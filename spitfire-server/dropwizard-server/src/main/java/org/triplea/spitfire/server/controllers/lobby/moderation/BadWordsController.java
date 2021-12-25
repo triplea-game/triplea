@@ -39,11 +39,8 @@ public class BadWordsController extends HttpController {
   public Response removeBadWord(
       @Auth final AuthenticatedUser authenticatedUser, final String word) {
     Preconditions.checkArgument(word != null && !word.isEmpty());
-    return badWordsService.removeBadWord(authenticatedUser.getUserIdOrThrow(), word)
-        ? Response.ok().build()
-        : Response.status(400)
-            .entity(word + " was not removed, it may already have been deleted")
-            .build();
+    badWordsService.removeBadWord(authenticatedUser.getUserIdOrThrow(), word);
+    return Response.ok().entity("Removed bad word: " + word).build();
   }
 
   /**

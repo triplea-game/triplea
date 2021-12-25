@@ -66,6 +66,23 @@ public class SwingKeyBinding {
         action);
   }
 
+  /**
+   * Same as {@code addKeyBindingWithMetaAndCtrlMasks(JFrame, KeyCode, Runnable)} but for {@code
+   * JDialog}.
+   */
+  public static void addKeyBindingWithMetaAndCtrlMasks(
+      final JDialog component, final KeyCode key, final Runnable action) {
+
+    addKeyMapping(
+        (JComponent) component.getContentPane(),
+        KeyCombination.of(key, ButtonDownMask.CTRL),
+        action);
+    addKeyMapping(
+        (JComponent) component.getContentPane(),
+        KeyCombination.of(key, ButtonDownMask.META),
+        action);
+  }
+
   private static void addKeyMapping(
       final JComponent component, final KeyCode keyCode, final Runnable action) {
     addKeyMapping(component, KeyCombination.of(keyCode, ButtonDownMask.NONE), action);

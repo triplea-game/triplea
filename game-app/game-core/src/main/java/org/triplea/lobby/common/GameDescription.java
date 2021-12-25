@@ -18,9 +18,6 @@ import org.triplea.game.server.HeadlessGameServer;
 /**
  * Immutable Data class being used to send information about the current game state to the lobby.
  */
-// See https://github.com/google/error-prone/pull/1195 and
-// https://github.com/rzwitserloot/lombok/issues/737
-@SuppressWarnings("ReferenceEquality")
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

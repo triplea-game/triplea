@@ -2286,7 +2286,7 @@
 - mapName: Global 40 expansion
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_expansion/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
   description: |
     <br>
@@ -2348,3 +2348,111 @@
   img: https://raw.githubusercontent.com/triplea-maps/greatlakeswar/master/preview.png
   description: |
     <br>Conflict around the North American Great Lakes, with both free-for-all and alliance scenarios
+- mapName: Cold War 4th Edition
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Cold_War_1950_4th_edition/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Cold_War_1950_4th_edition/master/preview.png
+  description: |
+    <br>A hypothetical World War 3 starting in 1950 using the Pact of Steel map
+- mapName: Pacific-Beta
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Pacific_Beta/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Pacific_Beta/master/preview.png
+  description: |
+    <br>The Pacific War. Based on the Axis & Allies: Pacific game.
+- mapName: World War II Global 1940 Ryuzaki Setup
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ww2global40_ryuzaki/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/ww2global40_ryuzaki/master/preview.png
+  description: |
+    <br>A better balanced setup for World War II Global Game
+- mapName: Lord of the Rings Middle Earth - Fords
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/middle_earth_Fords/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/middle_earth_Fords/master/preview.png
+  description: |
+    <br>The War of the Ring using The Lord of the Rings Middle Earth map, with most of the fords of the Anduin removed to increase the importance of Osgiliath
+- mapName: Great War - The Last Stand, March 1918
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Great_War-TLS-March1918/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Great_War-TLS-March1918/master/preview.png
+  description: |
+    <br>World War One, starting in March 1918, on The Great War map
+- mapName: "2020"
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/2020/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/2020/master/preview.png
+  description: |
+    <br>An alternate history where the United States has ceased to be a world power and WW3 has broken out between Canada/European Union vs Russia/China
+- mapName: Pearl Harbor 1941
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/PearlHarbor1941/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/PearlHarbor1941/master/preview.png
+  description: |
+    <br>World War Two on the Classic Map, starting with the Japanese attack on Pearl Harbor
+- mapName: Libyan Civil War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/wd_Libya/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/wd_Libya/master/preview.png
+  description: |
+    <br>The Libyan Civil War of 2010
+- mapName: TD-Kings Hill
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/TD-Kings_Hill/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/TD-Kings_Hill/master/preview.png
+  description: |
+    <br>An abstract, symmetrical, 2 vs 2 scenario with a number of continents
+- mapName: Master of Europa
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/MasterofEuropa/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/MasterofEuropa/master/preview.png
+  description: |
+    <br>WW2 in Europe starting in 1939 on the New World Order map
+- mapName: Caravan
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Caravan/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Caravan/master/preview.png
+  description: |
+    <br>In the deep, dark woods, a trade route is under threat from armed brigands. Can the town merchants get their goods through the forest paths safely?
+- mapName: Chess
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Chess/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Chess/master/preview.png
+  description: |
+    <br>An abstract, chess-inspired game
+- mapName: Big World Logistics Mod
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/big_world_logistics_mod/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_logistics_mod/master/preview.png
+  description: |
+    <br>World War 2 with supply lines required on the Big World Map
+- mapName: Aggression 1942
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/aggression_1942/archive/master.zip
+  version: 3
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1942/master/preview.png
+  description: |
+   <br>
+   <ul>
+     <li><b>Follows v3 type rules.</b></li>
+     <li><b>Only 1 battle rounds.</b></li>
+     <li><b>Units have 1 upkeep and movement costs.</b></li>
+     <li><b>Factory and aaGuns are destroyed when captured.</b></li>
+     <li><b>Victory is achieved by controlling 5 capitals.</b></li>
+     <li><b>Balance hasn't extensivelt tested yet. Still in progress.</b></li>
+     <li><b>By Navalland</b></li>
+   </ul>
+   <br>

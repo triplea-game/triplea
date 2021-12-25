@@ -3,6 +3,7 @@ package tools.image;
 import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Point;
@@ -250,7 +251,7 @@ public final class AutoPlacementFinder {
         "Place Dimensions in pixels, being used: " + placeWidth + "x" + placeHeight + "\r\n");
     textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
     final Map<String, List<Point>> placements = new HashMap<>();
-    final MapData mapData = new MapData(mapDir);
+    final MapData mapData = new MapData(new ResourceLoader(mapFolderLocation));
     for (final String name : mapData.getTerritories()) {
       final Set<Polygon> containedPolygons = mapData.getContainedTerritoryPolygons(name);
       final List<Point> points =

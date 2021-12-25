@@ -6,12 +6,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.HttpInteractionException;
 
 /** Can be used to interact with github's webservice API. */
+@Slf4j
 public class GithubApiClient {
 
   /** If this client is set to 'test' mode, we will return a stubbed response. */
@@ -52,7 +56,8 @@ public class GithubApiClient {
       final String githubRepo,
       final CreateIssueRequest createIssueRequest) {
     if (stubbingModeEnabled) {
-      return new CreateIssueResponse(STUBBED_RETURN_VALUE);
+      return new CreateIssueResponse(
+          STUBBED_RETURN_VALUE + String.valueOf(Math.random()).substring(0, 5));
     }
 
     final Map<String, Object> tokens = buildAuthorizationHeaders();
@@ -118,5 +123,15 @@ public class GithubApiClient {
       final String org, final String repo, final String branch) {
     final Map<String, Object> tokens = buildAuthorizationHeaders();
     return githubApiFeignClient.getBranchInfo(tokens, org, repo, branch);
+  }
+
+  public Optional<String> fetchLatestVersion(final String org, final String repo) {
+    final Map<String, Object> tokens = buildAuthorizationHeaders();
+    try {
+      return Optional.of(githubApiFeignClient.getLatestRelease(tokens, org, repo).getTagName());
+    } catch (final HttpInteractionException e) {
+      log.info("No data received from server for latest engine version", e);
+      return Optional.empty();
+    }
   }
 }

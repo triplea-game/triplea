@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eEux
+set -eEu
 
 script_dir=$(dirname "$0")
 "$script_dir/check-custom-style"

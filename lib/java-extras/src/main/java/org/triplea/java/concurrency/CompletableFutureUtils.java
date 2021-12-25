@@ -12,7 +12,6 @@ public final class CompletableFutureUtils {
    * Invokes {@code exceptionHandler} with any exception thrown by {@code future} when it is
    * complete. If {@code future} completes normally, no action is taken.
    */
-  @SuppressWarnings("FutureReturnValueIgnored")
   public static void logExceptionWhenComplete(
       final CompletableFuture<?> future, final Consumer<Throwable> exceptionHandler) {
     future.whenComplete(

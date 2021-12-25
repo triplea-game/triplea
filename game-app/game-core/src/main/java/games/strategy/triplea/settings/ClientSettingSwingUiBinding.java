@@ -4,12 +4,12 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.booleanR
 import static games.strategy.triplea.settings.SelectionComponentFactory.diceRollerOverrideSelection;
 import static games.strategy.triplea.settings.SelectionComponentFactory.folderPath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.intValueRange;
-import static games.strategy.triplea.settings.SelectionComponentFactory.lobbyOverrideSelection;
 import static games.strategy.triplea.settings.SelectionComponentFactory.proxySettings;
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.lobby.LobbySelectionViewFactory;
 import java.util.Collection;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
@@ -270,7 +270,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   LOBBY_URI_OVERRIDE_BINDING("Lobby URI Override", SettingType.TESTING, "Overrides the lobby URI") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return lobbyOverrideSelection();
+      return LobbySelectionViewFactory.build();
     }
   },
 

@@ -18,7 +18,7 @@ class UserNameTest {
         "",
         "a",
         "ab", // still too short
-        Strings.repeat("a", UserName.MAX_LENGTH + 1),
+        Strings.repeat("a", LobbyConstants.USERNAME_MAX_LENGTH + 1),
         "ab*", // no special characters other than '-' and '_'
         "ab$",
         ".ab",
@@ -49,7 +49,7 @@ class UserNameTest {
 
   @SuppressWarnings("unused")
   private static List<String> usernameValidationWithValidNames() {
-    return List.of("abc", Strings.repeat("a", UserName.MAX_LENGTH), "a12", "a--");
+    return List.of("abc", Strings.repeat("a", LobbyConstants.USERNAME_MAX_LENGTH), "a12", "a--");
   }
 
   @ParameterizedTest

@@ -9,9 +9,9 @@ class ZippedMapsExtractorTest {
 
   @Test
   void testExtractionFolderNaming() {
-    assertThat(ZippedMapsExtractor.createExtractionFolderName("zip"), is("zip"));
-    assertThat(ZippedMapsExtractor.createExtractionFolderName("zip-master"), is("zip"));
-    assertThat(ZippedMapsExtractor.createExtractionFolderName("zip-master.zip"), is("zip"));
-    assertThat(ZippedMapsExtractor.createExtractionFolderName("zip.zip"), is("zip"));
+    assertThat(ZippedMapsExtractor.computeExtractionFolderName("zip"), is("zip"));
+    assertThat(ZippedMapsExtractor.computeExtractionFolderName("zip-master"), is("zip"));
+    assertThat(ZippedMapsExtractor.computeExtractionFolderName("zip-master.zip"), is("zip"));
+    assertThat(ZippedMapsExtractor.computeExtractionFolderName("zip.zip"), is("zip"));
   }
 }

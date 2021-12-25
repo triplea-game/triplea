@@ -1,6 +1,5 @@
 package games.strategy.triplea.image;
 
-import games.strategy.engine.data.NamedAttachable;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 import java.awt.Image;
@@ -44,14 +43,11 @@ public abstract class AbstractImageFactory {
    *
    * @throws IllegalStateException if image can't be found
    */
-  public ImageIcon getIcon(final NamedAttachable type, final boolean large) {
-    final String fullName = type.getName() + (large ? "_large" : "");
-    if (icons.containsKey(fullName)) {
-      return icons.get(fullName);
-    }
-    final Image img = getBaseImage(fullName);
-    final ImageIcon icon = new ImageIcon(img);
-    icons.put(fullName, icon);
-    return icon;
+  public ImageIcon getIcon(final String name) {
+    return icons.computeIfAbsent(name, iconName -> new ImageIcon(getBaseImage(iconName)));
+  }
+
+  public ImageIcon getLargeIcon(final String name) {
+    return getIcon(name + "_large");
   }
 }

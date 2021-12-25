@@ -23,11 +23,13 @@ public class LobbyWatcherClient {
   public static final String PLAYER_LEFT_PATH = "/lobby/games/player-left";
   public static final String UPLOAD_CHAT_PATH = "/lobby/chat/upload";
 
+  private final ApiKey apiKey;
   private final AuthenticationHeaders authenticationHeaders;
   private final LobbyWatcherFeignClient lobbyWatcherFeignClient;
 
   public static LobbyWatcherClient newClient(final URI serverUri, final ApiKey apiKey) {
     return new LobbyWatcherClient(
+        apiKey,
         new AuthenticationHeaders(apiKey),
         new HttpClient<>(LobbyWatcherFeignClient.class, serverUri).get());
   }
@@ -51,8 +53,7 @@ public class LobbyWatcherClient {
     lobbyWatcherFeignClient.removeGame(authenticationHeaders.createHeaders(), gameId);
   }
 
-  public void uploadChatMessage(
-      final ApiKey apiKey, final ChatUploadParams uploadChatMessageParams) {
+  public void uploadChatMessage(final ChatUploadParams uploadChatMessageParams) {
     lobbyWatcherFeignClient.uploadChat(
         authenticationHeaders.createHeaders(), uploadChatMessageParams.toChatMessageUpload(apiKey));
   }

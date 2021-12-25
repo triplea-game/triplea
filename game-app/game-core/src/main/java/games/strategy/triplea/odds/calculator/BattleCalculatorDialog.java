@@ -1,9 +1,9 @@
 package games.strategy.triplea.odds.calculator;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.history.History;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.BorderLayout;
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.KeyCode;
@@ -45,14 +46,11 @@ public class BattleCalculatorDialog extends JDialog {
    * Shows the Odds Calculator dialog and initializes it using the current state of the specified
    * territory.
    */
-  public static void show(final TripleAFrame taFrame, final Territory t, final History history) {
-    // Note: The history param may not be the same as taFrame.getGame().getData().getHistory() as
-    // GameData
-    // gets cloned when showing history with a different History instance that doesn't correspond to
-    // what's
-    // shown.
-    final BattleCalculatorPanel panel =
-        new BattleCalculatorPanel(taFrame.getGame().getData(), history, taFrame.getUiContext(), t);
+  public static void show(final TripleAFrame taFrame, final Territory t, final GameData data) {
+    // Note: The data param may not be the same as taFrame.getGame().getData() as GameData gets
+    // cloned when showing history with a different History instance that doesn't correspond to
+    // what's shown.
+    final BattleCalculatorPanel panel = new BattleCalculatorPanel(data, taFrame.getUiContext(), t);
     final BattleCalculatorDialog dialog = new BattleCalculatorDialog(panel, taFrame);
     dialog.pack();
 
@@ -83,6 +81,7 @@ public class BattleCalculatorDialog extends JDialog {
           }
         });
 
+    taFrame.getTerritoryDetails().addBattleCalculatorKeyBindings(dialog);
     // close when hitting the escape key
     SwingKeyBinding.addKeyBinding(
         dialog,
@@ -98,6 +97,14 @@ public class BattleCalculatorDialog extends JDialog {
       dialog.setLocation(lastPosition);
     }
     dialog.setVisible(true);
+    // On some desktop environments, there is an odd behaviour: The new battle calculator dialog is
+    // not put at the front if the last user-interaction was to move the window of an already
+    // existing battle calculator dialog.  Oddly enough, calling toFront() directly here (before or
+    // after setVisible(true)) has no effect either, but delaying the call to the end of the queue
+    // of the Event Dispatch Thread solves the issue (though you can see the new dialog in the
+    // background for an blink of an eye).
+    // Tested with Cinnamon Desktop 4.8.5.
+    SwingUtilities.invokeLater(dialog::toFront);
     taFrame.getUiContext().addShutdownWindow(dialog);
   }
 
@@ -158,11 +165,5 @@ public class BattleCalculatorDialog extends JDialog {
     instances.remove(this);
     lastPosition = new Point(getLocation());
     super.dispose();
-  }
-
-  @Override
-  public void setVisible(final boolean vis) {
-    super.setVisible(vis);
-    panel.selectCalculateButton();
   }
 }

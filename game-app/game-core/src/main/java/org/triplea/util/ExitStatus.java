@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 
 /** A process exit status. */
 @AllArgsConstructor
-@SuppressWarnings("ImmutableEnumChecker")
 public enum ExitStatus {
   /** The process exited successfully (0). */
   SUCCESS(0),

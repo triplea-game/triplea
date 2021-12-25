@@ -1,35 +1,53 @@
 package org.triplea.spitfire.server.controllers;
 
-import com.github.database.rider.core.api.dataset.DataSet;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
+
 import java.net.URI;
-import org.junit.jupiter.api.Disabled;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.user.account.UserAccountClient;
-import org.triplea.spitfire.server.AllowedUserRole;
-import org.triplea.spitfire.server.ProtectedEndpointTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
-@Disabled
-@DataSet(value = SpitfireServerTestExtension.LOBBY_USER_DATASET, useSequenceFiltering = false)
-class UserAccountControllerIntegrationTest extends ProtectedEndpointTest<UserAccountClient> {
+class UserAccountControllerIntegrationTest extends ControllerIntegrationTest {
+  private final URI localhost;
+  private final UserAccountClient client;
 
   UserAccountControllerIntegrationTest(final URI localhost) {
-    super(localhost, AllowedUserRole.PLAYER, UserAccountClient::newClient);
+    this.localhost = localhost;
+    client = UserAccountClient.newClient(localhost, ControllerIntegrationTest.PLAYER);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void mustBeAuthorized() {
+    assertNotAuthorized(
+        List.of(ControllerIntegrationTest.ANONYMOUS),
+        apiKey -> UserAccountClient.newClient(localhost, apiKey),
+        UserAccountClient::fetchEmail,
+        client -> client.changeEmail("new-email"),
+        client -> client.changePassword("new-password"));
   }
 
   @Test
   void changePassword() {
-    verifyEndpoint(client -> client.changePassword("password"));
+    client.changePassword("password");
   }
 
   @Test
   void fetchEmail() {
-    verifyEndpoint(UserAccountClient::fetchEmail);
+    assertThat(client.fetchEmail(), notNullValue());
   }
 
   @Test
   void changeEmail() {
-    verifyEndpoint(client -> client.changeEmail("email@"));
+    assertThat(client.fetchEmail(), is(not("email@email-test.com")));
+
+    client.changeEmail("email@email-test.com");
+
+    assertThat(client.fetchEmail(), is("email@email-test.com"));
   }
 }

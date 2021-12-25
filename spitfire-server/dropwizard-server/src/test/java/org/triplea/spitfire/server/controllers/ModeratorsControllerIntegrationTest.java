@@ -1,36 +1,61 @@
 package org.triplea.spitfire.server.controllers;
 
-import com.github.database.rider.core.api.dataset.DataSet;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
 import java.net.URI;
-import org.junit.jupiter.api.Disabled;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
-import org.triplea.spitfire.server.AllowedUserRole;
-import org.triplea.spitfire.server.ProtectedEndpointTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
-@Disabled
-@DataSet(value = SpitfireServerTestExtension.LOBBY_USER_DATASET, useSequenceFiltering = false)
-class ModeratorsControllerIntegrationTest
-    extends ProtectedEndpointTest<ToolboxModeratorManagementClient> {
+class ModeratorsControllerIntegrationTest extends ControllerIntegrationTest {
+  private final URI localhost;
+  private final ToolboxModeratorManagementClient playerClient;
+  private final ToolboxModeratorManagementClient moderatorClient;
+  private final ToolboxModeratorManagementClient adminClient;
 
   ModeratorsControllerIntegrationTest(final URI localhost) {
-    super(localhost, AllowedUserRole.MODERATOR, ToolboxModeratorManagementClient::newClient);
+    this.localhost = localhost;
+    this.playerClient =
+        ToolboxModeratorManagementClient.newClient(localhost, ControllerIntegrationTest.PLAYER);
+    this.moderatorClient =
+        ToolboxModeratorManagementClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
+    this.adminClient =
+        ToolboxModeratorManagementClient.newClient(localhost, ControllerIntegrationTest.ADMIN);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void mustBeAuthorized() {
+    assertNotAuthorized(
+        List.of(ControllerIntegrationTest.PLAYER, ControllerIntegrationTest.MODERATOR),
+        apiKey -> ToolboxModeratorManagementClient.newClient(localhost, apiKey),
+        client -> client.addAdmin("admin"),
+        client -> client.addModerator("mod"),
+        client -> client.removeMod("mod"));
   }
 
   @Test
   void isAdmin() {
-    verifyEndpoint(ToolboxModeratorManagementClient::isCurrentUserAdmin);
+    assertThat(playerClient.isCurrentUserAdmin(), is(false));
+    assertThat(moderatorClient.isCurrentUserAdmin(), is(false));
+    assertThat(adminClient.isCurrentUserAdmin(), is(true));
   }
 
   @Test
   void removeMod() {
-    verifyEndpoint(AllowedUserRole.ADMIN, client -> client.removeMod("mod"));
+    adminClient.removeMod("mod");
+  }
+
+  @Test
+  void addMod() {
+    adminClient.addModerator("mod");
   }
 
   @Test
   void setAdmin() {
-    verifyEndpoint(AllowedUserRole.ADMIN, client -> client.addAdmin("mod3"));
+    adminClient.addAdmin("admin");
   }
 }

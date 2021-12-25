@@ -1,44 +1,105 @@
 # Developer Setup Guide
 
+## Before Getting Started
+- [Install IDE](./how-to/ide-setup) (favor choosing IDEA)
+  - Create as a gradle project (file > open project > select the build.gradle file))
+  - Usually TripleA and lobby are started from within IDE, look for checked in 'run configurations'.
+- Install docker
+  - Docker for Mac can be obtained at: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
+
 ## Getting Started
 
-To get setup with IDE, building and running code, see:
-[how-to/local-build-and-testing.md](./how-to/local-build-and-testing.md)
+- Fork <https://github.com/triplea-game/triplea>
+- Clone your newly forked repository
 
+## Compile and launch TripleA
+```bash
+./gradlew :game-app:game-headed:run
+```
 
- ## Why Work on TripleA?
+## Launch Local Database
 
- * If you like the game and want to improve it
- * To get practice coding and working within an open source team
- * General coding practice and the reward of building something 
+```bash
+./spitfire-server/database/start_docker_db
+```
 
+This will:
+- start a postgres DB docker container
+- run flyway to install a database schema
+- load a sample 'SQL' file to populate a small sample dataset
 
+### Working with database
+
+```
+## connect to database to bring up a SQL CLI
+./spitfire-server/database/connect_to_docker_db
+
+## connect to lobby database
+\c lobby_db
+
+## list tables
+\d
+
+## exit SQL CLI
+\q
+
+## erase database and recreate with sampledrop database schema & data and recreate
+./spitfire-server/database/reset_docker_db
+```
+
+## Launch local lobby:
+
+```bash
+./gradlew :spitfire-server:dropwizard-server:run
+```
+
+To connect to local lobby, from the game client:
+  - 'settings > testing > local lobby'
+  - play online
+  - use 'test:test' to login to local lobby as a moderator
+
+## Run all checks and tests
+
+```bash
+./verify
+```
+
+## Run formatting:
+
+```
+./format
+```
+
+## Reference
+
+For more detailed steps on building the project, see:
+- [how-to/cli-build-commands.md](./how-to/cli-build-commands.md)
+- [how-to/typical-git-workflow.md](./how-to/typical-git-workflow.md)
+
+## Coding Style Guide & Expectations
+
+- Code formatting is google java format
+- Checkstyle will verify low level code style standards
+- Generally write tests for new and modified code
+
+Full list of coding conventions can be found at: [reference/code-conventions](./reference/code-conventions)
 
 # Pitfalls and Pain Points to be aware of
 
-TripleA can be a really rewarding project but has its difficulties. Development
-on TripleA started in the early 2000s and has been ongoing since. Most difficulties
-are from the codebase being larger and older.
-
-
 ## Save-Game Compatibility
 
-- Game saves are done via object serialization. It is important therefore for object deserialization
-  to work. The `GameData` class and anything that it references is saved, most of these classes extend
-  `GameDataComponent`. To deserialize properly, all of the class fields may not (type and name).
+- Do not rename private fields or delete private fields of anything that extends `GameDataComponent`
 
-- Network compatibility, '@RemoteMethod' indicates methods invoked over network. The API of these
-  methods may not change.
+Game saves are done via object serialization that is then written to file. Renaming or deleting
+fields will prevent previous save games from loading.
 
-## General Complexity
+## Network Compatibility
 
-There is a lot of duct tape applied to the code, it is deceivingly complex and overly-complex.
-To overcome this we are extracting and cleaning code as much as possible and retrofitting in
-tests.
+'@RemoteMethod' indicates methods invoked over network. The API of these methods may not change.
 
-## Lack of Testing
+## Lots of Manual Testing Required
 
-There is a significant lack of test coverage, even with decent test coverage there can be non-obvious
-behavior that you will probably only find via manual testing. Manual test changes in addition to
-building as much automated testing as can be done reasonably..
+A lot of code is not automatically verified via tests, any change should be tested pretty
+thoroughly and for a variety of maps and scenarios. This can be very time consuming for
+even the smallest of changes.
 

@@ -1,5 +1,4 @@
 dependencies {
-    errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"

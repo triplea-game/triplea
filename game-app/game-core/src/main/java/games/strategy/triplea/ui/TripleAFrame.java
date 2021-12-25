@@ -199,7 +199,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
   private final AtomicBoolean inGame = new AtomicBoolean(true);
   private HistorySynchronizer historySyncher;
-  private final UiContext uiContext;
+  private UiContext uiContext;
   private final JPanel mapAndChatPanel;
   private final ChatPanel chatPanel;
   private final CommentPanel commentPanel;
@@ -261,7 +261,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               final JLabel territoryEffectLabel = new JLabel();
               territoryEffectLabel.setToolTipText(territoryEffect.getName());
               territoryEffectLabel.setIcon(
-                  uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect, false));
+                  uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
               territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
               territoryInfo.add(
                   territoryEffectLabel,
@@ -683,8 +683,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     Preconditions.checkState(
         !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
-    final UiContext uiContext = new UiContext();
-    uiContext.setDefaultMapDir(game.getData());
+    final UiContext uiContext = new UiContext(game.getData());
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
 
@@ -919,8 +918,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** We do NOT want to block the next player from beginning their turn. */
   public void notifyError(final String message) {
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(
-            message, UiContext.getResourceLoader().getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(message, UiContext.getMapLocation());
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -956,8 +954,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return;
     }
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(
-            message, UiContext.getResourceLoader().getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(message, UiContext.getMapLocation());
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -2361,12 +2358,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   /** Displays the map located in the directory/archive {@code mapdir}. */
-  public void updateMap(final String mapdir) {
-    uiContext.setMapDir(data, mapdir);
+  public void changeMapSkin(final String skinName) {
+    uiContext = UiContext.changeMapSkin(data, skinName);
     // when changing skins, always show relief images
     if (uiContext.getMapData().getHasRelief()) {
       TileImageFactory.setShowReliefImages(true);
     }
+
     mapPanel.setGameData(data);
     // update map panels to use new image
     mapPanel.changeImage(uiContext.getMapData().getMapDimensions());

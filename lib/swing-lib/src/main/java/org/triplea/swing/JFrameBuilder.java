@@ -26,6 +26,13 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
  * </ul>
  */
 public class JFrameBuilder {
+  enum CloseBehavior {
+    DISPOSE,
+    EXIT
+  }
+
+  private CloseBehavior closeBehavior = CloseBehavior.DISPOSE;
+
   private final Collection<Function<JFrame, Component>> children = new ArrayList<>();
   private boolean escapeClosesWindow;
   private boolean alwaysOnTop;
@@ -71,7 +78,6 @@ public class JFrameBuilder {
 
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
     Optional.ofNullable(iconImage).ifPresent(frame::setIconImage);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     if ((width > 0) || (height > 0)) {
       frame.setPreferredSize(new Dimension(width, height));
@@ -86,6 +92,12 @@ public class JFrameBuilder {
     }
     Optional.ofNullable(parent).ifPresent(frame::setLocationRelativeTo);
     Optional.ofNullable(layoutManager).ifPresent(frame.getContentPane()::setLayout);
+
+    if (closeBehavior == CloseBehavior.EXIT) {
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    } else {
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
 
     children.stream().map(component -> component.apply(frame)).forEach(frame::add);
 
@@ -176,6 +188,16 @@ public class JFrameBuilder {
 
   public JFrameBuilder visible(final boolean visible) {
     this.visible = visible;
+    return this;
+  }
+
+  public JFrameBuilder exitOnClose() {
+    this.closeBehavior = CloseBehavior.EXIT;
+    return this;
+  }
+
+  public JFrameBuilder disposeOnClose() {
+    this.closeBehavior = CloseBehavior.DISPOSE;
     return this;
   }
 }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -60,12 +62,12 @@ public class DownloadMapsWindow extends JFrame {
 
   private final MapDownloadProgressPanel progressPanel;
 
-  private final DownloadMapsWindowUtils downloadMapsWindowUtils;
+  private final DownloadMapsWindowModel downloadMapsWindowModel;
 
   private DownloadMapsWindow(
       final Collection<String> pendingDownloadMapNames, final List<MapDownloadItem> allDownloads) {
     super("Download Maps");
-    downloadMapsWindowUtils = new DownloadMapsWindowUtils();
+    downloadMapsWindowModel = new DownloadMapsWindowModel();
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -145,9 +147,11 @@ public class DownloadMapsWindow extends JFrame {
    */
   public static void showDownloadMapsWindowAndDownload(
       final Collection<String> mapNamesToDownload) {
-    checkState(SwingUtilities.isEventDispatchThread());
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(() -> showDownloadMapsWindowAndDownload(mapNamesToDownload));
+      return;
+    }
     checkNotNull(mapNamesToDownload);
-
     SINGLETON_MANAGER.showAndDownload(mapNamesToDownload);
   }
 
@@ -294,15 +298,20 @@ public class DownloadMapsWindow extends JFrame {
     // For the UX, always show an available maps tab, even if it is empty
     final JPanel available =
         newMapSelectionPanel(mapList.getAvailableExcluding(pendingDownloads), MapAction.INSTALL);
-    tabbedPane.addTab("Available", available);
+    tabbedPane.addTab("New Maps", available);
 
     if (!outOfDateDownloads.isEmpty()) {
       final JPanel outOfDate = newMapSelectionPanel(outOfDateDownloads, MapAction.UPDATE);
-      tabbedPane.addTab("Update", outOfDate);
+      tabbedPane.addTab("Updates Available", outOfDate);
     }
 
     if (!mapList.getInstalled().isEmpty()) {
-      final JPanel installed = newMapSelectionPanel(mapList.getInstalled(), MapAction.REMOVE);
+      final JPanel installed =
+          newMapSelectionPanel(
+              mapList.getInstalled().keySet().stream()
+                  .sorted(Comparator.comparing(m -> m.getMapName().toUpperCase()))
+                  .collect(Collectors.toList()),
+              MapAction.REMOVE);
       tabbedPane.addTab("Installed", installed);
     }
     return tabbedPane;
@@ -324,7 +333,7 @@ public class DownloadMapsWindow extends JFrame {
               newDescriptionPanelUpdatingSelectionListener(
                   mapSelections.get(0), descriptionPane, unsortedMaps, mapSizeLabel));
 
-      descriptionPane.setText(downloadMapsWindowUtils.toHtmlString(unsortedMaps.get(0)));
+      descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.get(0)));
       descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
@@ -357,7 +366,7 @@ public class DownloadMapsWindow extends JFrame {
         .findAny()
         .ifPresent(
             map -> {
-              final String text = downloadMapsWindowUtils.toHtmlString(map);
+              final String text = downloadMapsWindowModel.toHtmlString(map);
               descriptionPanel.setText(text);
               descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
               updateMapUrlAndSizeLabel(map, mapSizeLabelToUpdate);
@@ -377,47 +386,31 @@ public class DownloadMapsWindow extends JFrame {
     final String doubleSpace = "&nbsp;&nbsp;";
 
     final StringBuilder sb = new StringBuilder();
-    sb.append("<html>")
-        .append(map.getMapName())
-        .append(doubleSpace)
-        .append(" v")
-        .append(map.getVersion());
+    sb.append("<html>").append(map.getMapName()).append(doubleSpace);
 
-    if (!downloadMapsWindowUtils.isInstalled(map)) {
-      final String mapUrl = map.getDownloadUrl();
-      if (mapUrl != null) {
-        DownloadConfiguration.downloadLengthReader()
-            .getDownloadLength(mapUrl)
-            .ifPresent(
-                downloadSize ->
-                    sb.append(doubleSpace)
-                        .append(" (")
-                        .append(newSizeLabel(downloadSize))
-                        .append(")"));
-      }
+    if (!downloadMapsWindowModel.isInstalled(map)) {
+      sb.append(doubleSpace)
+          .append(" (")
+          .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
+          .append(")");
     } else {
       sb.append(doubleSpace).append(" (");
       try {
-        sb.append(newSizeLabel(Files.size(downloadMapsWindowUtils.getInstallLocation(map).get())));
+        sb.append(
+            FileUtils.byteCountToDisplaySize(
+                Files.size(downloadMapsWindowModel.getInstallLocation(map).get())));
       } catch (final IOException e) {
         log.warn("Failed to read file size", e);
         sb.append("N/A");
       }
       sb.append(")")
           .append("<br>")
-          .append(downloadMapsWindowUtils.getInstallLocation(map).get().toAbsolutePath());
+          .append(downloadMapsWindowModel.getInstallLocation(map).get().toAbsolutePath());
     }
     sb.append("<br>");
     sb.append("</html>");
 
     return sb.toString();
-  }
-
-  private static String newSizeLabel(final long bytes) {
-    final long kiloBytes = (bytes / 1024);
-    final long megaBytes = kiloBytes / 1024;
-    final long kbDigits = ((kiloBytes % 1000) / 100);
-    return megaBytes + "." + kbDigits + " MB";
   }
 
   private JPanel newButtonsPanel(
@@ -487,7 +480,7 @@ public class DownloadMapsWindow extends JFrame {
               .collect(Collectors.toList());
       if (!selectedMaps.isEmpty()) {
         FileSystemAccessStrategy.remove(
-            downloadMapsWindowUtils::delete, selectedMaps, tableRemoveAction);
+            downloadMapsWindowModel::delete, selectedMaps, tableRemoveAction);
       }
     };
   }

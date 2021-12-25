@@ -19,8 +19,8 @@ class DownloadFileTest {
             .previewImageUrl("preview-url")
             .description("description")
             .mapName("mapName")
-            .version(0)
             .lastCommitDateEpochMilli(60L)
+            .downloadSizeInBytes(100L)
             .build();
     final DownloadFile testObj = new DownloadFile(mapDownloadItem, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));

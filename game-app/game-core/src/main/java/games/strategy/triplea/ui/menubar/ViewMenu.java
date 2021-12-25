@@ -21,9 +21,9 @@ import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
@@ -79,7 +79,9 @@ final class ViewMenu extends JMenu {
     if (uiContext.getMapData().useTerritoryEffectMarkers()) {
       addShowTerritoryEffects();
     }
-    addMapSkinsMenu();
+    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
+      addMapSkinsMenu();
+    }
     addShowMapDetails();
     addShowMapBlends();
     addMapFontAndColorEditorMenu();
@@ -242,19 +244,18 @@ final class ViewMenu extends JMenu {
     mapSubMenu.setMnemonic(KeyEvent.VK_K);
     add(mapSubMenu);
     final ButtonGroup mapButtonGroup = new ButtonGroup();
-    final Map<String, String> skins = UiContext.getSkins(frame.getGame().getData().getMapName());
+    final Collection<UiContext.MapSkin> skins =
+        UiContext.getSkins(frame.getGame().getData().getMapName());
     mapSubMenu.setEnabled(skins.size() > 1);
-    for (final String key : skins.keySet()) {
-      final JMenuItem mapMenuItem = new JRadioButtonMenuItem(key);
+    for (final UiContext.MapSkin mapSkin : skins) {
+      final JMenuItem mapMenuItem = new JRadioButtonMenuItem(mapSkin.getSkinName());
       mapButtonGroup.add(mapMenuItem);
       mapSubMenu.add(mapMenuItem);
-      if (skins.get(key).equals(UiContext.getMapDir())) {
-        mapMenuItem.setSelected(true);
-      }
+      mapMenuItem.setSelected(mapSkin.isCurrentSkin());
       mapMenuItem.addActionListener(
           e -> {
             try {
-              frame.updateMap(skins.get(key));
+              frame.changeMapSkin(mapSkin.getSkinName());
               if (uiContext.getMapData().getHasRelief()) {
                 showMapDetails.setSelected(true);
               }
@@ -326,7 +327,7 @@ final class ViewMenu extends JMenu {
   private void addMapFontAndColorEditorMenu() {
     final Action mapFontOptions =
         SwingAction.of(
-            "Edit Map Font and Color",
+            "Map Font and Color",
             e -> {
               final List<IEditableProperty<?>> properties = new ArrayList<>();
               final NumberProperty fontsize =
@@ -385,7 +386,7 @@ final class ViewMenu extends JMenu {
                   JOptionPane.showOptionDialog(
                       frame,
                       ui,
-                      "Edit Map Font and Color",
+                      "Map Font and Color",
                       JOptionPane.YES_NO_CANCEL_OPTION,
                       JOptionPane.PLAIN_MESSAGE,
                       null,
@@ -454,7 +455,7 @@ final class ViewMenu extends JMenu {
 
     final JMenu flagDisplayMenu = new JMenu();
     flagDisplayMenu.setMnemonic(KeyEvent.VK_N);
-    flagDisplayMenu.setText("Flag Display Mode");
+    flagDisplayMenu.setText("Flag Display");
     final ButtonGroup flagsDisplayGroup = new ButtonGroup();
 
     final JRadioButtonMenuItem noFlags =

@@ -34,7 +34,7 @@ public class ResourceImageFactory extends AbstractImageFactory {
   public JLabel getLabel(final Resource resource, final String text) {
     final JLabel label = new JLabel();
     try {
-      label.setIcon(getIcon(resource, false));
+      label.setIcon(getIcon(resource.getName()));
       label.setText(text);
       label.setToolTipText(resource.getName());
     } catch (final IllegalStateException e) {

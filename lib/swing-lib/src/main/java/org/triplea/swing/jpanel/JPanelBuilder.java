@@ -2,6 +2,7 @@ package org.triplea.swing.jpanel;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.Collection;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -85,6 +86,12 @@ public class JPanelBuilder {
 
   public FlowLayoutBuilder add(final Component component) {
     return flowLayout().add(component);
+  }
+
+  public FlowLayoutBuilder addAll(final Collection<JComponent> components) {
+    final FlowLayoutBuilder flowLayout = flowLayout();
+    components.forEach(flowLayout::add);
+    return flowLayout;
   }
 
   public FlowLayoutBuilder flowLayout() {

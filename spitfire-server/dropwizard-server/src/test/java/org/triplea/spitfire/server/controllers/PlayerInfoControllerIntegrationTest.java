@@ -2,38 +2,62 @@ package org.triplea.spitfire.server.controllers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import java.net.URI;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.HttpInteractionException;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
-import org.triplea.spitfire.server.AllowedUserRole;
-import org.triplea.spitfire.server.ProtectedEndpointTest;
-import org.triplea.spitfire.server.SpitfireServerTestExtension;
+import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
-@Disabled
-@DataSet(value = SpitfireServerTestExtension.LOBBY_USER_DATASET, useSequenceFiltering = false)
-class PlayerInfoControllerIntegrationTest extends ProtectedEndpointTest<PlayerLobbyActionsClient> {
+class PlayerInfoControllerIntegrationTest extends ControllerIntegrationTest {
+
+  private final PlayerLobbyActionsClient client;
+  private final PlayerLobbyActionsClient moderatorClient;
 
   PlayerInfoControllerIntegrationTest(final URI localhost) {
-    super(localhost, AllowedUserRole.MODERATOR, PlayerLobbyActionsClient::new);
+    client = PlayerLobbyActionsClient.newClient(localhost, ControllerIntegrationTest.ANONYMOUS);
+    moderatorClient =
+        PlayerLobbyActionsClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
   }
 
   @Test
-  @DisplayName("Verify fetch player info endpoint is available")
+  @Disabled
+  /*
+  Disabled: non-deterministic test, needs work.
+  Failure message:
+  Reason: Bad Request
+  Http 400 - Bad Request: Player could not be found, have they left chat?
+  */
   void fetchPlayerInfo() {
-    try {
-      verifyEndpoint(client -> client.fetchPlayerInformation(PlayerChatId.of("id")));
-    } catch (final HttpInteractionException expected) {
-      assertThat(
-          "The requested player ID does not exist, we expect a 400 back for this request",
-          expected.status(),
-          is(400));
-    }
+    final PlayerSummary playerSummary =
+        client.fetchPlayerInformation(PlayerChatId.of("chatter-chat-id2"));
+
+    assertThat(playerSummary.getCurrentGames(), is(notNullValue()));
+    assertThat(playerSummary.getIp(), is(nullValue()));
+    assertThat(playerSummary.getSystemId(), is(nullValue()));
+  }
+
+  @Test
+  @Disabled
+  /*
+  Disabled: non-deterministic test, needs work.
+  Failure message:
+  Reason: Bad Request
+  Http 400 - Bad Request: Player could not be found, have they left chat?
+  */
+  void fetchPlayerInfoAsModerator() {
+    final PlayerSummary playerSummary =
+        moderatorClient.fetchPlayerInformation(PlayerChatId.of("chatter-chat-id2"));
+
+    assertThat(playerSummary.getIp(), is(notNullValue()));
+    assertThat(playerSummary.getRegistrationDateEpochMillis(), is(notNullValue()));
+    assertThat(playerSummary.getAliases(), is(notNullValue()));
+    assertThat(playerSummary.getBans(), is(notNullValue()));
+    assertThat(playerSummary.getSystemId(), is(notNullValue()));
   }
 }

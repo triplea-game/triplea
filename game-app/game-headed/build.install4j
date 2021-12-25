@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="8.0.9" transformSequenceNumber="8">
+<install4j version="9.0.5" transformSequenceNumber="9">
   <directoryPresets config=".triplea-root" />
   <application name="TripleA" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" createChecksums="false" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="https://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" autoSave="true" convertDotsToUnderscores="false" macVolumeId="af9346379363d40e" javaMinVersion="11" jdkMode="jdk">
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk11/jdk-11.0.9.1+1" />
+    <jreBundles jdkProviderId="AdoptOpenJDK" release="11/jdk-11.0.9.1+1" />
   </application>
-  <files>
+  <files preserveSymlinks="false">
     <mountPoints>
       <mountPoint id="28" location="assets" />
       <mountPoint id="23" location="bin" />
@@ -89,11 +89,19 @@
             <group id="339" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup">
               <serializedBean>
                 <property name="backgroundColor">
-                  <object class="java.awt.Color">
-                    <int>255</int>
-                    <int>255</int>
-                    <int>255</int>
-                    <int>255</int>
+                  <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                    <object class="java.awt.Color">
+                      <int>255</int>
+                      <int>255</int>
+                      <int>255</int>
+                      <int>255</int>
+                    </object>
+                    <object class="java.awt.Color">
+                      <int>49</int>
+                      <int>52</int>
+                      <int>53</int>
+                      <int>255</int>
+                    </object>
                   </object>
                 </property>
                 <property name="imageAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTHEAST" />
@@ -388,11 +396,19 @@ return Math.min(is32BitJavaRuntime ? 1024L : 2048L, halfMemoryMiB);</property>
             <group id="339" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup">
               <serializedBean>
                 <property name="backgroundColor">
-                  <object class="java.awt.Color">
-                    <int>255</int>
-                    <int>255</int>
-                    <int>255</int>
-                    <int>255</int>
+                  <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                    <object class="java.awt.Color">
+                      <int>255</int>
+                      <int>255</int>
+                      <int>255</int>
+                      <int>255</int>
+                    </object>
+                    <object class="java.awt.Color">
+                      <int>49</int>
+                      <int>52</int>
+                      <int>53</int>
+                      <int>255</int>
+                    </object>
                   </object>
                 </property>
                 <property name="imageAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTHEAST" />
@@ -580,11 +596,19 @@ return true;</property>
           <group id="332" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize banner image" externalParametrizationMode="include">
             <serializedBean>
               <property name="backgroundColor">
-                <object class="java.awt.Color">
-                  <int>255</int>
-                  <int>255</int>
-                  <int>255</int>
-                  <int>255</int>
+                <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                  <object class="java.awt.Color">
+                    <int>255</int>
+                    <int>255</int>
+                    <int>255</int>
+                    <int>255</int>
+                  </object>
+                  <object class="java.awt.Color">
+                    <int>49</int>
+                    <int>52</int>
+                    <int>53</int>
+                    <int>255</int>
+                  </object>
                 </object>
               </property>
               <property name="borderSides">
@@ -593,11 +617,19 @@ return true;</property>
                 </object>
               </property>
               <property name="imageEdgeBackgroundColor">
-                <object class="java.awt.Color">
-                  <int>25</int>
-                  <int>143</int>
-                  <int>220</int>
-                  <int>255</int>
+                <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                  <object class="java.awt.Color">
+                    <int>25</int>
+                    <int>143</int>
+                    <int>220</int>
+                    <int>255</int>
+                  </object>
+                  <object class="java.awt.Color">
+                    <int>0</int>
+                    <int>74</int>
+                    <int>151</int>
+                    <int>255</int>
+                  </object>
                 </object>
               </property>
               <property name="imageEdgeBorder" type="boolean" value="true" />
@@ -651,11 +683,19 @@ return true;</property>
               <group id="339" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize title bar" externalParametrizationMode="include">
                 <serializedBean>
                   <property name="backgroundColor">
-                    <object class="java.awt.Color">
-                      <int>255</int>
-                      <int>255</int>
-                      <int>255</int>
-                      <int>255</int>
+                    <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                      <object class="java.awt.Color">
+                        <int>255</int>
+                        <int>255</int>
+                        <int>255</int>
+                        <int>255</int>
+                      </object>
+                      <object class="java.awt.Color">
+                        <int>49</int>
+                        <int>52</int>
+                        <int>53</int>
+                        <int>255</int>
+                      </object>
                     </object>
                   </property>
                   <property name="borderSides">
@@ -762,13 +802,13 @@ return true;</property>
       <jreBundle usePack200="false" jreBundleSource="preCreated" includedJre="build/assets/install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.4_11.tar.gz" manualJreEntry="true" bundleUrl="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.4_11.tar.gz" directDownload="true" />
     </windows>
     <windows name="Windows 64 bit" id="87" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-64bit">
-      <jreBundle usePack200="false" jreBundleSource="generated" directDownload="true" />
+      <jreBundle usePack200="false" directDownload="true" />
     </windows>
     <macos name="Mac OS X" id="35" compressDmg="true" launcherId="33">
-      <jreBundle usePack200="false" jreBundleSource="generated" directDownload="true" />
+      <jreBundle usePack200="false" directDownload="true" />
     </macos>
     <unixInstaller name="Unix" id="36">
-      <jreBundle usePack200="false" jreBundleSource="generated" directDownload="true" installOnlyIfNecessary="true" />
+      <jreBundle usePack200="false" directDownload="true" installOnlyIfNecessary="true" />
     </unixInstaller>
   </mediaSets>
 </install4j>

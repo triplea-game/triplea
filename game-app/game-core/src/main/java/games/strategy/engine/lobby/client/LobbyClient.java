@@ -18,6 +18,7 @@ public class LobbyClient {
   private final boolean anonymousLogin;
   private final boolean moderator;
   private final boolean passwordChangeRequired;
+  private final String lobbyMessage;
 
   public static LobbyClient newLobbyClient(final URI lobbyUri, final LoginResult loginResult) {
     return LobbyClient.builder()
@@ -29,6 +30,7 @@ public class LobbyClient {
         .anonymousLogin(loginResult.isAnonymousLogin())
         .moderator(loginResult.isModerator())
         .userName(loginResult.getUsername())
+        .lobbyMessage(loginResult.getLoginMessage())
         .build();
   }
 }

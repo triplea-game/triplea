@@ -49,7 +49,7 @@ class EconomyPanel extends AbstractStatPanel {
       final JLabel label = (JLabel) table.getColumnModel().getColumn(i).getHeaderRenderer();
       final Resource resource = resourceStats.get(i - 1).resource;
       try {
-        label.setIcon(uiContext.getResourceImageFactory().getIcon(resource, false));
+        label.setIcon(uiContext.getResourceImageFactory().getIcon(resource.getName()));
         label.setToolTipText(resource.getName());
       } catch (final IllegalStateException e) {
         // ignore missing resource image

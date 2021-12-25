@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.ui.background.WaitDialog;
-import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -89,7 +88,6 @@ class BattleCalculatorPanel extends JPanel {
   private final PlayerUnitsPanel defendingUnitsPanel;
   private final JComboBox<GamePlayer> attackerCombo;
   private final JComboBox<GamePlayer> defenderCombo;
-  private final JComboBox<GamePlayer> swapSidesCombo;
   private final JLabel attackerUnitsTotalNumber = new JLabel();
   private final JLabel defenderUnitsTotalNumber = new JLabel();
   private final JLabel attackerUnitsTotalTuv = new JLabel();
@@ -103,11 +101,7 @@ class BattleCalculatorPanel extends JPanel {
   private final Territory location;
   private final JList<String> territoryEffectsJList;
 
-  BattleCalculatorPanel(
-      final GameData data,
-      final History history,
-      final UiContext uiContext,
-      final Territory location) {
+  BattleCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location) {
     this.data = data;
     this.uiContext = uiContext;
     this.location = location;
@@ -120,7 +114,6 @@ class BattleCalculatorPanel extends JPanel {
       }
       attackerCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
-      swapSidesCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       final Map<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
       if (allTerritoryEffects == null || allTerritoryEffects.isEmpty()) {
         territoryEffectsJList = null;
@@ -152,7 +145,6 @@ class BattleCalculatorPanel extends JPanel {
     }
     defenderCombo.setRenderer(new PlayerRenderer());
     attackerCombo.setRenderer(new PlayerRenderer());
-    swapSidesCombo.setRenderer(new PlayerRenderer());
     defendingUnitsPanel = new PlayerUnitsPanel(data, uiContext, true);
     attackingUnitsPanel = new PlayerUnitsPanel(data, uiContext, false);
     numRuns.setColumns(4);
@@ -957,31 +949,15 @@ class BattleCalculatorPanel extends JPanel {
 
     defenderCombo.addActionListener(
         e -> {
-          data.acquireReadLock();
-          try {
-            if (data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
-              attackerCombo.setSelectedItem(getEnemy(getDefender()));
-            }
-          } finally {
-            data.releaseReadLock();
-          }
           setDefendingUnits(
               defendingUnitsPanel.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(getDefender()))
                   ? defendingUnitsPanel.getUnits()
-                  : null);
+                  : List.of());
           setWidgetActivation();
         });
     attackerCombo.addActionListener(
         e -> {
-          data.acquireReadLock();
-          try {
-            if (data.getRelationshipTracker().isAllied(getDefender(), getAttacker())) {
-              defenderCombo.setSelectedItem(getEnemy(getAttacker()));
-            }
-          } finally {
-            data.releaseReadLock();
-          }
-          setAttackingUnits(null);
+          setAttackingUnits(List.of());
           setWidgetActivation();
         });
     amphibiousCheckBox.addActionListener(e -> setWidgetActivation());
@@ -989,8 +965,8 @@ class BattleCalculatorPanel extends JPanel {
         e -> {
           attackerOrderOfLosses = null;
           defenderOrderOfLosses = null;
-          setDefendingUnits(null);
-          setAttackingUnits(null);
+          setDefendingUnits(List.of());
+          setAttackingUnits(List.of());
           setWidgetActivation();
         });
     calculateButton.addActionListener(e -> updateStats());
@@ -1016,6 +992,7 @@ class BattleCalculatorPanel extends JPanel {
         e -> {
           attackerOrderOfLosses = null;
           defenderOrderOfLosses = null;
+          final GamePlayer newAttacker = getDefender();
           final List<Unit> newAttackers =
               CollectionUtils.getMatches(
                   defendingUnitsPanel.getUnits(),
@@ -1023,13 +1000,13 @@ class BattleCalculatorPanel extends JPanel {
                       .and(
                           Matches.unitCanBeInBattle(
                               true, isLand(), 1, hasMaxRounds(isLand(), data), true, List.of())));
+          final GamePlayer newDefender = getAttacker();
           final List<Unit> newDefenders =
               CollectionUtils.getMatches(
                   attackingUnitsPanel.getUnits(),
                   Matches.unitCanBeInBattle(true, isLand(), 1, true));
-          swapSidesCombo.setSelectedItem(getAttacker());
-          attackerCombo.setSelectedItem(getDefender());
-          defenderCombo.setSelectedItem(getSwapSides());
+          setAttacker(newAttacker);
+          setDefender(newDefender);
           setAttackingUnits(newAttackers);
           setDefendingUnits(newDefenders);
           setWidgetActivation();
@@ -1066,66 +1043,14 @@ class BattleCalculatorPanel extends JPanel {
     attackingUnitsPanel.addChangeListener(this::setWidgetActivation);
     defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
 
-    // use the one passed, not the one we found:
-    if (location != null) {
-      data.acquireReadLock();
-      try {
-        landBattleCheckBox.setSelected(!location.isWater());
-
-        // Default attacker to current player
-        final Optional<GamePlayer> currentPlayer = getCurrentPlayer(history);
-        currentPlayer.ifPresent(this::setAttacker);
-
-        // Get players with units sorted
-        final List<GamePlayer> players = location.getUnitCollection().getPlayersByUnitCount();
-        if (currentPlayer.isPresent() && players.contains(currentPlayer.get())) {
-          players.remove(currentPlayer.get());
-          players.add(0, currentPlayer.get());
-        }
-
-        // Check location to determine optimal attacker and defender
-        if (!location.isWater()) {
-          defenderCombo.setSelectedItem(location.getOwner());
-          for (final GamePlayer player : players) {
-            if (Matches.isAtWar(getDefender(), data.getRelationshipTracker()).test(player)) {
-              attackerCombo.setSelectedItem(player);
-              break;
-            }
-          }
-        } else {
-          if (players.size() == 1) {
-            defenderCombo.setSelectedItem(players.get(0));
-          } else if (players.size() > 1) {
-            if (!data.getRelationshipTracker()
-                .isAtWarWithAnyOfThesePlayers(players.get(0), players)) {
-              defenderCombo.setSelectedItem(players.get(0));
-            } else {
-              attackerCombo.setSelectedItem(players.get(0));
-              for (final GamePlayer player : players) {
-                if (Matches.isAtWar(getAttacker(), data.getRelationshipTracker()).test(player)) {
-                  defenderCombo.setSelectedItem(player);
-                  break;
-                }
-              }
-            }
-          }
-        }
-
-        setAttackingUnits(
-            location.getUnitCollection().getMatches(Matches.unitIsOwnedBy(getAttacker())));
-        setDefendingUnits(
-            location
-                .getUnitCollection()
-                .getMatches(Matches.alliedUnit(getDefender(), data.getRelationshipTracker())));
-      } finally {
-        data.releaseReadLock();
-      }
-    } else {
+    // Note: Setting landBattleCheckBox resets the units. Thus, set the units after this.
+    if (location == null) {
       landBattleCheckBox.setSelected(true);
-      defenderCombo.setSelectedItem(data.getPlayerList().getPlayers().iterator().next());
-      setDefendingUnits(null);
-      setAttackingUnits(null);
+    } else {
+      landBattleCheckBox.setSelected(!location.isWater());
     }
+    setupAttackerAndDefender();
+
     calculator =
         new ConcurrentBattleCalculator(
             () ->
@@ -1133,6 +1058,7 @@ class BattleCalculatorPanel extends JPanel {
                     () -> {
                       calculateButton.setText("Calculate Odds");
                       calculateButton.setEnabled(true);
+                      calculateButton.requestFocusInWindow();
                     }));
 
     calculator.setGameData(data);
@@ -1140,12 +1066,20 @@ class BattleCalculatorPanel extends JPanel {
     revalidate();
   }
 
-  public Optional<GamePlayer> getCurrentPlayer(final History history) {
-    final Optional<GamePlayer> player = history.getActivePlayer();
-    if (player.isPresent()) {
-      return player;
-    }
-    return GamePlayer.asOptional(data.getSequence().getStep().getPlayerId());
+  private void setupAttackerAndDefender() {
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        AttackerAndDefenderSelector.builder()
+            .players(data.getPlayerList().getPlayers())
+            .currentPlayer(data.getSequence().getStep().getPlayerId())
+            .relationshipTracker(data.getRelationshipTracker())
+            .territory(location)
+            .build()
+            .getAttackerAndDefender();
+
+    attAndDef.getAttacker().ifPresent(this::setAttacker);
+    attAndDef.getDefender().ifPresent(this::setDefender);
+    setAttackingUnits(attAndDef.getAttackingUnits());
+    setDefendingUnits(attAndDef.getDefendingUnits());
   }
 
   GamePlayer getAttacker() {
@@ -1162,10 +1096,6 @@ class BattleCalculatorPanel extends JPanel {
 
   void setDefender(final GamePlayer gamePlayer) {
     defenderCombo.setSelectedItem(gamePlayer);
-  }
-
-  private GamePlayer getSwapSides() {
-    return (GamePlayer) swapSidesCombo.getSelectedItem();
   }
 
   private boolean isAmphibiousBattle() {
@@ -1262,6 +1192,10 @@ class BattleCalculatorPanel extends JPanel {
     if (results.get() == null) {
       setResultsToBlank();
     } else {
+      // All AggregateResults method return NaN if there are no battle results to aggregate over.
+      // For "unrestricted" average methods, this cannot happen as we ensure that at least 1 round
+      // is simulated. However, the ...IfAbcWon() methods restrict that set of results which might
+      // become empty. In this case we display N/A (not applicable) instead of NaN (not a number).
       attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
       defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
       draw.setText(formatPercentage(results.get().getDrawPercent()));
@@ -1278,14 +1212,16 @@ class BattleCalculatorPanel extends JPanel {
           formatValue(results.get().getAverageDefendingUnitsLeft()) + " / " + defendersTotal);
       attackerLeft.setText(
           formatValue(results.get().getAverageAttackingUnitsLeft()) + " / " + attackersTotal);
+      final double avgDefIfDefWon = results.get().getAverageDefendingUnitsLeftWhenDefenderWon();
       defenderLeftWhenDefenderWon.setText(
-          formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon())
-              + " / "
-              + defendersTotal);
+          Double.isNaN(avgDefIfDefWon)
+              ? "N/A"
+              : formatValue(avgDefIfDefWon) + " / " + defendersTotal);
+      final double avgAttIfAttWon = results.get().getAverageAttackingUnitsLeftWhenAttackerWon();
       attackerLeftWhenAttackerWon.setText(
-          formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon())
-              + " / "
-              + attackersTotal);
+          Double.isNaN(avgAttIfAttWon)
+              ? "N/A"
+              : formatValue(avgAttIfAttWon) + " / " + attackersTotal);
       roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
       try {
         data.acquireReadLock();
@@ -1374,21 +1310,6 @@ class BattleCalculatorPanel extends JPanel {
 
   private boolean isLand() {
     return landBattleCheckBox.isSelected();
-  }
-
-  private GamePlayer getEnemy(final GamePlayer player) {
-    for (final GamePlayer gamePlayer : data.getPlayerList()) {
-      if (data.getRelationshipTracker().isAtWar(player, gamePlayer)) {
-        return gamePlayer;
-      }
-    }
-    for (final GamePlayer gamePlayer : data.getPlayerList()) {
-      if (!data.getRelationshipTracker().isAllied(player, gamePlayer)) {
-        return gamePlayer;
-      }
-    }
-    // TODO: do we allow fighting allies in the battle calc?
-    throw new IllegalStateException("No enemies or non-allies for :" + player);
   }
 
   private void setResultsToBlank() {
@@ -1501,10 +1422,6 @@ class BattleCalculatorPanel extends JPanel {
       setIcon(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(gamePlayer)));
       return this;
     }
-  }
-
-  void selectCalculateButton() {
-    calculateButton.requestFocus();
   }
 
   private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameState data) {

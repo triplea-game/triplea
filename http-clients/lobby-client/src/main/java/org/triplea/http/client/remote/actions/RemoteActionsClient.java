@@ -23,6 +23,10 @@ public class RemoteActionsClient {
     headers = new AuthenticationHeaders(apiKey).createHeaders();
   }
 
+  public static RemoteActionsClient newClient(final URI serverUri, final ApiKey apiKey) {
+    return new RemoteActionsClient(serverUri, apiKey);
+  }
+
   public boolean checkIfPlayerIsBanned(final InetAddress ipAddress) {
     return remoteActionsFeignClient.checkIfPlayerIsBanned(headers, ipAddress.getHostAddress());
   }

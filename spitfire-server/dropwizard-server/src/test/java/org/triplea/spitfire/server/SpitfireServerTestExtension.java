@@ -1,16 +1,13 @@
 package org.triplea.spitfire.server;
 
 import io.dropwizard.testing.DropwizardTestSupport;
-import org.triplea.domain.data.ApiKey;
 
+/**
+ * Use with {@code @ExtendWith(SpitfireServerTestExtension.class)} Tests extended with this
+ * extension will launch a drop wizard server when the test starts up. If a server is already
+ * running at the start of a test, it will be re-used.
+ */
 public class SpitfireServerTestExtension extends DropwizardServerExtension<SpitfireServerConfig> {
-
-  public static final String LOBBY_USER_DATASET =
-      "integration/user_role.yml,"
-          + "integration/lobby_user.yml,"
-          + "integration/lobby_api_key.yml";
-  public static final ApiKey MODERATOR_API_KEY = AllowedUserRole.MODERATOR.getAllowedKey();
-  public static final ApiKey CHATTER_API_KEY = AllowedUserRole.PLAYER.getAllowedKey();
 
   private static final DropwizardTestSupport<SpitfireServerConfig> testSupport =
       new DropwizardTestSupport<>(SpitfireServerApplication.class, "configuration.yml");

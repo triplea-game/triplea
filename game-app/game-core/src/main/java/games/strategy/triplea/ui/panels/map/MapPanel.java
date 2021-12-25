@@ -20,7 +20,6 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.triplea.ui.UnitIconProperties;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -135,8 +134,7 @@ public class MapPanel extends ImageScrollerLargeView {
           // find the players with tech changes
           final Set<GamePlayer> playersWithTechChange = new HashSet<>();
           getPlayersWithTechChanges(change, playersWithTechChange);
-          if (!playersWithTechChange.isEmpty()
-              || UnitIconProperties.getInstance(gameData).testIfConditionsHaveChanged(gameData)) {
+          if (!playersWithTechChange.isEmpty()) {
             tileManager.resetTiles(gameData, uiContext.getMapData());
             SwingUtilities.invokeLater(
                 () -> {

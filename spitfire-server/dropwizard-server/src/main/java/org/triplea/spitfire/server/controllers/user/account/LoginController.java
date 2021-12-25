@@ -9,6 +9,7 @@ import javax.ws.rs.core.Context;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
+import org.triplea.domain.data.LobbyConstants;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
@@ -32,7 +33,13 @@ public class LoginController extends HttpController {
   @Path(LobbyLoginClient.LOGIN_PATH)
   public LobbyLoginResponse login(
       @Context final HttpServletRequest request, final LoginRequest loginRequest) {
-    Preconditions.checkNotNull(loginRequest);
+    Preconditions.checkArgument(loginRequest != null);
+    Preconditions.checkArgument(loginRequest.getName() != null);
+    Preconditions.checkArgument(
+        loginRequest.getName().length() <= LobbyConstants.USERNAME_MAX_LENGTH);
+    Preconditions.checkArgument(
+        loginRequest.getName().length() >= LobbyConstants.USERNAME_MIN_LENGTH);
+
     return loginModule.doLogin(
         loginRequest,
         request.getHeader(AuthenticationHeaders.SYSTEM_ID_HEADER),

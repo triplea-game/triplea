@@ -5,6 +5,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+/**
+ * 'Map Tag' data as attached to a specific map. A map will contain a set of 'MapTag' data items.
+ * This data represents the current value of a specific tag and the necessary information to display
+ * a tags value to user.
+ */
 @Value
 @Builder
 @EqualsAndHashCode
@@ -16,20 +21,10 @@ public class MapTag {
   String value;
 
   /**
-   * Tag type determines how the value is interpreted and rendered. The value should be an element
-   * of {@code MapTagType}
-   */
-  String type;
-
-  /**
    * The ordering to display this map tag in relative to other map tags. Lower values should be
    * displayed first. displayOrder is greater than zero.
    */
   int displayOrder;
-
-  //  public MapTagType getType() {
-  //    return MapTagType.valueOf(type);
-  //  }
 
   public String getValue() {
     return Optional.ofNullable(value).orElse("");

@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.Util;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -129,57 +130,43 @@ public class MapData {
   @Nullable private final Image blockadeImage;
   @Nullable private final Image errorImage;
   @Nullable private final Image warningImage;
-  private final String mapNameDir;
 
-  public MapData(final String mapNameDir) {
-    this.mapNameDir = mapNameDir;
-    try (ResourceLoader loader = new ResourceLoader(mapNameDir)) {
-      try {
-        if (loader.getResource(POLYGON_FILE) == null) {
-          throw new IllegalStateException(
-              "Error in resource loading for map: "
-                  + mapNameDir
-                  + ". Unable to load file: "
-                  + POLYGON_FILE
-                  + ", searched these locations: "
-                  + loader.getSearchUrls());
-        }
+  public MapData(final ResourceLoader loader) {
+    try {
+      place.putAll(readOptionalPlacementsOneToMany(loader, PLACEMENT_FILE));
+      territoryEffects.putAll(readOptionalPointsOneToMany(loader, TERRITORY_EFFECT_FILE));
 
-        place.putAll(readOptionalPlacementsOneToMany(loader, PLACEMENT_FILE));
-        territoryEffects.putAll(readOptionalPointsOneToMany(loader, TERRITORY_EFFECT_FILE));
+      polys.putAll(
+          PointFileReaderWriter.readOneToManyPolygons(loader.requiredResource(POLYGON_FILE)));
+      centers.putAll(PointFileReaderWriter.readOneToOne(loader.requiredResource(CENTERS_FILE)));
+      vcPlace.putAll(readOptionalPointsOneToOne(loader, VC_MARKERS));
+      convoyPlace.putAll(readOptionalPointsOneToOne(loader, CONVOY_MARKERS));
+      commentPlace.putAll(readOptionalPointsOneToOne(loader, COMMENT_MARKERS));
+      blockadePlace.putAll(readOptionalPointsOneToOne(loader, BLOCKADE_MARKERS));
+      capitolPlace.putAll(readOptionalPointsOneToOne(loader, CAPITAL_MARKERS));
+      puPlace.putAll(readOptionalPointsOneToOne(loader, PU_PLACE_FILE));
+      namePlace.putAll(readOptionalPointsOneToOne(loader, TERRITORY_NAME_PLACE_FILE));
+      kamikazePlace.putAll(readOptionalPointsOneToOne(loader, KAMIKAZE_FILE));
+      decorations.putAll(loadDecorations(loader));
+      territoryNameImages.putAll(territoryNameImages(loader));
 
-        polys.putAll(
-            PointFileReaderWriter.readOneToManyPolygons(loader.requiredResource(POLYGON_FILE)));
-        centers.putAll(PointFileReaderWriter.readOneToOne(loader.requiredResource(CENTERS_FILE)));
-        vcPlace.putAll(readOptionalPointsOneToOne(loader, VC_MARKERS));
-        convoyPlace.putAll(readOptionalPointsOneToOne(loader, CONVOY_MARKERS));
-        commentPlace.putAll(readOptionalPointsOneToOne(loader, COMMENT_MARKERS));
-        blockadePlace.putAll(readOptionalPointsOneToOne(loader, BLOCKADE_MARKERS));
-        capitolPlace.putAll(readOptionalPointsOneToOne(loader, CAPITAL_MARKERS));
-        puPlace.putAll(readOptionalPointsOneToOne(loader, PU_PLACE_FILE));
-        namePlace.putAll(readOptionalPointsOneToOne(loader, TERRITORY_NAME_PLACE_FILE));
-        kamikazePlace.putAll(readOptionalPointsOneToOne(loader, KAMIKAZE_FILE));
-        decorations.putAll(loadDecorations(loader));
-        territoryNameImages.putAll(territoryNameImages(loader));
-
-        try (InputStream inputStream =
-            Files.newInputStream(loader.requiredResource(MAP_PROPERTIES))) {
-          mapProperties.load(inputStream);
-        } catch (final Exception e) {
-          log.error("Error reading map.properties", e);
-        }
-
-        contains.putAll(IslandTerritoryFinder.findIslands(polys));
-      } catch (final IOException ex) {
-        log.error("Failed to initialize map data", ex);
+      try (InputStream inputStream =
+          Files.newInputStream(loader.requiredResource(MAP_PROPERTIES))) {
+        mapProperties.load(inputStream);
+      } catch (final Exception e) {
+        log.warn("Error reading map.properties, {}", e.getMessage(), e);
       }
 
-      playerColors = new PlayerColors(mapProperties);
-      vcImage = loader.loadImage("misc/vc.png").orElse(null);
-      blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
-      errorImage = loader.loadImage("misc/error.gif").orElse(null);
-      warningImage = loader.loadImage("misc/warning.gif").orElse(null);
+      contains.putAll(IslandTerritoryFinder.findIslands(polys));
+    } catch (final IOException ex) {
+      log.warn("Failed to initialize map data: {}", ex.getMessage(), ex);
     }
+
+    playerColors = new PlayerColors(mapProperties);
+    vcImage = loader.loadImage("misc/vc.png").orElse(null);
+    blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
+    errorImage = loader.loadImage("misc/error.gif").orElse(null);
+    warningImage = loader.loadImage("misc/warning.gif").orElse(null);
   }
 
   private static Map<String, Point> readOptionalPointsOneToOne(
@@ -767,18 +754,17 @@ public class MapData {
   }
 
   public Optional<Image> getTerritoryEffectImage(final String effectName) {
-    try (ResourceLoader loader = new ResourceLoader(mapNameDir)) {
-      // TODO: what does this cache buy us? should we still keep it?
-      if (effectImages.get(effectName) != null) {
-        return Optional.of(effectImages.get(effectName));
-      }
-      Optional<Image> effectImage =
-          loader.loadImage("territoryEffects/" + effectName + "_large.png");
-      if (effectImage.isEmpty()) {
-        effectImage = loader.loadImage("territoryEffects/" + effectName + ".png");
-      }
-      effectImages.put(effectName, effectImage.orElse(null));
-      return effectImage;
-    }
+    return Optional.ofNullable(
+        effectImages.computeIfAbsent(
+            effectName,
+            key -> {
+              String largeImageName = "territoryEffects/" + effectName + "_large.png";
+              String standardImageName = "territoryEffects/" + effectName + ".png";
+
+              return UiContext.getResourceLoader()
+                  .loadImage(largeImageName)
+                  .or(() -> UiContext.getResourceLoader().loadImage(standardImageName))
+                  .orElse(null);
+            }));
   }
 }

@@ -57,7 +57,7 @@ public class DiceImageFactory {
       final Color color,
       final int dieSide) {
     if (loader != null) {
-      final Image image = factory.getImage(getDiceResourceName(color, dieSide), false);
+      final Image image = factory.getImage(getDiceResourceName(color, dieSide)).orElse(null);
       if (image != null) {
         return image;
       }

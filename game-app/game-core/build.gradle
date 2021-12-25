@@ -26,6 +26,7 @@ dependencies {
     implementation project(":lib:xml-reader")
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testImplementation project(":lib:swing-lib-test-support")
     testImplementation project(":lib:test-common")
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }

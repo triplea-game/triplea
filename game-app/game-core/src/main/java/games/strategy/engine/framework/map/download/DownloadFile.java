@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import java.io.IOException;
 import java.nio.file.Path;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
@@ -32,8 +31,6 @@ final class DownloadFile {
   DownloadFile(final MapDownloadItem download, final DownloadListener downloadListener) {
     this.download = download;
     this.downloadListener = downloadListener;
-
-    SwingUtilities.invokeLater(() -> downloadListener.downloadStarted(download));
   }
 
   MapDownloadItem getDownload() {
@@ -83,6 +80,7 @@ final class DownloadFile {
           ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
               .ifPresent(
                   installedMap -> {
+                    // create a map description YAML file for the map if it does not contain one
                     if (MapDescriptionYaml.fromMap(installedMap).isEmpty()) {
                       MapDescriptionYaml.generateForMap(installedMap);
                     }

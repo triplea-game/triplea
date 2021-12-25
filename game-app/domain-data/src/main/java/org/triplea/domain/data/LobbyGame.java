@@ -15,9 +15,6 @@ import lombok.With;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-// See https://github.com/google/error-prone/pull/1195 and
-// https://github.com/rzwitserloot/lombok/issues/737
-@SuppressWarnings("ReferenceEquality")
 public class LobbyGame {
   private String hostAddress;
   private Integer hostPort;

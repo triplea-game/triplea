@@ -2,29 +2,35 @@ package games.strategy.engine.framework.map.file.system.loader;
 
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
+import org.triplea.map.description.file.SkinDescriptionYaml;
 import org.triplea.map.game.notes.GameNotes;
 import org.triplea.util.LocalizeHtml;
 
 /** Object representing a map that is downloaded and installed. */
+@Builder
 @AllArgsConstructor
+@RequiredArgsConstructor
+@ToString
 public class InstalledMap {
-  private final MapDescriptionYaml mapDescriptionYaml;
+  @Nonnull private final MapDescriptionYaml mapDescriptionYaml;
+  @Nullable private Instant lastModifiedDate;
+  @Nullable private Path contentRoot;
 
   public String getMapName() {
     return mapDescriptionYaml.getMapName();
-  }
-
-  /**
-   * Returns the map version value from the map.yml file, returns zero if there is no map.yml file.
-   */
-  int getMapVersion() {
-    return mapDescriptionYaml.getMapVersion();
   }
 
   /**
@@ -33,10 +39,17 @@ public class InstalledMap {
    * missing).
    */
   Optional<Path> findContentRoot() {
-    // relative to the 'map.yml' file location, search current and child directories for
-    // a polygons file, the location of the polygons file is the map content root.
-    final Path mapYamlParentFolder = Path.of(mapDescriptionYaml.getYamlFileLocation()).getParent();
-    return FileUtils.find(mapYamlParentFolder, 3, MapData.POLYGON_FILE).map(Path::getParent);
+    // contentRoot is cached to avoid searching on the file system
+    if (contentRoot == null) {
+      // relative to the 'map.yml' file location, search current and child directories for
+      // a polygons file, the location of the polygons file is the map content root.
+      final Path mapYamlParentFolder = mapDescriptionYaml.getYamlFileLocation().getParent();
+      contentRoot =
+          FileUtils.findAny(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
+              .map(Path::getParent)
+              .orElse(null);
+    }
+    return Optional.ofNullable(contentRoot);
   }
 
   /**
@@ -68,7 +81,54 @@ public class InstalledMap {
     } else {
       return Optional.of(
           LocalizeHtml.localizeImgLinksInHtml(
-              GameNotes.loadGameNotes(xmlPath.get(), gameName), mapContentRoot.get()));
+              GameNotes.loadGameNotes(xmlPath.get()), mapContentRoot.get()));
     }
+  }
+
+  /**
+   * Checks if this installed map is out of date compared to a given map-download. This is done by
+   * comparing the last modified date on the map installation folder compared to the last commit
+   * date of the map-download.
+   */
+  boolean isOutOfDate(final MapDownloadItem download) {
+    // we cache lastModifiedDate for two reasons:
+    // 1. *primarily* test can inject a value
+    // 2. avoid file system access
+    if (lastModifiedDate == null) {
+      lastModifiedDate = findContentRoot().flatMap(FileUtils::getLastModified).orElse(null);
+      if (lastModifiedDate == null) {
+        return false;
+      }
+    }
+
+    final Instant lastCommitDate = Instant.ofEpochMilli(download.getLastCommitDateEpochMilli());
+    return lastModifiedDate.isBefore(lastCommitDate);
+  }
+
+  public Optional<Path> findMapSkin(String skinName) {
+    Path mapPath = mapDescriptionYaml.getYamlFileLocation().getParent();
+    Collection<Path> skinYamlFiles = FileUtils.find(mapPath, 7, "skin.yml");
+
+    return skinYamlFiles.stream()
+        .map(SkinDescriptionYaml::readSkinDescriptionYamlFile)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .filter(skinDescriptionYaml -> skinDescriptionYaml.getSkinName().equalsIgnoreCase(skinName))
+        .findAny()
+        .map(SkinDescriptionYaml::getFilePath)
+        .map(Path::getParent);
+  }
+
+  public Collection<String> getSkinNames() {
+    Path mapPath = mapDescriptionYaml.getYamlFileLocation().getParent();
+    Collection<Path> skinYamlFiles = FileUtils.find(mapPath, 4, "skin.yml");
+
+    return skinYamlFiles.stream()
+        .map(SkinDescriptionYaml::readSkinDescriptionYamlFile)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(SkinDescriptionYaml::getSkinName)
+        .sorted()
+        .collect(Collectors.toList());
   }
 }
