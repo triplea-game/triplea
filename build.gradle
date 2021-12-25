@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
-    id 'com.diffplug.spotless' version '6.0.5' apply false
+    id 'com.diffplug.spotless' version '6.1.0' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -71,11 +71,11 @@ subprojects {
         commonsMathVersion = '3.6.1'
         commonsTextVersion = '1.9'
         databaseRiderVersion = '1.32.0'
-        dropwizardVersion = '2.0.27'
+        dropwizardVersion = '2.0.28'
         dropwizardWebsocketsVersion = '1.3.14'
         equalsVerifierVersion = '3.8.1'
-        feignCoreVersion = '11.7'
-        feignGsonVersion = '11.7'
+        feignCoreVersion = '11.8'
+        feignGsonVersion = '11.8'
         javaWebSocketVersion = '1.5.2'
         gsonVersion = '2.8.9'
         guavaVersion = '31.0.1-jre'
@@ -89,13 +89,13 @@ subprojects {
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '3.0.2'
         jaxbImplVersion = '3.0.2'
-        jdbiVersion = '3.25.0'
+        jdbiVersion = '3.26.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.8.2'
         junitPlatformLauncherVersion = '1.8.2'
-        logbackClassicVersion = '1.2.9'
+        logbackClassicVersion = '1.2.10'
         mockitoVersion = '4.2.0'
-        openFeignVersion = '11.7'
+        openFeignVersion = '11.8'
         postgresqlVersion = '42.3.1'
         snakeYamlVersion = '2.3'
         sonatypeGoodiesPrefsVersion = '2.3.2-01'
@@ -104,7 +104,7 @@ subprojects {
         wireMockVersion = '2.27.2'
         xchartVersion = '3.8.1'
         xmlUnitCore = '2.8.4'
-        xmlUnitMatchers = '2.8.3'
+        xmlUnitMatchers = '2.8.4'
     }
 
     repositories {
