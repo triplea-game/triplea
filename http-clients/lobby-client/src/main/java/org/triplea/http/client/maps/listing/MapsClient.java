@@ -23,7 +23,7 @@ public class MapsClient {
     try {
       return mapsFeignClient.fetchMapListing(AuthenticationHeaders.systemIdHeaders());
     } catch (FeignException e) {
-      log.error("Failed to fetch map download list", e);
+      log.error("Failed to download the list of available maps from TripleA servers.", e);
       return List.of();
     }
   }
