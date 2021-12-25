@@ -53,5 +53,4 @@ Should look like this when configured: <br />
       ](http://www.vogella.com/tutorials/EclipseGit/article.html)
   - Run Configurations are checked in
   - Run `./gradlew downloadAssets` (Windows: `gradlew.bat downloadAssets`) once in the main triplea folder to get images downloaded
-  - Run `./gradlew downloadAssets` (Windows: `gradlew.bat downloadAssets`) once in the main triplea folder to get images downloaded
   - Run `./gradlew spotlessApply` (Windows: `gradlew.bat spotlessApply`) at least once in the main triplea folder if errors occur during gradle build for any of the tasks (it might have to be run multiple times though)
