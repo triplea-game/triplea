@@ -6,7 +6,7 @@ server {
 
 # warning: be sure that we can run certbot role and then re-run the nginx
 # role without this file changing. If this file is changed (white-space included)
-# then nginx will be restarting, disconnecting all active connections.
+# then nginx will be restarted, disconnecting all active connections.
 
 server {
     listen 443 ssl http2;
@@ -33,23 +33,17 @@ server {
     add_header X-XSS-Protection "1; mode=block";
 
     location / {
-
+      {{ lobby_proxy_pass }}
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header        X-Forwarded-Proto $scheme;
-
-      # Fix the “It appears that your reverse proxy set up is broken" error.
-      proxy_pass          http://localhost:8080;
       proxy_read_timeout  90;
-
-      proxy_redirect      https://localhost:443 https://localhost:8080;
     }
 
     location /game-connection/ws {
-      proxy_pass http://localhost:8080;
+      {{ lobby_proxy_pass }}
       proxy_http_version 1.1;
-
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -60,9 +54,8 @@ server {
     }
 
     location /player-connection/ws {
-      proxy_pass http://localhost:8080;
+      {{ lobby_proxy_pass }}
       proxy_http_version 1.1;
-
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
