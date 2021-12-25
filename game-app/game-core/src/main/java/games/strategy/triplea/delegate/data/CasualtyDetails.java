@@ -171,10 +171,6 @@ public class CasualtyDetails extends CasualtyList {
     final var owner = firstUnit.getOwner();
     final var type = firstUnit.getType();
 
-    final Predicate<Unit> sameOwnerAndTypeAndHit =
-        (Unit unit) ->
-            unit.getOwner().equals(owner) && unit.getType().equals(type) && unit.getHits() > 0;
-
     targets.sort(shouldTakeHitsFirst);
 
     // have allTargetsOfOwnerAndTypeThatCanTakeHits in sort order

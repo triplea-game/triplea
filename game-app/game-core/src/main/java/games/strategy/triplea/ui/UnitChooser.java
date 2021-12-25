@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.Postconditions;
 import org.triplea.java.collections.IntegerMap;
@@ -764,12 +764,12 @@ public final class UnitChooser extends JPanel {
       return Optional.of(unitImageWithNonWithdrawableImage);
     }
 
-    private @NonNull BufferedImage loadGenericUnitsImage(final String fileName) {
+    private @Nonnull BufferedImage loadGenericUnitsImage(final String fileName) {
       return resourceLoader.loadBufferedImage("units", "generic", fileName).orElseThrow();
     }
 
     @VisibleForTesting
-    public @NonNull BufferedImage getNonWithdrawableImage() {
+    public @Nonnull BufferedImage getNonWithdrawableImage() {
       if (nonWithdrawableImage == null) {
         loadNonWithdrawableImage();
       }
@@ -859,7 +859,7 @@ public final class UnitChooser extends JPanel {
     }
 
     @VisibleForTesting
-    public @NonNull UnitImageFactory getUnitImageFactoryForDecoractedImages() {
+    public @Nonnull UnitImageFactory getUnitImageFactoryForDecoractedImages() {
       if (unitImageFactoryForDecoractedImages == null) {
         loadNonWithdrawableImage();
       }

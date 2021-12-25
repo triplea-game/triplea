@@ -88,8 +88,7 @@ public class BattleDisplay extends JPanel {
   private static final int MY_WIDTH = 100;
   private static final int MY_HEIGHT = 100;
 
-  @VisibleForTesting
-  final JButton actionButton = new JButton();
+  @VisibleForTesting final JButton actionButton = new JButton();
   private final GamePlayer defender;
   private final GamePlayer attacker;
 
@@ -517,7 +516,6 @@ public class BattleDisplay extends JPanel {
 
     SwingUtilities.invokeLater(
         () -> {
-
           final boolean isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
           if (!isEditMode) {
             dicePanel.setDiceRoll(dice);
@@ -527,40 +525,40 @@ public class BattleDisplay extends JPanel {
           final String countStr = isEditMode ? "" : "" + count;
           final String btnText =
               hit.getName() + " select " + countStr + (plural ? " casualties" : " casualty");
-          final var casualtySelection = new CasualtySelection(
-              selectFrom,
-              dependents,
-              count,
-              message + " " + btnText + ".",
-              hit,
-              defaultCasualties,
-              allowMultipleHitsPerUnit,
-              uiContext,
-              BattleDisplay.this,
-              isEditMode
-          );
+          final var casualtySelection =
+              new CasualtySelection(
+                  selectFrom,
+                  dependents,
+                  count,
+                  message + " " + btnText + ".",
+                  hit,
+                  defaultCasualties,
+                  allowMultipleHitsPerUnit,
+                  uiContext,
+                  BattleDisplay.this,
+                  isEditMode);
 
           actionButton.setAction(
-            new AbstractAction(btnText) {
-              @Override
-              public void actionPerformed(final ActionEvent e) {
-                actionButton.setEnabled(false);
-
-                final CasualtyDetails selectedCasualties =
-                    casualtySelection.showModalDialog().orElse(null);
-
-                if (selectedCasualties != null) {
-                  casualtyDetails.set(selectedCasualties);
-                  dicePanel.removeAll();
-                  continueLatch.countDown();
-                  actionButton.setAction(nullAction);
+              new AbstractAction(btnText) {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
                   actionButton.setEnabled(false);
-                } else {
-                  actionButton.setEnabled(true);
+
+                  final CasualtyDetails selectedCasualties =
+                      casualtySelection.showModalDialog().orElse(null);
+
+                  if (selectedCasualties != null) {
+                    casualtyDetails.set(selectedCasualties);
+                    dicePanel.removeAll();
+                    continueLatch.countDown();
+                    actionButton.setAction(nullAction);
+                    actionButton.setEnabled(false);
+                  } else {
+                    actionButton.setEnabled(true);
+                  }
                 }
-              }
-          });
-    });
+              });
+        });
 
     uiContext.addShutdownLatch(continueLatch);
     Interruptibles.await(continueLatch);
