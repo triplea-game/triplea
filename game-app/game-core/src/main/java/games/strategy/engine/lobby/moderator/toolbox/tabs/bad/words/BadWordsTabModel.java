@@ -21,13 +21,9 @@ class BadWordsTabModel {
    * words table, the second column value is the "remove" button.
    */
   List<List<String>> fetchTableData() {
-    try {
-      return toolboxBadWordsClient.getBadWords().stream()
-          .map(word -> List.of(word, BadWordsTabActions.REMOVE_BUTTON_TEXT))
-          .collect(Collectors.toList());
-    } catch (final RuntimeException e) {
-      return List.of();
-    }
+    return toolboxBadWordsClient.getBadWords().stream()
+        .map(word -> List.of(word, BadWordsTabActions.REMOVE_BUTTON_TEXT))
+        .collect(Collectors.toList());
   }
 
   void removeBadWord(final String wordToRemove) {
