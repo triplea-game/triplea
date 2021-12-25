@@ -123,7 +123,7 @@ public class CasualtySelector {
             ? CasualtyUtil.getTotalHitpointsLeft(sortedTargetsToPickFrom)
             : sortedTargetsToPickFrom.size());
 
-    final CasualtyDetails casualtySelection =
+    final CasualtyDetails casualtyDetails =
         hitsRemaining >= totalHitpoints
                 || allTargetsOneTypeOneHitPoint(
                     sortedTargetsToPickFrom,
@@ -147,30 +147,25 @@ public class CasualtySelector {
                 allowMultipleHitsPerUnit);
 
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
-      final boolean isUnitWithMarineBonusAndWasAmphibiousKilled =
-          casualtySelection.getKilled().stream()
+      final boolean unitsWithMarineBonusAndWasAmphibiousKilled =
+          casualtyDetails.getKilled().stream()
               .anyMatch(
                   unit -> unit.getUnitAttachment().getIsMarine() != 0 && unit.getWasAmphibious());
-      final boolean isUnitWithMarineBonusAndWasAmphibiousDamaged =
-          casualtySelection.getDamaged().stream()
-              .anyMatch(
-                  unit -> unit.getUnitAttachment().getIsMarine() != 0 && unit.getWasAmphibious());
-      if (isUnitWithMarineBonusAndWasAmphibiousKilled
-          || isUnitWithMarineBonusAndWasAmphibiousDamaged) {
-        casualtySelection.ensureUnitsWithPositiveMarineBonusAreKilledLast(sortedTargetsToPickFrom);
+      if (unitsWithMarineBonusAndWasAmphibiousKilled) {
+        casualtyDetails.ensureUnitsWithPositiveMarineBonusAreKilledLast(sortedTargetsToPickFrom);
       }
     }
 
-    casualtySelection.ensureUnitsAreKilledFirst(
+    casualtyDetails.ensureUnitsAreKilledFirst(
         sortedTargetsToPickFrom, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
 
-    casualtySelection.ensureUnitsAreDamagedFirst(
+    casualtyDetails.ensureUnitsAreDamagedFirst(
         sortedTargetsToPickFrom,
         Matches.unitIsAir(),
         Comparator.comparing(Unit::getMovementLeft).reversed());
 
-    final List<Unit> damaged = casualtySelection.getDamaged();
-    final List<Unit> killed = casualtySelection.getKilled();
+    final List<Unit> damaged = casualtyDetails.getDamaged();
+    final List<Unit> killed = casualtyDetails.getKilled();
     int numhits = killed.size();
     if (!allowMultipleHitsPerUnit) {
       damaged.clear();
@@ -195,7 +190,7 @@ public class CasualtySelector {
                 + " != number of hits to take "
                 + Math.min(hitsRemaining, totalHitpoints)
                 + ", for "
-                + casualtySelection);
+                + casualtyDetails);
       }
       return selectCasualties(
           player,
@@ -219,7 +214,7 @@ public class CasualtySelector {
             "Possible Infinite Loop: Cannot remove enough units of those types: targets "
                 + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom)
                 + ", for "
-                + casualtySelection);
+                + casualtyDetails);
       }
       return selectCasualties(
           player,
@@ -234,7 +229,7 @@ public class CasualtySelector {
           extraHits,
           allowMultipleHitsPerUnit);
     }
-    return casualtySelection;
+    return casualtyDetails;
   }
 
   /**
