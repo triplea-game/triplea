@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
 import com.google.common.base.Strings;
-import feign.FeignException;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.io.IOException;
 import java.net.URI;
