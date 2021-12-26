@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
 import com.google.common.base.Strings;
+import feign.FeignException;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.io.IOException;
 import java.net.URI;
@@ -11,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.AuthenticationHeaders;
-import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
@@ -70,7 +70,7 @@ public class LobbyLogin {
                 notifyTempPasswordInvalid(parentWindow, null);
               }
 
-            } catch (final HttpInteractionException e) {
+            } catch (final FeignException e) {
               notifyTempPasswordInvalid(parentWindow, e);
             }
           }
@@ -111,7 +111,7 @@ public class LobbyLogin {
         showMessage("Login Failed", loginResponse.getFailReason());
         return loginToServer(loginMode);
       }
-    } catch (final HttpInteractionException e) {
+    } catch (final FeignException e) {
       log.error("Could Not Connect To Lobby", e);
       return Optional.empty();
     } catch (final InterruptedException e) {

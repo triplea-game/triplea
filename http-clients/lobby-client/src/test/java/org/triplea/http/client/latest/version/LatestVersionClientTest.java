@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import feign.FeignException;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.WireMockTest;
 import org.triplea.test.common.JsonUtil;
 import ru.lanwen.wiremock.ext.WiremockResolver;
@@ -48,7 +48,6 @@ class LatestVersionClientTest extends WireMockTest {
         get(LatestVersionClient.LATEST_VERSION_PATH)
             .willReturn(WireMock.aResponse().withStatus(500)));
 
-    assertThrows(
-        HttpInteractionException.class, () -> newClient(wireMockServer).fetchLatestVersion());
+    assertThrows(FeignException.class, () -> newClient(wireMockServer).fetchLatestVersion());
   }
 }

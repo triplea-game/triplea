@@ -14,7 +14,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.HttpInteractionException;
 
 @ExtendWith(SpitfireServerTestExtension.class)
 @ExtendWith(SpitfireDatabaseTestSupport.class)
@@ -88,8 +87,8 @@ public abstract class ControllerIntegrationTest {
     try {
       invocation.run();
       fail("Invocation did not produce a 400");
-    } catch (final HttpInteractionException httpInteractionException) {
-      assertThat(httpInteractionException.status(), is(400));
+    } catch (final FeignException feignException) {
+      assertThat(feignException.status(), is(400));
     }
   }
 }

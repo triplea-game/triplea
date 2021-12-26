@@ -1,5 +1,6 @@
 package org.triplea.http.client.lobby.moderator.toolbox.words;
 
+import feign.FeignException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.HttpInteractionException;
 
 /** Http client class for fetching the list of bad words and adding and removing them. */
 @Slf4j
@@ -43,7 +43,7 @@ public class ToolboxBadWordsClient {
   public List<String> getBadWords() {
     try {
       return client.getBadWords(authenticationHeaders);
-    } catch (final HttpInteractionException e) {
+    } catch (final FeignException e) {
       log.error("Failed to fetch list of bad words", e);
       return List.of();
     }

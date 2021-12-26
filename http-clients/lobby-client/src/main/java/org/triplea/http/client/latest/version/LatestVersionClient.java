@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.HttpInteractionException;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,7 +21,7 @@ public class LatestVersionClient {
   /**
    * Gets latest engine version from triplea server
    *
-   * @throws HttpInteractionException thrown if server unavailable or returns 500
+   * @throws feign.FeignException thrown if server unavailable or returns 500
    */
   public LatestVersionResponse fetchLatestVersion() {
     final var latestVersionResponse =
