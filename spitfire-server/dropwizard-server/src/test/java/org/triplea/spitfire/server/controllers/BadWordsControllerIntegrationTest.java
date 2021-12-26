@@ -15,11 +15,9 @@ import org.triplea.spitfire.server.ControllerIntegrationTest;
 @SuppressWarnings("UnmatchedTest")
 class BadWordsControllerIntegrationTest extends ControllerIntegrationTest {
 
-  private final URI localhost;
   private final ToolboxBadWordsClient client;
 
   BadWordsControllerIntegrationTest(final URI localhost) {
-    this.localhost = localhost;
     this.client = ToolboxBadWordsClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
   }
 
