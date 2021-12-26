@@ -3,6 +3,7 @@ package org.triplea.debug;
 import com.google.common.base.Preconditions;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -34,7 +35,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public enum ErrorMessage {
   INSTANCE;
 
-  private final JFrame windowReference = new JFrame("TripleA Error");
+  private final JFrame windowReference = new JFrame("Error");
   private final JEditorPaneWithClickableLinks errorMessage = new JEditorPaneWithClickableLinks("");
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
   private volatile boolean enableErrorPopup = false;
@@ -47,6 +48,8 @@ public enum ErrorMessage {
 
   ErrorMessage() {
     windowReference.setAlwaysOnTop(true);
+    windowReference.setMinimumSize(new Dimension(350, 150));
+    windowReference.setPreferredSize(new Dimension(900, 200));
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
     windowReference.addWindowListener(
         new WindowAdapter() {
@@ -60,13 +63,7 @@ public enum ErrorMessage {
         new JPanelBuilder()
             .border(10)
             .borderLayout()
-            .addCenter(
-                new JPanelBuilder()
-                    .boxLayoutHorizontal()
-                    .addHorizontalGlue()
-                    .add(SwingComponents.newJScrollPane(errorMessage))
-                    .addHorizontalGlue()
-                    .build())
+            .addCenter(SwingComponents.newJScrollPane(errorMessage))
             .addSouth(
                 new JPanelBuilder()
                     .border(20, 0, 0, 0)

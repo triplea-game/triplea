@@ -30,26 +30,7 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(result, is("<html>" + LOG_MESSAGE + "</html>"));
-  }
-
-  @Test
-  void exceptionOnlyWithMessage() {
-    lenient().when(logRecord.getLogMessage()).thenReturn(null);
-    lenient().when(logRecord.isError()).thenReturn(true);
-    lenient()
-        .when(logRecord.getExceptions())
-        .thenReturn(
-            List.of(
-                ExceptionDetails.builder()
-                    .exceptionMessage("message from exception111")
-                    .exceptionClassName("NullPointerException111")
-                    .build()));
-
-    final String result = errorMessageFormatter.apply(logRecord);
-
-    assertThat(
-        result, is("<html>" + "NullPointerException111" + " - message from exception111</html>"));
+    assertThat(result, is("<html><b>" + LOG_MESSAGE + "</b></html>"));
   }
 
   @Test
@@ -59,11 +40,20 @@ class ErrorMessageFormatterTest {
     lenient()
         .when(logRecord.getExceptions())
         .thenReturn(
-            List.of(ExceptionDetails.builder().exceptionClassName("NullPointerException").build()));
+            List.of(
+                ExceptionDetails.builder()
+                    .exceptionClassName("java.lang.NullPointerException")
+                    .exceptionMessage(null)
+                    .build()));
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(result, is("<html>NullPointerException</html>"));
+    assertThat(
+        result,
+        is(
+            "<html><b>"
+                + ErrorMessageFormatter.UNEXPECTED_ERROR_TEXT
+                + "</b><br/><br/>NullPointerException</html>"));
   }
 
   @Test
@@ -84,9 +74,37 @@ class ErrorMessageFormatterTest {
     assertThat(
         result,
         is(
-            "<html>"
+            "<html><b>"
                 + LOG_MESSAGE
-                + "<br/><br/>NullPointerException222: message from exception222</html>"));
+                + "</b><br/><br/>NullPointerException222: message from exception222</html>"));
+  }
+
+  @Test
+  void duplicatLogMessageIsHandledAsUnknownError() {
+    lenient().when(logRecord.getLogMessage()).thenReturn(LOG_MESSAGE);
+    lenient().when(logRecord.isError()).thenReturn(true);
+    lenient()
+        .when(logRecord.getExceptions())
+        .thenReturn(
+            List.of(
+                ExceptionDetails.builder()
+                    .exceptionClassName("java.lang.exceptionClass")
+                    .exceptionMessage(LOG_MESSAGE)
+                    .build()));
+
+    final String result = errorMessageFormatter.apply(logRecord);
+
+    assertThat(
+        "exception has a duplicate message as the log statement, this indicates the"
+            + "log message was derived from the exception and we are looking "
+            + "at an uncaught exception.",
+        result,
+        is(
+            "<html><b>"
+                + ErrorMessageFormatter.UNEXPECTED_ERROR_TEXT
+                + "</b><br/><br/>exceptionClass: "
+                + LOG_MESSAGE
+                + "</html>"));
   }
 
   @Test
@@ -101,7 +119,8 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(result, is("<html>" + LOG_MESSAGE + "<br/><br/>NullPointerException4444</html>"));
+    assertThat(
+        result, is("<html><b>" + LOG_MESSAGE + "</b><br/><br/>NullPointerException4444</html>"));
   }
 
   @Test

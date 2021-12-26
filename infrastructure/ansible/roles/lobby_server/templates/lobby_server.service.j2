@@ -1,5 +1,5 @@
 [Unit]
-Description=TripleA Lobby Server
+Description={{ lobby_name }}
 Documentation=
 
 [Service]
@@ -14,6 +14,8 @@ Environment=ERROR_REPORT_GITHUB_REPO=triplea
 Environment=GITHUB_API_TOKEN={{ github_api_token }}
 Environment=MAP_INDEXING_PERIOD_MINUTES={{ map_indexing_period_minutes }}
 Environment=MAP_INDEXING_DELAY_SECONDS={{ map_indexing_task_delay_seconds }}
+Environment=HTTP_PORT={{ lobby_http_port }}
+
 WorkingDirectory={{ lobby_server_home_folder }}
 User={{ lobby_server_user }}
 Group={{ lobby_server_user }}
