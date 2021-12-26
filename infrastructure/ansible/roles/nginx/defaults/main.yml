@@ -9,3 +9,19 @@ dhparams_pem_file: /etc/nginx/dhparam.pem
 nginx_allowed_ports:
   - 443
   - 80
+
+# 'lobby_proxy_pass' captures common selection logic for redirecting clients based on their
+# TripleA Version.
+#
+# Note: header names automatically have dashes converted to underscores.
+# Headers containing underscores are ignored entirely!
+lobby_proxy_pass: |
+    if ($http_triplea_version = "") {
+      proxy_pass          http://localhost:{{ lobby_25_port }};
+    }
+    if ($http_triplea_version = "2.5") {
+      proxy_pass          http://localhost:{{ lobby_25_port }};
+    }
+    if ($http_triplea_version = "2.6") {
+      proxy_pass           http://localhost:{{ lobby_26_port }};
+    }
