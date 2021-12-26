@@ -1067,23 +1067,19 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private void setupAttackerAndDefender() {
-    try {
-      final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
-          AttackerAndDefenderSelector.builder()
-              .players(data.getPlayerList().getPlayers())
-              .currentPlayer(data.getSequence().getStep().getPlayerId())
-              .relationshipTracker(data.getRelationshipTracker())
-              .territory(location)
-              .build()
-              .getAttackerAndDefender();
+    final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+        AttackerAndDefenderSelector.builder()
+            .players(data.getPlayerList().getPlayers())
+            .currentPlayer(data.getSequence().getStep().getPlayerId())
+            .relationshipTracker(data.getRelationshipTracker())
+            .territory(location)
+            .build()
+            .getAttackerAndDefender();
 
-      attAndDef.getAttacker().ifPresent(this::setAttacker);
-      attAndDef.getDefender().ifPresent(this::setDefender);
-      setAttackingUnits(attAndDef.getAttackingUnits());
-      setDefendingUnits(attAndDef.getDefendingUnits());
-    } finally {
-      data.releaseReadLock();
-    }
+    attAndDef.getAttacker().ifPresent(this::setAttacker);
+    attAndDef.getDefender().ifPresent(this::setDefender);
+    setAttackingUnits(attAndDef.getAttackingUnits());
+    setDefendingUnits(attAndDef.getDefendingUnits());
   }
 
   GamePlayer getAttacker() {

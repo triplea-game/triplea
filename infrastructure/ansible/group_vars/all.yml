@@ -8,3 +8,10 @@ admin_user: "admin"
 admin_home: "/home/{{ admin_user }}"
 github_releases_url: https://github.com/triplea-game/triplea/releases/download
 ansible_python_interpreter: /usr/bin/python3
+
+# When adding a new lobby, update 'nginx' to redirect
+# port numbers, 8080 -> old default, 9026 -> v2.6,  9027 -> v2.7
+lobby_25_port: 8080
+lobby_26_port: 9026
+lobby_http_port: "{{ lobby_26_port }}"
+lobby_name: lobby_26
