@@ -83,7 +83,7 @@
     proto: tcp
   with_items: "{{ nginx_allowed_ports }}"
 
-- name: restart nginx if config changed
+- name: reload nginx if config changed
   tags: [deploy]
   when: |
     (nginx_config_changed.changed) 
@@ -91,7 +91,7 @@
       or (has_cert.stat.exists == false)
   systemd:
     name: nginx
-    state: restarted
+    state: reloaded
 
 - name: ensure nginx is started
   systemd:
