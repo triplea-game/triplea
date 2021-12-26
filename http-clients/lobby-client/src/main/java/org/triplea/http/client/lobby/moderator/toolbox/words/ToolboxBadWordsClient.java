@@ -1,5 +1,6 @@
 package org.triplea.http.client.lobby.moderator.toolbox.words;
 
+import feign.FeignException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class ToolboxBadWordsClient {
   public List<String> getBadWords() {
     try {
       return client.getBadWords(authenticationHeaders);
-    } catch (final FeignExceptionException e) {
+    } catch (final FeignException e) {
       log.error("Failed to fetch list of bad words", e);
       return List.of();
     }
