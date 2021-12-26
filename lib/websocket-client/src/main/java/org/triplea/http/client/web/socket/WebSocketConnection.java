@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
-import org.triplea.java.Retryable;
+import org.triplea.java.Retriable;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
 
@@ -98,20 +98,19 @@ class WebSocketConnection {
     if (!client.isOutputClosed()) {
 
       final Optional<Boolean> pingSuccess =
-          Optional.of(
-              Retryable.builder()
-                  .withMaxAttempts(5)
-                  .withFixedBackOff(Duration.ofSeconds(3))
-                  .withTask(
-                      () -> {
-                        try {
-                          client.sendPing(ByteBuffer.allocate(0)).get();
-                          return true;
-                        } catch (final ExecutionException | InterruptedException e) {
-                          return false;
-                        }
-                      })
-                  .buildAndExecute());
+          Retriable.<Boolean>builder()
+              .withMaxAttempts(5)
+              .withFixedBackOff(Duration.ofSeconds(3))
+              .withTask(
+                  () -> {
+                    try {
+                      client.sendPing(ByteBuffer.allocate(0)).get();
+                      return Optional.of(true);
+                    } catch (final ExecutionException | InterruptedException e) {
+                      return Optional.of(false);
+                    }
+                  })
+              .buildAndExecute();
 
       if (pingSuccess.isEmpty()) {
         log.warn(
