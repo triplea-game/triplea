@@ -13,14 +13,15 @@ import feign.codec.Decoder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Builds http feign clients, each feign interface class should have a static {@code newClient}
@@ -30,7 +31,7 @@ import lombok.extern.java.Log;
  * @param <ClientTypeT> The feign client interface, should be an interface type that has feign
  *     annotations on it.
  */
-@Log
+@Slf4j
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
@@ -45,6 +46,31 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
   @Nonnull private final URI hostUri;
 
   private Integer maxAttempts = 3;
+
+  /**
+   * This decoder acts similar to the default decoder where the method key and response status codes
+   * are printed, but in addition, if present, any server response body message is also printed.
+   */
+  private static Exception errorDecoder(final String methodKey, final Response response) {
+    final String firstLine =
+        String.format(
+            "Status %s reading %s\nReason: %s", response.status(), methodKey, response.reason());
+
+    throw Optional.ofNullable(response.body())
+        .map(
+            body -> {
+              try (final BufferedReader reader =
+                  new BufferedReader(body.asReader(StandardCharsets.UTF_8))) {
+                final String errorMessageBody = reader.lines().collect(Collectors.joining("\n"));
+                return new HttpInteractionException(
+                    response.status(), firstLine + "\n" + errorMessageBody);
+              } catch (final IOException e) {
+                log.info("An additional error occurred when decoding response", e);
+                return new HttpInteractionException(response.status(), firstLine);
+              }
+            })
+        .orElseGet(() -> new HttpInteractionException(response.status(), firstLine));
+  }
 
   @Override
   public ClientTypeT get() {
@@ -76,35 +102,17 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
               protected void log(
                   final String configKey, final String format, final Object... args) {
                 final String logMessage = String.format(format, args);
-                log.info(configKey + ": " + logMessage);
+                log.trace(configKey + ": " + logMessage);
               }
             })
         .logLevel(Logger.Level.BASIC)
-        .options(new Request.Options(DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIME_OUT_MS))
+        .options(
+            new Request.Options(
+                DEFAULT_CONNECT_TIMEOUT_MS,
+                TimeUnit.MILLISECONDS,
+                DEFAULT_READ_TIME_OUT_MS,
+                TimeUnit.MILLISECONDS,
+                true))
         .target(classType, hostUri.toString());
-  }
-
-  /**
-   * This decoder acts similar to the default decoder where the method key and response status codes
-   * are printed, but in addition, if present, any server response body message is also printed.
-   */
-  private static Exception errorDecoder(final String methodKey, final Response response) {
-    final String firstLine =
-        String.format(
-            "Status %s reading %s\nReason: %s", response.status(), methodKey, response.reason());
-
-    throw Optional.ofNullable(response.body())
-        .map(
-            body -> {
-              try (BufferedReader reader = new BufferedReader(body.asReader())) {
-                final String errorMessageBody = reader.lines().collect(Collectors.joining("\n"));
-                return new HttpInteractionException(
-                    response.status(), firstLine + "\n" + errorMessageBody);
-              } catch (final IOException e) {
-                log.log(Level.INFO, "An additional error occurred when decoding response", e);
-                return new HttpInteractionException(response.status(), firstLine);
-              }
-            })
-        .orElseGet(() -> new HttpInteractionException(response.status(), firstLine));
   }
 }

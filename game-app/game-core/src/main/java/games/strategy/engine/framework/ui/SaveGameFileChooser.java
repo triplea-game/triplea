@@ -6,6 +6,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.nio.file.Path;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.StringJoiner;
 import javax.swing.JFileChooser;
@@ -45,8 +46,7 @@ public final class SaveGameFileChooser extends JFileChooser {
   }
 
   private static String formatGameName(final String gameName) {
-    @SuppressWarnings("JavaTimeDefaultTimeZone")
-    final ZonedDateTime now = ZonedDateTime.now();
+    final ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
     return new StringJoiner("-")
         .add(String.valueOf(now.getYear()))
         .add(String.valueOf(now.getMonthValue()))
