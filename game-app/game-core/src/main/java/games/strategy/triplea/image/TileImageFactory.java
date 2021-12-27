@@ -147,7 +147,9 @@ public final class TileImageFactory {
     if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
       return null;
     }
-    return loadImage(url, fileName, transparent);
+    return (showMapBlends && showReliefImages && transparent)
+        ? loadBlendedImage(fileName)
+        : loadUnblendedImage(url, fileName, transparent);
   }
 
   public Image getReliefTile(final int a, final int b) {
@@ -170,13 +172,6 @@ public final class TileImageFactory {
     g2.drawImage(compatibleImage, 0, 0, null);
     g2.dispose();
     return compatibleImage;
-  }
-
-  private Image loadImage(
-      final URL imageLocation, final String fileName, final boolean transparent) {
-    return (showMapBlends && showReliefImages && transparent)
-        ? loadBlendedImage(fileName)
-        : loadUnblendedImage(imageLocation, fileName, transparent);
   }
 
   private Image loadBlendedImage(final String fileName) {
