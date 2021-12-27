@@ -42,7 +42,7 @@ public class ClientSetupPanel extends SetupPanel {
         new IRemoteModelListener() {
           @Override
           public void playersTakenChanged() {
-            // nothing to do
+            // nothing to do, but implementation required
           }
 
           @Override

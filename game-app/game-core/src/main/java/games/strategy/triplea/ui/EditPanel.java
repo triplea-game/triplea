@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
+import games.strategy.triplea.ui.panels.map.MouseOverUnitListener;
 import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
@@ -77,7 +78,6 @@ class EditPanel extends ActionPanel {
   public static final String ACTION_LABEL_COULD_NOT_PERFORM_EDIT = "Could not perform edit";
   public static final String ACTION_LABEL_CHANGE_UNIT_HIT_DAMAGE = "Change Unit Hit Damage";
   public static final String ACTION_LABEL_CHANGE_UNIT_BOMBING_DAMAGE = "Change Unit Bombing Damage";
-  public static final String ACTION_LABEL_CHANGE_RESOURCE = "Change Resources";
   private static final long serialVersionUID = 5043639777373556106L;
   private final TripleAFrame frame;
   private final Action performMoveAction;
@@ -226,6 +226,134 @@ class EditPanel extends ActionPanel {
         }
       };
 
+  @SuppressWarnings("UnnecessaryLambda")
+  private final MouseOverUnitListener mouseOverUnitListener =
+      (units, territory) -> {
+        if (!isActive() || currentAction != null) {
+          return;
+        }
+        getMap().setUnitHighlight(Set.of(Collections.unmodifiableList(units)));
+      };
+
+  private final MapSelectionListener mapSelectionListener =
+      new DefaultMapSelectionListener() {
+        @Override
+        public void territorySelected(final Territory territory, final MouseDetails md) {
+          if (currentAction == changeTerritoryOwnerAction) {
+            final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+            if (ta == null) {
+              JOptionPane.showMessageDialog(
+                  getTopLevelAncestor(),
+                  "No TerritoryAttachment for " + territory + ".",
+                  ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
+                  JOptionPane.ERROR_MESSAGE);
+              return;
+            }
+            // PlayerId defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
+            final GamePlayer defaultPlayer = ta.getOriginalOwner();
+            final PlayerChooser playerChooser =
+                new PlayerChooser(
+                    getData().getPlayerList(), defaultPlayer, getMap().getUiContext(), true);
+            final JDialog dialog =
+                playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
+            dialog.setVisible(true);
+            final GamePlayer player = playerChooser.getSelected();
+            if (player != null) {
+              final String result = frame.getEditDelegate().changeTerritoryOwner(territory, player);
+              if (result != null) {
+                JOptionPane.showMessageDialog(
+                    getTopLevelAncestor(),
+                    result,
+                    ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
+                    JOptionPane.ERROR_MESSAGE);
+              }
+            }
+            SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
+          } else if (currentAction == addUnitsAction) {
+            final boolean allowNeutral = doesNeutralHaveUnitsOnMap(getData());
+            final PlayerChooser playerChooser =
+                new PlayerChooser(
+                    getData().getPlayerList(),
+                    territory.getOwner(),
+                    getMap().getUiContext(),
+                    allowNeutral);
+            final JDialog dialog =
+                playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
+            dialog.setVisible(true);
+            final GamePlayer player = playerChooser.getSelected();
+            if (player != null) {
+              // open production panel for adding new units
+              final IntegerMap<ProductionRule> production =
+                  EditProductionPanel.getProduction(
+                      player, frame, getData(), getMap().getUiContext());
+              final Collection<Unit> units = new ArrayList<>();
+              for (final ProductionRule productionRule : production.keySet()) {
+                final int quantity = production.getInt(productionRule);
+                final NamedAttachable resourceOrUnit =
+                    productionRule.getResults().keySet().iterator().next();
+                if (!(resourceOrUnit instanceof UnitType)) {
+                  continue;
+                }
+                final UnitType type = (UnitType) resourceOrUnit;
+                units.addAll(type.create(quantity, player));
+              }
+              final String result = frame.getEditDelegate().addUnits(territory, units);
+              if (result != null) {
+                JOptionPane.showMessageDialog(
+                    getTopLevelAncestor(),
+                    result,
+                    ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
+                    JOptionPane.ERROR_MESSAGE);
+              }
+            }
+            SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
+          }
+        }
+
+        @Override
+        public void mouseMoved(final @Nullable Territory territory, final MouseDetails md) {
+          if (!isActive()) {
+            return;
+          }
+          if (territory != null) {
+            if (currentAction == null && selectedTerritory != null) {
+              mouseCurrentPoint = md.getMapPoint();
+              getMap().setMouseShadowUnits(selectedUnits);
+            }
+            // highlight territory
+            if ((currentAction == changeTerritoryOwnerAction || currentAction == addUnitsAction)
+                && !Objects.equals(currentTerritory, territory)) {
+              if (currentTerritory != null) {
+                getMap().clearTerritoryOverlay(currentTerritory);
+              }
+              currentTerritory = territory;
+              getMap().setTerritoryOverlay(currentTerritory, Color.WHITE, 200);
+              getMap().repaint();
+            }
+          }
+        }
+      };
+
+  private final AbstractAction cancelEditAction =
+      new AbstractAction("Cancel") {
+        private static final long serialVersionUID = 6394987295241603443L;
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          selectedTerritory = null;
+          selectedUnits.clear();
+          this.setEnabled(false);
+          getMap().setRoute(null, mouseSelectedPoint, mouseCurrentPoint, null);
+          getMap().setMouseShadowUnits(null);
+          if (currentTerritory != null) {
+            getMap().clearTerritoryOverlay(currentTerritory);
+          }
+          currentTerritory = null;
+          currentAction = null;
+          setWidgetActivation();
+        }
+      };
+
   EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
@@ -360,7 +488,7 @@ class EditPanel extends ActionPanel {
           }
         };
     changeResourcesAction =
-        new AbstractAction(ACTION_LABEL_CHANGE_RESOURCE) {
+        new AbstractAction("Change Resources") {
           private static final long serialVersionUID = -2751668909341983795L;
 
           @Override
@@ -402,7 +530,7 @@ class EditPanel extends ActionPanel {
             final PlayerChooser playerChooser =
                 new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
             final JDialog dialog =
-                playerChooser.createDialog(getTopLevelAncestor(), ACTION_LABEL_CHANGE_RESOURCE);
+                playerChooser.createDialog(getTopLevelAncestor(), "Change Resources");
             dialog.setVisible(true);
             return Optional.ofNullable(playerChooser.getSelected());
           }
@@ -419,7 +547,7 @@ class EditPanel extends ActionPanel {
 
             final ResourceChooser chooser = new ResourceChooser(resources, getMap().getUiContext());
             return Optional.ofNullable(
-                chooser.showDialog(getTopLevelAncestor(), ACTION_LABEL_CHANGE_RESOURCE));
+                chooser.showDialog(getTopLevelAncestor(), "Change Resources"));
           }
 
           private Optional<Integer> chooseResourceValue(
@@ -868,134 +996,6 @@ class EditPanel extends ActionPanel {
     setWidgetActivation();
   }
 
-  private final MapSelectionListener mapSelectionListener =
-      new DefaultMapSelectionListener() {
-        @Override
-        public void territorySelected(final Territory territory, final MouseDetails md) {
-          if (currentAction == changeTerritoryOwnerAction) {
-            final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-            if (ta == null) {
-              JOptionPane.showMessageDialog(
-                  getTopLevelAncestor(),
-                  "No TerritoryAttachment for " + territory + ".",
-                  ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
-                  JOptionPane.ERROR_MESSAGE);
-              return;
-            }
-            // PlayerId defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
-            final GamePlayer defaultPlayer = ta.getOriginalOwner();
-            final PlayerChooser playerChooser =
-                new PlayerChooser(
-                    getData().getPlayerList(), defaultPlayer, getMap().getUiContext(), true);
-            final JDialog dialog =
-                playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
-            dialog.setVisible(true);
-            final GamePlayer player = playerChooser.getSelected();
-            if (player != null) {
-              final String result = frame.getEditDelegate().changeTerritoryOwner(territory, player);
-              if (result != null) {
-                JOptionPane.showMessageDialog(
-                    getTopLevelAncestor(),
-                    result,
-                    ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
-                    JOptionPane.ERROR_MESSAGE);
-              }
-            }
-            SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
-          } else if (currentAction == addUnitsAction) {
-            final boolean allowNeutral = doesNeutralHaveUnitsOnMap(getData());
-            final PlayerChooser playerChooser =
-                new PlayerChooser(
-                    getData().getPlayerList(),
-                    territory.getOwner(),
-                    getMap().getUiContext(),
-                    allowNeutral);
-            final JDialog dialog =
-                playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
-            dialog.setVisible(true);
-            final GamePlayer player = playerChooser.getSelected();
-            if (player != null) {
-              // open production panel for adding new units
-              final IntegerMap<ProductionRule> production =
-                  EditProductionPanel.getProduction(
-                      player, frame, getData(), getMap().getUiContext());
-              final Collection<Unit> units = new ArrayList<>();
-              for (final ProductionRule productionRule : production.keySet()) {
-                final int quantity = production.getInt(productionRule);
-                final NamedAttachable resourceOrUnit =
-                    productionRule.getResults().keySet().iterator().next();
-                if (!(resourceOrUnit instanceof UnitType)) {
-                  continue;
-                }
-                final UnitType type = (UnitType) resourceOrUnit;
-                units.addAll(type.create(quantity, player));
-              }
-              final String result = frame.getEditDelegate().addUnits(territory, units);
-              if (result != null) {
-                JOptionPane.showMessageDialog(
-                    getTopLevelAncestor(),
-                    result,
-                    ACTION_LABEL_COULD_NOT_PERFORM_EDIT,
-                    JOptionPane.ERROR_MESSAGE);
-              }
-            }
-            SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
-          }
-        }
-
-        @Override
-        public void mouseMoved(final @Nullable Territory territory, final MouseDetails md) {
-          if (!isActive()) {
-            return;
-          }
-          if (territory != null) {
-            if (currentAction == null && selectedTerritory != null) {
-              mouseCurrentPoint = md.getMapPoint();
-              getMap().setMouseShadowUnits(selectedUnits);
-            }
-            // highlight territory
-            if ((currentAction == changeTerritoryOwnerAction || currentAction == addUnitsAction)
-                && !Objects.equals(currentTerritory, territory)) {
-              if (currentTerritory != null) {
-                getMap().clearTerritoryOverlay(currentTerritory);
-              }
-              currentTerritory = territory;
-              getMap().setTerritoryOverlay(currentTerritory, Color.WHITE, 200);
-              getMap().repaint();
-            }
-          }
-        }
-      };
-
-  private final AbstractAction cancelEditAction =
-      new AbstractAction("Cancel") {
-        private static final long serialVersionUID = 6394987295241603443L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          selectedTerritory = null;
-          selectedUnits.clear();
-          this.setEnabled(false);
-          getMap().setRoute(null, mouseSelectedPoint, mouseCurrentPoint, null);
-          getMap().setMouseShadowUnits(null);
-          if (currentTerritory != null) {
-            getMap().clearTerritoryOverlay(currentTerritory);
-          }
-          currentTerritory = null;
-          currentAction = null;
-          setWidgetActivation();
-        }
-      };
-
-  @SuppressWarnings(
-      "PMD.UnusedFormalParameter") // MouseOverUnitListener interface has those parameters
-  private void setMouseOverUnitListener(final List<Unit> units, final Territory territory) {
-    if (!isActive() || currentAction != null) {
-      return;
-    }
-    getMap().setUnitHighlight(Set.of(Collections.unmodifiableList(units)));
-  }
-
   private static void sortUnitsToRemove(final List<Unit> units) {
     if (units.isEmpty()) {
       return;
@@ -1060,17 +1060,17 @@ class EditPanel extends ActionPanel {
       // current turn belongs to remote player or AI player
       getMap().removeMapSelectionListener(mapSelectionListener);
       getMap().removeUnitSelectionListener(unitSelectionListener);
-      getMap().removeMouseOverUnitListener(this::setMouseOverUnitListener);
+      getMap().removeMouseOverUnitListener(mouseOverUnitListener);
       setWidgetActivation();
     } else if (!this.active && active) {
       getMap().addMapSelectionListener(mapSelectionListener);
       getMap().addUnitSelectionListener(unitSelectionListener);
-      getMap().addMouseOverUnitListener(this::setMouseOverUnitListener);
+      getMap().addMouseOverUnitListener(mouseOverUnitListener);
       setWidgetActivation();
     } else if (!active && this.active) {
       getMap().removeMapSelectionListener(mapSelectionListener);
       getMap().removeUnitSelectionListener(unitSelectionListener);
-      getMap().removeMouseOverUnitListener(this::setMouseOverUnitListener);
+      getMap().removeMouseOverUnitListener(mouseOverUnitListener);
       cancelEditAction.actionPerformed(null);
     }
     this.active = active;
