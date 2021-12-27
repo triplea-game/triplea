@@ -115,7 +115,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
 
-  @SuppressWarnings("UnnecessaryLambda")
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
   @Getter @Nullable private LobbyWatcherThread lobbyWatcherThread;

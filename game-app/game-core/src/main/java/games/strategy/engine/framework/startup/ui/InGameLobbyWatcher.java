@@ -37,7 +37,6 @@ public class InGameLobbyWatcher {
   @Getter private String gameId;
   private GameSelectorModel gameSelectorModel;
 
-  @SuppressWarnings("UnnecessaryLambda")
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
 
   private IGame game;

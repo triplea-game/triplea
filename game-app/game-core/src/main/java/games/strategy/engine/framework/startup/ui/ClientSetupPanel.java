@@ -218,7 +218,6 @@ public class ClientSetupPanel extends SetupPanel {
     private final Action dontTakeAction =
         SwingAction.of("Don't Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
 
-    @SuppressWarnings("UnnecessaryLambda")
     private final ActionListener disablePlayerActionListener =
         e -> {
           if (enabledCheckBox.isSelected()) {

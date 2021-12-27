@@ -46,7 +46,6 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
   private ListCellRenderer<Object> setCellRenderer = new DefaultListCellRenderer();
   private final List<IPlayerActionFactory> actionFactories = new ArrayList<>();
 
-  @SuppressWarnings("UnnecessaryLambda")
   private final BiConsumer<UserName, String> statusUpdateListener = (username, status) -> repaint();
 
   public ChatPlayerPanel(final Chat chat) {
