@@ -182,7 +182,7 @@ public class ClientSetupPanel extends SetupPanel {
 
   @Override
   public void postStartGame() {
-    // nothing to do
+    // nothing to do, but implementation required
   }
 
   @Override
