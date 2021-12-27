@@ -167,10 +167,6 @@ public class CasualtyDetails extends CasualtyList {
       final List<Unit> targets,
       final Comparator<Unit> shouldTakeHitsFirst,
       final List<Unit> targetsHitWithCorrectOrder) {
-    final Unit firstUnit = targetsWithHitsBeforeRedistribution.get(0);
-    final var owner = firstUnit.getOwner();
-    final var type = firstUnit.getType();
-
     targets.sort(shouldTakeHitsFirst);
 
     // have allTargetsOfOwnerAndTypeThatCanTakeHits in sort order

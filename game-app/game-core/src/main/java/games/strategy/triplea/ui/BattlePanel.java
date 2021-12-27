@@ -474,8 +474,7 @@ public final class BattlePanel extends ActionPanel {
                   selectFrom,
                   defaultCasualties,
                   dependents,
-                  Properties.getPartialAmphibiousRetreat(
-                      hit.getData().getProperties()),
+                  Properties.getPartialAmphibiousRetreat(hit.getData().getProperties()),
                   false,
                   allowMultipleHitsPerUnit,
                   getMap().getUiContext());

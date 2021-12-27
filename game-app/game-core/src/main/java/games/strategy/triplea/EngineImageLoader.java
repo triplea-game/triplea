@@ -30,15 +30,7 @@ public class EngineImageLoader {
     Path imageFilePath = createPathToImage(path);
 
     if (!Files.exists(imageFilePath)) {
-      try {
-        imageFilePath =
-            ClientFileSystemHelper.getCodeSourceFolder().resolve(createPathToImage(path));
-      } catch (final IOException e) {
-        throw new IllegalStateException(
-            "Error loading image at: ClientFileSystemHelper.getCodeSourceFolder(), "
-                + e.getMessage(),
-            e);
-      }
+      imageFilePath = ClientFileSystemHelper.getRootFolder().resolve(createPathToImage(path));
     }
 
     if (!Files.exists(imageFilePath)) {

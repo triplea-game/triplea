@@ -137,8 +137,9 @@ final class BattleModel extends DefaultTableModel {
       }
       for (int i = 0; i <= gameData.getDiceSides(); i++) {
         if (shift[i] > 0) {
-          columns.get(i).add(new TableData(UnitImageFactory.ImageKey.of(category),
-              shift[i], uiContext));
+          columns
+              .get(i)
+              .add(new TableData(UnitImageFactory.ImageKey.of(category), shift[i], uiContext));
         }
       }
       // TODO Kev determine if we need to identify if the unit is hit/disabled
@@ -176,10 +177,8 @@ final class BattleModel extends DefaultTableModel {
 
     private TableData() {}
 
-    TableData(final UnitImageFactory.ImageKey imageKey,
-              final int count,
-              final UiContext uiContext
-    ) {
+    TableData(
+        final UnitImageFactory.ImageKey imageKey, final int count, final UiContext uiContext) {
       this.player = imageKey.getPlayer();
       this.count = count;
       this.unitType = imageKey.getType();

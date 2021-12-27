@@ -733,7 +733,7 @@ public final class UnitChooser extends JPanel {
     }
 
     public Optional<Image> getImage(final ImageKey imageKey, final boolean nonWithdrawable) {
-      final var undecoratedImage = unitImageFactory.getImage(imageKey);
+      final var undecoratedImage = unitImageFactoryForDecoractedImages.getImage(imageKey);
 
       return nonWithdrawable && undecoratedImage.isPresent()
           ? getImage(undecoratedImage.get())

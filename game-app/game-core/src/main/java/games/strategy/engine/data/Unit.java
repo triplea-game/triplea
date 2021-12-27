@@ -500,7 +500,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   public int hitsUnitCanTakeHitWithoutBeingKilled() {
-    return getUnitAttachment().getHitPoints() -1 -hits;
+    return getUnitAttachment().getHitPoints() - 1 - hits;
   }
 
   public boolean canTakeHitWithoutBeingKilled() {

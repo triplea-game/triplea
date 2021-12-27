@@ -203,8 +203,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
                 .thenComparing(UnitCategory::getCanRetreat)
                 .thenComparingInt(UnitCategory::getDamaged)
                 .thenComparingInt(UnitCategory::getBombingDamage)
-                .thenComparing(UnitCategory::getDisabled)
-                )
+                .thenComparing(UnitCategory::getDisabled))
         .compare(this, other);
   }
 }

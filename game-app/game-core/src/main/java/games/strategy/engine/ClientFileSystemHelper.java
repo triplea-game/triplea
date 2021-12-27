@@ -33,8 +33,19 @@ public final class ClientFileSystemHelper {
    */
   public static Path getRootFolder() {
     try {
-      return FileUtils.findFileInParentFolders(getCodeSourceFolder(), ".triplea-root")
-          .orElseThrow(() -> new IllegalStateException("Unable to locate root folder"));
+      final Optional<Path> markerFile =
+          FileUtils.findFileInParentFolders(getCodeSourceFolder(), ".triplea-root");
+
+      if (markerFile.isEmpty()) {
+        throw new IllegalStateException("Unable to locate root folder");
+      }
+
+      final Path rootFolder = markerFile.get().getParent();
+      if (rootFolder == null) {
+        throw new IllegalStateException("Unable to locate root folder");
+      }
+
+      return rootFolder;
     } catch (final IOException e) {
       throw new IllegalStateException("Unable to locate root folder", e);
     }

@@ -28,8 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class UnitSeparatorTest {
-  @Mock
-  private GameData gameData;
+  @Mock private GameData gameData;
   private GamePlayer player1 = new GamePlayer("player1", gameData);
 
   @Mock private MapData mockMapData;
@@ -112,9 +111,7 @@ class UnitSeparatorTest {
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
     final UnitSeparator.SeparatorCategories separatorCategories =
-        UnitSeparator.SeparatorCategories.builder()
-            .movementForAirUnitsOnly(true)
-            .build();
+        UnitSeparator.SeparatorCategories.builder().movementForAirUnitsOnly(true).build();
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
@@ -124,8 +121,7 @@ class UnitSeparatorTest {
   }
 
   @Test
-  void
-  testCategorizeWithAirUnitsWithDifferentMovement_insensitiveToAirUnitsWithTypeWithOneHitPoint() {
+  void testCategorizeWithAirUnitsWithDifferentMovement_insensitiveToAirUnitsOneHitPoint() {
     final UnitType drake = givenUnitType("Drake");
     UnitAttachment.get(drake).setHitPoints(1);
     UnitAttachment.get(drake).setMovement(4);
@@ -138,9 +134,7 @@ class UnitSeparatorTest {
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
     final UnitSeparator.SeparatorCategories separatorCategories =
-        UnitSeparator.SeparatorCategories.builder()
-            .movementForAirUnitsOnly(true)
-            .build();
+        UnitSeparator.SeparatorCategories.builder().movementForAirUnitsOnly(true).build();
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
@@ -151,7 +145,7 @@ class UnitSeparatorTest {
 
   @Test
   void
-  testCategorizeWithAirUnitsWithDifferentMovement_regardingAirUnitsInsensitiveToMovementFlag() {
+      testCategorizeWithAirUnitsWithDifferentMovement_regardingAirUnitsInsensitiveToMovementFlag() {
     final UnitType dragon = givenUnitType("Dragon");
     UnitAttachment.get(dragon).setHitPoints(2);
     UnitAttachment.get(dragon).setMovement(4);
@@ -164,9 +158,7 @@ class UnitSeparatorTest {
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
     final UnitSeparator.SeparatorCategories separatorCategories =
-        UnitSeparator.SeparatorCategories.builder()
-            .movementForAirUnitsOnly(true)
-            .build();
+        UnitSeparator.SeparatorCategories.builder().movementForAirUnitsOnly(true).build();
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
@@ -201,15 +193,13 @@ class UnitSeparatorTest {
     units.get(1).setHits(1);
 
     final UnitSeparator.SeparatorCategories separatorCategories =
-        UnitSeparator.SeparatorCategories.builder()
-            .movementForAirUnitsOnly(true)
-            .build();
+        UnitSeparator.SeparatorCategories.builder().movementForAirUnitsOnly(true).build();
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
     assertThat(
         "Categorization of air units should take into account hit points by type "
-            +"but not hit points the unit has already taken",
+            + "but not hit points the unit has already taken",
         categories.size() == 2);
   }
 
@@ -226,15 +216,12 @@ class UnitSeparatorTest {
     units.get(0).setHits(1);
 
     final UnitSeparator.SeparatorCategories separatorCategories =
-        UnitSeparator.SeparatorCategories.builder()
-            .movementForAirUnitsOnly(true)
-            .build();
+        UnitSeparator.SeparatorCategories.builder().movementForAirUnitsOnly(true).build();
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
     assertThat(
-        "units with different hits should be in different categories",
-        categories.size() == 2);
+        "units with different hits should be in different categories", categories.size() == 2);
   }
 
   @Test
@@ -258,9 +245,7 @@ class UnitSeparatorTest {
     units.get(3).setAlreadyMoved(BigDecimal.valueOf(2));
 
     final UnitSeparator.SeparatorCategories separatorCategories =
-        UnitSeparator.SeparatorCategories.builder()
-            .movementForAirUnitsOnly(true)
-            .build();
+        UnitSeparator.SeparatorCategories.builder().movementForAirUnitsOnly(true).build();
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 

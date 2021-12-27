@@ -20,7 +20,6 @@ class CasualtySelectionTest {
   private static final GamePlayer player1 = new GamePlayer("player1", gameData);
   private static final GamePlayer player2 = new GamePlayer("player2", gameData);
 
-
   private static UnitType givenUnitType(final String name) {
     final UnitType unitType = new UnitType(name, gameData);
     final UnitAttachment unitAttachment = new UnitAttachment(name, unitType, gameData);
@@ -83,7 +82,7 @@ class CasualtySelectionTest {
 
     assertThat(
         "Non-air units should not affect if the player chooses between units"
-            +" with different movement points",
+            + " with different movement points",
         !playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
   }
 }
