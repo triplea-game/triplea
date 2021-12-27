@@ -13,10 +13,10 @@ import lombok.AllArgsConstructor;
  * Module to execute a task with retries. Provides a builder interface to specify number of max
  * attempts (max number of times the task will be executed) and backoff.
  *
- * @param <T> Generic type that is returned by the retryable.
+ * @param <T> Generic type that is returned by the retriable.
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Retryable<T> {
+public class Retriable<T> {
   private static final Consumer<Duration> DEFAULT_THREAD_SLEEP =
       duration -> Interruptibles.sleep(duration.toMillis());
 
@@ -58,36 +58,8 @@ public class Retryable<T> {
     }
   }
 
-  @AllArgsConstructor(access = AccessLevel.PRIVATE)
-  public static class TaskBuilder<T> {
-    private final Consumer<Duration> threadSleeper;
-    private final int maxAttempts;
-    private final Duration backOff;
-
-    public RetryableBuilder<T> withTask(final Supplier<Optional<T>> taskRunner) {
-      Preconditions.checkNotNull(taskRunner);
-      return new RetryableBuilder<>(threadSleeper, maxAttempts, backOff, taskRunner);
-    }
-  }
-
-  @AllArgsConstructor(access = AccessLevel.PRIVATE)
-  public static class RetryableBuilder<T> {
-    private final Consumer<Duration> threadSleeper;
-    private final int maxAttempts;
-    private final Duration fixedBackOff;
-    private final Supplier<Optional<T>> taskRunner;
-
-    public Retryable<T> build() {
-      return new Retryable<>(threadSleeper, maxAttempts, fixedBackOff, taskRunner);
-    }
-
-    public Optional<T> buildAndExecute() {
-      return build().execute();
-    }
-  }
-
   /**
-   * Executes the retryable task with retries. The result of the task is retried until either:
+   * Executes the retriable task with retries. The result of the task is retried until either:
    *
    * <ul>
    *   <li>The task throws an uncaught exception
@@ -107,5 +79,33 @@ public class Retryable<T> {
       threadSleeper.accept(fixedBackOff);
     }
     return taskRunner.get();
+  }
+
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  public static class TaskBuilder<T> {
+    private final Consumer<Duration> threadSleeper;
+    private final int maxAttempts;
+    private final Duration backOff;
+
+    public RetriableBuilder<T> withTask(final Supplier<Optional<T>> taskRunner) {
+      Preconditions.checkNotNull(taskRunner);
+      return new RetriableBuilder<>(threadSleeper, maxAttempts, backOff, taskRunner);
+    }
+  }
+
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  public static class RetriableBuilder<T> {
+    private final Consumer<Duration> threadSleeper;
+    private final int maxAttempts;
+    private final Duration fixedBackOff;
+    private final Supplier<Optional<T>> taskRunner;
+
+    public Retriable<T> build() {
+      return new Retriable<>(threadSleeper, maxAttempts, fixedBackOff, taskRunner);
+    }
+
+    public Optional<T> buildAndExecute() {
+      return build().execute();
+    }
   }
 }

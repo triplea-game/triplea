@@ -10,7 +10,10 @@ import org.junit.jupiter.api.Test;
 class TestDataFileReaderTest {
   private static final String SAMPLE_FILE_PATH = "example/example_file.txt";
   private static final String EXPECTED_CONTENT =
-      "A file with some example text\nand a second line\n";
+      "A file with some example text"
+          + System.lineSeparator()
+          + "and a second line"
+          + System.lineSeparator();
 
   @Test
   void fileNotFoundCase() {

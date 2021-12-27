@@ -6,6 +6,7 @@ plugins {
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
+apply plugin: 'eclipse'
 
 ext {
     schemasDir = file('config/triplea/schemas')
