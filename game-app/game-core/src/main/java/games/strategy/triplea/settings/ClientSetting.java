@@ -15,6 +15,7 @@ import java.awt.Frame;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -221,6 +222,11 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    * result in an {@code IllegalStateException} being thrown by methods of this class.
    */
   public static void initialize() {
+    final String defaultLocaleLang = Locale.getDefault().getLanguage();
+    if (!defaultLocaleLang.equals(Locale.ENGLISH.getLanguage())
+        && !defaultLocaleLang.equals(Locale.GERMAN.getLanguage())) {
+      Locale.setDefault(Locale.GERMANY);
+    }
     setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
   }
 

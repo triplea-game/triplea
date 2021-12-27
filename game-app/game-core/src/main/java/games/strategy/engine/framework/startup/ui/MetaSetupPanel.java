@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -30,70 +31,103 @@ public class MetaSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 3926503672972937677L;
 
   public MetaSetupPanel(final SetupPanelModel model) {
+    final ResourceBundle resourceBundle =
+        ResourceBundle.getBundle("i18n.games.strategy.engine.framework.ui");
     final JButton connectToLobby =
-        new JButtonBuilder("Play Online")
-            .biggerFont()
+        new JButtonBuilder(
+                resourceBundle.getString("startup.SetupPanelModel.button.PlayOnline.Label"))
+            .biggerFont() // startup.SetupPanelModel.button.StartLocalGame.Tooltip.Line1
             .toolTipText(
-                "<html>Find Games Online on the Lobby Server. <br>"
-                    + "TripleA is MEANT to be played Online against other humans. <br>"
-                    + "Any other way is not as fun!</html>")
+                getHTML(
+                    new String[] {
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.PlayOnline.Tooltip.Line1"),
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.PlayOnline.Tooltip.Line2"),
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.PlayOnline.Tooltip.Line3")
+                    }))
             .actionListener(model::login)
             .build();
     final JButton startLocal =
-        new JButtonBuilder("Start Local Game")
+        new JButtonBuilder(
+                resourceBundle.getString("startup.SetupPanelModel.button.StartLocalGame.Label"))
             .toolTipText(
-                "<html>Start a game on this computer. <br>"
-                    + "You can play against a friend sitting besides you (hotseat mode), <br>"
-                    + "or against one of the AIs.</html>")
+                getHTML(
+                    new String[] {
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.StartLocalGame.Tooltip.Line1"),
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.StartLocalGame.Tooltip.Line2"),
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.StartLocalGame.Tooltip.Line3")
+                    }))
             .actionListener(model::showLocal)
             .build();
 
     final JButton startPbf =
-        new JButtonBuilder("Play By Forum")
+        new JButtonBuilder(
+                resourceBundle.getString("startup.SetupPanelModel.button.PlayByForum.Label"))
             .toolTipText(
-                "<html>"
-                    + "Starts a game which will be posted to an online forum or message board."
-                    + "</html>")
+                getHTML(
+                    resourceBundle.getString("startup.SetupPanelModel.button.PlayByForum.Tooltip")))
             .actionListener(model::showPbf)
             .build();
     final JButton startPbem =
-        new JButtonBuilder("Play By Email")
+        new JButtonBuilder(
+                resourceBundle.getString("startup.SetupPanelModel.button.PlayByEmail.Label"))
             .toolTipText(
-                "<html>"
-                    + "Starts a game which will be emailed back and forth between all players."
-                    + "</html>")
+                getHTML(
+                    resourceBundle.getString("startup.SetupPanelModel.button.PlayByEmail.Tooltip")))
             .actionListener(model::showPbem)
             .build();
     final JButton hostGame =
-        new JButtonBuilder("Host Networked Game")
+        new JButtonBuilder(
+                resourceBundle.getString("startup.SetupPanelModel.button.HostNetworkGame.Label"))
             .toolTipText(
-                "<html>Hosts a network game, which people can connect to. <br>"
-                    + "Anyone on a LAN will be able to connect. <br>"
-                    + "Anyone from the internet can connect as well, but only if the host has "
-                    + "configured port forwarding correctly.</html>")
+                getHTML(
+                    new String[] {
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.PlayOnline.HostNetworkGame.Tooltip.Line1"),
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.PlayOnline.HostNetworkGame.Tooltip.Line2"),
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.PlayOnline.HostNetworkGame.Tooltip.Line3")
+                    }))
             .actionListener(() -> new Thread(model::showServer).start())
             .build();
     final JButton connectToHostedGame =
-        new JButtonBuilder("Connect to Networked Game")
+        new JButtonBuilder(
+                resourceBundle.getString(
+                    "startup.SetupPanelModel.button.ConnectToNetworkedGame.Label"))
             .toolTipText(
-                "<html>Connects to someone's hosted game, <br>"
-                    + "so long as you know their IP address.</html>")
+                getHTML(
+                    new String[] {
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.PlayOnline.ConnectToNetworkedGame.Tooltip.Line1"),
+                      resourceBundle.getString(
+                          "startup.SetupPanelModel.button.PlayOnline.ConnectToNetworkedGame.Tooltip.Line2")
+                    }))
             .actionListener(() -> new Thread(model::showClient).start())
             .build();
     final JButton enginePreferences =
-        new JButtonBuilder("Engine Preferences")
-            .toolTipText("<html>Configure certain options related to the engine.")
+        new JButtonBuilder(
+                resourceBundle.getString("startup.SetupPanelModel.button.EnginePreferences.Label"))
+            .toolTipText(
+                resourceBundle.getString(
+                    "startup.SetupPanelModel.button.EnginePreferences.Tooltip"))
             .actionListener(
                 () -> ClientSetting.showSettingsWindow(JOptionPane.getFrameForComponent(this)))
             .build();
     final JButton userGuideButton =
-        new JButtonBuilder("User Guide & Help")
+        new JButtonBuilder(
+                resourceBundle.getString("startup.SetupPanelModel.button.UserGuideHelp.Label"))
             .actionListener(
                 () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE))
             .build();
     final JButton mapCreator =
         new JButtonBuilder()
-            .title("Map Creator Tools")
+            .title(resourceBundle.getString("startup.SetupPanelModel.button.MapCreatorTools.Label"))
             .actionListener(MapCreator::openMapCreatorWindow)
             .build();
 
@@ -101,24 +135,34 @@ public class MetaSetupPanel extends SetupPanel {
     final JPanel mainContents = new JPanel();
     add(mainContents);
     mainContents.setLayout(new GridBagLayout());
-    int row = 0;
-    mainContents.add(connectToLobby, buildConstraintForRow(row));
-    row++;
-    mainContents.add(startLocal, buildConstraintForRow(row));
-    row++;
-    mainContents.add(startPbf, buildConstraintForRow(row));
-    row++;
-    mainContents.add(startPbem, buildConstraintForRow(row));
-    row++;
-    mainContents.add(hostGame, buildConstraintForRow(row));
-    row++;
-    mainContents.add(connectToHostedGame, buildConstraintForRow(row));
-    row++;
-    mainContents.add(enginePreferences, buildConstraintForRow(row));
-    row++;
-    mainContents.add(mapCreator, buildConstraintForRow(row));
-    row++;
-    mainContents.add(userGuideButton, buildConstraintForRow(row));
+    addButtonsToPanel(
+        mainContents,
+        new JButton[] {
+          connectToLobby,
+          startLocal,
+          startPbf,
+          startPbem,
+          hostGame,
+          connectToHostedGame,
+          enginePreferences,
+          mapCreator,
+          userGuideButton
+        });
+  }
+
+  private static String getHTML(final String[] lines) {
+
+    return getHTML(String.join("<br/>", lines));
+  }
+
+  private static String getHTML(final String line) {
+    return "<html>" + line + "</html>";
+  }
+
+  private void addButtonsToPanel(final JPanel panel, final JButton[] buttons) {
+    for (int row = 0; row < buttons.length; row++) {
+      panel.add(buttons[row], buildConstraintForRow(row));
+    }
   }
 
   private GridBagConstraints buildConstraintForRow(final int rowNumber) {
