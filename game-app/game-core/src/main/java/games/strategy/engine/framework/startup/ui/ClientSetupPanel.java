@@ -41,7 +41,9 @@ public class ClientSetupPanel extends SetupPanel {
     clientModel.setRemoteModelListener(
         new IRemoteModelListener() {
           @Override
-          public void playersTakenChanged() {}
+          public void playersTakenChanged() {
+            // nothing to do
+          }
 
           @Override
           public void playerListChanged() {
@@ -178,6 +180,31 @@ public class ClientSetupPanel extends SetupPanel {
     return false;
   }
 
+  @Override
+  public void postStartGame() {
+    // nothing to do
+  }
+
+  @Override
+  public ChatPanel getChatModel() {
+    return clientModel.getChatPanel();
+  }
+
+  @Override
+  public List<Action> getUserActions() {
+    return List.of();
+  }
+
+  @Override
+  public boolean isCancelButtonVisible() {
+    return true;
+  }
+
+  @Override
+  public Optional<ILauncher> getLauncher() {
+    throw new UnsupportedOperationException();
+  }
+
   class PlayerRow {
     private static final String PLAY_TEXT = "Play";
     private final JCheckBox enabledCheckBox = new JCheckBox();
@@ -190,6 +217,7 @@ public class ClientSetupPanel extends SetupPanel {
         SwingAction.of(PLAY_TEXT, e -> clientModel.takePlayer(playerNameLabel.getText()));
     private final Action dontTakeAction =
         SwingAction.of("Don't Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
+
     private final ActionListener disablePlayerActionListener =
         e -> {
           if (enabledCheckBox.isSelected()) {
@@ -280,27 +308,4 @@ public class ClientSetupPanel extends SetupPanel {
       enabledCheckBox.setEnabled(disableable);
     }
   }
-
-  @Override
-  public ChatPanel getChatModel() {
-    return clientModel.getChatPanel();
-  }
-
-  @Override
-  public List<Action> getUserActions() {
-    return List.of();
-  }
-
-  @Override
-  public boolean isCancelButtonVisible() {
-    return true;
-  }
-
-  @Override
-  public Optional<ILauncher> getLauncher() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void postStartGame() {}
 }
