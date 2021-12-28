@@ -3,6 +3,7 @@ package org.triplea.http.client;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
+import com.google.errorprone.annotations.FormatMethod;
 import feign.Feign;
 import feign.FeignException;
 import feign.Logger;
@@ -68,6 +69,7 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
                     : super.logAndRebufferResponse(configKey, logLevel, response, elapsedTime);
               }
 
+              @FormatMethod
               @Override
               protected void log(
                   final String configKey, final String format, final Object... args) {

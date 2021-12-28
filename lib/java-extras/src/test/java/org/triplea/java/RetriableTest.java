@@ -18,7 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class RetryableTest {
+class RetriableTest {
 
   /**
    * Increment the invocation count and return true if the invocation count matches the input
@@ -42,17 +42,20 @@ class RetryableTest {
   @ParameterizedTest
   @ValueSource(ints = {0, 1})
   void maxAttemptOfZeroOrOneThrows(final int invalidMaxAttempts) {
+    final Retriable.MaxAttemptsBuilder<Object> retriableMaxAttemptsBuilder = Retriable.builder();
     assertThrows(
         IllegalArgumentException.class,
-        () -> Retryable.builder().withMaxAttempts(invalidMaxAttempts));
+        () -> retriableMaxAttemptsBuilder.withMaxAttempts(invalidMaxAttempts));
   }
 
   @ParameterizedTest
   @MethodSource
   void durationMustBeAtLeastOneMilli(final Duration invalidDuration) {
+    final Retriable.BackOffBuilder<Object> retriableBackOffBuilder =
+        Retriable.builder().withMaxAttempts(2);
     assertThrows(
         IllegalArgumentException.class,
-        () -> Retryable.builder().withMaxAttempts(2).withFixedBackOff(invalidDuration));
+        () -> retriableBackOffBuilder.withFixedBackOff(invalidDuration));
   }
 
   @SuppressWarnings("unused")
@@ -69,7 +72,7 @@ class RetryableTest {
   void retryIfTaskReturnsFalseAndReturnFalseIfAllFail() {
     final Task task = new Task(3);
     final Optional<Boolean> result =
-        Retryable.<Boolean>builder()
+        Retriable.<Boolean>builder()
             .withMaxAttempts(2)
             .withFixedBackOff(Duration.ofMillis(1))
             .withTask(task)
@@ -84,7 +87,7 @@ class RetryableTest {
     final Task task = new Task(2);
 
     final Optional<Boolean> result =
-        Retryable.<Boolean>builder()
+        Retriable.<Boolean>builder()
             .withMaxAttempts(2)
             .withFixedBackOff(Duration.ofMillis(1))
             .withTask(task)
@@ -99,7 +102,7 @@ class RetryableTest {
     final Task task = new Task(1);
 
     final Optional<Boolean> result =
-        Retryable.<Boolean>builder()
+        Retriable.<Boolean>builder()
             .withMaxAttempts(3)
             .withFixedBackOff(Duration.ofMillis(1))
             .withTask(task)
@@ -116,7 +119,7 @@ class RetryableTest {
     final Task task = new Task(maxAttempts + 1);
 
     final Duration backOff = Duration.ofMillis(1);
-    Retryable.<Boolean>builder(threadSleeper)
+    Retriable.<Boolean>builder(threadSleeper)
         .withMaxAttempts(maxAttempts)
         .withFixedBackOff(backOff)
         .withTask(task)
