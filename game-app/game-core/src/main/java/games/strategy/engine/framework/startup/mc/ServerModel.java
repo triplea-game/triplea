@@ -114,7 +114,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   // while our server launcher is not null, delegate new/lost connections to it
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
+
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
+
   @Getter @Nullable private LobbyWatcherThread lobbyWatcherThread;
   @Nullable private GameToLobbyConnection gameToLobbyConnection;
 
@@ -205,7 +207,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           } catch (final IOException e) {
             log.error("Failed to write game properties", e);
           }
-          return null;
+          return new byte[0];
         }
 
         @Override
@@ -643,9 +645,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     // we lost a node. Remove the player they play.
     final List<String> free = new ArrayList<>();
     synchronized (this) {
-      for (final String player : playersToNodeListing.keySet()) {
-        if (node.getName().equals(playersToNodeListing.get(player))) {
-          free.add(player);
+      for (final Map.Entry<String, String> entryPlayerToNode : playersToNodeListing.entrySet()) {
+        if (node.getName().equals(entryPlayerToNode.getValue())) {
+          free.add(entryPlayerToNode.getKey());
         }
       }
     }
@@ -714,7 +716,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         }
       }
 
-      final ServerLauncher serverLauncher =
+      final ServerLauncher serverLauncherNew =
           new ServerLauncher(
               clientCount,
               messengers,
@@ -725,8 +727,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               launchAction);
       Optional.ofNullable(lobbyWatcherThread)
           .map(LobbyWatcherThread::getLobbyWatcher)
-          .ifPresent(serverLauncher::setInGameLobbyWatcher);
-      return Optional.of(serverLauncher);
+          .ifPresent(serverLauncherNew::setInGameLobbyWatcher);
+      return Optional.of(serverLauncherNew);
     }
   }
 

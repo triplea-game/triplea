@@ -15,23 +15,10 @@ import org.triplea.spitfire.server.ControllerIntegrationTest;
 @SuppressWarnings("UnmatchedTest")
 class BadWordsControllerIntegrationTest extends ControllerIntegrationTest {
 
-  private final URI localhost;
   private final ToolboxBadWordsClient client;
 
   BadWordsControllerIntegrationTest(final URI localhost) {
-    this.localhost = localhost;
     this.client = ToolboxBadWordsClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
-  }
-
-  @Test
-  @SuppressWarnings({"Convert2MethodRef", "unchecked"})
-  void mustBeAuthorized() {
-    assertNotAuthorized(
-        ControllerIntegrationTest.NOT_MODERATORS,
-        apiKey -> ToolboxBadWordsClient.newClient(localhost, apiKey),
-        client -> client.getBadWords(),
-        client -> client.addBadWord("bad-word"),
-        client -> client.removeBadWord("bad-word"));
   }
 
   @Test

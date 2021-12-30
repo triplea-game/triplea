@@ -10,6 +10,10 @@ import java.util.List;
 public interface LoggerRecord {
   String getLoggerClassName();
 
+  /**
+   * Returns the log message, eg: {@code log.info("message"))}, or if the LoggerRecord is created
+   * from an uncaught exception then returns {@code exception.getMessage()}.
+   */
   String getLogMessage();
 
   boolean isError();

@@ -1,5 +1,7 @@
 lobby_server_user: lobby_server
+lobby_name: lobby_default
 lobby_version: "{{ version }}"
+lobby_http_port: 8080
 lobby_server_home_folder: "/home/{{ lobby_server_user }}/{{ lobby_version }}"
 lobby_server_error_report_github_org: "triplea-game"
 lobby_server_error_report_github_repo: "test"

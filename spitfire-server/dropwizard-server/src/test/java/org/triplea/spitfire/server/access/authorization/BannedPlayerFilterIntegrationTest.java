@@ -3,13 +3,13 @@ package org.triplea.spitfire.server.access.authorization;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import feign.FeignException;
 import java.net.URI;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
-import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
@@ -31,9 +31,9 @@ class BannedPlayerFilterIntegrationTest extends ControllerIntegrationTest {
   void banned() {
     // we expect an exception because user is banned. If user were not banned
     // then the login attempt would return result.
-    final HttpInteractionException exception =
+    final FeignException exception =
         Assertions.assertThrows(
-            HttpInteractionException.class,
+            FeignException.class,
             () ->
                 LobbyLoginClient.newClient(localhost, headersWithSystemId(BANNED_SYSTEM_ID))
                     .login("user", null));
