@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.math.BigDecimal;
@@ -32,12 +33,14 @@ public class UnitSeparator {
     @Builder.Default @Nullable final Map<Unit, Collection<Unit>> dependents = null;
     /** whether to categorize by movement */
     @Builder.Default final boolean movement = false;
+    /** whether to categorize by movement for air units only */
+    @Builder.Default final boolean movementForAirUnitsOnly = false;
     /** whether to categorize by transport cost */
     @Builder.Default final boolean transportCost = false;
     /** whether to categorize transports by movement */
     @Builder.Default final boolean transportMovement = false;
-    /** whether to categorize by amphibious */
-    @Builder.Default final boolean amphibious = false;
+    /** whether to categorize by whether the unit can retreat or not */
+    @Builder.Default final boolean retreatPossibility = false;
   }
 
   /**
@@ -90,7 +93,9 @@ public class UnitSeparator {
     for (final Unit current : units) {
       BigDecimal unitMovement = new BigDecimal(-1);
       if (separatorCategories.movement
-          || (separatorCategories.transportMovement && Matches.unitIsTransport().test(current))) {
+          || (separatorCategories.transportMovement && Matches.unitIsTransport().test(current))
+          || (separatorCategories.movementForAirUnitsOnly
+              && isAirWithHitPointsRemaining(current))) {
         unitMovement = current.getMovementLeft();
       }
       int unitTransportCost = -1;
@@ -101,9 +106,10 @@ public class UnitSeparator {
       if (separatorCategories.dependents != null) {
         currentDependents = separatorCategories.dependents.get(current);
       }
-      boolean unitAmphibious = false;
-      if (separatorCategories.amphibious) {
-        unitAmphibious = current.getWasAmphibious();
+      boolean canRetreat = true;
+      if (separatorCategories.retreatPossibility) {
+        // only time a unit can't retreat is if the unit was amphibious
+        canRetreat = !current.getWasAmphibious();
       }
       final boolean disabled = Matches.unitIsDisabled().test(current);
       final UnitCategory entry =
@@ -115,7 +121,7 @@ public class UnitSeparator {
               current.getUnitDamage(),
               disabled,
               unitTransportCost,
-              unitAmphibious);
+              canRetreat);
       // we test to see if we have the key using equals, then since
       // key maps to key, we retrieve it to add the unit to the correct category
       if (categories.containsKey(entry)) {
@@ -126,5 +132,10 @@ public class UnitSeparator {
       }
     }
     return new TreeSet<>(categories.keySet());
+  }
+
+  private static boolean isAirWithHitPointsRemaining(final Unit unit) {
+    return UnitAttachment.get(unit.getType()).getIsAir()
+        && UnitAttachment.get(unit.getType()).getHitPoints() > 1;
   }
 }

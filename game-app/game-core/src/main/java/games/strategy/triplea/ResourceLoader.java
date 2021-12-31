@@ -165,6 +165,29 @@ public class ResourceLoader implements Closeable {
   }
 
   public Optional<Image> loadImage(final String imageName) {
+    final var bufferedImage = loadBufferedImage(imageName);
+    return Optional.ofNullable(bufferedImage.orElse(null));
+  }
+
+  private Path createPathToImage(final String firstPathElement, final String... furtherPath) {
+    Path imageFilePath = Path.of(firstPathElement);
+    for (final String pathPart : furtherPath) {
+      imageFilePath = imageFilePath.resolve(pathPart);
+    }
+    return imageFilePath;
+  }
+
+  /**
+   * tries to load images in a priority order, first from the map, then from engine assets
+   *
+   * @param firstPathElement the image file name or the first element of the path to the image
+   *     relative to the map folder of the game resp. the assets folder of the engine
+   * @param furtherPath zero or more further elements of the path to the image
+   * @return the image or null, if the image could not be found
+   */
+  public Optional<BufferedImage> loadBufferedImage(
+      final String firstPathElement, final String... furtherPath) {
+    final String imageName = createPathToImage(firstPathElement, furtherPath).toString();
     final URL url = getResource(imageName);
     if (url == null) {
       // this is actually pretty common that we try to read images that are not there. Let the
