@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.player.Player;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -473,6 +474,8 @@ public final class BattlePanel extends ActionPanel {
                   selectFrom,
                   defaultCasualties,
                   dependents,
+                  Properties.getPartialAmphibiousRetreat(hit.getData().getProperties()),
+                  false,
                   allowMultipleHitsPerUnit,
                   getMap().getUiContext());
           chooser.setTitle(message);
