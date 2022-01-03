@@ -13,10 +13,14 @@ import java.util.ResourceBundle;
  */
 public abstract class I18nResourceBundle {
 
-  private ResourceBundle bundle;
+  private final ResourceBundle bundle;
 
   protected I18nResourceBundle() {
-    bundle = ResourceBundle.getBundle(this.getResourcePath());
+    bundle = ResourceBundle.getBundle(getResourcePath());
+  }
+
+  public String getBaseBundleName() {
+    return bundle.getBaseBundleName();
   }
 
   /**
@@ -31,13 +35,6 @@ public abstract class I18nResourceBundle {
   /** @return List of supported languages */
   public static List<String> getSupportedLanguages() {
     return Arrays.asList(Locale.ENGLISH.getLanguage(), Locale.GERMAN.getLanguage());
-  }
-
-  private ResourceBundle getResourceBundle() {
-    if (bundle == null) {
-      bundle = ResourceBundle.getBundle(getResourcePath());
-    }
-    return bundle;
   }
 
   /** @return Path to resource bundle property file */
@@ -57,6 +54,6 @@ public abstract class I18nResourceBundle {
    * @return Language dependent text
    */
   public String getText(final String key) {
-    return getResourceBundle().getString(key);
+    return bundle.getString(key);
   }
 }
