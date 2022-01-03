@@ -2465,3 +2465,10 @@
    <br>Variants for WW2v5
    <br>WW2v5-Maintenance adds per turn maintenance costs
    <br>WW2v5-Buildcaps limits the number of units you can build
+- mapName: NWO-Andrew's
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NWO_Andrews/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/NWO_Andrews/master/preview.png
+  description: |
+   <br>1939 on New World Order map with low piece count
