@@ -216,7 +216,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     this.defaultValue = defaultValue;
   }
 
-
   /**
    * Initializes the client settings framework.
    *

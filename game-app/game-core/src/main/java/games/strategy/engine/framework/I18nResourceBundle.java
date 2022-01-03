@@ -15,6 +15,10 @@ public abstract class I18nResourceBundle {
 
   private ResourceBundle bundle;
 
+  protected I18nResourceBundle() {
+    bundle = ResourceBundle.getBundle(this.getResourcePath());
+  }
+
   /**
    * @param locale which should be checked whether it is supported
    * @return True value, if it is supported, false value otherwise
