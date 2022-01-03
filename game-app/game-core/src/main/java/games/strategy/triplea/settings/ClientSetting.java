@@ -5,6 +5,7 @@ import static java.util.function.Predicate.not;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
@@ -215,6 +216,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     this.defaultValue = defaultValue;
   }
 
+
   /**
    * Initializes the client settings framework.
    *
@@ -223,9 +225,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    */
   public static void initialize() {
     final String defaultLocaleLang = Locale.getDefault().getLanguage();
-    if (!defaultLocaleLang.equals(Locale.ENGLISH.getLanguage())
-        && !defaultLocaleLang.equals(Locale.GERMAN.getLanguage())) {
-      Locale.setDefault(Locale.GERMANY);
+    if (!I18nResourceBundle.getSupportedLanguages().contains(defaultLocaleLang)) {
+      Locale.setDefault(Locale.ENGLISH);
     }
     setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
   }

@@ -2,6 +2,7 @@ package games.strategy.engine.framework;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -21,6 +22,11 @@ public abstract class I18nResourceBundle {
   public static boolean isSupported(final Locale locale) {
     final Locale[] availableLocales = Locale.getAvailableLocales();
     return Arrays.asList(availableLocales).contains(locale);
+  }
+
+  /** @return List of supported languages */
+  public static List<String> getSupportedLanguages() {
+    return Arrays.asList(Locale.ENGLISH.getLanguage(), Locale.GERMAN.getLanguage());
   }
 
   private ResourceBundle getResourceBundle() {
