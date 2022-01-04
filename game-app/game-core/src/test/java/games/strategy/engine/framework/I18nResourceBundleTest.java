@@ -9,19 +9,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 
 class I18nResourceBundleTest {
-  private static final String resourcePath =
-      "propertyTest"; // i18n.games.strategy.engine.framework.ui
+  private static final String resourcePath = "propertyTest";
   private static final int maxTextMatchLengthWithEn = 10;
 
-  @Test
-  void get() {
-    final I18nResourceBundle i18nBundle = I18nTestBundle.get();
-    assertNotNull(i18nBundle);
-  }
-
+  @NonNls
   private static String errorTextNotTranslated(
       final ResourceBundle bundle, final String lang, final String key) {
     return "i18n error: Key '"
@@ -34,18 +29,24 @@ class I18nResourceBundleTest {
   }
 
   @Test
-  void isSupported() {
+  void i18nGet() {
+    final I18nResourceBundle i18nBundle = I18nTestBundle.get();
+    assertNotNull(i18nBundle);
+  }
+
+  @Test
+  void i18nIsSupported() {
     assertTrue(I18nResourceBundle.isSupported(Locale.ENGLISH));
   }
 
   @Test
-  void getResourcePath() {
+  void i18nGetResourcePath() {
     final I18nResourceBundle i18nBundle = I18nTestBundle.get();
     assertEquals(resourcePath, i18nBundle.getResourcePath());
   }
 
   @Test
-  void getText() {
+  void i18nGetText() {
     final I18nResourceBundle i18nBundle = I18nTestBundle.get();
     assertEquals("Test Text: Happy Testing", i18nBundle.getText("test.Text"));
   }
@@ -59,16 +60,16 @@ class I18nResourceBundleTest {
    * assumed.
    */
   @Test
-  void testGetText() {
+  void ensureLocalizedResultOfGetText() {
     // Add subclasses of I18nResourceBundle below
-    List<Class<? extends I18nResourceBundle>> subclasses = List.of(I18nEngineFramework.class);
+    final List<Class<? extends I18nResourceBundle>> subclasses = List.of(I18nEngineFramework.class);
     subclasses.forEach(
         (subclass) -> {
           // instantiate i18nBundle
           I18nResourceBundle i18nBundle = null;
           try {
             i18nBundle = subclass.getDeclaredConstructor().newInstance();
-          } catch (NoSuchMethodException
+          } catch (final NoSuchMethodException
               | InvocationTargetException
               | InstantiationException
               | IllegalAccessException e) {
@@ -77,24 +78,27 @@ class I18nResourceBundleTest {
           assertNotNull(i18nBundle);
           // Check each language bundle for each key against default language (English)
           final String baseBundleName = i18nBundle.getBaseBundleName();
-          final ResourceBundle bundleEn = ResourceBundle.getBundle(baseBundleName, Locale.ENGLISH);
-          for (String lang : I18nResourceBundle.getSupportedLanguages()) {
-            if (lang.equals(Locale.ENGLISH.getLanguage())) {
-              continue; // do not check en <-> en
+          final Locale localeBase = Locale.US;
+          final ResourceBundle bundleEn = ResourceBundle.getBundle(baseBundleName, localeBase);
+
+          for (final Locale locale : I18nResourceBundle.getMapSupportedLocales()) {
+            if (locale.equals(localeBase)) {
+              continue; // do not check against base Locale
             }
-            final ResourceBundle bundle =
-                ResourceBundle.getBundle(baseBundleName, Locale.forLanguageTag(lang));
-            for (String key : bundleEn.keySet()) {
+            final ResourceBundle bundle = ResourceBundle.getBundle(baseBundleName, locale);
+            for (final String key : bundleEn.keySet()) {
               try {
                 final String langString = bundle.getString(key);
-                final String enString = bundleEn.getString(key);
+                @NonNls final String enString = bundleEn.getString(key);
                 if (enString.length() >= maxTextMatchLengthWithEn) {
                   continue; // too short to assume translation is missing from matching strings
                 } else {
-                  assert !enString.equals(langString) : errorTextNotTranslated(bundle, lang, key);
+                  assert !enString.equals(langString)
+                      : errorTextNotTranslated(bundle, locale.toString(), key);
                 }
-                assert 0 != langString.length() : errorTextNotTranslated(bundle, lang, key);
-              } catch (MissingResourceException e) {
+                assert 0 != langString.length()
+                    : errorTextNotTranslated(bundle, locale.toString(), key);
+              } catch (final MissingResourceException e) {
                 assertNotNull(e);
               }
             }

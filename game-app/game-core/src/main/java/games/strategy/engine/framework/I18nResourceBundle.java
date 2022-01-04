@@ -1,13 +1,14 @@
 package games.strategy.engine.framework;
 
-import java.text.DateFormat;
+import java.text.Collator;
 import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * This is the main i18n (internationalization) class to retrieve langauge dependent outputs. The
@@ -17,29 +18,69 @@ import java.util.ResourceBundle;
 public abstract class I18nResourceBundle {
 
   private final ResourceBundle bundle;
+  private static final HashMap<Locale, Double> mapSupportedLocales = getNewMapSupportedLocales();
+  private static final Locale locale =
+      Locale.lookup(getSupportedLanguageRange(), Arrays.asList(Collator.getAvailableLocales()));
 
   protected I18nResourceBundle() {
-    bundle = ResourceBundle.getBundle(getResourcePath());
+    bundle = ResourceBundle.getBundle(getResourcePath(), locale);
+  }
+
+  /**
+   * Add new supported locales here!
+   *
+   * @return new map supported Locale->weight Double
+   */
+  private static HashMap<Locale, Double> getNewMapSupportedLocales() {
+    final HashMap<Locale, Double> newMapSupportedLocales = new HashMap<>();
+    newMapSupportedLocales.put(Locale.US, 1.0);
+    newMapSupportedLocales.put(Locale.GERMANY, 0.5);
+    return newMapSupportedLocales;
+  }
+
+  public static Set<Locale> getMapSupportedLocales() {
+    return mapSupportedLocales.keySet();
+  }
+
+  public static List<Locale.LanguageRange> getSupportedLanguageRange() {
+    @NonNls final StringBuilder sb = new StringBuilder();
+    for (final var entry : mapSupportedLocales.entrySet()) {
+      sb.append(",").append(entry.getKey().toLanguageTag()).append(";q=").append(entry.getValue());
+    }
+    return Locale.LanguageRange.parse(sb.substring(1));
+  }
+
+  /*
+   * @param number Number to be language-dependent converted to string
+   * @return Language-dependent string for number
+   */
+  /*public static String convToText(final long number) {
+    return NumberFormat.getInstance(locale).format(number);
+  }*/
+
+  /*
+   * @param date Date to be language-dependent converted to string
+   * @return Language-dependent string for date
+   */
+  /*public static String convToText(final Date date) {
+    return convToText(date, DateFormat.SHORT);
+  }*/
+  /*
+   * @param date Date to be language-dependent converted to string
+   * @param style Date formatting style to be used
+   * @return Language-dependent string for date
+   */
+  /*public static String convToText(final Date date, final int style) {
+    return DateFormat.getDateInstance(style, locale).format(date);
+  }*/
+
+  /** @return List of supported languages */
+  public static List<Locale> getSupportedLanguages() {
+    return Arrays.asList(Locale.ENGLISH, Locale.GERMAN);
   }
 
   public String getBaseBundleName() {
     return bundle.getBaseBundleName();
-  }
-
-  /**
-   * @param number Number to be language-dependent converted to string
-   * @return Language-dependent string for number
-   */
-  public static String convToText(final long number) {
-    return NumberFormat.getInstance().format(number);
-  }
-
-  /**
-   * @param date Date to be language-dependent converted to string
-   * @return Language-dependent string for date
-   */
-  public static String convToText(final Date date) {
-    return DateFormat.getInstance().format(date);
   }
 
   /**
@@ -49,11 +90,6 @@ public abstract class I18nResourceBundle {
   public static boolean isSupported(final Locale locale) {
     final Locale[] availableLocales = Locale.getAvailableLocales();
     return Arrays.asList(availableLocales).contains(locale);
-  }
-
-  /** @return List of supported languages */
-  public static List<String> getSupportedLanguages() {
-    return Arrays.asList(Locale.ENGLISH.getLanguage(), Locale.GERMAN.getLanguage());
   }
 
   /** @return Path to resource bundle property file */

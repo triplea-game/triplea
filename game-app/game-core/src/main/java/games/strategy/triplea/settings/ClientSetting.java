@@ -223,9 +223,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    * result in an {@code IllegalStateException} being thrown by methods of this class.
    */
   public static void initialize() {
-    final String defaultLocaleLang = Locale.getDefault().getLanguage();
-    if (!I18nResourceBundle.getSupportedLanguages().contains(defaultLocaleLang)) {
-      Locale.setDefault(Locale.ENGLISH);
+    final Locale defaultLocale = Locale.getDefault();
+    if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
+      Locale.setDefault(Locale.US);
     }
     setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
   }
