@@ -24,9 +24,12 @@
 ### General Questions
 
 1. How many strings are there approximately in TripleA?
-    - <todo: count strings>
+    - game-app\ai 102
+    - game-app\game-core 12628
+    - game-app\game-headed 12
+    - game-app\game-headless 2
 2. What is our desired percentage to have internationalized?
-    - 5%. The rest is either having only functional purpose or can be translated later.
+    - 5% (around 650 strings). The rest is either having only functional purpose or can be translated later.
 3. How much work will that be?
     - I assume about a year.
 4. Are we going to target to have every user-display string translated?
