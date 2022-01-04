@@ -1,7 +1,10 @@
 package games.strategy.engine.framework;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -21,6 +24,22 @@ public abstract class I18nResourceBundle {
 
   public String getBaseBundleName() {
     return bundle.getBaseBundleName();
+  }
+
+  /**
+   * @param number Number to be language-dependent converted to string
+   * @return Language-dependent string for number
+   */
+  public static String convToText(final long number) {
+    return NumberFormat.getInstance().format(number);
+  }
+
+  /**
+   * @param date Date to be language-dependent converted to string
+   * @return Language-dependent string for date
+   */
+  public static String convToText(final Date date) {
+    return DateFormat.getInstance().format(date);
   }
 
   /**
