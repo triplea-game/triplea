@@ -2472,3 +2472,13 @@
   img: https://raw.githubusercontent.com/triplea-maps/NWO_Andrews/master/preview.png
   description: |
    <br>1939 on New World Order map with low piece count
+- mapName: New_World_Order_Variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/New_World_Order_Variants/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/New_World_Order_Variants/master/preview.png
+  description: |
+   <br>1939 on New World Order map with the neutral nations of Spain, Turkey, Middle East, Skandinavia, Poland, Yugoslavia & Greece. There are 3 scenarios.
+   <br>New World Order Variant - Neutrals Unassigned, the neutral nations can be attacked by all, but they will build and move within their own territories.
+   <br>New World Order Variant - Neutrals Assigned, the neutral nations are part of one the alliances, but they will build and move within their own territories.
+   <br>New World Order Variant - Neutral Unrestricted, the neutral nations are part of one the alliances, without restrictions.
