@@ -11,7 +11,7 @@ distributions.
 
 ## Target TripleA version
 
-... is 2.7, so 2.6 can be completed, soon. How can I submit a PR for 2.7?
+... is 2.7/3.0, so 2.6 can be completed, soon. How can I submit a PR for 2.7/3.0?
 
 ## Compromises
 
@@ -206,3 +206,25 @@ The `StochasticBattleCalculator` can write
    yet)
 
 This allows `StochasticBattleCalculator` to be developed incrementally. 
+
+## Internal design considerations
+
+The core loop of the main algorithm resides in `StochasticBattleCalculator.calculateForRemainingAttackers`.
+It iterates over all possible battle states of the current round in order to determine the probability distribution 
+of the battle states of the current round.
+
+You would expect that it iterates from one current state to the next and distributes the probability 
+of that current state among the future states that can be reached from the respective current state.
+However, currently the algorithm iterates from one future state to the next and from there iterates
+through the current states. This way the write operations switch location slowly while the read operations 
+switch quickly. 
+
+I was hoping that this would allow multithreading and avoid memory access collisions with write operations.
+However, there is currently no multithreading in the core loop. That's because I couldn't identify any speedup.
+I guess the reason is that the bottleneck is not within the CPU but between the CPU and RAM.
+
+If anybody could help me to speed up the core loop by multithreading (or in any other way), I'd be happy.
+
+If I don't achieve any further insights regarding this issue, I will probably invert the core loop, i.e.
+go from one current state to the next rather than go from one future state to the next, because that will 
+probably integrate better with extensions of that algorithm, e.g. for calculation of battles that include aa fire.
