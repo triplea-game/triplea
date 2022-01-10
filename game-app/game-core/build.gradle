@@ -1,7 +1,9 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.5.30'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
 }
 dependencies {
+
+    implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
     implementation ("com.googlecode.soundlibs:jlayer:$jlayerVersion") {
        exclude group: 'junit', module: 'junit'
     }
@@ -28,18 +30,18 @@ dependencies {
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testImplementation project(":lib:swing-lib-test-support")
     testImplementation project(":lib:test-common")
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 repositories {
     mavenCentral()
 }
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }

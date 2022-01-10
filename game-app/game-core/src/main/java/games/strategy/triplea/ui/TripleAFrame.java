@@ -193,6 +193,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final EconomyPanel economyPanel;
   private ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetails;
+  public final InstrumentationPanel instrumentationPanel;
   private final JPanel historyComponent = new JPanel();
   private final JPanel gameSouthPanel;
   private HistoryPanel historyPanel;
@@ -601,6 +602,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     territoryDetails = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
     addTab("Territory", territoryDetails, KeyCode.T);
+    instrumentationPanel = new InstrumentationPanel();
+    addTab("Instrumentation", instrumentationPanel, KeyCode.L );
     editPanel = new EditPanel(data, mapPanel, this);
     // Register a change listener
     tabsPanel.addChangeListener(
@@ -1124,8 +1127,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     messageAndDialogThreadPool.waitForAll();
     final String message =
         (Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
-                ? "Bomb/Escort"
-                : "Bomb")
+            ? "Bomb/Escort"
+            : "Bomb")
             + " in "
             + location.getName();
     final String bomb =
@@ -2060,6 +2063,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
           }
           addTab("Territory", territoryDetails, KeyCode.T);
+          addTab("Instrumentation", instrumentationPanel, KeyCode.L );
           if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
@@ -2248,6 +2252,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
           }
           addTab("Territory", territoryDetails, KeyCode.T);
+          addTab("Instrumentation", instrumentationPanel, KeyCode.L );
           if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
@@ -2312,11 +2317,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                           (scroll.getPreferredSize().width > availWidth
                               ? availWidth
                               : (scroll.getPreferredSize().width
-                                  + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
+                              + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
                           (scroll.getPreferredSize().height > availHeight
                               ? availHeight
                               : (scroll.getPreferredSize().height
-                                  + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
+                              + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
                   panelRef.set(scroll);
                   chooserRef.set(chooser);
                 }));

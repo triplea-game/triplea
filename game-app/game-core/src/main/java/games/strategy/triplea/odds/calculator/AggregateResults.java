@@ -29,7 +29,7 @@ import org.triplea.util.Tuple;
  */
 public class AggregateResults {
   private final List<BattleResults> results;
-  @Getter @Setter private long time;
+  @Getter @Setter long time;
 
   /**
    * Creates a new aggregator and sets the internal storage size to {@code expectedCount}. Choosing
@@ -85,11 +85,11 @@ public class AggregateResults {
             Comparator.comparingDouble(
                 result ->
                     Math.abs(
-                            result.getRemainingAttackingUnits().size()
-                                - getAverageAttackingUnitsLeft())
+                        result.getRemainingAttackingUnits().size()
+                            - getAverageAttackingUnitsLeft())
                         + Math.abs(
-                            result.getRemainingDefendingUnits().size()
-                                - getAverageDefendingUnitsLeft())));
+                        result.getRemainingDefendingUnits().size()
+                            - getAverageDefendingUnitsLeft())));
   }
 
   public Collection<Unit> getAverageAttackingUnitsRemaining() {
@@ -173,13 +173,13 @@ public class AggregateResults {
     return defenderStartingTuv
         - attackerStartingTuv
         + mean.evaluate(
-            results.stream()
-                .mapToDouble(
-                    result ->
-                        TuvUtils.getTuv(result.getRemainingAttackingUnits(), attackerCostsForTuv)
-                            - TuvUtils.getTuv(
-                                result.getRemainingDefendingUnits(), defenderCostsForTuv))
-                .toArray());
+        results.stream()
+            .mapToDouble(
+                result ->
+                    TuvUtils.getTuv(result.getRemainingAttackingUnits(), attackerCostsForTuv)
+                        - TuvUtils.getTuv(
+                        result.getRemainingDefendingUnits(), defenderCostsForTuv))
+            .toArray());
   }
 
   /**

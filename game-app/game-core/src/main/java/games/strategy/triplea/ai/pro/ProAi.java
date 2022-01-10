@@ -3,17 +3,17 @@ package games.strategy.triplea.ai.pro;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
+import games.strategy.triplea.odds.calculator.StochasticBattleCalculator;
 
 public class ProAi extends AbstractProAi {
   // Odds calculator
-  private static final ConcurrentBattleCalculator concurrentCalc = new ConcurrentBattleCalculator();
+  private static final StochasticBattleCalculator calc = new StochasticBattleCalculator();
 
   public ProAi(final String name) {
-    super(name, concurrentCalc, new ProData());
+    super(name, calc, new ProData());
     // cuncurrentCalc is static so that it can be shared across all ProAi instances
     // at the end of a game, it needs to be cleared up
-    GameShutdownRegistry.registerShutdownAction(() -> concurrentCalc.setGameData(null));
+    GameShutdownRegistry.registerShutdownAction(() -> calc.setGameData(null));
   }
 
   @Override
@@ -24,11 +24,11 @@ public class ProAi extends AbstractProAi {
   @Override
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
-    concurrentCalc.cancel();
+    calc.cancel();
   }
 
   @Override
   protected void prepareData(final GameData data) {
-    concurrentCalc.setGameData(data);
+    calc.setGameData(data);
   }
 }

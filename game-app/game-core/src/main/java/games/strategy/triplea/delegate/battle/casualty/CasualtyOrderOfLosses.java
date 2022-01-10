@@ -28,7 +28,7 @@ import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
-class CasualtyOrderOfLosses {
+public class CasualtyOrderOfLosses {
   private final Map<String, List<AmphibType>> oolCache = new ConcurrentHashMap<>();
 
   void clearOolCache() {
@@ -37,7 +37,7 @@ class CasualtyOrderOfLosses {
 
   @Builder
   @Value
-  static class Parameters {
+  public static class Parameters {
     @Nonnull Collection<Unit> targetsToPickFrom;
     @Nonnull GamePlayer player;
     @Nonnull CombatValue combatValue;
@@ -57,7 +57,7 @@ class CasualtyOrderOfLosses {
    * all artillery, or the other way around, you will be missing out on some important support
    * provided. (Veqryn)
    */
-  List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
+  public List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
     // Convert unit lists to unit type lists
     final List<AmphibType> targetTypes = new ArrayList<>();
     for (final Unit u : parameters.targetsToPickFrom) {
@@ -85,11 +85,11 @@ class CasualtyOrderOfLosses {
     final List<Unit> sortedUnitsList = new ArrayList<>(parameters.targetsToPickFrom);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-                parameters.costs,
-                parameters.data,
-                parameters.combatValue.buildWithNoUnitSupports(),
-                true,
-                false)
+            parameters.costs,
+            parameters.data,
+            parameters.combatValue.buildWithNoUnitSupports(),
+            true,
+            false)
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =

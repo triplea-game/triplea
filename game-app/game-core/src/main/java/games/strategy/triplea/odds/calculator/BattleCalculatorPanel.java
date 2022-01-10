@@ -17,6 +17,7 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
 import java.awt.BorderLayout;
@@ -83,7 +84,7 @@ class BattleCalculatorPanel extends JPanel {
       new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
-  private final ConcurrentBattleCalculator calculator;
+  private final StochasticBattleCalculator calculator;
   private final PlayerUnitsPanel attackingUnitsPanel;
   private final PlayerUnitsPanel defendingUnitsPanel;
   private final JComboBox<GamePlayer> attackerCombo;
@@ -1024,11 +1025,11 @@ class BattleCalculatorPanel extends JPanel {
                   data);
           if (JOptionPane.OK_OPTION
               == JOptionPane.showConfirmDialog(
-                  BattleCalculatorPanel.this,
-                  oolPanel,
-                  "Create Order Of Losses for each side",
-                  JOptionPane.OK_CANCEL_OPTION,
-                  JOptionPane.PLAIN_MESSAGE)) {
+              BattleCalculatorPanel.this,
+              oolPanel,
+              "Create Order Of Losses for each side",
+              JOptionPane.OK_CANCEL_OPTION,
+              JOptionPane.PLAIN_MESSAGE)) {
             if (OrderOfLossesInputPanel.isValidOrderOfLoss(oolPanel.getAttackerOrder(), data)) {
               attackerOrderOfLosses = oolPanel.getAttackerOrder();
             }
@@ -1052,7 +1053,7 @@ class BattleCalculatorPanel extends JPanel {
     setupAttackerAndDefender();
 
     calculator =
-        new ConcurrentBattleCalculator(
+        new StochasticBattleCalculator(
             () ->
                 SwingUtilities.invokeLater(
                     () -> {
@@ -1228,14 +1229,14 @@ class BattleCalculatorPanel extends JPanel {
         averageChangeInTuv.setText(
             ""
                 + formatValue(
-                    results
-                        .get()
-                        .getAverageTuvSwing(
-                            getAttacker(),
-                            mainCombatAttackers,
-                            getDefender(),
-                            mainCombatDefenders,
-                            data)));
+                results
+                    .get()
+                    .getAverageTuvSwing(
+                        getAttacker(),
+                        mainCombatAttackers,
+                        getDefender(),
+                        mainCombatDefenders,
+                        data)));
       } finally {
         data.releaseReadLock();
       }
@@ -1344,11 +1345,11 @@ class BattleCalculatorPanel extends JPanel {
       attackerUnitsTotalTuv.setText(
           "TUV: "
               + TuvUtils.getTuv(
-                  attackers, getAttacker(), TuvUtils.getCostsForTuv(getAttacker(), data), data));
+              attackers, getAttacker(), TuvUtils.getCostsForTuv(getAttacker(), data), data));
       defenderUnitsTotalTuv.setText(
           "TUV: "
               + TuvUtils.getTuv(
-                  defenders, getDefender(), TuvUtils.getCostsForTuv(getDefender(), data), data));
+              defenders, getDefender(), TuvUtils.getCostsForTuv(getDefender(), data), data));
       final int attackHitPoints = CasualtyUtil.getTotalHitpointsLeft(attackers);
       final int defenseHitPoints = CasualtyUtil.getTotalHitpointsLeft(defenders);
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);

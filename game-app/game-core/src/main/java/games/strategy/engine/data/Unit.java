@@ -56,11 +56,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
   private GamePlayer owner;
   private final UUID id;
-  @Setter private int hits = 0;
-  private final UnitType type;
+  @Setter public int hits = 0;
+  public final UnitType type;
 
   // the transport that is currently transporting us
-  private Unit transportedBy = null;
+  public Unit transportedBy = null;
   // the units we have unloaded this turn
   private List<Unit> unloaded = List.of();
   // was this unit loaded this turn?

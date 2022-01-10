@@ -9,7 +9,7 @@ import lombok.Getter;
 public class Territory extends NamedAttachable implements NamedUnitHolder, Comparable<Territory> {
   private static final long serialVersionUID = -6390555051736721082L;
 
-  private final boolean water;
+  public final boolean water;
   /**
    * The territory owner; defaults to {@link GamePlayer#NULL_PLAYERID} if the territory is not
    * owned.
