@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id 'com.github.ben-manes.versions' version '0.40.0'
+    id 'com.github.ben-manes.versions' version '0.41.0'
     id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
-    id 'com.diffplug.spotless' version '6.1.0' apply false
+    id 'com.diffplug.spotless' version '6.1.2' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -74,7 +74,7 @@ subprojects {
         databaseRiderVersion = '1.32.0'
         dropwizardVersion = '2.0.28'
         dropwizardWebsocketsVersion = '1.3.14'
-        equalsVerifierVersion = '3.8.1'
+        equalsVerifierVersion = '3.8.2'
         feignCoreVersion = '11.8'
         feignGsonVersion = '11.8'
         javaWebSocketVersion = '1.5.2'
@@ -90,7 +90,7 @@ subprojects {
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '3.0.2'
         jaxbImplVersion = '3.0.2'
-        jdbiVersion = '3.26.0'
+        jdbiVersion = '3.27.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.8.2'
         junitPlatformLauncherVersion = '1.8.2'
