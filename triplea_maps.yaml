@@ -2481,3 +2481,16 @@
    <br>Scenarios with many unit types on the Big World map
    <br>Hearts of Iron: The Rising Sun 1942, starts in early 1942
    <br>Hearts of Iron: Awakening the Giants, starts in mid 1941
+- mapName: CTF2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/CTF2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/CTF2/master/preview.png
+  description: |
+   <br>Scenarios with various themes using the Capture the Flag map
+   <br>CTF Colors: Basic TripleA Units
+   <br>CTR Future Warfare: Science Fiction themed units
+   <br>CTF Good Versus Evil: Fantasy themed units
+   <br>CTF Medieval: Medieval themed units
+   <br>CTF WW2: World War 2 themed units
+   
