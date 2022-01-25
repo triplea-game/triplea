@@ -11,7 +11,8 @@
 
 - Fork <https://github.com/triplea-game/triplea>
 - Clone your newly forked repository
-- Create a new branch in your fork repository and do the checkout
+- Create a new branch in your fork repository and do the checkout (see the [typical workflow](./how-to/typical-git-workflow.md))
+- Follow TripleA's [pull requests process here](../reference/dev-process/pull-requests.md).
 
 ## Compile and launch TripleA
 ```bash
