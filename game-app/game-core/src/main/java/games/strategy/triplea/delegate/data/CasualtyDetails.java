@@ -174,8 +174,8 @@ public class CasualtyDetails extends CasualtyList {
     int hitsToRedistributeToUnit;
     final Iterator<Unit> unitIterator = targets.iterator();
     for (int hitsToRedistribute = targetsWithHitsBeforeRedistribution.size();
-        hitsToRedistribute > 0;
-        hitsToRedistribute -= hitsToRedistributeToUnit) {
+         hitsToRedistribute > 0;
+         hitsToRedistribute -= hitsToRedistributeToUnit) {
       final Unit unit = unitIterator.next();
 
       hitsToRedistributeToUnit =
