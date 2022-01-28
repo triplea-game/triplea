@@ -19,6 +19,7 @@ import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -1124,9 +1125,7 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private void updateStats() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong thread");
-    }
+    Util.ensureEventDispatchThread();
     final AtomicReference<AggregateResults> results = new AtomicReference<>();
     final WaitDialog dialog =
         new WaitDialog(this, "Calculating Odds... (this may take a while)", calculator::cancel);

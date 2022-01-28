@@ -300,9 +300,7 @@ public class BattleDisplay extends JPanel {
   }
 
   void waitForConfirmation(final String message) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("This cannot be in dispatch thread");
-    }
+    Util.ensureNoneEventDispatchThread();
 
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Action buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
@@ -338,9 +336,7 @@ public class BattleDisplay extends JPanel {
   @Nullable
   Territory getRetreat(
       final String message, final Collection<Territory> possible, final boolean submerge) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Should not be called from dispatch thread");
-    }
+    Util.ensureNoneEventDispatchThread();
     final String title;
     final Supplier<RetreatResult> supplier;
     if (!submerge || possible.size() > 1) {
@@ -507,9 +503,7 @@ public class BattleDisplay extends JPanel {
       final GamePlayer hit,
       final CasualtyList defaultCasualties,
       final boolean allowMultipleHitsPerUnit) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("This method should not be run in the event dispatch thread");
-    }
+    Util.ensureNoneEventDispatchThread();
     final AtomicReference<CasualtyDetails> casualtyDetails =
         new AtomicReference<>(new CasualtyDetails());
     final CountDownLatch continueLatch = new CountDownLatch(1);

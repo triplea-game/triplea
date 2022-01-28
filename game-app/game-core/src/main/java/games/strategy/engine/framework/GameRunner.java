@@ -17,6 +17,7 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.MainFrame;
+import games.strategy.ui.Util;
 import java.awt.Component;
 import java.awt.Frame;
 import java.net.URI;
@@ -169,9 +170,7 @@ public final class GameRunner {
 
   /** After the game has been left, call this. */
   public static void clientLeftGame() {
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("This method must not be called from the EDT");
-    }
+    Util.ensureNoneEventDispatchThread();
     Interruptibles.await(() -> SwingAction.invokeAndWait(setupPanelModel::showSelectType));
     showMainFrame();
   }

@@ -17,6 +17,7 @@ import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.ui.Util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -32,7 +33,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import javax.swing.SwingUtilities;
 import org.triplea.injection.Injections;
 import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
@@ -491,8 +491,8 @@ public class GameData implements Serializable, GameState {
 
   /** Executes a change and notifies listeners. */
   public void performChange(final Change change) {
-    if (areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong thread");
+    if (areChangesOnlyInSwingEventThread()) {
+      Util.ensureEventDispatchThread();
     }
     try {
       acquireWriteLock();

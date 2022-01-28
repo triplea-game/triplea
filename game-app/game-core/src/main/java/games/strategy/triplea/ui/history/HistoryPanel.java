@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -282,18 +283,14 @@ public class HistoryPanel extends JPanel {
   }
 
   private void treeSelectionChanged(final TreeSelectionEvent e) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong thread");
-    }
+    Util.ensureEventDispatchThread();
     // move the game to the state of the selected node
     final HistoryNode node = (HistoryNode) e.getPath().getLastPathComponent();
     gotoNode(node);
   }
 
   private void gotoNode(final HistoryNode node) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Not EDT");
-    }
+    Util.ensureEventDispatchThread();
     if (details != null) {
       details.render(node);
     }

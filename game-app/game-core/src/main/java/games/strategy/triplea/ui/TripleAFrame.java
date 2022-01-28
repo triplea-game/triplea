@@ -78,6 +78,7 @@ import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerSmallView;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -1397,9 +1398,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack,
       final Resource attackResourceToken,
       final int maxNumberOfAttacksAllowed) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Should not be called from dispatch thread");
-    }
+    Util.ensureNoneEventDispatchThread();
     final Map<Territory, IntegerMap<Unit>> selection = new HashMap<>();
     if (possibleUnitsToAttack == null
         || possibleUnitsToAttack.isEmpty()
@@ -1523,9 +1522,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     messageAndDialogThreadPool.waitForAll();
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Should not be called from dispatch thread");
-    }
+    Util.ensureNoneEventDispatchThread();
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Map<Territory, Collection<Unit>> selection = new HashMap<>();
     final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<>();
@@ -1697,9 +1694,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public Collection<Unit> selectUnitsQuery(
       final Territory current, final Collection<Unit> possible, final String message) {
     messageAndDialogThreadPool.waitForAll();
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Should not be called from dispatch thread");
-    }
+    Util.ensureNoneEventDispatchThread();
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Collection<Unit> selection = new ArrayList<>();
     SwingUtilities.invokeLater(

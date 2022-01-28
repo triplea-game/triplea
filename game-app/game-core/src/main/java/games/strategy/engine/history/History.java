@@ -5,11 +5,11 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import games.strategy.ui.Util;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -41,8 +41,8 @@ public class History extends DefaultTreeModel {
   }
 
   private void assertCorrectThread() {
-    if (gameData.areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong thread");
+    if (gameData.areChangesOnlyInSwingEventThread()) {
+      Util.ensureEventDispatchThread();
     }
   }
 
