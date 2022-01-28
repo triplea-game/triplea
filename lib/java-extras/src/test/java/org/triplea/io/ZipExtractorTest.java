@@ -85,6 +85,6 @@ class ZipExtractorTest {
     assertThat(Files.exists(subfolder.resolve("matrix.jpg")), is(false));
 
     // Folder creation outside of the extraction directory should be prevented!
-    assertThat(exception.getMessage(), containsString("/.."));
+    assertThat(exception.getMessage(), containsString(".."));
   }
 }
