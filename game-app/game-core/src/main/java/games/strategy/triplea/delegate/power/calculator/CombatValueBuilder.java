@@ -35,33 +35,33 @@ public class CombatValueBuilder {
 
     return side == BattleState.Side.DEFENSE
         ? MainDefenseCombatValue.builder()
-        .gameSequence(gameSequence)
-        .gameDiceSides(gameDiceSides)
-        .lhtrHeavyBombers(lhtrHeavyBombers)
-        .strengthSupportFromFriends(
-            supportFromFriends.filter(UnitSupportAttachment::getStrength))
-        .strengthSupportFromEnemies(
-            supportFromEnemies.filter(UnitSupportAttachment::getStrength))
-        .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getRoll))
-        .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getRoll))
-        .friendUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .territoryEffects(territoryEffects)
-        .build()
+            .gameSequence(gameSequence)
+            .gameDiceSides(gameDiceSides)
+            .lhtrHeavyBombers(lhtrHeavyBombers)
+            .strengthSupportFromFriends(
+                supportFromFriends.filter(UnitSupportAttachment::getStrength))
+            .strengthSupportFromEnemies(
+                supportFromEnemies.filter(UnitSupportAttachment::getStrength))
+            .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getRoll))
+            .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getRoll))
+            .friendUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .territoryEffects(territoryEffects)
+            .build()
         : MainOffenseCombatValue.builder()
-        .gameSequence(gameSequence)
-        .gameDiceSides(gameDiceSides)
-        .lhtrHeavyBombers(lhtrHeavyBombers)
-        .strengthSupportFromFriends(
-            supportFromFriends.filter(UnitSupportAttachment::getStrength))
-        .strengthSupportFromEnemies(
-            supportFromEnemies.filter(UnitSupportAttachment::getStrength))
-        .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getRoll))
-        .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getRoll))
-        .friendUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .territoryEffects(territoryEffects)
-        .build();
+            .gameSequence(gameSequence)
+            .gameDiceSides(gameDiceSides)
+            .lhtrHeavyBombers(lhtrHeavyBombers)
+            .strengthSupportFromFriends(
+                supportFromFriends.filter(UnitSupportAttachment::getStrength))
+            .strengthSupportFromEnemies(
+                supportFromEnemies.filter(UnitSupportAttachment::getStrength))
+            .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getRoll))
+            .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getRoll))
+            .friendUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .territoryEffects(territoryEffects)
+            .build();
   }
 
   @Builder(builderMethodName = "aaCombatValue", builderClassName = "AaBuilder")
@@ -91,25 +91,25 @@ public class CombatValueBuilder {
 
     return side == BattleState.Side.DEFENSE
         ? AaDefenseCombatValue.builder()
-        .strengthSupportFromFriends(
-            supportFromFriends.filter(UnitSupportAttachment::getAaStrength))
-        .strengthSupportFromEnemies(
-            supportFromEnemies.filter(UnitSupportAttachment::getAaStrength))
-        .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getAaRoll))
-        .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getAaRoll))
-        .friendUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .build()
+            .strengthSupportFromFriends(
+                supportFromFriends.filter(UnitSupportAttachment::getAaStrength))
+            .strengthSupportFromEnemies(
+                supportFromEnemies.filter(UnitSupportAttachment::getAaStrength))
+            .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getAaRoll))
+            .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getAaRoll))
+            .friendUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .build()
         : AaOffenseCombatValue.builder()
-        .strengthSupportFromFriends(
-            supportFromFriends.filter(UnitSupportAttachment::getAaStrength))
-        .strengthSupportFromEnemies(
-            supportFromEnemies.filter(UnitSupportAttachment::getAaStrength))
-        .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getRoll))
-        .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getRoll))
-        .friendUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .build();
+            .strengthSupportFromFriends(
+                supportFromFriends.filter(UnitSupportAttachment::getAaStrength))
+            .strengthSupportFromEnemies(
+                supportFromEnemies.filter(UnitSupportAttachment::getAaStrength))
+            .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getRoll))
+            .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getRoll))
+            .friendUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .build();
   }
 
   @Builder(
@@ -153,12 +153,12 @@ public class CombatValueBuilder {
 
     return side == BattleState.Side.DEFENSE
         ? AirBattleDefenseCombatValue.builder()
-        .gameDiceSides(gameDiceSides)
-        .lhtrHeavyBombers(lhtrHeavyBombers)
-        .build()
+            .gameDiceSides(gameDiceSides)
+            .lhtrHeavyBombers(lhtrHeavyBombers)
+            .build()
         : AirBattleOffenseCombatValue.builder()
-        .gameDiceSides(gameDiceSides)
-        .lhtrHeavyBombers(lhtrHeavyBombers)
-        .build();
+            .gameDiceSides(gameDiceSides)
+            .lhtrHeavyBombers(lhtrHeavyBombers)
+            .build();
   }
 }

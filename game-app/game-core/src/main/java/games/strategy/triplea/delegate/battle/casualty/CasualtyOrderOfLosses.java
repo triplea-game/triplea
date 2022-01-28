@@ -85,11 +85,11 @@ public class CasualtyOrderOfLosses {
     final List<Unit> sortedUnitsList = new ArrayList<>(parameters.targetsToPickFrom);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-            parameters.costs,
-            parameters.data,
-            parameters.combatValue.buildWithNoUnitSupports(),
-            true,
-            false)
+                parameters.costs,
+                parameters.data,
+                parameters.combatValue.buildWithNoUnitSupports(),
+                true,
+                false)
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =

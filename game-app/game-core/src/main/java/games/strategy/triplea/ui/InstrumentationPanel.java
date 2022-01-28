@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import static java.lang.System.gc;
 
-import games.strategy.engine.framework.IGame;
 import games.strategy.triplea.odds.calculator.InstrumentationMonitor;
 import games.strategy.triplea.odds.calculator.StochasticBattleCalculator;
 import java.time.Instant;
