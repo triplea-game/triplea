@@ -19,28 +19,40 @@ import org.triplea.java.ThreadRunner
 import org.triplea.java.concurrency.CountUpAndDownLatch
 import java.text.DecimalFormat
 import java.time.Instant
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.absoluteValue
 import games.strategy.engine.data.Unit as GameUnit
 
 @Suppress("NOTHING_TO_INLINE")
 class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnable { }) : IBattleCalculator {
-    private val backupCalculator: ConcurrentBattleCalculator by lazy {
-        ConcurrentBattleCalculator(dataLoadedAction)
+    @Volatile
+    private var cancelled = false
+    private val isRunning = AtomicBoolean(false)
+
+    private var backupCalculator: ConcurrentBattleCalculator? = null
+
+    private fun getBackupCalculator(): ConcurrentBattleCalculator {
+        if (backupCalculator == null) {
+            backupCalculator = ConcurrentBattleCalculator(dataLoadedAction)
+            with(backupCalculator!!) {
+                setGameData(gameData)
+                setRetreatAfterRound(retreatAfterRound)
+                setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft)
+                setKeepOneAttackingLandUnit(keepOneAttackingLandUnit)
+                setAmphibious(amphibious)
+                setAttackerOrderOfLosses(attackerOrderOfLosses)
+                setDefenderOrderOfLosses(defenderOrderOfLosses)
+            }
+        }
+
+        return backupCalculator!!
     }
 
-    private var gameDataForBackupCalculator: GameData? = null
     var gameData: GameData? = null
         set(value) {
             field = value
             diceSides = field?.diceSides ?: 6
         }
-
-    private fun setGameDataForBackupCalculator() {
-        if (gameDataForBackupCalculator != gameData) {
-            backupCalculator.setGameData(gameData)
-            gameDataForBackupCalculator = gameData
-        }
-    }
 
     var diceSides
         get() = Distribution.diceSides
@@ -63,115 +75,125 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
         retreatWhenOnlyAirLeft: Boolean,
         runCount: Int,
     ): AggregateResults {
-        Preconditions.checkArgument(attacker != null)
-        Preconditions.checkArgument(defender != null)
-        Preconditions.checkArgument(location != null)
-        Preconditions.checkArgument(attacking != null)
-        Preconditions.checkArgument(defending != null)
-        Preconditions.checkArgument(bombarding != null)
-        Preconditions.checkArgument(territoryEffects != null)
+        Preconditions.checkState(
+            !isRunning.getAndSet(true), "Can't calculate while operation is still running!")
 
-        Preconditions.checkArgument(attacking != null)
-        Preconditions.checkArgument(defending != null)
+        try {
+            Preconditions.checkArgument(attacker != null)
+            Preconditions.checkArgument(defender != null)
+            Preconditions.checkArgument(location != null)
+            Preconditions.checkArgument(attacking != null)
+            Preconditions.checkArgument(defending != null)
+            Preconditions.checkArgument(bombarding != null)
+            Preconditions.checkArgument(territoryEffects != null)
 
-        ++requestsTotal
+            Preconditions.checkArgument(attacking != null)
+            Preconditions.checkArgument(defending != null)
 
-        val iCanDoIt = !retreatWhenOnlyAirLeft &&
-                (attacking!!.firstOrNull { it.unitAttachment.isInfrastructure } == null) &&
-                (attacking.firstOrNull {
-                    it.cantBeHandledByStochasticBattleCalculator(attacker!!) ||
-                            it.unitAttachment.getAttackRolls(attacker) != 1
-                } == null) &&
-                (defending!!.firstOrNull {
-                    it.cantBeHandledByStochasticBattleCalculator(defender!!) ||
-                            it.unitAttachment.getDefenseRolls(defender) != 1
-                } == null) && (!location!!.water || waterBattleSetupAsExpected(attacking, defending))
+            ++requestsTotal
 
-        if (!iCanDoIt) {
-            val attackingInfrastructure = attacking!!.firstOrNull { it.unitAttachment.isInfrastructure }
+            val iCanDoIt = !retreatWhenOnlyAirLeft &&
+                    (attacking!!.firstOrNull { it.unitAttachment.isInfrastructure } == null) &&
+                    (attacking.firstOrNull {
+                        it.cantBeHandledByStochasticBattleCalculator(attacker!!) ||
+                                it.unitAttachment.getAttackRolls(attacker) != 1
+                    } == null) &&
+                    (defending!!.firstOrNull {
+                        it.cantBeHandledByStochasticBattleCalculator(defender!!) ||
+                                it.unitAttachment.getDefenseRolls(defender) != 1
+                    } == null) && (!location!!.water || waterBattleSetupAsExpected(attacking, defending))
 
-            log.info("can't calculate, because " +
-                    if (attackingInfrastructure != null)
-                        "attacker comes with infrastructure unit ${attackingInfrastructure.type.name} "
-                    else "" +
-                            if (location!!.water && !waterBattleSetupAsExpected(attacking,
-                                    defending!!)
-                            ) "water with unexpected setup" else "")
-        }
+            if (!iCanDoIt) {
+                val attackingInfrastructure = attacking!!.firstOrNull { it.unitAttachment.isInfrastructure }
 
-        beforeMe = Instant.now()
+                log.info("can't calculate, because " +
+                        if (attackingInfrastructure != null)
+                            "attacker comes with infrastructure unit ${attackingInfrastructure.type.name} "
+                        else "" +
+                                if (location!!.water && !waterBattleSetupAsExpected(attacking,
+                                        defending!!)
+                                ) "water with unexpected setup" else "")
+            }
 
-        val myRet =
-            if (iCanDoIt && whenCallBackup != BackupCalculatorOnly) {
-                try {
-                    Core(
-                        attacker!!,
-                        defender!!,
-                        bombarding!!,
-                        attacking!!,
-                        defending!!,
-                        location!!,
-                        territoryEffects!!,
-                    ).calculate()
-                } catch (e: Exception) {
-                    log.error("${javaClass.name}.calculate() failed unexpectedly", e)
-                    null
-                }
+            beforeMe = Instant.now()
+
+            val myRet =
+                if (iCanDoIt && whenCallBackup != BackupCalculatorOnly) {
+                    try {
+                        Core(
+                            attacker!!,
+                            defender!!,
+                            bombarding!!,
+                            attacking!!,
+                            defending!!,
+                            location!!,
+                            territoryEffects!!,
+                        ).calculate()
+                    } catch (e: Exception) {
+                        log.error("${javaClass.name}.calculate() failed unexpectedly", e)
+                        null
+                    }
+                } else null
+
+            beforeBackup = Instant.now()
+            val backupRet = if (whenCallBackup == Always ||
+                whenCallBackup == BackupCalculatorOnly ||
+                whenCallBackup == Sometimes && requestsTotal % 10 == 0 ||
+                whenCallBackup == OnlyWhenNecessary && myRet == null
+            ) {
+                getBackupCalculator().calculate(attacker,
+                    defender,
+                    location,
+                    attacking,
+                    defending,
+                    bombarding,
+                    territoryEffects,
+                    retreatWhenOnlyAirLeft,
+                    runCount)
             } else null
 
-        beforeBackup = Instant.now()
-        val backupRet = if (whenCallBackup == Always ||
-            whenCallBackup == BackupCalculatorOnly ||
-            whenCallBackup == Sometimes && requestsTotal % 10 == 0 ||
-            whenCallBackup == OnlyWhenNecessary && myRet == null
-        ) {
-            setGameDataForBackupCalculator()
+            afterBackup = if (backupRet == null) beforeBackup else Instant.now()
 
-            backupCalculator.calculate(attacker,
-                defender,
-                location,
-                attacking,
-                defending,
-                bombarding,
-                territoryEffects,
-                retreatWhenOnlyAirLeft,
-                runCount)
-        } else null
+            reportToMonitor(beforeMe, beforeBackup, afterBackup)
 
-        afterBackup = if (backupRet == null) beforeBackup else Instant.now()
+            if (myRet != null) {
+                with(myRet as StochasticResult) {
 
-        reportToMonitor(beforeMe, beforeBackup, afterBackup)
+                    if (backupRet != null) {
+                        val myTuv = averageTuvSwingOfBattle
+                        val cbTuv = backupRet.getAverageTuvSwing(attacker, attacking, defender, defending, gameData)
+                        log.info("${dec00(attackerWinPercent * 100)}/${dec00(drawPercent * 100)}/${
+                            dec00(defenderWinPercent * 100)
+                        } " +
+                                dec2Decimals(myTuv) +
+                                " - ${dec00(backupRet.attackerWinPercent * 100)}/${dec00(backupRet.drawPercent * 100)}/${
+                                    dec00(backupRet.defenderWinPercent * 100)
+                                } " +
+                                dec2Decimals(cbTuv)
+                        )
 
-        if (myRet != null) {
-            with(myRet as StochasticResult) {
+                        if (location!!.water && attacking!! contains { unit -> unit.isLand && unit.transportedBy == null }) {
+                            log.debug("land units outside transports attacking on water!")
+                        } else if (((myTuv - cbTuv) / myTuv).absoluteValue > 1.0 && (myTuv - cbTuv).absoluteValue > 1.5) {
+                            fun Collection<GameUnit>.tS() = StringBuilder().also { s ->
+                                forEach {
+                                    s.append(it.type.name)
+                                    s.append('\n')
+                                }
+                            }.toString()
 
-                if (backupRet != null) {
-                    val myTuv = averageTuvSwingOfBattle
-                    val cbTuv = backupRet.getAverageTuvSwing(attacker, attacking, defender, defending, gameData)
-                    log.info("${dec00(attackerWinPercent * 100)}/${dec00(drawPercent * 100)}/${dec00(defenderWinPercent * 100)} " +
-                            dec2Decimals(myTuv) +
-                            " - ${dec00(backupRet.attackerWinPercent * 100)}/${dec00(backupRet.drawPercent * 100)}/${
-                                dec00(backupRet.defenderWinPercent * 100)
-                            } " +
-                            dec2Decimals(cbTuv)
-                    )
-
-                    if (((myTuv - cbTuv) / myTuv).absoluteValue > 1.0 && (myTuv - cbTuv).absoluteValue > 1.5) {
-                        fun Collection<GameUnit>.tS() = StringBuilder().also { s ->
-                            forEach {
-                                s.append(it.type.name)
-                                s.append('\n')
-                            }
-                        }.toString()
-
-                        log.debug("differing tuv-result with ${attacker!!.name} attacking\n" + attacking!!.tS() +
-                                "\n${defender!!.name}  defending:\n" + defending!!.tS())
+                            log.debug("differing tuv-result with ${attacker!!.name} attacking\n" + attacking!!.tS() +
+                                    "\n${defender!!.name}  defending:\n" + defending!!.tS())
+                        }
                     }
                 }
             }
-        }
 
-        return myRet ?: backupRet!!
+            cancelled = false
+            return myRet ?: backupRet!!
+        } finally {
+            isRunning.set(false)
+        }
     }
 
     private fun waterBattleSetupAsExpected(
@@ -252,17 +274,26 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
             ++requestsHandled
             val start = System.currentTimeMillis()
 
-            setupInitialState()
+            val initialStateIsResultOfBombarding = setupInitialState()
 
             stateDistribution2 = StateDistribution(nAttackerRecs, nDefenderRecs)
 
             var probability: Double
             val probabilityEndedThisRound = ArrayList<Double>()
-            probabilityEndedThisRound.add((0..nAttackerRecs).sumOf { stateDistribution1[it, 0] } + (1..nDefenderRecs).sumOf { stateDistribution1[0, it] })
-            var probabilityEndedRoundBefore = probabilityEndedThisRound[0]
+
+            var probabilityEndedRoundBefore = if (initialStateIsResultOfBombarding) .0
+            else {
+                ((0..nAttackerRecs).sumOf { stateDistribution1[it, 0] } +
+                        (1..nDefenderRecs).sumOf { stateDistribution1[0, it] }).also { probabilityEndedThisRound.add(it) }
+            }
+
             probability = 1.0 - probabilityEndedRoundBefore
 
-            while (probability >= significanceThresholdArray && stateDistributionChangedSignificantly) {
+            while (probability >= significanceThresholdArray &&
+                stateDistributionChangedSignificantly &&
+                (retreatAfterRound < 0 || probabilityEndedThisRound.size < retreatAfterRound - 1) &&
+                !cancelled
+            ) {
                 stateDistribution2.clear()
                 probability = calculateNextState()
                 probabilityEndedThisRound.add(1.0 - probabilityEndedRoundBefore - probability)
@@ -298,7 +329,12 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
                     stateDistribution1[a, d] = .0
         }
 
-        fun setupInitialState() {
+        /**
+         *  @return true if the calculated initial state was the result of bombarding
+         *  rather than the first normal battle round
+         */
+
+        fun setupInitialState(): Boolean {
             val latchWorkerThreadsCreation = CountUpAndDownLatch()
             latchWorkerThreadsCreation.increment()
 
@@ -309,7 +345,7 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
                 nAttackerRecs = attackerRecs.size
                 attackerHitDist = getHitDistributions(nAttackerRecs, attackerMaxHitDistInThread!!)
                 attackerOverkill = attackerHitDist.overkill
-                bombardingHitDistInThread = getHitDist(bombarding)
+                bombardingHitDistInThread = getBombardingHitDist()
                 latchWorkerThreadsCreation.countDown()
             }
 
@@ -322,7 +358,8 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
             latchWorkerThreadsCreation.await()
 
             val attackerMaxHitDist: Distribution
-            if ((bombardingHitDistInThread?.key ?: 0L) > 0L) { // bombarding
+            val calculateBombarding = (bombardingHitDistInThread?.key ?: 0L) > 0L
+            if (calculateBombarding) {
                 attackerMaxHitDist = bombardingHitDistInThread!!
                 defenderMaxHitDist = Distribution[0] // defenders don't fight back against bombarding
             } else {
@@ -357,9 +394,11 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
 
             stateDistribution1.verify()
             instrumentationMonitor?.stateDistribution = stateDistribution1
+
+            return calculateBombarding
         }
 
-        private fun getHitDist(bombarding: Collection<GameUnit>): Distribution {
+        private fun getBombardingHitDist(): Distribution {
             val key = bombarding.getKey { unitAttachment.bombard }
 
             return Distribution[key]
@@ -564,8 +603,7 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
             val sum = data.sum()
             log.info("verify finds: ${dec(sum * 100)}%")
 //            log.debug("\n" + toString())
-            if (sum < .7)
-                throw Error("total probability distribution should be 1.0 but is only $sum")
+//            Preconditions.checkState(sum > .7) { "total probability distribution should be 1.0 but is only $sum" }
         }
     }
 
@@ -581,37 +619,37 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
     var retreatAfterRound = -1
         set(value) {
             field = value
-            backupCalculator.setRetreatAfterRound(field)
+            backupCalculator?.setRetreatAfterRound(field)
         }
 
     var retreatAfterXUnitsLeft = -1
         set(value) {
             field = value
-            backupCalculator.setRetreatAfterXUnitsLeft(field)
+            backupCalculator?.setRetreatAfterXUnitsLeft(field)
         }
 
     var keepOneAttackingLandUnit = false
         set(value) {
             field = value
-            backupCalculator.setKeepOneAttackingLandUnit(field)
+            backupCalculator?.setKeepOneAttackingLandUnit(field)
         }
 
     var amphibious = false
         set(value) {
             field = value
-            backupCalculator.setAmphibious(field)
+            backupCalculator?.setAmphibious(field)
         }
 
     var attackerOrderOfLosses: String? = null
         set(value) {
             field = value
-            backupCalculator.setAttackerOrderOfLosses(field)
+            backupCalculator?.setAttackerOrderOfLosses(field)
         }
 
     var defenderOrderOfLosses: String? = null
         set(value) {
             field = value
-            backupCalculator.setDefenderOrderOfLosses(field)
+            backupCalculator?.setDefenderOrderOfLosses(field)
         }
 
     init {
@@ -619,7 +657,8 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
     }
 
     fun cancel() {
-        backupCalculator.cancel()
+        cancelled = true
+        backupCalculator?.cancel()
     }
 
     enum class WhenCallBackup {
@@ -783,6 +822,15 @@ class StochasticBattleCalculator(private val dataLoadedAction: Runnable = Runnab
 
             return allSortedCorrectly
         }
+
+        /**
+         * this is not specific to anything within StochasticBattleCalculator
+         * and hence a candidate for a generic extension function of Iterable
+         */
+
+        inline infix fun <T> Iterable<T>.contains(predicate: (T) -> Boolean) = find(predicate) != null
+
+        private val GameUnit.isLand: Boolean get() = with(unitAttachment) { !isAir && !isSea }
 
         var whenCallBackup = OnlyWhenNecessary
     }

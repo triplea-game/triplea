@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.triplea.debug.LoggerManager
+import org.triplea.java.ThreadRunner
+import org.triplea.java.concurrency.CountUpAndDownLatch
 import util.TestData
 import util.TestData.Companion.threeOnThree
 import util.TestData.Companion.twoOnOne
@@ -582,6 +584,20 @@ round	p end	p more	abs. p end	abs p more		contribution
         assertTrue(1.0 almostEquals  (res?.attackerWinPercent ?: .0) )
     }
 
+
+    @Test
+    fun readingAttackAA() {
+        val testData = TestData(
+            "270bc_wars\\map\\games\\270BC_Wars.xml",
+            "Macedonia",
+            (1 unitsOfType "ballista"),
+        )
+
+        val ballista = testData.players[0].units[0]
+
+        assertEquals(4, ballista.unitAttachment.getAttackAa(testData.players[0].gamePlayer))
+    }
+
     @Test
     fun gracefulFailWhenTooManyUnits() {
         val testData = TestData.nArmoursOnBothSides(256)
@@ -612,6 +628,69 @@ round	p end	p more	abs. p end	abs p more		contribution
         assertTrue(res.attackerWinPercent > res.defenderWinPercent)
     }
 
+    @Test
+    fun cancel() {
+        val testData = TestData.nArmoursOnBothSides(255)
+
+        StochasticBattleCalculator.instrumentationMonitor = instrumentationMonitor
+        StochasticBattleCalculator.whenCallBackup = OnlyWhenNecessary
+        val s = StochasticBattleCalculator()
+
+        var res: StochasticResult?
+        res = s.calculate(testData,"Western Germany") as StochasticResult
+        val averageBattleRoundsFoughtWhenNotInterrupted = res.averageBattleRoundsFought
+        res = null
+
+        val latchWorkerThreadsCreation = CountUpAndDownLatch()
+        latchWorkerThreadsCreation.increment()
+        ThreadRunner.runInNewThread("calculate") {
+            res = s.calculate(testData,"Western Germany") as StochasticResult
+            latchWorkerThreadsCreation.countDown()
+        }
+        s.cancel()
+        latchWorkerThreadsCreation.await()
+
+        assertTrue( res!!.averageBattleRoundsFought < averageBattleRoundsFoughtWhenNotInterrupted )
+    }
+
+    @Test
+    fun limitNumberOfBattleRounds() {
+        val testData = TestData.nArmoursOnBothSides(255)
+
+        StochasticBattleCalculator.instrumentationMonitor = instrumentationMonitor
+        StochasticBattleCalculator.whenCallBackup = OnlyWhenNecessary
+        val s = StochasticBattleCalculator()
+
+        var res = s.calculate(testData,"Western Germany") as StochasticResult
+        assertTrue( res.averageBattleRoundsFought > 2 )
+
+        s.retreatAfterRound = 2
+        res = s.calculate(testData,"Western Germany") as StochasticResult
+
+        assertTrue( res.averageBattleRoundsFought <= s.retreatAfterRound )
+    }
+
+    @Test
+    fun limitNumberOfBattleRoundsBombarding() {
+        val testData = TestData.nArmoursOnBothSides(255)
+
+        StochasticBattleCalculator.instrumentationMonitor = instrumentationMonitor
+        StochasticBattleCalculator.whenCallBackup = OnlyWhenNecessary
+        val s = StochasticBattleCalculator()
+
+        val unitType = testData.gameData.unitTypeList.getUnitType("battleship")
+        val battleship = unitType.createTemp(1, testData.players[0].gamePlayer)
+
+
+        var res = s.calculate(testData,"Western Germany", battleship) as StochasticResult
+        assertTrue( res.averageBattleRoundsFought > 2 )
+
+        s.retreatAfterRound = 2
+        res = s.calculate(testData,"Western Germany", battleship) as StochasticResult
+
+        assertTrue( res.averageBattleRoundsFought <= s.retreatAfterRound )
+    }
+
     companion object {
         val runtime = Runtime.getRuntime()
 
@@ -629,7 +708,7 @@ round	p end	p more	abs. p end	abs p more		contribution
 
             override var text: String
                 get() = ""
-                set(value) {
+                set(_) {
                 }
 
             override var stateDistribution: StateDistribution?

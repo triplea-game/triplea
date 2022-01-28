@@ -37,7 +37,7 @@ class StochasticResult(data: Core) : AggregateResults(0) {
             var tuvWhenSoManyUnitsLeft = 0
             var averageTuvOfUnitsLeft = .0
 
-            Preconditions.checkState(recs.isSortedBy { if (it.unit == null) 1 else 0 },
+            Preconditions.checkState(recs isSortedBy { if (it.unit == null) 1 else 0 },
                 "in lists of hit receivers units must come before damage receivers")
 
             for ((iUnit, i) in (1..distributionLeft.lastIndex).withIndex()) {
