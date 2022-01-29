@@ -1125,7 +1125,7 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private void updateStats() {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     final AtomicReference<AggregateResults> results = new AtomicReference<>();
     final WaitDialog dialog =
         new WaitDialog(this, "Calculating Odds... (this may take a while)", calculator::cancel);

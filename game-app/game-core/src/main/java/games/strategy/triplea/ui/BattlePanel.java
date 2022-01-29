@@ -192,7 +192,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   private boolean ensureBattleIsDisplayed(final UUID battleId) {
-    Util.ensureNoneEventDispatchThread();
+    Util.ensureNotOnEventDispatchThread();
     UUID displayed = currentBattleDisplayed;
     int count = 0;
     while (!battleId.equals(displayed)) {

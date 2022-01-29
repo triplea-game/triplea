@@ -300,7 +300,7 @@ public class BattleDisplay extends JPanel {
   }
 
   void waitForConfirmation(final String message) {
-    Util.ensureNoneEventDispatchThread();
+    Util.ensureNotOnEventDispatchThread();
 
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Action buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
@@ -336,7 +336,7 @@ public class BattleDisplay extends JPanel {
   @Nullable
   Territory getRetreat(
       final String message, final Collection<Territory> possible, final boolean submerge) {
-    Util.ensureNoneEventDispatchThread();
+    Util.ensureNotOnEventDispatchThread();
     final String title;
     final Supplier<RetreatResult> supplier;
     if (!submerge || possible.size() > 1) {
@@ -503,7 +503,7 @@ public class BattleDisplay extends JPanel {
       final GamePlayer hit,
       final CasualtyList defaultCasualties,
       final boolean allowMultipleHitsPerUnit) {
-    Util.ensureNoneEventDispatchThread();
+    Util.ensureNotOnEventDispatchThread();
     final AtomicReference<CasualtyDetails> casualtyDetails =
         new AtomicReference<>(new CasualtyDetails());
     final CountDownLatch continueLatch = new CountDownLatch(1);

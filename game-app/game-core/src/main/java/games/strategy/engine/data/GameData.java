@@ -492,7 +492,7 @@ public class GameData implements Serializable, GameState {
   /** Executes a change and notifies listeners. */
   public void performChange(final Change change) {
     if (areChangesOnlyInSwingEventThread()) {
-      Util.ensureEventDispatchThread();
+      Util.ensureOnEventDispatchThread();
     }
     try {
       acquireWriteLock();

@@ -189,7 +189,7 @@ public class PbemDiceRoller implements IRandomSource {
     }
 
     private void rollInternal() {
-      Util.ensureEventDispatchThread();
+      Util.ensureOnEventDispatchThread();
       reRollButton.setEnabled(false);
       exitButton.setEnabled(false);
       ThreadRunner.runInNewThread(this::rollInSeparateThread);

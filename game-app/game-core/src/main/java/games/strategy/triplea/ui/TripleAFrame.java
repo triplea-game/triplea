@@ -1398,7 +1398,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack,
       final Resource attackResourceToken,
       final int maxNumberOfAttacksAllowed) {
-    Util.ensureNoneEventDispatchThread();
+    Util.ensureNotOnEventDispatchThread();
     final Map<Territory, IntegerMap<Unit>> selection = new HashMap<>();
     if (possibleUnitsToAttack == null
         || possibleUnitsToAttack.isEmpty()
@@ -1522,7 +1522,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     messageAndDialogThreadPool.waitForAll();
-    Util.ensureNoneEventDispatchThread();
+    Util.ensureNotOnEventDispatchThread();
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Map<Territory, Collection<Unit>> selection = new HashMap<>();
     final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<>();
@@ -1694,7 +1694,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public Collection<Unit> selectUnitsQuery(
       final Territory current, final Collection<Unit> possible, final String message) {
     messageAndDialogThreadPool.waitForAll();
-    Util.ensureNoneEventDispatchThread();
+    Util.ensureNotOnEventDispatchThread();
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Collection<Unit> selection = new ArrayList<>();
     SwingUtilities.invokeLater(

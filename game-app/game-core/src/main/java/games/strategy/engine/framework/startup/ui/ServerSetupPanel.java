@@ -326,7 +326,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   private void internalPlayersTakenChanged() {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     final Map<String, String> playersToNode = model.getPlayersToNodeListing();
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
     for (final PlayerRow row : playerRows) {
@@ -336,7 +336,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   private void internalPlayerListChanged() {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     playerRows = new ArrayList<>();
     final Map<String, String> players = model.getPlayersToNodeListing();
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();

@@ -283,14 +283,14 @@ public class HistoryPanel extends JPanel {
   }
 
   private void treeSelectionChanged(final TreeSelectionEvent e) {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     // move the game to the state of the selected node
     final HistoryNode node = (HistoryNode) e.getPath().getLastPathComponent();
     gotoNode(node);
   }
 
   private void gotoNode(final HistoryNode node) {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     if (details != null) {
       details.render(node);
     }

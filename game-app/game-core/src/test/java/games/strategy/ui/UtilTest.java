@@ -2,12 +2,37 @@ package games.strategy.ui;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Polygon;
+import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class UtilTest {
+  @Test
+  void ensureOnEventDispatchThread() {
+    new Thread(
+            () ->
+                assertAll(
+                    () -> SwingUtilities.invokeAndWait(() -> Util.ensureOnEventDispatchThread())))
+        .start();
+    assertThrows(IllegalStateException.class, () -> Util.ensureOnEventDispatchThread());
+  }
+
+  @Test
+  void ensureNotOnEventDispatchThread() {
+    new Thread(
+            () ->
+                assertThrows(
+                    IllegalStateException.class,
+                    () ->
+                        SwingUtilities.invokeAndWait(() -> Util.ensureNotOnEventDispatchThread())))
+        .start();
+    assertAll(() -> Util.ensureNotOnEventDispatchThread());
+  }
+
   @Nested
   final class TranslatePolygonTest {
     private final Polygon polygon = new Polygon(new int[] {1, 2, 3}, new int[] {4, 5, 6}, 3);

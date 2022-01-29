@@ -170,7 +170,7 @@ public final class GameRunner {
 
   /** After the game has been left, call this. */
   public static void clientLeftGame() {
-    Util.ensureNoneEventDispatchThread();
+    Util.ensureNotOnEventDispatchThread();
     Interruptibles.await(() -> SwingAction.invokeAndWait(setupPanelModel::showSelectType));
     showMainFrame();
   }

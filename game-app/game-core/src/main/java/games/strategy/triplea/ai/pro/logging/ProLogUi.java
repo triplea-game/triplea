@@ -27,7 +27,7 @@ public final class ProLogUi {
   }
 
   private static Collection<JMenuItem> initialize(final TripleAFrame frame) {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     if (settingsWindow == null) {
       settingsWindow = new ProLogWindow(frame);
       GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);

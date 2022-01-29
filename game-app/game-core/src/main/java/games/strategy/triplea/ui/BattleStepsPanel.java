@@ -53,7 +53,7 @@ class BattleStepsPanel extends JPanel {
 
   /** Set the steps given, setting the selected step to the first step. */
   void listBattle(final List<String> steps) {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     synchronized (mutex) {
       listModel.removeAllElements();
       steps.forEach(listModel::addElement);
@@ -98,7 +98,7 @@ class BattleStepsPanel extends JPanel {
 
   /** Walks through and pause at each list item until we find our target. */
   private void walkStep() {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     if (doneWalkingSteps()) {
       wakeAll();
       return;
@@ -159,7 +159,7 @@ class BattleStepsPanel extends JPanel {
   }
 
   private void goToTarget() {
-    Util.ensureEventDispatchThread();
+    Util.ensureOnEventDispatchThread();
     waitThenWalk();
   }
 

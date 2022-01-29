@@ -139,13 +139,13 @@ public final class Util {
     return translatedPolygon;
   }
 
-  public static void ensureEventDispatchThread() {
+  public static void ensureOnEventDispatchThread() {
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread (not Event Dispatch Thread)");
     }
   }
 
-  public static void ensureNoneEventDispatchThread() {
+  public static void ensureNotOnEventDispatchThread() {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This method should not called from Event Dispatch Thread");
     }

@@ -42,7 +42,7 @@ public class History extends DefaultTreeModel {
 
   private void assertCorrectThread() {
     if (gameData.areChangesOnlyInSwingEventThread()) {
-      Util.ensureEventDispatchThread();
+      Util.ensureOnEventDispatchThread();
     }
   }
 
