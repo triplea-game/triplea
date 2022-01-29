@@ -3,34 +3,55 @@ package games.strategy.ui;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Polygon;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class UtilTest {
+  Throwable inThreadException;
+
+  void runInEvenDispatchThreadAndRethrow(final Runnable run) throws Throwable {
+    inThreadException = null;
+    final Thread threadNotEventDispatchThread =
+        new Thread(
+            () -> {
+              try {
+                SwingUtilities.invokeAndWait(run);
+              } catch (final InterruptedException e) {
+                inThreadException = e;
+              } catch (final InvocationTargetException e) {
+                inThreadException = e.getTargetException();
+              }
+            });
+
+    threadNotEventDispatchThread.start();
+    try {
+      threadNotEventDispatchThread.join();
+    } catch (final InterruptedException e) {
+      inThreadException = e;
+    }
+    if (inThreadException != null) {
+      throw inThreadException;
+    }
+  }
+
   @Test
   void ensureOnEventDispatchThread() {
-    new Thread(
-            () ->
-                assertAll(
-                    () -> SwingUtilities.invokeAndWait(() -> Util.ensureOnEventDispatchThread())))
-        .start();
-    assertThrows(IllegalStateException.class, () -> Util.ensureOnEventDispatchThread());
+    assertDoesNotThrow(() -> runInEvenDispatchThreadAndRethrow(Util::ensureOnEventDispatchThread));
+    assertThrows(IllegalStateException.class, Util::ensureOnEventDispatchThread); // negative test
   }
 
   @Test
   void ensureNotOnEventDispatchThread() {
-    new Thread(
-            () ->
-                assertThrows(
-                    IllegalStateException.class,
-                    () ->
-                        SwingUtilities.invokeAndWait(() -> Util.ensureNotOnEventDispatchThread())))
-        .start();
-    assertAll(() -> Util.ensureNotOnEventDispatchThread());
+    assertAll(Util::ensureNotOnEventDispatchThread); // positive test
+    assertThrows(
+        IllegalStateException.class,
+        () -> runInEvenDispatchThreadAndRethrow(Util::ensureNotOnEventDispatchThread));
   }
 
   @Nested
