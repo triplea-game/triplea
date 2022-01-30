@@ -8,37 +8,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Polygon;
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class UtilTest {
-  AtomicReference<Throwable> inThreadException;
 
-  void runInEvenDispatchThreadAndRethrow(final Runnable run) throws Throwable {
-    inThreadException = new AtomicReference<>();
-    final Thread threadNotEventDispatchThread =
-        new Thread(
-            () -> {
-              try {
-                SwingUtilities.invokeAndWait(run);
-              } catch (final InterruptedException e) {
-                inThreadException.set(e);
-              } catch (final InvocationTargetException e) {
-                inThreadException.set(e.getTargetException());
-              }
-            });
-
-    threadNotEventDispatchThread.start();
+  /**
+   * @param run Runnable to be executed
+   * @throws Throwable target exception raised in the Runnable executed in Event Dispatch Thread
+   */
+  static void runInEvenDispatchThreadAndRethrow(final Runnable run) throws Throwable {
     try {
-      threadNotEventDispatchThread.join();
-    } catch (final InterruptedException e) {
-      inThreadException.set(e);
-    }
-    final Throwable throwableResult = inThreadException.get();
-    if (throwableResult != null) {
-      throw throwableResult;
+      SwingUtilities.invokeAndWait(run);
+    } catch (final InvocationTargetException e) {
+      throw e.getTargetException();
     }
   }
 
