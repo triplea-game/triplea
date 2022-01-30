@@ -17,7 +17,7 @@ final class UtilTest {
   AtomicReference<Throwable> inThreadException;
 
   void runInEvenDispatchThreadAndRethrow(final Runnable run) throws Throwable {
-    inThreadException.set(null);
+    inThreadException = new AtomicReference<>();
     final Thread threadNotEventDispatchThread =
         new Thread(
             () -> {
