@@ -192,9 +192,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   private boolean ensureBattleIsDisplayed(final UUID battleId) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong threads");
-    }
+    Util.ensureNotOnEventDispatchThread();
     UUID displayed = currentBattleDisplayed;
     int count = 0;
     while (!battleId.equals(displayed)) {
