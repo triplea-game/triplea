@@ -13,8 +13,16 @@ skinparam packageStyle rect
 (TripleAPlayer.pickTerritoryAndUnits) as (pickTerritoryAndUnits)
 (pickTerritoryAndUnits) --> (UnitChooser)
 note left of (pickTerritoryAndUnits)
-    I could not produce a situation,
-    in which TripleAPlayer.pickTerritoryAndUnits is called.
+    This is called from RandomStartDelegate.setupBoard which is
+    used in the XmlGameElementMapper.newDelegateFactories. The
+    RandomStartDelegate is used in the following games:
+    Feudal Japan Warlords 3, 4, and 5 player
+    Conquest World
+    Pact of Steel 2
+    The Grand War 11 player free for all
+    Alagaesia 2 and 4 player
+    Game of Thrones
+    The Rising Sun Variants vXXX
 end note
 
 (PlacePanel) --> (UnitChooser)
@@ -23,10 +31,9 @@ end note
 
 (TripleAFrame.selectUnitsQuery)--> (UnitChooser)
 note left of (TripleAFrame.selectUnitsQuery)
-    I could not produce a situation,
-    in which TripleAFrame.selectUnitsQuery is called.
-
-    May be an old legacy item
+    This is called from TripleAPlayer.selectUnitsQuery which is called
+    from AirBattle.InterceptorsLaunch.getInterceptors.
+    This is used for intercept prompts in World War II Global 1940 games.
 end note
 
 (TripleAFrame.moveFightersToCarrier)--> (UnitChooser)
