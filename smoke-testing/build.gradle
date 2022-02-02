@@ -27,7 +27,7 @@ task downloadXmls {
         mkdir "$projectDir/src/test/resources/map-xmls/"
         file('map-list.txt').eachLine { path ->
             if (!path.startsWith('#')) {
-                download {
+                download.run {
                     src "$path"
                     dest "$projectDir/src/test/resources/map-xmls/"
                     overwrite false
@@ -42,7 +42,7 @@ task downloadSaveGames {
         mkdir "$projectDir/src/test/resources/save-games/"
         file('save-game-list.txt').eachLine { path ->
             if (!path.startsWith('#')) {
-                download {
+                download.run {
                     src "$path"
                     dest "$projectDir/src/test/resources/save-games/"
                     overwrite false
