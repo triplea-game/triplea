@@ -2034,7 +2034,7 @@
 - mapName: Global 40 House Rules
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_house_rules/archive/master.zip
-  version: 14
+  version: 15
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
   description:
     <br>
@@ -2042,7 +2042,7 @@
 - mapName: The Grand War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_grand_war/archive/master.zip
-  version: 3
+  version: 4
   img: https://raw.githubusercontent.com/triplea-maps/the_grand_war/master/preview.png
   description:
     <br>
