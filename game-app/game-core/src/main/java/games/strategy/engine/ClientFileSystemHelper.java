@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.ApplicationContext;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.io.FileUtils;
 import org.triplea.util.Services;
 
@@ -37,18 +38,27 @@ public final class ClientFileSystemHelper {
           FileUtils.findFileInParentFolders(getCodeSourceFolder(), ".triplea-root");
 
       if (markerFile.isEmpty()) {
-        throw new IllegalStateException("Unable to locate root folder");
+        throw handleUnableToLocateRootFolder(null);
       }
 
       final Path rootFolder = markerFile.get().getParent();
       if (rootFolder == null) {
-        throw new IllegalStateException("Unable to locate root folder");
+        throw handleUnableToLocateRootFolder(null);
       }
 
       return rootFolder;
     } catch (final IOException e) {
-      throw new IllegalStateException("Unable to locate root folder", e);
+      throw handleUnableToLocateRootFolder(e);
     }
+  }
+
+  private static IllegalStateException handleUnableToLocateRootFolder(final Throwable cause) {
+    final IllegalStateException illegalStateException =
+        new IllegalStateException("Unable to locate root folder");
+    if (cause != null) {
+      illegalStateException.initCause(cause);
+    }
+    return illegalStateException;
   }
 
   public static void setCodeSourceFolder(final Path sourceFolder) {
@@ -115,7 +125,7 @@ public final class ClientFileSystemHelper {
   @VisibleForTesting
   static Path getUserMapsFolder(final Supplier<Path> userHomeRootFolderSupplier) {
     final Path defaultDownloadedMapsFolder =
-        userHomeRootFolderSupplier.get().resolve("downloadedMaps");
+        userHomeRootFolderSupplier.get().resolve(MapsClient.MAPS_FOLDER_NAME);
 
     // make sure folder override location is valid, if not notify user and reset it.
     final Optional<Path> path = ClientSetting.mapFolderOverride.getValue();
@@ -131,7 +141,7 @@ public final class ClientFileSystemHelper {
     final Path mapsFolder =
         ClientSetting.mapFolderOverride
             .getValue()
-            .orElseGet(() -> userHomeRootFolderSupplier.get().resolve("downloadedMaps"));
+            .orElseGet(() -> userHomeRootFolderSupplier.get().resolve(MapsClient.MAPS_FOLDER_NAME));
 
     if (!Files.exists(mapsFolder)) {
       try {

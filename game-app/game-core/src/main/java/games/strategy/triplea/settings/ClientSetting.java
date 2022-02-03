@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.java.ThreadRunner;
 
 /**
@@ -151,7 +152,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Path> userMapsFolderPath =
       new PathClientSetting(
           "USER_MAPS_FOLDER_PATH",
-          ClientFileSystemHelper.getUserRootFolder().resolve("downloadedMaps"));
+          ClientFileSystemHelper.getUserRootFolder().resolve(MapsClient.MAPS_FOLDER_NAME));
   public static final ClientSetting<Integer> wheelScrollAmount =
       new IntegerClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting<String> playerName =

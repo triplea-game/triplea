@@ -13,6 +13,7 @@ import org.triplea.http.client.HttpClient;
 @Slf4j
 public class MapsClient {
   public static final String MAPS_LISTING_PATH = "/maps/listing";
+  public static final String MAPS_FOLDER_NAME = "downloadedMaps";
   private final MapsFeignClient mapsFeignClient;
 
   public MapsClient(final URI mapsServerUri) {
@@ -23,7 +24,10 @@ public class MapsClient {
     try {
       return mapsFeignClient.fetchMapListing(AuthenticationHeaders.systemIdHeaders());
     } catch (FeignException e) {
-      log.error("Failed to download the list of available maps from TripleA servers.", e);
+      log.warn(
+          "Failed to download the list of available maps from TripleA servers.\n"
+              + "You can download the needed maps manually into your TripleA maps subfolder from <a href='https://github.com/triplea-maps/'>https://github.com/triplea-maps/</a>.",
+          e);
       return List.of();
     }
   }
