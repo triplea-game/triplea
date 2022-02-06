@@ -101,7 +101,8 @@ public class NodeBbTokenGenerator {
     if (!jsonObject.containsKey("uid")) {
       throw new IllegalStateException(String.format("User %s doesn't exist.", username));
     }
-    if (1 == (Integer) jsonObject.get("banned")) {
+    Object banned = jsonObject.get("banned");
+    if (banned instanceof Integer ? (Integer) banned == 1 : (Boolean) banned) {
       throw new IllegalStateException("Your account is banned from the forum.");
     }
     if (1 != (Integer) jsonObject.get("email:confirmed")) {
