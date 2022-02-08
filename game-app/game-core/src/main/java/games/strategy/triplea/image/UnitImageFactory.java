@@ -136,7 +136,7 @@ public class UnitImageFactory {
           }
           if (TechTracker.hasJetFighter(gamePlayer)
               && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
-              || UnitAttachment.get(type).getDefense(gamePlayer) > 0)) {
+                  || UnitAttachment.get(type).getDefense(gamePlayer) > 0)) {
             name.append("_jp");
           }
         }
@@ -152,14 +152,14 @@ public class UnitImageFactory {
         if (UnitAttachment.get(type).getIsFirstStrike()
             && UnitAttachment.get(type).getCanEvade()
             && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
-            || UnitAttachment.get(type).getDefense(gamePlayer) > 0)
+                || UnitAttachment.get(type).getDefense(gamePlayer) > 0)
             && TechTracker.hasSuperSubs(gamePlayer)) {
           name.append("_ss");
         }
         if ((type.getName().equals(Constants.UNIT_TYPE_FACTORY)
-            || UnitAttachment.get(type).getCanProduceUnits())
+                || UnitAttachment.get(type).getCanProduceUnits())
             && (TechTracker.hasIndustrialTechnology(gamePlayer)
-            || TechTracker.hasIncreasedFactoryProduction(gamePlayer))) {
+                || TechTracker.hasIncreasedFactoryProduction(gamePlayer))) {
           name.append("_it");
         }
       }
@@ -270,7 +270,7 @@ public class UnitImageFactory {
       final GamePlayer gamePlayer, final UnitType type, final MapData mapData) {
     return !mapData.ignoreTransformingUnit(type.getName())
         && (mapData.getUnitColor(gamePlayer.getName()).isPresent()
-        || mapData.shouldFlipUnit(gamePlayer.getName()));
+            || mapData.shouldFlipUnit(gamePlayer.getName()));
   }
 
   private static BufferedImage convertToBufferedImage(final Image image) {
