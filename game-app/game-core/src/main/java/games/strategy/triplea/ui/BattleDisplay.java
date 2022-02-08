@@ -537,6 +537,7 @@ public class BattleDisplay extends JPanel {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
                   actionButton.setEnabled(false);
+
                   final CasualtyDetails selectedCasualties =
                       casualtySelection.showModalDialog().orElse(null);
 
