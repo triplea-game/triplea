@@ -2481,3 +2481,11 @@
    <br>Scenarios with many unit types on the Big World map
    <br>Hearts of Iron: The Rising Sun 1942, starts in early 1942
    <br>Hearts of Iron: Awakening the Giants, starts in mid 1941
+- mapName: Hot War-1956
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/HotWar/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/HotWar/master/preview.png
+  description: |
+   <br>World War 3 in 1956 on Big World Map
+   
