@@ -20,6 +20,7 @@ import org.triplea.util.Services;
 /** Provides methods to work with common file locations in a client installation. */
 @Slf4j
 public final class ClientFileSystemHelper {
+  public static final String USER_ROOT_FOLDER_NAME = "triplea";
   private static Path codeSourceLocation;
 
   private ClientFileSystemHelper() {}
@@ -53,12 +54,7 @@ public final class ClientFileSystemHelper {
   }
 
   private static IllegalStateException handleUnableToLocateRootFolder(final Throwable cause) {
-    final IllegalStateException illegalStateException =
-        new IllegalStateException("Unable to locate root folder");
-    if (cause != null) {
-      illegalStateException.initCause(cause);
-    }
-    return illegalStateException;
+    return new IllegalStateException("Unable to locate root folder", cause);
   }
 
   public static void setCodeSourceFolder(final Path sourceFolder) {
@@ -106,8 +102,8 @@ public final class ClientFileSystemHelper {
    */
   public static Path getUserRootFolder() {
     final Path userHome = Path.of(SystemProperties.getUserHome());
-    final Path rootDir = userHome.resolve("Documents").resolve("triplea");
-    return Files.exists(rootDir) ? rootDir : userHome.resolve("triplea");
+    final Path rootDir = userHome.resolve("Documents").resolve(USER_ROOT_FOLDER_NAME);
+    return Files.exists(rootDir) ? rootDir : userHome.resolve(USER_ROOT_FOLDER_NAME);
   }
 
   /**
