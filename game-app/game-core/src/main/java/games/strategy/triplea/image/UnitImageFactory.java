@@ -68,10 +68,10 @@ public class UnitImageFactory {
   @Value
   @Builder
   public static class ImageKey {
-    private final GamePlayer player;
-    private final UnitType type;
-    private final boolean damaged;
-    private final boolean disabled;
+    GamePlayer player;
+    UnitType type;
+    boolean damaged;
+    boolean disabled;
 
     public static ImageKey of(final UnitCategory unit) {
       return ImageKey.builder()
@@ -191,7 +191,7 @@ public class UnitImageFactory {
 
   /** Return the height of scaled units. */
   public int getUnitImageHeight() {
-    return (int) (scaleFactor * unitIconHeight);
+    return (int) Math.round(scaleFactor * unitIconHeight);
   }
 
   public int getUnitCounterOffsetWidth() {

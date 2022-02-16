@@ -704,22 +704,17 @@ public final class UnitChooser extends JPanel {
         final int height = NonWithdrawableFactory.getUnitImageHeight();
         return new Dimension(width, height);
       }
-
-      @VisibleForTesting
-      public ChooserEntry getEmbeddingChooserEntry() {
-        return ChooserEntry.this;
-      }
     }
   }
 
-  /** delivers unit images decorated with non withdrawable images */
+  /** delivers unit images decorated with non-withdrawable images */
   @UtilityClass
   static final class NonWithdrawableFactory {
     private ResourceLoader resourceLoader = null;
     private UnitImageFactory unitImageFactory = null;
     private final Map<Image, Image> images = new HashMap<>();
     private BufferedImage nonWithdrawableImage = null;
-    private UnitImageFactory unitImageFactoryForDecoractedImages = null;
+    private UnitImageFactory unitImageFactoryForDecoratedImages = null;
 
     public void makeSureNonWithdrawableFactoryMatchesUiContext(final UiContext uiContext) {
       if (resourceLoader != UiContext.getResourceLoader()
@@ -728,12 +723,12 @@ public final class UnitChooser extends JPanel {
         resourceLoader = UiContext.getResourceLoader();
         unitImageFactory = uiContext.getUnitImageFactory();
         nonWithdrawableImage = null;
-        unitImageFactoryForDecoractedImages = null;
+        unitImageFactoryForDecoratedImages = null;
       }
     }
 
     public Optional<Image> getImage(final ImageKey imageKey, final boolean nonWithdrawable) {
-      final var undecoratedImage = unitImageFactoryForDecoractedImages.getImage(imageKey);
+      final var undecoratedImage = unitImageFactoryForDecoratedImages.getImage(imageKey);
 
       return nonWithdrawable && undecoratedImage.isPresent()
           ? getImage(undecoratedImage.get())
@@ -749,7 +744,7 @@ public final class UnitChooser extends JPanel {
       final var unitImageWithNonWithdrawableImage =
           new BufferedImage(
               getXofNonWithdrawableImage() + getNonWithdrawableImage().getWidth(),
-              unitImageFactoryForDecoractedImages.getUnitImageHeight(),
+              unitImageFactoryForDecoratedImages.getUnitImageHeight(),
               BufferedImage.TYPE_INT_ARGB);
 
       final Graphics2D g2d = unitImageWithNonWithdrawableImage.createGraphics();
@@ -800,12 +795,12 @@ public final class UnitChooser extends JPanel {
       // being 24 pixels resp. 32 pixels high.
       // So the unit image will be either 48 pixels or 32 pixels high.
 
-      unitImageFactoryForDecoractedImages = unitImageFactory.withScaleFactor(scaleFactor);
+      unitImageFactoryForDecoratedImages = unitImageFactory.withScaleFactor(scaleFactor);
 
       Postconditions.assertState(
           nonWithdrawableImage.getHeight()
               == getNonWithdrawableImageHeight(
-                  unitImageFactoryForDecoractedImages.getUnitImageHeight()));
+                  unitImageFactoryForDecoratedImages.getUnitImageHeight()));
     }
 
     /**
@@ -814,7 +809,7 @@ public final class UnitChooser extends JPanel {
      *     specific scale is being used to make sure that the non-withdrawable image can reasonably
      *     be displayed with its original height, i.e. unscaled.
      * @return the non-withdrawable image best matching the unit image height given the proportion
-     *     between non-withdrawable imagehight and unit image height determined by <code>
+     *     between non-withdrawable image height and unit image height determined by <code>
      *     getNonWithdrawableImageHeight</code>.
      */
     private BufferedImage loadNonWithdrawableImage(final int nonWithdrawableImageHeight) {
@@ -838,13 +833,13 @@ public final class UnitChooser extends JPanel {
     }
 
     private int getYofNonWithdrawableImage() {
-      return (unitImageFactoryForDecoractedImages.getUnitImageHeight()
+      return (unitImageFactoryForDecoratedImages.getUnitImageHeight()
               - nonWithdrawableImage.getHeight())
           / 2;
     }
 
     private int getXofNonWithdrawableImage() {
-      return unitImageFactoryForDecoractedImages.getUnitImageWidth() * 3 / 3;
+      return unitImageFactoryForDecoratedImages.getUnitImageWidth() * 3 / 3;
     }
 
     /**
@@ -857,20 +852,20 @@ public final class UnitChooser extends JPanel {
     }
 
     int getUnitImageWidth() {
-      return getUnitImageFactoryForDecoractedImages().getUnitImageWidth();
+      return getUnitImageFactoryForDecoratedImages().getUnitImageWidth();
     }
 
     @VisibleForTesting
-    public @Nonnull UnitImageFactory getUnitImageFactoryForDecoractedImages() {
-      if (unitImageFactoryForDecoractedImages == null) {
+    public @Nonnull UnitImageFactory getUnitImageFactoryForDecoratedImages() {
+      if (unitImageFactoryForDecoratedImages == null) {
         loadNonWithdrawableImage();
       }
 
-      return unitImageFactoryForDecoractedImages;
+      return unitImageFactoryForDecoratedImages;
     }
 
     int getUnitImageHeight() {
-      return getUnitImageFactoryForDecoractedImages().getUnitImageHeight();
+      return getUnitImageFactoryForDecoratedImages().getUnitImageHeight();
     }
 
     int getNonWithdrawableImageWidth() {

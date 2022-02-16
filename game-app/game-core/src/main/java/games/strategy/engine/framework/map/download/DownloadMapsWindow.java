@@ -155,100 +155,36 @@ public class DownloadMapsWindow extends JFrame {
     SINGLETON_MANAGER.showAndDownload(mapNamesToDownload);
   }
 
-  private static final class SingletonManager {
-    private enum State {
-      UNINITIALIZED,
-      INITIALIZING,
-      INITIALIZED
-    }
+  private String newLabelText(final MapDownloadItem map) {
+    final String doubleSpace = "&nbsp;&nbsp;";
 
-    private State state;
-    private DownloadMapsWindow window;
+    final StringBuilder sb = new StringBuilder();
+    sb.append("<html>").append(map.getMapName()).append(doubleSpace);
 
-    SingletonManager() {
-      uninitialize();
-    }
-
-    private void uninitialize() {
-      assert SwingUtilities.isEventDispatchThread();
-
-      state = State.UNINITIALIZED;
-      window = null;
-    }
-
-    void showAndDownload(final Collection<String> mapNamesToDownload) {
-      assert SwingUtilities.isEventDispatchThread();
-
-      switch (state) {
-        case UNINITIALIZED:
-          initialize(mapNamesToDownload);
-          break;
-
-        case INITIALIZING:
-          logMapDownloadRequestIgnored(mapNamesToDownload);
-          // do nothing; window will be shown when initialization is complete
-          break;
-
-        case INITIALIZED:
-          logMapDownloadRequestIgnored(mapNamesToDownload);
-          show();
-          break;
-
-        default:
-          throw new AssertionError("unknown state");
-      }
-    }
-
-    private void initialize(final Collection<String> mapNamesToDownload) {
-      assert SwingUtilities.isEventDispatchThread();
-      assert state == State.UNINITIALIZED;
-
-      Interruptibles.awaitResult(SingletonManager::getMapDownloadListInBackground)
-          .result
+    if (!downloadMapsWindowModel.isInstalled(map)) {
+      sb.append(doubleSpace)
+          .append(" (")
+          .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
+          .append(")");
+    } else {
+      downloadMapsWindowModel
+          .getInstallLocation(map)
           .ifPresent(
-              downloads -> {
-                state = State.INITIALIZING;
-                createAndShow(mapNamesToDownload, downloads);
+              mapPath -> {
+                sb.append(doubleSpace).append(" (");
+                try {
+                  sb.append(FileUtils.byteCountToDisplaySize(Files.size(mapPath)));
+                } catch (final IOException e) {
+                  log.warn("Failed to read file size", e);
+                  sb.append("N/A");
+                }
+                sb.append(")").append("<br>").append(mapPath.toAbsolutePath());
               });
     }
+    sb.append("<br>");
+    sb.append("</html>");
 
-    private static List<MapDownloadItem> getMapDownloadListInBackground()
-        throws InterruptedException {
-      return BackgroundTaskRunner.runInBackgroundAndReturn(
-          "Downloading list of available maps...", MapListingFetcher::getMapDownloadList);
-    }
-
-    private void createAndShow(
-        final Collection<String> mapNamesToDownload,
-        final List<MapDownloadItem> availableDownloads) {
-      assert SwingUtilities.isEventDispatchThread();
-      assert state == State.INITIALIZING;
-      assert window == null;
-
-      window = new DownloadMapsWindow(mapNamesToDownload, availableDownloads);
-      SwingComponents.addWindowClosedListener(window, this::uninitialize);
-      LookAndFeelSwingFrameListener.register(window);
-      state = State.INITIALIZED;
-
-      show();
-    }
-
-    private void show() {
-      assert SwingUtilities.isEventDispatchThread();
-      assert state == State.INITIALIZED;
-      assert window != null;
-
-      window.setVisible(true);
-      window.requestFocus();
-      window.toFront();
-    }
-  }
-
-  private static void logMapDownloadRequestIgnored(final Collection<String> mapNames) {
-    if (!mapNames.isEmpty()) {
-      log.info(
-          "ignoring request to download maps because window initialization has already started");
-    }
+    return sb.toString();
   }
 
   private static String formatIgnoredPendingMapsMessage(final Collection<String> unknownMapNames) {
@@ -382,35 +318,103 @@ public class DownloadMapsWindow extends JFrame {
         });
   }
 
-  private String newLabelText(final MapDownloadItem map) {
-    final String doubleSpace = "&nbsp;&nbsp;";
-
-    final StringBuilder sb = new StringBuilder();
-    sb.append("<html>").append(map.getMapName()).append(doubleSpace);
-
-    if (!downloadMapsWindowModel.isInstalled(map)) {
-      sb.append(doubleSpace)
-          .append(" (")
-          .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
-          .append(")");
-    } else {
-      sb.append(doubleSpace).append(" (");
-      try {
-        sb.append(
-            FileUtils.byteCountToDisplaySize(
-                Files.size(downloadMapsWindowModel.getInstallLocation(map).get())));
-      } catch (final IOException e) {
-        log.warn("Failed to read file size", e);
-        sb.append("N/A");
-      }
-      sb.append(")")
-          .append("<br>")
-          .append(downloadMapsWindowModel.getInstallLocation(map).get().toAbsolutePath());
+  private static final class SingletonManager {
+    private enum State {
+      UNINITIALIZED,
+      INITIALIZING,
+      INITIALIZED
     }
-    sb.append("<br>");
-    sb.append("</html>");
 
-    return sb.toString();
+    private State state;
+    private DownloadMapsWindow window;
+
+    SingletonManager() {
+      uninitialize();
+    }
+
+    private void uninitialize() {
+      assert SwingUtilities.isEventDispatchThread();
+
+      state = State.UNINITIALIZED;
+      window = null;
+    }
+
+    private static void logMapDownloadRequestIgnored(final Collection<String> mapNames) {
+      if (!mapNames.isEmpty()) {
+        log.info(
+            "ignoring request to download maps because window initialization has already started");
+      }
+    }
+
+    void showAndDownload(final Collection<String> mapNamesToDownload) {
+      assert SwingUtilities.isEventDispatchThread();
+
+      switch (state) {
+        case UNINITIALIZED:
+          initialize(mapNamesToDownload);
+          break;
+
+        case INITIALIZING:
+          logMapDownloadRequestIgnored(mapNamesToDownload);
+          // do nothing; window will be shown when initialization is complete
+          break;
+
+        case INITIALIZED:
+          logMapDownloadRequestIgnored(mapNamesToDownload);
+          show();
+          break;
+
+        default:
+          throw new AssertionError("unknown state");
+      }
+    }
+
+    private void initialize(final Collection<String> mapNamesToDownload) {
+      assert SwingUtilities.isEventDispatchThread();
+      assert state == State.UNINITIALIZED;
+
+      Interruptibles.awaitResult(SingletonManager::getMapDownloadListInBackground)
+          .result
+          .ifPresent(
+              downloads -> {
+                if (downloads.isEmpty()) {
+                  return; // no maps to show, so we can leave
+                }
+                state = State.INITIALIZING;
+                createAndShow(mapNamesToDownload, downloads);
+              });
+    }
+
+    private static List<MapDownloadItem> getMapDownloadListInBackground()
+        throws InterruptedException {
+      return BackgroundTaskRunner.runInBackgroundAndReturn(
+          "Downloading list of available maps...", MapListingFetcher::getMapDownloadList);
+    }
+
+    private void createAndShow(
+        final Collection<String> mapNamesToDownload,
+        final List<MapDownloadItem> availableDownloads) {
+      assert SwingUtilities.isEventDispatchThread();
+      assert state == State.INITIALIZING;
+      assert window == null;
+
+      window = new DownloadMapsWindow(mapNamesToDownload, availableDownloads);
+      SwingComponents.addWindowClosedListener(window, this::uninitialize);
+      LookAndFeelSwingFrameListener.register(window);
+      state = State.INITIALIZED;
+
+      show();
+    }
+
+    private void show() {
+      assert SwingUtilities.isEventDispatchThread();
+      assert state == State.INITIALIZED;
+      assert window != null;
+
+      window.setVisible(true);
+      window.requestFocus();
+      window.toFront();
+    }
   }
 
   private JPanel newButtonsPanel(
