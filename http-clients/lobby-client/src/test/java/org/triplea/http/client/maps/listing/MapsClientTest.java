@@ -53,4 +53,18 @@ class MapsClientTest extends WireMockTest {
 
     assertThat(result, is(mapsListingResponse));
   }
+
+  @Test
+  void mapsNotFound(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    wireMockServer.stubFor(
+            get(MapsClient.MAPS_LISTING_PATH)
+                    .willReturn(
+                            WireMock.aResponse()
+                                    .withStatus(404)
+                                    .withBody("404 Not Found")));
+
+    final var result = newClient(wireMockServer).fetchMapDownloads();
+
+    assertThat(result, is(List.of()));
+  }
 }

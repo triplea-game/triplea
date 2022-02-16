@@ -11,7 +11,7 @@ import lombok.Value;
 @Value
 @Builder
 public class GenericServerResponse {
-  public static final GenericServerResponse SUCCCESS =
+  public static final GenericServerResponse SUCCESS =
       GenericServerResponse.builder().success(true).build();
 
   /** True if the requested operation was successful. */
