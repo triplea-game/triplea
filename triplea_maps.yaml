@@ -2481,3 +2481,12 @@
    <br>Scenarios with many unit types on the Big World map
    <br>Hearts of Iron: The Rising Sun 1942, starts in early 1942
    <br>Hearts of Iron: Awakening the Giants, starts in mid 1941
+- mapName: 270BC Variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/270BC_Variants/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/270BC_Variants/master/preview.png
+  description: |
+   <br>270BC Cernel Mod
+   <br>270BC Tertiered - Units and production values divided by 3
+
