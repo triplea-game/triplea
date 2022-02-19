@@ -2483,8 +2483,8 @@
    <br>Hearts of Iron: Awakening the Giants, starts in mid 1941
 - mapName: CTF2 Colors
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/Hearts_of_Iron/archive/master.zip
+  url: https://github.com/triplea-maps/CTF2/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Hearts_of_Iron/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/CTF2/master/preview.png
   description: |
    <br>A variety of scenarios using the Capture the Flag Map
