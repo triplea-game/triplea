@@ -1,9 +1,10 @@
 package org.triplea.http.client;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalToObject;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,25 +13,22 @@ class GenericServerResponseTest {
   @Test
   void builder() {
     GenericServerResponse genericServerResponse = GenericServerResponse.builder().build();
-    assertFalse(genericServerResponse.isSuccess());
-    assertNull(genericServerResponse.getMessage());
+    assertThat(genericServerResponse.isSuccess(), is(true));
+    assertThat(genericServerResponse.getMessage(), nullValue());
   }
 
   @Test
   void isSuccess() {
-    GenericServerResponse genericServerResponseTrue =
+    GenericServerResponse genericServerResponse =
         GenericServerResponse.builder().success(true).build();
-    GenericServerResponse genericServerResponseFalse =
-        GenericServerResponse.builder().success(false).build();
-    assertTrue(genericServerResponseTrue.isSuccess());
-    assertFalse(genericServerResponseFalse.isSuccess());
-    assertEquals(GenericServerResponse.SUCCESS, genericServerResponseTrue);
+    assertThat(genericServerResponse.isSuccess(), is(true));
+    assertThat(GenericServerResponse.SUCCESS, equalToObject(genericServerResponse));
   }
 
   @Test
   void getMessage() {
     GenericServerResponse genericServerResponse =
         GenericServerResponse.builder().message("test").build();
-    assertEquals(genericServerResponse.getMessage(), "test");
+    assertThat(genericServerResponse.getMessage(), equalTo("test"));
   }
 }

@@ -1,9 +1,10 @@
 package org.triplea.http.client;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasKey;
 
-import java.util.HashMap;
+import org.hamcrest.collection.IsMapWithSize;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ApiKey;
 
@@ -13,16 +14,16 @@ class AuthenticationHeadersTest {
 
   @Test
   void createHeaders() {
-    assertTrue(authenticationHeaders.createHeaders() instanceof HashMap);
-    assertTrue(authenticationHeaders.createHeaders().containsKey("Authorization"));
-    assertTrue(authenticationHeaders.createHeaders().containsKey("System-Id-Header"));
-    assertEquals(
+    assertThat(authenticationHeaders.createHeaders(), IsMapWithSize.aMapWithSize(2));
+    assertThat(authenticationHeaders.createHeaders(), hasKey("Authorization"));
+    assertThat(authenticationHeaders.createHeaders(), hasKey("System-Id-Header"));
+    assertThat(
         authenticationHeaders.createHeaders().get("Authorization").toString(),
-        "Bearer" + " " + apiKey);
+        equalTo("Bearer" + " " + apiKey));
   }
 
   @Test
   void systemIdHeaders() {
-    assertTrue(AuthenticationHeaders.systemIdHeaders().containsKey("System-Id-Header"));
+    assertThat(AuthenticationHeaders.systemIdHeaders(), hasKey("System-Id-Header"));
   }
 }
