@@ -35,13 +35,13 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
 
   private static final Decoder gsonDecoder = JsonDecoder.gsonDecoder();
   /**
-   * Allowed idle time for a connection with no activity (waiting to receive a message). Expressed in milliseconds.
-   * Default 5 seconds.
+   * Allowed idle time for a connection with no activity (waiting to receive a message).
+   * Expressed in milliseconds. Default 5 seconds.
    */
   private static final int DEFAULT_CONNECT_TIMEOUT_MS = 5000;
   /**
-   * The time a connection should allow for completely receiving a message. Expressed in milliseconds.
-   * Default 20 seconds.
+   * The time a connection should allow for completely receiving a message.
+   * Expressed in milliseconds. Default 20 seconds.
    */
   private static final int DEFAULT_READ_TIME_OUT_MS = 20000;
 
