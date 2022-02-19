@@ -13,7 +13,7 @@ class GenericServerResponseTest {
   @Test
   void builder() {
     GenericServerResponse genericServerResponse = GenericServerResponse.builder().build();
-    assertThat(genericServerResponse.isSuccess(), is(true));
+    assertThat(genericServerResponse.isSuccess(), is(false));
     assertThat(genericServerResponse.getMessage(), nullValue());
   }
 
