@@ -132,18 +132,24 @@ public final class TileImageFactory {
     return "baseTiles" + "/" + x + "_" + y + ".png";
   }
 
+  private Image getCachedImage(final String fileName) {
+    final SoftReference<Image> imageRef = imageCache.get(fileName);
+    // Note: imageRef.get() may return null if the SoftReference has been cleared.
+    return (imageRef != null ? imageRef.get() : null);
+  }
+
   private Image getImage(final String fileName, final boolean transparent) {
     if (isDirty) {
       isDirty = false;
       imageCache.clear();
     }
 
-    if (imageCache.get(fileName) != null) {
-      return imageCache.get(fileName).get();
+    final Image cachedImage = getCachedImage(fileName);
+    if (cachedImage != null) {
+      return cachedImage;
     }
-    // This is null if there is no image
-    final URL url = resourceLoader.getResource(fileName);
 
+    final URL url = resourceLoader.getResource(fileName);
     if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
       return null;
     }
