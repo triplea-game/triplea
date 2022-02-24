@@ -277,8 +277,10 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
       final JTextField textField, final String incomingValue) {
     // avoid updating fields to the same value; setting field text
     // resets the carat position to the end, very annoying if a user is
-    // editing text.
-    if (!textField.getText().equals(incomingValue)) {
+    // editing text. Trim the text before comparing as the model will
+    // trim email addresses internally, which breaks typing multiple
+    // space-separated emails in the To field.
+    if (!textField.getText().trim().equals(incomingValue)) {
       textField.setText(incomingValue);
     }
   }
