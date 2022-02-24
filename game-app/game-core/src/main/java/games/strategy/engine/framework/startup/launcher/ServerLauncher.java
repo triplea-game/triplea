@@ -271,6 +271,12 @@ public class ServerLauncher implements ILauncher {
     if (serverGame.getPlayerManager().isPlaying(node)) {
       if (serverGame.isGameSequenceRunning()) {
         saveAndEndGame(node);
+        // Release any countries played by this player. This ensures the slots are freed up in the
+        // game lobby as we keep the other player mappings for resuming from the saved game.
+        for (final String countryName : serverGame.getPlayerManager().getPlayedBy(node)) {
+          serverModel.releasePlayer(countryName);
+        }
+        serverModel.persistPlayersToNodesMapping();
       } else {
         stopGame();
       }
@@ -294,6 +300,7 @@ public class ServerLauncher implements ILauncher {
     final Path f = launchAction.getAutoSaveFile();
     try {
       serverGame.saveGame(f);
+      gameSelectorModel.setSaveGameFileToLoad(f);
     } catch (final Exception e) {
       log.error("Failed to save game: " + f.toAbsolutePath(), e);
     }
