@@ -3130,31 +3130,31 @@ public class UnitAttachment extends DefaultAttachment {
         + canBombard
         + "  bombard:"
         + bombard
-        + "  isAAForCombatOnly:"
+        + "  isAaForCombatOnly:"
         + isAaForCombatOnly
-        + "  isAAForBombingThisUnitOnly:"
+        + "  isAaForBombingThisUnitOnly:"
         + isAaForBombingThisUnitOnly
-        + "  isAAForFlyOverOnly:"
+        + "  isAaForFlyOverOnly:"
         + isAaForFlyOverOnly
-        + "  attackAA:"
+        + "  attackAa:"
         + attackAa
-        + "  offensiveAttackAA:"
+        + "  offensiveAttackAa:"
         + offensiveAttackAa
-        + "  attackAAmaxDieSides:"
+        + "  attackAaMaxDieSides:"
         + attackAaMaxDieSides
         + "  offensiveAttackAaMaxDieSides:"
         + offensiveAttackAaMaxDieSides
         + "  maxAaAttacks:"
         + maxAaAttacks
-        + "  maxRoundsAA:"
+        + "  maxRoundsAa:"
         + maxRoundsAa
-        + "  mayOverStackAA:"
+        + "  mayOverStackAa:"
         + mayOverStackAa
-        + "  damageableAA:"
+        + "  damageableAa:"
         + damageableAa
-        + "  typeAA:"
+        + "  typeAa:"
         + typeAa
-        + "  targetsAA:"
+        + "  targetsAa:"
         + toString(targetsAa, "all air units")
         + "  willNotFireIfPresent:"
         + toString(willNotFireIfPresent)
