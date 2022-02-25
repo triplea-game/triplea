@@ -3031,6 +3031,32 @@ public class UnitAttachment extends DefaultAttachment {
     return ta != null && ta.getParatroopers();
   }
 
+  private static <T> String toString(final Collection<T> collection, final String nullStr) {
+    return collection == null ? nullStr : collection.isEmpty() ? "empty" : collection.toString();
+  }
+
+  private static <T> String toString(final Collection<T> collection) {
+    return toString(collection, "null");
+  }
+
+  private static String toString(final String[] collection) {
+    return collection == null ? "null" : collection.length == 0 ? "empty" : collection.toString();
+  }
+
+  private static <T> String toString(final IntegerMap<T> collection) {
+    return collection == null ? "null" : collection.isEmpty() ? "empty" : collection.toString();
+  }
+
+  private static <K, V> String toString(final Map<K, V> collection) {
+    return collection == null ? "null" : collection.isEmpty() ? "empty" : collection.toString();
+  }
+
+  private static String toString(final List<String[]> collection) {
+    return collection == null
+        ? "null"
+        : collection.isEmpty() ? "empty" : MyFormatter.listOfArraysToString(collection);
+  }
+
   /**
    * Returns a list of all unit properties. Should cover ALL fields stored in UnitAttachment
    * Remember to test for null and fix arrays. The stats exporter relies on this toString having two
@@ -3091,9 +3117,9 @@ public class UnitAttachment extends DefaultAttachment {
         + "  isFirstStrike:"
         + isFirstStrike
         + "  canNotTarget:"
-        + (canNotTarget == null || canNotTarget.isEmpty() ? "empty" : canNotTarget.toString())
+        + toString(canNotTarget)
         + "  canNotBeTargetedBy:"
-        + (canNotBeTargetedBy.isEmpty() ? "empty" : canNotBeTargetedBy.toString())
+        + toString(canNotBeTargetedBy)
         + "  canMoveThroughEnemies:"
         + canMoveThroughEnemies
         + "  canBeMovedThroughByEnemies:"
@@ -3104,11 +3130,11 @@ public class UnitAttachment extends DefaultAttachment {
         + canBombard
         + "  bombard:"
         + bombard
-        + "  isAAforCombatOnly:"
+        + "  isAAForCombatOnly:"
         + isAaForCombatOnly
-        + "  isAAforBombingThisUnitOnly:"
+        + "  isAAForBombingThisUnitOnly:"
         + isAaForBombingThisUnitOnly
-        + "  isAAforFlyOverOnly:"
+        + "  isAAForFlyOverOnly:"
         + isAaForFlyOverOnly
         + "  attackAA:"
         + attackAa
@@ -3116,9 +3142,9 @@ public class UnitAttachment extends DefaultAttachment {
         + offensiveAttackAa
         + "  attackAAmaxDieSides:"
         + attackAaMaxDieSides
-        + "  offensiveAttackAAmaxDieSides:"
+        + "  offensiveAttackAaMaxDieSides:"
         + offensiveAttackAaMaxDieSides
-        + "  maxAAattacks:"
+        + "  maxAaAttacks:"
         + maxAaAttacks
         + "  maxRoundsAA:"
         + maxRoundsAa
@@ -3129,13 +3155,9 @@ public class UnitAttachment extends DefaultAttachment {
         + "  typeAA:"
         + typeAa
         + "  targetsAA:"
-        + (targetsAa != null
-            ? (targetsAa.isEmpty() ? "empty" : targetsAa.toString())
-            : "all air units")
+        + toString(targetsAa, "all air units")
         + "  willNotFireIfPresent:"
-        + (willNotFireIfPresent != null
-            ? (willNotFireIfPresent.isEmpty() ? "empty" : willNotFireIfPresent.toString())
-            : "null")
+        + toString(willNotFireIfPresent)
         + "  isRocket:"
         + isRocket
         + "  canProduceUnits:"
@@ -3143,19 +3165,13 @@ public class UnitAttachment extends DefaultAttachment {
         + "  canProduceXUnits:"
         + canProduceXUnits
         + "  createsUnitsList:"
-        + (createsUnitsList != null
-            ? (createsUnitsList.isEmpty() ? "empty" : createsUnitsList.toString())
-            : "null")
+        + toString(createsUnitsList)
         + "  createsResourcesList:"
-        + (createsResourcesList != null
-            ? (createsResourcesList.isEmpty() ? "empty" : createsResourcesList.toString())
-            : "null")
+        + toString(createsResourcesList)
         + "  fuelCost:"
-        + (fuelCost != null ? (fuelCost.isEmpty() ? "empty" : fuelCost.toString()) : "null")
+        + toString(fuelCost)
         + "  fuelFlatCost:"
-        + (fuelFlatCost != null
-            ? (fuelFlatCost.isEmpty() ? "empty" : fuelFlatCost.toString())
-            : "null")
+        + toString(fuelFlatCost)
         + "  isInfrastructure:"
         + isInfrastructure
         + "  isConstruction:"
@@ -3167,13 +3183,9 @@ public class UnitAttachment extends DefaultAttachment {
         + "  maxConstructionsPerTypePerTerr:"
         + maxConstructionsPerTypePerTerr
         + "  destroyedWhenCapturedBy:"
-        + (destroyedWhenCapturedBy != null
-            ? (destroyedWhenCapturedBy.isEmpty() ? "empty" : destroyedWhenCapturedBy.toString())
-            : "null")
+        + toString(destroyedWhenCapturedBy, "null")
         + "  canBeCapturedOnEnteringBy:"
-        + (canBeCapturedOnEnteringBy != null
-            ? (canBeCapturedOnEnteringBy.isEmpty() ? "empty" : canBeCapturedOnEnteringBy.toString())
-            : "null")
+        + toString(canBeCapturedOnEnteringBy, "null")
         + "  canBeDamaged:"
         + canBeDamaged
         + "  canDieFromReachingMaxDamage:"
@@ -3183,31 +3195,19 @@ public class UnitAttachment extends DefaultAttachment {
         + "  maxDamage:"
         + maxDamage
         + "  unitPlacementRestrictions:"
-        + (unitPlacementRestrictions != null
-            ? (unitPlacementRestrictions.length == 0
-                ? "empty"
-                : Arrays.toString(unitPlacementRestrictions))
-            : "null")
+        + toString(unitPlacementRestrictions)
         + "  requiresUnits:"
-        + (requiresUnits != null
-            ? (requiresUnits.isEmpty() ? "empty" : MyFormatter.listOfArraysToString(requiresUnits))
-            : "null")
+        + toString(requiresUnits)
         + "  consumesUnits:"
-        + (consumesUnits != null
-            ? (consumesUnits.isEmpty() ? "empty" : consumesUnits.toString())
-            : "null")
+        + toString(consumesUnits)
         + "  requiresUnitsToMove:"
-        + (requiresUnitsToMove != null
-            ? (requiresUnitsToMove.isEmpty()
-                ? "empty"
-                : MyFormatter.listOfArraysToString(requiresUnitsToMove))
-            : "null")
+        + toString(requiresUnitsToMove)
         + "  canOnlyBePlacedInTerritoryValuedAtX:"
         + canOnlyBePlacedInTerritoryValuedAtX
         + "  maxBuiltPerPlayer:"
         + maxBuiltPerPlayer
         + "  special:"
-        + (special != null ? (special.isEmpty() ? "empty" : special.toString()) : "null")
+        + toString(special)
         + "  isSuicideOnAttack:"
         + isSuicideOnAttack
         + "  isSuicideOnDefense:"
@@ -3217,21 +3217,13 @@ public class UnitAttachment extends DefaultAttachment {
         + "  isCombatTransport:"
         + isCombatTransport
         + "  canInvadeOnlyFrom:"
-        + (canInvadeOnlyFrom != null
-            ? (canInvadeOnlyFrom.length == 0 ? "empty" : Arrays.toString(canInvadeOnlyFrom))
-            : "null")
+        + toString(special)
         + "  canBeGivenByTerritoryTo:"
-        + (canBeGivenByTerritoryTo != null
-            ? (canBeGivenByTerritoryTo.isEmpty() ? "empty" : canBeGivenByTerritoryTo.toString())
-            : "null")
+        + toString(canBeGivenByTerritoryTo)
         + "  receivesAbilityWhenWith:"
-        + (receivesAbilityWhenWith != null
-            ? (receivesAbilityWhenWith.isEmpty() ? "empty" : receivesAbilityWhenWith.toString())
-            : "null")
+        + toString(receivesAbilityWhenWith)
         + "  whenCombatDamaged:"
-        + (whenCombatDamaged != null
-            ? (whenCombatDamaged.isEmpty() ? "empty" : whenCombatDamaged.toString())
-            : "null")
+        + toString(whenCombatDamaged, "null")
         + "  blockade:"
         + blockade
         + "  bombingMaxDieSides:"
@@ -3241,13 +3233,9 @@ public class UnitAttachment extends DefaultAttachment {
         + "  bombingTargets:"
         + bombingTargets
         + "  givesMovement:"
-        + (givesMovement != null
-            ? (givesMovement.isEmpty() ? "empty" : givesMovement.toString())
-            : "null")
+        + toString(givesMovement)
         + "  repairsUnits:"
-        + (repairsUnits != null
-            ? (repairsUnits.isEmpty() ? "empty" : repairsUnits.toString())
-            : "null")
+        + toString(repairsUnits)
         + "  canScramble:"
         + canScramble
         + "  maxScrambleDistance:"
@@ -3259,23 +3247,13 @@ public class UnitAttachment extends DefaultAttachment {
         + "  maxInterceptCount:"
         + maxInterceptCount
         + "  whenCapturedChangesInto:"
-        + (whenCapturedChangesInto != null
-            ? (whenCapturedChangesInto.isEmpty() ? "empty" : whenCapturedChangesInto.toString())
-            : "null")
-        + " whenCapturedSustainsDamage:"
+        + toString(whenCapturedChangesInto)
+        + "  whenCapturedSustainsDamage:"
         + whenCapturedSustainsDamage
         + "  whenHitPointsDamagedChangesInto:"
-        + (whenHitPointsDamagedChangesInto != null
-            ? (whenHitPointsDamagedChangesInto.isEmpty()
-                ? "empty"
-                : whenHitPointsDamagedChangesInto.toString())
-            : "null")
+        + toString(whenHitPointsDamagedChangesInto)
         + "  whenHitPointsRepairedChangesInto:"
-        + (whenHitPointsRepairedChangesInto != null
-            ? (whenHitPointsRepairedChangesInto.isEmpty()
-                ? "empty"
-                : whenHitPointsRepairedChangesInto.toString())
-            : "null")
+        + toString(whenHitPointsRepairedChangesInto)
         + "  canIntercept:"
         + canIntercept
         + "  requiresAirBaseToIntercept:"
