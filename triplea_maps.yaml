@@ -2488,3 +2488,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/CTF2/master/preview.png
   description: |
    <br>A variety of scenarios using the Capture the Flag Map
+- mapName: Oil Wars
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Oil_Wars/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Oil_Wars/master/preview.png
+  description: |
+   <br>An alternate history scenario in a world critically short of oil. Income is concentrated in oil-producing regions
