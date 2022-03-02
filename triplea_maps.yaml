@@ -2495,3 +2495,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Oil_Wars/master/preview.png
   description: |
    <br>An alternate history scenario in a world critically short of oil. Income is concentrated in oil-producing regions
+- mapName: Game of Thrones V2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/game_of_thrones_v2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/game_of_thrones_v2/master/preview.png
+  description: |
+   <br>The Game of Thrones with triggers to reflect the shifting alliances. Triggers are not fully implemented
