@@ -2502,3 +2502,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/game_of_thrones_v2/master/preview.png
   description: |
    <br>The Game of Thrones with triggers to reflect the shifting alliances. Triggers are not fully implemented
+- mapName: D-Day 3
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/D-Day_3/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/D-Day_3/master/preview.png
+  description: |
+   <br>Based upon the Axis & Allies D-Day game, this mod is designed for maximum compatibility with the AI
