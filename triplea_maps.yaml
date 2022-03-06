@@ -2516,3 +2516,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Hearts_of_Iron2/master/preview.png
   description: |
    <br>4 WW2 Scenarios on large map with many unit types
+- mapName: China vs Russia
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/China_vs_Russia/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/China_vs_Russia/master/preview.png
+  description: |
+   <br>A hypothetical Chinese-Russian conflict on the World War II Pacific map
