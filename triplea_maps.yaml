@@ -2509,3 +2509,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/D-Day_3/master/preview.png
   description: |
    <br>Based upon the Axis & Allies D-Day game, this mod is designed for maximum compatibility with the AI
+- mapName: Hearts of Iron 2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Hearts_of_Iron2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Hearts_of_Iron2/master/preview.png
+  description: |
+   <br>4 WW2 Scenarios on large map with many unit types
