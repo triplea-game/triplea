@@ -2523,3 +2523,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/China_vs_Russia/master/preview.png
   description: |
    <br>A hypothetical Chinese-Russian conflict on the World War II Pacific map
+- mapName: Feudal Lords
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/feudal_lords/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/feudal_lords/master/preview.png
+  description: |
+   <br>Free for all in Medieval Europe and the Mediterranean
