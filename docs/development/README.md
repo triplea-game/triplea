@@ -1,6 +1,7 @@
 # Developer Setup Guide
 
 ## Before Getting Started
+- Install JDK 11 (project is on this Java version)
 - [Install IDE](./how-to/ide-setup) (favor choosing IDEA)
   - Create as a gradle project (file > open project > select the build.gradle file))
   - Usually TripleA and lobby are started from within IDE, look for checked in 'run configurations'.
