@@ -2537,3 +2537,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/big_world_1940/master/preview.png
   description: |
    <br>Free for all in Medieval Europe and the Mediterranean
+- mapName: TripleA Classic Revised
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/TripleA_Classic_Revised/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/TripleA_Classic_Revised/master/preview.png
+  description: |
+   <br>World War II Classic with some rules from World War II Revised added
