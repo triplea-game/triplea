@@ -2530,3 +2530,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/feudal_lords/master/preview.png
   description: |
    <br>Free for all in Medieval Europe and the Mediterranean
+- mapName: Big World 1940
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/big_world_1940/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_1940/master/preview.png
+  description: |
+   <br>Free for all in Medieval Europe and the Mediterranean
