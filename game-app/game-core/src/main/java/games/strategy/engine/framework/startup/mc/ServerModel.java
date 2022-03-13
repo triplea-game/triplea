@@ -323,6 +323,19 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     this.playersToNodesMappingPersisted = true;
   }
 
+  private void gameDataChanged() {
+    synchronized (this) {
+      data = gameSelectorModel.getGameData();
+      if (data != null) {
+        updatePlayersOnGameDataChanged(data);
+      }
+      objectStreamFactory.setData(data);
+      localPlayerTypes.clear();
+    }
+    notifyChannelPlayersChanged();
+    remoteModelListener.playerListChanged();
+  }
+
   private void updatePlayersOnGameDataChanged(final GameData data) {
     // If specified, keep the previous player data.
     if (playersToNodesMappingPersisted) {
@@ -360,19 +373,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
       playersEnabledListing.put(name, !player.getIsDisabled());
     }
-  }
-
-  private void gameDataChanged() {
-    synchronized (this) {
-      data = gameSelectorModel.getGameData();
-      if (data != null) {
-        updatePlayersOnGameDataChanged(data);
-      }
-      objectStreamFactory.setData(data);
-      localPlayerTypes.clear();
-    }
-    notifyChannelPlayersChanged();
-    remoteModelListener.playerListChanged();
   }
 
   private Optional<ServerConnectionProps> getServerProps() {
