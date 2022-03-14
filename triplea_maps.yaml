@@ -2459,12 +2459,13 @@
 - mapName: WW2v5 Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v5_variants/archive/master.zip
-  version: 3
+  version: 4
   img: https://raw.githubusercontent.com/triplea-maps/ww2v5_variants/master/preview.png
   description: |
    <br>Variants for WW2v5
    <br>WW2v5-Maintenance adds per turn maintenance costs
    <br>WW2v5-Buildcaps limits the number of units you can build
+   <br>WW2v5_1942_2nd_Edition_High_Production_Mod
 - mapName: NWO-Andrew's
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/NWO_Andrews/archive/master.zip
