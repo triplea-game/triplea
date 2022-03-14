@@ -401,17 +401,16 @@ public final class ProMoveUtils {
         unitList.add(u);
 
         // Determine route and add to move list
-        Route route = null;
-        if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
-          route =
+        if (unitList.stream().allMatch(Matches.unitIsAir())) {
+          final Route route =
               map.getRouteForUnit(
                   startTerritory,
                   t,
                   ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, true),
                   u,
                   player);
+          moves.add(new MoveDescription(unitList, route));
         }
-        moves.add(new MoveDescription(unitList, route));
       }
     }
     return moves;
