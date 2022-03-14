@@ -409,7 +409,9 @@ public final class ProMoveUtils {
                   ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, true),
                   u,
                   player);
-          moves.add(new MoveDescription(unitList, route));
+          if (route != null) {
+            moves.add(new MoveDescription(unitList, route));
+          }
         }
       }
     }
