@@ -6,6 +6,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
@@ -173,16 +174,25 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
             + territory.getUnits().stream()
                 .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
                 .count());
-    units.setViewportView(unitsInTerritoryPanel(territory, uiContext));
+    units.setViewportView(unitsInTerritoryPanel(territory, uiContext, gameData));
   }
 
   private static JPanel unitsInTerritoryPanel(
-      final Territory territory, final UiContext uiContext) {
+      final Territory territory, final UiContext uiContext, final GameData gameData) {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    final List<UnitCategory> units =
-        UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
+
+    final List<UnitCategory> units;
+    // Get unit types under lock as otherwise they may change on the game thread causing a
+    // ConcurrentModificationException.
+    gameData.acquireReadLock();
+    try {
+      units = UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
+    } finally {
+      gameData.releaseReadLock();
+    }
+
     @Nullable GamePlayer currentPlayer = null;
     for (final UnitCategory item : units) {
       // separate players with a separator
