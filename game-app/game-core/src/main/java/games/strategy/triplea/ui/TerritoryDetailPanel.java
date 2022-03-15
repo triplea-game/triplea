@@ -177,10 +177,11 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     gameData.acquireReadLock();
     try {
       unitsList = UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
-      unitsLabel = "Units: "
-          + territory.getUnits().stream()
-          .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
-          .count();
+      unitsLabel =
+          "Units: "
+              + territory.getUnits().stream()
+                  .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
+                  .count();
     } finally {
       gameData.releaseReadLock();
     }
