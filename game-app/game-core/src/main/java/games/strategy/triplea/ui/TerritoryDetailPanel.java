@@ -168,29 +168,32 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br>" + additionalText + "</html>";
     }
     territoryInfo.setText(labelText);
-    unitInfo.setText(
-        "Units: "
-            + territory.getUnits().stream()
-                .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
-                .count());
-    units.setViewportView(unitsInTerritoryPanel(territory, uiContext, gameData));
-  }
 
-  private static JPanel unitsInTerritoryPanel(
-      final Territory territory, final UiContext uiContext, final GameData gameData) {
-    final JPanel panel = new JPanel();
-    panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    final List<UnitCategory> unitsList;
+    final String unitsLabel;
 
-    final List<UnitCategory> units;
-    // Get unit types under lock as otherwise they may change on the game thread causing a
+    // Get the unit information under lock as otherwise they may change on the game thread causing a
     // ConcurrentModificationException.
     gameData.acquireReadLock();
     try {
-      units = UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
+      unitsList = UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
+      unitsLabel = "Units: "
+          + territory.getUnits().stream()
+          .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
+          .count();
     } finally {
       gameData.releaseReadLock();
     }
+
+    unitInfo.setText(unitsLabel);
+    units.setViewportView(unitsInTerritoryPanel(unitsList, uiContext));
+  }
+
+  private static JPanel unitsInTerritoryPanel(
+      final List<UnitCategory> units, final UiContext uiContext) {
+    final JPanel panel = new JPanel();
+    panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
     @Nullable GamePlayer currentPlayer = null;
     for (final UnitCategory item : units) {
