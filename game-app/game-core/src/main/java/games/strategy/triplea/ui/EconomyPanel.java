@@ -25,7 +25,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import org.triplea.java.collections.IntegerMap;
 
-class EconomyPanel extends AbstractStatPanel {
+class EconomyPanel extends AbstractStatPanel implements GameDataChangeListener {
   private static final long serialVersionUID = -7713792841831042952L;
   private final List<ResourceStat> resourceStats = new ArrayList<>();
   private ResourceTableModel resourceModel;
@@ -35,6 +35,7 @@ class EconomyPanel extends AbstractStatPanel {
     super(data);
     this.uiContext = uiContext;
     initLayout();
+    gameData.addDataChangeListener(this);
   }
 
   protected void initLayout() {
@@ -59,14 +60,12 @@ class EconomyPanel extends AbstractStatPanel {
     add(scroll);
   }
 
-  class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener {
+  class ResourceTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 5197895788633898324L;
-    private boolean isDirty = true;
     private String[][] collectedData;
 
     ResourceTableModel() {
       setResourceColumns();
-      gameData.addDataChangeListener(this);
     }
 
     private void setResourceColumns() {
@@ -79,15 +78,34 @@ class EconomyPanel extends AbstractStatPanel {
     }
 
     @Override
-    public synchronized Object getValueAt(final int row, final int col) {
-      if (isDirty) {
+    public Object getValueAt(final int row, final int col) {
+      return getCollectedData()[row][col];
+    }
+
+    @Override
+    public String getColumnName(final int col) {
+      return "";
+    }
+
+    @Override
+    public int getColumnCount() {
+      return resourceStats.size() + 1;
+    }
+
+    @Override
+    public int getRowCount() {
+      return getCollectedData().length;
+    }
+
+    private synchronized String[][] getCollectedData() {
+      if (collectedData == null) {
         loadData();
-        isDirty = false;
       }
-      return collectedData[row][col];
+      return collectedData;
     }
 
     private synchronized void loadData() {
+      final GameData gameData = EconomyPanel.this.gameData;
       gameData.acquireReadLock();
       try {
         final List<GamePlayer> players = getPlayers();
@@ -137,52 +155,21 @@ class EconomyPanel extends AbstractStatPanel {
       return resourceAmountAndIncome.toString();
     }
 
-    @Override
-    public void gameDataChanged(final Change change) {
-      synchronized (this) {
-        isDirty = true;
-      }
-      SwingUtilities.invokeLater(EconomyPanel.this::repaint);
-    }
-
-    @Override
-    public String getColumnName(final int col) {
-      return "";
-    }
-
-    @Override
-    public int getColumnCount() {
-      return resourceStats.size() + 1;
-    }
-
-    @Override
-    public synchronized int getRowCount() {
-      if (!isDirty) {
-        return collectedData.length;
-      }
-
-      gameData.acquireReadLock();
-      try {
-        return gameData.getPlayerList().size() + getAlliances().size();
-      } finally {
-        gameData.releaseReadLock();
-      }
-    }
-
-    public synchronized void setGameData(final GameData data) {
-      synchronized (this) {
-        gameData.removeDataChangeListener(this);
-        gameData = data;
-        gameData.addDataChangeListener(this);
-        isDirty = true;
-      }
-      repaint();
+    synchronized void markDirty() {
+      collectedData = null;
     }
   }
 
+  @Override
+  public void gameDataChanged(final Change change) {
+    resourceModel.markDirty();
+    SwingUtilities.invokeLater(this::repaint);
+  }
+
   public void setGameData(final GameData data) {
+    gameData.removeDataChangeListener(this);
     gameData = data;
-    resourceModel.setGameData(data);
-    resourceModel.gameDataChanged(null);
+    gameData.addDataChangeListener(this);
+    gameDataChanged(null);
   }
 }
