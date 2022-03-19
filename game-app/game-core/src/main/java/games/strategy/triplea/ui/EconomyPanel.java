@@ -105,6 +105,7 @@ class EconomyPanel extends AbstractStatPanel implements GameDataChangeListener {
     }
 
     private synchronized void loadData() {
+      // copy so acquire/release read lock are on the same object!
       final GameData gameData = EconomyPanel.this.gameData;
       gameData.acquireReadLock();
       try {
