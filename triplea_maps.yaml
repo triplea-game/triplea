@@ -2559,3 +2559,16 @@
   img: https://raw.githubusercontent.com/triplea-maps/anti_imperialism/master/preview.png
   description: |
    <br>An abstract game of the United States vs the rest of the world on the Revised map
+- mapName: New World Order Variants-Neutrals
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/New_World_Order_Variants/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/New_World_Order_Variants/blob/master/preview.png
+  description: |
+   <br>3 Variants on the New World Order Map that handle smaller neutral nations differently
+   <br>New World Order Variant - Neutrals Unassigned
+   <br>Neutral nations are restricted to their homeland and can be attacked by either alliance
+   <br>New World Order Variant - Neutrals Assigned
+   <br>Neutral nations are restricted to their homeland and are assigned to an alliance
+   <br>New World Order Variant - Neutrals Unrestricted
+   <br>Neutral nations are normal members of an alliance
