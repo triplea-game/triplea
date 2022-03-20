@@ -139,10 +139,7 @@ class StatPanel extends AbstractStatPanel {
   /** Custom table model. This model is thread safe. */
   class StatTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = -6156153062049822444L;
-    /* Flag to indicate whether data needs to be recalculated */
-    private boolean isDirty = true;
-    /* Column Header Names */
-    /* Underlying data for the table */
+    /* Underlying data for the table. If null, needs to be computed. */
     private String[][] collectedData;
 
     StatTableModel() {
@@ -166,6 +163,8 @@ class StatPanel extends AbstractStatPanel {
     }
 
     private synchronized void loadData() {
+      // copy so acquire/release read lock are on the same object!
+      final GameData gameData = StatPanel.this.gameData;
       gameData.acquireReadLock();
       try {
         final List<GamePlayer> players = getPlayers();
@@ -198,7 +197,7 @@ class StatPanel extends AbstractStatPanel {
     @Override
     public void gameDataChanged(final Change change) {
       synchronized (this) {
-        isDirty = true;
+        collectedData = null;
       }
       SwingUtilities.invokeLater(StatPanel.this::repaint);
     }
@@ -209,11 +208,7 @@ class StatPanel extends AbstractStatPanel {
      */
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
-      if (isDirty) {
-        loadData();
-        isDirty = false;
-      }
-      return collectedData[row][col];
+      return getCollectedData()[row][col];
     }
 
     // Trivial implementations of required methods
@@ -231,30 +226,23 @@ class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public synchronized int getRowCount() {
-      if (!isDirty) {
-        return collectedData.length;
-      }
-
-      // no need to recalculate all the stats just to get the row count
-      // getting the row count is a fairly frequent operation, and will happen even if we are not
-      // displayed!
-      gameData.acquireReadLock();
-      try {
-        return gameData.getPlayerList().size() + getAlliances().size();
-      } finally {
-        gameData.releaseReadLock();
-      }
+    public int getRowCount() {
+      return getCollectedData().length;
     }
 
     synchronized void setGameData(final GameData data) {
-      synchronized (this) {
-        gameData.removeDataChangeListener(this);
-        gameData = data;
-        gameData.addDataChangeListener(this);
-        isDirty = true;
-      }
+      gameData.removeDataChangeListener(this);
+      gameData = data;
+      gameData.addDataChangeListener(this);
+      collectedData = null;
       repaint();
+    }
+
+    private synchronized String[][] getCollectedData() {
+      if (collectedData == null) {
+        loadData();
+      }
+      return collectedData;
     }
   }
 
@@ -279,21 +267,16 @@ class StatPanel extends AbstractStatPanel {
       for (int i = 0; i < colList.length; i++) {
         colMap.put(colList[i], i + 1);
       }
-      /*
-       * .size()+1 added to stop index out of bounds errors when using an Italian player.
-       */
       boolean useTech = false;
+      final GameData gameData = StatPanel.this.gameData;
       try {
         gameData.acquireReadLock();
+        final int numTechs = TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size();
         if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
           useTech = true;
-          data =
-              new String[TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size() + 1]
-                  [colList.length + 2];
+          data = new String[numTechs + 1][colList.length + 2];
         } else {
-          data =
-              new String[TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size()]
-                  [colList.length + 1];
+          data = new String[numTechs][colList.length + 1];
         }
       } finally {
         gameData.releaseReadLock();
@@ -330,7 +313,7 @@ class StatPanel extends AbstractStatPanel {
       for (int i = 0; i < players.size(); i++) {
         colList[i] = players.get(i).getName();
       }
-      Arrays.sort(colList, 0, players.size());
+      Arrays.sort(colList);
     }
 
     void update() {

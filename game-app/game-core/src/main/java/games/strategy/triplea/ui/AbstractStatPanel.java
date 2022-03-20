@@ -28,8 +28,9 @@ public abstract class AbstractStatPanel extends JPanel {
   Map<String, Set<GamePlayer>> getAllianceMap() {
     final Map<String, Set<GamePlayer>> allianceMap = new LinkedHashMap<>();
     for (final String alliance : gameData.getAllianceTracker().getAlliances()) {
-      if (gameData.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
-        allianceMap.put(alliance, gameData.getAllianceTracker().getPlayersInAlliance(alliance));
+      final Set<GamePlayer> players = gameData.getAllianceTracker().getPlayersInAlliance(alliance);
+      if (players.size() > 1) {
+        allianceMap.put(alliance, players);
       }
     }
     return allianceMap;

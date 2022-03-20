@@ -2552,3 +2552,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Cybertank/master/preview.png
   description: |
    <br>Futuristic warfare inspired by the game Ogre
+- mapName: Anti-Imperialism
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/anti_imperialism/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/anti_imperialism/master/preview.png
+  description: |
+   <br>An abstract game of the United States vs the rest of the world on the Revised map
