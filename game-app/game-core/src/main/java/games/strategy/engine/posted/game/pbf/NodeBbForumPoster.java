@@ -156,8 +156,14 @@ public class NodeBbForumPoster {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
         final String json = EntityUtils.toString(response.getEntity());
-        final String url = (String) YamlReader.readList(json).get(0).get("url");
-        return "\n[Savegame](" + url + ")";
+        try {
+          final String url = (String) YamlReader.readMap(json).get("url");
+          return "\n[Savegame](" + url + ")";
+        } catch (final Exception e) {
+          // This is a temporary hack to handle old versions of nodeBB forum json
+          final String url = (String) YamlReader.readList(json).get(0).get("url");
+          return "\n[Savegame](" + url + ")";
+        }
       }
       throw new IllegalStateException(
           "Failed to upload savegame, server returned Error Code "
