@@ -64,7 +64,7 @@ subprojects {
         apacheHttpComponentsVersion = '4.5.13'
         awaitilityVersion = '4.2.0'
         bcryptVersion = '0.9.0'
-        caffeineVersion = '3.0.5'
+        caffeineVersion = '3.0.6'
         checkstyleVersion = '8.45'
         commonsCliVersion = '1.5.0'
         commonsCodecVersion = '1.15'
