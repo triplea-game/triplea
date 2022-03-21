@@ -53,6 +53,7 @@ class StatPanel extends AbstractStatPanel implements GameDataChangeListener {
     techModel = new TechTableModel();
     fillPlayerIcons();
     initLayout();
+    gameData.addDataChangeListener(this);
   }
 
   protected void initLayout() {
@@ -150,7 +151,6 @@ class StatPanel extends AbstractStatPanel implements GameDataChangeListener {
 
     StatTableModel() {
       setStatColumns();
-      gameData.addDataChangeListener(this);
     }
 
     void setStatColumns() {
@@ -255,7 +255,6 @@ class StatPanel extends AbstractStatPanel implements GameDataChangeListener {
     private final Map<String, Integer> rowMap = new HashMap<>();
 
     TechTableModel() {
-      gameData.addDataChangeListener(this);
       initColList();
       /* Load the country -> col mapping */
       for (int i = 0; i < colList.length; i++) {
