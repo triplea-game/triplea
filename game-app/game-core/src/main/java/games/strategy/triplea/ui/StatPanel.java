@@ -37,7 +37,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-class StatPanel extends AbstractStatPanel {
+class StatPanel extends AbstractStatPanel implements GameDataChangeListener {
   private static final long serialVersionUID = 4340684166664492498L;
 
   IStat[] stats;
@@ -85,11 +85,17 @@ class StatPanel extends AbstractStatPanel {
   }
 
   public void setGameData(final GameData data) {
+    gameData.removeDataChangeListener(this);
     gameData = data;
-    dataModel.setGameData(data);
-    techModel.setGameData(data);
-    dataModel.gameDataChanged(null);
-    techModel.gameDataChanged(null);
+    gameData.addDataChangeListener(this);
+    gameDataChanged(null);
+  }
+
+  @Override
+  public void gameDataChanged(final Change change) {
+    dataModel.markDirty();
+    techModel.markDirty();
+    SwingUtilities.invokeLater(this::repaint);
   }
 
   /**
@@ -137,7 +143,7 @@ class StatPanel extends AbstractStatPanel {
   }
 
   /** Custom table model. This model is thread safe. */
-  class StatTableModel extends AbstractTableModel implements GameDataChangeListener {
+  class StatTableModel extends AbstractTableModel {
     private static final long serialVersionUID = -6156153062049822444L;
     /* Underlying data for the table. If null, needs to be computed. */
     private String[][] collectedData;
@@ -194,14 +200,6 @@ class StatPanel extends AbstractStatPanel {
       }
     }
 
-    @Override
-    public void gameDataChanged(final Change change) {
-      synchronized (this) {
-        collectedData = null;
-      }
-      SwingUtilities.invokeLater(StatPanel.this::repaint);
-    }
-
     /*
      * Re-calcs the underlying data in a lazy manner.
      * Limitation: This is not a thread-safe implementation.
@@ -230,12 +228,8 @@ class StatPanel extends AbstractStatPanel {
       return getCollectedData().length;
     }
 
-    synchronized void setGameData(final GameData data) {
-      gameData.removeDataChangeListener(this);
-      gameData = data;
-      gameData.addDataChangeListener(this);
+    synchronized void markDirty() {
       collectedData = null;
-      repaint();
     }
 
     private synchronized String[][] getCollectedData() {
@@ -246,7 +240,7 @@ class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class TechTableModel extends AbstractTableModel implements GameDataChangeListener {
+  class TechTableModel extends AbstractTableModel {
     private static final long serialVersionUID = -4612476336419396081L;
     /* Flag to indicate whether data needs to be recalculated */
     private boolean isDirty = true;
@@ -388,16 +382,7 @@ class StatPanel extends AbstractStatPanel {
       return data.length;
     }
 
-    @Override
-    public void gameDataChanged(final Change change) {
-      isDirty = true;
-      SwingUtilities.invokeLater(StatPanel.this::repaint);
-    }
-
-    void setGameData(final GameData data) {
-      gameData.removeDataChangeListener(this);
-      gameData = data;
-      gameData.addDataChangeListener(this);
+    void markDirty() {
       isDirty = true;
     }
   }
