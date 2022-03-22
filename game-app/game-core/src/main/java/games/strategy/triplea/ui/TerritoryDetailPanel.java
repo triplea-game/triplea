@@ -46,7 +46,8 @@ public class TerritoryDetailPanel extends JPanel {
   private final JScrollPane units = new JScrollPane();
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
-  private final List<Function<Territory, String>> additionalTerritoryDetailFunctions = new ArrayList<>();
+  private final List<Function<Territory, String>> additionalTerritoryDetailFunctions =
+      new ArrayList<>();
 
   TerritoryDetailPanel(
       final MapPanel mapPanel,
