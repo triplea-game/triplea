@@ -218,11 +218,9 @@ public class PlayerAttachment extends DefaultAttachment {
         copyUnitsMoving.removeAll(CollectionUtils.getMatches(copyUnitsMoving, notAllied));
       }
       // now remove units that are not part of our list
-      final Set<UnitType> unitsToTest = currentLimit.units;
-      currentInTerritory.retainAll(
-          CollectionUtils.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));
-      copyUnitsMoving.retainAll(
-          CollectionUtils.getMatches(copyUnitsMoving, Matches.unitIsOfTypes(unitsToTest)));
+      final Predicate<Unit> matchesUnits = Matches.unitIsOfTypes(currentLimit.units);
+      currentInTerritory.retainAll(CollectionUtils.getMatches(currentInTerritory, matchesUnits));
+      copyUnitsMoving.retainAll(CollectionUtils.getMatches(copyUnitsMoving, matchesUnits));
       // now test
       if (currentLimit.max < (currentInTerritory.size() + copyUnitsMoving.size())) {
         return false;
