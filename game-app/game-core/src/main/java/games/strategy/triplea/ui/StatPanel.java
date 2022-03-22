@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -37,17 +38,18 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-class StatPanel extends AbstractStatPanel implements GameDataChangeListener {
+class StatPanel extends JPanel implements GameDataChangeListener {
   private static final long serialVersionUID = 4340684166664492498L;
 
   IStat[] stats;
   private final Map<GamePlayer, ImageIcon> mapPlayerImage = new HashMap<>();
+  protected GameData gameData;
   private final UiContext uiContext;
   private final StatTableModel dataModel;
   private final TechTableModel techModel;
 
   StatPanel(final GameData data, final UiContext uiContext) {
-    super(data);
+    this.gameData = data;
     this.uiContext = uiContext;
     dataModel = new StatTableModel();
     techModel = new TechTableModel();
@@ -173,8 +175,8 @@ class StatPanel extends AbstractStatPanel implements GameDataChangeListener {
       final GameData gameData = StatPanel.this.gameData;
       gameData.acquireReadLock();
       try {
-        final List<GamePlayer> players = getPlayers();
-        final Collection<String> alliances = getAlliances();
+        final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
+        final Collection<String> alliances = gameData.getAllianceTracker().getAlliances();
         collectedData = new String[players.size() + alliances.size()][stats.length + 1];
         int row = 0;
         for (final GamePlayer player : players) {
@@ -301,7 +303,7 @@ class StatPanel extends AbstractStatPanel implements GameDataChangeListener {
     }
 
     private void initColList() {
-      final List<GamePlayer> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
+      final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
       colList = new String[players.size()];
       for (int i = 0; i < players.size(); i++) {
         colList[i] = players.get(i).getName();

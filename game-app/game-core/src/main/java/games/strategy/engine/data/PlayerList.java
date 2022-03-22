@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.triplea.util.PlayerOrderComparator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,6 +43,12 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
 
   public List<GamePlayer> getPlayers() {
     return new ArrayList<>(players.values());
+  }
+
+  public List<GamePlayer> getSortedPlayers() {
+    final List<GamePlayer> players = getPlayers();
+    players.sort(new PlayerOrderComparator(getData()));
+    return players;
   }
 
   /** an iterator of a new ArrayList copy of the players. */

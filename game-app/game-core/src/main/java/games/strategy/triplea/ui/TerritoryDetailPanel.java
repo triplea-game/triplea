@@ -33,8 +33,9 @@ import javax.swing.border.EmptyBorder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
-public class TerritoryDetailPanel extends AbstractStatPanel {
+public class TerritoryDetailPanel extends JPanel {
   private static final long serialVersionUID = 1377022163587438988L;
+  private GameData gameData;
   private final UiContext uiContext;
   private final JButton showOdds = new JButton("Battle Calculator (Ctrl-B)");
   private final JButton addAttackers = new JButton("Add Attackers (Ctrl-A)");
@@ -45,14 +46,14 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   private final JScrollPane units = new JScrollPane();
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
-  private List<Function<Territory, String>> additionalTerritoryDetailFunctions = new ArrayList<>();
+  private final List<Function<Territory, String>> additionalTerritoryDetailFunctions = new ArrayList<>();
 
   TerritoryDetailPanel(
       final MapPanel mapPanel,
       final GameData data,
       final UiContext uiContext,
       final TripleAFrame frame) {
-    super(data);
+    this.gameData = data;
     this.frame = frame;
     this.uiContext = uiContext;
     mapPanel.addMapSelectionListener(
