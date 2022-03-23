@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -25,14 +26,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import org.triplea.java.collections.IntegerMap;
 
-class EconomyPanel extends AbstractStatPanel implements GameDataChangeListener {
+class EconomyPanel extends JPanel implements GameDataChangeListener {
   private static final long serialVersionUID = -7713792841831042952L;
   private final List<ResourceStat> resourceStats = new ArrayList<>();
   private ResourceTableModel resourceModel;
+  private GameData gameData;
   private final UiContext uiContext;
 
   EconomyPanel(final GameData data, final UiContext uiContext) {
-    super(data);
+    this.gameData = data;
     this.uiContext = uiContext;
     initLayout();
     gameData.addDataChangeListener(this);
@@ -109,8 +111,9 @@ class EconomyPanel extends AbstractStatPanel implements GameDataChangeListener {
       final GameData gameData = EconomyPanel.this.gameData;
       gameData.acquireReadLock();
       try {
-        final List<GamePlayer> players = getPlayers();
-        final Map<String, Set<GamePlayer>> allianceMap = getAllianceMap();
+        final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
+        final Map<String, Set<GamePlayer>> allianceMap =
+            gameData.getAllianceTracker().getAllianceMap();
         collectedData = new String[players.size() + allianceMap.size()][resourceStats.size() + 1];
         int row = 0;
         final Map<GamePlayer, IntegerMap<Resource>> resourceIncomeMap = new HashMap<>();

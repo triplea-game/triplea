@@ -33,6 +33,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -52,16 +53,18 @@ import org.triplea.util.FileNameUtils;
  * not.
  */
 @Slf4j
-public class ObjectivePanel extends AbstractStatPanel {
+class ObjectivePanel extends JPanel implements GameDataChangeListener {
   private static final long serialVersionUID = 3759819236905645520L;
   private Map<String, Map<ICondition, String>> statsObjective;
   private ObjectiveTableModel objectiveModel;
+  private GameData gameData;
   private IDelegateBridge dummyDelegate;
 
   ObjectivePanel(final GameData data) {
-    super(data);
+    gameData = data;
     dummyDelegate = new ObjectiveDummyDelegateBridge(data);
     initLayout();
+    gameData.addDataChangeListener(this);
   }
 
   @Override
@@ -74,7 +77,7 @@ public class ObjectivePanel extends AbstractStatPanel {
   }
 
   public void removeDataChangeListener() {
-    objectiveModel.removeDataChangeListener();
+    gameData.removeDataChangeListener(this);
   }
 
   protected void initLayout() {
@@ -106,7 +109,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     add(scroll);
   }
 
-  class ObjectiveTableModel extends AbstractTableModel implements GameDataChangeListener {
+  class ObjectiveTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 2259315408905271333L;
     private static final int COLUMNS_TOTAL = 2;
     private boolean isDirty = true;
@@ -116,11 +119,6 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     ObjectiveTableModel() {
       setObjectiveStats();
-      gameData.addDataChangeListener(this);
-    }
-
-    public void removeDataChangeListener() {
-      gameData.removeDataChangeListener(this);
     }
 
     private void setObjectiveStats() {
@@ -251,6 +249,8 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     private synchronized void loadData() {
+      // copy so acquire/release read lock are on the same object!
+      final GameData gameData = ObjectivePanel.this.gameData;
       gameData.acquireReadLock();
       try {
         final Map<ICondition, String> conditions = getConditionComment(getTestedConditions());
@@ -327,14 +327,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     @Override
-    public void gameDataChanged(final Change change) {
-      synchronized (this) {
-        isDirty = true;
-      }
-      SwingUtilities.invokeLater(ObjectivePanel.this::repaint);
-    }
-
-    @Override
     public String getColumnName(final int col) {
       return (col == 0) ? "Done" : "Objective Name";
     }
@@ -366,23 +358,23 @@ public class ObjectivePanel extends AbstractStatPanel {
       return rowsTotal;
     }
 
-    public synchronized void setGameData(final GameData data) {
-      synchronized (this) {
-        gameData.removeDataChangeListener(this);
-        gameData = data;
-        setObjectiveStats();
-        gameData.addDataChangeListener(this);
-        isDirty = true;
-      }
-      repaint();
+    void markDirty() {
+      isDirty = true;
     }
   }
 
   public void setGameData(final GameData data) {
     dummyDelegate = new ObjectiveDummyDelegateBridge(data);
+    gameData.removeDataChangeListener(this);
     gameData = data;
-    objectiveModel.setGameData(data);
-    objectiveModel.gameDataChanged(null);
+    gameData.addDataChangeListener(this);
+    gameDataChanged(null);
+  }
+
+  @Override
+  public void gameDataChanged(final Change change) {
+    objectiveModel.markDirty();
+    SwingUtilities.invokeLater(this::repaint);
   }
 
   private static final class ColorTableCellRenderer extends DefaultTableCellRenderer {
