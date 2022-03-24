@@ -99,7 +99,7 @@ subprojects {
         openFeignVersion = '11.8'
         postgresqlVersion = '42.3.3'
         snakeYamlVersion = '2.3'
-        sonatypeGoodiesPrefsVersion = '2.3.3'
+        sonatypeGoodiesPrefsVersion = '2.3.4'
         substanceVersion = '4.5.0'
         wireMockJunit5Version = '1.3.1'
         wireMockVersion = '2.27.2'
