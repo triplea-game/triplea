@@ -342,10 +342,12 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       playersToNodesMappingPersisted = false;
       final Set<String> dataPlayers =
           data.getPlayerList().stream().map(GamePlayer::getName).collect(Collectors.toSet());
+      // Sanity check that the list of countries matches.
       if (dataPlayers.equals(playersToNodeListing.keySet())) {
-        // List of countries matches, keep the persisted mappings.
+        // Don't regenerate the mappings, persist existing ones.
         return;
       }
+      throw new IllegalStateException("Expected countries to match when persisting seatings");
     }
 
     // Reset setting based on game data.
