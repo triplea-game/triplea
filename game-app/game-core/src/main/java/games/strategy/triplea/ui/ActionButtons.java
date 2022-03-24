@@ -182,9 +182,9 @@ public class ActionButtons extends JPanel {
     actionPanel = newCurrent;
 
     // newCurrent might be null if we are shutting down
-    if (actionPanel != null) {
-      actionPanel.display(gamePlayer);
-      SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, actionPanel.toString()));
+    if (newCurrent != null) {
+      newCurrent.display(gamePlayer);
+      SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, newCurrent.toString()));
     }
   }
 
