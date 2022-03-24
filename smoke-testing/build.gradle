@@ -25,14 +25,19 @@ tasks.test.dependsOn("downloadXmls", "downloadSaveGames")
 task downloadXmls {
     doLast {
         mkdir "$projectDir/src/test/resources/map-xmls/"
+
+        def urls = []
         file('map-list.txt').eachLine { path ->
             if (!path.startsWith('#')) {
-                download.run {
-                    src "$path"
-                    dest "$projectDir/src/test/resources/map-xmls/"
-                    overwrite false
-                }
+                urls.add(path)
             }
+        }
+
+        // Use a single download.run invocation to download in parallel.
+        download.run {
+             src(urls)
+             dest "$projectDir/src/test/resources/map-xmls/"
+             overwrite false
         }
     }
 }
@@ -40,14 +45,19 @@ task downloadXmls {
 task downloadSaveGames {
     doLast {
         mkdir "$projectDir/src/test/resources/save-games/"
+
+        def urls = []
         file('save-game-list.txt').eachLine { path ->
             if (!path.startsWith('#')) {
-                download.run {
-                    src "$path"
-                    dest "$projectDir/src/test/resources/save-games/"
-                    overwrite false
-                }
+                urls.add(path)
             }
+        }
+
+        // Use a single download.run invocation to download in parallel.
+        download.run {
+            src(urls)
+            dest "$projectDir/src/test/resources/save-games/"
+            overwrite false
         }
     }
 }
