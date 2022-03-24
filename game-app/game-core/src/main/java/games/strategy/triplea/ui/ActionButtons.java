@@ -46,22 +46,23 @@ public class ActionButtons extends JPanel {
   private static final long serialVersionUID = 2175685892863042399L;
   private final CardLayout layout = new CardLayout();
 
-  @Getter private BattlePanel battlePanel;
+  @Getter private @Nullable BattlePanel battlePanel;
 
-  private MovePanel movePanel;
+  private @Nullable MovePanel movePanel;
 
-  private PurchasePanel purchasePanel;
-  private RepairPanel repairPanel;
+  private @Nullable PurchasePanel purchasePanel;
+  private @Nullable RepairPanel repairPanel;
 
   @Getter private PlacePanel placePanel;
 
-  private TechPanel techPanel;
-  private EndTurnPanel endTurnPanel;
-  private MoveForumPosterPanel moveForumPosterPanel;
+  private @Nullable TechPanel techPanel;
+  private @Nullable EndTurnPanel endTurnPanel;
+  private @Nullable MoveForumPosterPanel moveForumPosterPanel;
+  private @Nullable PoliticsPanel politicsPanel;
+  private @Nullable UserActionPanel userActionPanel;
+  private @Nullable PickTerritoryAndUnitsPanel pickTerritoryAndUnitsPanel;
+
   private @Nullable ActionPanel actionPanel;
-  private PoliticsPanel politicsPanel;
-  private UserActionPanel userActionPanel;
-  private PickTerritoryAndUnitsPanel pickTerritoryAndUnitsPanel;
 
   public ActionButtons(
       final GameData data,
@@ -128,11 +129,13 @@ public class ActionButtons extends JPanel {
   }
 
   void changeToMove(final GamePlayer gamePlayer, final boolean nonCombat, final String stepName) {
-    movePanel.setNonCombat(nonCombat);
-    final boolean airBorne = stepName.endsWith("AirborneCombatMove");
-    final String displayText = (airBorne ? " Airborne" : (nonCombat ? " Non" : ""));
-    movePanel.setDisplayText(displayText + " Combat Move");
-    movePanel.setMoveType(airBorne ? MoveType.SPECIAL : MoveType.DEFAULT);
+    if (movePanel != null) {
+      movePanel.setNonCombat(nonCombat);
+      final boolean airBorne = stepName.endsWith("AirborneCombatMove");
+      final String displayText = (airBorne ? " Airborne" : (nonCombat ? " Non" : ""));
+      movePanel.setDisplayText(displayText + " Combat Move");
+      movePanel.setMoveType(airBorne ? MoveType.SPECIAL : MoveType.DEFAULT);
+    }
     changeTo(gamePlayer, movePanel);
   }
 
@@ -150,7 +153,9 @@ public class ActionButtons extends JPanel {
 
   public void changeToBattle(
       final GamePlayer gamePlayer, final Map<BattleType, Collection<Territory>> battles) {
-    battlePanel.setBattlesAndBombing(battles);
+    if (battlePanel != null) {
+      battlePanel.setBattlesAndBombing(battles);
+    }
     changeTo(gamePlayer, battlePanel);
   }
 
@@ -198,6 +203,9 @@ public class ActionButtons extends JPanel {
    * @return null if no move was made.
    */
   public IntegerMap<ProductionRule> waitForPurchase(final boolean bid) {
+    if (purchasePanel == null) {
+      return null;
+    }
     return purchasePanel.waitForPurchase(bid);
   }
 
@@ -208,6 +216,9 @@ public class ActionButtons extends JPanel {
    */
   public Map<Unit, IntegerMap<RepairRule>> waitForRepair(
       final boolean bid, final Collection<GamePlayer> allowedPlayersToRepair) {
+    if (repairPanel == null) {
+      return null;
+    }
     return repairPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 
@@ -217,6 +228,9 @@ public class ActionButtons extends JPanel {
    * @return null if no move was made.
    */
   public MoveDescription waitForMove(final IPlayerBridge bridge) {
+    if (movePanel == null) {
+      return null;
+    }
     return movePanel.waitForMove(bridge);
   }
 
@@ -226,6 +240,9 @@ public class ActionButtons extends JPanel {
    * @return null if no tech roll was made.
    */
   public TechRoll waitForTech() {
+    if (techPanel == null) {
+      return null;
+    }
     return techPanel.waitForTech();
   }
 
@@ -236,6 +253,9 @@ public class ActionButtons extends JPanel {
    */
   public PoliticalActionAttachment waitForPoliticalAction(
       final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
+    if (politicsPanel == null) {
+      return null;
+    }
     return politicsPanel.waitForPoliticalAction(firstRun, politicsDelegate);
   }
 
@@ -246,6 +266,9 @@ public class ActionButtons extends JPanel {
    */
   public UserActionAttachment waitForUserActionAction(
       final boolean firstRun, final IUserActionDelegate userActionDelegate) {
+    if (userActionPanel == null) {
+      return null;
+    }
     return userActionPanel.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
@@ -255,20 +278,30 @@ public class ActionButtons extends JPanel {
    * @return null if no placement was made.
    */
   public PlaceData waitForPlace(final boolean bid, final IPlayerBridge bridge) {
+    if (placePanel == null) {
+      return null;
+    }
     return placePanel.waitForPlace(bid, bridge);
   }
 
   /** Blocks until the user selects an end-of-turn action. */
   public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge) {
-    endTurnPanel.waitForDone(frame, bridge);
+    if (endTurnPanel != null) {
+      endTurnPanel.waitForDone(frame, bridge);
+    }
   }
 
   public void waitForMoveForumPosterPanel(final TripleAFrame frame, final IPlayerBridge bridge) {
-    moveForumPosterPanel.waitForDone(frame, bridge);
+    if (moveForumPosterPanel != null) {
+      moveForumPosterPanel.waitForDone(frame, bridge);
+    }
   }
 
   /** Blocks until the user selects a battle to fight. */
   public FightBattleDetails waitForBattleSelection() {
+    if (battlePanel == null) {
+      return null;
+    }
     return battlePanel.waitForBattleSelection();
   }
 
@@ -276,6 +309,9 @@ public class ActionButtons extends JPanel {
       final List<Territory> territoryChoices,
       final List<Unit> unitChoices,
       final int unitsPerPick) {
+    if (pickTerritoryAndUnitsPanel == null) {
+      return Tuple.of(null, Set.of());
+    }
     return pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(
         territoryChoices, unitChoices, unitsPerPick);
   }
