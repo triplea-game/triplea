@@ -61,6 +61,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -99,6 +100,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   private Messengers messengers;
   private GameData data;
   private Map<String, String> playersToNodeListing = new HashMap<>();
+  private boolean playersToNodesMappingPersisted = false;
   private Map<String, Boolean> playersEnabledListing = new HashMap<>();
   private Collection<String> playersAllowedToBeDisabled = new HashSet<>();
   private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
@@ -313,42 +315,66 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     localPlayerTypes.put(player, type);
   }
 
+  /**
+   * Persists the players mappings to re-use upon a game data change. Used to persist the previous
+   * game's player setting for the game restart if a connection is lost.
+   */
+  public void persistPlayersToNodesMapping() {
+    this.playersToNodesMappingPersisted = true;
+  }
+
   private void gameDataChanged() {
     synchronized (this) {
       data = gameSelectorModel.getGameData();
       if (data != null) {
-        playersToNodeListing = new HashMap<>();
-        playersEnabledListing = new HashMap<>();
-        playersAllowedToBeDisabled =
-            new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
-        playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
-        for (final GamePlayer player : data.getPlayerList().getPlayers()) {
-          final String name = player.getName();
-          if (HeadlessGameServer.headless()) {
-            if (player.getIsDisabled()) {
-              playersToNodeListing.put(name, messengers.getLocalNode().getName());
-              localPlayerTypes.put(name, PlayerTypes.WEAK_AI);
-            } else {
-              // we generally do not want a headless host bot to be doing any AI turns, since that
-              // is taxing on the system
-              playersToNodeListing.put(name, null);
-            }
-          } else {
-            Optional.ofNullable(messengers)
-                .ifPresent(
-                    messenger ->
-                        playersToNodeListing.put(name, messenger.getLocalNode().getName()));
-          }
-          playerNamesAndAlliancesInTurnOrder.put(
-              name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
-          playersEnabledListing.put(name, !player.getIsDisabled());
-        }
+        updatePlayersOnGameDataChanged(data);
       }
       objectStreamFactory.setData(data);
       localPlayerTypes.clear();
     }
     notifyChannelPlayersChanged();
     remoteModelListener.playerListChanged();
+  }
+
+  private void updatePlayersOnGameDataChanged(final GameData data) {
+    // If specified, keep the previous player data.
+    if (playersToNodesMappingPersisted) {
+      playersToNodesMappingPersisted = false;
+      final Set<String> dataPlayers =
+          data.getPlayerList().stream().map(GamePlayer::getName).collect(Collectors.toSet());
+      // Sanity check that the list of countries matches.
+      if (dataPlayers.equals(playersToNodeListing.keySet())) {
+        // Don't regenerate the mappings, persist existing ones.
+        return;
+      }
+      throw new IllegalStateException("Expected countries to match when persisting seatings");
+    }
+
+    // Reset setting based on game data.
+    playersToNodeListing = new HashMap<>();
+    playersEnabledListing = new HashMap<>();
+    playersAllowedToBeDisabled = new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
+    playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
+    for (final GamePlayer player : data.getPlayerList().getPlayers()) {
+      final String name = player.getName();
+      if (HeadlessGameServer.headless()) {
+        if (player.getIsDisabled()) {
+          playersToNodeListing.put(name, messengers.getLocalNode().getName());
+          localPlayerTypes.put(name, PlayerTypes.WEAK_AI);
+        } else {
+          // we generally do not want a headless host bot to be doing any AI turns, since that
+          // is taxing on the system
+          playersToNodeListing.put(name, null);
+        }
+      } else {
+        Optional.ofNullable(messengers)
+            .ifPresent(
+                messenger -> playersToNodeListing.put(name, messenger.getLocalNode().getName()));
+      }
+      playerNamesAndAlliancesInTurnOrder.put(
+          name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
+      playersEnabledListing.put(name, !player.getIsDisabled());
+    }
   }
 
   private Optional<ServerConnectionProps> getServerProps() {
