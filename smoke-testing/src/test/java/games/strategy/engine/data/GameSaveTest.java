@@ -21,7 +21,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.server.HeadlessLaunchAction;
 import org.triplea.injection.Injections;
@@ -30,58 +32,64 @@ import org.triplea.io.FileUtils;
 
 class GameSaveTest {
 
-  private static Injections constructInjections() {
-    return Injections.builder()
+  @BeforeEach
+  public void setUp() throws IOException {
+    if (Injections.getInstance() != null) {
+      return;
+    }
+    Injections.init(Injections.builder()
         .engineVersion(new ProductVersionReader().getVersion())
         .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
-        .build();
+        .build());
+    ClientSetting.initialize();
+    final Path tempFolder = FileUtils.newTempFolder();
+    FileUtils.writeToFile(tempFolder.resolve(".triplea-root"), "");
+    Files.createDirectory(tempFolder.resolve("assets"));
+    ClientFileSystemHelper.setCodeSourceFolder(tempFolder);
   }
 
-  @Test
-  void testSaveGame() throws Exception {
-    if (Injections.getInstance() == null) {
-      Injections.init(constructInjections());
-      ClientSetting.initialize();
-      Path tempFolder = FileUtils.newTempFolder();
-      FileUtils.writeToFile(tempFolder.resolve(".triplea-root"), "");
-      Files.createDirectory(tempFolder.resolve("assets"));
-      ClientFileSystemHelper.setCodeSourceFolder(tempFolder);
-    }
-
-    String path = "https://github.com/triplea-maps/pacific_challenge/archive/master.zip";
-
-    final Path mapName = downloadMap(path);
+  @ParameterizedTest
+  @CsvSource({
+      "world_war_ii_revised,map/games/ww2v2.xml",
+      "pacific_challenge,map/games/Pacific_Theater_Solo_Challenge.xml"
+  })
+  void testSaveGame(final String mapName, final String mapXmlPath) throws Exception {
+    final Path mapFolderPath = downloadMap(getMapDownloadURI(mapName));
     final GameSelectorModel gameSelector = new GameSelectorModel();
-    gameSelector.load(mapName.resolve("map/games/Pacific_Theater_Solo_Challenge.xml"));
+    gameSelector.load(mapFolderPath.resolve(mapXmlPath));
     final ServerGame game = startGameWithAis(gameSelector);
     final Path saveFile = Files.createTempFile("save", GameDataFileUtils.getExtension());
     game.saveGame(saveFile);
     assertNotEquals(Files.size(saveFile), 0);
   }
 
-  private static Path downloadMap(final String path) throws IOException, URISyntaxException {
+  private static Path downloadMap(final URI uri) throws IOException {
     final Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve("map.zip");
-    try (ContentDownloader downloader = new ContentDownloader(new URI(path))) {
+    try (ContentDownloader downloader = new ContentDownloader(uri)) {
       Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
     }
 
-    final Path[] mapName = new Path[1];
+    final Path[] mapFolderPath = new Path[1];
     ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
         .ifPresent(
             installedMap -> {
-              mapName[0] = installedMap;
+              mapFolderPath[0] = installedMap;
             });
-    return mapName[0];
+    return mapFolderPath[0];
   }
-  
+
+  private static URI getMapDownloadURI(final String mapName) throws URISyntaxException {
+    return new URI(String.format("https://github.com/triplea-maps/%s/archive/master.zip", mapName));
+  }
+
   private static ServerGame startGameWithAis(final GameSelectorModel gameSelector) {
     final GameData gameData = gameSelector.getGameData();
-    Map<String, PlayerTypes.Type> playerTypes = new HashMap<>();
+    final Map<String, PlayerTypes.Type> playerTypes = new HashMap<>();
     for (var player : gameData.getPlayerList().getPlayers()) {
       playerTypes.put(player.getName(), PlayerTypes.PRO_AI);
     }
     final Set<Player> gamePlayers = gameData.getGameLoader().newPlayers(playerTypes);
-    HeadlessLaunchAction launchAction = new HeadlessLaunchAction();
+    final HeadlessLaunchAction launchAction = new HeadlessLaunchAction();
     final Messengers messengers = new Messengers(new LocalNoOpMessenger());
     final ServerGame game =
         new ServerGame(
