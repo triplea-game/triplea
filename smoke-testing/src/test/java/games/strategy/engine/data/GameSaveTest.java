@@ -70,7 +70,7 @@ class GameSaveTest {
     final Path saveFile = Files.createTempFile("save", GameDataFileUtils.getExtension());
     game.saveGame(saveFile);
     assertNotEquals(Files.size(saveFile), 0);
-    assertThat(Files.size(saveFile), is(not(0));
+    assertThat(Files.size(saveFile), is(not(0)));
   }
 
   private static Path downloadMap(final URI uri) throws IOException {
@@ -81,10 +81,7 @@ class GameSaveTest {
 
     final Path[] mapFolderPath = new Path[1];
     ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
-        .ifPresent(
-            installedMap -> {
-              mapFolderPath[0] = installedMap;
-            });
+        .ifPresent(installedMap -> mapFolderPath[0] = installedMap);
     return mapFolderPath[0];
   }
 
