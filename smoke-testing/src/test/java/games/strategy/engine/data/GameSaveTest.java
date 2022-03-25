@@ -37,10 +37,11 @@ class GameSaveTest {
     if (Injections.getInstance() != null) {
       return;
     }
-    Injections.init(Injections.builder()
-        .engineVersion(new ProductVersionReader().getVersion())
-        .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
-        .build());
+    Injections.init(
+        Injections.builder()
+            .engineVersion(new ProductVersionReader().getVersion())
+            .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
+            .build());
     ClientSetting.initialize();
     final Path tempFolder = FileUtils.newTempFolder();
     FileUtils.writeToFile(tempFolder.resolve(".triplea-root"), "");
@@ -50,8 +51,8 @@ class GameSaveTest {
 
   @ParameterizedTest
   @CsvSource({
-      "world_war_ii_revised,map/games/ww2v2.xml",
-      "pacific_challenge,map/games/Pacific_Theater_Solo_Challenge.xml"
+    "world_war_ii_revised,map/games/ww2v2.xml",
+    "pacific_challenge,map/games/Pacific_Theater_Solo_Challenge.xml"
   })
   void testSaveGame(final String mapName, final String mapXmlPath) throws Exception {
     final Path mapFolderPath = downloadMap(getMapDownloadURI(mapName));
