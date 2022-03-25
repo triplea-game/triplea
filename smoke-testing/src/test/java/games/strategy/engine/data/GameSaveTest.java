@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.triplea.config.product.ProductVersionReader;
@@ -30,13 +30,17 @@ import org.triplea.injection.Injections;
 import org.triplea.io.ContentDownloader;
 import org.triplea.io.FileUtils;
 
+/**
+ * Checks that no error is encountered when saving a game on several different maps. This test
+ * downloads the maps in question and starts an all-AI game on each of them, before saving.
+ *
+ * <p>Note: A variety of maps are used to ensure different engine features are exercised since
+ * object serialization may run into errors that depend on the state of the object graph.
+ */
 class GameSaveTest {
 
-  @BeforeEach
-  public void setUp() throws IOException {
-    if (Injections.getInstance() != null) {
-      return;
-    }
+  @BeforeAll
+  public static void setUp() throws IOException {
     Injections.init(
         Injections.builder()
             .engineVersion(new ProductVersionReader().getVersion())
