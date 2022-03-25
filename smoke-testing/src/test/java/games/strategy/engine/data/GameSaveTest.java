@@ -1,5 +1,8 @@
 package games.strategy.engine.data;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import games.strategy.engine.ClientFileSystemHelper;
@@ -35,7 +38,8 @@ import org.triplea.io.FileUtils;
  * downloads the maps in question and starts an all-AI game on each of them, before saving.
  *
  * <p>Note: A variety of maps are used to ensure different engine features are exercised since
- * object serialization may run into errors that depend on the state of the object graph.
+ * object serialization may run into errors that depend on the state of the object graph. For
+ * example, if there's a non-null reference to a non-serializable object.
  */
 class GameSaveTest {
 
@@ -66,6 +70,7 @@ class GameSaveTest {
     final Path saveFile = Files.createTempFile("save", GameDataFileUtils.getExtension());
     game.saveGame(saveFile);
     assertNotEquals(Files.size(saveFile), 0);
+    assertThat(Files.size(saveFile), is(not(0));
   }
 
   private static Path downloadMap(final URI uri) throws IOException {
