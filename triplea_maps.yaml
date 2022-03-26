@@ -2572,3 +2572,11 @@
    <br>Neutral nations are restricted to their homeland and are assigned to an alliance
    <br>New World Order Variant - Neutrals Unrestricted
    <br>Neutral nations are normal members of an alliance
+- mapName: Imperialism FFA
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/imperialism_ffa/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/imperialism_ffa/master/preview.png
+  description: |
+   <br>An abstract game with a four power free-for-all fighting on the Revised Map.
+   
