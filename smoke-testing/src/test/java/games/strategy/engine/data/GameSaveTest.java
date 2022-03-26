@@ -76,11 +76,7 @@ class GameSaveTest {
     try (ContentDownloader downloader = new ContentDownloader(uri)) {
       Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
     }
-
-    final Path[] mapFolderPath = new Path[1];
-    ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
-        .ifPresent(installedMap -> mapFolderPath[0] = installedMap);
-    return mapFolderPath[0];
+    return ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo).get();
   }
 
   private static URI getMapDownloadURI(final String mapName) throws URISyntaxException {
