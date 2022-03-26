@@ -50,9 +50,9 @@ final class PlainRandomSourceTest {
 
   @Test
   void getRandomMany_Performance() {
-    final long maxRuntimeNano = 1000000; // 1ms
-    final int testRuns = 10000;
-    final int diceCount = 4000;
+    final long maxRuntimeNano = 100000000; // 100ms
+    final int testRuns = 1000;
+    final int diceCount = 400;
     long startTime = System.nanoTime();
     for (int i = 0; i < testRuns; ++i) {
       int[] number = plainRandomSource.getRandom(MAX, diceCount, ANNOTATION);

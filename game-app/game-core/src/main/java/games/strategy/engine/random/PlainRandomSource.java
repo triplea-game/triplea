@@ -40,11 +40,11 @@ public final class PlainRandomSource implements IRandomSource {
         int randomInt = getRandom(basePowers.getPowerResult(powerCur), annotation);
         // Get individual dice x by projecting from range 1 until base^x to 0 until (base-1) for
         // each x via modular arithmetic from the largest power to the smallest
-        // correct with +1 to stay in range 1 until base; Note: x is diceIdOffset
+        // Note: x is diceIdOffset
         for (int diceIdOffset = powerCur - 1; diceIdOffset >= 0; --diceIdOffset) {
           final int powerResult = basePowers.getPowerResult(diceIdOffset);
           final int powerFit = randomInt / powerResult;
-          numbers[diceIdBase + diceIdOffset] = powerFit + 1;
+          numbers[diceIdBase + diceIdOffset] = powerFit;
           randomInt -= powerFit * powerResult;
         }
         diceIdBase += powerCur;
@@ -68,18 +68,19 @@ public final class PlainRandomSource implements IRandomSource {
   }
 
   /**
-   * Maps base to its {@link BasePowers} to avoid repeated computation.
-   * Each {@link BasePowers#powerResults} represents the limit of a range (1-base^x) of all
-   * possible combinations of x numbers between 0 and the base-1 (base range).
-   * Therefore, drawing one random number in this range corresponds to drawing x random numbers
-   * in the base range.
+   * Maps base to its {@link BasePowers} to avoid repeated computation. Each {@link
+   * BasePowers#powerResults} represents the limit of a range (1-base^x) of all possible
+   * combinations of x numbers between 0 and the base-1 (base range). Therefore, drawing one random
+   * number in this range corresponds to drawing x random numbers in the base range.
    */
   private static final Map<Integer, BasePowers> basePowersMap = new HashMap<>();
   /**
    * An instances stores the calculation results of
+   *
    * <pre>{@code
    * base^x
    * }</pre>
+   *
    * for any power x <= {@link BasePowers#basePowerMax} to avoid repeated computation.
    */
   static class BasePowers {
@@ -97,6 +98,7 @@ public final class PlainRandomSource implements IRandomSource {
 
     /**
      * Lookup of result of
+     *
      * <pre>{@code
      * base^power
      * }</pre>
