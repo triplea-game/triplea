@@ -11,13 +11,13 @@ help.
 
 ### Overview
 
-- [:game_die: Player](#Player)
-- :bulb:[Issue manager](#Issue-manager)
-- :golf:[Map maker](#Map-maker)
-- :book:[Rule guru](#Rule-guru)
-- :speech_balloon:[Forum moderator](#Forum-moderator)
-- :wrench:[Developer w/o merge rights](#Developer-wo-merge-rights)
-- :hammer:[Developer with merge rights](#Developer-with-merge-rights)
+- [:game_die: Player](#game_die-Player)
+- [:bulb: Issue manager](#bulb-Issue-manager)
+- [:golf: Map maker](#golf-Map-maker)
+- [:book: Rule guru](#book-Rule-guru)
+- [:speech_balloon: Forum moderator](#speech_balloon-Forum-moderator)
+- [:wrench: Developer w/o merge rights](#wrench-Developer-wo-merge-rights)
+- [:hammer: Developer with merge rights](#hammer-Developer-with-merge-rights)
 
 ### :game_die: Player
 
@@ -50,7 +50,7 @@ help.
 
 - tbd
 
-### Map maker
+### :golf: Map maker
 
 #### _Skillset_
 
@@ -64,7 +64,7 @@ help.
 
 - tbd
 
-### Rule guru
+### :book: Rule guru
 
 #### _Skillset_
 
@@ -78,7 +78,7 @@ help.
 
 - tbd
 
-### Forum moderator
+### :speech_balloon: Forum moderator
 
 #### _Skillset_
 
@@ -92,7 +92,7 @@ help.
 
 - tbd
 
-### Developer w/o merge rights
+### :wrench: Developer w/o merge rights
 
 #### _Skillset_
 
@@ -111,11 +111,11 @@ help.
 - [Setup your system](https://github.com/triplea-game/triplea/tree/master/docs/development/how-to/ide-setup) and check
   our [development processes](https://github.com/triplea-game/triplea/tree/master/docs/development/reference/dev-process)
 
-### Developer with merge rights
+### :hammer: Developer with merge rights
 
 #### _Skillset_
 
-- Extensive work as [Developer w/o merge rights](#Developer-wo-merge-rights)
+- Extensive work as [Developer w/o merge rights](#wrench-Developer-wo-merge-rights)
 
 #### _Contributions_
 
