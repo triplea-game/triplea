@@ -85,13 +85,12 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
       final DiceType diceType,
       final String annotation) {
     if (count <= 0) {
-      throw new IllegalStateException("count must be > o, annotation:" + annotation);
+      throw new IllegalStateException("count must be > 0, annotation:" + annotation);
     }
-    final int[] numbers = new int[count];
-    for (int i = 0; i < count; i++) {
-      numbers[i] = getRandom(max, player, diceType, annotation);
-    }
-    return numbers;
+    // Oracle documentation: "Each class variable, instance variable, or array component
+    // is initialized with a default value when it is created (§15.9, §15.10)
+    // ... For type int, the default value is zero, that is, 0."
+    return new int[count];
   }
 
   @Override
