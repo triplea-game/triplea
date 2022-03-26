@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameDataFileUtils;
@@ -69,7 +68,6 @@ class GameSaveTest {
     final ServerGame game = startGameWithAis(gameSelector);
     final Path saveFile = Files.createTempFile("save", GameDataFileUtils.getExtension());
     game.saveGame(saveFile);
-    assertNotEquals(Files.size(saveFile), 0);
     assertThat(Files.size(saveFile), is(not(0)));
   }
 
