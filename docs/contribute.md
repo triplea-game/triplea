@@ -4,18 +4,18 @@
 
 TripleA is a community project and always looking for new members to join.
 
-If you are interested in supporting the project, just pick contribution role from below and find out what you can do to
-help.
+If you are interested in supporting the project, just pick a contribution role from below and find out what you can do
+to help.
 
 ## Contribution Roles
 
 ### Overview
 
 - [:game_die: Player](#game_die-Player)
-- [:bulb: Issue manager](#bulb-Issue-manager)
 - [:golf: Map maker](#golf-Map-maker)
 - [:book: Rule guru](#book-Rule-guru)
 - [:speech_balloon: Forum moderator](#speech_balloon-Forum-moderator)
+- [:bulb: Issue manager](#bulb-Issue-manager)
 - [:wrench: Developer w/o merge rights](#wrench-Developer-wo-merge-rights)
 - [:hammer: Developer with merge rights](#hammer-Developer-with-merge-rights)
 
@@ -36,19 +36,7 @@ help.
 
 - [Download](https://triplea-game.org/) TripleA and play
 
-### :bulb: Issue manager
-
-#### _Skillset_
-
-- tbd
-
-#### _Contributions_
-
-- tbd
-
-#### _How to become one_
-
-- tbd
+[//]: # (:black_flag: Translator)
 
 ### :golf: Map maker
 
@@ -58,11 +46,13 @@ help.
 
 #### _Contributions_
 
-- tbd
+- Update existing maps ([how-to](map-making/how-to/updating-existing-maps.md))
+- Create and upload new maps ([how-to](map-making/how-to/uploading-a-map-to-triplea.md))
 
 #### _How to become one_
 
-- tbd
+- Read the [Map Maker Guides & Documentation](https://forums.triplea-game.org/topic/2600/map-maker-guides-documentation)
+  and check the documentation on [map-making](map-making)
 
 ### :book: Rule guru
 
@@ -79,6 +69,20 @@ help.
 - tbd
 
 ### :speech_balloon: Forum moderator
+
+#### _Skillset_
+
+- tbd
+
+#### _Contributions_
+
+- tbd
+
+#### _How to become one_
+
+- tbd
+
+### :bulb: Issue manager
 
 #### _Skillset_
 
