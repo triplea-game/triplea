@@ -11,15 +11,15 @@ help.
 
 ### Overview
 
-- [Player]()
-- [Issue manager](#Issue-manager)
-- [Map maker](#Map-maker)
-- [Rule guru](#Rule-guru)
-- [Forum moderator](#Forum-moderator)
-- [Developer w/o merge rights](#Developer-w/o-merge-rights)
-- [Developer with merge rights](#Developer-with-merge-rights)
+- [:game_die: Player](#Player)
+- :bulb:[Issue manager](#Issue-manager)
+- :golf:[Map maker](#Map-maker)
+- :book:[Rule guru](#Rule-guru)
+- :speech_balloon:[Forum moderator](#Forum-moderator)
+- :wrench:[Developer w/o merge rights](#Developer-wo-merge-rights)
+- :hammer:[Developer with merge rights](#Developer-with-merge-rights)
 
-### Player
+### :game_die: Player
 
 #### _Skillset_
 
@@ -36,9 +36,7 @@ help.
 
 - [Download](https://triplea-game.org/) TripleA and play
 
-### Issue manager
-
-:bulb:
+### :bulb: Issue manager
 
 #### _Skillset_
 
@@ -117,7 +115,7 @@ help.
 
 #### _Skillset_
 
-- Extensive work as [Developer w/o merge rights](#Developer-w/o-merge-rights)
+- Extensive work as [Developer w/o merge rights](#Developer-wo-merge-rights)
 
 #### _Contributions_
 
