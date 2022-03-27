@@ -13,12 +13,12 @@ to help.
 
 - [:game_die: Player](#game_die-Player)
 - [:moneybag: Donor](#moneybag-Donor)
-- [:golf: Map maker](#golf-Map-maker)
-- [:book: Rule guru](#book-Rule-guru)
-- [:speech_balloon: Forum moderator](#speech_balloon-Forum-moderator)
-- [:bulb: Issue manager](#bulb-Issue-manager)
-- [:wrench: Developer w/o merge rights](#wrench-Developer-wo-merge-rights)
-- [:hammer: Developer with merge rights](#hammer-Developer-with-merge-rights)
+- [:golf: Map Maker](#golf-Map-Maker)
+- [:book: Rule Expert](#book-Rule-Expert)
+- [:speech_balloon: Forum Moderator](#speech_balloon-Forum-Moderator)
+- [:bulb: Issue Manager](#bulb-Issue-Manager)
+- [:wrench: Developer w/o Merge Rights](#wrench-Developer-wo-Merge-Rights)
+- [:hammer: Developer with Merge Rights](#hammer-Developer-with-Merge-Rights)
 
 ### :game_die: Player
 
@@ -51,7 +51,7 @@ to help.
 
 - [Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif) what you can share
 
-### :golf: Map maker
+### :golf: Map Maker
 
 #### _Skillset_
 
@@ -87,7 +87,7 @@ to help.
 - Show your expertise by answering related questions on Github or the forum, then ... 
 - ... be appointed by the forum admin team
 
-### :speech_balloon: Forum moderator
+### :speech_balloon: Forum Moderator
 
 #### _Skillset_
 
@@ -101,7 +101,7 @@ to help.
 
 - tbd
 
-### :bulb: Issue manager
+### :bulb: Issue Manager
 
 #### _Skillset_
 
@@ -115,7 +115,7 @@ to help.
 
 - tbd
 
-### :wrench: Developer w/o merge rights
+### :wrench: Developer w/o Merge Rights
 
 #### _Skillset_
 
@@ -134,7 +134,7 @@ to help.
 - [Setup your system](https://github.com/triplea-game/triplea/tree/master/docs/development/how-to/ide-setup) and check
   our [development processes](https://github.com/triplea-game/triplea/tree/master/docs/development/reference/dev-process)
 
-### :hammer: Developer with merge rights
+### :hammer: Developer with Merge Rights
 
 #### _Skillset_
 
