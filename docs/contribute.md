@@ -12,6 +12,7 @@ to help.
 ### Overview
 
 - [:game_die: Player](#game_die-Player)
+- [:moneybag: Donor](#moneybag-Donor)
 - [:golf: Map maker](#golf-Map-maker)
 - [:book: Rule guru](#book-Rule-guru)
 - [:speech_balloon: Forum moderator](#speech_balloon-Forum-moderator)
@@ -36,13 +37,26 @@ to help.
 
 - [Download](https://triplea-game.org/) TripleA and play
 
-[//]: # (:black_flag: Translator)
+### :moneybag: Donor
+
+#### _Skillset_
+
+- Money left in a PayPal account
+
+#### _Contributions_
+
+- Finance the server and hosting costs of TripleA
+
+#### _How to become one_
+
+- [Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif) what you can share
 
 ### :golf: Map maker
 
 #### _Skillset_
 
-- tbd
+- Basic knowledge of [XML](https://www.w3schools.com/XML/)
+- Graphic designer, i.e., creation of image files with advanced image editing software
 
 #### _Contributions_
 
