@@ -13,12 +13,12 @@ to help.
 
 - [:game_die: Player](#game_die-Player)
 - [:moneybag: Donor](#moneybag-Donor)
-- [:golf: Map maker](#golf-Map-maker)
-- [:book: Rule guru](#book-Rule-guru)
-- [:speech_balloon: Forum moderator](#speech_balloon-Forum-moderator)
-- [:bulb: Issue manager](#bulb-Issue-manager)
-- [:wrench: Developer w/o merge rights](#wrench-Developer-wo-merge-rights)
-- [:hammer: Developer with merge rights](#hammer-Developer-with-merge-rights)
+- [:golf: Map Maker](#golf-Map-Maker)
+- [:book: Rule Expert](#book-Rule-Expert)
+- [:speech_balloon: Forum Moderator](#speech_balloon-Forum-Moderator)
+- [:bulb: Issue Manager](#bulb-Issue-Manager)
+- [:wrench: Developer w/o Merge Rights](#wrench-Developer-wo-Merge-Rights)
+- [:hammer: Developer with Merge Rights](#hammer-Developer-with-Merge-Rights)
 
 ### :game_die: Player
 
@@ -51,7 +51,7 @@ to help.
 
 - [Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif) what you can share
 
-### :golf: Map maker
+### :golf: Map Maker
 
 #### _Skillset_
 
@@ -68,35 +68,26 @@ to help.
 - Read the [Map Maker Guides & Documentation](https://forums.triplea-game.org/topic/2600/map-maker-guides-documentation)
   and check the documentation on [map-making](map-making)
 
-### :book: Rule guru
+### :book: Rule Expert
 
 #### _Skillset_
 
-- Expert rule knowledge of at least one map
+- Expert rules knowledge of some of the core game rules (v1-v6)
 
 #### _Contributions_
 
-- tbd
+- Answer rule questions on Github and on the forum
+- Report rules related bugs to Github
+- Approve/Deny rules related Github issues
+- Investigate deeper to allow rules compliant implementation
+- Check results of rules related pull requests (resulting pre-releases) for rules compliance 
 
 #### _How to become one_
 
-- tbd
+- Show your expertise by answering related questions on Github or the forum, then ... 
+- ... be appointed by the forum admin team
 
-### :speech_balloon: Forum moderator
-
-#### _Skillset_
-
-- tbd
-
-#### _Contributions_
-
-- tbd
-
-#### _How to become one_
-
-- tbd
-
-### :bulb: Issue manager
+### :speech_balloon: Forum Moderator
 
 #### _Skillset_
 
@@ -110,7 +101,21 @@ to help.
 
 - tbd
 
-### :wrench: Developer w/o merge rights
+### :bulb: Issue Manager
+
+#### _Skillset_
+
+- tbd
+
+#### _Contributions_
+
+- tbd
+
+#### _How to become one_
+
+- tbd
+
+### :wrench: Developer w/o Merge Rights
 
 #### _Skillset_
 
@@ -129,7 +134,7 @@ to help.
 - [Setup your system](https://github.com/triplea-game/triplea/tree/master/docs/development/how-to/ide-setup) and check
   our [development processes](https://github.com/triplea-game/triplea/tree/master/docs/development/reference/dev-process)
 
-### :hammer: Developer with merge rights
+### :hammer: Developer with Merge Rights
 
 #### _Skillset_
 
