@@ -68,19 +68,24 @@ to help.
 - Read the [Map Maker Guides & Documentation](https://forums.triplea-game.org/topic/2600/map-maker-guides-documentation)
   and check the documentation on [map-making](map-making)
 
-### :book: Rule guru
+### :book: Rule Expert
 
 #### _Skillset_
 
-- Expert rule knowledge of at least one map
+- Expert rules knowledge of some of the core game rules (v1-v6)
 
 #### _Contributions_
 
-- tbd
+- Answer rule questions on Github and on the forum
+- Report rules related bugs to Github
+- Approve/Deny rules related Github issues
+- Investigate deeper to allow rules compliant implementation
+- Check results of rules related pull requests (resulting pre-releases) for rules compliance 
 
 #### _How to become one_
 
-- tbd
+- Show your expertise by answering related questions on Github or the forum, then ... 
+- ... be appointed by the forum admin team
 
 ### :speech_balloon: Forum moderator
 
