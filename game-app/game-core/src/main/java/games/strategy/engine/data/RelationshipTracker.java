@@ -50,8 +50,16 @@ public class RelationshipTracker extends GameDataComponent {
     return getRelationship(p1, p2).getRelationshipType();
   }
 
+  public RelationshipType getRelationshipType(final RelatedPlayers p1p2) {
+    return getRelationship(p1p2).getRelationshipType();
+  }
+
+  public Relationship getRelationship(final RelatedPlayers p1p2) {
+    return relationships.get(p1p2);
+  }
+
   public Relationship getRelationship(final GamePlayer p1, final GamePlayer p2) {
-    return relationships.get(new RelatedPlayers(p1, p2));
+    return getRelationship(new RelatedPlayers(p1, p2));
   }
 
   public Set<Relationship> getRelationships(final GamePlayer player1) {
@@ -205,7 +213,7 @@ public class RelationshipTracker extends GameDataComponent {
     private final GamePlayer player1;
     private final GamePlayer player2;
 
-    RelatedPlayers(final GamePlayer player1, final GamePlayer player2) {
+    public RelatedPlayers(final GamePlayer player1, final GamePlayer player2) {
       this.player1 = player1;
       this.player2 = player2;
     }

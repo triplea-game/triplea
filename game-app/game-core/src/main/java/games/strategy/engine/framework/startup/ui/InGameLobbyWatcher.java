@@ -36,7 +36,9 @@ public class InGameLobbyWatcher {
   private boolean isShutdown = false;
   @Getter private String gameId;
   private GameSelectorModel gameSelectorModel;
+
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
+
   private IGame game;
   private GameDescription gameDescription;
   private final IConnectionChangeListener connectionChangeListener;

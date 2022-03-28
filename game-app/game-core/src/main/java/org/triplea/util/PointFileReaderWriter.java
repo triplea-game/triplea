@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -44,7 +44,7 @@ public final class PointFileReaderWriter {
   public static Map<String, Point> readOneToOne(final Path input) throws IOException {
     checkNotNull(input);
 
-    final Map<String, Point> mapping = new HashMap<>();
+    final Map<String, Point> mapping = new LinkedHashMap<>();
     readPath(input, current -> readSingle(current, mapping));
     return mapping;
   }
@@ -158,7 +158,7 @@ public final class PointFileReaderWriter {
   public static Map<String, List<Point>> readOneToMany(final Path input) throws IOException {
     checkNotNull(input);
 
-    final Map<String, List<Point>> mapping = new HashMap<>();
+    final Map<String, List<Point>> mapping = new LinkedHashMap<>();
     readPath(input, current -> readMultiple(current, mapping));
     return mapping;
   }
@@ -195,8 +195,8 @@ public final class PointFileReaderWriter {
       throws IOException {
     checkNotNull(input);
 
-    final Map<String, List<Point>> mapping = new HashMap<>();
-    final Map<String, Tuple<List<Point>, Boolean>> result = new HashMap<>();
+    final Map<String, List<Point>> mapping = new LinkedHashMap<>();
+    final Map<String, Tuple<List<Point>, Boolean>> result = new LinkedHashMap<>();
     readPath(
         input,
         current -> {
@@ -215,7 +215,7 @@ public final class PointFileReaderWriter {
       throws IOException {
     checkNotNull(input);
 
-    final Map<String, List<Polygon>> mapping = new HashMap<>();
+    final Map<String, List<Polygon>> mapping = new LinkedHashMap<>();
     readPath(input, current -> readMultiplePolygons(current, mapping));
     return mapping;
   }

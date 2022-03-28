@@ -10,8 +10,10 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CasualtyDetailsTest {
 
   @Mock private GameData gameData;
-  @Mock private GamePlayer player;
+  private GamePlayer player1 = new GamePlayer("player1", gameData);
+  private GamePlayer player2 = new GamePlayer("player2", gameData);
 
   private UnitType givenUnitType(final String name) {
     final UnitType unitType = new UnitType(name, gameData);
@@ -36,17 +39,17 @@ class CasualtyDetailsTest {
     final UnitType infantry = givenUnitType("infantry");
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player));
+    units.addAll(infantry.createTemp(2, player1));
 
     final List<Unit> killed = new ArrayList<>();
     killed.add(units.get(0));
 
-    final CasualtyDetails originalDetails = new CasualtyDetails(killed, List.of(), true);
-    final CasualtyDetails updatedDetails =
-        originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
+    casualtyDetails.ensureUnitsAreKilledFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
     assertThat(
         "The infantry should still be killed",
-        updatedDetails.getKilled(),
+        casualtyDetails.getKilled(),
         is(containsInAnyOrder(units.get(0))));
   }
 
@@ -55,17 +58,17 @@ class CasualtyDetailsTest {
     final UnitType infantry = givenUnitType("infantry");
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player));
+    units.addAll(infantry.createTemp(2, player1));
 
     final List<Unit> damaged = new ArrayList<>();
     damaged.add(units.get(0));
 
-    final CasualtyDetails originalDetails = new CasualtyDetails(List.of(), damaged, true);
-    final CasualtyDetails updatedDetails =
-        originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(List.of(), damaged, true);
+    casualtyDetails.ensureUnitsAreDamagedFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
     assertThat(
         "The infantry should still be damaged",
-        updatedDetails.getDamaged(),
+        casualtyDetails.getDamaged(),
         is(containsInAnyOrder(units.get(0))));
   }
 
@@ -76,7 +79,7 @@ class CasualtyDetailsTest {
     UnitAttachment.get(fighter).setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player));
+    units.addAll(fighter.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -84,23 +87,24 @@ class CasualtyDetailsTest {
     final List<Unit> killed = new ArrayList<>();
     killed.add(units.get(0));
 
-    final CasualtyDetails originalDetails = new CasualtyDetails(killed, List.of(), true);
-    final CasualtyDetails updatedDetails =
-        originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
+    casualtyDetails.ensureUnitsAreKilledFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
     assertThat(
         "The second air unit has no movement left so it should be killed",
-        updatedDetails.getKilled(),
+        casualtyDetails.getKilled(),
         is(containsInAnyOrder(units.get(1))));
   }
 
   @Test
-  void damageLowestMovementAirUnitsWhenOnlyOneTypeIsAvailable() {
+  void damageHighestMovementAirUnitsWhenOnlyOneTypeIsAvailable() {
     final UnitType fighter = givenUnitType("fighter");
+    UnitAttachment.get(fighter).setHitPoints(2);
     UnitAttachment.get(fighter).setMovement(4);
     UnitAttachment.get(fighter).setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player));
+    units.addAll(fighter.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -108,14 +112,14 @@ class CasualtyDetailsTest {
     final List<Unit> damaged = new ArrayList<>();
     damaged.add(units.get(0));
 
-    final CasualtyDetails originalDetails = new CasualtyDetails(List.of(), damaged, true);
-    final CasualtyDetails updatedDetails =
-        originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(List.of(), damaged, true);
+    casualtyDetails.ensureUnitsAreDamagedFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
 
     assertThat(
-        "The second air unit has no movement left so it should be damaged",
-        updatedDetails.getDamaged(),
-        is(containsInAnyOrder(units.get(1))));
+        "The first air unit has one movement left so it should be damaged",
+        casualtyDetails.getDamaged(),
+        is(containsInAnyOrder(units.get(0))));
   }
 
   @Test
@@ -128,8 +132,8 @@ class CasualtyDetailsTest {
     UnitAttachment.get(bomber).setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player));
-    units.addAll(bomber.createTemp(2, player));
+    units.addAll(fighter.createTemp(2, player1));
+    units.addAll(bomber.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -141,28 +145,30 @@ class CasualtyDetailsTest {
     killed.add(units.get(0));
     killed.add(units.get(2));
 
-    final CasualtyDetails originalDetails = new CasualtyDetails(killed, List.of(), true);
-    final CasualtyDetails updatedDetails =
-        originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
+    casualtyDetails.ensureUnitsAreKilledFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
 
     assertThat(
         "The second and fourth air unit have no movement left so it should be killed",
-        updatedDetails.getKilled(),
+        casualtyDetails.getKilled(),
         is(containsInAnyOrder(units.get(1), units.get(3))));
   }
 
   @Test
-  void damageLowestMovementAirUnitsInTwoTypes() {
+  void damageHighestMovementAirUnitsInTwoTypes() {
     final UnitType fighter = givenUnitType("fighter");
+    UnitAttachment.get(fighter).setHitPoints(2);
     UnitAttachment.get(fighter).setMovement(4);
     UnitAttachment.get(fighter).setIsAir(true);
     final UnitType bomber = givenUnitType("bomber");
+    UnitAttachment.get(bomber).setHitPoints(3);
     UnitAttachment.get(bomber).setMovement(6);
     UnitAttachment.get(bomber).setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player));
-    units.addAll(bomber.createTemp(2, player));
+    units.addAll(fighter.createTemp(2, player1));
+    units.addAll(bomber.createTemp(2, player1));
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -174,14 +180,72 @@ class CasualtyDetailsTest {
     damaged.add(units.get(0));
     damaged.add(units.get(2));
 
-    final CasualtyDetails originalDetails = new CasualtyDetails(List.of(), damaged, true);
-    final CasualtyDetails updatedDetails =
-        originalDetails.ensureAirUnitsWithLessMovementAreTakenFirst(units);
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(List.of(), damaged, true);
+    casualtyDetails.ensureUnitsAreDamagedFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
 
     assertThat(
-        "The second and fourth air unit have no movement left so it should be damaged",
-        updatedDetails.getDamaged(),
-        is(containsInAnyOrder(units.get(1), units.get(3))));
+        "The first and third air unit have one movement left so they should be damaged",
+        casualtyDetails.getDamaged(),
+        is(containsInAnyOrder(units.get(0), units.get(2))));
+  }
+
+  @Test
+  void damageHighestMovementAirUnitsWithTwoOwners() {
+    final UnitType fighter = givenUnitType("fighter");
+    UnitAttachment.get(fighter).setHitPoints(2);
+    UnitAttachment.get(fighter).setMovement(3);
+    UnitAttachment.get(fighter).setIsAir(true);
+
+    final List<Unit> units = new ArrayList<>();
+    units.addAll(fighter.createTemp(2, player1));
+    units.addAll(fighter.createTemp(1, player2));
+
+    units.get(0).setAlreadyMoved(BigDecimal.ONE);
+    units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
+    units.get(2).setAlreadyMoved(BigDecimal.valueOf(2));
+
+    final List<Unit> damaged = new ArrayList<>();
+    damaged.add(units.get(0));
+    damaged.add(units.get(1));
+
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(List.of(), damaged, true);
+    casualtyDetails.ensureUnitsAreDamagedFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
+
+    assertThat(
+        "Damage is not distributed to a unit of another owner",
+        casualtyDetails.getDamaged(),
+        is(containsInAnyOrder(units.get(1), units.get(0))));
+  }
+
+  @Test
+  void keepDamageAtUnitsAlreadyDamaged() {
+    final UnitType fighter = givenUnitType("fighter");
+    UnitAttachment.get(fighter).setHitPoints(2);
+    UnitAttachment.get(fighter).setMovement(4);
+    UnitAttachment.get(fighter).setIsAir(true);
+
+    final List<Unit> units = new ArrayList<>();
+    units.addAll(fighter.createTemp(2, player1));
+
+    units.get(0).setAlreadyMoved(BigDecimal.ONE);
+    units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
+    units.get(0).setHits(1);
+
+    final List<Unit> damaged = new ArrayList<>();
+    damaged.add(units.get(1));
+
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(List.of(), damaged, true);
+    casualtyDetails.ensureUnitsAreDamagedFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
+
+    assertThat(
+        "The first and third air unit have one movement left so they should be damaged",
+        casualtyDetails.getDamaged().size() == 1
+            && casualtyDetails.getDamaged().contains(units.get(1))
+            && units.get(0).getHits() == 1
+            && units.get(1).getHits() == 0);
   }
 
   @Test
@@ -190,7 +254,7 @@ class CasualtyDetailsTest {
     UnitAttachment.get(infantry).setIsMarine(1);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player));
+    units.addAll(infantry.createTemp(2, player1));
 
     units.get(0).setWasAmphibious(true);
     units.get(1).setWasAmphibious(false);
@@ -198,13 +262,12 @@ class CasualtyDetailsTest {
     final List<Unit> killed = new ArrayList<>();
     killed.add(units.get(0));
 
-    final CasualtyDetails originalDetails = new CasualtyDetails(killed, List.of(), true);
-    final CasualtyDetails updatedDetails =
-        originalDetails.ensureUnitsWithPositiveMarineBonusAreTakenLast(units);
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
+    casualtyDetails.ensureUnitsWithPositiveMarineBonusAreKilledLast(units);
     assertThat(
         "The second unit was not amphibious, so it doesn't have the positive marine bonus "
             + "and should be taken first.",
-        updatedDetails.getKilled(),
+        casualtyDetails.getKilled(),
         is(containsInAnyOrder(units.get(1))));
   }
 
@@ -214,7 +277,7 @@ class CasualtyDetailsTest {
     UnitAttachment.get(infantry).setIsMarine(-1);
 
     final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player));
+    units.addAll(infantry.createTemp(2, player1));
 
     units.get(0).setWasAmphibious(false);
     units.get(1).setWasAmphibious(true);
@@ -222,13 +285,12 @@ class CasualtyDetailsTest {
     final List<Unit> killed = new ArrayList<>();
     killed.add(units.get(0));
 
-    final CasualtyDetails originalDetails = new CasualtyDetails(killed, List.of(), true);
-    final CasualtyDetails updatedDetails =
-        originalDetails.ensureUnitsWithPositiveMarineBonusAreTakenLast(units);
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
+    casualtyDetails.ensureUnitsWithPositiveMarineBonusAreKilledLast(units);
     assertThat(
         "The second unit was amphibious, so it has the negative marine bonus "
             + "and should be taken first.",
-        updatedDetails.getKilled(),
+        casualtyDetails.getKilled(),
         is(containsInAnyOrder(units.get(1))));
   }
 }

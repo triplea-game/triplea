@@ -26,10 +26,9 @@ import org.junit.jupiter.api.Test;
 import org.triplea.util.Version;
 
 class BattleCalculatorTest {
-  private GameData gameData = TestMapGameData.REVISED.getGameData();
-
   @Test
   void testUnbalancedFight() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Collection<Unit> defendingUnits = new ArrayList<>(germany.getUnits());
     final GamePlayer russians = russians(gameData);
@@ -55,6 +54,7 @@ class BattleCalculatorTest {
 
   @Test
   void testKeepOneAttackingLand() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
     // 1 bomber and 1 infantry attacking
     // 1 fighter
     // if one attacking inf must live, the odds much worse
@@ -84,6 +84,7 @@ class BattleCalculatorTest {
 
   @Test
   void testAttackingTransports() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = transport(gameData).create(2, americans(gameData));
     final List<Unit> defending = submarine(gameData).create(2, germans(gameData));
@@ -107,7 +108,7 @@ class BattleCalculatorTest {
   @Test
   void testDefendingTransports() {
     // use v3 rule set
-    gameData = TestMapGameData.WW2V3_1942.getGameData();
+    final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = submarine(gameData).create(2, americans(gameData));
     final List<Unit> defending = transport(gameData).create(2, germans(gameData));

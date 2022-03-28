@@ -1,0 +1,59 @@
+@startuml
+'To be displayed in a development environment, this PlantUML file may require a plugin,
+'e.g. https://plugins.jetbrains.com/plugin/7017-plantuml-integration
+'See https://plantuml.com/de/running
+
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+skinparam packageStyle rect
+(UnitChooser)
+
+(BattleDisplay) --> (UnitChooser)
+(TripleAPlayer.pickTerritoryAndUnits) as (pickTerritoryAndUnits)
+(pickTerritoryAndUnits) --> (UnitChooser)
+note left of (pickTerritoryAndUnits)
+    This is called from RandomStartDelegate.setupBoard which is
+    used in the XmlGameElementMapper.newDelegateFactories. The
+    RandomStartDelegate is used in the following games:
+    Feudal Japan Warlords 3, 4, and 5 player
+    Conquest World
+    Pact of Steel 2
+    The Grand War 11 player free for all
+    Alagaesia 2 and 4 player
+    Game of Thrones
+    The Rising Sun Variants vXXX
+end note
+
+(PlacePanel) --> (UnitChooser)
+
+(TripleAFrame.scrambleUnitsQuery)--> (UnitChooser)
+
+(TripleAFrame.selectUnitsQuery)--> (UnitChooser)
+note left of (TripleAFrame.selectUnitsQuery)
+    This is called from TripleAPlayer.selectUnitsQuery which is called
+    from AirBattle.InterceptorsLaunch.getInterceptors.
+    This is used for intercept prompts in World War II Global 1940 games.
+end note
+
+(TripleAFrame.moveFightersToCarrier)--> (UnitChooser)
+
+(BattlePanel.getCasualtiesAa)--> (UnitChooser)
+note left of (BattlePanel.getCasualtiesAa)
+    I could not produce a situation,
+    in which BattlePanel.getCasualtiesAa is called.
+
+    This may be related to https://github.com/triplea-game/triplea/issues/4133
+end note
+
+(EditPanel.selectUnitsToRemove)--> (UnitChooser)
+(EditPanel.actionPerformed)--> (UnitChooser)
+(MovePanel.selectUnitsToMove)--> (UnitChooser)
+
+note as N1
+    These use cases use UnitChooser and therefore should be regression tested,
+    when UnitChooser is changed.
+
+    21.Nov.2021
+end note
+@enduml

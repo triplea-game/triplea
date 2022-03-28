@@ -138,13 +138,6 @@ if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
   SKIP_TAGS=prerelease
 fi
 
-# Install mitogen
-# Mitogen offers improved command pipelining and faster ansible execution
-# The mitogen execution strategy is configured in 'ansible.cfg'
-# See: https://mitogen.networkgenomics.com/ansible_detailed.html
-"$(dirname "$0")/.include/install-mitogen"
-
-
 # Run deployment
 ansible-playbook \
   --extra-vars "version=$VERSION" \

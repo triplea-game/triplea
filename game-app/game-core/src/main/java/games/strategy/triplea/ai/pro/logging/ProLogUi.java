@@ -3,11 +3,11 @@ package games.strategy.triplea.ai.pro.logging;
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.DebugMenu;
+import games.strategy.ui.Util;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
 import org.triplea.swing.SwingAction;
 
 /** Class to manage log window display. */
@@ -27,9 +27,7 @@ public final class ProLogUi {
   }
 
   private static Collection<JMenuItem> initialize(final TripleAFrame frame) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong thread, should be running on AWT thread.");
-    }
+    Util.ensureOnEventDispatchThread();
     if (settingsWindow == null) {
       settingsWindow = new ProLogWindow(frame);
       GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);

@@ -44,6 +44,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   // just for host bots, so we can get the actions for loading/saving games on the bots from this
   // model
   @Setter @Getter private ClientModel clientModelForHostBots = null;
+  private Optional<String> saveGameToLoad = Optional.empty();
 
   public GameSelectorModel() {
     this.gameParser = GameParser::parse;
@@ -173,13 +174,24 @@ public class GameSelectorModel extends Observable implements GameSelector {
     ThreadRunner.runInNewThread(this::loadDefaultGameSameThread);
   }
 
+  /** Sets the path of a save file that should be loaded. */
+  public void setSaveGameFileToLoad(final Path filePath) {
+    saveGameToLoad = Optional.of(filePath.toAbsolutePath().toString());
+  }
+
   /**
    * Runs the load default game logic in same thread. Default game is the one that we loaded on
    * startup.
    */
   public void loadDefaultGameSameThread() {
-    ClientSetting.defaultGameUri
-        .getValue()
+    final Optional<String> gameUri;
+    if (saveGameToLoad.isPresent()) {
+      gameUri = saveGameToLoad;
+      saveGameToLoad = Optional.empty();
+    } else {
+      gameUri = ClientSetting.defaultGameUri.getValue();
+    }
+    gameUri
         .filter(Predicate.not(String::isBlank))
         .filter(GameSelectorModel::gameUriExistsOnFileSystem)
         .map(Path::of)

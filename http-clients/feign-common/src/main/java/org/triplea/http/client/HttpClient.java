@@ -3,6 +3,7 @@ package org.triplea.http.client;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
+import com.google.errorprone.annotations.FormatMethod;
 import feign.Feign;
 import feign.FeignException;
 import feign.Logger;
@@ -20,11 +21,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Builds http feign clients, each feign interface class should have a static {@code newClient}
+ * Builds http Feign clients, each Feign interface class should have a static {@code newClient}
  * convenience method to construct an instance of this class which can be used to interact with the
  * remote http interface.
  *
- * @param <ClientTypeT> The feign client interface, should be an interface type that has feign
+ * @param <ClientTypeT> Feign client interface, should be an interface type that contains Feign.
  *     annotations on it.
  */
 @Slf4j
@@ -33,10 +34,16 @@ import lombok.extern.slf4j.Slf4j;
 public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
 
   private static final Decoder gsonDecoder = JsonDecoder.gsonDecoder();
-  /** How long we can take to start receiving a message. */
-  private static final int DEFAULT_CONNECT_TIMEOUT_MS = 5 * 1000;
-  /** How long we can spend receiving a message. */
-  private static final int DEFAULT_READ_TIME_OUT_MS = 20 * 1000;
+  /**
+   * Allowed idle time for a connection with no activity (waiting to receive a message). Expressed
+   * in milliseconds. Default 5 seconds.
+   */
+  private static final int DEFAULT_CONNECT_TIMEOUT_MS = 5000;
+  /**
+   * The time a connection should allow for completely receiving a message. Expressed in
+   * milliseconds. Default 20 seconds.
+   */
+  private static final int DEFAULT_READ_TIME_OUT_MS = 20000;
 
   @Nonnull private final Class<ClientTypeT> classType;
   @Nonnull private final URI hostUri;
@@ -68,6 +75,7 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
                     : super.logAndRebufferResponse(configKey, logLevel, response, elapsedTime);
               }
 
+              @FormatMethod
               @Override
               protected void log(
                   final String configKey, final String format, final Object... args) {
