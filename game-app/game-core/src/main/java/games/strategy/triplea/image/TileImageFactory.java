@@ -11,11 +11,7 @@ import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
@@ -24,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 /** A factory for creating the base tile images used to render a map. */
 @Slf4j
 public final class TileImageFactory {
-  // one instance in the application
-  private static boolean isDirty = false;
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
   private static boolean showReliefImages;
   private static final String SHOW_MAP_BLENDS_PREFERENCE = "ShowBlends";
@@ -38,8 +32,6 @@ public final class TileImageFactory {
       GraphicsEnvironment.getLocalGraphicsEnvironment()
           .getDefaultScreenDevice()
           .getDefaultConfiguration();
-  // maps image name to ImageRef
-  private final Map<String, SoftReference<Image>> imageCache = new HashMap<>();
   private ResourceLoader resourceLoader;
 
   static {
@@ -67,7 +59,6 @@ public final class TileImageFactory {
   }
 
   public static void setShowReliefImages(final boolean showReliefImages) {
-    isDirty |= TileImageFactory.showReliefImages != showReliefImages;
     TileImageFactory.showReliefImages = showReliefImages;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, TileImageFactory.showReliefImages);
@@ -79,7 +70,6 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlends(final boolean showMapBlends) {
-    isDirty |= TileImageFactory.showMapBlends != showMapBlends;
     TileImageFactory.showMapBlends = showMapBlends;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putBoolean(SHOW_MAP_BLENDS_PREFERENCE, TileImageFactory.showMapBlends);
@@ -91,7 +81,6 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlendMode(final String showMapBlendMode) {
-    isDirty |= !Objects.equals(TileImageFactory.showMapBlendMode, showMapBlendMode);
     TileImageFactory.showMapBlendMode = showMapBlendMode;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.put(SHOW_MAP_BLEND_MODE, TileImageFactory.showMapBlendMode);
@@ -103,7 +92,6 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlendAlpha(final float showMapBlendAlpha) {
-    isDirty |= TileImageFactory.showMapBlendAlpha != showMapBlendAlpha;
     TileImageFactory.showMapBlendAlpha = showMapBlendAlpha;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putFloat(SHOW_MAP_BLEND_ALPHA, TileImageFactory.showMapBlendAlpha);
@@ -116,7 +104,6 @@ public final class TileImageFactory {
 
   public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
-    imageCache.clear();
   }
 
   public Image getBaseTile(final int x, final int y) {
@@ -132,30 +119,15 @@ public final class TileImageFactory {
     return "baseTiles" + "/" + x + "_" + y + ".png";
   }
 
-  private Image getCachedImage(final String fileName) {
-    final SoftReference<Image> imageRef = imageCache.get(fileName);
-    // Note: imageRef.get() may return null if the SoftReference has been cleared.
-    return (imageRef != null ? imageRef.get() : null);
-  }
-
   private Image getImage(final String fileName, final boolean transparent) {
-    if (isDirty) {
-      isDirty = false;
-      imageCache.clear();
-    }
-
-    final Image cachedImage = getCachedImage(fileName);
-    if (cachedImage != null) {
-      return cachedImage;
-    }
-
     final URL url = resourceLoader.getResource(fileName);
+
     if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
       return null;
     }
     return (showMapBlends && showReliefImages && transparent)
         ? loadBlendedImage(fileName)
-        : loadUnblendedImage(url, fileName, transparent);
+        : loadUnblendedImage(url, transparent);
   }
 
   public Image getReliefTile(final int a, final int b) {
@@ -229,19 +201,13 @@ public final class TileImageFactory {
       final BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
       g2.setComposite(blendComposite);
       g2.drawImage(baseFile, 0, 0, null);
-      final SoftReference<Image> ref = new SoftReference<>(blendedImage);
-      imageCache.put(fileName, ref);
       return blendedImage;
     }
 
-    final SoftReference<Image> ref = new SoftReference<>(baseFile);
-    imageCache.put(fileName, ref);
     return baseFile;
   }
 
-  private Image loadUnblendedImage(
-      final URL imageLocation, final String fileName, final boolean transparent) {
-    Image image;
+  private Image loadUnblendedImage(final URL imageLocation, final boolean transparent) {
     try {
       final BufferedImage fromFile = ImageIO.read(imageLocation);
       // if we don't copy, drawing the tile to the screen takes significantly longer
@@ -249,17 +215,16 @@ public final class TileImageFactory {
       // some images can be copied quickly to the screen
       // this step is a significant bottle neck in the image drawing process
       // we should try to find a way to avoid it, and load the png directly as the right type
-      image = Util.newImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
+      Image image = Util.newImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
       g.drawImage(fromFile, 0, 0, null);
       g.dispose();
       fromFile.flush();
+      return image;
     } catch (final IOException e) {
       log.error("Could not load image, url: " + imageLocation.toString(), e);
-      image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+      return new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
-    imageCache.put(fileName, new SoftReference<>(image));
-    return image;
   }
 
   private static BufferedImage loadCompatibleImage(final URL resource) throws IOException {
