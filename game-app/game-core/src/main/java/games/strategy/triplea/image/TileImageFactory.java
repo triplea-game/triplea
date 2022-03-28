@@ -20,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 /** A factory for creating the base tile images used to render a map. */
 @Slf4j
 public final class TileImageFactory {
-  // one instance in the application
-  private static boolean isDirty = false;
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
   private static boolean showReliefImages;
   private static final String SHOW_MAP_BLENDS_PREFERENCE = "ShowBlends";
@@ -122,16 +120,6 @@ public final class TileImageFactory {
   }
 
   private Image getImage(final String fileName, final boolean transparent) {
-    if (isDirty) {
-      isDirty = false;
-      imageCache.clear();
-    }
-
-    final Image cachedImage = getCachedImage(fileName);
-    if (cachedImage != null) {
-      return cachedImage;
-    }
-
     final URL url = resourceLoader.getResource(fileName);
 
     if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
