@@ -45,6 +45,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
   // instead we feed it the node name and status as a string
   private ListCellRenderer<Object> setCellRenderer = new DefaultListCellRenderer();
   private final List<IPlayerActionFactory> actionFactories = new ArrayList<>();
+
   private final BiConsumer<UserName, String> statusUpdateListener = (username, status) -> repaint();
 
   public ChatPlayerPanel(final Chat chat) {

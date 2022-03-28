@@ -16,19 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.IntegerMap;
 
 /** Panel used to display the current players resources. */
-public class ResourceBar extends AbstractStatPanel implements GameDataChangeListener {
+public class ResourceBar extends JPanel implements GameDataChangeListener {
   private static final long serialVersionUID = -7713792841831042952L;
 
+  private final GameData gameData;
   private final UiContext uiContext;
   private final List<ResourceStat> resourceStats = new ArrayList<>();
 
   public ResourceBar(final GameData data, final UiContext uiContext) {
-    super(data);
+    this.gameData = data;
     this.uiContext = uiContext;
     setResources();
     initLayout();

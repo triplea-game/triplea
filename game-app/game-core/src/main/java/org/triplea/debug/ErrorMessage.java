@@ -36,7 +36,8 @@ public enum ErrorMessage {
   INSTANCE;
 
   private final JFrame windowReference = new JFrame("Error");
-  private final JEditorPaneWithClickableLinks errorMessage = new JEditorPaneWithClickableLinks("");
+  private final JEditorPaneWithClickableLinks errorMessagePane =
+      new JEditorPaneWithClickableLinks("");
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
   private volatile boolean enableErrorPopup = false;
 
@@ -49,7 +50,6 @@ public enum ErrorMessage {
   ErrorMessage() {
     windowReference.setAlwaysOnTop(true);
     windowReference.setMinimumSize(new Dimension(350, 150));
-    windowReference.setPreferredSize(new Dimension(900, 200));
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
     windowReference.addWindowListener(
         new WindowAdapter() {
@@ -58,12 +58,12 @@ public enum ErrorMessage {
             hide();
           }
         });
-    errorMessage.setBorder(new EmptyBorder(5, 20, 5, 10));
+    errorMessagePane.setBorder(new EmptyBorder(5, 20, 5, 10));
     windowReference.add(
         new JPanelBuilder()
             .border(10)
             .borderLayout()
-            .addCenter(SwingComponents.newJScrollPane(errorMessage))
+            .addCenter(SwingComponents.newJScrollPane(errorMessagePane))
             .addSouth(
                 new JPanelBuilder()
                     .border(20, 0, 0, 0)
@@ -100,13 +100,13 @@ public enum ErrorMessage {
    * Note, we hide and reveal the error message dialog instead of creating and disposing it to avoid
    * swing component creation threading issues.
    */
-  public static void show(final LoggerRecord record) {
+  public static void show(final LoggerRecord loggerRecord) {
     if (INSTANCE.enableErrorPopup && INSTANCE.isVisible.compareAndSet(false, true)) {
-      INSTANCE.setUploadRecord(record);
+      INSTANCE.setUploadRecord(loggerRecord);
 
       SwingUtilities.invokeLater(
           () -> {
-            INSTANCE.errorMessage.setText(new ErrorMessageFormatter().apply(record));
+            INSTANCE.errorMessagePane.setText(new ErrorMessageFormatter().apply(loggerRecord));
             INSTANCE.windowReference.pack();
             INSTANCE.windowReference.setLocationRelativeTo(null);
             INSTANCE.windowReference.setVisible(true);

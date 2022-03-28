@@ -122,7 +122,16 @@ public final class TileImageFactory {
   }
 
   private Image getImage(final String fileName, final boolean transparent) {
-    // This is null if there is no image
+    if (isDirty) {
+      isDirty = false;
+      imageCache.clear();
+    }
+
+    final Image cachedImage = getCachedImage(fileName);
+    if (cachedImage != null) {
+      return cachedImage;
+    }
+
     final URL url = resourceLoader.getResource(fileName);
 
     if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {

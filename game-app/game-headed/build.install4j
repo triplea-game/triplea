@@ -804,9 +804,7 @@ return true;</property>
     <windows name="Windows 64 bit" id="87" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-64bit">
       <jreBundle usePack200="false" directDownload="true" />
     </windows>
-    <macos name="Mac OS X" id="35" compressDmg="true" launcherId="33">
-      <jreBundle usePack200="false" directDownload="true" />
-    </macos>
+    <macosArchive name="macOS Single Bundle Archive" id="557" launcherId="33" />
     <unixInstaller name="Unix" id="36">
       <jreBundle usePack200="false" directDownload="true" installOnlyIfNecessary="true" />
     </unixInstaller>

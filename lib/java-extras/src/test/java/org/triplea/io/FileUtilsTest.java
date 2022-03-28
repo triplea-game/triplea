@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,6 +56,19 @@ final class FileUtilsTest {
     }
   }
 
+  @Test
+  @DisplayName("Verify we can read file contents with ISO-8859-1 encoded characters")
+  void readContents() {
+    final File testFile =
+        new File(
+            FileUtilsTest.class.getClassLoader().getResource("ISO-8859-1-test-file.txt").getFile());
+    final Path testFilePath = Path.of(testFile.toURI());
+
+    final Optional<String> contentRead = FileUtils.readContents(testFilePath);
+
+    assertThat(contentRead, isPresent());
+  }
+
   @Nested
   class FindFileInParentFolder {
 
@@ -73,10 +87,9 @@ final class FileUtilsTest {
       //   |- child1/
       //      |- child2/
       //         |- touch-file
-
-      final Path testFolderPath =
-          Path.of(
-              ZipExtractorTest.class.getClassLoader().getResource("test-folder-path").getFile());
+      final File testFolderFile =
+          new File(FileUtilsTest.class.getClassLoader().getResource("test-folder-path").getFile());
+      final Path testFolderPath = Path.of(testFolderFile.toURI());
       final Path child1 = testFolderPath.resolve("child1");
       final Path child2 = child1.resolve("child2");
 
@@ -103,21 +116,6 @@ final class FileUtilsTest {
           FileUtils.findFileInParentFolders(testFolderPath, "touch-parent"),
           isPresentAndIs(testFolderPath.resolve("touch-parent")));
     }
-  }
-
-  @Test
-  @DisplayName("Verify we can read file contents with ISO-8859-1 encoded characters")
-  void readContents() {
-    final Path testFile =
-        Path.of(
-            ZipExtractorTest.class
-                .getClassLoader()
-                .getResource("ISO-8859-1-test-file.txt")
-                .getFile());
-
-    final Optional<String> contentRead = FileUtils.readContents(testFile);
-
-    assertThat(contentRead, isPresent());
   }
 
   /**

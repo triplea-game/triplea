@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +53,7 @@ class BattleStepsPanel extends JPanel {
 
   /** Set the steps given, setting the selected step to the first step. */
   void listBattle(final List<String> steps) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Not in dispatch thread");
-    }
+    Util.ensureOnEventDispatchThread();
     synchronized (mutex) {
       listModel.removeAllElements();
       steps.forEach(listModel::addElement);
@@ -99,9 +98,7 @@ class BattleStepsPanel extends JPanel {
 
   /** Walks through and pause at each list item until we find our target. */
   private void walkStep() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong thread");
-    }
+    Util.ensureOnEventDispatchThread();
     if (doneWalkingSteps()) {
       wakeAll();
       return;
@@ -162,9 +159,7 @@ class BattleStepsPanel extends JPanel {
   }
 
   private void goToTarget() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Not swing event thread");
-    }
+    Util.ensureOnEventDispatchThread();
     waitThenWalk();
   }
 

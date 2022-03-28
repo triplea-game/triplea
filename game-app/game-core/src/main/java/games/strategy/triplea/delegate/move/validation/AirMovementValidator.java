@@ -807,7 +807,7 @@ public final class AirMovementValidator {
   public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn) {
     if (Matches.unitIsCarrier().test(unit)) {
       // here we check to see if the unit can no longer carry units
-      if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER)
+      if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITS_MAY_NOT_LAND_ON_CARRIER)
           .test(unit)) {
         // and we must check to make sure we let any allied air that are cargo stay here
         if (Matches.unitHasWhenCombatDamagedEffect(

@@ -65,7 +65,7 @@
 - mapName: Middle Earth
   mapCategory: BEST
   url: https://github.com/triplea-maps/middle_earth/archive/master.zip
-  version: 2
+  version: 3
   description: |
     <br>Lord of the Rings
 - mapName: Napoleonic Empires
@@ -2034,7 +2034,7 @@
 - mapName: Global 40 House Rules
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_house_rules/archive/master.zip
-  version: 14
+  version: 15
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
   description:
     <br>
@@ -2042,7 +2042,7 @@
 - mapName: The Grand War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_grand_war/archive/master.zip
-  version: 3
+  version: 4
   img: https://raw.githubusercontent.com/triplea-maps/the_grand_war/master/preview.png
   description:
     <br>
@@ -2286,7 +2286,7 @@
 - mapName: Global 40 expansion
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_expansion/archive/master.zip
-  version: 3
+  version: 6
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
   description: |
     <br>
@@ -2456,3 +2456,126 @@
      <li><b>By Navalland</b></li>
    </ul>
    <br>
+- mapName: WW2v5 Variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ww2v5_variants/archive/master.zip
+  version: 4
+  img: https://raw.githubusercontent.com/triplea-maps/ww2v5_variants/master/preview.png
+  description: |
+   <br>Variants for WW2v5
+   <br>WW2v5-Maintenance adds per turn maintenance costs
+   <br>WW2v5-Buildcaps limits the number of units you can build
+   <br>WW2v5_1942_2nd_Edition_High_Production_Mod
+- mapName: NWO-Andrew's
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NWO_Andrews/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/NWO_Andrews/master/preview.png
+  description: |
+   <br>1939 on New World Order map with low piece count
+- mapName: Hearts of Iron
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Hearts_of_Iron/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Hearts_of_Iron/master/preview.png
+  description: |
+   <br>Scenarios with many unit types on the Big World map
+   <br>Hearts of Iron: The Rising Sun 1942, starts in early 1942
+   <br>Hearts of Iron: Awakening the Giants, starts in mid 1941
+- mapName: CTF2 Colors
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/CTF2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/CTF2/master/preview.png
+  description: |
+   <br>A variety of scenarios using the Capture the Flag Map
+- mapName: Oil Wars
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Oil_Wars/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Oil_Wars/master/preview.png
+  description: |
+   <br>An alternate history scenario in a world critically short of oil. Income is concentrated in oil-producing regions
+- mapName: Game of Thrones V2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/game_of_thrones_v2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/game_of_thrones_v2/master/preview.png
+  description: |
+   <br>The Game of Thrones with triggers to reflect the shifting alliances. Triggers are not fully implemented
+- mapName: D-Day 3
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/D-Day_3/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/D-Day_3/master/preview.png
+  description: |
+   <br>Based upon the Axis & Allies D-Day game, this mod is designed for maximum compatibility with the AI
+- mapName: Hearts of Iron 2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Hearts_of_Iron2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Hearts_of_Iron2/master/preview.png
+  description: |
+   <br>4 WW2 Scenarios on large map with many unit types
+- mapName: China vs Russia
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/China_vs_Russia/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/China_vs_Russia/master/preview.png
+  description: |
+   <br>A hypothetical Chinese-Russian conflict on the World War II Pacific map
+- mapName: Feudal Lords
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/feudal_lords/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/feudal_lords/master/preview.png
+  description: |
+   <br>Free for all in Medieval Europe and the Mediterranean
+- mapName: Big World 1940
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/big_world_1940/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_1940/master/preview.png
+  description: |
+   <br>Free for all in Medieval Europe and the Mediterranean
+- mapName: TripleA Classic Revised
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/TripleA_Classic_Revised/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/TripleA_Classic_Revised/master/preview.png
+  description: |
+   <br>World War II Classic with some rules from World War II Revised added
+- mapName: Cybertank
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Cybertank/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Cybertank/master/preview.png
+  description: |
+   <br>Futuristic warfare inspired by the game Ogre
+- mapName: Anti-Imperialism
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/anti_imperialism/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/anti_imperialism/master/preview.png
+  description: |
+   <br>An abstract game of the United States vs the rest of the world on the Revised map
+- mapName: New World Order Variants-Neutrals
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/New_World_Order_Variants/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/New_World_Order_Variants/blob/master/preview.png
+  description: |
+   <br>3 Variants on the New World Order Map that handle smaller neutral nations differently
+   <br>New World Order Variant - Neutrals Unassigned
+   <br>Neutral nations are restricted to their homeland and can be attacked by either alliance
+   <br>New World Order Variant - Neutrals Assigned
+   <br>Neutral nations are restricted to their homeland and are assigned to an alliance
+   <br>New World Order Variant - Neutrals Unrestricted
+   <br>Neutral nations are normal members of an alliance
+- mapName: Imperialism FFA
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/imperialism_ffa/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/imperialism_ffa/master/preview.png
+  description: |
+   <br>An abstract game with a four power free-for-all fighting on the Revised Map.

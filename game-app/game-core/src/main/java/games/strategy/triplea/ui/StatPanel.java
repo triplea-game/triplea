@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -37,22 +38,24 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-class StatPanel extends AbstractStatPanel {
+class StatPanel extends JPanel implements GameDataChangeListener {
   private static final long serialVersionUID = 4340684166664492498L;
 
   IStat[] stats;
   private final Map<GamePlayer, ImageIcon> mapPlayerImage = new HashMap<>();
+  protected GameData gameData;
   private final UiContext uiContext;
   private final StatTableModel dataModel;
   private final TechTableModel techModel;
 
   StatPanel(final GameData data, final UiContext uiContext) {
-    super(data);
+    this.gameData = data;
     this.uiContext = uiContext;
     dataModel = new StatTableModel();
     techModel = new TechTableModel();
     fillPlayerIcons();
     initLayout();
+    gameData.addDataChangeListener(this);
   }
 
   protected void initLayout() {
@@ -85,11 +88,17 @@ class StatPanel extends AbstractStatPanel {
   }
 
   public void setGameData(final GameData data) {
+    gameData.removeDataChangeListener(this);
     gameData = data;
-    dataModel.setGameData(data);
-    techModel.setGameData(data);
-    dataModel.gameDataChanged(null);
-    techModel.gameDataChanged(null);
+    gameData.addDataChangeListener(this);
+    gameDataChanged(null);
+  }
+
+  @Override
+  public void gameDataChanged(final Change change) {
+    dataModel.markDirty();
+    techModel.markDirty();
+    SwingUtilities.invokeLater(this::repaint);
   }
 
   /**
@@ -137,17 +146,13 @@ class StatPanel extends AbstractStatPanel {
   }
 
   /** Custom table model. This model is thread safe. */
-  class StatTableModel extends AbstractTableModel implements GameDataChangeListener {
+  class StatTableModel extends AbstractTableModel {
     private static final long serialVersionUID = -6156153062049822444L;
-    /* Flag to indicate whether data needs to be recalculated */
-    private boolean isDirty = true;
-    /* Column Header Names */
-    /* Underlying data for the table */
+    /* Underlying data for the table. If null, needs to be computed. */
     private String[][] collectedData;
 
     StatTableModel() {
       setStatColumns();
-      gameData.addDataChangeListener(this);
     }
 
     void setStatColumns() {
@@ -166,10 +171,12 @@ class StatPanel extends AbstractStatPanel {
     }
 
     private synchronized void loadData() {
+      // copy so acquire/release read lock are on the same object!
+      final GameData gameData = StatPanel.this.gameData;
       gameData.acquireReadLock();
       try {
-        final List<GamePlayer> players = getPlayers();
-        final Collection<String> alliances = getAlliances();
+        final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
+        final Collection<String> alliances = gameData.getAllianceTracker().getAlliances();
         collectedData = new String[players.size() + alliances.size()][stats.length + 1];
         int row = 0;
         for (final GamePlayer player : players) {
@@ -195,25 +202,13 @@ class StatPanel extends AbstractStatPanel {
       }
     }
 
-    @Override
-    public void gameDataChanged(final Change change) {
-      synchronized (this) {
-        isDirty = true;
-      }
-      SwingUtilities.invokeLater(StatPanel.this::repaint);
-    }
-
     /*
      * Re-calcs the underlying data in a lazy manner.
      * Limitation: This is not a thread-safe implementation.
      */
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
-      if (isDirty) {
-        loadData();
-        isDirty = false;
-      }
-      return collectedData[row][col];
+      return getCollectedData()[row][col];
     }
 
     // Trivial implementations of required methods
@@ -231,34 +226,23 @@ class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public synchronized int getRowCount() {
-      if (!isDirty) {
-        return collectedData.length;
-      }
-
-      // no need to recalculate all the stats just to get the row count
-      // getting the row count is a fairly frequent operation, and will happen even if we are not
-      // displayed!
-      gameData.acquireReadLock();
-      try {
-        return gameData.getPlayerList().size() + getAlliances().size();
-      } finally {
-        gameData.releaseReadLock();
-      }
+    public int getRowCount() {
+      return getCollectedData().length;
     }
 
-    synchronized void setGameData(final GameData data) {
-      synchronized (this) {
-        gameData.removeDataChangeListener(this);
-        gameData = data;
-        gameData.addDataChangeListener(this);
-        isDirty = true;
+    synchronized void markDirty() {
+      collectedData = null;
+    }
+
+    private synchronized String[][] getCollectedData() {
+      if (collectedData == null) {
+        loadData();
       }
-      repaint();
+      return collectedData;
     }
   }
 
-  class TechTableModel extends AbstractTableModel implements GameDataChangeListener {
+  class TechTableModel extends AbstractTableModel {
     private static final long serialVersionUID = -4612476336419396081L;
     /* Flag to indicate whether data needs to be recalculated */
     private boolean isDirty = true;
@@ -273,27 +257,21 @@ class StatPanel extends AbstractStatPanel {
     private final Map<String, Integer> rowMap = new HashMap<>();
 
     TechTableModel() {
-      gameData.addDataChangeListener(this);
       initColList();
       /* Load the country -> col mapping */
       for (int i = 0; i < colList.length; i++) {
         colMap.put(colList[i], i + 1);
       }
-      /*
-       * .size()+1 added to stop index out of bounds errors when using an Italian player.
-       */
       boolean useTech = false;
+      final GameData gameData = StatPanel.this.gameData;
       try {
         gameData.acquireReadLock();
+        final int numTechs = TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size();
         if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
           useTech = true;
-          data =
-              new String[TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size() + 1]
-                  [colList.length + 2];
+          data = new String[numTechs + 1][colList.length + 2];
         } else {
-          data =
-              new String[TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size()]
-                  [colList.length + 1];
+          data = new String[numTechs][colList.length + 1];
         }
       } finally {
         gameData.releaseReadLock();
@@ -325,12 +303,12 @@ class StatPanel extends AbstractStatPanel {
     }
 
     private void initColList() {
-      final List<GamePlayer> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
+      final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
       colList = new String[players.size()];
       for (int i = 0; i < players.size(); i++) {
         colList[i] = players.get(i).getName();
       }
-      Arrays.sort(colList, 0, players.size());
+      Arrays.sort(colList);
     }
 
     void update() {
@@ -405,16 +383,7 @@ class StatPanel extends AbstractStatPanel {
       return data.length;
     }
 
-    @Override
-    public void gameDataChanged(final Change change) {
-      isDirty = true;
-      SwingUtilities.invokeLater(StatPanel.this::repaint);
-    }
-
-    void setGameData(final GameData data) {
-      gameData.removeDataChangeListener(this);
-      gameData = data;
-      gameData.addDataChangeListener(this);
+    void markDirty() {
       isDirty = true;
     }
   }

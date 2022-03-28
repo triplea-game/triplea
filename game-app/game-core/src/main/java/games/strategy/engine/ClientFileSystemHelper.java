@@ -13,12 +13,16 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.ApplicationContext;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.io.FileUtils;
 import org.triplea.util.Services;
 
 /** Provides methods to work with common file locations in a client installation. */
 @Slf4j
 public final class ClientFileSystemHelper {
+  public static final String USER_ROOT_FOLDER_NAME = "triplea";
+  private static Path codeSourceLocation;
+
   private ClientFileSystemHelper() {}
 
   /**
@@ -31,26 +35,54 @@ public final class ClientFileSystemHelper {
    */
   public static Path getRootFolder() {
     try {
-      return FileUtils.findFileInParentFolders(getCodeSourceFolder(), ".triplea-root")
-          .orElseThrow(() -> new IllegalStateException("Unable to locate root folder"));
+      final Optional<Path> markerFile =
+          FileUtils.findFileInParentFolders(getCodeSourceFolder(), ".triplea-root");
+
+      if (markerFile.isEmpty()) {
+        throw handleUnableToLocateRootFolder(null);
+      }
+
+      final Path rootFolder = markerFile.get().getParent();
+      if (rootFolder == null) {
+        throw handleUnableToLocateRootFolder(null);
+      }
+
+      return rootFolder;
     } catch (final IOException e) {
-      throw new IllegalStateException("Unable to locate root folder", e);
+      throw handleUnableToLocateRootFolder(e);
     }
   }
 
-  private static Path getCodeSourceFolder() throws IOException {
-    final ApplicationContext applicationContext = Services.loadAny(ApplicationContext.class);
-    final @Nullable CodeSource codeSource =
-        applicationContext.getMainClass().getProtectionDomain().getCodeSource();
-    if (codeSource == null) {
-      throw new IOException("code source is not available");
-    }
+  private static IllegalStateException handleUnableToLocateRootFolder(final Throwable cause) {
+    return new IllegalStateException("Unable to locate root folder", cause);
+  }
 
-    final Path codeSourceLocation;
-    try {
-      codeSourceLocation = Path.of(codeSource.getLocation().toURI());
-    } catch (final URISyntaxException e) {
-      throw new IOException("code source location URI is malformed", e);
+  public static void setCodeSourceFolder(final Path sourceFolder) {
+    codeSourceLocation = sourceFolder;
+  }
+
+  /**
+   * TripleA stores two folders, one for user content that survives between game installs, and a
+   * second that contains binaries. This method returns the 'user folder', which contains maps and
+   * save games.
+   *
+   * @return Folder that contains binaries. This folder would contain e.g. resources that are not
+   *     specific to a particular game.
+   */
+  public static Path getCodeSourceFolder() throws IOException {
+    if (codeSourceLocation == null) {
+      final ApplicationContext applicationContext = Services.loadAny(ApplicationContext.class);
+      final @Nullable CodeSource codeSource =
+          applicationContext.getMainClass().getProtectionDomain().getCodeSource();
+      if (codeSource == null) {
+        throw new IOException("code source is not available");
+      }
+
+      try {
+        codeSourceLocation = Path.of(codeSource.getLocation().toURI());
+      } catch (final URISyntaxException e) {
+        throw new IOException("code source location URI is malformed", e);
+      }
     }
 
     // code source location is either a jar file (installation) or a folder (dev environment)
@@ -70,8 +102,8 @@ public final class ClientFileSystemHelper {
    */
   public static Path getUserRootFolder() {
     final Path userHome = Path.of(SystemProperties.getUserHome());
-    final Path rootDir = userHome.resolve("Documents").resolve("triplea");
-    return Files.exists(rootDir) ? rootDir : userHome.resolve("triplea");
+    final Path rootDir = userHome.resolve("Documents").resolve(USER_ROOT_FOLDER_NAME);
+    return Files.exists(rootDir) ? rootDir : userHome.resolve(USER_ROOT_FOLDER_NAME);
   }
 
   /**
@@ -89,7 +121,7 @@ public final class ClientFileSystemHelper {
   @VisibleForTesting
   static Path getUserMapsFolder(final Supplier<Path> userHomeRootFolderSupplier) {
     final Path defaultDownloadedMapsFolder =
-        userHomeRootFolderSupplier.get().resolve("downloadedMaps");
+        userHomeRootFolderSupplier.get().resolve(MapsClient.MAPS_FOLDER_NAME);
 
     // make sure folder override location is valid, if not notify user and reset it.
     final Optional<Path> path = ClientSetting.mapFolderOverride.getValue();
@@ -105,7 +137,7 @@ public final class ClientFileSystemHelper {
     final Path mapsFolder =
         ClientSetting.mapFolderOverride
             .getValue()
-            .orElseGet(() -> userHomeRootFolderSupplier.get().resolve("downloadedMaps"));
+            .orElseGet(() -> userHomeRootFolderSupplier.get().resolve(MapsClient.MAPS_FOLDER_NAME));
 
     if (!Files.exists(mapsFolder)) {
       try {

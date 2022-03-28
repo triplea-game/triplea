@@ -52,14 +52,14 @@ class MapTagAdminClientTest extends WireMockTest {
   @Test
   void sendUpdateMapTagRequest(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
 
-    final var updateMapTagResponse = GenericServerResponse.SUCCCESS;
+    final var updateMapTagResponse = GenericServerResponse.SUCCESS;
 
     wireMockServer.stubFor(
         post(MapTagAdminClient.UPDATE_MAP_TAG_PATH)
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
-                    .withBody(JsonUtil.toJson(GenericServerResponse.SUCCCESS))));
+                    .withBody(JsonUtil.toJson(GenericServerResponse.SUCCESS))));
 
     final var result =
         newClient(wireMockServer)

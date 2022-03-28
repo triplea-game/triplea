@@ -189,9 +189,7 @@ public class PbemDiceRoller implements IRandomSource {
     }
 
     private void rollInternal() {
-      if (!SwingUtilities.isEventDispatchThread()) {
-        throw new IllegalStateException("Wrong thread");
-      }
+      Util.ensureOnEventDispatchThread();
       reRollButton.setEnabled(false);
       exitButton.setEnabled(false);
       ThreadRunner.runInNewThread(this::rollInSeparateThread);

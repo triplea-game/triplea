@@ -22,7 +22,6 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.help.UnitStatsTable;
-import games.strategy.triplea.util.PlayerOrderComparator;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,13 +32,11 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -184,16 +181,14 @@ final class ExportMenu extends JMenu {
       writer.print(currentRound);
       writer.println(',');
       writer.append("Number of Players: ,");
-      writer.print(statPanel.getPlayers().size());
+      writer.print(gameData.getPlayerList().size());
       writer.println(',');
       writer.append("Number of Alliances: ,");
-      writer.print(statPanel.getAlliances().size());
+      writer.print(gameData.getAllianceTracker().getAlliances().size());
       writer.println(',');
       writer.println();
       writer.println("Turn Order: ,");
-      final SortedSet<GamePlayer> orderedPlayers =
-          new TreeSet<>(new PlayerOrderComparator(gameData));
-      orderedPlayers.addAll(gameData.getPlayerList().getPlayers());
+      final List<GamePlayer> orderedPlayers = gameData.getPlayerList().getSortedPlayers();
       for (final GamePlayer currentGamePlayer : orderedPlayers) {
         writer.append(currentGamePlayer.getName()).append(',');
         final Collection<String> allianceNames =
@@ -256,12 +251,11 @@ final class ExportMenu extends JMenu {
               : "Short Stats (only shows first phase with activity per player per round),");
       writer.println("Turn Stats: ,");
       writer.append("Round,Player Turn,Phase Name,");
-      final String[] alliances = statPanel.getAlliances().toArray(new String[0]);
-      final GamePlayer[] players = statPanel.getPlayers().toArray(new GamePlayer[0]);
-      // its important here to translate the player objects into our game data
+      final Set<String> alliances = gameData.getAllianceTracker().getAlliances();
+      // its important here to use the player objects from the cloned game data
       // the players for the stat panel are only relevant with respect to the game data they belong
       // to
-      Arrays.setAll(players, i -> clone.getPlayerList().getPlayerId(players[i].getName()));
+      final List<GamePlayer> players = clone.getPlayerList().getSortedPlayers();
 
       // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom
       // resources or tech
