@@ -13,12 +13,16 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.ApplicationContext;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.io.FileUtils;
 import org.triplea.util.Services;
 
 /** Provides methods to work with common file locations in a client installation. */
 @Slf4j
 public final class ClientFileSystemHelper {
+  public static final String USER_ROOT_FOLDER_NAME = "triplea";
+  private static Path codeSourceLocation;
+
   private ClientFileSystemHelper() {}
 
   /**
