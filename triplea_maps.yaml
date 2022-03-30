@@ -2579,3 +2579,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/imperialism_ffa/master/preview.png
   description: |
    <br>An abstract game with a four power free-for-all fighting on the Revised Map.
+- mapName: Terra Firma 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/TerraFirma1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/TerraFirma1939/master/preview.png
+  description: |
+   <br>World War 2 on a huge map
