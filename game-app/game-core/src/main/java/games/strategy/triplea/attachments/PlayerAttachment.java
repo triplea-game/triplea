@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
 
 /**
  * An attachment for instances of {@link GamePlayer} that defines properties unrelated to rules (see
@@ -54,13 +55,13 @@ public class PlayerAttachment extends DefaultAttachment {
   private Set<UnitType> suicideAttackTargets = null;
 
   // placement limits on a flexible per player basis
-  private Set<StackingLimit> placementLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> placementLimit = new HashSet<>();
 
   // movement limits on a flexible per player basis
-  private Set<StackingLimit> movementLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> movementLimit = new HashSet<>();
 
   // attacking limits on a flexible per player basis
-  private Set<StackingLimit> attackingLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> attackingLimit = new HashSet<>();
 
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -85,11 +86,11 @@ public class PlayerAttachment extends DefaultAttachment {
     placementLimit.add(parseUnitLimit("placementLimit", value));
   }
 
-  private void setPlacementLimit(final Set<StackingLimit> value) {
+  private void setPlacementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     placementLimit = value;
   }
 
-  private Set<StackingLimit> getPlacementLimit() {
+  private Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit() {
     return placementLimit;
   }
 
@@ -101,11 +102,11 @@ public class PlayerAttachment extends DefaultAttachment {
     movementLimit.add(parseUnitLimit("movementLimit", value));
   }
 
-  private void setMovementLimit(final Set<StackingLimit> value) {
+  private void setMovementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     movementLimit = value;
   }
 
-  private Set<StackingLimit> getMovementLimit() {
+  private Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit() {
     return movementLimit;
   }
 
@@ -117,11 +118,11 @@ public class PlayerAttachment extends DefaultAttachment {
     attackingLimit.add(parseUnitLimit("attackingLimit", value));
   }
 
-  private void setAttackingLimit(final Set<StackingLimit> value) {
+  private void setAttackingLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     attackingLimit = value;
   }
 
-  private Set<StackingLimit> getAttackingLimit() {
+  private Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit() {
     return attackingLimit;
   }
 
@@ -129,20 +130,8 @@ public class PlayerAttachment extends DefaultAttachment {
     attackingLimit = new HashSet<>();
   }
 
-  private static class StackingLimit {
-    final int max;
-    final String type;
-    final Set<UnitType> units;
-
-    public StackingLimit(final int count, final String type, final Set<UnitType> units) {
-      this.max = count;
-      this.type = type;
-      this.units = units;
-    }
-  }
-
-  private StackingLimit parseUnitLimit(final String type, final String value)
-      throws GameParseException {
+  private Triple<Integer, String, Set<UnitType>> parseUnitLimit(
+      final String type, final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length < 3) {
       throw new GameParseException(
@@ -168,7 +157,7 @@ public class PlayerAttachment extends DefaultAttachment {
         types.add(ut);
       }
     }
-    return new StackingLimit(max, s[1], types);
+    return Triple.of(max, s[1], types);
   }
 
   /**
@@ -185,7 +174,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (pa == null) {
       return true;
     }
-    final Set<StackingLimit> stackingLimits;
+    final Set<Triple<Integer, String, Set<UnitType>>> stackingLimits;
     switch (limitType) {
       case "movementLimit":
         stackingLimits = pa.getMovementLimit();
@@ -205,24 +194,26 @@ public class PlayerAttachment extends DefaultAttachment {
     final Predicate<Unit> notOwned = Matches.unitIsOwnedBy(owner).negate();
     final Predicate<Unit> notAllied =
         Matches.alliedUnit(owner, data.getRelationshipTracker()).negate();
-    for (final StackingLimit currentLimit : stackingLimits) {
+    for (final Triple<Integer, String, Set<UnitType>> currentLimit : stackingLimits) {
       // first make a copy of unitsMoving
       final Collection<Unit> copyUnitsMoving = new ArrayList<>(unitsMoving);
       final Collection<Unit> currentInTerritory = new ArrayList<>(toMoveInto.getUnits());
+      final String type = currentLimit.getSecond();
       // first remove units that do not apply to our current type
-      if (currentLimit.type.equals("owned")) {
+      if (type.equals("owned")) {
         currentInTerritory.removeAll(CollectionUtils.getMatches(currentInTerritory, notOwned));
         copyUnitsMoving.removeAll(CollectionUtils.getMatches(copyUnitsMoving, notOwned));
-      } else if (currentLimit.type.equals("allied")) {
+      } else if (type.equals("allied")) {
         currentInTerritory.removeAll(CollectionUtils.getMatches(currentInTerritory, notAllied));
         copyUnitsMoving.removeAll(CollectionUtils.getMatches(copyUnitsMoving, notAllied));
       }
       // now remove units that are not part of our list
-      final Predicate<Unit> matchesUnits = Matches.unitIsOfTypes(currentLimit.units);
+      final Predicate<Unit> matchesUnits = Matches.unitIsOfTypes(currentLimit.getThird());
       currentInTerritory.retainAll(CollectionUtils.getMatches(currentInTerritory, matchesUnits));
       copyUnitsMoving.retainAll(CollectionUtils.getMatches(copyUnitsMoving, matchesUnits));
       // now test
-      if (currentLimit.max < (currentInTerritory.size() + copyUnitsMoving.size())) {
+      final Integer max = currentLimit.getFirst();
+      if (max < (currentInTerritory.size() + copyUnitsMoving.size())) {
         return false;
       }
     }
