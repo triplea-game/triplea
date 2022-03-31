@@ -35,10 +35,6 @@
     - "{{ bot_install_home }}"
     - "{{ bot_maps_folder }}"
 
-- name: download maps on bot server
-  tags: [update_maps]
-  command: "{{ admin_home }}/download-all-maps"
-
 - name: deploy zip file (prerelease build only)
   tags: [prerelease, deploy]
   copy:
