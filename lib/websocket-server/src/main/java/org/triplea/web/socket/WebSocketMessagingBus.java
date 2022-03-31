@@ -54,10 +54,10 @@ public class WebSocketMessagingBus {
   }
 
   public <X extends WebSocketMessage> void broadcastMessage(final X broadcastMessage) {
-    broadcastMessageEnvelope(broadcastMessage.toEnvelope());
+    broadcastMessage(broadcastMessage.toEnvelope());
   }
 
-  public void broadcastMessageEnvelope(final MessageEnvelope messageEnvelope) {
+  public void broadcastMessage(final MessageEnvelope messageEnvelope) {
     messageBroadcaster.accept(sessionSet.getSessions(), messageEnvelope);
   }
 
