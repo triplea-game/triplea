@@ -20,7 +20,7 @@ public class GameRelayServer {
    */
   public GameRelayServer(final int port) {
     final WebSocketMessagingBus webSocketMessagingBus = new WebSocketMessagingBus();
-    webSocketMessagingBus.addMessageListener(webSocketMessagingBus::broadcastMessageEnvelope);
+    webSocketMessagingBus.addMessageListener(webSocketMessagingBus::broadcastMessage);
     standaloneWebsocketServer = new StandaloneWebsocketServer(webSocketMessagingBus, port);
     standaloneWebsocketServer.start();
     log.info("Game Relay Server started on port: " + port);
