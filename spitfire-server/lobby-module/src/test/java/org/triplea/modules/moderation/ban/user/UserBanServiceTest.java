@@ -165,23 +165,4 @@ class UserBanServiceTest {
             USER_BAN_PARAMS.getMinutesToBan()))
         .thenReturn(updateCount);
   }
-
-  @Test
-  void banUserSuccessCase() {
-    givenBanDaoUpdateCount(1);
-    when(chatters.disconnectIp(eq(IpAddressParser.fromString(USER_BAN_PARAMS.getIp())), any()))
-        .thenReturn(true);
-
-    bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS);
-    verify(moderatorAuditHistoryDao)
-        .addAuditRecord(
-            ModeratorAuditHistoryDao.AuditArgs.builder()
-                .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
-                .actionTarget(USERNAME + " " + USER_BAN_PARAMS.getMinutesToBan() + " minutes")
-                .moderatorUserId(MODERATOR_ID)
-                .build());
-
-    verify(chatMessagingBus).broadcastMessage(any());
-    verify(gameMessagingBus).broadcastMessage(any());
-  }
 }
