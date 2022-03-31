@@ -68,7 +68,7 @@ class GameSaveTest {
     final ServerGame game = startGameWithAis(gameSelector);
     final Path saveFile = Files.createTempFile("save", GameDataFileUtils.getExtension());
     game.saveGame(saveFile);
-    assertThat(Files.size(saveFile), is(not(0)));
+    assertThat(Files.size(saveFile), is(not(0L)));
   }
 
   private static Path downloadMap(final URI uri) throws IOException {
