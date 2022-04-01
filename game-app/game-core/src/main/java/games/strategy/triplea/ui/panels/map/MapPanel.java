@@ -714,10 +714,10 @@ public class MapPanel extends ImageScrollerLargeView {
             uiContext
                 .getUnitImageFactory()
                 .getHighlightImage(UnitImageFactory.ImageKey.of(category));
-          final AffineTransform transform =
-              AffineTransform.getTranslateInstance(
-                  normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
-          g2d.drawImage(image, transform, this);
+        final AffineTransform transform =
+            AffineTransform.getTranslateInstance(
+                normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
+        g2d.drawImage(image, transform, this);
       }
     }
     // draw the tiles nearest us first
