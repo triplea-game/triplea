@@ -206,8 +206,11 @@ public class UnitImageFactory {
     return images.containsKey(imageKey) || getBaseImageUrl(imageKey).isPresent();
   }
 
-  /** Return the appropriate unit image. */
-  public Optional<Image> getImage(final ImageKey imageKey) {
+  /**
+   * Return the appropriate unit image. If an image cannot be found, a placeholder 'no-image' image
+   * is returned.
+   */
+  public Image getImage(final ImageKey imageKey) {
     return Optional.ofNullable(images.get(imageKey))
         .or(
             () ->
@@ -229,7 +232,13 @@ public class UnitImageFactory {
                           Util.ensureImageLoaded(scaledImage);
                           images.put(imageKey, scaledImage);
                           return scaledImage;
-                        }));
+                        }))
+        .orElseGet(
+            () -> {
+              final URL missingUnitImageLocation =
+                  resourceLoader.getResource(FILE_NAME_BASE + "/missing_unit_image.png");
+              return Toolkit.getDefaultToolkit().getImage(missingUnitImageLocation);
+            });
   }
 
   public Optional<URL> getBaseImageUrl(final ImageKey imageKey) {
@@ -287,8 +296,8 @@ public class UnitImageFactory {
    *
    * @return The highlight image or empty if no base image is available for the specified unit.
    */
-  public Optional<Image> getHighlightImage(final ImageKey imageKey) {
-    return getImage(imageKey).map(UnitImageFactory::highlightImage);
+  public Image getHighlightImage(final ImageKey imageKey) {
+    return highlightImage(getImage(imageKey));
   }
 
   private static Image highlightImage(final Image image) {

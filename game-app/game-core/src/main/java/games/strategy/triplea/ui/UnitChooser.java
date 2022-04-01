@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.swing.JButton;
@@ -668,21 +667,22 @@ public final class UnitChooser extends JPanel {
       public void paint(final Graphics g) {
         super.paint(g);
 
-        NonWithdrawableFactory.getImage(
+        Image image =
+            NonWithdrawableFactory.getImage(
                 ImageKey.builder()
                     .type(category.getType())
                     .player(category.getOwner())
                     .damaged(damaged || category.hasDamageOrBombingUnitDamage())
                     .disabled(category.getDisabled())
                     .build(),
-                /*nonWithdrawable =*/ !category.getCanRetreat())
-            .ifPresent(image -> g.drawImage(image, 0, 0, this));
+                /*nonWithdrawable =*/ !category.getCanRetreat());
+        g.drawImage(image, 0, 0, this);
 
         int index = 1;
         for (final UnitOwner holder : category.getDependents()) {
           final int x = NonWithdrawableFactory.getUnitImageWidth() * index;
-          NonWithdrawableFactory.getImage(ImageKey.of(holder), false)
-              .ifPresent(image1 -> g.drawImage(image1, x, 0, this));
+          Image nonWithdrawableImage = NonWithdrawableFactory.getImage(ImageKey.of(holder), false);
+          g.drawImage(nonWithdrawableImage, x, 0, this);
           index++;
         }
       }
@@ -727,18 +727,16 @@ public final class UnitChooser extends JPanel {
       }
     }
 
-    public Optional<Image> getImage(final ImageKey imageKey, final boolean nonWithdrawable) {
-      final var undecoratedImage = unitImageFactoryForDecoratedImages.getImage(imageKey);
+    private Image getImage(final ImageKey imageKey, final boolean nonWithdrawable) {
+      final Image undecoratedImage = unitImageFactoryForDecoratedImages.getImage(imageKey);
 
-      return nonWithdrawable && undecoratedImage.isPresent()
-          ? getImage(undecoratedImage.get())
-          : undecoratedImage;
+      return nonWithdrawable ? getImage(undecoratedImage) : undecoratedImage;
     }
 
-    private Optional<Image> getImage(final Image undecoratedImage) {
+    private Image getImage(final Image undecoratedImage) {
       final var cachedImage = images.get(undecoratedImage);
       if (cachedImage != null) {
-        return Optional.of(cachedImage);
+        return cachedImage;
       }
 
       final var unitImageWithNonWithdrawableImage =
@@ -756,7 +754,7 @@ public final class UnitChooser extends JPanel {
 
       images.put(undecoratedImage, unitImageWithNonWithdrawableImage);
 
-      return Optional.of(unitImageWithNonWithdrawableImage);
+      return unitImageWithNonWithdrawableImage;
     }
 
     private BufferedImage loadImage(final String fileName) {
