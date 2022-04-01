@@ -262,7 +262,12 @@ public class UnitImageFactory {
 
     Image image = Toolkit.getDefaultToolkit().getImage(imageLocation);
     Util.ensureImageLoaded(image);
-    if (needToTransformImage(gamePlayer, type, mapData)) {
+    boolean needToTransformImage =
+        !mapData.ignoreTransformingUnit(type.getName())
+            && (mapData.getUnitColor(gamePlayer.getName()).isPresent()
+                || mapData.shouldFlipUnit(gamePlayer.getName()));
+
+    if (needToTransformImage) {
       image = convertToBufferedImage(image);
       Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
       if (unitColor.isPresent()) {
@@ -274,13 +279,6 @@ public class UnitImageFactory {
       }
     }
     return image;
-  }
-
-  private static boolean needToTransformImage(
-      final GamePlayer gamePlayer, final UnitType type, final MapData mapData) {
-    return !mapData.ignoreTransformingUnit(type.getName())
-        && (mapData.getUnitColor(gamePlayer.getName()).isPresent()
-            || mapData.shouldFlipUnit(gamePlayer.getName()));
   }
 
   private static BufferedImage convertToBufferedImage(final Image image) {
