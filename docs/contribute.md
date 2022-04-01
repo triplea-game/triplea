@@ -95,15 +95,15 @@ to help.
 
 #### _Skillset_
 
-- tbd
+- Have interpersonal skills to communicate with users in a non-confrontational manner.
 
 #### _Contributions_
 
-- tbd
+- Answer lobby user questions. Help provide a fun and safe lobby experience for all users. Discipline inappropriate user behaviour.
 
 #### _How to become one_
 
-- tbd
+- Be sponsored by an existing moderator and added by a Developer with merge rights.
 
 ### :bulb: Issue Manager
 
