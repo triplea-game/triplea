@@ -22,6 +22,7 @@ import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
 import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatterListingMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ConnectToChatMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMessage;
@@ -102,7 +103,7 @@ class PlayerConnectedListenerTest {
     playerConnectedListener.accept(context);
 
     verify(chatters, never()).connectPlayer(any());
-    verify(webSocketMessagingBus, never()).broadcastMessage(any());
+    verify(webSocketMessagingBus, never()).broadcastMessage(any(MessageEnvelope.class));
     verify(webSocketMessagingBus, never()).sendResponse(any(), any());
   }
 
@@ -150,6 +151,6 @@ class PlayerConnectedListenerTest {
 
     // we do *not* broadcast a player joined message as the player appears already
     // connected, the second connection is transparent to the other users.
-    verify(webSocketMessagingBus, never()).broadcastMessage(any());
+    verify(webSocketMessagingBus, never()).broadcastMessage(any(MessageEnvelope.class));
   }
 }
