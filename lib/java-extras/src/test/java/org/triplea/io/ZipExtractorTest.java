@@ -77,8 +77,7 @@ class ZipExtractorTest {
     final Path subfolder = destinationFolder.resolve("sub");
 
     final Exception exception =
-        assertThrows(
-            Exception.class, () -> ZipExtractor.unzipFile(zip, subfolder));
+        assertThrows(Exception.class, () -> ZipExtractor.unzipFile(zip, subfolder));
 
     assertThat(Files.exists(destinationFolder.resolve("matrix.jpg")), is(false));
     // Make sure file isn't extracted at all
