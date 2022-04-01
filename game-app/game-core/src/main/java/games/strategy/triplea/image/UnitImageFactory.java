@@ -252,27 +252,28 @@ public class UnitImageFactory {
   }
 
   private Optional<Image> getTransformedImage(final ImageKey imageKey) {
+    return getBaseImageUrl(imageKey)
+        .map(imageLocation -> loadImageAndTransform(imageLocation, imageKey));
+  }
+
+  private Image loadImageAndTransform(URL imageLocation, ImageKey imageKey) {
     final GamePlayer gamePlayer = imageKey.getPlayer();
     final UnitType type = imageKey.getType();
 
-    final Optional<URL> imageLocation = getBaseImageUrl(imageKey);
-    Image image = null;
-    if (imageLocation.isPresent()) {
-      image = Toolkit.getDefaultToolkit().getImage(imageLocation.get());
-      Util.ensureImageLoaded(image);
-      if (needToTransformImage(gamePlayer, type, mapData)) {
-        image = convertToBufferedImage(image);
-        final Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
-        if (unitColor.isPresent()) {
-          final int brightness = mapData.getUnitBrightness(gamePlayer.getName());
-          ImageTransformer.colorize(unitColor.get(), brightness, (BufferedImage) image);
-        }
-        if (mapData.shouldFlipUnit(gamePlayer.getName())) {
-          image = ImageTransformer.flipHorizontally((BufferedImage) image);
-        }
+    Image image = Toolkit.getDefaultToolkit().getImage(imageLocation);
+    Util.ensureImageLoaded(image);
+    if (needToTransformImage(gamePlayer, type, mapData)) {
+      image = convertToBufferedImage(image);
+      Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
+      if (unitColor.isPresent()) {
+        final int brightness = mapData.getUnitBrightness(gamePlayer.getName());
+        ImageTransformer.colorize(unitColor.get(), brightness, (BufferedImage) image);
+      }
+      if (mapData.shouldFlipUnit(gamePlayer.getName())) {
+        image = ImageTransformer.flipHorizontally((BufferedImage) image);
       }
     }
-    return Optional.ofNullable(image);
+    return image;
   }
 
   private static boolean needToTransformImage(
