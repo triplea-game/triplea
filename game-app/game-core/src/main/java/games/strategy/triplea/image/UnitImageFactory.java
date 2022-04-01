@@ -298,10 +298,7 @@ public class UnitImageFactory {
    * @return The highlight image or empty if no base image is available for the specified unit.
    */
   public Image getHighlightImage(final ImageKey imageKey) {
-    return highlightImage(getImage(imageKey));
-  }
-
-  private static Image highlightImage(final Image image) {
+    Image image = getImage(imageKey);
     final BufferedImage highlightedImage =
         Util.newImage(image.getWidth(null), image.getHeight(null), true);
     // copy the real image
