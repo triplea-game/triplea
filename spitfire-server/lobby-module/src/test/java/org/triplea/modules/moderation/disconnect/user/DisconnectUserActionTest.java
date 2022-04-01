@@ -22,6 +22,7 @@ import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
 import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.PlayerChatId;
+import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessagingBus;
@@ -60,7 +61,7 @@ class DisconnectUserActionTest {
 
     private void verifyNoOp() {
       verify(chatters, never()).disconnectPlayerByName(any(), any());
-      verify(playerConnections, never()).broadcastMessage(any());
+      verify(playerConnections, never()).broadcastMessage(any(MessageEnvelope.class));
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
 

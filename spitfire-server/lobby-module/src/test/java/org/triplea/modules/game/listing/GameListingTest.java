@@ -38,6 +38,7 @@ import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
+import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.java.IpAddressParser;
@@ -160,7 +161,7 @@ class GameListingTest {
 
       assertThat(cache.asMap(), is(aMapWithSize(1)));
       assertThat(cache.asMap(), hasEntry(new GameListing.GameId(API_KEY_0, GAME_ID_0), lobbyGame0));
-      verify(playerMessagingBus, never()).broadcastMessage(any());
+      verify(playerMessagingBus, never()).broadcastMessage(any(MessageEnvelope.class));
     }
   }
 
@@ -191,7 +192,7 @@ class GameListingTest {
 
       assertThat(result, is(false));
       assertThat(cache.asMap(), is(anEmptyMap()));
-      verify(playerMessagingBus, never()).broadcastMessage(any());
+      verify(playerMessagingBus, never()).broadcastMessage(any(MessageEnvelope.class));
     }
 
     @Test
