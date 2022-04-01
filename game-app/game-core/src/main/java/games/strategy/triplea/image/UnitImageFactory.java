@@ -237,7 +237,9 @@ public class UnitImageFactory {
             () -> {
               final URL missingUnitImageLocation =
                   resourceLoader.getResource(FILE_NAME_BASE + "/missing_unit_image.png");
-              return Toolkit.getDefaultToolkit().getImage(missingUnitImageLocation);
+              Image image = Toolkit.getDefaultToolkit().getImage(missingUnitImageLocation);
+              Util.ensureImageLoaded(image);
+              return image;
             });
   }
 
@@ -312,10 +314,9 @@ public class UnitImageFactory {
   }
 
   public Dimension getImageDimensions(final ImageKey imageKey) {
-    final Image baseImage =
-        getTransformedImage(imageKey).orElseThrow(() -> new MissingImageException(imageKey));
-    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
-    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+    final Image image = getImage(imageKey);
+    final int width = (int) (image.getWidth(null) * scaleFactor);
+    final int height = (int) (image.getHeight(null) * scaleFactor);
     return new Dimension(width, height);
   }
 }
