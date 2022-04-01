@@ -268,26 +268,16 @@ public class UnitImageFactory {
                 || mapData.shouldFlipUnit(gamePlayer.getName()));
 
     if (needToTransformImage) {
-      image = convertToBufferedImage(image);
       Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
       if (unitColor.isPresent()) {
         final int brightness = mapData.getUnitBrightness(gamePlayer.getName());
-        ImageTransformer.colorize(unitColor.get(), brightness, (BufferedImage) image);
+        ImageTransformer.colorize(unitColor.get(), brightness, image);
       }
       if (mapData.shouldFlipUnit(gamePlayer.getName())) {
         image = ImageTransformer.flipHorizontally((BufferedImage) image);
       }
     }
     return image;
-  }
-
-  private static BufferedImage convertToBufferedImage(final Image image) {
-    final BufferedImage newImage =
-        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-    final Graphics2D g = newImage.createGraphics();
-    g.drawImage(image, 0, 0, null);
-    g.dispose();
-    return newImage;
   }
 
   /**
