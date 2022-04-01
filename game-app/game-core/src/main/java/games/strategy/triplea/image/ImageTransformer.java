@@ -1,11 +1,11 @@
 package games.strategy.triplea.image;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import org.triplea.java.ImageUtil;
 
 /**
  * Class used to transform images including colorizing and flipping. Colorizing is based on finding
@@ -27,20 +27,9 @@ public class ImageTransformer {
    * color. It ignores the brightness of the color and uses the given brightness value.
    */
   public static void colorize(final Color color, final int brightness, Image image) {
-    if(!(image instanceof BufferedImage)) {
-      image = convertToBufferedImage(image);
-    }
+    image = ImageUtil.convertToBufferedImage(image);
     final float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
     colorize((int) (hsb[0] * 360), (int) (hsb[1] * 100), brightness, (BufferedImage) image);
-  }
-
-  private static BufferedImage convertToBufferedImage(final Image image) {
-    final BufferedImage newImage =
-        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-    final Graphics2D g = newImage.createGraphics();
-    g.drawImage(image, 0, 0, null);
-    g.dispose();
-    return newImage;
   }
 
   /**
@@ -108,10 +97,10 @@ public class ImageTransformer {
     return lum;
   }
 
-  public static BufferedImage flipHorizontally(final BufferedImage image) {
+  public static BufferedImage flipHorizontally(final Image image) {
     final AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
     tx.translate(-image.getWidth(null), 0);
     final AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    return op.filter(image, null);
+    return op.filter(ImageUtil.convertToBufferedImage(image), null);
   }
 }
