@@ -23,7 +23,6 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.List;
 import java.util.function.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.Tuple;
 
 /**
@@ -33,7 +32,6 @@ import org.triplea.util.Tuple;
  * horizontal row, overflowing to the right of the territory. A solid black line, rooted at the
  * territory's default placement point, will be drawn under all units in this case.
  */
-@Slf4j
 public class UnitsDrawer extends AbstractDrawable {
   private final int count;
   private final String unitType;
