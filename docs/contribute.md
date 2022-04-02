@@ -1,4 +1,4 @@
-# Contribute to TripleA
+# How to contribute to Triplea
 
 *So far still work in progress...*
 
@@ -12,8 +12,10 @@ to help.
 ### Overview
 
 - [:game_die: Player](#game_die-Player)
+- [:mag: Release Tester](#game_die-Release-Tester)
 - [:moneybag: Donor](#moneybag-Donor)
 - [:golf: Map Maker](#golf-Map-Maker)
+- [:trident: Map Admin](#trident-Map-Admin)
 - [:book: Rule Expert](#book-Rule-Expert)
 - [:speech_balloon: Forum Moderator](#speech_balloon-Forum-Moderator)
 - [:bulb: Issue Manager](#bulb-Issue-Manager)
@@ -30,12 +32,28 @@ to help.
 
 - Participate in the lobby or the [forum](https://forums.triplea-game.org/)
 - Test
-  and [Report bugs](https://github.com/triplea-game/triplea/issues/new?assignees=&labels=Problem&template=problem_report.md&title=)
+  and [report bugs](https://github.com/triplea-game/triplea/issues/new?assignees=&labels=Problem&template=problem_report.md&title=)
   on GitHub
 
 #### _How to become one_
 
 - [Download](https://triplea-game.org/) TripleA and play
+
+### :mag: Release Tester
+
+#### _Skillset_
+
+- No requirements
+
+#### _Contributions_
+
+- Especially for new releases test
+  and [report bugs](https://github.com/triplea-game/triplea/issues/new?assignees=&labels=Problem&template=problem_report.md&title=)
+  on GitHub
+
+#### _How to become one_
+
+- tbd
 
 ### :moneybag: Donor
 
@@ -72,11 +90,30 @@ to help.
 - Read the [Map Maker Guides & Documentation](https://forums.triplea-game.org/topic/2600/map-maker-guides-documentation)
   and check the documentation on [map-making](map-making)
 
+### :trident: Map Admin
+
+#### _Skillset_
+
+- Basic knowledge of [XML](https://www.w3schools.com/XML/)
+- Graphic designer, i.e., creation of image files with advanced image editing software
+
+#### _Contributions_
+
+- Update existing maps ([how-to](map-making/how-to/updating-existing-maps.md))
+- Organize maps (categorize, remove broken ones, etc.)
+
+#### _How to become one_
+
+- Read the [Map Maker Guides & Documentation](https://forums.triplea-game.org/topic/2600/map-maker-guides-documentation)
+  and check the documentation on [map-making](map-making)
+- Get in contact with an existing map admin from
+  the [list of map admins](https://github.com/orgs/triplea-maps/teams/mapadmins/members)
+
 ### :book: Rule Expert
 
 #### _Skillset_
 
-- Expert rules knowledge of some of the core game rules (v1-v6)
+- Expert rules knowledge of some core game rules (v1-v6)
 
 #### _Contributions_
 
