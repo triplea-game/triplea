@@ -55,6 +55,7 @@ import static org.mockito.Mockito.when;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
@@ -91,6 +92,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -99,6 +101,10 @@ import org.triplea.java.collections.IntegerMap;
 
 class WW2V3Year41Test {
   private final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
+
+  private Territory getTerritory(final String territoryName) {
+    return territory(territoryName, gameData);
+  }
 
   private static void givenRemotePlayerWillSelectAttackSubs(final IDelegateBridge delegateBridge) {
     when(delegateBridge.getRemotePlayer().selectAttackSubs(any())).thenReturn(true);
@@ -159,10 +165,9 @@ class WW2V3Year41Test {
     // 3 bombers and 3 fighters
     final Collection<Unit> planes = bomber(gameData).create(3, british(gameData));
     planes.addAll(fighter(gameData).create(3, british(gameData)));
+    final Territory germany = getTerritory("Germany");
     final Collection<Unit> defendingAa =
-        territory("Germany", gameData)
-            .getUnitCollection()
-            .getMatches(Matches.unitIsAaForAnything());
+        germany.getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     // don't allow rolling, 6 of each is deterministic
     final DiceRoll roll =
         RollDiceFactory.rollAaDice(
@@ -173,10 +178,10 @@ class WW2V3Year41Test {
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
-            territory("Germany", gameData),
+            germany,
             CombatValueBuilder.aaCombatValue()
                 .enemyUnits(planes)
-                .friendlyUnits(territory("Germany", gameData).getUnits())
+                .friendlyUnits(germany.getUnits())
                 .side(BattleState.Side.DEFENSE)
                 .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
                 .build());
@@ -205,7 +210,7 @@ class WW2V3Year41Test {
                 bridge,
                 null,
                 null,
-                territory("Germany", gameData))
+                germany)
             .getKilled();
     assertEquals(2, casualties.size());
     // should be 1 fighter and 1 bomber
@@ -226,12 +231,11 @@ class WW2V3Year41Test {
     // 4 bombers and 4 fighters
     final Collection<Unit> planes = bomber(gameData).create(4, british(gameData));
     planes.addAll(fighter(gameData).create(4, british(gameData)));
+    final Territory germany = getTerritory("Germany");
     final Collection<Unit> defendingAa =
-        territory("Germany", gameData)
-            .getUnitCollection()
-            .getMatches(Matches.unitIsAaForAnything());
+        germany.getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     // 1 roll, a hit
-    // then a dice to select the casualty
+    // then a die to select the casualty
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(1));
     final DiceRoll roll =
         RollDiceFactory.rollAaDice(
@@ -242,10 +246,10 @@ class WW2V3Year41Test {
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
-            territory("Germany", gameData),
+            germany,
             CombatValueBuilder.aaCombatValue()
                 .enemyUnits(planes)
-                .friendlyUnits(territory("Germany", gameData).getUnits())
+                .friendlyUnits(germany.getUnits())
                 .side(BattleState.Side.DEFENSE)
                 .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
                 .build());
@@ -276,7 +280,7 @@ class WW2V3Year41Test {
                 bridge,
                 null,
                 null,
-                territory("Germany", gameData))
+                germany)
             .getKilled();
     assertEquals(3, casualties.size());
     // should be 1 fighter and 2 bombers
@@ -296,12 +300,11 @@ class WW2V3Year41Test {
     // 4 bombers and 4 fighters
     final Collection<Unit> planes = bomber(gameData).create(4, british(gameData));
     planes.addAll(fighter(gameData).create(4, british(gameData)));
+    final Territory germany = getTerritory("Germany");
     final Collection<Unit> defendingAa =
-        territory("Germany", gameData)
-            .getUnitCollection()
-            .getMatches(Matches.unitIsAaForAnything());
+        germany.getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     // 1 roll, a miss
-    // then a dice to select the casualty
+    // then a die to select the casualty
     whenGetRandom(bridge)
         .thenAnswer(withValues(5))
         .thenAnswer(withValues(0))
@@ -315,10 +318,10 @@ class WW2V3Year41Test {
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
-            territory("Germany", gameData),
+            germany,
             CombatValueBuilder.aaCombatValue()
                 .enemyUnits(planes)
-                .friendlyUnits(territory("Germany", gameData).getUnits())
+                .friendlyUnits(germany.getUnits())
                 .side(BattleState.Side.DEFENSE)
                 .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
                 .build());
@@ -350,7 +353,7 @@ class WW2V3Year41Test {
                 bridge,
                 null,
                 null,
-                territory("Germany", gameData))
+                germany)
             .getKilled();
     assertEquals(2, casualties.size());
     // random should not have been called during getAaCasualties so the number of times
@@ -363,9 +366,9 @@ class WW2V3Year41Test {
   }
 
   @Test
-  void testDefendingTrasnportsAutoKilled() {
-    final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
-    final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
+  void testDefendingTransportsAutoKilled() {
+    final Territory sz13 = getTerritory("13 Sea Zone");
+    final Territory sz12 = getTerritory("12 Sea Zone");
     final GamePlayer british = GameDataTestUtil.british(gameData);
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
@@ -402,9 +405,7 @@ class WW2V3Year41Test {
     addTo(british(gameData), transport(gameData).create(1, british(gameData)), gameData);
     final String error =
         del.placeUnits(
-            List.of(),
-            territory("United Kingdom", gameData),
-            IAbstractPlaceDelegate.BidMode.NOT_BID);
+            List.of(), getTerritory("United Kingdom"), IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertNull(error);
   }
 
@@ -447,8 +448,8 @@ class WW2V3Year41Test {
 
   @Test
   void testInfantryLoadOnlyTransports() {
-    final Territory gibraltar = territory("Gibraltar", gameData);
-    // add a tank to gibralter
+    final Territory gibraltar = getTerritory("Gibraltar");
+    // add a tank to gibraltar
     final GamePlayer british = british(gameData);
     addTo(gibraltar, infantry(gameData).create(1, british));
     final MoveDelegate moveDelegate = moveDelegate(gameData);
@@ -456,9 +457,9 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "britishCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Territory sz9 = territory("9 Sea Zone", gameData);
-    final Territory sz13 = territory("13 Sea Zone", gameData);
-    final Route sz9ToSz13 = new Route(sz9, territory("12 Sea Zone", gameData), sz13);
+    final Territory sz9 = getTerritory("9 Sea Zone");
+    final Territory sz13 = getTerritory("13 Sea Zone");
+    final Route sz9ToSz13 = new Route(sz9, getTerritory("12 Sea Zone"), sz13);
     // move the transport to attack, this is suicide but valid
     move(sz9.getUnitCollection().getMatches(Matches.unitIsTransport()), sz9ToSz13);
     // load the transport
@@ -480,10 +481,10 @@ class WW2V3Year41Test {
     givenRemotePlayerWillSelectAttackSubs(bridge);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Territory sz9 = territory("9 Sea Zone", gameData);
-    final Territory sz7 = territory("7 Sea Zone", gameData);
-    final Territory uk = territory("United Kingdom", gameData);
-    final Route sz9ToSz7 = new Route(sz9, territory("8 Sea Zone", gameData), sz7);
+    final Territory sz9 = getTerritory("9 Sea Zone");
+    final Territory sz7 = getTerritory("7 Sea Zone");
+    final Territory uk = getTerritory("United Kingdom");
+    final Route sz9ToSz7 = new Route(sz9, getTerritory("8 Sea Zone"), sz7);
     // move the transport to attack, this is suicide but valid
     final List<Unit> transports = sz9.getUnitCollection().getMatches(Matches.unitIsTransport());
     move(transports, sz9ToSz7);
@@ -505,9 +506,9 @@ class WW2V3Year41Test {
 
   @Test
   void testCanRetreatIntoEmptyEnemyTerritory() {
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory ukraine = territory("Ukraine", gameData);
-    final Territory poland = territory("Poland", gameData);
+    final Territory eastPoland = getTerritory("East Poland");
+    final Territory ukraine = getTerritory("Ukraine");
+    final Territory poland = getTerritory("Poland");
     // remove all units from east poland
     removeFrom(eastPoland, eastPoland.getUnits());
     final MoveDelegate moveDelegate = moveDelegate(gameData);
@@ -515,8 +516,8 @@ class WW2V3Year41Test {
     advanceToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
-    final Territory bulgaria = territory("Bulgaria Romania", gameData);
-    // attack from bulgraia
+    final Territory bulgaria = getTerritory("Bulgaria Romania");
+    // attack from bulgaria
     move(bulgaria.getUnits(), new Route(bulgaria, ukraine));
     // add an air attack from east poland
     move(
@@ -531,9 +532,9 @@ class WW2V3Year41Test {
 
   @Test
   void testCanRetreatIntoBlitzedTerritory() {
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory ukraine = territory("Ukraine", gameData);
-    final Territory poland = territory("Poland", gameData);
+    final Territory eastPoland = getTerritory("East Poland");
+    final Territory ukraine = getTerritory("Ukraine");
+    final Territory poland = getTerritory("Poland");
     // remove all units from east poland
     removeFrom(eastPoland, eastPoland.getUnits());
     final MoveDelegate moveDelegate = moveDelegate(gameData);
@@ -541,8 +542,8 @@ class WW2V3Year41Test {
     advanceToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
-    final Territory bulgaria = territory("Bulgaria Romania", gameData);
-    // attack from bulgraia
+    final Territory bulgaria = getTerritory("Bulgaria Romania");
+    // attack from bulgaria
     move(bulgaria.getUnits(), new Route(bulgaria, ukraine));
     // add a blitz attack
     move(
@@ -558,9 +559,9 @@ class WW2V3Year41Test {
   @Test
   void testCantBlitzFactoryOrAa() {
     // Set up territories
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory ukraine = territory("Ukraine", gameData);
+    final Territory poland = getTerritory("Poland");
+    final Territory eastPoland = getTerritory("East Poland");
+    final Territory ukraine = getTerritory("Ukraine");
     // remove all units from east poland
     removeFrom(eastPoland, eastPoland.getUnits());
     // Add a russian factory
@@ -599,9 +600,9 @@ class WW2V3Year41Test {
   @Test
   void testMultipleAaInTerritory() {
     // Set up territories
-    final Territory poland = territory("Poland", gameData);
+    final Territory poland = getTerritory("Poland");
     // Add a russian factory
-    final Territory germany = territory("Germany", gameData);
+    final Territory germany = getTerritory("Germany");
     addTo(poland, aaGun(gameData).create(1, germans(gameData)));
     MoveDelegate moveDelegate = moveDelegate(gameData);
     IDelegateBridge delegateBridge = newDelegateBridge(germans(gameData));
@@ -621,8 +622,8 @@ class WW2V3Year41Test {
     /*
      * Test unloading TRN
      */
-    final Territory finland = territory("Finland", gameData);
-    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory finland = getTerritory("Finland");
+    final Territory sz5 = getTerritory("5 Sea Zone");
     addTo(finland, aaGun(gameData).create(1, germans(gameData)));
     moveDelegate = moveDelegate(gameData);
     delegateBridge = newDelegateBridge(germans(gameData));
@@ -681,9 +682,9 @@ class WW2V3Year41Test {
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // Set up the territories
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory belorussia = territory("Belorussia", gameData);
+    final Territory poland = getTerritory("Poland");
+    final Territory eastPoland = getTerritory("East Poland");
+    final Territory belorussia = getTerritory("Belorussia");
     // Set up the unit types
     final UnitType infantryType = infantry(gameData);
     // Remove all units from east poland
@@ -725,13 +726,14 @@ class WW2V3Year41Test {
         TechAdvance.findAdvance(
             TechAdvance.TECH_PROPERTY_JET_POWER, gameData.getTechnologyFrontier(), germans));
     // Set up the territories
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
+    final Territory poland = getTerritory("Poland");
+    final Territory eastPoland = getTerritory("East Poland");
     // Set up the unit types
     final UnitType fighterType = fighter(gameData);
     advanceToStep(delegateBridge, "germanBattle");
-    while (!gameData.getSequence().getStep().getName().equals("germanBattle")) {
-      gameData.getSequence().next();
+    final GameSequence sequence = gameData.getSequence();
+    while (sequence.getStep().getName().equals("germanBattle")) {
+      sequence.next();
     }
     final Collection<TerritoryEffect> territoryEffects =
         TerritoryEffectHelper.getEffects(eastPoland);
@@ -788,7 +790,7 @@ class WW2V3Year41Test {
     bidPlaceDelegate(gameData).start();
     // create 20 british infantry
     addTo(british(gameData), infantry(gameData).create(20, british(gameData)), gameData);
-    final Territory uk = territory("United Kingdom", gameData);
+    final Territory uk = getTerritory("United Kingdom");
     final Collection<Unit> units = british(gameData).getUnits();
     final PlaceableUnits placeable = bidPlaceDelegate(gameData).getPlaceableUnits(units, uk);
     assertEquals(20, placeable.getMaxUnits());
@@ -803,7 +805,7 @@ class WW2V3Year41Test {
     final GamePlayer british = GameDataTestUtil.british(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(british(gameData));
     // Set up the territories
-    final Territory egypt = territory("Union of South Africa", gameData);
+    final Territory egypt = getTerritory("Union of South Africa");
     // Set up the unit types
     final UnitType factoryType = factory(gameData);
     // Set up the move delegate
@@ -840,9 +842,9 @@ class WW2V3Year41Test {
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // Set up the territories
-    final Territory yunnan = territory("Yunnan", gameData);
-    final Territory kiangsu = territory("Kiangsu", gameData);
-    final Territory hupeh = territory("Hupeh", gameData);
+    final Territory yunnan = getTerritory("Yunnan");
+    final Territory kiangsu = getTerritory("Kiangsu");
+    final Territory hupeh = getTerritory("Hupeh");
     // Set up the unit types
     final UnitType infantryType = infantry(gameData);
     // Remove all units
@@ -914,7 +916,7 @@ class WW2V3Year41Test {
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(germans);
     // Clear all units from the SZ and add an enemy unit
-    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory sz5 = getTerritory("5 Sea Zone");
     removeFrom(sz5, sz5.getUnits());
     addTo(sz5, destroyer(gameData).create(1, british(gameData)));
     // Set up the unit types
@@ -939,9 +941,8 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "britishNonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    final Territory sz6 = territory("6 Sea Zone", gameData);
-    final Route route =
-        new Route(sz6, territory("7 Sea Zone", gameData), territory("8 Sea Zone", gameData));
+    final Territory sz6 = getTerritory("6 Sea Zone");
+    final Route route = new Route(sz6, getTerritory("7 Sea Zone"), getTerritory("8 Sea Zone"));
     final String error = moveDelegate(gameData).move(sz6.getUnits(), route);
     assertNull(error, error);
   }
@@ -952,9 +953,8 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "britishCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    final Territory sz12 = territory("12 Sea Zone", gameData);
-    final Route route =
-        new Route(sz12, territory("13 Sea Zone", gameData), territory("14 Sea Zone", gameData));
+    final Territory sz12 = getTerritory("12 Sea Zone");
+    final Route route = new Route(sz12, getTerritory("13 Sea Zone"), getTerritory("14 Sea Zone"));
     final String error = moveDelegate(gameData).move(sz12.getUnits(), route);
     assertNull(error, error);
   }
@@ -965,10 +965,10 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "britishNonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    final Territory sz12 = territory("12 Sea Zone", gameData);
-    final Territory sz14 = territory("14 Sea Zone", gameData);
+    final Territory sz12 = getTerritory("12 Sea Zone");
+    final Territory sz14 = getTerritory("14 Sea Zone");
     removeFrom(sz14, sz14.getUnits());
-    final Route route = new Route(sz12, territory("13 Sea Zone", gameData), sz14);
+    final Route route = new Route(sz12, getTerritory("13 Sea Zone"), sz14);
     final String error = moveDelegate(gameData).move(sz12.getUnits(), route);
     assertNull(error, error);
   }
@@ -980,10 +980,10 @@ class WW2V3Year41Test {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Territory sz8 = territory("8 Sea Zone", gameData);
-    final Territory sz7 = territory("7 Sea Zone", gameData);
-    final Territory sz6 = territory("6 Sea Zone", gameData);
-    final Territory uk = territory("United Kingdom", gameData);
+    final Territory sz8 = getTerritory("8 Sea Zone");
+    final Territory sz7 = getTerritory("7 Sea Zone");
+    final Territory sz6 = getTerritory("6 Sea Zone");
+    final Territory uk = getTerritory("United Kingdom");
     // add a transport
     addTo(sz8, transport(gameData).create(1, british(gameData)));
     // move the transport where to the sub is
@@ -1004,9 +1004,9 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
-    final Territory sz14 = territory("14 Sea Zone", gameData);
-    final Territory sz13 = territory("13 Sea Zone", gameData);
-    final Territory sz12 = territory("12 Sea Zone", gameData);
+    final Territory sz14 = getTerritory("14 Sea Zone");
+    final Territory sz13 = getTerritory("13 Sea Zone");
+    final Territory sz12 = getTerritory("12 Sea Zone");
     final Route r = new Route(sz14, sz13, sz12);
     // move the battleship
     move(sz14.getUnitCollection().getMatches(Matches.unitHasMoreThanOneHitPointTotal()), r);
@@ -1030,9 +1030,9 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
-    final Territory libya = territory("Libya", gameData);
-    final Territory egypt = territory("Egypt", gameData);
-    final Territory sudan = territory("Anglo-Egypt Sudan", gameData);
+    final Territory libya = getTerritory("Libya");
+    final Territory egypt = getTerritory("Egypt");
+    final Territory sudan = getTerritory("Anglo-Egypt Sudan");
     final Route r = new Route(libya, egypt, sudan);
     egypt.getUnitCollection().clear();
     // blitz tank
@@ -1049,8 +1049,8 @@ class WW2V3Year41Test {
     final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
     final GamePlayer attackerPlayer = british(gameData);
-    final Territory attacked = territory("31 Sea Zone", gameData);
-    final Territory from = territory("32 Sea Zone", gameData);
+    final Territory attacked = getTerritory("31 Sea Zone");
+    final Territory from = getTerritory("32 Sea Zone");
     // 1 sub attacks 1 sub
     addTo(from, submarine(gameData).create(1, attackerPlayer));
     addTo(attacked, submarine(gameData).create(1, defenderPlayer));
@@ -1089,8 +1089,8 @@ class WW2V3Year41Test {
     final GamePlayer defenderPlayer = germans(gameData);
     final String attacker = "British";
     final GamePlayer attackerPlayer = british(gameData);
-    final Territory attacked = territory("31 Sea Zone", gameData);
-    final Territory from = territory("32 Sea Zone", gameData);
+    final Territory attacked = getTerritory("31 Sea Zone");
+    final Territory from = getTerritory("32 Sea Zone");
     // 1 sub attacks 1 sub and 1 destroyer
     // defender sneak attacks, not attacker
     addTo(from, submarine(gameData).create(1, attackerPlayer));
@@ -1136,8 +1136,8 @@ class WW2V3Year41Test {
     final String attacker = "British";
     final String defender = "Germans";
     final GamePlayer attackerPlayer = british(gameData);
-    final Territory attacked = territory("31 Sea Zone", gameData);
-    final Territory from = territory("32 Sea Zone", gameData);
+    final Territory attacked = getTerritory("31 Sea Zone");
+    final Territory from = getTerritory("32 Sea Zone");
     // 1 sub and 1 destroyer attack 1 sub
     // defender sneak attacks, not attacker
     addTo(from, submarine(gameData).create(1, attackerPlayer));
@@ -1183,8 +1183,8 @@ class WW2V3Year41Test {
     final String attacker = "British";
     final String defender = "Germans";
     final GamePlayer attackerPlayer = british(gameData);
-    final Territory attacked = territory("31 Sea Zone", gameData);
-    final Territory from = territory("32 Sea Zone", gameData);
+    final Territory attacked = getTerritory("31 Sea Zone");
+    final Territory from = getTerritory("32 Sea Zone");
     // 1 sub and 1 destroyer attack 1 sub and 1 destroyer
     // no sneak attacks
     addTo(from, submarine(gameData).create(1, attackerPlayer));
@@ -1232,18 +1232,18 @@ class WW2V3Year41Test {
   }
 
   @Test
-  void testLimitBombardtoNumberOfUnloaded() {
+  void testLimitBombardToNumberOfUnloaded() {
     final MoveDelegate move = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(italians(gameData));
     givenRemotePlayerWillSelectShoreBombard(bridge);
     advanceToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
-    final Territory sz14 = territory("14 Sea Zone", gameData);
-    final Territory sz15 = territory("15 Sea Zone", gameData);
-    final Territory eg = territory("Egypt", gameData);
-    final Territory li = territory("Libya", gameData);
-    final Territory balkans = territory("Balkans", gameData);
+    final Territory sz14 = getTerritory("14 Sea Zone");
+    final Territory sz15 = getTerritory("15 Sea Zone");
+    final Territory eg = getTerritory("Egypt");
+    final Territory li = getTerritory("Libya");
+    final Territory balkans = getTerritory("Balkans");
     // Clear all units from the attacked terr
     removeFrom(eg, eg.getUnits());
     // Add 2 inf
@@ -1282,7 +1282,7 @@ class WW2V3Year41Test {
               new ArrayList<>(),
               false);
         });
-    // Show that     // Show that bombard casualties can return fire
+    // Show that bombard casualties can return fire
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
     // 2= Battleship hitting a 3, 2=Cruiser hitting a 3, 15=British infantry hitting once
     whenGetRandom(bridge).thenAnswer(withValues(2, 2)).thenAnswer(withValues(1, 5));
@@ -1300,10 +1300,10 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
-    final Territory sz14 = territory("14 Sea Zone", gameData);
-    final Territory sz15 = territory("15 Sea Zone", gameData);
-    final Territory eg = territory("Egypt", gameData);
-    final Territory balkans = territory("Balkans", gameData);
+    final Territory sz14 = getTerritory("14 Sea Zone");
+    final Territory sz15 = getTerritory("15 Sea Zone");
+    final Territory eg = getTerritory("Egypt");
+    final Territory balkans = getTerritory("Balkans");
     // Clear all units
     removeFrom(eg, eg.getUnits());
     removeFrom(sz14, sz14.getUnits());
@@ -1327,7 +1327,7 @@ class WW2V3Year41Test {
     // ww2v3 doesn't have this tech, so this does nothing...
     // TechAttachment.get(italians).setDestroyerBombard("true");
     UnitAttachment.get(destroyer(gameData)).setCanBombard("true");
-    // Set the bombard strength for the DDs
+    // Set the bombardment strength for the DDs
     final Collection<Unit> dds =
         CollectionUtils.getMatches(sz15.getUnits(), Matches.unitIsDestroyer());
     for (final Unit unit : dds) {
@@ -1358,18 +1358,18 @@ class WW2V3Year41Test {
   }
 
   @Test
-  void testAmphAttackUndoAndAttackAgainBombard() {
+  void testAmphibiousAttackUndoAndAttackAgainBombard() {
     final MoveDelegate move = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(italians(gameData));
     givenRemotePlayerWillSelectShoreBombard(bridge);
     advanceToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
-    final Territory sz14 = territory("14 Sea Zone", gameData);
-    final Territory sz15 = territory("15 Sea Zone", gameData);
-    final Territory eg = territory("Egypt", gameData);
-    final Territory li = territory("Libya", gameData);
-    final Territory balkans = territory("Balkans", gameData);
+    final Territory sz14 = getTerritory("14 Sea Zone");
+    final Territory sz15 = getTerritory("15 Sea Zone");
+    final Territory eg = getTerritory("Egypt");
+    final Territory li = getTerritory("Libya");
+    final Territory balkans = getTerritory("Balkans");
     // load the transports
     load(
         balkans.getUnitCollection().getMatches(Matches.unitIsLandTransportable()),
@@ -1399,8 +1399,8 @@ class WW2V3Year41Test {
 
   @Test
   void testCarrierWithAlliedPlanes() {
-    final Territory sz8 = territory("8 Sea Zone", gameData);
-    final Territory sz1 = territory("1 Sea Zone", gameData);
+    final Territory sz8 = getTerritory("8 Sea Zone");
+    final Territory sz1 = getTerritory("1 Sea Zone");
     addTo(sz8, carrier(gameData).create(1, british(gameData)));
     addTo(sz8, fighter(gameData).create(1, americans(gameData)));
     final Route route = new Route(sz8, sz1);
@@ -1420,10 +1420,10 @@ class WW2V3Year41Test {
     // also 1 carrier, and 1 allied fighter in sz 40
     // the fighters should not be able to move from madagascar
     // to sz 40, since with the allied fighter, there is no room on the carrier
-    final Territory madagascar = territory("French Madagascar", gameData);
+    final Territory madagascar = getTerritory("French Madagascar");
     final GamePlayer germans = germans(gameData);
     madagascar.setOwner(germans);
-    final Territory sz40 = territory("40 Sea Zone", gameData);
+    final Territory sz40 = getTerritory("40 Sea Zone");
     addTo(sz40, carrier(gameData).create(1, germans));
     addTo(sz40, fighter(gameData).create(1, italians(gameData)));
     addTo(madagascar, fighter(gameData).create(2, germans));
@@ -1440,27 +1440,28 @@ class WW2V3Year41Test {
   @Test
   void testMechInfSimple() {
     final GamePlayer germans = germans(gameData);
-    final Territory france = territory("France", gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory poland = territory("Poland", gameData);
+    final Territory france = getTerritory("France");
+    final Territory germany = getTerritory("Germany");
+    final Territory poland = getTerritory("Poland");
     TechAttachment.get(germans).setMechanizedInfantry("true");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    final Route r = new Route(france, germany, poland);
+    final Route routeFranceToPoland = new Route(france, germany, poland);
     // 1 armour and 1 infantry
     final List<Unit> toMove =
         new ArrayList<>(france.getUnitCollection().getMatches(Matches.unitCanBlitz()));
     toMove.add(france.getUnitCollection().getMatches(Matches.unitIsLandTransportable()).get(0));
-    move(toMove, r);
+    move(toMove, routeFranceToPoland);
+    assertTrue(poland.getUnits().containsAll(toMove));
   }
 
   @Test
   void testMechInfUnitAlreadyMovedSimple() {
     final GamePlayer germans = germans(gameData);
-    final Territory france = territory("France", gameData);
-    final Territory germany = territory("Germany", gameData);
+    final Territory france = getTerritory("France");
+    final Territory germany = getTerritory("Germany");
     TechAttachment.get(germans).setMechanizedInfantry("true");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
@@ -1481,9 +1482,9 @@ class WW2V3Year41Test {
   @Test
   void testParatroopsWalkOnWater() {
     final GamePlayer germans = germans(gameData);
-    final Territory france = territory("France", gameData);
+    final Territory france = getTerritory("France");
     TechAttachment.get(germans).setParatroopers("true");
-    final Route r = new Route(france, territory("7 Sea Zone", gameData));
+    final Route r = new Route(france, getTerritory("7 Sea Zone"));
     final Collection<Unit> paratroopers =
         france.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     assertFalse(paratroopers.isEmpty());
@@ -1501,9 +1502,9 @@ class WW2V3Year41Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     TechAttachment.get(germans).setParatroopers("true");
-    final Territory sz5 = territory("5 Sea Zone", gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory karelia = territory("Karelia S.S.R.", gameData);
+    final Territory sz5 = getTerritory("5 Sea Zone");
+    final Territory germany = getTerritory("Germany");
+    final Territory karelia = getTerritory("Karelia S.S.R.");
     addTo(germany, armour(gameData).create(1, germans));
     final Route r = new Route(germany, sz5, karelia);
     final Collection<Unit> toMove = germany.getUnitCollection().getMatches(Matches.unitCanBlitz());
@@ -1523,9 +1524,9 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    final Territory sz5 = territory("5 Sea Zone", gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory karelia = territory("Karelia S.S.R.", gameData);
+    final Territory sz5 = getTerritory("5 Sea Zone");
+    final Territory germany = getTerritory("Germany");
+    final Territory karelia = getTerritory("Karelia S.S.R.");
     addTo(germany, armour(gameData).create(1, germans));
     final Route r = new Route(germany, sz5, karelia);
     final Collection<Unit> toMove = germany.getUnitCollection().getMatches(Matches.unitCanBlitz());
@@ -1538,12 +1539,12 @@ class WW2V3Year41Test {
   }
 
   @Test
-  void testMoveParatroopersAsNonPartroops() {
+  void testMoveParatroopersAsNonParatroops() {
     // move a bomber and a paratrooper
     // one step, but as a normal movement
     final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory nwe = territory("Northwestern Europe", gameData);
+    final Territory germany = getTerritory("Germany");
+    final Territory nwe = getTerritory("Northwestern Europe");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1554,18 +1555,19 @@ class WW2V3Year41Test {
     paratrooper = paratrooper.subList(0, 1);
     final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
     bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
-    // move to nwe, this is a valid move, and it not a partroop move
+    // move to nwe, this is a valid move, and it not a paratroop move
     move(bomberAndParatroop, new Route(germany, nwe));
+    assertTrue(nwe.getUnits().containsAll(bomberAndParatroop));
   }
 
   @Test
   void testCantMoveParatroopersThatMovedPreviously() {
     // make sure infantry can't be moved as paratroopers after moving
     final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory nwe = territory("Northwestern Europe", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
+    final Territory germany = getTerritory("Germany");
+    final Territory nwe = getTerritory("Northwestern Europe");
+    final Territory poland = getTerritory("Poland");
+    final Territory eastPoland = getTerritory("East Poland");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1586,10 +1588,10 @@ class WW2V3Year41Test {
   void testCantTransportParatroopersWithBombersThatMovedPreviously() {
     // make sure bombers can't move then pick up paratroopers
     final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory bulgaria = territory("Bulgaria Romania", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory ukraine = territory("Ukraine", gameData);
+    final Territory germany = getTerritory("Germany");
+    final Territory bulgaria = getTerritory("Bulgaria Romania");
+    final Territory poland = getTerritory("Poland");
+    final Territory ukraine = getTerritory("Ukraine");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1611,10 +1613,10 @@ class WW2V3Year41Test {
   void testMoveOneParatrooperPerBomber() {
     // make sure only 1 paratroop per bomber can be moved
     final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
+    final Territory germany = getTerritory("Germany");
     // Territory nwe = territory("Northwestern Europe", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
+    final Territory poland = getTerritory("Poland");
+    final Territory eastPoland = getTerritory("East Poland");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1636,10 +1638,10 @@ class WW2V3Year41Test {
     // territory, you can make a new move (in the same battle move round) to put
     // bomber+ infantry in a more internal enemy territory.
     final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory beloRussia = territory("Belorussia", gameData);
+    final Territory germany = getTerritory("Germany");
+    final Territory poland = getTerritory("Poland");
+    final Territory eastPoland = getTerritory("East Poland");
+    final Territory beloRussia = getTerritory("Belorussia");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1672,10 +1674,10 @@ class WW2V3Year41Test {
   void testParatroopersFlyOverBlitzedTerritory() {
     // We should be able to blitz a territory, then fly over it with paratroops to battle.
     final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory beloRussia = territory("Belorussia", gameData);
+    final Territory germany = getTerritory("Germany");
+    final Territory poland = getTerritory("Poland");
+    final Territory eastPoland = getTerritory("East Poland");
+    final Territory belorussia = getTerritory("Belorussia");
     // Clear East Poland
     removeFrom(eastPoland, eastPoland.getUnits());
     // Set up test
@@ -1690,7 +1692,7 @@ class WW2V3Year41Test {
     final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
     bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
     final List<Unit> tanks = poland.getUnitCollection().getMatches(Matches.unitCanBlitz());
-    move(tanks, new Route(poland, eastPoland, beloRussia));
+    move(tanks, new Route(poland, eastPoland, belorussia));
     final List<Unit> airTransports =
         CollectionUtils.getMatches(bomberAndParatroop, Matches.unitIsAirTransport());
     for (final Unit airTransport : airTransports) {
@@ -1702,7 +1704,7 @@ class WW2V3Year41Test {
     // Verify paratroops can overfly blitzed territory
     final String error =
         moveDelegate(gameData)
-            .move(bomberAndParatroop, new Route(germany, poland, eastPoland, beloRussia));
+            .move(bomberAndParatroop, new Route(germany, poland, eastPoland, belorussia));
     assertValid(error);
   }
 
@@ -1713,15 +1715,15 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    final Territory uk = territory("United Kingdom", gameData);
-    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory uk = getTerritory("United Kingdom");
+    final Territory sz5 = getTerritory("5 Sea Zone");
     // remove the sub
     removeFrom(sz5, sz5.getUnitCollection().getMatches(Matches.unitCanEvade()));
 
     move(
         uk.getUnitCollection().getMatches(Matches.unitIsAir()),
-        gameData.getMap().getRoute(uk, sz5, it -> true));
-    // move units for amphib assault
+        Objects.requireNonNull(gameData.getMap().getRoute(uk, sz5, it -> true)));
+    // move units for amphibious assault
     moveDelegate(gameData).end();
     advanceToStep(bridge, "Combat");
     // cook the dice so that 1 british fighters hits, and nothing else
@@ -1747,16 +1749,19 @@ class WW2V3Year41Test {
     moveDelegate(gameData).start();
     // the fighter should be able to move and hover in the sea zone
     // the fighter has no movement left
-    final Territory neEurope = territory("Northwestern Europe", gameData);
-    final Route route =
+    final Territory neEurope = getTerritory("Northwestern Europe");
+    final Territory sz5 = getTerritory("5 Sea Zone");
+    final Route routeNeEuropeToSz5 =
         new Route(
             neEurope,
-            territory("Germany", gameData),
-            territory("Poland", gameData),
-            territory("Baltic States", gameData),
-            territory("5 Sea Zone", gameData));
+            getTerritory("Germany"),
+            getTerritory("Poland"),
+            getTerritory("Baltic States"),
+            sz5);
     // the fighter should be able to move, and hover in the sea zone until the carrier is placed
-    move(neEurope.getUnitCollection().getMatches(Matches.unitIsAir()), route);
+    final List<Unit> airUnits = neEurope.getUnitCollection().getMatches(Matches.unitIsAir());
+    move(airUnits, routeNeEuropeToSz5);
+    assertTrue(sz5.getUnits().containsAll(airUnits));
   }
 
   @Test
@@ -1767,16 +1772,16 @@ class WW2V3Year41Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // the fighter should not be able to move and hover in the sea zone
-    // since their are no carriers to place
+    // since there are no carriers to place
     // the fighter has no movement left
-    final Territory neEurope = territory("Northwestern Europe", gameData);
+    final Territory neEurope = getTerritory("Northwestern Europe");
     final Route route =
         new Route(
             neEurope,
-            territory("Germany", gameData),
-            territory("Poland", gameData),
-            territory("Baltic States", gameData),
-            territory("5 Sea Zone", gameData));
+            getTerritory("Germany"),
+            getTerritory("Poland"),
+            getTerritory("Baltic States"),
+            getTerritory("5 Sea Zone"));
     final String error =
         moveDelegate(gameData)
             .move(neEurope.getUnitCollection().getMatches(Matches.unitIsAir()), route);
@@ -1785,7 +1790,7 @@ class WW2V3Year41Test {
 
   @Test
   void testRepair() {
-    final Territory germany = territory("Germany", gameData);
+    final Territory germany = getTerritory("Germany");
     final Unit factory = germany.getUnitCollection().getMatches(Matches.unitCanBeDamaged()).get(0);
     final PurchaseDelegate del = purchaseDelegate(gameData);
     del.setDelegateBridgeAndPlayer(newDelegateBridge(germans(gameData)));
@@ -1849,7 +1854,7 @@ class WW2V3Year41Test {
 
   @Test
   void testRepairMoreThanDamaged() {
-    final Territory germany = territory("Germany", gameData);
+    final Territory germany = getTerritory("Germany");
     final Unit factory = germany.getUnitCollection().getMatches(Matches.unitCanBeDamaged()).get(0);
     final PurchaseDelegate del = purchaseDelegate(gameData);
     del.setDelegateBridgeAndPlayer(newDelegateBridge(germans(gameData)));
@@ -1886,8 +1891,8 @@ class WW2V3Year41Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate(gameData).start();
     // Set up the territories
-    final Territory hupeh = territory("Hupeh", gameData);
-    final Territory kiangsu = territory("Kiangsu", gameData);
+    final Territory hupeh = getTerritory("Hupeh");
+    final Territory kiangsu = getTerritory("Kiangsu");
     // Remove all units
     removeFrom(kiangsu, kiangsu.getUnits());
     removeFrom(hupeh, hupeh.getUnits());
@@ -1919,9 +1924,9 @@ class WW2V3Year41Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate(gameData).start();
     // Set up the territories
-    final Territory hupeh = territory("Hupeh", gameData);
-    final Territory kiangsu = territory("Kiangsu", gameData);
-    final Territory mongolia = territory("Mongolia", gameData);
+    final Territory hupeh = getTerritory("Hupeh");
+    final Territory kiangsu = getTerritory("Kiangsu");
+    final Territory mongolia = getTerritory("Mongolia");
     // Remove original capital
     final TerritoryAttachment taMongolia = TerritoryAttachment.get(mongolia);
     final TerritoryAttachment taKiangsu = TerritoryAttachment.get(kiangsu);
@@ -1952,9 +1957,9 @@ class WW2V3Year41Test {
   void testTwoStepBlitz() {
     final IDelegateBridge delegateBridge = newDelegateBridge(british(gameData));
     // Set up the territories
-    final Territory libya = territory("Libya", gameData);
-    final Territory egypt = territory("Egypt", gameData);
-    final Territory morrocco = territory("Morocco Algeria", gameData);
+    final Territory libya = getTerritory("Libya");
+    final Territory egypt = getTerritory("Egypt");
+    final Territory morocco = getTerritory("Morocco Algeria");
     removeFrom(libya, libya.getUnits());
     // Set up the move delegate
     final MoveDelegate moveDelegate = moveDelegate(gameData);
@@ -1965,7 +1970,7 @@ class WW2V3Year41Test {
     final Collection<Unit> armour = egypt.getUnitCollection().getMatches(Matches.unitCanBlitz());
     move(armour, new Route(egypt, libya));
     assertEquals(libya.getOwner(), british(gameData));
-    move(armour, new Route(libya, morrocco));
+    move(armour, new Route(libya, morocco));
   }
 
   void assertValid(final String string) {
