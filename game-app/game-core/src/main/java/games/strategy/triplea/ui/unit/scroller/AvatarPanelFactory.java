@@ -6,7 +6,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.MissingImageException;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.panels.map.MapPanel;
@@ -139,10 +138,7 @@ class AvatarPanelFactory {
     unitsToDraw.sort(unitRenderingOrder(player));
     for (int i = 0; i < drawLocations.size(); i++) {
       final var unitToDraw = unitsToDraw.get(i);
-      final var imageToDraw =
-          unitImageFactory
-              .getImage(ImageKey.of(unitToDraw))
-              .orElseThrow(() -> new MissingImageException(unitToDraw));
+      final var imageToDraw = unitImageFactory.getImage(ImageKey.of(unitToDraw));
 
       final Point drawLocation = drawLocations.get(i);
       graphics.drawImage(

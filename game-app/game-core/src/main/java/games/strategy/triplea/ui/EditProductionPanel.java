@@ -10,10 +10,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
-import java.awt.Image;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import javax.swing.JFrame;
 import org.triplea.java.collections.IntegerMap;
@@ -91,10 +89,8 @@ class EditProductionPanel extends ProductionPanel {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Optional<Image> unitImage =
-                  imageFactory.getImage(
-                      UnitImageFactory.ImageKey.builder().player(player).type(ut).build());
-              if (unitImage.isPresent()) {
+              if (imageFactory.hasImage(
+                  UnitImageFactory.ImageKey.builder().player(player).type(ut).build())) {
                 unitsAllowed.add(ut);
                 final IntegerMap<NamedAttachable> result = new IntegerMap<>();
                 result.add(ut, 1);
