@@ -43,7 +43,7 @@ clean.doFirst {
 task downloadAssets {
     doLast {
         download.run {
-            src "https://github.com/triplea-game/assets/releases/download/45/game_headed_assets.zip"
+            src "https://github.com/triplea-game/assets/releases/download/46/game_headed_assets.zip"
             dest "$projectDir/.assets/assets.zip"
             overwrite false
         }

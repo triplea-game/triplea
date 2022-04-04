@@ -312,8 +312,8 @@ public class MapData {
 
   /** Returns the unit color associated with the player named {@code playerName}. */
   public Optional<Color> getUnitColor(final String playerName) {
-    final Color color = getColorProperty(PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX + playerName);
-    return Optional.ofNullable(color);
+    return Optional.ofNullable(
+        getColorProperty(PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX + playerName));
   }
 
   /** Returns the unit brightness associated with the player named {@code playerName}. */

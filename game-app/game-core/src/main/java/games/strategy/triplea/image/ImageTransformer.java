@@ -32,6 +32,10 @@ public class ImageTransformer {
     colorize((int) (hsb[0] * 360), (int) (hsb[1] * 100), brightness, (BufferedImage) image);
   }
 
+  public static void colorize(final Color color, Image image) {
+    colorize(color, 0, image);
+  }
+
   /**
    * Apply HSB values to the given image.
    *

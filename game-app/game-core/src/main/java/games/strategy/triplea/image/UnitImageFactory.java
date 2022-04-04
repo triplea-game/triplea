@@ -15,6 +15,8 @@ import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -235,10 +237,16 @@ public class UnitImageFactory {
                         }))
         .orElseGet(
             () -> {
-              final URL missingUnitImageLocation =
-                  resourceLoader.getResource(FILE_NAME_BASE + "/missing_unit_image.png");
-              Image image = Toolkit.getDefaultToolkit().getImage(missingUnitImageLocation);
-              Util.ensureImageLoaded(image);
+              BufferedImage image =
+                  resourceLoader.getImageOrThrow(FILE_NAME_BASE + "/missing_unit_image.png");
+              Color playerColor = mapData.getPlayerColor(imageKey.getPlayer().getName());
+              ImageTransformer.colorize(playerColor, image);
+
+              Graphics graphics = image.getGraphics();
+              Font font = graphics.getFont();
+              graphics.setFont(font.deriveFont(8.0f));
+              graphics.setColor(Color.LIGHT_GRAY);
+              graphics.drawString(imageKey.getBaseImageName(), 5, 28);
               return image;
             });
   }
