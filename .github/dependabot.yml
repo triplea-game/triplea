@@ -18,3 +18,8 @@ updates:
   - dependency-name: com.install4j.gradle
     versions:
     - "9.0"
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
