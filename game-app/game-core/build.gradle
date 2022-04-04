@@ -2,7 +2,7 @@ dependencies {
     implementation ("com.googlecode.soundlibs:jlayer:$jlayerVersion") {
        exclude group: 'junit', module: 'junit'
     }
-    implementation "org.jetbrains:annotations:13.0"
+    implementation "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
     implementation "commons-cli:commons-cli:$commonsCliVersion"
