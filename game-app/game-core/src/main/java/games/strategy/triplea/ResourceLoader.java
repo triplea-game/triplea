@@ -132,15 +132,6 @@ public class ResourceLoader implements Closeable {
     return findResource(inputPath).orElse(null);
   }
 
-  public BufferedImage getImageOrThrow(final String inputPath) {
-    URL url = findResource(inputPath).orElseThrow(() -> new Exceptions.MissingFile(inputPath));
-    try {
-      return ImageIO.read(url);
-    } catch (IOException e) {
-      throw new Exceptions.MissingFile(inputPath, e);
-    }
-  }
-
   /**
    * Returns the URL of the resource at the specified path or {@code null} if the resource does not
    * exist. Tries the given 2 paths in order first in the map resources then engine resources.
@@ -172,6 +163,15 @@ public class ResourceLoader implements Closeable {
 
   public Path requiredResource(final String path) throws IOException {
     return optionalResource(path).orElseThrow(() -> new FileNotFoundException(path));
+  }
+
+  public BufferedImage getImageOrThrow(final String inputPath) {
+    URL url = findResource(inputPath).orElseThrow(() -> new Exceptions.MissingFile(inputPath));
+    try {
+      return ImageIO.read(url);
+    } catch (IOException e) {
+      throw new Exceptions.MissingFile(inputPath, e);
+    }
   }
 
   public Optional<Image> loadImage(final String imageName) {
