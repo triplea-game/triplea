@@ -1,9 +1,11 @@
 package games.strategy.triplea.image;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import org.triplea.java.ImageUtil;
 
 /**
  * Class used to transform images including colorizing and flipping. Colorizing is based on finding
@@ -24,9 +26,14 @@ public class ImageTransformer {
    * Apply color and brightness to the given image. This uses the hue and saturation of the given
    * color. It ignores the brightness of the color and uses the given brightness value.
    */
-  public static void colorize(final Color color, final int brightness, final BufferedImage image) {
+  public static void colorize(final Color color, final int brightness, Image image) {
+    image = ImageUtil.convertToBufferedImage(image);
     final float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
-    colorize((int) (hsb[0] * 360), (int) (hsb[1] * 100), brightness, image);
+    colorize((int) (hsb[0] * 360), (int) (hsb[1] * 100), brightness, (BufferedImage) image);
+  }
+
+  public static void colorize(final Color color, Image image) {
+    colorize(color, 0, image);
   }
 
   /**
@@ -94,10 +101,10 @@ public class ImageTransformer {
     return lum;
   }
 
-  public static BufferedImage flipHorizontally(final BufferedImage image) {
+  public static BufferedImage flipHorizontally(final Image image) {
     final AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
     tx.translate(-image.getWidth(null), 0);
     final AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    return op.filter(image, null);
+    return op.filter(ImageUtil.convertToBufferedImage(image), null);
   }
 }
