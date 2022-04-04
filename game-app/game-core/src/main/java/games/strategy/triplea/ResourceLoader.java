@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.game.Exceptions;
 import org.triplea.io.ImageLoader;
 import org.triplea.io.PathUtils;
 import org.triplea.java.UrlStreams;
@@ -162,6 +163,15 @@ public class ResourceLoader implements Closeable {
 
   public Path requiredResource(final String path) throws IOException {
     return optionalResource(path).orElseThrow(() -> new FileNotFoundException(path));
+  }
+
+  public BufferedImage getImageOrThrow(final String inputPath) {
+    URL url = findResource(inputPath).orElseThrow(() -> new Exceptions.MissingFile(inputPath));
+    try {
+      return ImageIO.read(url);
+    } catch (IOException e) {
+      throw new Exceptions.MissingFile(inputPath, e);
+    }
   }
 
   public Optional<Image> loadImage(final String imageName) {
