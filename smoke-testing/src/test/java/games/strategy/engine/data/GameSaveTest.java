@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.io.FileMatchers.aFileWithSize;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameDataFileUtils;
@@ -68,7 +69,7 @@ class GameSaveTest {
     final ServerGame game = startGameWithAis(gameSelector);
     final Path saveFile = Files.createTempFile("save", GameDataFileUtils.getExtension());
     game.saveGame(saveFile);
-    assertThat(Files.size(saveFile), is(not(0)));
+    assertThat(saveFile.toFile(), is(not(aFileWithSize(0))));
   }
 
   private static Path downloadMap(final URI uri) throws IOException {
