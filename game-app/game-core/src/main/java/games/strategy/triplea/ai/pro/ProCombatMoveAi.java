@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro combat move AI. */
@@ -885,6 +886,7 @@ public class ProCombatMoveAi {
       }
 
       // Check to see if any territories can be bombed
+      final Map<Territory, BombedTerritoryData> bombedTerritoryDataMap = new HashMap<>();
       final Map<Unit, Set<Territory>> bomberMoveMap =
           territoryManager.getAttackOptions().getBomberMoveMap();
       for (final Unit unit : bomberMoveMap.keySet()) {
@@ -905,8 +907,22 @@ public class ProCombatMoveAi {
           if (canBeBombedByThisUnit
               && !canCreateAirBattle
               && canAirSafelyLandAfterAttack(unit, t)) {
-            final int noAaBombingDefense =
-                t.getUnitCollection().anyMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
+            // get territory data that is independent of the attack unit
+            final BombedTerritoryData bombedTerritoryData =
+                bombedTerritoryDataMap.computeIfAbsent(
+                    t,
+                    territory -> {
+                      int noAaBombingDefense = 1;
+                      // minimum damage to allow bombing = max. damage a defense unit can take
+                      int minDamageNeeded = 0;
+                      for (final Unit targetUnit : t.getUnitCollection()) {
+                        minDamageNeeded = Math.max(minDamageNeeded, targetUnit.getUnitDamage());
+                        if (Matches.unitIsAaForBombingThisUnitOnly().test(targetUnit)) {
+                          noAaBombingDefense = 0;
+                        }
+                      }
+                      return new BombedTerritoryData(noAaBombingDefense, minDamageNeeded);
+                    });
             int maxDamage = 0;
             final TerritoryAttachment ta = TerritoryAttachment.get(t);
             if (ta != null) {
@@ -914,10 +930,15 @@ public class ProCombatMoveAi {
             }
             final int numExistingBombers = attackMap.get(t).getBombers().size();
             final int remainingDamagePotential = maxDamage - 3 * numExistingBombers;
-            final int bombingScore = (1 + 9 * noAaBombingDefense) * remainingDamagePotential;
+            final int bombingScore =
+                (1 + 9 * bombedTerritoryData.getNoAaBombingDefense()) * remainingDamagePotential;
             if (bombingScore >= maxBombingScore) {
               maxBombingScore = bombingScore;
               maxBombingTerritory = Optional.of(t);
+            }
+            if (bombingScore < bombedTerritoryData.getMinDamageNeeded()) {
+              bombedTerritoryData.addMaxDamage(
+                  bombingScore); // collect bombingScore for this territory
             }
           }
         }
@@ -928,6 +949,12 @@ public class ProCombatMoveAi {
           ProLogger.debug("Add bomber (" + unit + ") to " + t);
         }
       }
+
+      // filter out bombings without sufficient damage
+      bombedTerritoryDataMap.forEach(
+          (bombedTerr, bombedTerritoryData) -> {
+            if (!bombedTerritoryData.bombingWithSufficientDamage()) attackMap.remove(bombedTerr);
+          });
 
       // Re-sort attack options
       sortedUnitAttackOptions =
@@ -1203,6 +1230,26 @@ public class ProCombatMoveAi {
 
       prioritizedTerritories.remove(territoryToRemove);
       ProLogger.debug("Removing " + territoryToRemove.getTerritory().getName());
+    }
+  }
+
+  /** Data storage class for territories that could be bombed. */
+  static class BombedTerritoryData {
+    @Getter final int noAaBombingDefense;
+    @Getter final int minDamageNeeded;
+    int maxDamage = 0;
+
+    public BombedTerritoryData(final int noAaBombingDefense, final int minDamageNeeded) {
+      this.noAaBombingDefense = noAaBombingDefense;
+      this.minDamageNeeded = minDamageNeeded;
+    }
+
+    public void addMaxDamage(final int newDamage) {
+      maxDamage += newDamage;
+    }
+
+    public boolean bombingWithSufficientDamage() {
+      return maxDamage >= minDamageNeeded;
     }
   }
 
