@@ -82,11 +82,10 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     if (movePanel.getUndoableMoves() != null && movePanel.getUndoableMoves().size() > 1) {
       final JButton undoAllButton = new JButton("Undo All");
       undoAllButton.addActionListener(new UndoAllMovesActionListener());
-      items.add(undoAllButton);
-      Box b1 = Box.createHorizontalBox();
-      b1.add(undoAllButton);
-      b1.add(Box.createHorizontalGlue());
-      items.add(b1);
+      final Box box = Box.createHorizontalBox();
+      box.add(undoAllButton);
+      box.add(Box.createHorizontalGlue());
+      items.add(box);
     }
 
     final int scrollIncrementFinal = scrollIncrement; // + separatorSize.height;
