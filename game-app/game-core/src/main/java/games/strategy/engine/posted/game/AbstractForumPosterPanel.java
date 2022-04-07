@@ -11,7 +11,6 @@ import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.ActionPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.panels.map.MapPanel;
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 abstract class AbstractForumPosterPanel extends ActionPanel {
@@ -20,12 +19,10 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
   IPlayerBridge playerBridge;
   PbemMessagePoster pbemMessagePoster;
   final ForumPosterComponent forumPosterComponent;
-  private final JLabel actionLabel;
   private TripleAFrame tripleAFrame;
 
   AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    actionLabel = new JLabel();
     forumPosterComponent = new ForumPosterComponent(data, this::performDone, getTitle());
   }
 

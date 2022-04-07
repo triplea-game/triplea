@@ -43,7 +43,6 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
  */
 public class PoliticsPanel extends ActionPanel {
   private static final long serialVersionUID = -4661479948450261578L;
-  private final JLabel actionLabel = new JLabel();
   private JButton selectPoliticalActionButton = null;
   private JButton doneButton = null;
   private PoliticalActionAttachment choice = null;

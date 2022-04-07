@@ -18,7 +18,6 @@ import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -38,7 +37,6 @@ public abstract class AbstractMovePanel extends ActionPanel {
   protected AbstractUndoableMovesPanel undoableMovesPanel;
   private final TripleAFrame frame;
   private boolean listening = false;
-  private final JLabel actionLabel = new JLabel();
   private MoveDescription moveMessage;
   private List<UndoableMove> undoableMoves;
 
@@ -47,6 +45,14 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   private final JButton cancelMoveButton =
       new JButtonBuilder().title("Cancel").actionListener(this::cancelMove).build();
+  private final JButton doneButton =
+      new JButtonBuilder()
+          .title("Done")
+          .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+          .actionListener(this::performDone)
+          .build();
+  private final JButton undoAllButton =
+      new JButtonBuilder().title("Undo All").actionListener(this::undoAll).build();
 
   protected AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
@@ -121,6 +127,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   private void updateMoves() {
     undoableMoves = getMoveDelegate().getMovesMade();
     this.undoableMovesPanel.setMoves(new ArrayList<>(undoableMoves));
+    undoAllButton.setEnabled(!undoableMoves.isEmpty());
   }
 
   protected final void cancelMove() {
@@ -149,6 +156,14 @@ public abstract class AbstractMovePanel extends ActionPanel {
     }
     undoMoveSpecific();
     return error;
+  }
+
+  private final void undoAll() {
+    final int moveCount = getUndoableMoves().size();
+    final boolean suppressErrorMsgToUser = true;
+    for (int i = moveCount - 1; i >= 0; i--) {
+      undoMove(i, suppressErrorMsgToUser);
+    }
   }
 
   /**
@@ -257,18 +272,17 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
     this.actionLabel.setText(gamePlayer.getName() + actionLabel);
     movedUnitsPanel.add(SwingComponents.leftBox(this.actionLabel));
+
     final JPanel buttonsPanel = new JPanel();
     if (setCancelButton()) {
-      buttonsPanel.add(SwingComponents.leftBox(cancelMoveButton));
+      buttonsPanel.add(cancelMoveButton);
     }
-    buttonsPanel.add(
-        SwingComponents.leftBox(
-            new JButtonBuilder()
-                .title("Done")
-                .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
-                .actionListener(this::performDone)
-                .build()));
+    buttonsPanel.add(doneButton);
+    buttonsPanel.add(undoAllButton);
     movedUnitsPanel.add(buttonsPanel);
+
+    // Add any additional buttons on their own lines, since their text may be
+    // arbitrarily long.
     getAdditionalButtons().forEach(movedUnitsPanel::add);
     movedUnitsPanel.add(undoableMovesPanel);
     movedUnitsPanel.add(Box.createGlue());

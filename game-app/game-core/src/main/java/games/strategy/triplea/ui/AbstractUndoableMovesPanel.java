@@ -9,7 +9,6 @@ import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -62,8 +62,13 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
   private void initLayout() {
     removeAll();
     setLayout(new BorderLayout());
-    if (!moves.isEmpty()) {
-      add(new JLabel(getLabelText()), BorderLayout.NORTH);
+    if (movesMade()) {
+      Box box = Box.createVerticalBox();
+      JLabel titleLabel = ActionPanel.createIndentedLabel();
+      titleLabel.setText(getLabelText());
+      box.add(titleLabel);
+      box.add(new JSeparator());
+      add(box, BorderLayout.NORTH);
     }
     add(createScrollPane(), BorderLayout.CENTER);
     SwingUtilities.invokeLater(this::validate);
@@ -79,6 +84,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       scrollIncrement = moveComponent.getPreferredSize().height;
       items.add(moveComponent);
     }
+    /*
     if (movePanel.getUndoableMoves() != null && movePanel.getUndoableMoves().size() > 1) {
       final JButton undoAllButton = new JButton("Undo All");
       undoAllButton.addActionListener(new UndoAllMovesActionListener());
@@ -86,7 +92,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       box.add(undoAllButton);
       box.add(Box.createHorizontalGlue());
       items.add(box);
-    }
+    }*/
 
     final int scrollIncrementFinal = scrollIncrement; // + separatorSize.height;
     final JScrollPane scroll =
@@ -122,16 +128,9 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(move.getUnits());
     final Dimension buttonSize = new Dimension(80, 22);
     for (final UnitCategory category : unitCategories) {
-      Optional<ImageIcon> icon =
+      final Optional<ImageIcon> icon =
           movePanel.getMap().getUiContext().getUnitImageFactory().getIcon(ImageKey.of(category));
       if (icon.isPresent()) {
-        Image image = icon.get().getImage(); // transform it
-        Image newimg =
-            image.getScaledInstance(
-                icon.get().getIconWidth() / 2,
-                icon.get().getIconHeight() / 2,
-                java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        icon = Optional.of(new ImageIcon(newimg)); // transform it back
         final JLabel label =
             new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
         unitsBox.add(label);
@@ -188,23 +187,6 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
         previousVisibleIndex = Math.max(0, moveIndex - 1);
       } else {
         previousVisibleIndex = null;
-      }
-    }
-  }
-
-  class UndoAllMovesActionListener extends AbstractAction {
-    private static final long serialVersionUID = 7908136093303143896L;
-
-    UndoAllMovesActionListener() {
-      super("UndoAllMoves");
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final int moveCount = movePanel.getUndoableMoves().size();
-      final boolean suppressErrorMsgToUser = true;
-      for (int i = moveCount - 1; i >= 0; i--) {
-        movePanel.undoMove(i, suppressErrorMsgToUser);
       }
     }
   }
