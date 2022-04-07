@@ -88,7 +88,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       items.add(moveComponent);
     }
 
-    final int scrollIncrementFinal = scrollIncrement; // + separatorSize.height;
+    final int scrollIncrementFinal = scrollIncrement;
     scroll =
         new JScrollPane(items) {
           private static final long serialVersionUID = -1064967105431785533L;
