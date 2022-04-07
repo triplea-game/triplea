@@ -71,7 +71,10 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       add(box, BorderLayout.NORTH);
     }
     add(createScrollPane(), BorderLayout.CENTER);
-    SwingUtilities.invokeLater(this::validate);
+    // The two lines below are needed to ensure the view redraws at the correct size
+    // when first loaded.
+    revalidate();
+    doLayout();
   }
 
   private JScrollPane createScrollPane() {
