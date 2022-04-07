@@ -27,10 +27,9 @@ public class CollapsiblePanel extends JPanel {
   private final JButton toggleButton;
 
   private String title;
-  private String currentToggleIndicator = EXPANDED_TEXT;
+  private String currentToggleIndicator;
 
   public CollapsiblePanel(final JPanel content, final String title) {
-    super();
     this.title = title;
     this.content = content;
     this.toggleButton = new JButton();
@@ -53,7 +52,14 @@ public class CollapsiblePanel extends JPanel {
     expand();
   }
 
+  public boolean isCollapsed() {
+    return currentToggleIndicator == COLLAPSED_TEXT;
+  }
+
   public void collapse() {
+    if (isCollapsed()) {
+      return;
+    }
     currentToggleIndicator = COLLAPSED_TEXT;
     toggleButton.setText(title + currentToggleIndicator);
     content.setVisible(false);
@@ -61,6 +67,9 @@ public class CollapsiblePanel extends JPanel {
   }
 
   public void expand() {
+    if (!isCollapsed()) {
+      return;
+    }
     currentToggleIndicator = EXPANDED_TEXT;
     toggleButton.setText(title + currentToggleIndicator);
     content.setVisible(true);

@@ -34,7 +34,6 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 @Slf4j
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
-  private static final int entryPadding = 15;
 
   protected AbstractUndoableMovesPanel undoableMovesPanel;
   private final TripleAFrame frame;
@@ -258,18 +257,19 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
     this.actionLabel.setText(gamePlayer.getName() + actionLabel);
     movedUnitsPanel.add(SwingComponents.leftBox(this.actionLabel));
+    final JPanel buttonsPanel = new JPanel();
     if (setCancelButton()) {
-      movedUnitsPanel.add(SwingComponents.leftBox(cancelMoveButton));
+      buttonsPanel.add(SwingComponents.leftBox(cancelMoveButton));
     }
-    movedUnitsPanel.add(
+    buttonsPanel.add(
         SwingComponents.leftBox(
             new JButtonBuilder()
                 .title("Done")
                 .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
                 .actionListener(this::performDone)
                 .build()));
+    movedUnitsPanel.add(buttonsPanel);
     getAdditionalButtons().forEach(movedUnitsPanel::add);
-    movedUnitsPanel.add(Box.createVerticalStrut(entryPadding));
     movedUnitsPanel.add(undoableMovesPanel);
     movedUnitsPanel.add(Box.createGlue());
     return movedUnitsPanel;

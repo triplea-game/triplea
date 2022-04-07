@@ -36,7 +36,6 @@ import games.strategy.triplea.ui.unit.scroller.UnitScroller;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
@@ -66,6 +65,7 @@ import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.swing.key.binding.KeyCode;
@@ -109,7 +109,7 @@ public class MovePanel extends AbstractMovePanel {
   private final UnitScroller unitScroller;
 
   @Getter(onMethod_ = @Override)
-  private final Component unitScrollerPanel;
+  private final CollapsiblePanel unitScrollerPanel;
 
   private final UnitSelectionListener unitSelectionListener =
       new UnitSelectionListener() {

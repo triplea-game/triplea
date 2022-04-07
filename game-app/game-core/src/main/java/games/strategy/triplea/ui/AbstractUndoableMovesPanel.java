@@ -9,16 +9,17 @@ import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -27,7 +28,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -47,7 +47,9 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
   }
 
   void setMoves(final List<AbstractUndoableMove> undoableMoves) {
-    moves = undoableMoves;
+    // we want the newest move at the top
+    moves = new ArrayList<>(undoableMoves);
+    Collections.reverse(moves);
     SwingUtilities.invokeLater(this::initLayout);
   }
 
@@ -60,40 +62,35 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
   private void initLayout() {
     removeAll();
     setLayout(new BorderLayout());
+    if (!moves.isEmpty()) {
+      add(new JLabel(getLabelText()), BorderLayout.NORTH);
+    }
+    add(createScrollPane(), BorderLayout.CENTER);
+    SwingUtilities.invokeLater(this::validate);
+  }
+
+  private JScrollPane createScrollPane() {
     final JPanel items = new JPanel();
     items.setLayout(new BoxLayout(items, BoxLayout.Y_AXIS));
-    // we want the newest move at the top
-    moves = new ArrayList<>(moves);
-    Collections.reverse(moves);
-    final Iterator<AbstractUndoableMove> iter = moves.iterator();
-    if (iter.hasNext()) {
-      add(
-          new JLabel((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"),
-          BorderLayout.NORTH);
-    }
+
     int scrollIncrement = 10;
-    final Dimension separatorSize = new Dimension(150, 20);
-    while (iter.hasNext()) {
-      final AbstractUndoableMove item = iter.next();
+    for (final AbstractUndoableMove item : moves) {
       final JComponent moveComponent = newComponentForMove(item);
       scrollIncrement = moveComponent.getPreferredSize().height;
       items.add(moveComponent);
-      if (iter.hasNext()) {
-        final JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
-        separator.setPreferredSize(separatorSize);
-        separator.setMaximumSize(separatorSize);
-        items.add(separator);
-      }
     }
     if (movePanel.getUndoableMoves() != null && movePanel.getUndoableMoves().size() > 1) {
       final JButton undoAllButton = new JButton("Undo All");
       undoAllButton.addActionListener(new UndoAllMovesActionListener());
       items.add(undoAllButton);
+      Box b1 = Box.createHorizontalBox();
+      b1.add(undoAllButton);
+      b1.add(Box.createHorizontalGlue());
+      items.add(b1);
     }
 
-    final int scrollIncrementFinal = scrollIncrement + separatorSize.height;
-    // JScrollPane scroll = new JScrollPane(items);
-    scroll =
+    final int scrollIncrementFinal = scrollIncrement; // + separatorSize.height;
+    final JScrollPane scroll =
         new JScrollPane(items) {
           private static final long serialVersionUID = -1064967105431785533L;
 
@@ -117,8 +114,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       scroll.getVerticalScrollBar().setValue(scrollBarPreviousValue);
       scrollBarPreviousValue = null;
     }
-    add(scroll, BorderLayout.CENTER);
-    SwingUtilities.invokeLater(this::validate);
+    return scroll;
   }
 
   private JComponent newComponentForMove(final AbstractUndoableMove move) {
@@ -127,9 +123,16 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(move.getUnits());
     final Dimension buttonSize = new Dimension(80, 22);
     for (final UnitCategory category : unitCategories) {
-      final Optional<ImageIcon> icon =
+      Optional<ImageIcon> icon =
           movePanel.getMap().getUiContext().getUnitImageFactory().getIcon(ImageKey.of(category));
       if (icon.isPresent()) {
+        Image image = icon.get().getImage(); // transform it
+        Image newimg =
+            image.getScaledInstance(
+                icon.get().getIconWidth() / 2,
+                icon.get().getIconHeight() / 2,
+                java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+        icon = Optional.of(new ImageIcon(newimg)); // transform it back
         final JLabel label =
             new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
         unitsBox.add(label);
@@ -144,17 +147,17 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     textBox.add(Box.createHorizontalGlue());
     final JButton cancelButton = new JButton(new UndoMoveActionListener(move.getIndex()));
     setSize(buttonSize, cancelButton);
-    final JButton viewbutton = new JButton(new ViewAction(move));
-    setSize(buttonSize, viewbutton);
+    final JButton viewButton = new JButton(new ViewAction(move));
+    setSize(buttonSize, viewButton);
     final Box buttonsBox = new Box(BoxLayout.X_AXIS);
-    buttonsBox.add(viewbutton);
+    buttonsBox.add(viewButton);
     buttonsBox.add(cancelButton);
     buttonsBox.add(Box.createHorizontalGlue());
     final Box containerBox = new Box(BoxLayout.Y_AXIS);
     containerBox.add(unitsBox);
     containerBox.add(textBox);
     containerBox.add(buttonsBox);
-    containerBox.add(new JLabel(" "));
+    containerBox.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
     return containerBox;
   }
 
@@ -224,6 +227,10 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       }
       specificViewAction(move);
     }
+  }
+
+  protected String getLabelText() {
+    return "Moves:";
   }
 
   protected abstract void specificViewAction(AbstractUndoableMove move);
