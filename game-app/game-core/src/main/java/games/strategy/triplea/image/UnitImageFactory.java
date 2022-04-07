@@ -238,7 +238,7 @@ public class UnitImageFactory {
         .orElseGet(
             () -> {
               BufferedImage image =
-                  resourceLoader.getImageOrThrow(FILE_NAME_BASE + "/missing_unit_image.png");
+                  resourceLoader.getImageOrThrow(FILE_NAME_BASE + "missing_unit_image.png");
               Color playerColor = mapData.getPlayerColor(imageKey.getPlayer().getName());
               ImageTransformer.colorize(playerColor, image);
 
