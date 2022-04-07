@@ -52,12 +52,8 @@ public class CollapsiblePanel extends JPanel {
     expand();
   }
 
-  public boolean isCollapsed() {
-    return currentToggleIndicator == COLLAPSED_TEXT;
-  }
-
   public void collapse() {
-    if (isCollapsed()) {
+    if (currentToggleIndicator == COLLAPSED_TEXT) {
       return;
     }
     currentToggleIndicator = COLLAPSED_TEXT;
@@ -67,7 +63,7 @@ public class CollapsiblePanel extends JPanel {
   }
 
   public void expand() {
-    if (!isCollapsed()) {
+    if (currentToggleIndicator == EXPANDED_TEXT) {
       return;
     }
     currentToggleIndicator = EXPANDED_TEXT;
