@@ -87,18 +87,9 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       scrollIncrement = moveComponent.getPreferredSize().height;
       items.add(moveComponent);
     }
-    /*
-    if (movePanel.getUndoableMoves() != null && movePanel.getUndoableMoves().size() > 1) {
-      final JButton undoAllButton = new JButton("Undo All");
-      undoAllButton.addActionListener(new UndoAllMovesActionListener());
-      final Box box = Box.createHorizontalBox();
-      box.add(undoAllButton);
-      box.add(Box.createHorizontalGlue());
-      items.add(box);
-    }*/
 
     final int scrollIncrementFinal = scrollIncrement; // + separatorSize.height;
-    final JScrollPane scroll =
+    scroll =
         new JScrollPane(items) {
           private static final long serialVersionUID = -1064967105431785533L;
 
