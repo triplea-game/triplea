@@ -509,7 +509,7 @@ public final class UnitChooser extends JPanel {
                 builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
           }
         }
-        panel.add(label, builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
+        panel.add(label, builder.insets(emptyInsets).gridX(gridx++).build());
         panel.add(scroll, builder.insets(new Insets(0, 4, 0, 0)).gridX(gridx++).build());
         scroll.addChangeListener(field -> updateLeftToSelect());
       }
