@@ -37,6 +37,9 @@ import javax.swing.JTextArea;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.Postconditions;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
+import org.triplea.swing.jpanel.GridBagConstraintsFill;
 
 /**
  * Shows units to choose including the controls to make the choice. Units are grouped by owner, type
@@ -475,9 +478,9 @@ public final class UnitChooser extends JPanel {
 
     void createComponents(final JPanel panel, final int rowIndex) {
       int gridx = 0;
-      for (int i = 0;
-          i < (hasMultipleHits ? Math.max(1, category.getHitPoints() - category.getDamaged()) : 1);
-          i++) {
+      int iterations =
+          (hasMultipleHits ? Math.max(1, category.getHitPoints() - category.getDamaged()) : 1);
+      for (int i = 0; i < iterations; i++) {
         final boolean damaged = i > 0;
         final ScrollableTextField scroll = new ScrollableTextField(0, category.getUnits().size());
         hitTexts.add(scroll);
@@ -485,83 +488,29 @@ public final class UnitChooser extends JPanel {
         scroll.addChangeListener(textFieldListener);
         final JLabel label = new JLabel("x" + category.getUnits().size());
         hitLabel.add(label);
+        final var builder =
+            new GridBagConstraintsBuilder(gridx, rowIndex)
+                .gridWidth(1)
+                .gridHeight(1)
+                .anchor(GridBagConstraintsAnchor.WEST)
+                .fill(GridBagConstraintsFill.HORIZONTAL);
         panel.add(
             new UnitChooserEntryIcon(damaged),
-            new GridBagConstraints(
-                gridx++,
-                rowIndex,
-                1,
-                1,
-                0,
-                0,
-                GridBagConstraints.WEST,
-                GridBagConstraints.HORIZONTAL,
-                new Insets(0, (i == 0 ? 0 : 8), 0, 0),
-                0,
-                0));
+            builder.insets(new Insets(0, (i == 0 ? 0 : 8), 0, 0)).gridX(gridx++).build());
         if (i == 0) {
           if (category.getMovement().compareTo(new BigDecimal(-1)) != 0) {
             panel.add(
                 new JLabel("mvt " + category.getMovement()),
-                new GridBagConstraints(
-                    gridx,
-                    rowIndex,
-                    1,
-                    1,
-                    0,
-                    0,
-                    GridBagConstraints.WEST,
-                    GridBagConstraints.HORIZONTAL,
-                    new Insets(0, 4, 0, 4),
-                    0,
-                    0));
+                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
           }
-          gridx++;
           if (category.getTransportCost() != -1) {
             panel.add(
                 new JLabel("cst " + category.getTransportCost()),
-                new GridBagConstraints(
-                    gridx,
-                    rowIndex,
-                    1,
-                    1,
-                    0,
-                    0,
-                    GridBagConstraints.WEST,
-                    GridBagConstraints.HORIZONTAL,
-                    new Insets(0, 4, 0, 4),
-                    0,
-                    0));
+                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
           }
         }
-        panel.add(
-            label,
-            new GridBagConstraints(
-                gridx++,
-                rowIndex,
-                1,
-                1,
-                0,
-                0,
-                GridBagConstraints.WEST,
-                GridBagConstraints.HORIZONTAL,
-                emptyInsets,
-                0,
-                0));
-        panel.add(
-            scroll,
-            new GridBagConstraints(
-                gridx++,
-                rowIndex,
-                1,
-                1,
-                0,
-                0,
-                GridBagConstraints.WEST,
-                GridBagConstraints.HORIZONTAL,
-                new Insets(0, 4, 0, 0),
-                0,
-                0));
+        panel.add(label, builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
+        panel.add(scroll, builder.insets(new Insets(0, 4, 0, 0)).gridX(gridx++).build());
         scroll.addChangeListener(field -> updateLeftToSelect());
       }
       updateLeftToSelect();
