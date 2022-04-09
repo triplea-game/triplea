@@ -1518,6 +1518,7 @@ public class MovePanel extends AbstractMovePanel {
     mouseCurrentTerritory = null;
     forced = null;
     selectedUnits.clear();
+    dependentUnits.clear();
     currentCursorImage = null;
     updateRouteAndMouseShadowUnits(null);
     getMap().showMouseCursor();
