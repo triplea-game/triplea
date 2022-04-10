@@ -23,37 +23,34 @@ public final class PlainRandomSource implements IRandomSource {
     checkArgument(max > 0, "max must be > 0 (%s)", annotation);
     checkArgument(count > 0, "count must be > 0 (%s)", annotation);
 
+    if (count == 1) {
+      return new int[] {getRandom(max, annotation)};
+    }
+
     final int[] numbers = new int[count]; // initialize return array of drawn numbers
-    if (count > 2) {
-      // get base power results (compute if needed)
-      BasePowers basePowers = basePowersMap.get(max);
-      if (basePowers == null) {
-        basePowers =
-            new BasePowers((int) Math.abs(Math.log(Integer.MAX_VALUE) / Math.log(max)), max);
-        basePowersMap.put(max, basePowers);
+    // get base power results (compute if needed)
+    BasePowers basePowers = basePowersMap.get(max);
+    if (basePowers == null) {
+      basePowers = new BasePowers((int) Math.abs(Math.log(Integer.MAX_VALUE) / Math.log(max)), max);
+      basePowersMap.put(max, basePowers);
+    }
+    final int basePowerMax = basePowers.getBasePowerMax();
+    int restCount = count;
+    int diceIdBase = 0;
+    while (restCount > 0) {
+      final int powerCur = Math.min(basePowerMax, restCount); // = random numbers to draw now
+      int randomInt = getRandom(basePowers.getPowerResult(powerCur), annotation);
+      // Get individual dice x by projecting from range 1 until base^x to 0 until (base-1) for
+      // each x via modular arithmetic from the largest power to the smallest
+      // Note: x is diceIdOffset
+      for (int diceIdOffset = powerCur - 1; diceIdOffset >= 0; --diceIdOffset) {
+        final int powerResult = basePowers.getPowerResult(diceIdOffset);
+        final int powerFit = randomInt / powerResult;
+        numbers[diceIdBase + diceIdOffset] = powerFit;
+        randomInt -= powerFit * powerResult;
       }
-      final int basePowerMax = basePowers.getBasePowerMax();
-      int restCount = count;
-      int diceIdBase = 0;
-      while (restCount > 0) {
-        final int powerCur = Math.min(basePowerMax, restCount); // = random numbers to draw now
-        int randomInt = getRandom(basePowers.getPowerResult(powerCur), annotation);
-        // Get individual dice x by projecting from range 1 until base^x to 0 until (base-1) for
-        // each x via modular arithmetic from the largest power to the smallest
-        // Note: x is diceIdOffset
-        for (int diceIdOffset = powerCur - 1; diceIdOffset >= 0; --diceIdOffset) {
-          final int powerResult = basePowers.getPowerResult(diceIdOffset);
-          final int powerFit = randomInt / powerResult;
-          numbers[diceIdBase + diceIdOffset] = powerFit;
-          randomInt -= powerFit * powerResult;
-        }
-        diceIdBase += powerCur;
-        restCount -= powerCur; // newly remaining random numbers to be drawn
-      }
-    } else {
-      for (int i = 0; i < count; i++) {
-        numbers[i] = getRandom(max, annotation);
-      }
+      diceIdBase += powerCur;
+      restCount -= powerCur; // newly remaining random numbers to be drawn
     }
     return numbers;
   }
