@@ -26,8 +26,8 @@ import java.awt.Insets;
  * </pre></code>
  */
 public class GridBagConstraintsBuilder {
-  private final int gridX;
-  private final int gridY;
+  private int gridX;
+  private int gridY;
 
   private int gridWidth = 1;
   private int gridHeight = 1;
@@ -132,6 +132,16 @@ public class GridBagConstraintsBuilder {
   /** Default value is 0 */
   public GridBagConstraintsBuilder padY(final int padY) {
     this.padY = padY;
+    return this;
+  }
+
+  public GridBagConstraintsBuilder gridY(final int gridY) {
+    this.gridY = gridY;
+    return this;
+  }
+
+  public GridBagConstraintsBuilder gridX(final int gridX) {
+    this.gridX = gridX;
     return this;
   }
 }

@@ -3,6 +3,7 @@ package games.strategy.ui;
 import com.google.common.primitives.Doubles;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -93,19 +94,14 @@ public class ImageScrollerLargeView extends JComponent {
     final MouseWheelListener mouseWheelListener =
         e -> {
           if (e.isControlDown()) {
-            final float zoomFactor = ClientSetting.mapZoomFactor.getValueOrThrow() / 100f;
             final int oldWidth = model.getBoxWidth();
             final int oldHeight = model.getBoxHeight();
+            final float zoomFactor = ClientSetting.mapZoomFactor.getValueOrThrow() / 100f;
             setScale(scale - zoomFactor * e.getPreciseWheelRotation());
-            model.set(
-                model.getX()
-                    + (int)
-                        ((getMousePosition().getX() / getWidth())
-                            * (oldWidth - model.getBoxWidth())),
-                model.getY()
-                    + (int)
-                        ((getMousePosition().getY() / getHeight())
-                            * (oldHeight - model.getBoxHeight())));
+            final Point mouse = getMousePosition();
+            final int dx = (int) (mouse.getX() / getWidth() * (oldWidth - model.getBoxWidth()));
+            final int dy = (int) (mouse.getY() / getHeight() * (oldHeight - model.getBoxHeight()));
+            model.set(model.getX() + dx, model.getY() + dy);
           } else {
             if (edge == NONE) {
               insideCount = 0;
@@ -113,22 +109,16 @@ public class ImageScrollerLargeView extends JComponent {
             // compute the amount to move
             int dx = 0;
             int dy = 0;
+            int scrollAmount = ClientSetting.wheelScrollAmount.getValueOrThrow();
             // In java 11 SHIFT_DOWN_MASK seems to be true for sideways scrolling
             // this doesn't seem to be documented anywhere, but we'll take it for now
             if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-              dx =
-                  (int)
-                      (e.getPreciseWheelRotation()
-                          * ClientSetting.wheelScrollAmount.getValueOrThrow());
+              dx = (int) (e.getPreciseWheelRotation() * scrollAmount);
             } else {
-              dy =
-                  (int)
-                      (e.getPreciseWheelRotation()
-                          * ClientSetting.wheelScrollAmount.getValueOrThrow());
+              dy = (int) (e.getPreciseWheelRotation() * scrollAmount);
             }
-            // Update the model, which will handle its own clamping or wrapping depending on the
-            // map.
-            this.model.set(this.model.getX() + dx, this.model.getY() + dy);
+            // Update the model, which will handle clamping or wrapping depending on the map.
+            model.set(model.getX() + dx, model.getY() + dy);
           }
         };
     addMouseWheelListener(mouseWheelListener);
