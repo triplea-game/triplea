@@ -11,7 +11,7 @@ jobs:
     runs-on: Ubuntu-20.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Update maps on website
         run: .build/update-maps-on-website/run
         env:
