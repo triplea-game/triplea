@@ -16,7 +16,6 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -74,6 +73,12 @@ public final class BattlePanel extends ActionPanel {
                 () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus));
           }
         });
+    final Dimension screenSize = Util.getScreenSize(battleWindow);
+    if (screenSize.width > 1024 && screenSize.height > 768) {
+      battleWindow.setMinimumSize(new Dimension(1024, 768));
+    } else {
+      battleWindow.setMinimumSize(new Dimension(800, 600));
+    }
     getMap().getUiContext().addShutdownWindow(battleWindow);
   }
 
@@ -263,18 +268,11 @@ public final class BattlePanel extends ActionPanel {
           battleWindow.setTitle(battleDisplay.getDescription());
           battleWindow.getContentPane().add(battleDisplay);
 
-          final Frame parent = JOptionPane.getFrameForComponent(BattlePanel.this);
-          final Dimension screenSize = Util.getScreenSize(parent);
-          if (screenSize.width > 1024 && screenSize.height > 768) {
-            battleWindow.setMinimumSize(new Dimension(1024, 768));
-          } else {
-            battleWindow.setMinimumSize(new Dimension(800, 600));
-          }
           final var localPlayers = getMap().getUiContext().getLocalPlayers();
           if (ClientSetting.showBattlesWhenObserving.getValueOrThrow()
               || localPlayers.playing(attacker)
               || localPlayers.playing(defender)) {
-            battleWindow.setLocationRelativeTo(parent);
+            battleWindow.setLocationRelativeTo(battleWindow);
             battleWindow.setVisible(true);
             SwingComponents.redraw(battleWindow);
             battleWindow.toFront();
