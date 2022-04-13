@@ -42,30 +42,25 @@ public class FileChooser {
     }
 
     fileDialog.setVisible(true);
-    final Path path = getSelectedPath(fileDialog);
-    if (path == null) {
-      return Optional.empty();
-    }
-
-    // If the user selects a filename that already exists, the AWT Dialog will ask the user for
-    // confirmation, but this fails if we append an extension afterwards, so show our own dialog.
-    if (mode == FileDialog.SAVE && Files.exists(path) && !shouldReplaceExistingFile(path)) {
-      return Optional.empty();
-    }
-
-    return Optional.of(path);
+    return getSelectedPath(fileDialog);
   }
 
-  private Path getSelectedPath(final FileDialog fileDialog) {
+  private Optional<Path> getSelectedPath(final FileDialog fileDialog) {
     final String fileName = fileDialog.getFile();
     if (fileName == null) {
-      return null;
+      return Optional.empty();
     }
     Path path = Path.of(fileDialog.getDirectory(), fileName);
     if (mode == FileDialog.SAVE && fileExtension != null) {
-      path = appendExtensionIfAbsent(path, fileExtension);
+      final Path newPath = appendExtensionIfAbsent(path, fileExtension);
+      // If the user selects a file that already exists, the FileDialog will ask the user for
+      // confirmation, but not if we appended an extension above, so show our own dialog.
+      if (!newPath.equals(path) && Files.exists(newPath) && !shouldReplaceExistingFile(newPath)) {
+        return Optional.empty();
+      }
+      path = newPath;
     }
-    return path;
+    return Optional.of(path);
   }
 
   private boolean shouldReplaceExistingFile(final Path path) {
