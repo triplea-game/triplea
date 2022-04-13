@@ -47,8 +47,7 @@ public final class GameDataFileUtils {
     final String legacyExtension = ".svg";
 
     // Macs download a game data file as "tsvg.gz", so that extension must be used when evaluating
-    // candidate game data
-    // files.
+    // candidate game data files.
     final String macOsAlternativeExtension = "tsvg.gz";
 
     return List.of(getExtension(), legacyExtension, macOsAlternativeExtension);

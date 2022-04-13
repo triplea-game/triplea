@@ -2,7 +2,7 @@ package games.strategy.engine.framework.network.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -34,7 +34,7 @@ public class GetGameSaveClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final Frame frame = JOptionPane.getFrameForComponent(parent);
-    final Path f = SaveGameFileChooser.getSaveGameLocation(frame, gameDataOnStartup);
+    final Path f = GameFileSelector.getSaveGameLocation(frame, gameDataOnStartup).get();
     if (f != null) {
       final byte[] bytes = serverRemote.getSaveGame();
       try (var fileOutputStream = Files.newOutputStream(f)) {

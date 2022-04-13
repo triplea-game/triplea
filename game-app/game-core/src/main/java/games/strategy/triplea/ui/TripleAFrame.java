@@ -34,7 +34,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -2132,7 +2132,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       JOptionPane.INFORMATION_MESSAGE);
                   data.acquireReadLock();
                   try {
-                    final Path f = SaveGameFileChooser.getSaveGameLocation(TripleAFrame.this, data);
+                    final Path f =
+                        GameFileSelector.getSaveGameLocation(TripleAFrame.this, data).get();
                     if (f != null) {
                       try (OutputStream fileOutputStream = Files.newOutputStream(f)) {
                         final GameData datacopy =
