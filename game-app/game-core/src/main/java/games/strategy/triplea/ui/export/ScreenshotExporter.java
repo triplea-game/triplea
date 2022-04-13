@@ -23,7 +23,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOCase;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingComponents;
@@ -61,8 +60,8 @@ public final class ScreenshotExporter {
         .parent(frame)
         .title("Save Screenshot")
         .fileExtension("png")
-        .filenameFilter((dir, name) -> IOCase.SYSTEM.checkEndsWith(name, ".png"))
-        .chooseSave();
+        .filenameFilter((dir, name) -> name.toLowerCase().endsWith(".png"))
+        .chooseFile();
   }
 
   private void runSave(final GameData gameData, final HistoryNode node, final Path file) {

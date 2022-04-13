@@ -7,53 +7,60 @@ import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
 public class FileChooser {
   private static final String PERIOD = ".";
 
-  private Frame parent;
+  @Nullable private Frame parent;
   private String title = "";
-  private Path directory;
-  private FilenameFilter filenameFilter;
-  private String fileName;
-  private String fileExtension;
+  private int mode = FileDialog.SAVE;
+  @Nullable private Path directory;
+  @Nullable private FilenameFilter filenameFilter;
+  @Nullable private String fileName;
+  @Nullable private String fileExtension;
 
-  public FileChooser parent(final Frame parent) {
+  public FileChooser parent(Frame parent) {
     this.parent = parent;
     return this;
   }
 
-  public FileChooser title(final String title) {
+  public FileChooser title(String title) {
     this.title = title;
     return this;
   }
 
-  public FileChooser directory(final Path directory) {
+  public FileChooser mode(int mode) {
+    this.mode = mode;
+    return this;
+  }
+
+  public FileChooser directory(Path directory) {
     this.directory = directory;
     return this;
   }
 
-  public FileChooser filenameFilter(final FilenameFilter filenameFilter) {
+  public FileChooser filenameFilter(FilenameFilter filenameFilter) {
     this.filenameFilter = filenameFilter;
     return this;
   }
 
-  public FileChooser fileName(final String fileName) {
+  public FileChooser fileName(String fileName) {
     this.fileName = fileName;
     return this;
   }
 
-  public FileChooser fileExtension(final String fileExtension) {
+  public FileChooser fileExtension(String fileExtension) {
     this.fileExtension = fileExtension;
     return this;
   }
 
-  public Optional<Path> chooseSave() {
+  public Optional<Path> chooseFile() {
     // Use FileDialog rather than JFileChooser as the former results in a native dialog, which on
     // some platforms, like macOS provides a much better user experience than JFileChooser.
     final FileDialog fileDialog = new FileDialog(parent, "Save Game as");
-    fileDialog.setMode(FileDialog.SAVE);
+    fileDialog.setMode(mode);
     if (directory != null) {
       fileDialog.setDirectory(directory.toString());
     }
@@ -66,9 +73,13 @@ public class FileChooser {
 
     fileDialog.setVisible(true);
     final Path path = getSelectedPath(fileDialog);
+    if (path == null) {
+      return Optional.empty();
+    }
+
     // If the user selects a filename that already exists, the AWT Dialog will ask the user for
     // confirmation, but this fails if we append an extension afterwards, so show our own dialog.
-    if (path == null || (Files.exists(path) && !shouldReplaceExistingFile(path))) {
+    if (mode == FileDialog.SAVE && Files.exists(path) && !shouldReplaceExistingFile(path)) {
       return Optional.empty();
     }
 
@@ -81,7 +92,7 @@ public class FileChooser {
       return null;
     }
     Path path = Path.of(fileDialog.getDirectory(), fileName);
-    if (fileExtension != null) {
+    if (mode == FileDialog.SAVE && fileExtension != null) {
       path = appendExtensionIfAbsent(path, fileExtension);
     }
     return path;

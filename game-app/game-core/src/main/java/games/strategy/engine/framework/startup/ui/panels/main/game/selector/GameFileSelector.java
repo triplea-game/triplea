@@ -25,7 +25,7 @@ import org.triplea.swing.FileChooser;
  */
 @Builder
 public final class GameFileSelector {
-  @Nonnull private final Consumer<Path> fileDoesNotExistAction;
+  @Nonnull private final Consumer<Path>  fileDoesNotExistAction;
 
   /**
    * Displays a file chooser dialog for the user to select the file to which the current game should
@@ -36,15 +36,35 @@ public final class GameFileSelector {
    *     cancelled the operation.
    */
   public static Optional<Path> getSaveGameLocation(final Frame frame, final GameData gameData) {
-    final Path directory = ClientSetting.saveGamesFolderPath.getValueOrThrow();
+    return createFileChooser(frame)
+        .mode(FileDialog.SAVE)
+        .title("Save Game As")
+        .fileName(getSaveGameName(gameData))
+        .chooseFile();
+  }
+
+  /**
+   * Opens up a UI pop-up allowing user to select a game file. Returns nothing if user closes the
+   * pop-up.
+   */
+  public Optional<Path> selectGameFile(final Frame frame) {
+    Optional<Path> path = createFileChooser(frame)
+        .mode(FileDialog.LOAD)
+        .title("Open Saved Game")
+        .chooseFile();
+    if (path.isPresent() && !Files.exists(path.get())) {
+      fileDoesNotExistAction.accept(path.get());
+      path = Optional.empty();
+    }
+    return path;
+  }
+
+  private static FileChooser createFileChooser(final Frame frame) {
     return new FileChooser()
         .parent(frame)
-        .title("Save Game as")
-        .directory(directory)
+        .directory(ClientSetting.saveGamesFolderPath.getValueOrThrow())
         .filenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name))
-        .fileExtension(GameDataFileUtils.getExtension())
-        .fileName(getSaveGameName(gameData))
-        .chooseSave();
+        .fileExtension(GameDataFileUtils.getExtension());
   }
 
   private static String getSaveGameName(final GameData gameData) {
@@ -59,34 +79,5 @@ public final class GameFileSelector {
         .add(String.valueOf(now.getDayOfMonth()))
         .add(gameName.replace(" ", "-") + GameDataFileUtils.getExtension())
         .toString();
-  }
-
-  /**
-   * Opens up a UI pop-up allowing user to select a game file. Returns nothing if user closes the
-   * pop-up.
-   */
-  public Optional<Path> selectGameFile(final Frame owner) {
-    final FileDialog fileDialog = new FileDialog(owner, "Open Saved Game");
-    fileDialog.setMode(FileDialog.LOAD);
-    fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
-    fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
-    fileDialog.setVisible(true);
-
-    // FileDialog.getFiles() always returns an array
-    // of 1 or 0 items, because FileDialog.multipleMode is false by default
-    return Arrays.stream(fileDialog.getFiles())
-        .findAny()
-        .map(File::toPath)
-        .map(this::mapFileResult);
-  }
-
-  @Nullable
-  private Path mapFileResult(final Path file) {
-    if (Files.exists(file)) {
-      return file;
-    } else {
-      fileDoesNotExistAction.accept(file);
-      return null;
-    }
   }
 }
