@@ -81,7 +81,8 @@ public class MovePanel extends AbstractMovePanel {
    */
   private static final int deselectNumber = 10;
 
-  private static final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
+  // Map from air transport to units being transported for the current move being made.
+  private final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
 
   // access only through getter and setter!
   private Territory firstSelectedTerritory;
@@ -306,7 +307,6 @@ public class MovePanel extends AbstractMovePanel {
                   CollectionUtils.getMatches(
                       t.getUnitCollection().getMatches(unitsToMoveMatch),
                       candidateAirTransportsMatch);
-              // candidateAirTransports.removeAll(selectedUnits);
               candidateAirTransports.removeAll(dependentUnits.keySet());
               if (!unitsToLoad.isEmpty() && !candidateAirTransports.isEmpty()) {
                 final Collection<Unit> airTransportsToLoad =
@@ -387,9 +387,8 @@ public class MovePanel extends AbstractMovePanel {
           }
           // If no airTransports can be loaded, return the empty set
           if (airTransportsToLoad.isEmpty()) {
-            return airTransportsToLoad;
+            return List.of();
           }
-          final Set<Unit> defaultSelections = new HashSet<>();
           // Check to see if there's room for the selected units
           final Predicate<Collection<Unit>> unitsToLoadMatch =
               units -> {
@@ -399,27 +398,26 @@ public class MovePanel extends AbstractMovePanel {
                     TransportUtils.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
                 return unitMap.keySet().containsAll(unitsToLoad);
               };
-          List<Unit> loadedUnits = new ArrayList<>(capableUnitsToLoad);
-          if (!airTransportsToLoad.isEmpty()) {
-            // Get a list of the units that could be loaded on the transport (based upon transport
-            // capacity)
-            final List<Unit> unitsToLoad =
-                TransportUtils.findUnitsToLoadOnAirTransports(
-                    capableUnitsToLoad, airTransportsToLoad);
-            loadedUnits = userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad);
-            final Map<Unit, Unit> mapping =
-                TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
-            for (final Unit unit : mapping.keySet()) {
-              final Collection<Unit> unitsColl = new ArrayList<>();
-              unitsColl.add(unit);
-              final Unit airTransport = mapping.get(unit);
-              if (dependentUnits.containsKey(airTransport)) {
-                unitsColl.addAll(dependentUnits.get(airTransport));
-              }
-              dependentUnits.put(airTransport, unitsColl);
-              mustMoveWithDetails =
-                  MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
+          // Get a list of the units that could be loaded on the transport (based upon transport
+          // capacity)
+          final List<Unit> unitsToLoad =
+              TransportUtils.findUnitsToLoadOnAirTransports(
+                  capableUnitsToLoad, airTransportsToLoad);
+          final Set<Unit> defaultSelections = new HashSet<>();
+          List<Unit> loadedUnits =
+              userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad);
+          final Map<Unit, Unit> mapping =
+              TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
+          for (final Unit unit : mapping.keySet()) {
+            final Collection<Unit> unitsColl = new ArrayList<>();
+            unitsColl.add(unit);
+            final Unit airTransport = mapping.get(unit);
+            if (dependentUnits.containsKey(airTransport)) {
+              unitsColl.addAll(dependentUnits.get(airTransport));
             }
+            dependentUnits.put(airTransport, unitsColl);
+            mustMoveWithDetails =
+                MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
           }
           return loadedUnits;
         }
@@ -442,9 +440,7 @@ public class MovePanel extends AbstractMovePanel {
             if (me.isControlDown()) {
               selectedUnits.clear();
               // Clear the stored dependents for AirTransports
-              if (!dependentUnits.isEmpty()) {
-                dependentUnits.clear();
-              }
+              dependentUnits.clear();
             } else if (!unitsWithoutDependents.isEmpty()) {
               // check for alt key - remove 1/10 of total units (useful for splitting large armies)
               final int iterCount = me.isAltDown() ? deselectNumber : 1;
@@ -607,6 +603,7 @@ public class MovePanel extends AbstractMovePanel {
           setMoveMessage(message);
           setFirstSelectedTerritory(null);
           setSelectedEndpointTerritory(null);
+          dependentUnits.clear();
           mouseCurrentTerritory = null;
           forced = null;
           updateRouteAndMouseShadowUnits(null);
@@ -740,20 +737,6 @@ public class MovePanel extends AbstractMovePanel {
     unitScrollerPanel = unitScroller.build();
     unitScrollerPanel.setVisible(false);
     registerKeyBindings(frame);
-  }
-
-  // Same as above! Delete this crap after refactoring.
-  public static void clearDependents(final Collection<Unit> units) {
-    for (final Unit unit : units) {
-      if (Matches.unitIsAirTransport().test(unit)) {
-        dependentUnits.remove(unit);
-      }
-    }
-  }
-
-  @Override
-  protected void clearDependencies() {
-    dependentUnits.clear();
   }
 
   public void setMoveType(final MoveType moveType) {
