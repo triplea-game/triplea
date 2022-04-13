@@ -5,17 +5,14 @@ import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import lombok.Builder;
 import org.triplea.swing.FileChooser;
 
@@ -25,7 +22,7 @@ import org.triplea.swing.FileChooser;
  */
 @Builder
 public final class GameFileSelector {
-  @Nonnull private final Consumer<Path>  fileDoesNotExistAction;
+  @Nonnull private final Consumer<Path> fileDoesNotExistAction;
 
   /**
    * Displays a file chooser dialog for the user to select the file to which the current game should
@@ -40,6 +37,7 @@ public final class GameFileSelector {
         .mode(FileDialog.SAVE)
         .title("Save Game As")
         .fileName(getSaveGameName(gameData))
+        .build()
         .chooseFile();
   }
 
@@ -48,10 +46,12 @@ public final class GameFileSelector {
    * pop-up.
    */
   public Optional<Path> selectGameFile(final Frame frame) {
-    Optional<Path> path = createFileChooser(frame)
-        .mode(FileDialog.LOAD)
-        .title("Open Saved Game")
-        .chooseFile();
+    Optional<Path> path =
+        createFileChooser(frame)
+            .mode(FileDialog.LOAD)
+            .title("Open Saved Game")
+            .build()
+            .chooseFile();
     if (path.isPresent() && !Files.exists(path.get())) {
       fileDoesNotExistAction.accept(path.get());
       path = Optional.empty();
@@ -59,8 +59,8 @@ public final class GameFileSelector {
     return path;
   }
 
-  private static FileChooser createFileChooser(final Frame frame) {
-    return new FileChooser()
+  private static FileChooser.FileChooserBuilder createFileChooser(final Frame frame) {
+    return FileChooser.builder()
         .parent(frame)
         .directory(ClientSetting.saveGamesFolderPath.getValueOrThrow())
         .filenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name))

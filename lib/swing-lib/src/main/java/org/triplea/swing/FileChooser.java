@@ -9,7 +9,9 @@ import java.nio.file.Path;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
+import lombok.Builder;
 
+@Builder
 public class FileChooser {
   private static final String PERIOD = ".";
 
@@ -20,41 +22,6 @@ public class FileChooser {
   @Nullable private FilenameFilter filenameFilter;
   @Nullable private String fileName;
   @Nullable private String fileExtension;
-
-  public FileChooser parent(Frame parent) {
-    this.parent = parent;
-    return this;
-  }
-
-  public FileChooser title(String title) {
-    this.title = title;
-    return this;
-  }
-
-  public FileChooser mode(int mode) {
-    this.mode = mode;
-    return this;
-  }
-
-  public FileChooser directory(Path directory) {
-    this.directory = directory;
-    return this;
-  }
-
-  public FileChooser filenameFilter(FilenameFilter filenameFilter) {
-    this.filenameFilter = filenameFilter;
-    return this;
-  }
-
-  public FileChooser fileName(String fileName) {
-    this.fileName = fileName;
-    return this;
-  }
-
-  public FileChooser fileExtension(String fileExtension) {
-    this.fileExtension = fileExtension;
-    return this;
-  }
 
   public Optional<Path> chooseFile() {
     // Use FileDialog rather than JFileChooser as the former results in a native dialog, which on

@@ -2132,10 +2132,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       JOptionPane.INFORMATION_MESSAGE);
                   data.acquireReadLock();
                   try {
-                    final Path f =
-                        GameFileSelector.getSaveGameLocation(TripleAFrame.this, data).get();
-                    if (f != null) {
-                      try (OutputStream fileOutputStream = Files.newOutputStream(f)) {
+                    final Optional<Path> f =
+                        GameFileSelector.getSaveGameLocation(TripleAFrame.this, data);
+                    if (f.isPresent()) {
+                      try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
                         final GameData datacopy =
                             GameDataUtils.cloneGameData(
                                     data, true, Injections.getInstance().getEngineVersion())

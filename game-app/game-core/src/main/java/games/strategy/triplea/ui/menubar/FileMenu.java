@@ -14,6 +14,7 @@ import games.strategy.triplea.ui.history.HistoryLog;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.nio.file.Path;
+import java.util.Optional;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -51,9 +52,9 @@ final class FileMenu extends JMenu {
         .accelerator(KeyCode.S)
         .actionListener(
             () -> {
-              final Path f = GameFileSelector.getSaveGameLocation(frame, gameData).get();
-              if (f != null) {
-                game.saveGame(f);
+              final Optional<Path> f = GameFileSelector.getSaveGameLocation(frame, gameData);
+              if (f.isPresent()) {
+                game.saveGame(f.get());
                 JOptionPane.showMessageDialog(
                     frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
               }
