@@ -2190,7 +2190,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                               JOptionPane.INFORMATION_MESSAGE);
                         }
                       } catch (final IOException e) {
-                        log.error("Failed to save game: " + f.toAbsolutePath(), e);
+                        log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                       }
                     }
                   } finally {

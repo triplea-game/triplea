@@ -58,7 +58,7 @@ public final class ScreenshotExporter {
   private Optional<Path> promptSaveFile() {
     return FileChooser.builder()
         .parent(frame)
-        .title("Save Screenshot")
+        .title("Export Screenshot")
         .fileExtension("png")
         .filenameFilter((dir, name) -> name.toLowerCase().endsWith(".png"))
         .build()

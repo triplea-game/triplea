@@ -16,8 +16,8 @@ public class FileChooser {
   private static final String PERIOD = ".";
 
   @Nullable private Frame parent;
-  private String title = "";
-  private int mode = FileDialog.SAVE;
+  @Nullable private String title;
+  @Builder.Default private int mode = FileDialog.SAVE;
   @Nullable private Path directory;
   @Nullable private FilenameFilter filenameFilter;
   @Nullable private String fileName;
@@ -26,8 +26,11 @@ public class FileChooser {
   public Optional<Path> chooseFile() {
     // Use FileDialog rather than JFileChooser as the former results in a native dialog, which on
     // some platforms, like macOS provides a much better user experience than JFileChooser.
-    final FileDialog fileDialog = new FileDialog(parent, "Save Game as");
+    final FileDialog fileDialog = new FileDialog(parent);
     fileDialog.setMode(mode);
+    if (title != null) {
+      fileDialog.setTitle(title);
+    }
     if (directory != null) {
       fileDialog.setDirectory(directory.toString());
     }
