@@ -1152,8 +1152,8 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   /**
-   * Allow the user to select what transports to load. If null is returned, the move should be
-   * canceled.
+   * Allow the user to select what transports to load. If an empty collection is returned, the move
+   * should be canceled.
    */
   private Collection<Unit> getTransportsToLoad(
       final Route route, final Collection<Unit> unitsToLoad) {
