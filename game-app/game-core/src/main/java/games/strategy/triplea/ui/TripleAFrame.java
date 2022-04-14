@@ -138,7 +138,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
@@ -1300,29 +1299,16 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return candidates.iterator().next();
     }
     messageAndDialogThreadPool.waitForAll();
-    final Supplier<Tuple<JPanel, JList<Territory>>> action =
+    final Supplier<SelectTerritoryComponent> action =
         () -> {
-          mapPanel.centerOn(currentTerritory);
-          final JList<Territory> list = new JList<>(SwingComponents.newListModel(candidates));
-          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-          list.setSelectedIndex(0);
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final JScrollPane scroll = new JScrollPane(list);
-          final JTextArea text = new JTextArea(unitMessage, 8, 30);
-          text.setLineWrap(true);
-          text.setEditable(false);
-          text.setWrapStyleWord(true);
-          panel.add(text, BorderLayout.NORTH);
-          panel.add(scroll, BorderLayout.CENTER);
-          return Tuple.of(panel, list);
+          var panel = new SelectTerritoryComponent(currentTerritory, candidates, mapPanel);
+          panel.setLabelText(unitMessage);
+          return panel;
         };
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
         .result
         .map(
-            comps -> {
-              final JPanel panel = comps.getFirst();
-              final JList<?> list = comps.getSecond();
+            panel -> {
               final String[] options = {"OK"};
               final String title =
                   "Select territory for air units to land, current territory is "
@@ -1337,7 +1323,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   options,
                   null,
                   getUiContext().getCountDownLatchHandler());
-              return (Territory) list.getSelectedValue();
+              return panel.getSelection();
             })
         .orElse(null);
   }
