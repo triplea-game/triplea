@@ -9,9 +9,7 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -20,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 
 /** Panel used to display the current players resources. */
 public class ResourceBar extends JPanel implements GameDataChangeListener {
@@ -28,7 +27,7 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
   private final GameData gameData;
   private final UiContext uiContext;
   private final List<ResourceStat> resourceStats = new ArrayList<>();
-  private volatile boolean needsUpdate;
+  private volatile boolean updateScheduled;
 
   public ResourceBar(final GameData data, final UiContext uiContext) {
     this.gameData = data;
@@ -54,19 +53,19 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
 
   @Override
   public void gameDataChanged(final Change change) {
-    needsUpdate = true;
+    // When there are multiple gameDataChanged() notifications in a row, for example
+    // from an "undo all" action, no need to do this repeatedly. This will just run
+    // once if this code runs after all the notifications have been received.
+    if (updateScheduled) {
+      return;
+    }
+    updateScheduled = true;
     SwingUtilities.invokeLater(
         () -> {
-          // When there are multiple gameDataChanged() notifications in a row, for example
-          // from an "undo all" action, no need to do this repeatedly. This will just run
-          // once if this code runs after all the notifications have been received.
-          if (!needsUpdate) {
-            return;
-          }
+          updateScheduled = false;
           final GamePlayer player;
           final IntegerMap<Resource> resourceIncomes;
           try {
-            needsUpdate = false;
             gameData.acquireReadLock();
             player = gameData.getSequence().getStep().getPlayerId();
             if (player == null) {
@@ -85,29 +84,13 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
               continue;
             }
             final double quantity = resourceStat.getValue(player, gameData, uiContext.getMapData());
-            final StringBuilder text =
-                new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity) + " (");
-            if (resourceIncomes.getInt(resource) >= 0) {
-              text.append("+");
-            }
-            text.append(resourceIncomes.getInt(resource)).append(")");
+            final StringBuilder text = new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity));
+            final int income = resourceIncomes.getInt(resource);
+            text.append(" (").append(income >= 0 ? "+" : "").append(income).append(")");
             final JLabel label =
                 uiContext.getResourceImageFactory().getLabel(resource, text.toString());
             label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-            add(
-                label,
-                new GridBagConstraints(
-                    count++,
-                    0,
-                    1,
-                    1,
-                    0,
-                    1,
-                    GridBagConstraints.WEST,
-                    GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0),
-                    0,
-                    0));
+            add(label, new GridBagConstraintsBuilder(count++, 0).weightX(0).weightY(1).build());
           }
         });
   }
