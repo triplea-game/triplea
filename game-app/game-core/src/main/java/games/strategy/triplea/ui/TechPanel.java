@@ -20,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -291,10 +290,12 @@ class TechPanel extends ActionPanel {
     }
     return techList.stream()
         .distinct()
-        .map(advance -> {
-          final int freq = Collections.frequency(techList, advance);
-          return advance.getName() + (freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
-        })
+        .map(
+            advance -> {
+              final int freq = Collections.frequency(techList, advance);
+              return advance.getName()
+                  + (freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
+            })
         .collect(Collectors.joining(", "));
   }
 
