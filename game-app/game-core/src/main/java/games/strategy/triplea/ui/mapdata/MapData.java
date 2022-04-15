@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -125,7 +126,7 @@ public class MapData {
   private final Map<Image, List<Point>> decorations = new HashMap<>();
   private final Map<String, Image> territoryNameImages = new HashMap<>();
   // Use a synchronized map since getTerritoryEffectImage() is called from multiple threads.
-  private final Map<String, Image> effectImages = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, Image> effectImages = new ConcurrentHashMap<>();
 
   @Nullable private final Image vcImage;
   @Nullable private final Image blockadeImage;
