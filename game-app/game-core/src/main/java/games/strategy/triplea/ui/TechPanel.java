@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -288,22 +289,13 @@ class TechPanel extends ActionPanel {
     if (techList.size() <= 1) {
       return null;
     }
-    final Collection<TechAdvance> listedAlready = new HashSet<>();
-    final StringBuilder strTechCategory = new StringBuilder("Available Techs:  ");
-    for (final TechAdvance advance : techList) {
-      if (listedAlready.contains(advance)) {
-        continue;
-      }
-      listedAlready.add(advance);
-      final int freq = Collections.frequency(techList, advance);
-      if (strTechCategory.length() > 0) {
-        strTechCategory.append(", ");
-      }
-      strTechCategory
-          .append(advance.getName())
-          .append(freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
-    }
-    return strTechCategory.toString();
+    return techList.stream()
+        .distinct()
+        .map(advance -> {
+          final int freq = Collections.frequency(techList, advance);
+          return advance.getName() + (freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
+        })
+        .collect(Collectors.joining(", "));
   }
 
   private static final class TechRollPanel extends JPanel {
