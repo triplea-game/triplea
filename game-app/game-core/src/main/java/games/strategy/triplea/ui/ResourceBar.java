@@ -60,7 +60,7 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
           // When there are multiple gameDataChanged() notifications in a row, for example
           // from an "undo all" action, no need to do this repeatedly. This will just run
           // once if this code runs after all the notifications have been received.
-          if (needsUpdate) {
+          if (!needsUpdate) {
             return;
           }
           final GamePlayer player;
