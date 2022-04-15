@@ -66,6 +66,7 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
           final GamePlayer player;
           final IntegerMap<Resource> resourceIncomes;
           try {
+            needsUpdate = false;
             gameData.acquireReadLock();
             player = gameData.getSequence().getStep().getPlayerId();
             if (player == null) {
@@ -74,7 +75,6 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
             resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
           } finally {
             gameData.releaseReadLock();
-            needsUpdate = false;
           }
 
           this.removeAll();
