@@ -84,13 +84,13 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
               continue;
             }
             final double quantity = resourceStat.getValue(player, gameData, uiContext.getMapData());
-            final StringBuilder text = new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity));
             final int income = resourceIncomes.getInt(resource);
+            final StringBuilder text = new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity));
             text.append(" (").append(income >= 0 ? "+" : "").append(income).append(")");
             final JLabel label =
                 uiContext.getResourceImageFactory().getLabel(resource, text.toString());
             label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-            add(label, new GridBagConstraintsBuilder(count++, 0).weightX(0).weightY(1).build());
+            add(label, new GridBagConstraintsBuilder(count++, 0).weightY(1).build());
           }
         });
   }
