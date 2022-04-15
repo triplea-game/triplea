@@ -1,11 +1,10 @@
 package games.strategy.triplea.ui.menubar.help;
 
+import games.strategy.engine.framework.ui.GameNotesView;
 import games.strategy.triplea.ui.UiContext;
-import java.awt.Color;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingAction;
@@ -44,10 +43,8 @@ class GameNotesMenu {
     final String localizedHtml =
         LocalizeHtml.localizeImgLinksInHtml(gameNotes.trim(), UiContext.getMapLocation());
 
-    final JEditorPane gameNotesPane = new JEditorPane("text/html", localizedHtml);
-    gameNotesPane.setEditable(false);
-    gameNotesPane.setForeground(Color.BLACK);
-    gameNotesPane.setCaretPosition(0);
+    final GameNotesView gameNotesPane = new GameNotesView();
+    gameNotesPane.setText(localizedHtml);
     return SwingComponents.newJScrollPane(gameNotesPane);
   }
 }
