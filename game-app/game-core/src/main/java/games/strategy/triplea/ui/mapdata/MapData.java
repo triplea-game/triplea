@@ -124,7 +124,8 @@ public class MapData {
   private Set<String> undrawnTerritoriesNames;
   private final Map<Image, List<Point>> decorations = new HashMap<>();
   private final Map<String, Image> territoryNameImages = new HashMap<>();
-  private final Map<String, Image> effectImages = new HashMap<>();
+  // Use a synchronized map since getTerritoryEffectImage() is called from multiple threads.
+  private final Map<String, Image> effectImages = Collections.synchronizedMap(new HashMap<>());
 
   @Nullable private final Image vcImage;
   @Nullable private final Image blockadeImage;
