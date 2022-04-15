@@ -16,7 +16,7 @@ public class GameNotesView extends JEditorPane {
     // If the background color isn't set, a dark theme may have a very dark window background, which
     // will make it hard to read the black text against. Note: For some reason, some dark themes
     // show the background as light gray even if white is set, but it doesn't actually look too bad.
-    // setBackground(Color.WHITE);
+    setBackground(Color.WHITE);
   }
 
   @Override
