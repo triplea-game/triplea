@@ -498,16 +498,19 @@ public final class UnitChooser extends JPanel {
             new UnitChooserEntryIcon(damaged),
             builder.insets(new Insets(0, (i == 0 ? 0 : 8), 0, 0)).gridX(gridx++).build());
         if (i == 0) {
+          // -1 indicates a transport whose movement ended due to unloading already.
           if (category.getMovement().compareTo(new BigDecimal(-1)) != 0) {
             panel.add(
                 new JLabel("mvt " + category.getMovement()),
-                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
+                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx).build());
           }
+          gridx++; // Increment outside the if to avoid misalignment.
           if (category.getTransportCost() != -1) {
             panel.add(
                 new JLabel("cst " + category.getTransportCost()),
-                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
+                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx).build());
           }
+          gridx++; // Increment outside the if to avoid misalignment.
         }
         panel.add(label, builder.insets(emptyInsets).gridX(gridx++).build());
         panel.add(scroll, builder.insets(new Insets(0, 4, 0, 0)).gridX(gridx++).build());
