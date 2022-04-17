@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 
 /** Panel used to display the current players resources. */
@@ -60,38 +61,45 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
       return;
     }
     updateScheduled = true;
-    SwingUtilities.invokeLater(
-        () -> {
-          updateScheduled = false;
-          final GamePlayer player;
-          final IntegerMap<Resource> resourceIncomes;
-          try {
-            gameData.acquireReadLock();
-            player = gameData.getSequence().getStep().getPlayerId();
-            if (player == null) {
-              return;
-            }
-            resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
-          } finally {
-            gameData.releaseReadLock();
-          }
-
-          this.removeAll();
-          int count = 0;
-          for (final ResourceStat resourceStat : resourceStats) {
-            final Resource resource = resourceStat.resource;
-            if (!resource.isDisplayedFor(player)) {
-              continue;
-            }
-            final double quantity = resourceStat.getValue(player, gameData, uiContext.getMapData());
-            final int income = resourceIncomes.getInt(resource);
-            final StringBuilder text = new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity));
-            text.append(" (").append(income >= 0 ? "+" : "").append(income).append(")");
-            final JLabel label =
-                uiContext.getResourceImageFactory().getLabel(resource, text.toString());
-            label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-            add(label, new GridBagConstraintsBuilder(count++, 0).weightY(1).build());
-          }
-        });
+    // Note: The two layers of async logic is because we don't want to get do the resource
+    // income computation inline (since it's heavy) to benefit from the optimization above
+    // and we don't want to do it on the UI thread to avoid a locking operation blocking UI.
+    AsyncRunner.runAsync(
+            () -> {
+              updateScheduled = false;
+              final GamePlayer player;
+              final IntegerMap<Resource> resourceIncomes;
+              try {
+                gameData.acquireReadLock();
+                player = gameData.getSequence().getStep().getPlayerId();
+                if (player == null) {
+                  return;
+                }
+                resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
+              } finally {
+                gameData.releaseReadLock();
+              }
+              SwingUtilities.invokeLater(
+                  () -> {
+                    this.removeAll();
+                    int count = 0;
+                    for (final ResourceStat resourceStat : resourceStats) {
+                      final Resource resource = resourceStat.resource;
+                      if (!resource.isDisplayedFor(player)) {
+                        continue;
+                      }
+                      final double quantity =
+                          resourceStat.getValue(player, gameData, uiContext.getMapData());
+                      final int income = resourceIncomes.getInt(resource);
+                      final var text = new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity));
+                      text.append(" (").append(income >= 0 ? "+" : "").append(income).append(")");
+                      final JLabel label =
+                          uiContext.getResourceImageFactory().getLabel(resource, text.toString());
+                      label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+                      add(label, new GridBagConstraintsBuilder(count++, 0).weightY(1).build());
+                    }
+                  });
+            })
+        .exceptionally(Throwable::printStackTrace);
   }
 }
