@@ -61,9 +61,9 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
       return;
     }
     updateScheduled = true;
-    // Note: The two layers of async logic is because we don't want to get do the resource
-    // income computation inline (since it's heavy) to benefit from the optimization above
-    // and we don't want to do it on the UI thread to avoid a locking operation blocking UI.
+    // Note: The two layers of async logic is because we don't want to do the resource incomes
+    // computation immediately (since it's heavy) to benefit from the optimization above and we
+    // also don't want to do it on the UI thread to avoid a locking operation blocking UI.
     AsyncRunner.runAsync(
             () -> {
               updateScheduled = false;
