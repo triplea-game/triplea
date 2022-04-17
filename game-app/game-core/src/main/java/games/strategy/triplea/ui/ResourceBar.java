@@ -56,7 +56,7 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
   public void gameDataChanged(final Change change) {
     // When there are multiple gameDataChanged() notifications in a row, for example
     // from an "undo all" action, no need to do this repeatedly. This will just run
-    // once if the swing code runs after all the notifications have been received.
+    // once if the async code runs after all the notifications have been received.
     if (updateScheduled) {
       return;
     }
