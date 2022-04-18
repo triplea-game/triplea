@@ -52,6 +52,8 @@ public class UiContext {
   static final String UNIT_SCALE_PREF = "UnitScale";
   static final String MAP_SCALE_PREF = "MapScale";
 
+  public static final double MAP_SCALE_MAX_VALUE = 2.0;
+
   private static final String ORIGINAL_SKIN_NAME = "Original";
 
   private static final String MAP_SKIN_PREF = "MapSkin";
