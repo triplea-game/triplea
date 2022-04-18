@@ -11,10 +11,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 /**
  * Manages rendering the small map image. The small map image provides a high-level overview of the
@@ -42,11 +42,15 @@ public class SmallMapImageManager {
   public void update(final MapData mapData) {
     final Graphics onScreenGraphics = view.getOffScreenImage().getGraphics();
     onScreenGraphics.drawImage(offscreen, 0, 0, null);
-    for (final UnitsDrawer drawer : new ArrayList<>(tileManager.getUnitDrawables())) {
-      final int x = (int) (drawer.getPlacementPoint().x * view.getRatioX());
-      final int y = (int) (drawer.getPlacementPoint().y * view.getRatioY());
+    final int smallMapUnitSize = mapData.getSmallMapUnitSize();
+    final double ratioX = view.getRatioX();
+    final double ratioY = view.getRatioY();
+    for (final UnitsDrawer drawer : tileManager.getUnitDrawables()) {
+      final Point placementPoint = drawer.getPlacementPoint();
+      final int x = (int) (placementPoint.x * ratioX);
+      final int y = (int) (placementPoint.y * ratioY);
       onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker());
-      onScreenGraphics.fillRect(x, y, mapData.getSmallMapUnitSize(), mapData.getSmallMapUnitSize());
+      onScreenGraphics.fillRect(x, y, smallMapUnitSize, smallMapUnitSize);
     }
     onScreenGraphics.dispose();
   }
@@ -66,7 +70,7 @@ public class SmallMapImageManager {
     {
       final Graphics2D g = (Graphics2D) largeImage.getGraphics();
       g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-      g.setColor(new Color(0));
+      g.setColor(Color.BLACK);
       g.fillRect(0, 0, bounds.width, bounds.height);
       g.dispose();
     }
@@ -84,32 +88,28 @@ public class SmallMapImageManager {
     }
 
     // scale it down
-    int thumbWidth = (int) (bounds.width * view.getRatioX());
-    int thumbHeight = (int) (bounds.height * view.getRatioY());
+    final double ratioX = view.getRatioX();
+    final double ratioY = view.getRatioX();
+    int thumbWidth = (int) (bounds.width * ratioX);
+    int thumbHeight = (int) (bounds.height * ratioY);
     // make the image a little bigger
     // the images wont overlap perfectly after being scaled, make them a little bigger to re-balance
     // that
     thumbWidth += 3;
     thumbHeight += 3;
-    final int thumbsX = (int) (bounds.x * view.getRatioX()) - 1;
-    final int thumbsY = (int) (bounds.y * view.getRatioY()) - 1;
+    final int thumbsX = (int) (bounds.x * ratioX) - 1;
+    final int thumbsY = (int) (bounds.y * ratioY) - 1;
     // create the thumb image
     final Image thumbImage = Util.newImage(thumbWidth, thumbHeight, true);
     {
       final Graphics g = thumbImage.getGraphics();
-      g.drawImage(largeImage, 0, 0, thumbImage.getWidth(null), thumbImage.getHeight(null), null);
+      g.drawImage(largeImage, 0, 0, thumbWidth, thumbHeight, null);
       g.dispose();
     }
     {
       final Graphics g = offscreen.getGraphics();
       // draw it on our offscreen
-      g.drawImage(
-          thumbImage,
-          thumbsX,
-          thumbsY,
-          thumbImage.getWidth(null),
-          thumbImage.getHeight(null),
-          null);
+      g.drawImage(thumbImage, thumbsX, thumbsY, thumbWidth, thumbHeight, null);
       g.dispose();
     }
   }
