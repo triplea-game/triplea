@@ -33,7 +33,7 @@ public class BottomBar extends JPanel {
   private final ResourceBar resourceBar;
   private final JPanel territoryInfo = new JPanel();
 
-  private final JLabel statusMessage = new JLabel("");
+  private final JLabel statusMessage = new JLabel();
 
   private final JLabel playerLabel = new JLabel("xxxxxx");
   private final JLabel stepLabel = new JLabel("xxxxxx");
