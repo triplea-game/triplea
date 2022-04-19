@@ -36,13 +36,12 @@ public class PurchasePanel extends ActionPanel {
   private static final String BUY = "Buy...";
   private static final String CHANGE = "Change...";
 
-  private final JLabel actionLabel = new JLabel();
   private IntegerMap<ProductionRule> purchase;
   private boolean bid;
   private final SimpleUnitPanel purchasedPreviousRoundsUnits;
   private final JLabel purchasedPreviousRoundsLabel;
   private final SimpleUnitPanel purchasedUnits;
-  private final JLabel purchasedLabel = new JLabel();
+  private final JLabel purchasedLabel = createIndentedLabel();
   private final JButton buyButton;
 
   private final AbstractAction purchaseAction =

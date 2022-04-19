@@ -156,6 +156,7 @@ import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
+import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.SwingAction;
@@ -576,13 +577,21 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
+    final CollapsiblePanel placementsPanel =
+        new PlacementUnitsCollapsiblePanel(data, uiContext).getPanel();
     rightHandSidePanel.add(
         new JPanelBuilder()
             .borderLayout()
-            .addNorth(new PlacementUnitsCollapsiblePanel(data, uiContext).getPanel())
+            .addNorth(placementsPanel)
             .addSouth(movePanel.getUnitScrollerPanel())
             .build(),
         BorderLayout.SOUTH);
+
+    final Frame parent = JOptionPane.getFrameForComponent(this);
+    if (Util.getScreenSize(parent).height < 1000) {
+      placementsPanel.collapse();
+      movePanel.getUnitScrollerPanel().collapse();
+    }
 
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
 

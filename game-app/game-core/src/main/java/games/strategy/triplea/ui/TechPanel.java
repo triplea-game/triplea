@@ -40,7 +40,6 @@ import org.triplea.swing.SwingComponents;
 
 class TechPanel extends ActionPanel {
   private static final long serialVersionUID = -6477919141575138007L;
-  private final JLabel actionLabel = new JLabel();
   private TechRoll techRoll;
   private int currTokens = 0;
 

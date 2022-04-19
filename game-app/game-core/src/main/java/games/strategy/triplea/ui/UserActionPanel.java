@@ -35,7 +35,6 @@ import org.triplea.swing.SwingAction;
 /** Similar to PoliticsPanel, but for UserActionAttachment/Delegate. */
 public class UserActionPanel extends ActionPanel {
   private static final long serialVersionUID = -2735582890226625860L;
-  private final JLabel actionLabel = new JLabel();
   private JButton selectUserActionButton = null;
   private JButton doneButton = null;
   private UserActionAttachment choice = null;

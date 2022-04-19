@@ -346,7 +346,6 @@ class EditPanel extends ActionPanel {
   EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
-    final JLabel actionLabel = new JLabel();
     performMoveAction =
         new AbstractAction("Perform Move or Other Actions") {
           private static final long serialVersionUID = 2205085537962024476L;

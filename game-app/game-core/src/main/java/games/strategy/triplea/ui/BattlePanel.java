@@ -50,7 +50,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 @Slf4j
 public final class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
-  private final JLabel actionLabel = new JLabel();
+
   private FightBattleDetails fightBattleMessage;
   private volatile BattleDisplay battleDisplay;
   // if we are showing a battle, then this will be set to the currently displayed battle. This will

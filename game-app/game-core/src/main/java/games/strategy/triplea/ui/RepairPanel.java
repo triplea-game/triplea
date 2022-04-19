@@ -24,12 +24,11 @@ class RepairPanel extends ActionPanel {
   private static final long serialVersionUID = 3045997038627313714L;
   private static final String CHANGE = "Change...";
   private static final String BUY = "Repair...";
-  private final JLabel actionLabel = new JLabel();
   private Map<Unit, IntegerMap<RepairRule>> repair;
   private boolean bid;
   private Collection<GamePlayer> allowedPlayersToRepair;
   private final SimpleUnitPanel unitsPanel;
-  private final JLabel repairedSoFar = new JLabel();
+  private final JLabel repairedSoFar = createIndentedLabel();
   private final JButton buyButton;
 
   private final ActionListener purchaseAction =

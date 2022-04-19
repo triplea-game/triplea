@@ -39,8 +39,7 @@ import org.triplea.swing.SwingComponents;
 
 class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private static final long serialVersionUID = -4411301492537704785L;
-  private final JLabel actionLabel = new JLabel();
-  private final JLabel leftToPlaceLabel = new JLabel();
+  private final JLabel leftToPlaceLabel = createIndentedLabel();
   private PlaceData placeData;
 
   private final SimpleUnitPanel unitsToPlacePanel;
