@@ -4,9 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
@@ -18,7 +16,6 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
@@ -63,6 +60,7 @@ public final class BattlePanel extends ActionPanel {
   BattlePanel(final GameData data, final MapPanel map, final JFrame parent) {
     super(data, map);
     battleWindow = new JDialog(parent);
+    battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     battleWindow.addWindowListener(
         new WindowAdapter() {
           @Override
@@ -71,6 +69,12 @@ public final class BattlePanel extends ActionPanel {
                 () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus));
           }
         });
+    final Dimension screenSize = Util.getScreenSize(battleWindow);
+    if (screenSize.width > 1024 && screenSize.height > 768) {
+      battleWindow.setMinimumSize(new Dimension(1024, 768));
+    } else {
+      battleWindow.setMinimumSize(new Dimension(800, 600));
+    }
     getMap().getUiContext().addShutdownWindow(battleWindow);
   }
 
@@ -243,7 +247,6 @@ public final class BattlePanel extends ActionPanel {
         () -> {
           if (battleDisplay != null) {
             cleanUpBattleWindow();
-            currentBattleDisplayed = null;
           }
           battleDisplay =
               new BattleDisplay(
@@ -258,47 +261,21 @@ public final class BattlePanel extends ActionPanel {
                   defendingWaitingToDieCopy,
                   BattlePanel.this.getMap(),
                   battleType);
-          final String battleStr =
-              (battleType == BattleType.NORMAL)
-                  ? ""
-                  : String.format("  (%s)", battleType.toDisplayText());
-          battleWindow.setTitle(
-              attacker.getName()
-                  + " attacks "
-                  + defender.getName()
-                  + " in "
-                  + location.getName()
-                  + battleStr);
-          battleWindow.getContentPane().removeAll();
+          battleWindow.setTitle(battleDisplay.getDescription());
           battleWindow.getContentPane().add(battleDisplay);
-          final Frame parent = JOptionPane.getFrameForComponent(BattlePanel.this);
-          final Dimension screenSize = Util.getScreenSize(parent);
-          if (screenSize.width > 1024 && screenSize.height > 768) {
-            battleWindow.setMinimumSize(new Dimension(1024, 768));
-          } else {
-            battleWindow.setMinimumSize(new Dimension(800, 600));
-          }
-          battleWindow.setLocationRelativeTo(parent);
-          boolean foundHumanInBattle = false;
-          for (final Player gamePlayer :
-              getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
-            if ((gamePlayer.getGamePlayer().equals(attacker) && gamePlayer instanceof TripleAPlayer)
-                || (gamePlayer.getGamePlayer().equals(defender)
-                    && gamePlayer instanceof TripleAPlayer)) {
-              foundHumanInBattle = true;
-              break;
-            }
-          }
-          if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
+
+          final var localPlayers = getMap().getUiContext().getLocalPlayers();
+          if (ClientSetting.showBattlesWhenObserving.getValueOrThrow()
+              || localPlayers.playing(attacker)
+              || localPlayers.playing(defender)) {
+            battleWindow.setLocationRelativeTo(battleWindow);
             battleWindow.setVisible(true);
             SwingComponents.redraw(battleWindow);
             battleWindow.toFront();
           } else {
             battleWindow.setVisible(false);
           }
-          battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
           currentBattleDisplayed = battleId;
-          SwingUtilities.invokeLater(battleWindow::toFront);
         });
   }
 

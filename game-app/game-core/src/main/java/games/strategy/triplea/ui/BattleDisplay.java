@@ -108,6 +108,7 @@ public class BattleDisplay extends JPanel {
   private final JLabel labelNoneDefender = new JLabel("None");
   private final JLabel messageLabel = new JLabel();
   private final Action nullAction = SwingAction.of(" ", e -> {});
+  @Getter private final String description;
 
   BattleDisplay(
       final GameData data,
@@ -127,6 +128,18 @@ public class BattleDisplay extends JPanel {
     this.gameData = data;
     this.mapPanel = mapPanel;
     this.uiContext = mapPanel.getUiContext();
+
+    final String battleStr =
+        (battleType == BattleType.NORMAL)
+            ? ""
+            : String.format("  (%s)", battleType.toDisplayText());
+    this.description =
+        attacker.getName()
+            + " attacks "
+            + defender.getName()
+            + " in "
+            + battleLocation.getName()
+            + battleStr;
 
     final Collection<TerritoryEffect> territoryEffects =
         TerritoryEffectHelper.getEffects(territory);
