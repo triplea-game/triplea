@@ -34,6 +34,7 @@ public class BottomBar extends JPanel {
 
   private final ResourceBar resourceBar;
   private final JPanel territoryInfo = new JPanel();
+  private final SimpleUnitPanel territoryUnitsPanel;
 
   private final JLabel statusMessage = new JLabel();
 
@@ -68,6 +69,12 @@ public class BottomBar extends JPanel {
     centerPanel.add(
         territoryInfo,
         gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.WEST).build());
+
+
+    centerPanel.add(
+        territoryUnitsPanel,
+        gridBuilder.gridX(2).weightX(1).anchor(GridBagConstraintsAnchor.EAST).build());
+
 
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -169,6 +176,11 @@ public class BottomBar extends JPanel {
     territoryInfo.add(unitsPanel, gridBuilder.gridX(count++).build());
 
     SwingComponents.redraw(territoryInfo);
+
+
+    var cats = UnitSeparator.categorize(territory.getUnits());
+    territoryUnitsPanel.setUnitsFromCategories(cats);
+    SwingComponents.redraw(territoryUnitsPanel);
   }
 
   public void gameDataChanged() {
