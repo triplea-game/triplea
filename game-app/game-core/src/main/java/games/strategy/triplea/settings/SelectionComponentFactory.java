@@ -295,11 +295,6 @@ final class SelectionComponentFactory {
     };
   }
 
-  /** File selection prompt. */
-  static SelectionComponent<JComponent> filePath(final ClientSetting<Path> clientSetting) {
-    return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
-  }
-
   private static SelectionComponent<JComponent> selectFile(
       final ClientSetting<Path> clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
