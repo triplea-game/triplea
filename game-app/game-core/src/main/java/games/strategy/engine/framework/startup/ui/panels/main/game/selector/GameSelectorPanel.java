@@ -336,6 +336,20 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     updateGameData();
   }
 
+  private void selectSavedGameFile() {
+    GameFileSelector.builder()
+        .fileDoesNotExistAction(
+            file ->
+                DialogBuilder.builder()
+                    .parent(this)
+                    .title("Save Game File Not Found")
+                    .errorMessage("File does not exist: " + file.toAbsolutePath())
+                    .showDialog())
+        .build()
+        .selectGameFile(JOptionPane.getFrameForComponent(this))
+        .ifPresent(file -> loadSaveFile(file));
+  }
+
   public void loadSaveFile(final Path file) {
     TaskRunner.builder()
         .waitDialogTitle("Loading Save Game")
@@ -361,20 +375,6 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                 setOriginalPropertiesMap(model.getGameData());
               }
             });
-  }
-
-  private void selectSavedGameFile() {
-    GameFileSelector.builder()
-        .fileDoesNotExistAction(
-            file ->
-                DialogBuilder.builder()
-                    .parent(this)
-                    .title("Save Game File Not Found")
-                    .errorMessage("File does not exist: " + file.toAbsolutePath())
-                    .showDialog())
-        .build()
-        .selectGameFile(JOptionPane.getFrameForComponent(this))
-        .ifPresent(file -> loadSaveFile(file));
   }
 
   private void selectGameFile() {
