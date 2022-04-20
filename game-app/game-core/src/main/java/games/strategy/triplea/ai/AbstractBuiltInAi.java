@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -609,7 +610,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
         for (final Territory current : entry.getValue()) {
           final String error =
               battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
-          if (error != null) {
+          if (error != null && !BattleDelegate.isBattleDependencyErrorMessage(error)) {
             log.warn(error);
           }
         }

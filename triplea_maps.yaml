@@ -2579,10 +2579,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/imperialism_ffa/master/preview.png
   description: |
    <br>An abstract game with a four power free-for-all fighting on the Revised Map.
-- mapName: Terra Firma 1939
+- mapName: TerraFirma1939
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/TerraFirma1939/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/TerraFirma1939/master/preview.png
   description: |
    <br>World War 2 on a huge map
@@ -2593,3 +2593,11 @@
   img: https://raw.githubusercontent.com/triplea-maps/wwi1939/master/preview.png
   description: |
    <br>An alternative timeline that WWI takes place in 1939.
+- mapName: Revised Variations
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Revised_Variations/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Revised_Variations/master/preview.png
+  description: |
+   <br>Revised LHTR-10% Upkeep
+   <br>Revised LHTR with Buildcaps

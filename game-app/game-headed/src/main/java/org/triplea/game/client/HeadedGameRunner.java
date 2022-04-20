@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ArgParser;
-import games.strategy.engine.framework.CliProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -13,6 +12,7 @@ import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtracto
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.settings.ClientSetting;
@@ -26,7 +26,6 @@ import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.ai.does.nothing.DoesNothingAiProvider;
@@ -67,19 +66,7 @@ public final class HeadedGameRunner {
             SwingUtilities.invokeLater(
                 () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
           });
-      MacOsIntegration.setOpenFileHandler(
-          file -> {
-            SwingUtilities.invokeLater(
-                () ->
-                    JOptionPane.showMessageDialog(
-                        null,
-                        "Unfortunately opening save-games via the OS"
-                            + " is currently not supported on macOS.",
-                        "Unsupported feature",
-                        JOptionPane.INFORMATION_MESSAGE));
-            System.setProperty(CliProperties.TRIPLEA_GAME, file.toAbsolutePath().toString());
-            GameRunner.showMainFrame();
-          });
+      MacOsIntegration.setOpenFileHandler(MainFrame::loadSaveFile);
     }
 
     if (HttpProxy.isUsingSystemProxy()) {

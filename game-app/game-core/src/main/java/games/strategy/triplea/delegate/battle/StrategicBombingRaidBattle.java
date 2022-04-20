@@ -498,34 +498,21 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                               .supportAttachments(
                                   bridge.getData().getUnitTypeList().getSupportAaRules())
                               .build());
+                  final var sound = bridge.getSoundChannelBroadcaster();
                   if (currentTypeAa.equals("AA")) {
-                    if (dice.getHits() > 0) {
-                      bridge
-                          .getSoundChannelBroadcaster()
-                          .playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, defender);
-                    } else {
-                      bridge
-                          .getSoundChannelBroadcaster()
-                          .playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, defender);
-                    }
+                    sound.playSoundForAll(
+                        dice.getHits() > 0
+                            ? SoundPath.CLIP_BATTLE_AA_HIT
+                            : SoundPath.CLIP_BATTLE_AA_MISS,
+                        defender);
                   } else {
-                    if (dice.getHits() > 0) {
-                      bridge
-                          .getSoundChannelBroadcaster()
-                          .playSoundForAll(
-                              SoundPath.CLIP_BATTLE_X_PREFIX
-                                  + currentTypeAa.toLowerCase()
-                                  + SoundPath.CLIP_BATTLE_X_HIT,
-                              defender);
-                    } else {
-                      bridge
-                          .getSoundChannelBroadcaster()
-                          .playSoundForAll(
-                              SoundPath.CLIP_BATTLE_X_PREFIX
-                                  + currentTypeAa.toLowerCase()
-                                  + SoundPath.CLIP_BATTLE_X_MISS,
-                              defender);
-                    }
+                    String prefix = SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase();
+                    sound.playSoundForAll(
+                        prefix
+                            + (dice.getHits() > 0
+                                ? SoundPath.CLIP_BATTLE_X_HIT
+                                : SoundPath.CLIP_BATTLE_X_MISS),
+                        defender);
                   }
                 }
               }

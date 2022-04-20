@@ -56,12 +56,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -76,7 +74,6 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.ScrollableJPanel;
 import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
@@ -111,6 +108,7 @@ public class BattleDisplay extends JPanel {
   private final JLabel labelNoneDefender = new JLabel("None");
   private final JLabel messageLabel = new JLabel();
   private final Action nullAction = SwingAction.of(" ", e -> {});
+  @Getter private final String description;
 
   BattleDisplay(
       final GameData data,
@@ -130,6 +128,18 @@ public class BattleDisplay extends JPanel {
     this.gameData = data;
     this.mapPanel = mapPanel;
     this.uiContext = mapPanel.getUiContext();
+
+    final String battleStr =
+        (battleType == BattleType.NORMAL)
+            ? ""
+            : String.format("  (%s)", battleType.toDisplayText());
+    this.description =
+        attacker.getName()
+            + " attacks "
+            + defender.getName()
+            + " in "
+            + battleLocation.getName()
+            + battleStr;
 
     final Collection<TerritoryEffect> territoryEffects =
         TerritoryEffectHelper.getEffects(territory);
@@ -182,8 +192,7 @@ public class BattleDisplay extends JPanel {
 
   void takeFocus() {
     // we want a component on this frame to take focus so that pressing space will work (since it
-    // requires in focused
-    // window). Only seems to be an issue on windows
+    // requires in focused window). Only seems to be an issue on Windows.
     actionButton.requestFocus();
   }
 
@@ -307,7 +316,7 @@ public class BattleDisplay extends JPanel {
     SwingUtilities.invokeLater(() -> actionButton.setAction(buttonAction));
     uiContext.addShutdownLatch(continueLatch);
 
-    // Set a auto-wait expiration if the option is set or
+    // Set an auto-wait expiration if the option is set or
     // waits for the button to be pressed otherwise.
     if (!ClientSetting.confirmDefensiveRolls.getValueOrThrow()) {
       final int maxWaitTime = 1500;
@@ -437,7 +446,8 @@ public class BattleDisplay extends JPanel {
 
   private RetreatResult showRetreatOptions(
       final String message, final Collection<Territory> possible) {
-    final RetreatComponent comp = new RetreatComponent(possible);
+    final SelectTerritoryComponent comp =
+        new SelectTerritoryComponent(battleLocation, possible, mapPanel);
     final int option =
         JOptionPane.showConfirmDialog(
             BattleDisplay.this,
@@ -449,49 +459,6 @@ public class BattleDisplay extends JPanel {
     return option == JOptionPane.OK_OPTION && comp.getSelection() != null
         ? RetreatResult.retreatTo(comp.getSelection())
         : RetreatResult.noResult();
-  }
-
-  private class RetreatComponent extends JPanel {
-    private static final long serialVersionUID = 3855054934860687832L;
-    private final JList<Territory> list;
-    private final JLabel retreatTerritory = new JLabel("");
-
-    RetreatComponent(final Collection<Territory> possible) {
-      this.setLayout(new BorderLayout());
-      final JLabel label = new JLabel("Retreat to...");
-      label.setBorder(new EmptyBorder(0, 0, 10, 0));
-      this.add(label, BorderLayout.NORTH);
-      final JPanel imagePanel = new JPanel();
-      imagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-      imagePanel.add(retreatTerritory);
-      imagePanel.setBorder(new EmptyBorder(10, 10, 10, 0));
-      this.add(imagePanel, BorderLayout.EAST);
-      list = new JList<>(SwingComponents.newListModel(possible));
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      if (!possible.isEmpty()) {
-        list.setSelectedIndex(0);
-      }
-      final JScrollPane scroll = new JScrollPane(list);
-      this.add(scroll, BorderLayout.CENTER);
-      scroll.setBorder(new EmptyBorder(10, 0, 10, 0));
-      updateImage();
-      list.addListSelectionListener(e -> updateImage());
-    }
-
-    private void updateImage() {
-      final int width = 250;
-      final int height = 250;
-      final Image img = mapPanel.getTerritoryImage(list.getSelectedValue(), battleLocation);
-      final Image finalImage = Util.newImage(width, height, true);
-      final Graphics g = finalImage.getGraphics();
-      g.drawImage(img, 0, 0, width, height, this);
-      g.dispose();
-      retreatTerritory.setIcon(new ImageIcon(finalImage));
-    }
-
-    public Territory getSelection() {
-      return list.getSelectedValue();
-    }
   }
 
   CasualtyDetails getCasualties(
