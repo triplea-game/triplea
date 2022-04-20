@@ -10,9 +10,9 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import games.strategy.engine.framework.startup.ui.panels.main.MainPanel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.settings.ClientSetting;
@@ -66,10 +66,7 @@ public final class HeadedGameRunner {
             SwingUtilities.invokeLater(
                 () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
           });
-      MacOsIntegration.setOpenFileHandler(
-          file -> {
-            MainPanel.loadSaveFile(file);
-          });
+      MacOsIntegration.setOpenFileHandler(MainFrame::loadSaveFile);
     }
 
     if (HttpProxy.isUsingSystemProxy()) {

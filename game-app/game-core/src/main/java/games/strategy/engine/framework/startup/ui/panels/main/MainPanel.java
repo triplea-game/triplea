@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import org.triplea.game.chat.ChatModel;
@@ -38,7 +37,6 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public class MainPanel extends JPanel {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(900, 780);
-  private static MainPanel instance;
 
   private final JButton playButton =
       new JButtonBuilder()
@@ -115,22 +113,10 @@ public class MainPanel extends JPanel {
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     updatePlayButtonState();
-    instance = this;
   }
 
-  public static void loadSaveFile(final Path file) {
-    // This may be called at any time, including during start up.
-    SwingUtilities.invokeLater(
-        () -> {
-          // If the MainPanel is up already, load the save file.
-          if (instance != null) {
-            instance.gameSelectorPanel.loadSaveFile(file);
-            return;
-          }
-
-          // Otherwise "recurse" to invokeLater() to try again.
-          loadSaveFile(file);
-        });
+  public void loadSaveFile(final Path file) {
+    gameSelectorPanel.loadSaveFile(file);
   }
 
   private void addChat(final Component chatComponent) {
