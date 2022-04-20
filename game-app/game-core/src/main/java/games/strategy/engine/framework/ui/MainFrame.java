@@ -82,7 +82,7 @@ public class MainFrame {
     loadSaveFileImpl(file, Instant.now());
   }
 
-  public static void loadSaveFileImpl(final Path file, final Instant startTime) {
+  private static void loadSaveFileImpl(final Path file, final Instant startTime) {
     // This may be called at any time, including during start up.
     SwingUtilities.invokeLater(
         () -> {
