@@ -13,15 +13,18 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
+import java.awt.Image;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.WrapLayout;
@@ -35,6 +38,7 @@ public class SimpleUnitPanel extends JPanel {
 
   public enum Style {
     LARGE_ICONS_COLUMN,
+    SMALL_ICONS_ROW,
     SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY
   }
 
@@ -47,6 +51,8 @@ public class SimpleUnitPanel extends JPanel {
     this.style = style;
     if (style == Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY) {
       setLayout(new WrapLayout());
+    } else if (style == Style.SMALL_ICONS_ROW) {
+      setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     } else {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
@@ -132,7 +138,7 @@ public class SimpleUnitPanel extends JPanel {
       final boolean damaged,
       final boolean disabled) {
     final JLabel label = new JLabel();
-    label.setText(" x " + quantity);
+    label.setText(" x " + quantity + " ");
     if (unit instanceof UnitType) {
       final UnitType unitType = (UnitType) unit;
 
@@ -143,10 +149,14 @@ public class SimpleUnitPanel extends JPanel {
               .damaged(damaged)
               .disabled(disabled)
               .build();
-      final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(imageKey);
+      Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(imageKey);
       if (icon.isEmpty() && !uiContext.isShutDown()) {
         final String imageName = imageKey.getFullName();
         log.error("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
+      }
+      if (style == Style.SMALL_ICONS_ROW) {
+        Image newimg = icon.get().getImage().getScaledInstance(icon.get().getIconWidth()/2, icon.get().getIconHeight()/2,  java.awt.Image.SCALE_SMOOTH);
+        icon = Optional.of(new ImageIcon(newimg));
       }
       icon.ifPresent(label::setIcon);
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);

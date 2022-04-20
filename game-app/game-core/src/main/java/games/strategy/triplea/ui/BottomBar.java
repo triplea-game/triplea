@@ -8,6 +8,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -32,6 +33,7 @@ public class BottomBar extends JPanel {
 
   private final ResourceBar resourceBar;
   private final JPanel territoryInfo = new JPanel();
+  private final SimpleUnitPanel territoryUnitsPanel;
 
   private final JLabel statusMessage = new JLabel();
 
@@ -45,6 +47,11 @@ public class BottomBar extends JPanel {
     setLayout(new BorderLayout());
 
     resourceBar = new ResourceBar(data, uiContext);
+
+
+    territoryUnitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
+    territoryUnitsPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
     add(createCenterPanel(), BorderLayout.CENTER);
     add(createStepPanel(usingDiceServer), BorderLayout.EAST);
   }
@@ -66,10 +73,16 @@ public class BottomBar extends JPanel {
         territoryInfo,
         gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.CENTER).build());
 
+
+    centerPanel.add(
+        territoryUnitsPanel,
+        gridBuilder.gridX(2).weightX(1).anchor(GridBagConstraintsAnchor.EAST).build());
+
+
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
-        statusMessage, gridBuilder.gridX(2).anchor(GridBagConstraintsAnchor.EAST).build());
+        statusMessage, gridBuilder.gridX(3).anchor(GridBagConstraintsAnchor.EAST).build());
     return centerPanel;
   }
 
@@ -161,6 +174,11 @@ public class BottomBar extends JPanel {
       territoryInfo.add(resourceLabel, gridBuilder.gridX(count++).build());
     }
     SwingComponents.redraw(territoryInfo);
+
+
+    var cats = UnitSeparator.categorize(territory.getUnits());
+    territoryUnitsPanel.setUnitsFromCategories(cats);
+    SwingComponents.redraw(territoryUnitsPanel);
   }
 
   public void gameDataChanged() {
