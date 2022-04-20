@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -52,6 +53,7 @@ public class MainPanel extends JPanel {
   private final JSplitPane chatSplit;
   private final JPanel chatPanelHolder = new JPanelBuilder().height(62).borderLayout().build();
   private SetupPanel gameSetupPanel;
+  private final GameSelectorPanel gameSelectorPanel;
 
   /**
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and
@@ -63,6 +65,7 @@ public class MainPanel extends JPanel {
       final Consumer<MainPanel> launchAction,
       @Nullable final ChatModel chatModel,
       final Runnable cancelAction) {
+    this.gameSelectorPanel = gameSelectorPanel;
     playButton.addActionListener(e -> launchAction.accept(this));
     cancelButton.addActionListener(e -> cancelAction.run());
 
@@ -110,6 +113,10 @@ public class MainPanel extends JPanel {
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     updatePlayButtonState();
+  }
+
+  public void loadSaveFile(final Path file) {
+    gameSelectorPanel.loadSaveFile(file);
   }
 
   private void addChat(final Component chatComponent) {
