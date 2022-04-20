@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
@@ -893,14 +894,13 @@ public class ProCombatMoveAi {
         if (alreadyAttackedWithUnits.contains(unit)) {
           continue;
         }
+        final Predicate<Unit> bombingTargetMatch =
+            Matches.unitCanProduceUnitsAndCanBeDamaged()
+                .and(Matches.unitIsLegalBombingTargetBy(unit));
         Optional<Territory> maxBombingTerritory = Optional.empty();
         int maxBombingScore = MIN_BOMBING_SCORE;
         for (final Territory t : bomberMoveMap.get(unit)) {
-          final boolean canBeBombedByThisUnit =
-              t.getUnitCollection()
-                  .anyMatch(
-                      Matches.unitCanProduceUnitsAndCanBeDamaged()
-                          .and(Matches.unitIsLegalBombingTargetBy(unit)));
+          final boolean canBeBombedByThisUnit = t.getUnitCollection().anyMatch(bombingTargetMatch);
           final boolean canCreateAirBattle =
               Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
@@ -915,7 +915,9 @@ public class ProCombatMoveAi {
                       int noAaBombingDefense = 1;
                       // minimum damage to allow bombing = max. damage a defense unit can take
                       int minDamageNeeded = 0;
-                      for (final Unit targetUnit : t.getUnitCollection()) {
+                      final List<Unit> potentialBombingTargetUnits =
+                          t.getUnitCollection().getMatches(bombingTargetMatch);
+                      for (final Unit targetUnit : potentialBombingTargetUnits) {
                         minDamageNeeded = Math.max(minDamageNeeded, targetUnit.getUnitDamage());
                         if (Matches.unitIsAaForBombingThisUnitOnly().test(targetUnit)) {
                           noAaBombingDefense = 0;
