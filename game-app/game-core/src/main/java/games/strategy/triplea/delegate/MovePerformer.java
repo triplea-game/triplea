@@ -22,7 +22,6 @@ import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.panel.move.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -406,9 +405,6 @@ public class MovePerformer implements Serializable {
   /** Marks transports and units involved in unloading with no movement left. */
   private void markTransportsMovement(
       final Collection<Unit> arrived, final Map<Unit, Unit> transporting, final Route route) {
-    if (transporting == null) {
-      return;
-    }
     final GameData data = bridge.getData();
     final Predicate<Unit> paratroopNAirTransports =
         Matches.unitIsAirTransport().or(Matches.unitIsAirTransportable());
@@ -438,7 +434,6 @@ public class MovePerformer implements Serializable {
       final Collection<Unit> airTransports =
           CollectionUtils.getMatches(arrived, Matches.unitIsAirTransport());
       airTransports.addAll(dependentAirTransportableUnits.keySet());
-      MovePanel.clearDependents(airTransports);
     }
     // load the transports
     if (route.isLoad() || paratroopsLanding) {

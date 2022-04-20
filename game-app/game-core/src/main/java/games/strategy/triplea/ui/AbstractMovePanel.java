@@ -312,17 +312,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
    */
   protected abstract void setUpSpecific();
 
-  protected void clearDependencies() {
-    // used by some subclasses
-  }
-
   public final MoveDescription waitForMove(final IPlayerBridge bridge) {
     setUp(bridge);
     waitForRelease();
     cleanUp();
     final MoveDescription returnValue = moveMessage;
     moveMessage = null;
-    clearDependencies();
     return returnValue;
   }
 }
