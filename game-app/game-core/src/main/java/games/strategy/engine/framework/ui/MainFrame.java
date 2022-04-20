@@ -88,5 +88,4 @@ public class MainFrame {
           loadSaveFile(file);
         });
   }
-
 }
