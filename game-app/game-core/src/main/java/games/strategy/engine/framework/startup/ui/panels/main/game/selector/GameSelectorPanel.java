@@ -336,6 +336,33 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     updateGameData();
   }
 
+  public void loadSaveFile(final Path file) {
+    TaskRunner.builder()
+        .waitDialogTitle("Loading Save Game")
+        .exceptionHandler(
+            e ->
+                SwingComponents.showDialogWithLinks(
+                    DialogWithLinksParams.builder()
+                        .title("Failed To Load Save Game")
+                        .dialogType(DialogWithLinksTypes.ERROR)
+                        .dialogText(
+                            String.format(
+                                "<html>Error: %s<br/><br/>"
+                                    + "If this is not expected, please "
+                                    + "file a <a href=%s>bug report</a><br/>"
+                                    + "and attach the error message above and the "
+                                    + "save game you are trying to load.",
+                                e.getMessage(), UrlConstants.GITHUB_ISSUES))
+                        .build()))
+        .build()
+        .run(
+            () -> {
+              if (model.load(file)) {
+                setOriginalPropertiesMap(model.getGameData());
+              }
+            });
+  }
+
   private void selectSavedGameFile() {
     GameFileSelector.builder()
         .fileDoesNotExistAction(
@@ -347,32 +374,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                     .showDialog())
         .build()
         .selectGameFile(JOptionPane.getFrameForComponent(this))
-        .ifPresent(
-            file ->
-                TaskRunner.builder()
-                    .waitDialogTitle("Loading Save Game")
-                    .exceptionHandler(
-                        e ->
-                            SwingComponents.showDialogWithLinks(
-                                DialogWithLinksParams.builder()
-                                    .title("Failed To Load Save Game")
-                                    .dialogType(DialogWithLinksTypes.ERROR)
-                                    .dialogText(
-                                        String.format(
-                                            "<html>Error: %s<br/><br/>"
-                                                + "If this is not expected, please "
-                                                + "file a <a href=%s>bug report</a><br/>"
-                                                + "and attach the error message above and the "
-                                                + "save game you are trying to load.",
-                                            e.getMessage(), UrlConstants.GITHUB_ISSUES))
-                                    .build()))
-                    .build()
-                    .run(
-                        () -> {
-                          if (model.load(file)) {
-                            setOriginalPropertiesMap(model.getGameData());
-                          }
-                        }));
+        .ifPresent(file -> loadSaveFile(file));
   }
 
   private void selectGameFile() {

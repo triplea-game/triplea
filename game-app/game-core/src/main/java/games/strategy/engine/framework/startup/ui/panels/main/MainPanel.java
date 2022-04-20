@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -18,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import org.triplea.game.chat.ChatModel;
@@ -36,6 +38,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public class MainPanel extends JPanel {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(900, 780);
+  private static MainPanel instance;
 
   private final JButton playButton =
       new JButtonBuilder()
@@ -52,6 +55,7 @@ public class MainPanel extends JPanel {
   private final JSplitPane chatSplit;
   private final JPanel chatPanelHolder = new JPanelBuilder().height(62).borderLayout().build();
   private SetupPanel gameSetupPanel;
+  private final GameSelectorPanel gameSelectorPanel;
 
   /**
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and
@@ -63,6 +67,7 @@ public class MainPanel extends JPanel {
       final Consumer<MainPanel> launchAction,
       @Nullable final ChatModel chatModel,
       final Runnable cancelAction) {
+    this.gameSelectorPanel = gameSelectorPanel;
     playButton.addActionListener(e -> launchAction.accept(this));
     cancelButton.addActionListener(e -> cancelAction.run());
 
@@ -110,6 +115,22 @@ public class MainPanel extends JPanel {
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     updatePlayButtonState();
+    instance = this;
+  }
+
+  public static void loadSaveFile(final Path file) {
+    // This may be called at any time, including during start up.
+    SwingUtilities.invokeLater(
+        () -> {
+          // If the MainPanel is up already, load the save file.
+          if (instance != null) {
+            instance.gameSelectorPanel.loadSaveFile(file);
+            return;
+          }
+
+          // Otherwise "recurse" to invokeLater() to try again.
+          loadSaveFile(file);
+        });
   }
 
   private void addChat(final Component chatComponent) {
