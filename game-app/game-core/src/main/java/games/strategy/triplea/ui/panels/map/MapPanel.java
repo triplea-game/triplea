@@ -20,6 +20,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -71,6 +72,7 @@ import javax.swing.Timer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.Range;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.ThreadRunner;
@@ -638,6 +640,10 @@ public class MapPanel extends ImageScrollerLargeView {
 
   @Override
   public void paint(final Graphics g) {
+    // make sure we use the same data for the entire paint
+    final GameData gameData = this.gameData;
+    final MapData mapData = uiContext.getMapData();
+
     final Graphics2D g2d = (Graphics2D) g;
     g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
     g2d.setRenderingHint(
@@ -651,9 +657,8 @@ public class MapPanel extends ImageScrollerLargeView {
     int y = getYOffset();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
-    // if the map fits on screen, don't draw any overlap
-    final boolean drawHorizontalOverlap = !fittingWidth && uiContext.getMapData().scrollWrapX();
-    final boolean drawVerticalOverlap = !fittingHeight && uiContext.getMapData().scrollWrapY();
+    final boolean drawHorizontalOverlap = !fittingWidth && mapData.scrollWrapX();
+    final boolean drawVerticalOverlap = !fittingHeight && mapData.scrollWrapY();
     if (drawHorizontalOverlap || drawVerticalOverlap) {
       if (drawHorizontalOverlap && x + (int) getScaledWidth() > model.getMaxWidth()) {
         x -= model.getMaxWidth();
@@ -701,11 +706,7 @@ public class MapPanel extends ImageScrollerLargeView {
     }
     for (final Collection<Unit> value : highlightedUnits) {
       for (final UnitCategory category : UnitSeparator.categorize(value)) {
-        final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
-        if (territoryUnitsOfSameCategory.isEmpty()) {
-          continue;
-        }
-        final Rectangle r = tileManager.getUnitRect(territoryUnitsOfSameCategory, gameData);
+        final Rectangle r = tileManager.getUnitRect(category.getUnits(), gameData);
         if (r == null) {
           continue;
         }
@@ -727,20 +728,18 @@ public class MapPanel extends ImageScrollerLargeView {
     updateUndrawnTiles(undrawnTiles, 513);
     updateUndrawnTiles(undrawnTiles, 767);
     clearPendingDrawOperations();
-    // make sure we use the same data for the entire paint
-    final GameData data = gameData;
-    undrawnTiles.forEach(
-        tile ->
-            executor.execute(
-                () -> {
-                  data.acquireReadLock();
-                  try {
-                    tile.drawImage(data, MapPanel.this.getUiContext().getMapData());
-                  } finally {
-                    data.releaseReadLock();
-                  }
-                  SwingUtilities.invokeLater(MapPanel.this::repaint);
-                }));
+    for (final Tile tile : undrawnTiles) {
+      executor.execute(
+          () -> {
+            gameData.acquireReadLock();
+            try {
+              tile.drawImage(gameData, mapData);
+            } finally {
+              gameData.releaseReadLock();
+            }
+            SwingUtilities.invokeLater(MapPanel.this::repaint);
+          });
+    }
   }
 
   @Override
@@ -852,16 +851,15 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
 
-    final Tuple<BigDecimal, BigDecimal> movementLeft =
+    final Range<BigDecimal> movementLeft =
         getMinAndMaxMovementLeft(
             CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate()));
     movementLeftForCurrentUnits =
-        movementLeft.getFirst()
-            + (movementLeft.getSecond().compareTo(movementLeft.getFirst()) > 0 ? "+" : "");
+        movementLeft.getMinimum()
+            + (movementLeft.getMaximum().compareTo(movementLeft.getMinimum()) > 0 ? "+" : "");
     if (routeDescription != null) {
       gameData.acquireReadLock();
       try {
-
         movementFuelCost =
             Route.getMovementFuelCostCharge(
                 units, routeDescription.getRoute(), units.iterator().next().getOwner(), gameData);
@@ -872,12 +870,10 @@ public class MapPanel extends ImageScrollerLargeView {
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units);
     final int iconWidth = uiContext.getUnitImageFactory().getUnitImageWidth();
+    final int iconHeight = uiContext.getUnitImageFactory().getUnitImageHeight();
     final int horizontalSpace = 5;
     final BufferedImage img =
-        Util.newImage(
-            categories.size() * (horizontalSpace + iconWidth),
-            uiContext.getUnitImageFactory().getUnitImageHeight(),
-            true);
+        Util.newImage(categories.size() * (horizontalSpace + iconWidth), iconHeight, true);
     final Graphics2D g = img.createGraphics();
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
     g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -915,12 +911,10 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   /**
-   * Returns a tuple whose first element indicates the minimum movement remaining for the specified
-   * collection of units, and whose second element indicates the maximum movement remaining for the
+   * Returns a range indicating the minimum movement and maximum movement remaining for the
    * specified collection of units.
    */
-  private static Tuple<BigDecimal, BigDecimal> getMinAndMaxMovementLeft(
-      final Collection<Unit> units) {
+  private static Range<BigDecimal> getMinAndMaxMovementLeft(final Collection<Unit> units) {
     BigDecimal min = new BigDecimal(100000);
     BigDecimal max = BigDecimal.ZERO;
     for (final Unit unit : units) {
@@ -935,7 +929,7 @@ public class MapPanel extends ImageScrollerLargeView {
     if (max.compareTo(min) < 0) {
       min = max;
     }
-    return Tuple.of(min, max);
+    return Range.between(min, max);
   }
 
   public void setTerritoryOverlay(final Territory territory, final Color color, final int alpha) {

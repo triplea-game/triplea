@@ -504,7 +504,7 @@ public class TileManager {
    * returned rectangle will always have a size equal to the standard unit image size.
    */
   public Rectangle getUnitRect(final List<Unit> units, final GameData data) {
-    if (units == null) {
+    if (units.isEmpty()) {
       return null;
     }
     data.acquireReadLock();
