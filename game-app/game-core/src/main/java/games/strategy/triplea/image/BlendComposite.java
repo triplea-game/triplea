@@ -111,6 +111,8 @@ class BlendComposite implements Composite {
   abstract static class Blender {
     public abstract int[] blend(int[] src, int[] dst);
 
+    // false positive
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Blender getBlenderFor(final BlendComposite composite) {
       switch (composite.getMode()) {
         case NORMAL:
