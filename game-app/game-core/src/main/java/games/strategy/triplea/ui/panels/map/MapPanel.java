@@ -856,7 +856,7 @@ public class MapPanel extends ImageScrollerLargeView {
             CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate()));
     movementLeftForCurrentUnits =
         movementLeft.getMinimum()
-            + (movementLeft.getMinimum().compareTo(movementLeft.getMaximum()) > 0 ? "+" : "");
+            + (movementLeft.getMaximum().compareTo(movementLeft.getMinimum()) > 0 ? "+" : "");
     if (routeDescription != null) {
       gameData.acquireReadLock();
       try {
