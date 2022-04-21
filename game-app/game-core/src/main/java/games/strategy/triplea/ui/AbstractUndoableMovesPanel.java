@@ -145,7 +145,8 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
           scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
           final String error = movePanel.undoMove(moveIndex);
           if (error == null) {
-            // Disable the button so it can't be clicked again until the UI is updated.
+            // Disable the button so it can't be clicked again. Note: Undoing will cause a later
+            // setMoves() call on this object, which will re-build the UI for all the moves.
             undoButton.setEnabled(false);
             previousVisibleIndex = Math.max(0, moveIndex - 1);
           } else {
