@@ -137,13 +137,26 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final Box textBox = new Box(BoxLayout.X_AXIS);
     textBox.add(text);
     textBox.add(Box.createHorizontalGlue());
-    final JButton cancelButton = new JButton(new UndoMoveActionListener(move.getIndex()));
-    setSize(buttonSize, cancelButton);
+    final JButton undoButton = new JButton("Undo");
+    final int moveIndex = move.getIndex();
+    undoButton.addActionListener((e) -> {
+      // Record position of scroll bar as percentage.
+      scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
+      final String error = movePanel.undoMove(moveIndex);
+      if (error == null) {
+        // Disable the button so it can't be clicked again until the UI is updated.
+        undoButton.setEnabled(false);
+        previousVisibleIndex = Math.max(0, moveIndex - 1);
+      } else {
+        previousVisibleIndex = null;
+      }
+    });
+    setSize(buttonSize, undoButton);
     final JButton viewButton = new JButton(new ViewAction(move));
     setSize(buttonSize, viewButton);
     final Box buttonsBox = new Box(BoxLayout.X_AXIS);
     buttonsBox.add(viewButton);
-    buttonsBox.add(cancelButton);
+    buttonsBox.add(undoButton);
     buttonsBox.add(Box.createHorizontalGlue());
     final Box containerBox = new Box(BoxLayout.Y_AXIS);
     containerBox.add(unitsBox);
@@ -161,28 +174,6 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     cancelButton.setMinimumSize(buttonSize);
     cancelButton.setPreferredSize(buttonSize);
     cancelButton.setMaximumSize(buttonSize);
-  }
-
-  class UndoMoveActionListener extends AbstractAction {
-    private static final long serialVersionUID = -397312652244693138L;
-    private final int moveIndex;
-
-    UndoMoveActionListener(final int index) {
-      super("Undo");
-      moveIndex = index;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      // Record position of scroll bar as percentage.
-      scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
-      final String error = movePanel.undoMove(moveIndex);
-      if (error == null) {
-        previousVisibleIndex = Math.max(0, moveIndex - 1);
-      } else {
-        previousVisibleIndex = null;
-      }
-    }
   }
 
   class ViewAction extends AbstractAction {
