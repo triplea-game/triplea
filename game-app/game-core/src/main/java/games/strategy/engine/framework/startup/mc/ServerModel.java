@@ -8,29 +8,21 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
-import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
-import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.chat.HeadlessChat;
-import games.strategy.engine.chat.MessengersChatTransmitter;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
-import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
@@ -38,7 +30,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
-import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,11 +54,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
@@ -81,7 +69,6 @@ import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
-import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 
 /** Represents a network-aware game server to which multiple clients may connect. */
@@ -107,10 +94,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       new LinkedHashMap<>();
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
-  @Nullable private final JFrame ui;
   private final LaunchAction launchAction;
   private ChatModel chatModel;
-  private Runnable chatModelCancel;
   private ChatController chatController;
   private final Map<String, PlayerTypes.Type> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
@@ -280,13 +265,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   public ServerModel(
       final GameSelectorModel gameSelectorModel,
       final ServerSetupModel serverSetupModel,
-      @Nullable final JFrame ui,
       final LaunchAction launchAction,
       final Consumer<String> errorHandler) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    this.ui = ui;
     this.launchAction = launchAction;
     getServerProps().ifPresent(props -> this.createServerMessenger(props, errorHandler));
   }
@@ -304,7 +287,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         .ifPresent(InGameLobbyWatcherWrapper::shutDown);
     Optional.ofNullable(chatController).ifPresent(ChatController::deactivate);
     Optional.ofNullable(messengers).ifPresent(Messengers::shutDown);
-    Optional.ofNullable(chatModelCancel).ifPresent(Runnable::run);
+    chatModel.cancel();
   }
 
   public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
@@ -390,48 +373,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                       .orElse(null))
               .build());
     }
-    final UserName userName = UserName.of(ClientSetting.playerName.getValueOrThrow());
-    final Interruptibles.Result<ServerOptions> optionsResult =
-        Interruptibles.awaitResult(
-            () ->
-                SwingAction.invokeAndWaitResult(
-                    () -> {
-                      final ServerOptions options =
-                          new ServerOptions(ui, userName, GameRunner.PORT, false);
-                      options.setLocationRelativeTo(ui);
-                      options.setVisible(true);
-                      options.dispose();
-                      if (!options.getOkPressed()) {
-                        return null;
-                      }
-                      final String name = options.getName();
-                      log.debug("Server playing as:" + name);
-                      ClientSetting.playerName.setValue(name);
-                      ClientSetting.flush();
-                      final int port = options.getPort();
-                      if (port >= 65536 || port == 0) {
-                        if (HeadlessGameServer.headless()) {
-                          throw new IllegalStateException("Invalid Port: " + port);
-                        }
-                        JOptionPane.showMessageDialog(
-                            ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
-                        return null;
-                      }
-                      return options;
-                    }));
-    if (!optionsResult.completed) {
-      throw new IllegalArgumentException("Error while gathering connection details");
-    }
-    if (optionsResult.result.isEmpty()) {
-      cancel();
-    }
-    return optionsResult.result.map(
-        options ->
-            ServerConnectionProps.builder()
-                .name(options.getName())
-                .port(options.getPort())
-                .password(options.getPassword())
-                .build());
+    return launchAction.getFallbackConnection(this::cancel);
   }
 
   private void createServerMessenger(
@@ -452,11 +394,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
         lobbyWatcherThread =
             new LobbyWatcherThread(
-                gameSelectorModel,
-                serverMessenger,
-                HeadlessGameServer.headless()
-                    ? new WatcherThreadMessaging.HeadlessWatcherThreadMessaging()
-                    : new WatcherThreadMessaging.HeadedWatcherThreadMessaging(ui));
+                gameSelectorModel, serverMessenger, launchAction.createThreadMessaging());
 
         gameToLobbyConnection =
             new GameToLobbyConnection(lobbyUri, gameHostingResponse, errorHandler);
@@ -487,14 +425,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
-      if (ui == null) {
-        chatModel =
-            new HeadlessChat(new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers)));
-      } else {
-        final var chatPanel = ChatPanel.newChatPanel(messengers, CHAT_NAME, ChatSoundProfile.GAME);
-        chatModelCancel = chatPanel::deleteChat;
-        chatModel = chatPanel;
-      }
+      chatModel = launchAction.createChatModel(CHAT_NAME, messengers);
 
       if (gameToLobbyConnection != null && lobbyWatcherThread != null) {
         chatModel
@@ -707,8 +638,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
     final Map<String, PlayerTypes.Type> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerTypes.Type defaultLocalType =
-        ui == null ? PlayerTypes.WEAK_AI : PlayerTypes.HUMAN_PLAYER;
+    final PlayerTypes.Type defaultLocalType = launchAction.getDefaultPlayerType();
     for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
       final String player = entry.getKey();
       final String playedBy = entry.getValue();

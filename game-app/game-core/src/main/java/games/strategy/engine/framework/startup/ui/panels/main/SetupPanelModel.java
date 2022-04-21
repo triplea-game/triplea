@@ -72,7 +72,6 @@ public class SetupPanelModel implements ServerSetupModel {
     return new ServerModel(
         gameSelectorModel,
         this,
-        ui,
         new HeadedLaunchAction(ui),
         error -> SwingComponents.showError(null, "Connection problem", error));
   }

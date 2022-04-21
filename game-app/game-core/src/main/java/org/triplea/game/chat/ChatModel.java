@@ -9,4 +9,6 @@ import games.strategy.engine.chat.Chat;
 public interface ChatModel {
 
   Chat getChat();
+
+  void cancel();
 }
