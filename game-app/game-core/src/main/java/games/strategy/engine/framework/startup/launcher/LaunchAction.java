@@ -47,4 +47,6 @@ public interface LaunchAction {
   WatcherThreadMessaging createThreadMessaging();
 
   Optional<ServerConnectionProps> getFallbackConnection(Runnable cancelAction);
+
+  void handleError(String error);
 }

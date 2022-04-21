@@ -36,6 +36,7 @@ import org.triplea.sound.DefaultSoundChannel;
 import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /**
  * Headed and default implementation of {@link LaunchAction}. Ideally replaceable with any other
@@ -172,5 +173,10 @@ public class HeadedLaunchAction implements LaunchAction {
                 .port(options.getPort())
                 .password(options.getPassword())
                 .build());
+  }
+
+  @Override
+  public void handleError(String error) {
+    SwingComponents.showError(null, "Connection problem", error);
   }
 }

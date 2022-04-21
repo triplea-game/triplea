@@ -10,14 +10,12 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.injection.Injections;
 
 /** Setup panel model for headless server. */
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-@Slf4j
 public class HeadlessServerSetupPanelModel implements ServerSetupModel {
 
   private final GameSelectorModel gameSelectorModel;
@@ -25,7 +23,7 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
 
   @Override
   public void showSelectType() {
-    new ServerModel(gameSelectorModel, this, new HeadlessLaunchAction(), log::error);
+    new ServerModel(gameSelectorModel, this, new HeadlessLaunchAction());
   }
 
   @Override

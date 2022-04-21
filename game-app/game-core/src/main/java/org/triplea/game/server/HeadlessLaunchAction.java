@@ -103,4 +103,9 @@ public class HeadlessLaunchAction implements LaunchAction {
   public Optional<ServerConnectionProps> getFallbackConnection(Runnable cancelAction) {
     return Optional.empty();
   }
+
+  @Override
+  public void handleError(String error) {
+    log.error(error);
+  }
 }

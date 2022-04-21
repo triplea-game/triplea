@@ -265,13 +265,13 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   public ServerModel(
       final GameSelectorModel gameSelectorModel,
       final ServerSetupModel serverSetupModel,
-      final LaunchAction launchAction,
-      final Consumer<String> errorHandler) {
+      final LaunchAction launchAction) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.launchAction = launchAction;
-    getServerProps().ifPresent(props -> this.createServerMessenger(props, errorHandler));
+    getServerProps()
+        .ifPresent(props -> this.createServerMessenger(props, launchAction::handleError));
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
