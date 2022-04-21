@@ -16,7 +16,7 @@ import org.triplea.injection.Injections;
 
 /** Setup panel model for headless server. */
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class HeadlessServerSetupPanelModel implements ServerSetupModel {
+public class HeadlessServerSetupModel implements ServerSetupModel {
 
   private final GameSelectorModel gameSelectorModel;
   private HeadlessServerSetup headlessServerSetup;

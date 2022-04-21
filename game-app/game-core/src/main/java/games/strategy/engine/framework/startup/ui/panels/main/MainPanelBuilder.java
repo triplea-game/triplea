@@ -21,7 +21,7 @@ public class MainPanelBuilder {
 
   /** Creates a MainPanel instance and configures screen transition listeners. */
   public MainPanel buildMainPanel(
-      final SetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
+          final HeadedServerSetupModel headedServerSetupModel, final GameSelectorModel gameSelectorModel) {
     final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorModel.addObserver(gameSelectorPanel);
 
@@ -30,7 +30,7 @@ public class MainPanelBuilder {
             quitAction,
             gameSelectorPanel,
             uiPanel -> {
-              setupPanelModel
+              headedServerSetupModel
                   .getPanel()
                   .getLauncher()
                   .ifPresent(
@@ -50,13 +50,13 @@ public class MainPanelBuilder {
                               }
                             });
                       });
-              setupPanelModel.getPanel().postStartGame();
+              headedServerSetupModel.getPanel().postStartGame();
             },
-            Optional.ofNullable(setupPanelModel.getPanel())
+            Optional.ofNullable(headedServerSetupModel.getPanel())
                 .map(SetupModel::getChatModel)
                 .orElse(null),
-            setupPanelModel::showSelectType);
-    setupPanelModel.setPanelChangeListener(mainPanel::setSetupPanel);
+            headedServerSetupModel::showSelectType);
+    headedServerSetupModel.setPanelChangeListener(mainPanel::setSetupPanel);
     gameSelectorModel.addObserver((observable, arg) -> mainPanel.updatePlayButtonState());
     return mainPanel;
   }

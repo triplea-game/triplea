@@ -26,7 +26,7 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.message.RemoteName;
@@ -78,7 +78,7 @@ public class ClientModel implements IMessengerErrorListener {
           IServerReady.class);
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final GameSelectorModel gameSelectorModel;
-  private final SetupPanelModel typePanelModel;
+  private final HeadedServerSetupModel typePanelModel;
   private final WaitWindow gameLoadingWindow;
   private final LaunchAction launchAction;
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
@@ -149,7 +149,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   public ClientModel(
       final GameSelectorModel gameSelectorModel,
-      final SetupPanelModel typePanelModel,
+      final HeadedServerSetupModel typePanelModel,
       final LaunchAction launchAction) {
     this.launchAction = launchAction;
     this.typePanelModel = typePanelModel;

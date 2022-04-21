@@ -14,7 +14,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.ui.Util;
@@ -46,7 +46,7 @@ public final class GameRunner {
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
 
   private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-  private static SetupPanelModel setupPanelModel;
+  private static HeadedServerSetupModel headedServerSetupModel;
 
   private GameRunner() {}
 
@@ -62,9 +62,9 @@ public final class GameRunner {
   public static void start() {
     SwingUtilities.invokeLater(
         () -> {
-          setupPanelModel = new SetupPanelModel(gameSelectorModel);
-          MainFrame.buildMainFrame(setupPanelModel, gameSelectorModel);
-          setupPanelModel.showSelectType();
+          headedServerSetupModel = new HeadedServerSetupModel(gameSelectorModel);
+          MainFrame.buildMainFrame(headedServerSetupModel, gameSelectorModel);
+          headedServerSetupModel.showSelectType();
           ThreadRunner.runInNewThread(GameRunner::showMainFrame);
         });
 
@@ -81,12 +81,12 @@ public final class GameRunner {
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
       MainFrame.show();
       gameSelectorModel.loadDefaultGameSameThread();
-      final ServerModel serverModel = setupPanelModel.showServer();
+      final ServerModel serverModel = headedServerSetupModel.showServer();
       MainFrame.addQuitAction(serverModel::cancel);
       System.clearProperty(TRIPLEA_SERVER);
     } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
       MainFrame.show();
-      setupPanelModel.showClient();
+      headedServerSetupModel.showClient();
       System.clearProperty(TRIPLEA_CLIENT);
     } else {
       final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
@@ -171,7 +171,7 @@ public final class GameRunner {
   /** After the game has been left, call this. */
   public static void clientLeftGame() {
     Util.ensureNotOnEventDispatchThread();
-    Interruptibles.await(() -> SwingAction.invokeAndWait(setupPanelModel::showSelectType));
+    Interruptibles.await(() -> SwingAction.invokeAndWait(headedServerSetupModel::showSelectType));
     showMainFrame();
   }
 }

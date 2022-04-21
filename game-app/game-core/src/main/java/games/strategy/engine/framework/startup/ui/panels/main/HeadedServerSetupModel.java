@@ -39,7 +39,7 @@ import org.triplea.injection.Injections;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
-public class SetupPanelModel implements ServerSetupModel {
+public class HeadedServerSetupModel implements ServerSetupModel {
   @Getter protected final GameSelectorModel gameSelectorModel;
   protected SetupPanel panel = null;
 
