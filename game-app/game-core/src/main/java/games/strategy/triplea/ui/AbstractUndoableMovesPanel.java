@@ -139,18 +139,19 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     textBox.add(Box.createHorizontalGlue());
     final JButton undoButton = new JButton("Undo");
     final int moveIndex = move.getIndex();
-    undoButton.addActionListener((e) -> {
-      // Record position of scroll bar as percentage.
-      scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
-      final String error = movePanel.undoMove(moveIndex);
-      if (error == null) {
-        // Disable the button so it can't be clicked again until the UI is updated.
-        undoButton.setEnabled(false);
-        previousVisibleIndex = Math.max(0, moveIndex - 1);
-      } else {
-        previousVisibleIndex = null;
-      }
-    });
+    undoButton.addActionListener(
+        (e) -> {
+          // Record position of scroll bar as percentage.
+          scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
+          final String error = movePanel.undoMove(moveIndex);
+          if (error == null) {
+            // Disable the button so it can't be clicked again until the UI is updated.
+            undoButton.setEnabled(false);
+            previousVisibleIndex = Math.max(0, moveIndex - 1);
+          } else {
+            previousVisibleIndex = null;
+          }
+        });
     setSize(buttonSize, undoButton);
     final JButton viewButton = new JButton(new ViewAction(move));
     setSize(buttonSize, viewButton);
