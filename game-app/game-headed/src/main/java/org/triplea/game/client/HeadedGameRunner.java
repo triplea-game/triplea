@@ -171,7 +171,7 @@ public final class HeadedGameRunner {
    *
    * @throws IllegalStateException If called from a headless environment.
    */
-  public static void start() {
+  private static void start() {
     SwingUtilities.invokeLater(
         () -> {
           headedServerSetupModel = new HeadedServerSetupModel(gameSelectorModel);
