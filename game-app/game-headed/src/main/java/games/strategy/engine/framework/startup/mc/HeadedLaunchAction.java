@@ -136,7 +136,6 @@ public class HeadedLaunchAction implements LaunchAction {
 
   @Override
   public Optional<ServerConnectionProps> getFallbackConnection(Runnable cancelAction) {
-
     final UserName userName = UserName.of(ClientSetting.playerName.getValueOrThrow());
     final Interruptibles.Result<ServerOptions> optionsResult =
         Interruptibles.awaitResult(

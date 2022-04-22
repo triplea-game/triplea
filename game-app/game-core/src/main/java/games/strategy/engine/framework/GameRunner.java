@@ -1,6 +1,14 @@
 package games.strategy.engine.framework;
 
-import static games.strategy.engine.framework.CliProperties.*;
+import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
+import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
+import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.net.URI;
 import java.util.ArrayList;
