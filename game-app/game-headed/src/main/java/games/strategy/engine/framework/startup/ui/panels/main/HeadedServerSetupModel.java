@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.injection.Injections;
@@ -100,7 +101,13 @@ public class HeadedServerSetupModel implements ServerSetupModel {
    */
   public void showClient() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
-    final ClientModel model = new ClientModel(gameSelectorModel, this, new HeadedLaunchAction(ui));
+    final ClientModel model =
+        new ClientModel(
+            gameSelectorModel,
+            this,
+            new HeadedLaunchAction(ui),
+            HeadedGameRunner::showMainFrame,
+            HeadedGameRunner::clientLeftGame);
     if (model.createClientMessenger(ui)) {
       SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
     } else {
@@ -139,7 +146,8 @@ public class HeadedServerSetupModel implements ServerSetupModel {
   private void showLobbyWindow(final LoginResult loginResult, final URI lobbyUri) {
     final var lobbyClient = LobbyClient.newLobbyClient(lobbyUri, loginResult);
 
-    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyUri);
+    final LobbyFrame lobbyFrame =
+        new LobbyFrame(lobbyClient, lobbyUri, HeadedGameRunner::exitGameIfNoWindowsVisible);
     MainFrame.hide();
     lobbyFrame.setVisible(true);
   }

@@ -2,14 +2,20 @@ package org.triplea.game.client;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static games.strategy.engine.framework.CliProperties.*;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.ArgParser;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
+import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
+import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.MainFrame;
@@ -17,9 +23,13 @@ import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
-import java.awt.GraphicsEnvironment;
+import games.strategy.ui.Util;
+import java.awt.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -34,13 +44,18 @@ import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
 import org.triplea.map.description.file.MapDescriptionYamlGeneratorRunner;
 import org.triplea.map.game.notes.GameNotesMigrator;
 import org.triplea.swing.SwingAction;
+import org.triplea.util.ExitStatus;
 
 /** Runs a headed game client. */
 @Slf4j
 public final class HeadedGameRunner {
+  private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
+  private static HeadedServerSetupModel headedServerSetupModel;
+
   private HeadedGameRunner() {}
 
   public static void initializeClientSettingAndLogging() {
@@ -112,7 +127,7 @@ public final class HeadedGameRunner {
         .extractGameNotes();
 
     log.info("Launching game, version: {} ", Injections.getInstance().getEngineVersion());
-    GameRunner.start();
+    start();
   }
 
   private static Injections constructInjections() {
@@ -141,5 +156,86 @@ public final class HeadedGameRunner {
       return ClientSetting.showBetaFeatures.getValue().orElse(false);
     }
     return true;
+  }
+
+  /**
+   * Starts a new UI-enabled game client. This method will return before the game client UI exits.
+   * The game client UI will continue to run until it is shut down by the user.
+   *
+   * <p>No command-line arguments will launch a client; additional arguments can be supplied to
+   * specify additional behavior.
+   *
+   * @throws IllegalStateException If called from a headless environment.
+   */
+  public static void start() {
+    SwingUtilities.invokeLater(
+        () -> {
+          headedServerSetupModel = new HeadedServerSetupModel(gameSelectorModel);
+          MainFrame.buildMainFrame(headedServerSetupModel, gameSelectorModel);
+          headedServerSetupModel.showSelectType();
+          ThreadRunner.runInNewThread(HeadedGameRunner::showMainFrame);
+        });
+
+    UpdateChecks.launch();
+  }
+
+  /**
+   * Sets the 'main frame' to visible. In this context the main frame is the initial welcome (launch
+   * lobby/single player game etc..) screen presented to GUI enabled clients.
+   */
+  public static void showMainFrame() {
+    GameShutdownRegistry.runShutdownActions();
+
+    if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
+      MainFrame.show();
+      gameSelectorModel.loadDefaultGameSameThread();
+      final ServerModel serverModel = headedServerSetupModel.showServer();
+      MainFrame.addQuitAction(serverModel::cancel);
+      System.clearProperty(TRIPLEA_SERVER);
+    } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
+      MainFrame.show();
+      headedServerSetupModel.showClient();
+      System.clearProperty(TRIPLEA_CLIENT);
+    } else {
+      final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
+      if (!saveGameFileName.isEmpty()) {
+        final Path saveGameFile = Path.of(saveGameFileName);
+        if (Files.exists(saveGameFile) && !gameSelectorModel.load(saveGameFile)) {
+          // abort launch if we failed to load the specified game
+          return;
+        }
+      }
+      MainFrame.show();
+      gameSelectorModel.loadDefaultGameSameThread();
+      openMapDownloadWindowIfDownloadScheduled();
+    }
+  }
+
+  private static void openMapDownloadWindowIfDownloadScheduled() {
+    final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
+    if (!downloadableMap.isEmpty()) {
+      SwingUtilities.invokeLater(
+          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+    }
+  }
+
+  public static void exitGameIfNoWindowsVisible() {
+    // Invoke later to add this check to the end of the event dispatcher queue
+    // and allow any potential in-flight 'setVisible' invocations to execute first.
+    SwingUtilities.invokeLater(
+        () -> {
+          final boolean allFramesClosed =
+              Arrays.stream(Frame.getFrames()).noneMatch(Component::isVisible);
+          if (allFramesClosed) {
+            ExitStatus.SUCCESS.exit();
+          }
+        });
+  }
+
+  /** After the game has been left, call this. */
+  public static void clientLeftGame() {
+    Util.ensureNotOnEventDispatchThread();
+    Interruptibles.await(() -> SwingAction.invokeAndWait(headedServerSetupModel::showSelectType));
+    showMainFrame();
   }
 }

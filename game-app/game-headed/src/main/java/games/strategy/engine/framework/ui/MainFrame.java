@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.ui;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanel;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.java.timer.Timers;
 import org.triplea.swing.JFrameBuilder;
 
@@ -37,7 +37,7 @@ public class MainFrame {
         JFrameBuilder.builder()
             .title("TripleA")
             .iconImage(EngineImageLoader.loadFrameIcon())
-            .windowClosedAction(GameRunner::exitGameIfNoWindowsVisible)
+            .windowClosedAction(HeadedGameRunner::exitGameIfNoWindowsVisible)
             .build();
     BackgroundTaskRunner.setMainFrame(mainFrame);
 

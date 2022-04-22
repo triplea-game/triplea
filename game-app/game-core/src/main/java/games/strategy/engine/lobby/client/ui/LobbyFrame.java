@@ -6,7 +6,6 @@ import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.chat.ChatTransmitter;
 import games.strategy.engine.chat.LobbyChatTransmitter;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
@@ -37,10 +36,10 @@ public class LobbyFrame extends JFrame implements QuitHandler {
   private final ChatTransmitter chatTransmitter;
   private final LobbyGameTableModel tableModel;
 
-  public LobbyFrame(final LobbyClient lobbyClient, final URI lobbyUri) {
+  public LobbyFrame(final LobbyClient lobbyClient, final URI lobbyUri, final Runnable closeAction) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    SwingComponents.addWindowClosedListener(this, GameRunner::exitGameIfNoWindowsVisible);
+    SwingComponents.addWindowClosedListener(this, closeAction);
     setIconImage(EngineImageLoader.loadFrameIcon());
     this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));
