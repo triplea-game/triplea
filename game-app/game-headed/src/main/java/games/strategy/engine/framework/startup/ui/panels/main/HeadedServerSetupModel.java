@@ -147,7 +147,7 @@ public class HeadedServerSetupModel implements ServerSetupModel {
     final var lobbyClient = LobbyClient.newLobbyClient(lobbyUri, loginResult);
 
     final LobbyFrame lobbyFrame =
-        new LobbyFrame(lobbyClient, lobbyUri, HeadedGameRunner::exitGameIfNoWindowsVisible);
+        new LobbyFrame(lobbyClient, lobbyUri);
     MainFrame.hide();
     lobbyFrame.setVisible(true);
   }

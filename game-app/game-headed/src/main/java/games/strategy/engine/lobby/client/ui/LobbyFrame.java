@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -36,10 +37,10 @@ public class LobbyFrame extends JFrame implements QuitHandler {
   private final ChatTransmitter chatTransmitter;
   private final LobbyGameTableModel tableModel;
 
-  public LobbyFrame(final LobbyClient lobbyClient, final URI lobbyUri, final Runnable closeAction) {
+  public LobbyFrame(final LobbyClient lobbyClient, final URI lobbyUri) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    SwingComponents.addWindowClosedListener(this, closeAction);
+    SwingComponents.addWindowClosedListener(this, HeadedGameRunner::exitGameIfNoWindowsVisible);
     setIconImage(EngineImageLoader.loadFrameIcon());
     this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));
