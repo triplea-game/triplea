@@ -710,7 +710,6 @@ public final class AirMovementValidator {
             data.getMap()
                 .getNeighborsByMovementCost(
                     current,
-                    unit,
                     movementLeft,
                     Matches.airCanFlyOver(
                         player,

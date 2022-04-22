@@ -266,10 +266,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighborsByMovementCost(
       final Territory territory,
-      final Unit unit,
       final BigDecimal movementLeft,
       final Predicate<Territory> territoryCondition) {
-    checkNotNull(unit);
     checkArgument(
         movementLeft.compareTo(BigDecimal.ZERO) >= 0,
         "MovementLeft must be non-negative: " + movementLeft);

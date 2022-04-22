@@ -793,7 +793,6 @@ public class ProTerritoryManager {
         final Set<Territory> possibleMoveTerritories =
             gameMap.getNeighborsByMovementCost(
                 myUnitTerritory,
-                mySeaUnit,
                 range,
                 ProMatches.territoryCanMoveSeaUnits(data, player, isCombatMove));
         possibleMoveTerritories.add(myUnitTerritory);
@@ -875,7 +874,6 @@ public class ProTerritoryManager {
         final Set<Territory> possibleMoveTerritories =
             gameMap.getNeighborsByMovementCost(
                 myUnitTerritory,
-                myLandUnit,
                 range,
                 isIgnoringRelationships
                     ? ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(
@@ -1010,7 +1008,6 @@ public class ProTerritoryManager {
         final Set<Territory> possibleMoveTerritories =
             gameMap.getNeighborsByMovementCost(
                 myUnitTerritory,
-                myAirUnit,
                 range,
                 isIgnoringRelationships
                     ? ProMatches.territoryCanPotentiallyMoveAirUnits(player, data.getProperties())
@@ -1049,7 +1046,7 @@ public class ProTerritoryManager {
               && (remainingMoves.compareTo(myRouteLength) < 0 || myUnitTerritory.isWater())) {
             final Set<Territory> possibleLandingTerritories =
                 gameMap.getNeighborsByMovementCost(
-                    potentialTerritory, myAirUnit, remainingMoves, canFlyOverMatch);
+                    potentialTerritory, remainingMoves, canFlyOverMatch);
             final List<Territory> landingTerritories =
                 CollectionUtils.getMatches(
                     possibleLandingTerritories,
@@ -1302,10 +1299,7 @@ public class ProTerritoryManager {
         // Find list of potential territories to move to
         final Set<Territory> potentialTerritories =
             gameMap.getNeighborsByMovementCost(
-                myUnitTerritory,
-                mySeaUnit,
-                range,
-                ProMatches.territoryCanMoveSeaUnits(data, player, true));
+                myUnitTerritory, range, ProMatches.territoryCanMoveSeaUnits(data, player, true));
         potentialTerritories.add(myUnitTerritory);
         potentialTerritories.retainAll(unloadFromTerritories);
         for (final Territory bombardFromTerritory : potentialTerritories) {

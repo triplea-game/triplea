@@ -306,12 +306,11 @@ public class MoveValidator {
           }
           failureMessage = canPassThroughCanal(canalAttachment, unit, player);
           final boolean canPass = failureMessage.isEmpty();
-          if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
-                  && canPass)
-              || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
-                  && !canPass)) {
-            break; // If need to control any canal and can pass OR need to control all canals and
-            // can't pass
+          final boolean mustControlAllCanals =
+              Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
+          if ((!mustControlAllCanals && canPass) || (mustControlAllCanals && !canPass)) {
+            // If need to control any canal and can pass OR need to control all and can't pass.
+            break;
           }
         }
         if (failureMessage.isPresent()) {
@@ -363,11 +362,11 @@ public class MoveValidator {
       final Collection<Unit> unitsWithoutDependents =
           findNonDependentUnits(units, route, new HashMap<>());
       canPass = canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player).isEmpty();
-      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties()) && canPass)
-          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
-              && !canPass)) {
-        break; // If need to control any canal and can pass OR need to control all canals and can't
-        // pass
+      final boolean mustControlAllCanals =
+          Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
+      if ((!mustControlAllCanals && canPass) || (mustControlAllCanals && !canPass)) {
+        // If need to control any canal and can pass OR need to control all and can't pass.
+        break;
       }
     }
     return canPass;
