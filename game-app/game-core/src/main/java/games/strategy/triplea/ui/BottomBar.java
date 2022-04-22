@@ -48,7 +48,6 @@ public class BottomBar extends JPanel {
 
     resourceBar = new ResourceBar(data, uiContext);
 
-
     territoryUnitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
     territoryUnitsPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
@@ -73,11 +72,9 @@ public class BottomBar extends JPanel {
         territoryInfo,
         gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.CENTER).build());
 
-
     centerPanel.add(
         territoryUnitsPanel,
         gridBuilder.gridX(2).weightX(1).anchor(GridBagConstraintsAnchor.EAST).build());
-
 
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -174,7 +171,6 @@ public class BottomBar extends JPanel {
       territoryInfo.add(resourceLabel, gridBuilder.gridX(count++).build());
     }
     SwingComponents.redraw(territoryInfo);
-
 
     var cats = UnitSeparator.categorize(territory.getUnits());
     territoryUnitsPanel.setUnitsFromCategories(cats);
