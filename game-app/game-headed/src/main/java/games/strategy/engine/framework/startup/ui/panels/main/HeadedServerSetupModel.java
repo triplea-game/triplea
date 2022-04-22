@@ -146,8 +146,7 @@ public class HeadedServerSetupModel implements ServerSetupModel {
   private void showLobbyWindow(final LoginResult loginResult, final URI lobbyUri) {
     final var lobbyClient = LobbyClient.newLobbyClient(lobbyUri, loginResult);
 
-    final LobbyFrame lobbyFrame =
-        new LobbyFrame(lobbyClient, lobbyUri);
+    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyUri);
     MainFrame.hide();
     lobbyFrame.setVisible(true);
   }
