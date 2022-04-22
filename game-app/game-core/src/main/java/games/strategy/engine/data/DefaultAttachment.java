@@ -120,10 +120,12 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 
   @Override
   public void setName(final String name) {
-    this.name = Optional.ofNullable(name)
-        // replace-all to automatically correct legacy (1.8) attachment spelling
-        .map(attachmentName -> attachmentName.replaceAll("ttatch", "ttach"))
-        .orElse(null);;
+    this.name =
+        Optional.ofNullable(name)
+            // replace-all to automatically correct legacy (1.8) attachment spelling
+            .map(attachmentName -> attachmentName.replaceAll("ttatch", "ttach"))
+            .orElse(null);
+    ;
   }
 
   /**
