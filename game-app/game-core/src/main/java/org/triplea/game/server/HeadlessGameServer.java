@@ -207,8 +207,7 @@ public class HeadlessGameServer {
   }
 
   private static synchronized boolean startHeadlessGame(
-      final HeadlessServerSetupModel setupPanelModel,
-      final GameSelectorModel gameSelectorModel) {
+      final HeadlessServerSetupModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
     try {
       if (setupPanelModel != null
           && setupPanelModel.getPanel() != null

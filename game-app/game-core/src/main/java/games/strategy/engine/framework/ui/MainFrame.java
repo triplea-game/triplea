@@ -3,9 +3,9 @@ package games.strategy.engine.framework.ui;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
+import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
-import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.EngineImageLoader;
@@ -31,7 +31,8 @@ public class MainFrame {
   private final List<Runnable> quitActions = new ArrayList<>();
 
   private MainFrame(
-          final HeadedServerSetupModel headedServerSetupModel, final GameSelectorModel gameSelectorModel) {
+      final HeadedServerSetupModel headedServerSetupModel,
+      final GameSelectorModel gameSelectorModel) {
     mainFrame =
         JFrameBuilder.builder()
             .title("TripleA")
@@ -48,7 +49,8 @@ public class MainFrame {
           mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
         };
 
-    mainPanel = new MainPanelBuilder(quitAction).buildMainPanel(headedServerSetupModel, gameSelectorModel);
+    mainPanel =
+        new MainPanelBuilder(quitAction).buildMainPanel(headedServerSetupModel, gameSelectorModel);
     mainFrame.add(mainPanel);
     mainFrame.pack();
 
@@ -56,7 +58,8 @@ public class MainFrame {
   }
 
   public static void buildMainFrame(
-          final HeadedServerSetupModel headedServerSetupModel, final GameSelectorModel gameSelectorModel) {
+      final HeadedServerSetupModel headedServerSetupModel,
+      final GameSelectorModel gameSelectorModel) {
     Preconditions.checkState(instance == null);
     instance = new MainFrame(headedServerSetupModel, gameSelectorModel);
   }

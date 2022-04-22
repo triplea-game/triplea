@@ -21,7 +21,8 @@ public class MainPanelBuilder {
 
   /** Creates a MainPanel instance and configures screen transition listeners. */
   public MainPanel buildMainPanel(
-          final HeadedServerSetupModel headedServerSetupModel, final GameSelectorModel gameSelectorModel) {
+      final HeadedServerSetupModel headedServerSetupModel,
+      final GameSelectorModel gameSelectorModel) {
     final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorModel.addObserver(gameSelectorPanel);
 
