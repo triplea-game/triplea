@@ -308,7 +308,7 @@ public class MoveValidator {
           final boolean canPass = failureMessage.isEmpty();
           final boolean mustControlAllCanals =
               Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
-          if ((!mustControlAllCanals && canPass) || (mustControlAllCanals && !canPass)) {
+          if (mustControlAllCanals != canPass) {
             // If need to control any canal and can pass OR need to control all and can't pass.
             break;
           }
