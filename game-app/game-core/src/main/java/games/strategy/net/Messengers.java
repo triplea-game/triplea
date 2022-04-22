@@ -111,18 +111,6 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     messenger.addMessageListener(listener);
   }
 
-  public void addErrorListener(final IMessengerErrorListener listener) {
-    if (messenger instanceof ClientMessenger) {
-      ((ClientMessenger) messenger).addErrorListener(listener);
-    }
-  }
-
-  public void removeErrorListener(final IMessengerErrorListener listener) {
-    if (messenger instanceof ClientMessenger) {
-      ((ClientMessenger) messenger).removeErrorListener(listener);
-    }
-  }
-
   @Override
   public INode getLocalNode() {
     return messenger.getLocalNode();

@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
 import org.triplea.java.collections.IntegerMap;
 
@@ -488,33 +485,5 @@ public final class GameDataTestUtil {
         .flatMap(
             entry -> from.getUnitCollection().getUnits(entry.getKey(), entry.getValue()).stream())
         .collect(Collectors.toList());
-  }
-
-  public static class IsEquivalentUnit extends BaseMatcher<Unit> {
-    private final Unit expected;
-
-    public IsEquivalentUnit(final Unit expected) {
-      this.expected = expected;
-    }
-
-    @Override
-    public boolean matches(final Object actual) {
-      if (actual == null) {
-        return expected == null;
-      }
-      if (!(actual instanceof Unit)) {
-        return false;
-      }
-      return ((Unit) actual).isEquivalent(expected);
-    }
-
-    @Override
-    public void describeTo(final Description description) {
-      description.appendValue(expected);
-    }
-
-    public static Matcher<Unit> equivalentTo(final Unit operand) {
-      return new IsEquivalentUnit(operand);
-    }
   }
 }
