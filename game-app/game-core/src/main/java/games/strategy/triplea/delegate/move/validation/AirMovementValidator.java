@@ -51,7 +51,7 @@ public final class AirMovementValidator {
     final GameData data = player.getData();
     // First check if we even need to check
     if (getEditMode(data) // Edit Mode, no need to check
-        || units.stream().noneMatch(Matches.unitIsAir()) // No Airunits, nothing to check
+        || units.stream().noneMatch(Matches.unitIsAir()) // No air units, nothing to check
         || route.hasNoSteps() // if there are no steps, we didn't move, so it is always OK!
         // we can land at the end, nothing left to check
         || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
@@ -99,7 +99,7 @@ public final class AirMovementValidator {
     // want the lowest movement to be validated first.
     airThatMustLandOnCarriersHash.addAll(ownedAirThatMustLandOnCarriers);
     final List<Unit> airThatMustLandOnCarriers = new ArrayList<>(airThatMustLandOnCarriersHash);
-    // sort the list by shortest range first so those birds will get first pick of landingspots
+    // sort the list by shortest range first so those birds will get first pick of landing spots
     airThatMustLandOnCarriers.sort(
         getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(route));
     // now we should see if the carriers we are moving with, plus the carriers already there, can
@@ -333,17 +333,15 @@ public final class AirMovementValidator {
       landingSpotCapacity += carrierCapacity(ownedCarriersInLandingSpot, landingSpot);
       // minus capacity of air in the territory
       landingSpotCapacity -= carrierCost(airInLandingSpot);
-      if (!airCanReach.isEmpty()) {
-        final Iterator<Unit> airIter = airCanReach.iterator();
-        while (airIter.hasNext()) {
-          final Unit air = airIter.next();
-          final int carrierCost = carrierCost(air);
-          if (landingSpotCapacity >= carrierCost) {
-            landingSpotCapacity -= carrierCost;
-            // we can land this one here, yay
-            airThatMustLandOnCarriers.remove(air);
-            airIter.remove();
-          }
+      final Iterator<Unit> airIter = airCanReach.iterator();
+      while (airIter.hasNext()) {
+        final Unit air = airIter.next();
+        final int carrierCost = carrierCost(air);
+        if (landingSpotCapacity >= carrierCost) {
+          landingSpotCapacity -= carrierCost;
+          // we can land this one here, yay
+          airThatMustLandOnCarriers.remove(air);
+          airIter.remove();
         }
       }
       if (airThatMustLandOnCarriers.isEmpty()) {
@@ -677,7 +675,7 @@ public final class AirMovementValidator {
   /**
    * Indicates this air unit reached a safe landing at this point in the route.
    *
-   * @param unit the airunit in question
+   * @param unit the air unit in question
    * @param route the current spot from which he needs to reach safe land.
    * @return whether the air-unit can find a stretch of friendly land to land on given her current
    *     spot and the remaining range.
@@ -710,7 +708,6 @@ public final class AirMovementValidator {
             data.getMap()
                 .getNeighborsByMovementCost(
                     current,
-                    unit,
                     movementLeft,
                     Matches.airCanFlyOver(
                         player,
