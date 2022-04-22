@@ -30,28 +30,6 @@ public final class GameDataUtils {
     return dataCopy;
   }
 
-  /**
-   * Serializes a game data object but lops off the history data from it. Use this for a faster
-   * serialization that does not require the history.
-   */
-  public static byte[] serializeGameDataWithoutHistory(final GameData data) {
-    final History temp = data.getHistory();
-    data.resetHistory();
-    final byte[] bytes;
-    try {
-      bytes =
-          IoUtils.writeToMemory(
-              os ->
-                  GameDataManager.saveGame(
-                      os, data, false, Injections.getInstance().getEngineVersion()));
-    } catch (final IOException e) {
-      throw new RuntimeException("Failed to serialize GameData", e);
-    } finally {
-      data.setHistory(temp);
-    }
-    return bytes;
-  }
-
   public static Optional<GameData> cloneGameData(final GameData data) {
     return cloneGameData(data, false, Injections.getInstance().getEngineVersion());
   }

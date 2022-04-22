@@ -31,11 +31,6 @@ public final class SystemProperties {
     return checkNotNull(System.getProperty("java.version"));
   }
 
-  /** Returns 'short' java version. EG: {@code "1.8"} */
-  public static String getJavaSpecificationVersion() {
-    return checkNotNull(System.getProperty("java.specification.version"));
-  }
-
   public static String getOperatingSystem() {
     return checkNotNull(System.getProperty("os.name"));
   }

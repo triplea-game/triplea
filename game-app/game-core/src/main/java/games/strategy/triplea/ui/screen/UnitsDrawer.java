@@ -49,11 +49,6 @@ public class UnitsDrawer extends AbstractDrawable {
     NONE,
     SMALL_FLAG,
     LARGE_FLAG;
-
-    public UnitFlagDrawMode nextDrawMode() {
-      final var values = values();
-      return values[(ordinal() + 1) % values.length];
-    }
   }
 
   public UnitsDrawer(

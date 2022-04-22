@@ -134,10 +134,6 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getCanBeMovedThroughByEnemies();
   }
 
-  public static Predicate<Unit> unitCanNotTargetAll() {
-    return unit -> !UnitAttachment.get(unit.getType()).getCanNotTarget().isEmpty();
-  }
-
   public static Predicate<Unit> unitCanNotBeTargetedByAll() {
     return unit -> !UnitAttachment.get(unit.getType()).getCanNotBeTargetedBy().isEmpty();
   }
