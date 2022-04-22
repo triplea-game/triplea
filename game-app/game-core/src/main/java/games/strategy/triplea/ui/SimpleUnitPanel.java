@@ -19,12 +19,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.WrapLayout;
@@ -155,7 +153,13 @@ public class SimpleUnitPanel extends JPanel {
         log.error("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
       }
       if (style == Style.SMALL_ICONS_ROW) {
-        Image newimg = icon.get().getImage().getScaledInstance(icon.get().getIconWidth()/2, icon.get().getIconHeight()/2,  java.awt.Image.SCALE_SMOOTH);
+        Image newimg =
+            icon.get()
+                .getImage()
+                .getScaledInstance(
+                    icon.get().getIconWidth() / 2,
+                    icon.get().getIconHeight() / 2,
+                    java.awt.Image.SCALE_SMOOTH);
         icon = Optional.of(new ImageIcon(newimg));
       }
       icon.ifPresent(label::setIcon);
