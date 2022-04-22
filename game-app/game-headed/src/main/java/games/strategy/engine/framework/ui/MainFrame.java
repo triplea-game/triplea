@@ -1,11 +1,10 @@
 package games.strategy.engine.framework.ui;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
+import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
-import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.EngineImageLoader;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.java.timer.Timers;
 import org.triplea.swing.JFrameBuilder;
 
@@ -31,12 +31,13 @@ public class MainFrame {
   private final List<Runnable> quitActions = new ArrayList<>();
 
   private MainFrame(
-      final SetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
+      final HeadedServerSetupModel headedServerSetupModel,
+      final GameSelectorModel gameSelectorModel) {
     mainFrame =
         JFrameBuilder.builder()
             .title("TripleA")
             .iconImage(EngineImageLoader.loadFrameIcon())
-            .windowClosedAction(GameRunner::exitGameIfNoWindowsVisible)
+            .windowClosedAction(HeadedGameRunner::exitGameIfNoWindowsVisible)
             .build();
     BackgroundTaskRunner.setMainFrame(mainFrame);
 
@@ -48,17 +49,19 @@ public class MainFrame {
           mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
         };
 
-    mainPanel = new MainPanelBuilder(quitAction).buildMainPanel(setupPanelModel, gameSelectorModel);
+    mainPanel =
+        new MainPanelBuilder(quitAction).buildMainPanel(headedServerSetupModel, gameSelectorModel);
     mainFrame.add(mainPanel);
     mainFrame.pack();
 
-    setupPanelModel.setUi(mainFrame);
+    headedServerSetupModel.setUi(mainFrame);
   }
 
   public static void buildMainFrame(
-      final SetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
+      final HeadedServerSetupModel headedServerSetupModel,
+      final GameSelectorModel gameSelectorModel) {
     Preconditions.checkState(instance == null);
-    instance = new MainFrame(setupPanelModel, gameSelectorModel);
+    instance = new MainFrame(headedServerSetupModel, gameSelectorModel);
   }
 
   public static void show() {

@@ -6,7 +6,6 @@ import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.chat.ChatTransmitter;
 import games.strategy.engine.chat.LobbyChatTransmitter;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
@@ -26,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -40,7 +40,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
   public LobbyFrame(final LobbyClient lobbyClient, final URI lobbyUri) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    SwingComponents.addWindowClosedListener(this, GameRunner::exitGameIfNoWindowsVisible);
+    SwingComponents.addWindowClosedListener(this, HeadedGameRunner::exitGameIfNoWindowsVisible);
     setIconImage(EngineImageLoader.loadFrameIcon());
     this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));

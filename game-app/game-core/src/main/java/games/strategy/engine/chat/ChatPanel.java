@@ -63,6 +63,11 @@ public class ChatPanel extends JPanel implements ChatModel {
     return chatMessagePanel.getChat();
   }
 
+  @Override
+  public void cancel() {
+    deleteChat();
+  }
+
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
     chatPlayerPanel.setPlayerRenderer(renderer);
     // gets remaining width from parent component, so setting the width is not really necessary

@@ -26,7 +26,6 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
@@ -181,6 +180,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final JTabbedPane tabsPanel = new JTabbedPane();
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
+  private final Runnable clientLeftGame;
   private ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetails;
   private final JPanel historyComponent = new JPanel();
@@ -260,9 +260,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final IGame game,
       final LocalPlayers players,
       final UiContext uiContext,
-      @Nullable final Chat chat) {
+      @Nullable final Chat chat,
+      final Runnable clientLeftGame) {
     super("TripleA - " + game.getData().getGameName());
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+    this.clientLeftGame = clientLeftGame;
 
     localPlayers = players;
     setIconImage(EngineImageLoader.loadFrameIcon());
@@ -465,7 +468,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
    */
   public static TripleAFrame create(
-      final IGame game, final LocalPlayers players, @Nullable final Chat chat) {
+      final IGame game,
+      final LocalPlayers players,
+      @Nullable final Chat chat,
+      final Runnable clientLeftGame) {
     Preconditions.checkState(
         !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
@@ -477,7 +483,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         Interruptibles.awaitResult(
                 () ->
                     SwingAction.invokeAndWaitResult(
-                        () -> new TripleAFrame(game, players, uiContext, chat)))
+                        () -> new TripleAFrame(game, players, uiContext, chat, clientLeftGame)))
             .result
             .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
     frame.updateStep();
@@ -605,7 +611,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       game.getMessengers().shutDown();
       ((ClientGame) game).shutDown();
       // an ugly hack, we need a better way to get the main frame
-      new Thread(GameRunner::clientLeftGame).start();
+      new Thread(clientLeftGame).start();
     }
   }
 

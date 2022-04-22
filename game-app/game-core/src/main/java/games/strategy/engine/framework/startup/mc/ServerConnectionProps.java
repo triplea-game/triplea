@@ -13,7 +13,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
-class ServerConnectionProps {
+public class ServerConnectionProps {
   /** Player name, the desired name for the current player connecting to remote host. */
   @Nonnull private final String name;
   /** Remote host address. */
