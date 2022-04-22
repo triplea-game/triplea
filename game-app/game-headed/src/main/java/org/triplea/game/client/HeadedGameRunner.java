@@ -2,8 +2,10 @@ package org.triplea.game.client;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static games.strategy.engine.framework.CliProperties.*;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.auto.update.UpdateChecks;
@@ -24,7 +26,9 @@ import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.Util;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
