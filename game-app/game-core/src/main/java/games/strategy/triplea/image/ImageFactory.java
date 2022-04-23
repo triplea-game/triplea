@@ -24,7 +24,8 @@ import javax.imageio.ImageIO;
 public class ImageFactory {
   private ResourceLoader resourceLoader;
   private final LoadingCache<URL, Image> cache =
-      CacheBuilder.newBuilder().softValues()
+      CacheBuilder.newBuilder()
+          .softValues()
           .build(
               new CacheLoader<>() {
                 @Override
