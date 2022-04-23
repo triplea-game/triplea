@@ -3,8 +3,7 @@ package games.strategy.engine.lobby.moderator.toolbox;
 import games.strategy.engine.lobby.moderator.toolbox.tabs.TabFactory;
 import games.strategy.triplea.EngineImageLoader;
 import java.awt.Component;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
@@ -14,7 +13,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * This window shows a series of tabs that provide CRUD operations to a moderator. Each tab roughly
  * maps to a DB table.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class ToolBoxWindow {
 
   /** Shows the moderator toolbox UI window. */
