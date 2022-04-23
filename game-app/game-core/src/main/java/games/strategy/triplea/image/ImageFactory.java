@@ -1,5 +1,8 @@
 package games.strategy.triplea.image;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import games.strategy.triplea.ResourceLoader;
 import java.awt.Image;
 import java.io.IOException;
@@ -9,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 
 /**
@@ -19,6 +23,16 @@ import javax.imageio.ImageIO;
  */
 public class ImageFactory {
   private ResourceLoader resourceLoader;
+  private final LoadingCache<URL, Image> cache =
+      CacheBuilder.newBuilder().softValues()
+          .build(
+              new CacheLoader<>() {
+                @Override
+                public @Nonnull Image load(@Nonnull URL url) throws IOException {
+                  ImageIO.setUseCache(false); // refers whether to "use a disk based cache"
+                  return ImageIO.read(url);
+                }
+              });
 
   public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
@@ -49,17 +63,6 @@ public class ImageFactory {
         .map(resourceLoader::getResource)
         .filter(Objects::nonNull)
         .findFirst()
-        .map(this::loadImageFromUrl);
-  }
-
-  private Image loadImageFromUrl(URL url) {
-    try {
-      // use cache refers whether to "use a disk based cache" or to use a memory based
-      // cache
-      ImageIO.setUseCache(false);
-      return ImageIO.read(url);
-    } catch (final IOException e) {
-      throw new IllegalStateException(e);
-    }
+        .map(cache::getUnchecked);
   }
 }
