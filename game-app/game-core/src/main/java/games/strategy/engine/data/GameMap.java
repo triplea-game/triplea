@@ -115,8 +115,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   private Set<Territory> getNeighbors(
       final Territory territory, final BiPredicate<Territory, Territory> routeCondition) {
-
-    return connections.getOrDefault(territory, Set.of()).parallelStream()
+    return connections.get(territory).stream()
         .filter(n -> routeCondition.test(territory, n))
         .collect(Collectors.toSet());
   }
