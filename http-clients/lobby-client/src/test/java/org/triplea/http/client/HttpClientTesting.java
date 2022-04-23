@@ -25,9 +25,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.triplea.domain.data.ApiKey;
@@ -35,7 +34,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.test.common.JsonUtil;
 
 /** Utility class with tests for common http client error scenarios. */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class HttpClientTesting {
 
   public static final ApiKey API_KEY = ApiKey.of("api-key-value");

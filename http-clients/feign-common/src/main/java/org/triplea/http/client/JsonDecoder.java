@@ -9,8 +9,7 @@ import com.google.gson.JsonElement;
 import feign.gson.GsonDecoder;
 import java.time.Instant;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /**
  * Custom decoder that allows for <code>Instant</code> values represented as a floating point number
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
  * <p>The expected representation that we will be parsing is: {@code [epoch second].[epoch nano]}.
  * This representation is created by the server when it sends JSON responses back.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 final class JsonDecoder {
 
   static GsonDecoder gsonDecoder() {

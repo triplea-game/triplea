@@ -7,11 +7,11 @@ import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.function.Consumer;
+import lombok.experimental.UtilityClass;
 
 /** Utility class to add macOS integration. */
+@UtilityClass
 public final class MacOsIntegration {
-  private MacOsIntegration() {}
-
   /** Sets the specified open URI handler to the application. */
   public static void setOpenUriHandler(final Consumer<URI> handler) {
     checkNotNull(handler);

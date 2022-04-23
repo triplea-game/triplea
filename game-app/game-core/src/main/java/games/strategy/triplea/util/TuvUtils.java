@@ -22,14 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** Utility class with static methods to assist in determining TUV. */
+@UtilityClass
 public class TuvUtils {
-
-  private TuvUtils() {}
-
   /**
    * Return map where keys are unit types and values are PU costs of that unit type, based on a
    * player. Any production rule that produces multiple units (like artillery in NWO, costs 7 but
