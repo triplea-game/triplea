@@ -23,8 +23,8 @@ import org.triplea.swing.key.binding.KeyCode;
  * </pre></code>
  */
 public class JMenuItemCheckBoxBuilder {
-  private String title;
-  private Character mnemonic;
+  private final String title;
+  private final Character mnemonic;
   private Consumer<Boolean> action;
   private boolean selected;
   private SettingPersistence settingPersistence;

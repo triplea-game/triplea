@@ -45,10 +45,7 @@ public class JButtonBuilder {
     private final float value;
   }
 
-  /**
-   * Constructs a Swing JButton using current builder values. Values that must be set: title,
-   * actionlistener
-   */
+  /** Constructs a Swing JButton using current builder values. Values that must be set: title. */
   public JButton build() {
     checkNotNull(title);
 
