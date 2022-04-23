@@ -40,6 +40,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.experimental.UtilityClass;
@@ -356,6 +357,10 @@ public final class SwingComponents {
    */
   public static boolean canDisplayCharacter(final char character) {
     return new JLabel().getFont().canDisplay(character);
+  }
+
+  public static boolean isUsingNativeLookAndFeel() {
+    return UIManager.getLookAndFeel().getName().equals(UIManager.getSystemLookAndFeelClassName());
   }
 
   /**
