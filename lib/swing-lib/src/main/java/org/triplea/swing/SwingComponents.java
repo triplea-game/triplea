@@ -359,8 +359,10 @@ public final class SwingComponents {
     return new JLabel().getFont().canDisplay(character);
   }
 
+  /** Whether the current look and feel is the platform "native" one. */
   public static boolean isUsingNativeLookAndFeel() {
-    return UIManager.getLookAndFeel().getName().equals(UIManager.getSystemLookAndFeelClassName());
+    return UIManager.getSystemLookAndFeelClassName()
+        .equals(UIManager.getLookAndFeel().getClass().getName());
   }
 
   /**
