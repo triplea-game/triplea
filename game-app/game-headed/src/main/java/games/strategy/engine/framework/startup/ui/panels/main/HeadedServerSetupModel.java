@@ -33,14 +33,14 @@ import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.injection.Injections;
-import org.triplea.swing.SwingComponents;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
-public class SetupPanelModel implements ServerSetupModel {
+public class HeadedServerSetupModel implements ServerSetupModel {
   @Getter protected final GameSelectorModel gameSelectorModel;
   protected SetupPanel panel = null;
 
@@ -69,12 +69,7 @@ public class SetupPanelModel implements ServerSetupModel {
    * clients.
    */
   public ServerModel showServer() {
-    return new ServerModel(
-        gameSelectorModel,
-        this,
-        ui,
-        new HeadedLaunchAction(ui),
-        error -> SwingComponents.showError(null, "Connection problem", error));
+    return new ServerModel(gameSelectorModel, this, new HeadedLaunchAction(ui));
   }
 
   @Override
@@ -106,7 +101,13 @@ public class SetupPanelModel implements ServerSetupModel {
    */
   public void showClient() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
-    final ClientModel model = new ClientModel(gameSelectorModel, this, new HeadedLaunchAction(ui));
+    final ClientModel model =
+        new ClientModel(
+            gameSelectorModel,
+            this,
+            new HeadedLaunchAction(ui),
+            HeadedGameRunner::showMainFrame,
+            HeadedGameRunner::clientLeftGame);
     if (model.createClientMessenger(ui)) {
       SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
     } else {

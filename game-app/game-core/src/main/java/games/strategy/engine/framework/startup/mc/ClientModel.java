@@ -26,7 +26,6 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.message.RemoteName;
@@ -60,6 +59,7 @@ import javax.swing.SwingUtilities;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -78,7 +78,7 @@ public class ClientModel implements IMessengerErrorListener {
           IServerReady.class);
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final GameSelectorModel gameSelectorModel;
-  private final SetupPanelModel typePanelModel;
+  private final ServerSetupModel typePanelModel;
   private final WaitWindow gameLoadingWindow;
   private final LaunchAction launchAction;
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
@@ -132,7 +132,7 @@ public class ClientModel implements IMessengerErrorListener {
         @Override
         public void gameReset() {
           objectStreamFactory.setData(null);
-          GameRunner.showMainFrame();
+          showMainFrame.run();
         }
 
         @Override
@@ -147,13 +147,20 @@ public class ClientModel implements IMessengerErrorListener {
         }
       };
 
+  private final Runnable showMainFrame;
+  private final Runnable clientLeftGame;
+
   public ClientModel(
       final GameSelectorModel gameSelectorModel,
-      final SetupPanelModel typePanelModel,
-      final LaunchAction launchAction) {
+      final ServerSetupModel typePanelModel,
+      final LaunchAction launchAction,
+      final Runnable showMainFrame,
+      final Runnable clientLeftGame) {
     this.launchAction = launchAction;
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel = gameSelectorModel;
+    this.showMainFrame = showMainFrame;
+    this.clientLeftGame = clientLeftGame;
     final Interruptibles.Result<WaitWindow> window =
         Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(WaitWindow::new));
     if (!window.completed) {
@@ -366,7 +373,7 @@ public class ClientModel implements IMessengerErrorListener {
                 messenger.shutDown();
                 gameLoadingWindow.doneWait();
                 // an ugly hack, we need a better way to get the main frame
-                GameRunner.clientLeftGame();
+                clientLeftGame.run();
               }
             }
             if (!gameRunning) {

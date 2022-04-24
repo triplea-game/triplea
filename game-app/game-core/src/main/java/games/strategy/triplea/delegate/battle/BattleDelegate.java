@@ -1525,7 +1525,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         data.getMap()
             .getNeighborsByMovementCost(
                 currentTerr,
-                strandedAir,
                 new BigDecimal(maxDistance),
                 Matches.airCanFlyOver(
                     alliedPlayer,

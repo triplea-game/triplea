@@ -2,12 +2,11 @@ package games.strategy.net;
 
 import com.google.common.base.Preconditions;
 import java.util.Collection;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.triplea.domain.data.UserName;
 
 /** Utility class that will assign a name to a newly logging in player. */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class UserNameAssigner {
 
   /**

@@ -208,6 +208,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
     private UnitDeserializationErrorLazyMessage() {}
 
+    // false positive
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static void printError(final String errorMessage) {
       if (!shownError) {
         shownError = true;

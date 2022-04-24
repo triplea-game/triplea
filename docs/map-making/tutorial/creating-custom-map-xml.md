@@ -298,7 +298,7 @@
 		<td><b>Capital XML Option</b></td>
 	</tr>
 	<tr>
-		<td><pre><code>&lt;attachment id="territoryAttachment" attatchTo="Germany" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory"&gt;
+		<td><pre><code>&lt;attachment id="territoryAttachment" attachTo="Germany" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory"&gt;
          &lt;option id="production" value="10"/&gt;
          &lt;option id="capital" value="Germans"/&gt;
 &lt;/attachment&gt;</code></pre></td>
@@ -378,7 +378,7 @@
 		<td><b>Victory City XML Option</b></td>
 	</tr>
 	<tr>
-		<td><pre><code>&lt;attachment id="territoryAttachment" attatchTo="Karelia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory"&gt;<br>&nbsp;&lt;option id="production" value="10"/&gt;<br>&nbsp;&lt;option id="victoryCity" value="true"/&gt;<br>&lt;/attachment&gt;</code></pre></td>
+		<td><pre><code>&lt;attachment id="territoryAttachment" attachTo="Karelia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory"&gt;<br>&nbsp;&lt;option id="production" value="10"/&gt;<br>&nbsp;&lt;option id="victoryCity" value="true"/&gt;<br>&lt;/attachment&gt;</code></pre></td>
 	</tr>
 </table>
 <br>
@@ -1221,7 +1221,7 @@ Options and Values for <b>result</b> tag:<br>
 		<td><b>Unit Attachment Example</b></td>
 	</tr>
 	<tr>
-		<td><pre><code>&lt;attachment id="unitAttachment" attatchTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType"&gt;
+		<td><pre><code>&lt;attachment id="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType"&gt;
 	&lt;option id="movement" value="2"/&gt;
 	&lt;option id="isSea" value="true"/&gt;
 	&lt;option id="attack" value="4"/&gt;
@@ -1229,14 +1229,14 @@ Options and Values for <b>result</b> tag:<br>
 	&lt;option id="canBombard" value="true"/&gt;
 	&lt;option id="isTwoHit" value="false"/&gt;
 &lt;/attachment&gt;
-&lt;attachment id="unitAttachment" attatchTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType"&gt;
+&lt;attachment id="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType"&gt;
     &lt;option id="movement" value="1"/&gt;
     &lt;option id="transportCost" value="2"/&gt;
     &lt;option id="attack" value="1"/&gt;
     &lt;option id="defense" value="2"/&gt;
     &lt;option id="artillerySupportable" value="true"/&gt;
 &lt;/attachment&gt;
-&lt;attachment id="unitAttachment" attatchTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType"&gt;
+&lt;attachment id="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType"&gt;
     &lt;option id="isFactory" value="true"/&gt;
 &lt;/attachment&gt;</code></pre></td>
 	</tr>
@@ -1342,7 +1342,7 @@ Options and Values for <b>result</b> tag:<br>
 		<td><b>Tech Attachment Example</b></td>
 	</tr>
 	<tr>
-		<td><pre><code>&lt;attachment id="techAttachment" attatchTo="British" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player"&gt;
+		<td><pre><code>&lt;attachment id="techAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player"&gt;
 	&lt;option id="heavyBomber" value="false"/&gt;
 	&lt;option id="jetPower" value="false"/&gt;
 	&lt;option id="industrialTechnology" value="false"/&gt;

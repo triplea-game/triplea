@@ -2,11 +2,10 @@ package org.triplea.java;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /** Utility class to validate method arguments. */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class ArgChecker {
 
   /**

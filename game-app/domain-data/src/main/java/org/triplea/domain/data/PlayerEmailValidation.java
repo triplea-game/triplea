@@ -1,9 +1,9 @@
 package org.triplea.domain.data;
 
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /** Utility class to validates user email to check if it looks valid. */
-@NoArgsConstructor
+@UtilityClass
 public final class PlayerEmailValidation {
 
   public static boolean isValid(final String emailAddress) {

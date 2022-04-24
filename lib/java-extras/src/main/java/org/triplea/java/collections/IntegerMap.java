@@ -29,8 +29,8 @@ public final class IntegerMap<T> implements Serializable {
 
   /**
    * Creates an IntegerMap using a counting function. The counting function maps each given element
-   * to a value that is then counted. The end result is a map with each counted elemented and how
-   * many occurrences of each counted element was found.
+   * to a value that is then counted. The end result is a map with each counted element and how many
+   * occurrences of each counted element was found.
    *
    * @param collection A collection to iterate over and map each element with a counting function.
    * @param countingFunction How to map each element of the input collection to a value that is then

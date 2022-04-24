@@ -81,7 +81,7 @@ will stop the parser, and terminate the program.
 
 getAttachment,
 where key is the name of the attachment.
-In the above example key would be unitAttachment.  Objects implementing the Attatchable
+In the above example key would be unitAttachment.  Objects implementing the Attachable
 interface are PlayerID, Resource, Territory, and UnitType.
 
 ##
