@@ -6,6 +6,7 @@ import games.strategy.triplea.ui.ProductionPanel.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
 class ProductionTabsProperties {
@@ -59,8 +60,7 @@ class ProductionTabsProperties {
           List.of(properties.getProperty(TAB_UNITS + "." + i).split(":"));
       final List<Rule> ruleList = new ArrayList<>();
       for (final Rule rule : rules) {
-        if (tabValues.contains(
-            rule.getProductionRule().getResults().keySet().iterator().next().getName())) {
+        if (tabValues.contains(rule.getProductionRule().getAnyResultKey().getName())) {
           ruleList.add(rule);
         }
       }

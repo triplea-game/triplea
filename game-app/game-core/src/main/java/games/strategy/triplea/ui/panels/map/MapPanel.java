@@ -862,7 +862,10 @@ public class MapPanel extends ImageScrollerLargeView {
       try {
         movementFuelCost =
             Route.getMovementFuelCostCharge(
-                units, routeDescription.getRoute(), units.iterator().next().getOwner(), gameData);
+                units,
+                routeDescription.getRoute(),
+                CollectionUtils.getAny(units).getOwner(),
+                gameData);
       } finally {
         gameData.releaseReadLock();
       }

@@ -49,6 +49,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.JMenuItemBuilder;
@@ -224,8 +225,8 @@ final class ExportMenu extends JMenu {
         for (final ProductionRule pr : purchaseOptions) {
           final String costString = pr.toStringCosts().replaceAll(";? ", ",");
           writer.append(pr.getName()).append(',');
-          writer.append(pr.getResults().keySet().iterator().next().getName()).append(',');
-          writer.print(pr.getResults().getInt(pr.getResults().keySet().iterator().next()));
+          writer.append(pr.getAnyResultKey().getName()).append(',');
+          writer.print(pr.getResults().getInt(pr.getAnyResultKey()));
           writer.append(',').append(costString).println(',');
         }
         writer.println();

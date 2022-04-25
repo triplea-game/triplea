@@ -841,7 +841,7 @@ public final class Matches {
   public static Predicate<Territory> territoryIsIsland() {
     return t -> {
       final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
-      return neighbors.size() == 1 && territoryIsWater().test(neighbors.iterator().next());
+      return neighbors.size() == 1 && territoryIsWater().test(CollectionUtils.getAny(neighbors));
     };
   }
 

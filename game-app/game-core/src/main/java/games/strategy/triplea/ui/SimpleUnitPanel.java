@@ -24,6 +24,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.WrapLayout;
 
@@ -46,8 +47,8 @@ public class SimpleUnitPanel extends JPanel {
         @Override
         public int compare(final ProductionRule o1, final ProductionRule o2) {
           if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
-            final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
-            final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
+            final NamedAttachable n1 = o1.getAnyResultKey();
+            final NamedAttachable n2 = o2.getAnyResultKey();
             if (n1 instanceof UnitType) {
               final UnitType u1 = (UnitType) n1;
               if (n2 instanceof UnitType) {
@@ -88,8 +89,8 @@ public class SimpleUnitPanel extends JPanel {
         @Override
         public int compare(final RepairRule o1, final RepairRule o2) {
           if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
-            final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
-            final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
+            final NamedAttachable n1 = o1.getAnyResultKey();
+            final NamedAttachable n2 = o2.getAnyResultKey();
             if (n1 instanceof UnitType) {
               final UnitType u1 = (UnitType) n1;
               if (n2 instanceof UnitType) {
@@ -180,7 +181,7 @@ public class SimpleUnitPanel extends JPanel {
       for (final RepairRule repairRule : repairRules) {
         // check to see if the repair rule matches the damaged unit
         if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
-            && unit.getType().equals(repairRule.getResults().keySet().iterator().next())) {
+            && unit.getType().equals(repairRule.getAnyResultKey())) {
           addUnits(
               player,
               rules.getInt(repairRule),

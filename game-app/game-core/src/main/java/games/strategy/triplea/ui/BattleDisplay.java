@@ -413,7 +413,9 @@ public class BattleDisplay extends JPanel {
   private RetreatResult showRetreatDialog(
       final String message, final Collection<Territory> possible) {
     final String yes =
-        possible.size() == 1 ? "Retreat to " + possible.iterator().next().getName() : "Retreat";
+        possible.size() == 1
+            ? "Retreat to " + CollectionUtils.getAny(possible).getName()
+            : "Retreat";
     final String no = "Remain";
     final String cancel = "Ask Me Later";
     final String[] options = {yes, no, cancel};
@@ -438,7 +440,7 @@ public class BattleDisplay extends JPanel {
 
     // retreat
     if (possible.size() == 1) {
-      return RetreatResult.retreatTo(possible.iterator().next());
+      return RetreatResult.retreatTo(CollectionUtils.getAny(possible));
     }
 
     return showRetreatOptions(message, possible);

@@ -111,7 +111,9 @@ class ProPurchaseAi {
       for (final var repairRule : player.getRepairFrontier().getRules()) {
         for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
           if (fixUnit == null
-              || !fixUnit.getType().equals(repairRule.getResults().keySet().iterator().next())) {
+              || !fixUnit
+                  .getType()
+                  .equals(repairRule.getAnyResultKey())) {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(

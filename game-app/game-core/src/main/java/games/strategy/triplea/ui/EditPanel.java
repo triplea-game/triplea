@@ -298,8 +298,7 @@ class EditPanel extends ActionPanel {
               final Collection<Unit> units = new ArrayList<>();
               for (final ProductionRule productionRule : production.keySet()) {
                 final int quantity = production.getInt(productionRule);
-                final NamedAttachable resourceOrUnit =
-                    productionRule.getResults().keySet().iterator().next();
+                final NamedAttachable resourceOrUnit = productionRule.getAnyResultKey();
                 if (!(resourceOrUnit instanceof UnitType)) {
                   continue;
                 }

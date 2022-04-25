@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Tuple;
@@ -218,8 +219,7 @@ class TabbedProductionPanel extends ProductionPanel {
     final List<Rule> resourceRules = new ArrayList<>();
     for (final Rule rule : rules) {
       allRules.add(rule);
-      final NamedAttachable resourceOrUnit =
-          rule.getProductionRule().getResults().keySet().iterator().next();
+      final NamedAttachable resourceOrUnit = rule.getProductionRule().getAnyResultKey();
       if (resourceOrUnit instanceof UnitType) {
         final UnitType type = (UnitType) resourceOrUnit;
         final UnitAttachment attach = UnitAttachment.get(type);

@@ -50,7 +50,8 @@ public class PurchaseDelegate extends BaseTripleADelegate
   public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
   private static final Comparator<RepairRule> repairRuleComparator =
       Comparator.comparing(
-          o -> (UnitType) o.getResults().keySet().iterator().next(), new UnitTypeComparator());
+          o -> (UnitType) o.getAnyResultKey(),
+          new UnitTypeComparator());
 
   private boolean needToInitialize = true;
 

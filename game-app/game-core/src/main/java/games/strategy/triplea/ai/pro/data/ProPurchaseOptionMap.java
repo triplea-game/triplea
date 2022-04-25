@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Takes all available purchase options, filters out those which the AI can't handle, and sorts them
@@ -59,7 +60,7 @@ public class ProPurchaseOptionMap {
     for (final ProductionRule rule : productionFrontier.getRules()) {
 
       // Check if rule is for a unit
-      final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+      final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
       if (!(resourceOrUnit instanceof UnitType)) {
         continue;
       }

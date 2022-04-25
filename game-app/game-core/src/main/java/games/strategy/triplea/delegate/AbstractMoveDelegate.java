@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.IntStream;
+import org.triplea.java.collections.CollectionUtils;
 
 /** An abstraction of MoveDelegate in order to allow other delegates to extend this. */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
@@ -109,7 +110,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     // these are.
     return (units.isEmpty() || !BaseEditDelegate.getEditMode(getData().getProperties()))
         ? player
-        : units.iterator().next().getOwner();
+        : CollectionUtils.getAny(units).getOwner();
   }
 
   public String move(final Collection<Unit> units, final Route route) {

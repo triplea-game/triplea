@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
@@ -53,7 +54,7 @@ public class TuvUtils {
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {
       for (final ProductionRule rule : frontier.getRules()) {
-        final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+        final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
         if (!(resourceOrUnit instanceof UnitType)) {
           continue;
         }
@@ -105,7 +106,7 @@ public class TuvUtils {
     for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {
       // only works for the first result, so we are assuming each purchase frontier only gives one
       // type of unit
-      final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+      final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
       if (!(resourceOrUnit instanceof UnitType)) {
         continue;
       }
@@ -209,7 +210,7 @@ public class TuvUtils {
         }
         final int totalProduced = unitMap.totalValues();
         if (totalProduced == 1) {
-          current.put(units.iterator().next(), costPerGroup);
+          current.put(CollectionUtils.getAny(units), costPerGroup);
         } else if (totalProduced > 1) {
           costPerGroup.discount((double) 1 / (double) totalProduced);
           for (final UnitType ut : units) {
@@ -273,7 +274,7 @@ public class TuvUtils {
       }
       final int totalProduced = unitMap.totalValues();
       if (totalProduced == 1) {
-        final UnitType ut = units.iterator().next();
+        final UnitType ut = CollectionUtils.getAny(units);
         final List<ResourceCollection> current =
             backups.computeIfAbsent(ut, k -> new ArrayList<>());
         current.add(costPerGroup);
@@ -306,11 +307,7 @@ public class TuvUtils {
       }
       if (costs.isEmpty()) {
         final ResourceCollection backup = backupAveraged.get(ut);
-        if (backup != null) {
-          costs.add(backup);
-        } else {
-          costs.add(defaultResources);
-        }
+        costs.add(Objects.requireNonNullElse(backup, defaultResources));
       }
       final ResourceCollection avgCost =
           new ResourceCollection(costs.toArray(new ResourceCollection[0]), data);
