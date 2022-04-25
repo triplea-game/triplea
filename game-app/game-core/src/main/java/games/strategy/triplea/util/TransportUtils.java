@@ -337,7 +337,7 @@ public final class TransportUtils {
     }
     unitToPotentialTransports.values().forEach(t -> t.remove(transport));
   }
-  
+
   private static Optional<Unit> findEquivalentUnit(final Unit unit, final Collection<Unit> units) {
     return units.stream().filter(unit::isEquivalent).findAny();
   }
