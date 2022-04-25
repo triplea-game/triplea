@@ -955,7 +955,9 @@ public class ProCombatMoveAi {
       // filter out bombings without sufficient damage
       bombedTerritoryDataMap.forEach(
           (bombedTerr, bombedTerritoryData) -> {
-            if (!bombedTerritoryData.bombingWithSufficientDamage()) attackMap.remove(bombedTerr);
+            if (!bombedTerritoryData.bombingWithSufficientDamage()) {
+              attackMap.remove(bombedTerr);
+            }
           });
 
       // Re-sort attack options
