@@ -6,7 +6,6 @@ import games.strategy.triplea.ui.ProductionPanel.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
 class ProductionTabsProperties {

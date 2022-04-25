@@ -896,7 +896,7 @@ public class WeakAi extends AbstractBuiltInAi {
       int maxUnits = (totalPu - 1) / minimumUnitPrice;
       if ((capProduction <= maxUnits / 2 || repairFactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : repairRules) {
-          if (!capUnit.getType().equals(rrule.getAnyResultKey()) {
+          if (!capUnit.getType().equals(rrule.getAnyResultKey())) {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(
@@ -941,8 +941,7 @@ public class WeakAi extends AbstractBuiltInAi {
       while (currentProduction < maxUnits && i < 2) {
         for (final RepairRule rrule : repairRules) {
           for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
-            if (fixUnit == null
-                || !fixUnit.getType().equals(rrule.getAnyResultKey()))) {
+            if (fixUnit == null || !fixUnit.getType().equals(rrule.getAnyResultKey())) {
               continue;
             }
             if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(

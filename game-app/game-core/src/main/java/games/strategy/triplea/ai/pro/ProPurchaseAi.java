@@ -110,10 +110,7 @@ class ProPurchaseAi {
       ProLogger.debug("Factories that need repaired: " + unitsThatCanProduceNeedingRepair);
       for (final var repairRule : player.getRepairFrontier().getRules()) {
         for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
-          if (fixUnit == null
-              || !fixUnit
-                  .getType()
-                  .equals(repairRule.getAnyResultKey())) {
+          if (fixUnit == null || !fixUnit.getType().equals(repairRule.getAnyResultKey())) {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(

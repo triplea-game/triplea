@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
 
 /** This delegate is only supposed to be run once, per game, at the start of the game. */
 @Slf4j
@@ -296,7 +295,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         final UnitType unit = data.getUnitTypeList().getUnitType(named.getName());
         final boolean isSea = UnitAttachment.get(unit).getIsSea();
         if (!isSea) {
-          final ProductionRule prodRule = data.getProductionRuleList().getProductionRule(rule.getName());
+          final ProductionRule prodRule =
+              data.getProductionRuleList().getProductionRule(rule.getName());
           change.add(ChangeFactory.addProductionRule(prodRule, frontierShipyards));
         }
       }

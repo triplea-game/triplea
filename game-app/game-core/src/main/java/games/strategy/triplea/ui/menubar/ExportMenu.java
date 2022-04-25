@@ -49,7 +49,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.JMenuItemBuilder;

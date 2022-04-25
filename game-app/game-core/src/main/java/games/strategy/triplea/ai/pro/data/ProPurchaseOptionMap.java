@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Takes all available purchase options, filters out those which the AI can't handle, and sorts them
