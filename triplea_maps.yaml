@@ -2601,3 +2601,11 @@
   description: |
    <br>Revised LHTR-10% Upkeep
    <br>Revised LHTR with Buildcaps
+- mapName: Classic with Buildcaps & Upkeep
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Classic_BuildCaps_Upkeep/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Classic_BuildCaps_Upkeep/master/preview.png
+  description: |
+   <br>Classic-10% Upkeep
+   <br>Classic with Buildcaps
