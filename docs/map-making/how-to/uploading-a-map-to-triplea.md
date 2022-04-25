@@ -3,7 +3,7 @@
 - [More about triplea_maps.yaml](#more-about-triplea_mapsyaml)
 - [Github repo change ownership option](#github-repo-change-ownership-option)
 
-Maps are hosted in (github triplea-maps)[https://github.com/triplea-maps/] and found by the game engine through a property file, (triplea_maps.yaml)[https://github.com/triplea-game/triplea/blob/master/triplea_maps.yaml], that is read live every time the game starts.
+Maps are hosted in [github triplea-maps](https://github.com/triplea-maps/) and found by the game engine through a property file, [triplea_maps.yaml](https://github.com/triplea-game/triplea/blob/master/triplea_maps.yaml), that is read live every time the game starts.
 
 Maps can be hosted at any time, before they are complete. Map repositories provide a download link that will zip a map up for you, this can be an easy way to share maps that are still being worked on.
 
@@ -24,8 +24,8 @@ or like this:
 * Create a github account
 * Create a repository
 * Upload your map folder to it
-** If the upload size is too large, do it a few files/folders at a time or use 'Github Desktop' or 'Git for Windows' or 'SourceTree' to do it in bulk.
-** Note, the files and folders uploaded should be unzipped. Zips are for download only convenience. When working with a map, you can and should have it unzipped, and same for upload.
+**If the upload size is too large, do it a few files/folders at a time or use 'Github Desktop' or 'Git for Windows' or 'SourceTree' to do it in bulk.** 
+Note, the files and folders uploaded should be unzipped. Zips are for download only convenience. When working with a map, you can and should have it unzipped, and same for upload.
 
 ## More about triplea_maps.yaml
 
