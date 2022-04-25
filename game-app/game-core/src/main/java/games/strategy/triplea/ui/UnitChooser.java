@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -101,11 +102,11 @@ public final class UnitChooser extends JPanel {
   }
 
   private UnitChooser(
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final boolean allowMultipleHits,
       final UiContext uiContext,
-      final Predicate<Collection<Unit>> match) {
-    dependents = dependent;
+      final @Nullable Predicate<Collection<Unit>> match) {
+    this.dependents = dependents;
     this.allowMultipleHits = allowMultipleHits;
     NonWithdrawableFactory.makeSureNonWithdrawableFactoryMatchesUiContext(uiContext);
     this.match = match;
@@ -114,19 +115,19 @@ public final class UnitChooser extends JPanel {
   UnitChooser(
       final Collection<Unit> units,
       final CasualtyList defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final boolean retreatPossibility,
       final boolean movementForAirUnitsOnly,
       final boolean allowMultipleHits,
       final UiContext uiContext) {
-    this(dependent, allowMultipleHits, uiContext, null);
+    this(dependents, allowMultipleHits, uiContext, null);
     final List<Unit> combinedList = defaultSelections.getDamaged();
     // TODO: this adds it to the default selections list, is this intended?
     combinedList.addAll(defaultSelections.getKilled());
     createEntries(
         units,
         UnitSeparator.SeparatorCategories.builder()
-            .dependents(dependent)
+            .dependents(dependents)
             .retreatPossibility(retreatPossibility)
             .movementForAirUnitsOnly(movementForAirUnitsOnly)
             .build(),
@@ -137,11 +138,11 @@ public final class UnitChooser extends JPanel {
   public UnitChooser(
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final UnitSeparator.SeparatorCategories separatorCategories,
       final boolean allowMultipleHits,
       final UiContext uiContext) {
-    this(dependent, allowMultipleHits, uiContext, null);
+    this(dependents, allowMultipleHits, uiContext, null);
     createEntries(
         units, separatorCategories.toBuilder().dependents(dependents).build(), defaultSelections);
     layoutEntries();
@@ -150,12 +151,12 @@ public final class UnitChooser extends JPanel {
   public UnitChooser(
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final UnitSeparator.SeparatorCategories separatorCategories,
       final boolean allowMultipleHits,
       final UiContext uiContext,
-      final Predicate<Collection<Unit>> match) {
-    this(dependent, allowMultipleHits, uiContext, match);
+      final @Nullable Predicate<Collection<Unit>> match) {
+    this(dependents, allowMultipleHits, uiContext, match);
     createEntries(
         units, separatorCategories.toBuilder().dependents(dependents).build(), defaultSelections);
     layoutEntries();
