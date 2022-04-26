@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.triplea.attachments.UnitTypeComparator;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 public abstract class Rule extends DefaultNamed implements Comparable<Rule> {
@@ -89,6 +90,10 @@ public abstract class Rule extends DefaultNamed implements Comparable<Rule> {
 
   public IntegerMap<NamedAttachable> getResults() {
     return results;
+  }
+
+  public NamedAttachable getAnyResultKey() {
+    return CollectionUtils.getAny(results.keySet());
   }
 
   @Override

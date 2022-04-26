@@ -1415,7 +1415,8 @@ public class BattleTracker implements Serializable {
   public void fightBattleIfOnlyOne(final IDelegateBridge bridge) {
     final Collection<Territory> territories = getPendingBattleSites(false);
     if (territories.size() == 1) {
-      final IBattle battle = getPendingBattle(territories.iterator().next(), BattleType.NORMAL);
+      final IBattle battle =
+          getPendingBattle(CollectionUtils.getAny(territories), BattleType.NORMAL);
       battle.fight(bridge);
     }
   }

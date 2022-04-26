@@ -94,7 +94,7 @@ public class SimpleUnitPanel extends JPanel {
       for (final RepairRule repairRule : repairRules) {
         // check to see if the repair rule matches the damaged unit
         if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
-            && unit.getType().equals(repairRule.getResults().keySet().iterator().next())) {
+            && unit.getType().equals(repairRule.getAnyResultKey())) {
           addUnits(
               player,
               rules.getInt(repairRule),

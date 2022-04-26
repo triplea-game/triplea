@@ -219,8 +219,8 @@ public class ProOddsCalculator {
 
     final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
     final int runCount = Math.max(16, 100 - minArmySize);
-    final GamePlayer attacker = attackingUnits.iterator().next().getOwner();
-    final GamePlayer defender = defendingUnits.iterator().next().getOwner();
+    final GamePlayer attacker = CollectionUtils.getAny(attackingUnits).getOwner();
+    final GamePlayer defender = CollectionUtils.getAny(defendingUnits).getOwner();
     final AggregateResults results =
         calc.calculate(
             attacker,
@@ -281,7 +281,7 @@ public class ProOddsCalculator {
     // Create battle result object
     final List<Territory> territoryList = new ArrayList<>();
     territoryList.add(t);
-    return (!territoryList.isEmpty() && territoryList.stream().allMatch(Matches.territoryIsLand()))
+    return territoryList.stream().allMatch(Matches.territoryIsLand())
         ? new ProBattleResult(
             winPercentage,
             tuvSwing,

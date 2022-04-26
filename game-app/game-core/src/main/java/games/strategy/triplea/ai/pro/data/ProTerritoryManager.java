@@ -200,7 +200,7 @@ public class ProTerritoryManager {
         if (!alliedUnits.isEmpty()) {
 
           // Make sure allies' capital isn't next to territory
-          final GamePlayer alliedPlayer = alliedUnits.iterator().next().getOwner();
+          final GamePlayer alliedPlayer = CollectionUtils.getAny(alliedUnits).getOwner();
           final Territory capital =
               TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(alliedPlayer, gameMap);
           if (capital != null && !gameMap.getNeighbors(capital).contains(t)) {
@@ -212,7 +212,7 @@ public class ProTerritoryManager {
               final Set<Unit> enemyUnits = new HashSet<>(enemyDefendOption.getMaxUnits());
               enemyUnits.addAll(enemyDefendOption.getMaxAmphibUnits());
               if (!enemyUnits.isEmpty()) {
-                final GamePlayer enemyPlayer = enemyUnits.iterator().next().getOwner();
+                final GamePlayer enemyPlayer = CollectionUtils.getAny(enemyUnits).getOwner();
                 if (ProUtils.isPlayersTurnFirst(players, enemyPlayer, alliedPlayer)) {
                   additionalEnemyDefenders.addAll(enemyUnits);
                 }
@@ -259,7 +259,7 @@ public class ProTerritoryManager {
                   "Checking strafing territory: "
                       + t
                       + ", alliedPlayer="
-                      + alliedUnits.iterator().next().getOwner().getName()
+                      + CollectionUtils.getAny(alliedUnits).getOwner().getName()
                       + ", maxWin%="
                       + patd.getMaxBattleResult().getWinPercentage()
                       + ", maxAttackers="

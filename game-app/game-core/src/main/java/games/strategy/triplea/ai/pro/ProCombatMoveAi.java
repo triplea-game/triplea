@@ -1298,7 +1298,8 @@ public class ProCombatMoveAi {
         estimatesMap.put(estimate, t);
       }
       if (!estimatesMap.isEmpty() && estimatesMap.firstKey() < 40) {
-        final Territory minWinTerritory = estimatesMap.entrySet().iterator().next().getValue();
+        final Territory minWinTerritory =
+            CollectionUtils.getAny(estimatesMap.entrySet()).getValue();
         final List<Unit> unitsToAdd =
             ProTransportUtils.getUnitsToAdd(proData, unit, alreadyMovedUnits, attackMap);
         attackMap.get(minWinTerritory).addUnits(unitsToAdd);
@@ -1877,7 +1878,7 @@ public class ProCombatMoveAi {
             data.getMap()
                 .getNeighbors(t, ProMatches.territoryCanMoveSeaUnitsThrough(data, player, true));
         if (!possibleMoveTerritories.isEmpty()) {
-          final Territory moveToTerritory = possibleMoveTerritories.iterator().next();
+          final Territory moveToTerritory = CollectionUtils.getAny(possibleMoveTerritories);
           final List<Unit> mySeaUnits =
               t.getUnitCollection()
                   .getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true));

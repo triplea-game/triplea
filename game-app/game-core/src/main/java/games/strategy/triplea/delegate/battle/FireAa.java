@@ -109,7 +109,7 @@ public class FireAa implements IExecutable {
       final List<Collection<Unit>> firingGroups = newFiringUnitGroups(aaTypeUnits);
       for (final Collection<Unit> firingGroup : firingGroups) {
         final Set<UnitType> validTargetTypes =
-            UnitAttachment.get(firingGroup.iterator().next().getType())
+            UnitAttachment.get(CollectionUtils.getAny(firingGroup).getType())
                 .getTargetsAa(bridge.getData().getUnitTypeList());
 
         final Set<UnitType> airborneTypesTargeted =

@@ -75,7 +75,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return null;
     }
     // now make sure land units are put on transports properly
-    final GamePlayer player = units.iterator().next().getOwner();
+    final GamePlayer player = CollectionUtils.getAny(units).getOwner();
     final GameData data = getData();
     Map<Unit, Unit> mapLoading = null;
     if (territory.isWater()
@@ -110,7 +110,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     // now perform the changes
     logEvent(
         "Adding units owned by "
-            + units.iterator().next().getOwner().getName()
+            + CollectionUtils.getAny(units).getOwner().getName()
             + " to "
             + territory.getName()
             + ": "
@@ -249,7 +249,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final Collection<Unit> unitsFinal = new ArrayList<>(unitDamageMap.keySet());
     logEvent(
         "Changing unit hit damage for these "
-            + unitsFinal.iterator().next().getOwner().getName()
+            + CollectionUtils.getAny(unitsFinal).getOwner().getName()
             + " owned units to: "
             + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false),
         unitsFinal);
@@ -285,7 +285,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final Collection<Unit> unitsFinal = new ArrayList<>(unitDamageMap.keySet());
     logEvent(
         "Changing unit bombing damage for these "
-            + unitsFinal.iterator().next().getOwner().getName()
+            + CollectionUtils.getAny(unitsFinal).getOwner().getName()
             + " owned units to: "
             + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false),
         unitsFinal);

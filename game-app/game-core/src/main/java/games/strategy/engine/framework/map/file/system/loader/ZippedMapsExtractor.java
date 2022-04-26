@@ -17,6 +17,7 @@ import org.triplea.io.FileUtils;
 import org.triplea.io.ZipExtractor;
 import org.triplea.io.ZipExtractor.FileSystemException;
 import org.triplea.io.ZipExtractor.ZipReadException;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 /**
@@ -132,10 +133,10 @@ public class ZippedMapsExtractor {
 
     // Typically the next step is to move and rename the temp folder to the maps folder.
     // But, if we just extracted exactly one folder, then we need to move and rename *that* folder.
+    final Collection<Path> files = FileUtils.listFiles(tempFolder);
     final Path tempFolderWithExtractedMap =
-        FileUtils.listFiles(tempFolder).size() == 1
-                && Files.isDirectory(FileUtils.listFiles(tempFolder).iterator().next())
-            ? FileUtils.listFiles(tempFolder).iterator().next()
+        files.size() == 1 && Files.isDirectory(CollectionUtils.getAny(files))
+            ? CollectionUtils.getAny(files)
             : tempFolder;
 
     // replace extraction target folder contents with the temp folder containing the extracted zip

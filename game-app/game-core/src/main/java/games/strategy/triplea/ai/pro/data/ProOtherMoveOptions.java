@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.triplea.java.collections.CollectionUtils;
 
 /** The result of an AI movement analysis for another player's possible moves. */
 public class ProOtherMoveOptions {
@@ -65,13 +66,10 @@ public class ProOtherMoveOptions {
         // Get current player
         final Set<Unit> currentUnits = new HashSet<>(moveMap.get(t).getMaxUnits());
         currentUnits.addAll(moveMap.get(t).getMaxAmphibUnits());
-        final GamePlayer movePlayer;
-        if (!currentUnits.isEmpty()) {
-          movePlayer = currentUnits.iterator().next().getOwner();
-        } else {
+        if (currentUnits.isEmpty()) {
           continue;
         }
-
+        final GamePlayer movePlayer = CollectionUtils.getAny(currentUnits).getOwner();
         // Skip if checking allied moves and their turn doesn't come before territory owner's
         if (proData.getData().getRelationshipTracker().isAllied(player, movePlayer)
             && !ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {

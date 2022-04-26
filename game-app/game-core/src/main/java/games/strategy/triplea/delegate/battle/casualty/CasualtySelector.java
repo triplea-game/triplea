@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -315,7 +316,7 @@ public class CasualtySelector {
                 .dependents(dependents)
                 .build());
     if (categorized.size() == 1) {
-      final UnitCategory unitCategory = categorized.iterator().next();
+      final UnitCategory unitCategory = CollectionUtils.getAny(categorized);
       return unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1;
     }
     return false;

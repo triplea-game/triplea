@@ -368,7 +368,7 @@ public class AirBattle extends AbstractBattle {
                     getRemote(bridge).whatShouldBomberBomb(battleSite, enemyTargets, List.of(unit));
               }
             } else {
-              target = enemyTargets.iterator().next();
+              target = CollectionUtils.getAny(enemyTargets);
             }
             if (target != null) {
               targets = new HashMap<>();
