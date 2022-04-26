@@ -1,11 +1,10 @@
 package games.strategy.engine.data;
 
-import java.util.Comparator;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.triplea.attachments.UnitTypeComparator;
+import java.util.Comparator;
 import org.triplea.java.collections.IntegerMap;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public abstract class Rule extends DefaultNamed {
   private final IntegerMap<Resource> costs;
@@ -15,7 +14,8 @@ public abstract class Rule extends DefaultNamed {
     this(name, data, new IntegerMap<>(), new IntegerMap<>());
   }
 
-  protected Rule(String name, GameData data, IntegerMap<NamedAttachable> results, IntegerMap<Resource> costs) {
+  protected Rule(
+      String name, GameData data, IntegerMap<NamedAttachable> results, IntegerMap<Resource> costs) {
     super(name, data);
 
     checkNotNull(results);
@@ -80,7 +80,7 @@ public abstract class Rule extends DefaultNamed {
   public void addResult(final NamedAttachable obj, final int quantity) {
     if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
       throw new IllegalArgumentException(
-        "results must be units or resources, not:" + obj.getClass().getName());
+          "results must be units or resources, not:" + obj.getClass().getName());
     }
     results.put(obj, quantity);
   }
