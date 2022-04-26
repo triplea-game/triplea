@@ -6,7 +6,6 @@ import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.RuleComparator;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
@@ -14,7 +13,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -39,36 +37,6 @@ public class SimpleUnitPanel extends JPanel {
     SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY
   }
 
-  private final Comparator<ProductionRule> productionRuleComparator =
-      new Comparator<>() {
-        final RuleComparator ruleComparator = new RuleComparator();
-
-        @Override
-        public int compare(final ProductionRule o1, final ProductionRule o2) {
-          var comparison = ruleComparator.compare(o1, o2);
-          if (comparison == 0) {
-            return o1.getName().compareTo(o2.getName());
-          } else {
-            return comparison;
-          }
-        }
-      };
-
-  private final Comparator<RepairRule> repairRuleComparator =
-      new Comparator<>() {
-        final RuleComparator ruleComparator = new RuleComparator();
-
-        @Override
-        public int compare(final RepairRule o1, final RepairRule o2) {
-          var comparison = ruleComparator.compare(o1, o2);
-          if (comparison == 0) {
-            return o1.getName().compareTo(o2.getName());
-          } else {
-            return comparison;
-          }
-        }
-      };
-
   public SimpleUnitPanel(final UiContext uiContext) {
     this(uiContext, Style.LARGE_ICONS_COLUMN);
   }
@@ -92,7 +60,7 @@ public class SimpleUnitPanel extends JPanel {
   void setUnitsFromProductionRuleMap(
       final IntegerMap<ProductionRule> units, final GamePlayer player) {
     removeAll();
-    final TreeSet<ProductionRule> productionRules = new TreeSet<>(productionRuleComparator);
+    final TreeSet<ProductionRule> productionRules = new TreeSet<>(ProductionRule.getComparator());
     productionRules.addAll(units.keySet());
     for (final ProductionRule productionRule : productionRules) {
       final int quantity = units.getInt(productionRule);
@@ -121,7 +89,7 @@ public class SimpleUnitPanel extends JPanel {
     final Set<Unit> entries = units.keySet();
     for (final Unit unit : entries) {
       final IntegerMap<RepairRule> rules = units.get(unit);
-      final TreeSet<RepairRule> repairRules = new TreeSet<>(repairRuleComparator);
+      final TreeSet<RepairRule> repairRules = new TreeSet<>(RepairRule.getComparator());
       repairRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repairRules) {
         // check to see if the repair rule matches the damaged unit

@@ -5,11 +5,8 @@ import java.util.Map.Entry;
 import org.triplea.java.collections.IntegerMap;
 
 /** A production rule. */
-public class ProductionRule extends DefaultNamed implements Rule {
+public class ProductionRule extends Rule {
   private static final long serialVersionUID = -6598296283127741307L;
-
-  private IntegerMap<Resource> costs = new IntegerMap<>();
-  private IntegerMap<NamedAttachable> results = new IntegerMap<>();
 
   public ProductionRule(final String name, final GameData data) {
     super(name, data);
@@ -20,37 +17,7 @@ public class ProductionRule extends DefaultNamed implements Rule {
       final GameData data,
       final IntegerMap<NamedAttachable> results,
       final IntegerMap<Resource> costs) {
-    super(name, data);
-    this.results = results;
-    this.costs = costs;
-  }
-
-  public void addCost(final Resource resource, final int quantity) {
-    costs.put(resource, quantity);
-  }
-
-  /** Benefits must be a resource or a unit. */
-  public void addResult(final NamedAttachable obj, final int quantity) {
-    if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
-      throw new IllegalArgumentException(
-          "results must be units or resources, not:" + obj.getClass().getName());
-    }
-    results.put(obj, quantity);
-  }
-
-  @Override
-  public IntegerMap<Resource> getCosts() {
-    return new IntegerMap<>(costs);
-  }
-
-  @Override
-  public IntegerMap<NamedAttachable> getResults() {
-    return results;
-  }
-
-  @Override
-  public String toString() {
-    return "ProductionRule:" + getName();
+    super(name, data, results, costs);
   }
 
   /**
@@ -68,6 +35,9 @@ public class ProductionRule extends DefaultNamed implements Rule {
     } finally {
       getData().releaseReadLock();
     }
+
+    IntegerMap<Resource> costs = getCosts();
+
     if (costs.getInt(pus) != 0) {
       sb.append("; ");
       sb.append(costs.getInt(pus));
