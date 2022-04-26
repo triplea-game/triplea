@@ -158,75 +158,50 @@ public class MovePanel extends AbstractMovePanel {
 
         private void selectUnitsToMove(
             final List<Unit> units, final Territory t, final MouseDetails mouseDetails) {
-          // are any of the units ours, note - if no units selected that's still ok
-          if (!BaseEditDelegate.getEditMode(getData().getProperties())
-              || !selectedUnits.isEmpty()) {
-            for (final Unit unit : units) {
-              if (!unit.getOwner().equals(getUnitOwner(selectedUnits))) {
-                return;
-              }
-            }
+          final boolean editMode = BaseEditDelegate.getEditMode(getData().getProperties());
+
+          GamePlayer requiredOwner = null;
+          if (!editMode) {
+            requiredOwner = getCurrentPlayer();
+          } else if (!selectedUnits.isEmpty()) {
+            // In edit mode, only allow units that match the existing selection.
+            requiredOwner = CollectionUtils.getAny(selectedUnits).getOwner();
           }
+          if (requiredOwner != null
+              && !units.stream().allMatch(Matches.unitIsOwnedBy(requiredOwner))) {
+            return;
+          }
+
           // basic match criteria only
           final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, null);
-          final Predicate<Collection<Unit>> ownerMatch =
-              unitsToCheck -> {
-                final GamePlayer owner = unitsToCheck.iterator().next().getOwner();
-                for (final Unit unit : unitsToCheck) {
-                  if (!owner.equals(unit.getOwner())) {
-                    return false;
-                  }
-                }
-                return true;
-              };
           if (units.isEmpty() && selectedUnits.isEmpty() && !mouseDetails.isShiftDown()) {
             final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
             if (unitsToMove.isEmpty()) {
               return;
             }
-            final String text = "Select units to move from " + t.getName();
-            final UnitChooser chooser;
-            if (BaseEditDelegate.getEditMode(getData().getProperties())
-                && !CollectionUtils.getMatches(
-                        unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove)))
-                    .containsAll(unitsToMove)) {
-              // use matcher to prevent units of different owners being chosen
-              chooser =
-                  new UnitChooser(
-                      unitsToMove,
-                      selectedUnits,
-                      null,
-                      UnitSeparator.SeparatorCategories.builder().build(),
-                      false,
-                      getMap().getUiContext(),
-                      ownerMatch);
-            } else {
-              chooser =
-                  new UnitChooser(
-                      unitsToMove,
-                      selectedUnits,
-                      null,
-                      UnitSeparator.SeparatorCategories.builder().build(),
-                      false,
-                      getMap().getUiContext());
-            }
-            final int option =
-                JOptionPane.showOptionDialog(
-                    getTopLevelAncestor(),
-                    chooser,
-                    text,
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE,
+            // matcher to prevent units of different owners being chosen (relevant for edit mode)
+            final Predicate<Collection<Unit>> unitsHaveSameOwner =
+                unitsToCheck -> {
+                  final GamePlayer owner = CollectionUtils.getAny(unitsToCheck).getOwner();
+                  return unitsToCheck.stream().allMatch(Matches.unitIsOwnedBy(owner));
+                };
+            final UnitChooser chooser =
+                new UnitChooser(
+                    unitsToMove,
+                    selectedUnits,
                     null,
-                    null,
-                    null);
-            if (option != JOptionPane.OK_OPTION) {
+                    UnitSeparator.SeparatorCategories.builder().build(),
+                    false,
+                    getMap().getUiContext(),
+                    unitsHaveSameOwner);
+            if (!confirmUnitChooserDialog(chooser, "Select units to move from " + t.getName())) {
               return;
             }
-            if (chooser.getSelected(false).isEmpty()) {
+            final List<Unit> chosenUnits = chooser.getSelected(false);
+            if (chosenUnits.isEmpty()) {
               return;
             }
-            selectedUnits.addAll(chooser.getSelected(false));
+            selectedUnits.addAll(chosenUnits);
           }
           if (getFirstSelectedTerritory() == null) {
             setFirstSelectedTerritory(t);
@@ -241,7 +216,7 @@ public class MovePanel extends AbstractMovePanel {
           if (mouseDetails.isShiftDown()) {
             // prevent units of multiple owners from being chosen in edit mode
             final PredicateBuilder<Unit> ownedNotFactoryBuilder = PredicateBuilder.trueBuilder();
-            if (!BaseEditDelegate.getEditMode(getData().getProperties())) {
+            if (!editMode) {
               ownedNotFactoryBuilder.and(unitsToMoveMatch);
             } else if (!selectedUnits.isEmpty()) {
               ownedNotFactoryBuilder
@@ -261,14 +236,14 @@ public class MovePanel extends AbstractMovePanel {
             final List<Unit> unitsToMove = CollectionUtils.getMatches(units, unitsToMoveMatch);
             unitsToMove.sort(UnitComparator.getHighestToLowestMovementComparator());
 
-            final int iterCount = mouseDetails.isAltDown() ? deselectNumber : 1;
+            final int maxCount = mouseDetails.isAltDown() ? deselectNumber : 1;
 
             int addCount = 0;
             for (final Unit unit : unitsToMove) {
               if (!selectedUnits.contains(unit)) {
                 selectedUnits.add(unit);
                 addCount++;
-                if (addCount >= iterCount) {
+                if (addCount >= maxCount) {
                   break;
                 }
               }
@@ -347,17 +322,7 @@ public class MovePanel extends AbstractMovePanel {
                   getMap().getUiContext(),
                   transportsToLoadMatch);
           chooser.setTitle("Select air transports to load");
-          final int option =
-              JOptionPane.showOptionDialog(
-                  getTopLevelAncestor(),
-                  chooser,
-                  "What transports do you want to load",
-                  JOptionPane.OK_CANCEL_OPTION,
-                  JOptionPane.PLAIN_MESSAGE,
-                  null,
-                  null,
-                  null);
-          if (option != JOptionPane.OK_OPTION) {
+          if (!confirmUnitChooserDialog(chooser, "What transports do you want to load")) {
             return List.of();
           }
           return chooser.getSelected(true);
@@ -479,7 +444,7 @@ public class MovePanel extends AbstractMovePanel {
               // check for alt key - remove 1/10 of total units (useful for splitting large armies)
               // changed to just remove 10 units
               // (int) Math.max(1, Math.floor(units.size() / deselectNumber))
-              final int iterCount = me.isAltDown() ? deselectNumber : 1;
+              final int maxCount = me.isAltDown() ? deselectNumber : 1;
               int remCount = 0;
               for (final Unit unit : units) {
                 if (selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
@@ -493,7 +458,7 @@ public class MovePanel extends AbstractMovePanel {
                     }
                   }
                   remCount++;
-                  if (remCount >= iterCount) {
+                  if (remCount >= maxCount) {
                     break;
                   }
                 }
@@ -525,7 +490,7 @@ public class MovePanel extends AbstractMovePanel {
         }
 
         private Predicate<Unit> getUnloadableMatch() {
-          // are we unloading everything? if we are then we dont need to select the transports
+          // are we unloading everything? if we are then we don't need to select the transports
           return PredicateBuilder.of(Matches.unitIsOwnedBy(getCurrentPlayer()))
               .and(Matches.unitIsLand())
               .andIf(nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
@@ -747,7 +712,7 @@ public class MovePanel extends AbstractMovePanel {
     return (BaseEditDelegate.getEditMode(getData().getProperties())
             && units != null
             && !units.isEmpty())
-        ? units.iterator().next().getOwner()
+        ? CollectionUtils.getAny(units).getOwner()
         : getCurrentPlayer();
   }
 
@@ -891,7 +856,7 @@ public class MovePanel extends AbstractMovePanel {
 
           // If we haven't seen all of the transports (and removed them) then there are extra
           // transports that don't fit
-          return (sortedTransports.isEmpty());
+          return sortedTransports.isEmpty();
         };
 
     // Choosing what transports to unload
@@ -904,17 +869,7 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             transportsToUnloadMatch);
-    final int option =
-        JOptionPane.showOptionDialog(
-            getTopLevelAncestor(),
-            chooser,
-            "Select transports to unload",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            null,
-            null);
-    if (option != JOptionPane.OK_OPTION) {
+    if (!confirmUnitChooserDialog(chooser, "Select transports to unload")) {
       return List.of();
     }
     final Collection<Unit> chosenTransports =
@@ -974,6 +929,20 @@ public class MovePanel extends AbstractMovePanel {
     return ImmutableList.copyOf(selectedUnitsToUnload);
   }
 
+  public boolean confirmUnitChooserDialog(final UnitChooser chooser, final String title) {
+    final int option =
+        JOptionPane.showOptionDialog(
+            getTopLevelAncestor(),
+            chooser,
+            title,
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
+    return option == JOptionPane.OK_OPTION;
+  }
+
   private Predicate<Unit> getUnloadableMatch(final Route route, final Collection<Unit> units) {
     return getMovableMatch(route, units).and(Matches.unitIsLand());
   }
@@ -1006,8 +975,6 @@ public class MovePanel extends AbstractMovePanel {
       } else {
         movableBuilder.and(enoughMovement);
       }
-    }
-    if (route != null) {
       final boolean water = route.getEnd().isWater();
       if (water && !route.isLoad()) {
         movableBuilder.and(Matches.unitIsNotLand());
@@ -1270,7 +1237,7 @@ public class MovePanel extends AbstractMovePanel {
       if (candidateTransports.size() == 1) {
         return candidateTransports;
       }
-      // all the same type, dont ask unless we have more than 1 unit type
+      // all the same type, don't ask unless we have more than 1 unit type
       if (UnitSeparator.categorize(
                       candidateTransports,
                       UnitSeparator.SeparatorCategories.builder()
@@ -1308,17 +1275,7 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             transportsToLoadMatch);
-    final int option =
-        JOptionPane.showOptionDialog(
-            getTopLevelAncestor(),
-            chooser,
-            "Select transports to load",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            null,
-            null);
-    if (option != JOptionPane.OK_OPTION) {
+    if (!confirmUnitChooserDialog(chooser, "Select transports to load")) {
       return List.of();
     }
     return chooser.getSelected(false);
@@ -1343,12 +1300,12 @@ public class MovePanel extends AbstractMovePanel {
                 .build());
     boolean mustQueryUser = false;
     for (final UnitCategory category1 : categories) {
-      // we cant move these, dont bother to check
+      // we cant move these, don't bother to check
       if (category1.getMovement().compareTo(BigDecimal.ZERO) == 0) {
         continue;
       }
       for (final UnitCategory category2 : categories) {
-        // we cant move these, dont bother to check
+        // we cant move these, don't bother to check
         if (category2.getMovement().compareTo(BigDecimal.ZERO) == 0) {
           continue;
         }
@@ -1391,17 +1348,7 @@ public class MovePanel extends AbstractMovePanel {
               getMap().getUiContext(),
               matchCriteria);
       final String text = "Select units to move from " + getFirstSelectedTerritory() + ".";
-      final int option =
-          JOptionPane.showOptionDialog(
-              getTopLevelAncestor(),
-              chooser,
-              text,
-              JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.PLAIN_MESSAGE,
-              null,
-              null,
-              null);
-      if (option != JOptionPane.OK_OPTION) {
+      if (!confirmUnitChooserDialog(chooser, text)) {
         units.clear();
         return;
       }
@@ -1465,17 +1412,7 @@ public class MovePanel extends AbstractMovePanel {
             getMap().getUiContext(),
             unitsToLoadMatch);
     chooser.setTitle("Load air transports");
-    final int option =
-        JOptionPane.showOptionDialog(
-            getTopLevelAncestor(),
-            chooser,
-            "What units do you want to load",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            null,
-            null);
-    if (option != JOptionPane.OK_OPTION) {
+    if (!confirmUnitChooserDialog(chooser, "What units do you want to load")) {
       return List.of();
     }
     return chooser.getSelected(true);

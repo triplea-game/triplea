@@ -221,11 +221,11 @@ public class TransportTracker {
   /** Detects if a unit has unloaded units in a previous game phase. */
   public static boolean hasTransportUnloadedInPreviousPhase(final Unit transport) {
     final Collection<Unit> unloaded = transport.getUnloaded();
+    boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true);
     // See if transport has unloaded anywhere yet
     for (final Unit unit : unloaded) {
       // cannot unload in two different phases
-      if (GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
-          && unit.getWasUnloadedInCombatPhase()) {
+      if (nonCombat && unit.getWasUnloadedInCombatPhase()) {
         return true;
       }
     }
