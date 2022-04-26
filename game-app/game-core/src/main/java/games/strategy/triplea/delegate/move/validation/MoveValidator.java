@@ -1171,10 +1171,7 @@ public class MoveValidator {
       final GamePlayer player,
       final Map<Unit, Unit> unitsToTransports,
       final MoveValidationResult result) {
-    if (!route.hasWater()) {
-      return result;
-    }
-    if (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir())) {
+    if (!route.hasWater() || (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir()))) {
       return result;
     }
     // If there are non-sea transports return

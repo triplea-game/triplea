@@ -158,17 +158,7 @@ public class MovePanel extends AbstractMovePanel {
 
         private void selectUnitsToMove(
             final List<Unit> units, final Territory t, final MouseDetails mouseDetails) {
-          final boolean editMode = BaseEditDelegate.getEditMode(getData().getProperties());
-
-          GamePlayer requiredOwner = null;
-          if (!editMode) {
-            requiredOwner = getCurrentPlayer();
-          } else if (!selectedUnits.isEmpty()) {
-            // In edit mode, only allow units that match the existing selection.
-            requiredOwner = CollectionUtils.getAny(selectedUnits).getOwner();
-          }
-          if (requiredOwner != null
-              && !units.stream().allMatch(Matches.unitIsOwnedBy(requiredOwner))) {
+          if (!canSelectUnits(units)) {
             return;
           }
 
@@ -216,7 +206,7 @@ public class MovePanel extends AbstractMovePanel {
           if (mouseDetails.isShiftDown()) {
             // prevent units of multiple owners from being chosen in edit mode
             final PredicateBuilder<Unit> ownedNotFactoryBuilder = PredicateBuilder.trueBuilder();
-            if (!editMode) {
+            if (!isEditMode()) {
               ownedNotFactoryBuilder.and(unitsToMoveMatch);
             } else if (!selectedUnits.isEmpty()) {
               ownedNotFactoryBuilder
@@ -233,21 +223,13 @@ public class MovePanel extends AbstractMovePanel {
           } else { // add one
             // best candidate unit for route is chosen dynamically later
             // check for alt key - add 1/10 of total units (useful for splitting large armies)
-            final List<Unit> unitsToMove = CollectionUtils.getMatches(units, unitsToMoveMatch);
-            unitsToMove.sort(UnitComparator.getHighestToLowestMovementComparator());
-
             final int maxCount = mouseDetails.isAltDown() ? deselectNumber : 1;
-
-            int addCount = 0;
-            for (final Unit unit : unitsToMove) {
-              if (!selectedUnits.contains(unit)) {
-                selectedUnits.add(unit);
-                addCount++;
-                if (addCount >= maxCount) {
-                  break;
-                }
-              }
-            }
+            units.stream()
+                .filter(unitsToMoveMatch)
+                .filter(Predicate.not(selectedUnits::contains))
+                .sorted(UnitComparator.getHighestToLowestMovementComparator())
+                .limit(maxCount)
+                .forEach(selectedUnits::add);
           }
           if (!selectedUnits.isEmpty()) {
             map.notifyUnitsAreSelected();
@@ -299,6 +281,19 @@ public class MovePanel extends AbstractMovePanel {
           } else {
             setFirstSelectedTerritory(null);
           }
+        }
+
+        private boolean canSelectUnits(final List<Unit> units) {
+          final GamePlayer requiredOwner;
+          if (!isEditMode()) {
+            requiredOwner = getCurrentPlayer();
+          } else if (!selectedUnits.isEmpty()) {
+            // In edit mode, only allow units that match the existing selection.
+            requiredOwner = CollectionUtils.getAny(selectedUnits).getOwner();
+          } else {
+            return true;
+          }
+          return units.stream().allMatch(Matches.unitIsOwnedBy(requiredOwner));
         }
 
         public Collection<Unit> getAirTransportsToLoad(
@@ -709,9 +704,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private GamePlayer getUnitOwner(final Collection<Unit> units) {
-    return (BaseEditDelegate.getEditMode(getData().getProperties())
-            && units != null
-            && !units.isEmpty())
+    return (isEditMode() && units != null && !units.isEmpty())
         ? CollectionUtils.getAny(units).getOwner()
         : getCurrentPlayer();
   }
@@ -949,7 +942,7 @@ public class MovePanel extends AbstractMovePanel {
 
   private Predicate<Unit> getMovableMatch(final Route route, final Collection<Unit> units) {
     final PredicateBuilder<Unit> movableBuilder = PredicateBuilder.trueBuilder();
-    if (!BaseEditDelegate.getEditMode(getData().getProperties())) {
+    if (!isEditMode()) {
       movableBuilder.and(Matches.unitIsOwnedBy(getCurrentPlayer()));
     }
     /*
@@ -964,9 +957,7 @@ public class MovePanel extends AbstractMovePanel {
     }
     if (route != null) {
       final Predicate<Unit> enoughMovement =
-          u ->
-              BaseEditDelegate.getEditMode(getData().getProperties())
-                  || (u.getMovementLeft().compareTo(route.getMovementCost(u)) >= 0);
+          u -> isEditMode() || (u.getMovementLeft().compareTo(route.getMovementCost(u)) >= 0);
 
       if (route.isUnload()) {
         final Predicate<Unit> notLandAndCanMove = enoughMovement.and(Matches.unitIsNotLand());
@@ -986,12 +977,16 @@ public class MovePanel extends AbstractMovePanel {
     if (units != null && !units.isEmpty()) {
       // force all units to have the same owner in edit mode
       final GamePlayer owner = getUnitOwner(units);
-      if (BaseEditDelegate.getEditMode(getData().getProperties())) {
+      if (isEditMode()) {
         movableBuilder.and(Matches.unitIsOwnedBy(owner));
       }
       movableBuilder.and(areOwnedUnitsOfType(units, owner));
     }
     return movableBuilder.build();
+  }
+
+  private boolean isEditMode() {
+    return BaseEditDelegate.getEditMode(getData().getProperties());
   }
 
   private static Predicate<Unit> areOwnedUnitsOfType(
