@@ -75,11 +75,8 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int defaultMinTransportCost = 5;
-  /**
-   * Adds or removes 10 units (used to remove 1/deselectNumber of total units (useful for splitting
-   * large armies), but changed it after feedback).
-   */
-  private static final int deselectNumber = 10;
+  /** Number of units to add/remove when Alt key is down. */
+  private static final int MULTI_SELECT_NUMBER = 10;
 
   // Map from air transport to units being transported for the current move being made.
   private final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
@@ -222,14 +219,14 @@ public class MovePanel extends AbstractMovePanel {
             selectedUnits.addAll(CollectionUtils.getMatches(units, unitsToMoveMatch));
           } else { // add one
             // best candidate unit for route is chosen dynamically later
-            // check for alt key - add 1/10 of total units (useful for splitting large armies)
-            final int maxCount = mouseDetails.isAltDown() ? deselectNumber : 1;
+            // check for alt key - add 10 units (useful for splitting large armies)
+            final int maxCount = mouseDetails.isAltDown() ? MULTI_SELECT_NUMBER : 1;
             units.stream()
                 .filter(unitsToMoveMatch)
                 .filter(Predicate.not(selectedUnits::contains))
                 .sorted(UnitComparator.getHighestToLowestMovementComparator())
                 .limit(maxCount)
-                .forEach(selectedUnits::add);
+                .forEachOrdered(selectedUnits::add);
           }
           if (!selectedUnits.isEmpty()) {
             map.notifyUnitsAreSelected();
@@ -402,10 +399,10 @@ public class MovePanel extends AbstractMovePanel {
               // Clear the stored dependents for AirTransports
               dependentUnits.clear();
             } else if (!unitsWithoutDependents.isEmpty()) {
-              // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-              final int iterCount = me.isAltDown() ? deselectNumber : 1;
-              // remove the last iterCount elements
-              for (int i = 0; i < iterCount; i++) {
+              // check for alt key - remove 10 units (useful for splitting large armies)
+              final int removeCount = me.isAltDown() ? MULTI_SELECT_NUMBER : 1;
+              // remove the last removeCount elements
+              for (int i = 0; i < removeCount; i++) {
                 unitsToRemove.add(unitsWithoutDependents.get(unitsWithoutDependents.size() - 1));
                 // Clear the stored dependents for AirTransports
                 if (!dependentUnits.isEmpty()) {
@@ -436,10 +433,8 @@ public class MovePanel extends AbstractMovePanel {
                 throw new IllegalStateException("Wrong selected territory");
               }
               // doesn't matter which unit we remove since units are assigned to routes later
-              // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-              // changed to just remove 10 units
-              // (int) Math.max(1, Math.floor(units.size() / deselectNumber))
-              final int maxCount = me.isAltDown() ? deselectNumber : 1;
+              // check for alt key - remove 10 units (useful for splitting large armies)
+              final int maxCount = me.isAltDown() ? MULTI_SELECT_NUMBER : 1;
               int remCount = 0;
               for (final Unit unit : units) {
                 if (selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
