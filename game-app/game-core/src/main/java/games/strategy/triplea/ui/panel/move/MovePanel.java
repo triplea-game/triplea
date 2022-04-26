@@ -164,9 +164,11 @@ public class MovePanel extends AbstractMovePanel {
           if (!editMode) {
             requiredOwner = getCurrentPlayer();
           } else if (!selectedUnits.isEmpty()) {
+            // In edit mode, only allow units that match the existing selection.
             requiredOwner = selectedUnits.iterator().next().getOwner();
           }
-          if (!units.stream().allMatch(Matches.unitIsOwnedBy(requiredOwner))) {
+          if (requiredOwner != null
+              && !units.stream().allMatch(Matches.unitIsOwnedBy(requiredOwner))) {
             return;
           }
 
