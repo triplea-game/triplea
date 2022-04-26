@@ -158,63 +158,45 @@ public class MovePanel extends AbstractMovePanel {
 
         private void selectUnitsToMove(
             final List<Unit> units, final Territory t, final MouseDetails mouseDetails) {
-          // are any of the units ours, note - if no units selected that's still ok
-          if (!BaseEditDelegate.getEditMode(getData().getProperties())
-              || !selectedUnits.isEmpty()) {
-            for (final Unit unit : units) {
-              if (!unit.getOwner().equals(getUnitOwner(selectedUnits))) {
-                return;
-              }
-            }
+          final boolean editMode = BaseEditDelegate.getEditMode(getData().getProperties());
+
+          GamePlayer requiredOwner = null;
+          if (!editMode) {
+            requiredOwner = getCurrentPlayer();
+          } else if (!selectedUnits.isEmpty()) {
+            requiredOwner = selectedUnits.iterator().next().getOwner();
           }
+          if (!units.stream().allMatch(Matches.unitIsOwnedBy(requiredOwner))) {
+            return;
+          }
+
           // basic match criteria only
           final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, null);
-          final Predicate<Collection<Unit>> ownerMatch =
-              unitsToCheck -> {
-                final GamePlayer owner = unitsToCheck.iterator().next().getOwner();
-                for (final Unit unit : unitsToCheck) {
-                  if (!owner.equals(unit.getOwner())) {
-                    return false;
-                  }
-                }
-                return true;
-              };
           if (units.isEmpty() && selectedUnits.isEmpty() && !mouseDetails.isShiftDown()) {
             final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
             if (unitsToMove.isEmpty()) {
               return;
             }
-            final String text = "Select units to move from " + t.getName();
-            final UnitChooser chooser;
-            if (BaseEditDelegate.getEditMode(getData().getProperties())
-                && !CollectionUtils.getMatches(
-                        unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove)))
-                    .containsAll(unitsToMove)) {
-              // use matcher to prevent units of different owners being chosen
-              chooser =
-                  new UnitChooser(
-                      unitsToMove,
-                      selectedUnits,
-                      null,
-                      UnitSeparator.SeparatorCategories.builder().build(),
-                      false,
-                      getMap().getUiContext(),
-                      ownerMatch);
-            } else {
-              chooser =
-                  new UnitChooser(
-                      unitsToMove,
-                      selectedUnits,
-                      null,
-                      UnitSeparator.SeparatorCategories.builder().build(),
-                      false,
-                      getMap().getUiContext());
-            }
+            // matcher to prevent units of different owners being chosen (relevant for edit mode)
+            final Predicate<Collection<Unit>> unitsHaveSameOwner =
+                unitsToCheck -> {
+                  final GamePlayer owner = unitsToCheck.iterator().next().getOwner();
+                  return unitsToCheck.stream().allMatch(Matches.unitIsOwnedBy(owner));
+                };
+            final UnitChooser chooser =
+                new UnitChooser(
+                    unitsToMove,
+                    selectedUnits,
+                    null,
+                    UnitSeparator.SeparatorCategories.builder().build(),
+                    false,
+                    getMap().getUiContext(),
+                    unitsHaveSameOwner);
             final int option =
                 JOptionPane.showOptionDialog(
                     getTopLevelAncestor(),
                     chooser,
-                    text,
+                    "Select units to move from " + t.getName(),
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE,
                     null,
@@ -223,10 +205,11 @@ public class MovePanel extends AbstractMovePanel {
             if (option != JOptionPane.OK_OPTION) {
               return;
             }
-            if (chooser.getSelected(false).isEmpty()) {
+            final List<Unit> chosenUnits = chooser.getSelected(false);
+            if (chosenUnits.isEmpty()) {
               return;
             }
-            selectedUnits.addAll(chooser.getSelected(false));
+            selectedUnits.addAll(chosenUnits);
           }
           if (getFirstSelectedTerritory() == null) {
             setFirstSelectedTerritory(t);
@@ -241,7 +224,7 @@ public class MovePanel extends AbstractMovePanel {
           if (mouseDetails.isShiftDown()) {
             // prevent units of multiple owners from being chosen in edit mode
             final PredicateBuilder<Unit> ownedNotFactoryBuilder = PredicateBuilder.trueBuilder();
-            if (!BaseEditDelegate.getEditMode(getData().getProperties())) {
+            if (!editMode) {
               ownedNotFactoryBuilder.and(unitsToMoveMatch);
             } else if (!selectedUnits.isEmpty()) {
               ownedNotFactoryBuilder
@@ -261,14 +244,14 @@ public class MovePanel extends AbstractMovePanel {
             final List<Unit> unitsToMove = CollectionUtils.getMatches(units, unitsToMoveMatch);
             unitsToMove.sort(UnitComparator.getHighestToLowestMovementComparator());
 
-            final int iterCount = mouseDetails.isAltDown() ? deselectNumber : 1;
+            final int maxCount = mouseDetails.isAltDown() ? deselectNumber : 1;
 
             int addCount = 0;
             for (final Unit unit : unitsToMove) {
               if (!selectedUnits.contains(unit)) {
                 selectedUnits.add(unit);
                 addCount++;
-                if (addCount >= iterCount) {
+                if (addCount >= maxCount) {
                   break;
                 }
               }
@@ -479,7 +462,7 @@ public class MovePanel extends AbstractMovePanel {
               // check for alt key - remove 1/10 of total units (useful for splitting large armies)
               // changed to just remove 10 units
               // (int) Math.max(1, Math.floor(units.size() / deselectNumber))
-              final int iterCount = me.isAltDown() ? deselectNumber : 1;
+              final int maxCount = me.isAltDown() ? deselectNumber : 1;
               int remCount = 0;
               for (final Unit unit : units) {
                 if (selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
@@ -493,7 +476,7 @@ public class MovePanel extends AbstractMovePanel {
                     }
                   }
                   remCount++;
-                  if (remCount >= iterCount) {
+                  if (remCount >= maxCount) {
                     break;
                   }
                 }
@@ -525,7 +508,7 @@ public class MovePanel extends AbstractMovePanel {
         }
 
         private Predicate<Unit> getUnloadableMatch() {
-          // are we unloading everything? if we are then we dont need to select the transports
+          // are we unloading everything? if we are then we don't need to select the transports
           return PredicateBuilder.of(Matches.unitIsOwnedBy(getCurrentPlayer()))
               .and(Matches.unitIsLand())
               .andIf(nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
@@ -1006,8 +989,6 @@ public class MovePanel extends AbstractMovePanel {
       } else {
         movableBuilder.and(enoughMovement);
       }
-    }
-    if (route != null) {
       final boolean water = route.getEnd().isWater();
       if (water && !route.isLoad()) {
         movableBuilder.and(Matches.unitIsNotLand());

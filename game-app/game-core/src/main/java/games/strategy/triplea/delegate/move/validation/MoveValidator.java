@@ -1171,11 +1171,10 @@ public class MoveValidator {
       final GamePlayer player,
       final Map<Unit, Unit> unitsToTransports,
       final MoveValidationResult result) {
-    final boolean isEditMode = getEditMode(data.getProperties());
-    if (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir())) {
+    if (!route.hasWater()) {
       return result;
     }
-    if (!route.hasWater()) {
+    if (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir())) {
       return result;
     }
     // If there are non-sea transports return
@@ -1189,6 +1188,7 @@ public class MoveValidator {
     final Territory routeEnd = route.getEnd();
     final Territory routeStart = route.getStart();
     // if unloading make sure length of route is only 1
+    final boolean isEditMode = getEditMode(data.getProperties());
     if (!isEditMode && route.isUnload()) {
       if (route.hasMoreThenOneStep()) {
         return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
@@ -1245,8 +1245,8 @@ public class MoveValidator {
           }
         }
         // TODO This is very sensitive to the order of the transport collection. The users may need
-        // to modify the order
-        // in which they perform their actions. check whether transport has already unloaded
+        // to modify the order in which they perform their actions. check whether transport has
+        // already unloaded
         if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
           for (final Unit unit : transport.getTransporting()) {
             result.addDisallowedUnit(
@@ -1313,7 +1313,7 @@ public class MoveValidator {
             result.addDisallowedUnit("Transports cannot leave their units", unit);
           }
         }
-        // make sure units dont leave their transports behind
+        // make sure units don't leave their transports behind
         if (ua.getTransportCost() != -1) {
           final Unit transport = unit.getTransportedBy();
           if (transport != null && !units.contains(transport)) {
