@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
+import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Class with method to extract a zip file with check against "Zip Slip" vulnerability
@@ -81,7 +82,7 @@ public class ZipExtractor {
     // iterate over each zip entry and write to a corresponding file
     // Note: We can switch to the single-param version of newFileSystem() once on Java 13+.
     try (FileSystem zipFileSystem = FileSystems.newFileSystem(fileZip, (ClassLoader) null)) {
-      final Path zipRoot = zipFileSystem.getRootDirectories().iterator().next();
+      final Path zipRoot = CollectionUtils.getAny(zipFileSystem.getRootDirectories());
       try (Stream<Path> files = Files.walk(zipRoot, MAX_DEPTH)) {
         for (final Path zipEntry : files.collect(Collectors.toList())) {
           unzipZipEntry(destDir, zipRoot, zipEntry);

@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
+import org.triplea.java.collections.CollectionUtils;
 
 @UtilityClass
 class IslandTerritoryFinder {
@@ -68,7 +69,7 @@ class IslandTerritoryFinder {
 
     // Function where given a territory name, give us a polygon for that territory
     final Function<String, Polygon> polygonLookup =
-        territoryName -> polygons.get(territoryName).iterator().next();
+        territoryName -> CollectionUtils.getAny(polygons.get(territoryName));
 
     return land -> {
       final Polygon seaPoly = polygonLookup.apply(seaTerritory);

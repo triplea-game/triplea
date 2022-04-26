@@ -602,7 +602,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return "No factory in or adjacent to " + to.getName();
     }
     if (producers.size() == 1) {
-      return canProduce(producers.iterator().next(), to, units, player);
+      return canProduce(CollectionUtils.getAny(producers), to, units, player);
     }
     final Collection<Territory> failingProducers = new ArrayList<>();
     final StringBuilder error = new StringBuilder();
@@ -1730,7 +1730,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         return factory.getOriginalOwner();
       }
     }
-    return factoryUnits.iterator().next().getOriginalOwner();
+    return CollectionUtils.getAny(factoryUnits).getOriginalOwner();
   }
 
   /**

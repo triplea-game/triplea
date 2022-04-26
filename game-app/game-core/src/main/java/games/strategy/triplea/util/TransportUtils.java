@@ -152,7 +152,7 @@ public final class TransportUtils {
         findTransportsThatUnitsCouldUnloadFrom(units, transports);
     while (!unitToPotentialTransports.isEmpty()) {
       unitToPotentialTransports = sortByTransportOptionsAscending(unitToPotentialTransports);
-      final Unit currentUnit = unitToPotentialTransports.keySet().iterator().next();
+      final Unit currentUnit = CollectionUtils.getAny(unitToPotentialTransports.keySet());
       final Unit selectedTransport =
           findOptimalTransportToUnloadFrom(currentUnit, unitToPotentialTransports);
       removeTransportAndLoadedUnits(selectedTransport, unitToPotentialTransports);

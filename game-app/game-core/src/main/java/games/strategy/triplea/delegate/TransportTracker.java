@@ -274,7 +274,7 @@ public class TransportTracker {
     if (unloaded.isEmpty()) {
       return null;
     }
-    return unloaded.iterator().next().getUnloadedTo();
+    return CollectionUtils.getAny(unloaded).getUnloadedTo();
   }
 
   /** If a transport has been in combat, it cannot both load AND unload in NCM. */

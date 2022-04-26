@@ -227,10 +227,10 @@ public class MovePerformer implements Serializable {
                         getRemotePlayer()
                             .whatShouldBomberBomb(route.getEnd(), enemyTargets, arrived);
                   } else if (!enemyTargets.isEmpty()) {
-                    target = enemyTargets.iterator().next();
+                    target = CollectionUtils.getAny(enemyTargets);
                   } else {
                     // in case we are escorts only
-                    target = enemyTargetsTotal.iterator().next();
+                    target = CollectionUtils.getAny(enemyTargetsTotal);
                   }
                   if (target == null) {
                     targetedAttack = false;

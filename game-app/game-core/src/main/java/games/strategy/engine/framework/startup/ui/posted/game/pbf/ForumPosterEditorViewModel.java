@@ -26,6 +26,7 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.Postconditions;
 import org.triplea.java.StringUtils;
 import org.triplea.java.ViewModelListener;
+import org.triplea.java.collections.CollectionUtils;
 
 class ForumPosterEditorViewModel {
   private static final int DUMMY_PASSWORD_LENGTH = 4;
@@ -157,7 +158,7 @@ class ForumPosterEditorViewModel {
     this.forumSelection =
         Optional.ofNullable(forumSelection)
             .filter(Predicate.not(String::isBlank))
-            .orElse(getForumSelectionOptions().iterator().next());
+            .orElse(CollectionUtils.getAny(getForumSelectionOptions()));
     Postconditions.assertState(
         this.forumSelection != null && !this.forumSelection.isBlank(),
         "Forum selection is driven by a drop-down to ensure user can never set it to null, "

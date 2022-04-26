@@ -56,7 +56,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         final Collection<GamePlayer> winners =
             data.getAllianceTracker()
                 .getPlayersInAlliance(
-                    data.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
+                    CollectionUtils.getAny(
+                        data.getAllianceTracker().getAlliancesPlayerIsIn(japanese)));
         signalGameOver(victoryMessage, winners, bridge);
       }
     }
@@ -300,7 +301,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           .playSoundForAll(
               SoundPath.CLIP_GAME_WON,
               ((this.winners != null && !this.winners.isEmpty())
-                  ? this.winners.iterator().next()
+                  ? CollectionUtils.getAny(this.winners)
                   : GamePlayer.NULL_PLAYERID));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the
       // end round delegate)

@@ -20,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
@@ -148,7 +149,7 @@ public class BattleCalculatorDialog extends JDialog {
     // select the defending side to match any unit in the current territory
     if (!currentDialog.panel.hasAttackingUnitsAdded()
         && !currentDialog.panel.hasDefendingUnitsAdded()) {
-      Optional.ofNullable(t.getUnitCollection().iterator().next())
+      Optional.ofNullable(CollectionUtils.getAny(t.getUnitCollection()))
           .map(Unit::getOwner)
           .ifPresent(currentDialog.panel::setDefender);
     }
