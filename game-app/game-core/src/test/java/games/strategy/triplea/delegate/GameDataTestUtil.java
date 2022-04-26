@@ -1,6 +1,11 @@
 package games.strategy.triplea.delegate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.in;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
@@ -337,6 +342,7 @@ public final class GameDataTestUtil {
 
   /** Adds all units from the given Collection to the given Territory. */
   public static void addTo(final Territory t, final Collection<Unit> units) {
+    assertThat(units, everyItem(is(not(in(t.getUnits())))));
     t.getData().performChange(ChangeFactory.addUnits(t, units));
   }
 
