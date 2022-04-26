@@ -165,7 +165,7 @@ public class MovePanel extends AbstractMovePanel {
             requiredOwner = getCurrentPlayer();
           } else if (!selectedUnits.isEmpty()) {
             // In edit mode, only allow units that match the existing selection.
-            requiredOwner = selectedUnits.iterator().next().getOwner();
+            requiredOwner = CollectionUtils.getAny(selectedUnits).getOwner();
           }
           if (requiredOwner != null
               && !units.stream().allMatch(Matches.unitIsOwnedBy(requiredOwner))) {
@@ -182,7 +182,7 @@ public class MovePanel extends AbstractMovePanel {
             // matcher to prevent units of different owners being chosen (relevant for edit mode)
             final Predicate<Collection<Unit>> unitsHaveSameOwner =
                 unitsToCheck -> {
-                  final GamePlayer owner = unitsToCheck.iterator().next().getOwner();
+                  final GamePlayer owner = CollectionUtils.getAny(unitsToCheck).getOwner();
                   return unitsToCheck.stream().allMatch(Matches.unitIsOwnedBy(owner));
                 };
             final UnitChooser chooser =
@@ -732,7 +732,7 @@ public class MovePanel extends AbstractMovePanel {
     return (BaseEditDelegate.getEditMode(getData().getProperties())
             && units != null
             && !units.isEmpty())
-        ? units.iterator().next().getOwner()
+        ? CollectionUtils.getAny(units).getOwner()
         : getCurrentPlayer();
   }
 
