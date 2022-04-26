@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -364,18 +365,17 @@ public final class TransportUtils {
     for (int i = 0; i < updatedUnits.size(); i++) {
       final Unit origUnit = updatedUnits.get(i);
       if (!canUnload(origUnit, route.getEnd())) {
+        final int unitIndex = i;
         // Can't unload the unit - find an equivalent one that can be unloaded
         // and that's not in our current list of units. Note: This takes into
         // account previous replacements.
-        for (Unit otherUnit : route.getStart().getUnits()) {
-          if (otherUnit.isEquivalent(origUnit)
-              && !updatedUnits.contains(otherUnit)
-              && canUnload(otherUnit, route.getEnd())) {
+        route.getStart().getUnits().stream()
+            .filter(u -> u.isEquivalent(origUnit))
+            .filter(Predicate.not(updatedUnits::contains))
+            .filter(u -> canUnload(u, route.getEnd()))
             // Replace the orig unit with the equivalent one.
-            updatedUnits.set(i, otherUnit);
-            break;
-          }
-        }
+            .findAny()
+            .ifPresent(u -> updatedUnits.set(unitIndex, u));
       }
     }
     return updatedUnits;
