@@ -11,6 +11,7 @@ import games.strategy.triplea.Properties;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nullable;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,9 +20,8 @@ import lombok.extern.slf4j.Slf4j;
  * end turn phase.
  */
 @Slf4j
+@UtilityClass
 public final class GameStepPropertiesHelper {
-  private GameStepPropertiesHelper() {}
-
   /**
    * Indicates we skip posting the game summary and save to a forum or email. Defaults to true for
    * purchase phase and false for all others.
