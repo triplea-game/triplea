@@ -1,8 +1,7 @@
 package games.strategy.engine.data;
 
-import java.util.Comparator;
-
 import games.strategy.triplea.attachments.UnitTypeComparator;
+import java.util.Comparator;
 import org.triplea.java.collections.IntegerMap;
 
 public class RuleComparator implements Comparator<Rule> {
