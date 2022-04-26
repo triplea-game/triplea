@@ -194,17 +194,7 @@ public class MovePanel extends AbstractMovePanel {
                     false,
                     getMap().getUiContext(),
                     unitsHaveSameOwner);
-            final int option =
-                JOptionPane.showOptionDialog(
-                    getTopLevelAncestor(),
-                    chooser,
-                    "Select units to move from " + t.getName(),
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    null);
-            if (option != JOptionPane.OK_OPTION) {
+            if (!confirmUnitChooserDialog(chooser, "Select units to move from " + t.getName())) {
               return;
             }
             final List<Unit> chosenUnits = chooser.getSelected(false);
@@ -332,17 +322,7 @@ public class MovePanel extends AbstractMovePanel {
                   getMap().getUiContext(),
                   transportsToLoadMatch);
           chooser.setTitle("Select air transports to load");
-          final int option =
-              JOptionPane.showOptionDialog(
-                  getTopLevelAncestor(),
-                  chooser,
-                  "What transports do you want to load",
-                  JOptionPane.OK_CANCEL_OPTION,
-                  JOptionPane.PLAIN_MESSAGE,
-                  null,
-                  null,
-                  null);
-          if (option != JOptionPane.OK_OPTION) {
+          if (!confirmUnitChooserDialog(chooser, "What transports do you want to load")) {
             return List.of();
           }
           return chooser.getSelected(true);
@@ -876,7 +856,7 @@ public class MovePanel extends AbstractMovePanel {
 
           // If we haven't seen all of the transports (and removed them) then there are extra
           // transports that don't fit
-          return (sortedTransports.isEmpty());
+          return sortedTransports.isEmpty();
         };
 
     // Choosing what transports to unload
@@ -889,17 +869,7 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             transportsToUnloadMatch);
-    final int option =
-        JOptionPane.showOptionDialog(
-            getTopLevelAncestor(),
-            chooser,
-            "Select transports to unload",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            null,
-            null);
-    if (option != JOptionPane.OK_OPTION) {
+    if (!confirmUnitChooserDialog(chooser, "Select transports to unload")) {
       return List.of();
     }
     final Collection<Unit> chosenTransports =
@@ -957,6 +927,20 @@ public class MovePanel extends AbstractMovePanel {
       }
     }
     return ImmutableList.copyOf(selectedUnitsToUnload);
+  }
+
+  public boolean confirmUnitChooserDialog(final UnitChooser chooser, final String title) {
+    final int option =
+        JOptionPane.showOptionDialog(
+            getTopLevelAncestor(),
+            chooser,
+            title,
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
+    return option == JOptionPane.OK_OPTION;
   }
 
   private Predicate<Unit> getUnloadableMatch(final Route route, final Collection<Unit> units) {
@@ -1253,7 +1237,7 @@ public class MovePanel extends AbstractMovePanel {
       if (candidateTransports.size() == 1) {
         return candidateTransports;
       }
-      // all the same type, dont ask unless we have more than 1 unit type
+      // all the same type, don't ask unless we have more than 1 unit type
       if (UnitSeparator.categorize(
                       candidateTransports,
                       UnitSeparator.SeparatorCategories.builder()
@@ -1291,17 +1275,7 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             transportsToLoadMatch);
-    final int option =
-        JOptionPane.showOptionDialog(
-            getTopLevelAncestor(),
-            chooser,
-            "Select transports to load",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            null,
-            null);
-    if (option != JOptionPane.OK_OPTION) {
+    if (!confirmUnitChooserDialog(chooser, "Select transports to load")) {
       return List.of();
     }
     return chooser.getSelected(false);
@@ -1326,12 +1300,12 @@ public class MovePanel extends AbstractMovePanel {
                 .build());
     boolean mustQueryUser = false;
     for (final UnitCategory category1 : categories) {
-      // we cant move these, dont bother to check
+      // we cant move these, don't bother to check
       if (category1.getMovement().compareTo(BigDecimal.ZERO) == 0) {
         continue;
       }
       for (final UnitCategory category2 : categories) {
-        // we cant move these, dont bother to check
+        // we cant move these, don't bother to check
         if (category2.getMovement().compareTo(BigDecimal.ZERO) == 0) {
           continue;
         }
@@ -1374,17 +1348,7 @@ public class MovePanel extends AbstractMovePanel {
               getMap().getUiContext(),
               matchCriteria);
       final String text = "Select units to move from " + getFirstSelectedTerritory() + ".";
-      final int option =
-          JOptionPane.showOptionDialog(
-              getTopLevelAncestor(),
-              chooser,
-              text,
-              JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.PLAIN_MESSAGE,
-              null,
-              null,
-              null);
-      if (option != JOptionPane.OK_OPTION) {
+      if (!confirmUnitChooserDialog(chooser, text)) {
         units.clear();
         return;
       }
@@ -1448,17 +1412,7 @@ public class MovePanel extends AbstractMovePanel {
             getMap().getUiContext(),
             unitsToLoadMatch);
     chooser.setTitle("Load air transports");
-    final int option =
-        JOptionPane.showOptionDialog(
-            getTopLevelAncestor(),
-            chooser,
-            "What units do you want to load",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            null,
-            null);
-    if (option != JOptionPane.OK_OPTION) {
+    if (!confirmUnitChooserDialog(chooser, "What units do you want to load")) {
       return List.of();
     }
     return chooser.getSelected(true);
