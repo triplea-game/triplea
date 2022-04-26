@@ -3,10 +3,9 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.triplea.attachments.UnitTypeComparator;
-import java.util.Comparator;
 import org.triplea.java.collections.IntegerMap;
 
-public abstract class Rule extends DefaultNamed {
+public abstract class Rule extends DefaultNamed implements Comparable<Rule> {
   private final IntegerMap<Resource> costs;
   private final IntegerMap<NamedAttachable> results;
 
@@ -25,51 +24,50 @@ public abstract class Rule extends DefaultNamed {
     this.results = new IntegerMap<>(results);
   }
 
-  public static Comparator<Rule> getComparator() {
-    return (o1, o2) -> {
-      final UnitTypeComparator utc = new UnitTypeComparator();
+  @Override
+  public int compareTo(Rule that) {
+    final UnitTypeComparator utc = new UnitTypeComparator();
 
-      IntegerMap<NamedAttachable> o1Results = o1.getResults();
-      IntegerMap<NamedAttachable> o2Results = o2.getResults();
+    IntegerMap<NamedAttachable> thisResults = getResults();
+    IntegerMap<NamedAttachable> thatResults = that.getResults();
 
-      if (o1Results.size() == 1 && o2Results.size() == 1) {
-        final NamedAttachable n1 = o1Results.keySet().iterator().next();
-        final NamedAttachable n2 = o2Results.keySet().iterator().next();
-        if (n1 instanceof UnitType) {
-          final UnitType u1 = (UnitType) n1;
-          if (n2 instanceof UnitType) {
-            final UnitType u2 = (UnitType) n2;
-            return utc.compare(u1, u2);
-          } else if (n2 instanceof Resource) {
-            // final Resource r2 = (Resource) n2;
-            return -1;
-          }
-
-          return n1.getName().compareTo(n2.getName());
-        } else if (n1 instanceof Resource) {
-          final Resource r1 = (Resource) n1;
-          if (n2 instanceof UnitType) {
-            // final UnitType u2 = (UnitType) n2;
-            return 1;
-          } else if (n2 instanceof Resource) {
-            final Resource r2 = (Resource) n2;
-            return r1.getName().compareTo(r2.getName());
-          } else {
-            return n1.getName().compareTo(n2.getName());
-          }
+    if (thisResults.size() == 1 && thatResults.size() == 1) {
+      final NamedAttachable n1 = thisResults.keySet().iterator().next();
+      final NamedAttachable n2 = thatResults.keySet().iterator().next();
+      if (n1 instanceof UnitType) {
+        final UnitType u1 = (UnitType) n1;
+        if (n2 instanceof UnitType) {
+          final UnitType u2 = (UnitType) n2;
+          return utc.compare(u1, u2);
+        } else if (n2 instanceof Resource) {
+          // final Resource r2 = (Resource) n2;
+          return -1;
         }
 
         return n1.getName().compareTo(n2.getName());
+      } else if (n1 instanceof Resource) {
+        final Resource r1 = (Resource) n1;
+        if (n2 instanceof UnitType) {
+          // final UnitType u2 = (UnitType) n2;
+          return 1;
+        } else if (n2 instanceof Resource) {
+          final Resource r2 = (Resource) n2;
+          return r1.getName().compareTo(r2.getName());
+        } else {
+          return n1.getName().compareTo(n2.getName());
+        }
       }
 
-      if (o1Results.size() > o2Results.size()) {
-        return -1;
-      } else if (o1Results.size() < o2Results.size()) {
-        return 1;
-      } else {
-        return o1.getName().compareTo(o2.getName());
-      }
-    };
+      return n1.getName().compareTo(n2.getName());
+    }
+
+    if (thisResults.size() > thatResults.size()) {
+      return -1;
+    } else if (thisResults.size() < thatResults.size()) {
+      return 1;
+    } else {
+      return getName().compareTo(that.getName());
+    }
   }
 
   public void addCost(final Resource resource, final int quantity) {

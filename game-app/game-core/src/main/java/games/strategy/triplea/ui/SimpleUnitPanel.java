@@ -60,7 +60,7 @@ public class SimpleUnitPanel extends JPanel {
   void setUnitsFromProductionRuleMap(
       final IntegerMap<ProductionRule> units, final GamePlayer player) {
     removeAll();
-    final TreeSet<ProductionRule> productionRules = new TreeSet<>(ProductionRule.getComparator());
+    final TreeSet<ProductionRule> productionRules = new TreeSet<>();
     productionRules.addAll(units.keySet());
     for (final ProductionRule productionRule : productionRules) {
       final int quantity = units.getInt(productionRule);
@@ -89,7 +89,7 @@ public class SimpleUnitPanel extends JPanel {
     final Set<Unit> entries = units.keySet();
     for (final Unit unit : entries) {
       final IntegerMap<RepairRule> rules = units.get(unit);
-      final TreeSet<RepairRule> repairRules = new TreeSet<>(RepairRule.getComparator());
+      final TreeSet<RepairRule> repairRules = new TreeSet<>();
       repairRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repairRules) {
         // check to see if the repair rule matches the damaged unit
