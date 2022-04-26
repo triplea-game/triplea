@@ -5,7 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import org.triplea.java.collections.IntegerMap;
 
 /** A repair rule. */
-public class RepairRule extends DefaultNamed {
+public class RepairRule extends DefaultNamed implements Rule {
   private static final long serialVersionUID = -45646671022993959L;
 
   private final IntegerMap<Resource> costs;
@@ -42,10 +42,12 @@ public class RepairRule extends DefaultNamed {
     results.put(obj, quantity);
   }
 
+  @Override
   public IntegerMap<Resource> getCosts() {
     return new IntegerMap<>(costs);
   }
 
+  @Override
   public IntegerMap<NamedAttachable> getResults() {
     return results;
   }

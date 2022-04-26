@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 import org.triplea.java.collections.IntegerMap;
 
 /** A production rule. */
-public class ProductionRule extends DefaultNamed {
+public class ProductionRule extends DefaultNamed implements Rule {
   private static final long serialVersionUID = -6598296283127741307L;
 
   private IntegerMap<Resource> costs = new IntegerMap<>();
@@ -38,10 +38,12 @@ public class ProductionRule extends DefaultNamed {
     results.put(obj, quantity);
   }
 
+  @Override
   public IntegerMap<Resource> getCosts() {
     return new IntegerMap<>(costs);
   }
 
+  @Override
   public IntegerMap<NamedAttachable> getResults() {
     return results;
   }
