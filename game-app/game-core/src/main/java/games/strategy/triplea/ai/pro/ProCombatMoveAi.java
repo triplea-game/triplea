@@ -64,10 +64,6 @@ public class ProCombatMoveAi {
     calc = ai.getCalc();
   }
 
-  private static BombedTerritoryData getInitialBomedTerritoryData(Territory territory) {
-    return new BombedTerritoryData();
-  }
-
   Map<Territory, ProTerritory> doCombatMove(final IMoveDelegate moveDel) {
     ProLogger.info("Starting combat move phase");
 
@@ -916,8 +912,7 @@ public class ProCombatMoveAi {
               && canAirSafelyLandAfterAttack(attackUnit, t)) {
             // get territory data
             final BombedTerritoryData bombedTerritoryData =
-                bombedTerritoryDataMap.computeIfAbsent(
-                    t, ProCombatMoveAi::getInitialBomedTerritoryData);
+                bombedTerritoryDataMap.computeIfAbsent(t, territory -> new BombedTerritoryData());
             // update territory data for potential targets of the current attack unit
             final List<Unit> potentialTargetUnits =
                 t.getUnitCollection().getMatches(bombingTargetMatch);
