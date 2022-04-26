@@ -41,6 +41,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.math3.util.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro combat move AI. */
@@ -1793,12 +1794,12 @@ public class ProCombatMoveAi {
                   && Matches.unitIsAaForBombingThisUnitOnly().test(targetUnit)) {
                 noAaBombingDefense = 0;
               }
-              return new Pair<>(unitMinDamageNeeded, Integer.valueOf(0));
+              return new Pair<>(unitMinDamageNeeded, 0);
             });
       }
     }
 
-    public void addMaxDamage(final int newDamage, List<Unit> targetUnits) {
+    public void addMaxDamage(final int newDamage, @NotNull List<Unit> targetUnits) {
       for (Unit targetUnit : targetUnits) {
         minNeededAndMaxDamageMap.compute(
             targetUnit,
@@ -1807,9 +1808,7 @@ public class ProCombatMoveAi {
       }
     }
 
-    /**
-     * @return whether at least one target unit damage is exceeding its minimum
-     */
+    /** @return whether at least one target unit damage is exceeding its minimum */
     public boolean bombingWithSufficientDamage() {
       for (Pair<Integer, Integer> unitDamageEntry : minNeededAndMaxDamageMap.values()) {
         if (unitDamageEntry.getFirst() <= unitDamageEntry.getSecond()) {
