@@ -14,7 +14,12 @@ public interface Rule {
 
   IntegerMap<NamedAttachable> getResults();
 
-  /** Benefits must be a resource or a unit. */
+  /**
+   * Benefits must be a resource or a unit.
+   *
+   * <p>It's not going to work if any of {@link Rule#getResults()} implementations returns, for
+   * example, a copy of {@link org.triplea.java.collections.IntegerMap}.
+   */
   default void addResult(final NamedAttachable obj, final int quantity) {
     if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
       throw new IllegalArgumentException(
