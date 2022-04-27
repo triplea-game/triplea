@@ -537,6 +537,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     convoyAttached = new HashSet<>();
   }
 
+  public static boolean hasNavalBase(final Territory t) {
+    final TerritoryAttachment ta = TerritoryAttachment.get(t);
+    return ta != null && ta.getNavalBase();
+  }
+
   private void setNavalBase(final String value) {
     navalBase = getBool(value);
   }
@@ -551,6 +556,11 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   private void resetNavalBase() {
     navalBase = false;
+  }
+
+  public static boolean hasAirBase(final Territory t) {
+    final TerritoryAttachment ta = TerritoryAttachment.get(t);
+    return ta != null && ta.getAirBase();
   }
 
   private void setAirBase(final String value) {

@@ -54,6 +54,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -160,7 +161,7 @@ public class MovePanel extends AbstractMovePanel {
           }
 
           // basic match criteria only
-          final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, null);
+          final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, List.of());
           if (units.isEmpty() && selectedUnits.isEmpty() && !mouseDetails.isShiftDown()) {
             final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
             if (unitsToMove.isEmpty()) {
@@ -969,27 +970,22 @@ public class MovePanel extends AbstractMovePanel {
         movableBuilder.and(Matches.unitIsNotSea());
       }
     }
-    if (units != null && !units.isEmpty()) {
+    if (!units.isEmpty()) {
       // force all units to have the same owner in edit mode
-      final GamePlayer owner = getUnitOwner(units);
+      final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(getUnitOwner(units));
       if (isEditMode()) {
-        movableBuilder.and(Matches.unitIsOwnedBy(owner));
+        movableBuilder.and(ownedBy);
       }
-      movableBuilder.and(areOwnedUnitsOfType(units, owner));
+      // Filter to only units with the same types as the input list.
+      final Set<UnitType> typesOfOwnedUnits =
+          units.stream().filter(ownedBy).map(Unit::getType).collect(Collectors.toSet());
+      movableBuilder.and(u -> typesOfOwnedUnits.contains(u.getType()));
     }
     return movableBuilder.build();
   }
 
   private boolean isEditMode() {
     return BaseEditDelegate.getEditMode(getData().getProperties());
-  }
-
-  private static Predicate<Unit> areOwnedUnitsOfType(
-      final Collection<Unit> units, final GamePlayer owner) {
-    return mainUnit ->
-        units.stream()
-            .filter(unit -> unit.getOwner().equals(owner))
-            .anyMatch(Matches.unitIsOfType(mainUnit.getType()));
   }
 
   private Route getRoute(

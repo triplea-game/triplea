@@ -2190,7 +2190,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (bombingTargets != null) {
       return bombingTargets;
     }
-    return new HashSet<>(unitTypeList.getAllUnitTypes());
+    return unitTypeList.getAllUnitTypes();
   }
 
   private void resetBombingTargets() {
@@ -2207,9 +2207,7 @@ public class UnitAttachment extends DefaultAttachment {
     for (final Unit u : bombersOrRockets) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       final Set<UnitType> bombingTargets = ua.getBombingTargets(unitTypeList);
-      if (bombingTargets != null) {
-        allowedTargets = CollectionUtils.intersection(allowedTargets, bombingTargets);
-      }
+      allowedTargets = CollectionUtils.intersection(allowedTargets, bombingTargets);
     }
     return new HashSet<>(allowedTargets);
   }
