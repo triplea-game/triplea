@@ -2,6 +2,8 @@ package games.strategy.triplea.util;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
+import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
+import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
@@ -25,9 +27,11 @@ public class TransportUtilsTest {
   private final GameData gameData = createGameData();
 
   private final Territory sz5 = territory("5 Sea Zone", gameData);
+  private final Territory sz6 = territory("6 Sea Zone", gameData);
   private final Territory norway = territory("Norway", gameData);
   private final Territory karelia = territory("Karelia S.S.R.", gameData);
   private final Route toNorway = new Route(sz5, norway);
+  private final Route toSz6 = new Route(sz5, sz6);
 
   private final Unit transport1 = transport(gameData).create(germans(gameData));
   private final Unit transport2 = transport(gameData).create(germans(gameData));
@@ -110,6 +114,25 @@ public class TransportUtilsTest {
       final var units = List.of(infantry1, tank1, infantry3, tank3);
       final var result = TransportUtils.chooseEquivalentUnitsToUnload(toNorway, units);
       assertThat(result, containsInAnyOrder(infantry1, tank1, infantry2, tank2));
+    }
+
+    @Test
+    void testNonUnload() {
+      addTransportedUnits(sz5, transport1, List.of(infantry1, tank1));
+      addTransportedUnits(sz5, transport2, List.of(infantry2, tank2));
+      final var units = List.of(transport1, transport2, infantry1, infantry2, tank1, tank2);
+      final var result = TransportUtils.chooseEquivalentUnitsToUnload(toSz6, units);
+      assertThat(result, containsInAnyOrder(units.toArray()));
+    }
+
+    @Test
+    void testNoTransports() {
+      final Unit fighter = fighter(gameData).create(germans(gameData));
+      final Unit bomber = bomber(gameData).create(germans(gameData));
+      final var units = List.of(fighter, bomber);
+      addTo(sz5, units);
+      final var result = TransportUtils.chooseEquivalentUnitsToUnload(toNorway, units);
+      assertThat(result, containsInAnyOrder(units.toArray()));
     }
   }
 }
