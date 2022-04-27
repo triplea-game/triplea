@@ -58,14 +58,6 @@ public class ImageFactory {
    *     returned.
    */
   protected Optional<Image> getImage(final String... keys) {
-    /*for (String key : keys) {
-      var result = cache.getUnchecked(key);
-      if (!result.isEmpty()) {
-        return result;
-      }
-    }
-    return Optional.empty();
-    */
     return Arrays.stream(keys)
         .map(cache::getUnchecked)
         .filter(Optional::isPresent)
