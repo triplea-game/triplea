@@ -749,6 +749,9 @@ public class MovePanel extends AbstractMovePanel {
     final Collection<Unit> allUnits = getFirstSelectedTerritory().getUnits();
     final List<Unit> candidateUnits =
         CollectionUtils.getMatches(allUnits, getUnloadableMatch(route, unitsToUnload));
+    if (unitsToUnload.size() == candidateUnits.size()) {
+      return ImmutableList.copyOf(unitsToUnload);
+    }
     final List<Unit> candidateTransports =
         CollectionUtils.getMatches(
             allUnits, Matches.unitIsTransportingSomeCategories(candidateUnits));
