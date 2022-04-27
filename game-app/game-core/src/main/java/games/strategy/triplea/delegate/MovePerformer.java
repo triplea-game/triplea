@@ -375,11 +375,10 @@ public class MovePerformer implements Serializable {
         change.add(ChangeFactory.markNoMovementChange(Set.of(unit)));
       }
     }
-    if (route.getEnd() != null
+    if (routeEnd != null
         && Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
         && GameStepPropertiesHelper.isNonCombatMove(data, false)
-        && route
-            .getEnd()
+        && routeEnd
             .anyUnitsMatch(
                 Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
                     .and(Matches.unitIsDestroyer()))) {
