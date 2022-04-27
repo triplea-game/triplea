@@ -98,7 +98,7 @@ public class WeakAi extends AbstractBuiltInAi {
     final Territory capitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     // we dont own our own capitol
-    if (capitol == null || !capitol.getOwner().equals(player)) {
+    if (capitol == null || !capitol.isOwnedBy(player)) {
       return false;
     }
     // find a land route to an enemy territory from our capitol
@@ -160,7 +160,7 @@ public class WeakAi extends AbstractBuiltInAi {
     }
     final Territory capitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
-    if (capitol == null || !capitol.getOwner().equals(player)) {
+    if (capitol == null || !capitol.isOwnedBy(player)) {
       return List.of();
     }
     final var moves = new ArrayList<MoveDescription>();
@@ -1084,7 +1084,7 @@ public class WeakAi extends AbstractBuiltInAi {
     Collections.shuffle(randomTerritories);
     for (final Territory t : randomTerritories) {
       if (!t.equals(capitol)
-          && t.getOwner().equals(player)
+          && t.isOwnedBy(player)
           && t.getUnitCollection().anyMatch(Matches.unitCanProduceUnits())) {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }

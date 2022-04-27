@@ -65,7 +65,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
     final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
     final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
     if (ua1.equals(ua2)
-        && u1.getOwner().equals(u2.getOwner())
+        && u1.isOwnedBy(u2.getOwner())
         && u1.getWasAmphibious() == u2.getWasAmphibious()) {
       if (transporting1 && !transporting2) {
         return 1;

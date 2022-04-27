@@ -104,8 +104,8 @@ class ProPoliticsAi {
         int count = 0;
         final List<GamePlayer> enemyPlayers = enemyMap.get(action);
         for (final ProTerritory patd : attackOptions) {
-          if (Matches.isTerritoryOwnedBy(enemyPlayers).test(patd.getTerritory())
-              || Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(enemyPlayers))
+          if (Matches.isTerritoryOwnedByAnyOf(enemyPlayers).test(patd.getTerritory())
+              || Matches.territoryHasUnitsThatMatch(Matches.unitIsOwnedByAnyOf(enemyPlayers))
                   .test(patd.getTerritory())) {
             count++;
           }

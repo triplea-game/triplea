@@ -656,15 +656,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // units can be null if we are just testing the territory itself...
     final Collection<Unit> testUnits = (units == null ? new ArrayList<>() : units);
     final boolean canProduceInConquered = isPlacementAllowedInCapturedTerritory(player);
-    if (!producer.getOwner().equals(player)) {
+    if (!producer.isOwnedBy(player)) {
       // sea constructions require either owning the sea zone or owning a surrounding land territory
       if (producer.isWater()
           && testUnits.stream().anyMatch(Matches.unitIsSea().and(Matches.unitIsConstruction()))) {
         boolean ownedNeighbor = false;
         for (final Territory current :
             getData().getMap().getNeighbors(to, Matches.territoryIsLand())) {
-          if (current.getOwner().equals(player)
-              && (canProduceInConquered || !wasConquered(current))) {
+          if (current.isOwnedBy(player) && (canProduceInConquered || !wasConquered(current))) {
             ownedNeighbor = true;
             break;
           }
@@ -826,7 +825,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     } else {
       // make sure we own the territory
-      if (!to.getOwner().equals(player)) {
+      if (!to.isOwnedBy(player)) {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
           if ((pa == null
@@ -967,7 +966,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
                   .anyMatch(
                       Matches.unitIsCarrier()
                           .and(
-                              Matches.unitIsOwnedByOfAnyOfThesePlayers(
+                              Matches.unitIsOwnedByAnyOf(
                                   GameStepPropertiesHelper.getCombinedTurns(
                                       getData(), player)))))) {
         placeableUnits.addAll(

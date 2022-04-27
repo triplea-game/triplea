@@ -123,7 +123,7 @@ public class ProCombatMoveAi {
     removeTerritoriesWhereTransportsAreExposed();
 
     // Determine if capital can be held if I still own it
-    if (proData.getMyCapital() != null && proData.getMyCapital().getOwner().equals(player)) {
+    if (proData.getMyCapital() != null && proData.getMyCapital().isOwnedBy(player)) {
       removeAttacksUntilCapitalCanBeHeld(
           attackOptions, proData.getPurchaseOptions().getLandOptions());
     }

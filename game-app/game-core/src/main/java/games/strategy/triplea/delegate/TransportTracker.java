@@ -211,7 +211,7 @@ public class TransportTracker {
       // the owner of the unit
       if (unit.getWasLoadedThisTurn()
           && unit.getTransportedBy() != null
-          && !unit.getTransportedBy().getOwner().equals(unit.getOwner())) {
+          && !unit.getTransportedBy().isOwnedBy(unit.getOwner())) {
         loadedUnits.add(unit);
       }
     }

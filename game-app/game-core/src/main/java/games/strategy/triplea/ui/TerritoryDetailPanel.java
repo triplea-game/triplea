@@ -201,7 +201,7 @@ public class TerritoryDetailPanel extends JPanel {
     @Nullable GamePlayer currentPlayer = null;
     for (final UnitCategory item : units) {
       // separate players with a separator
-      if (!item.getOwner().equals(currentPlayer)) {
+      if (!item.isOwnedBy(currentPlayer)) {
         currentPlayer = item.getOwner();
         panel.add(Box.createVerticalStrut(15));
       }

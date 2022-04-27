@@ -270,8 +270,8 @@ public class MustFightBattle extends DependentBattle
         CollectionUtils.getMatches(
             unitsLeftInTerritory,
             getWhoWon() != WhoWon.DEFENDER
-                ? Matches.unitOwnedBy(attacker)
-                : Matches.unitOwnedBy(attacker)
+                ? Matches.unitIsOwnedBy(attacker)
+                : Matches.unitIsOwnedBy(attacker)
                     .and(Matches.unitIsAir())
                     .and(Matches.unitIsNotInfrastructure())));
     return new ArrayList<>(remaining);
