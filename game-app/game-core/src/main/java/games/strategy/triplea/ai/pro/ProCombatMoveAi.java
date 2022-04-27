@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitCollection;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProOtherMoveOptions;
@@ -903,7 +904,8 @@ public class ProCombatMoveAi {
         Optional<Territory> maxBombingTerritory = Optional.empty();
         int maxBombingScore = MIN_BOMBING_SCORE;
         for (final Territory t : bomberMoveMap.get(attackUnit)) {
-          final boolean canBeBombedByThisUnit = t.getUnitCollection().anyMatch(bombingTargetMatch);
+          final UnitCollection targetUnits = t.getUnitCollection();
+          final boolean canBeBombedByThisUnit = targetUnits.anyMatch(bombingTargetMatch);
           final boolean canCreateAirBattle =
               Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
@@ -912,10 +914,10 @@ public class ProCombatMoveAi {
               && canAirSafelyLandAfterAttack(attackUnit, t)) {
             // get territory data
             final BombedTerritoryData bombedTerritoryData =
-                bombedTerritoryDataMap.computeIfAbsent(t, territory -> new BombedTerritoryData());
+                bombedTerritoryDataMap.computeIfAbsent(
+                    t, territory -> new BombedTerritoryData(targetUnits));
             // update territory data for potential targets of the current attack unit
-            final List<Unit> potentialTargetUnits =
-                t.getUnitCollection().getMatches(bombingTargetMatch);
+            final List<Unit> potentialTargetUnits = targetUnits.getMatches(bombingTargetMatch);
             bombedTerritoryData.addPotentialTargets(potentialTargetUnits);
             // calculate bombingScore
             int maxDamage = 0;
@@ -1772,23 +1774,23 @@ public class ProCombatMoveAi {
   /** Data storage class for territories that could be bombed. */
   static class BombedTerritoryData {
     final Map<Unit, Pair<Integer, Integer>> minNeededAndMaxDamageMap = new HashMap<>();
-    @Getter int noAaBombingDefense;
+    @Getter final int noAaBombingDefense;
 
-    public BombedTerritoryData() {
-      this.noAaBombingDefense = 1;
+    public BombedTerritoryData(UnitCollection targetUnits) {
+      this.noAaBombingDefense =
+          targetUnits.anyMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
     }
 
     public void addPotentialTargets(List<Unit> targetUnits) {
       for (Unit targetUnit : targetUnits) {
         minNeededAndMaxDamageMap.compute(
             targetUnit,
-            (targetUnitOld, damagePairOld) -> {
-              Integer unitMinDamageNeeded = (targetUnitOld == null ? 0 : damagePairOld.getFirst());
-              unitMinDamageNeeded = Math.max(unitMinDamageNeeded, targetUnitOld.getUnitDamage());
-              if (noAaBombingDefense > 0
-                  && Matches.unitIsAaForBombingThisUnitOnly().test(targetUnit)) {
-                noAaBombingDefense = 0;
-              }
+            (existingTargetUnit, existingDamagePair) -> {
+              Integer unitMinDamageNeeded =
+                  ((existingTargetUnit == null || existingDamagePair == null)
+                      ? 0
+                      : existingDamagePair.getFirst());
+              unitMinDamageNeeded = Math.max(unitMinDamageNeeded, targetUnit.getUnitDamage());
               return new Pair<>(unitMinDamageNeeded, 0);
             });
       }
@@ -1798,8 +1800,13 @@ public class ProCombatMoveAi {
       for (Unit targetUnit : targetUnits) {
         minNeededAndMaxDamageMap.compute(
             targetUnit,
-            (targetUnitOld, damagePairOld) ->
-                new Pair<>(damagePairOld.getFirst(), damagePairOld.getSecond() + newDamage));
+            (existingTargetUnit, existingDamagePair) -> {
+              if (existingDamagePair == null) {
+                return new Pair<>(0, 0);
+              }
+              return new Pair<>(
+                  existingDamagePair.getFirst(), existingDamagePair.getSecond() + newDamage);
+            });
       }
     }
 
