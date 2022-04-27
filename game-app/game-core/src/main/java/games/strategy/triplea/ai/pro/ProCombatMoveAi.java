@@ -1788,9 +1788,7 @@ public class ProCombatMoveAi {
             targetUnit,
             (existingTargetUnit, existingDamagePair) -> {
               Integer unitMinDamageNeeded =
-                  ((existingTargetUnit == null || existingDamagePair == null)
-                      ? 0
-                      : existingDamagePair.getFirst());
+                  (existingDamagePair == null ? 0 : existingDamagePair.getFirst());
               unitMinDamageNeeded = Math.max(unitMinDamageNeeded, targetUnit.getUnitDamage());
               return new Pair<>(unitMinDamageNeeded, 0);
             });
