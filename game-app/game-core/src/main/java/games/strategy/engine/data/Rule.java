@@ -3,6 +3,10 @@ package games.strategy.engine.data;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
+/**
+ * Superclass for {@link games.strategy.engine.data.RepairRule} and {@link
+ * games.strategy.engine.data.ProductionRule}.
+ */
 public interface Rule {
   String getName();
 
