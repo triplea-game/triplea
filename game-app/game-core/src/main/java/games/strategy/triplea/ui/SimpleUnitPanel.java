@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -38,12 +37,6 @@ public class SimpleUnitPanel extends JPanel {
     LARGE_ICONS_COLUMN,
     SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY
   }
-
-  private final Comparator<ProductionRule> productionRuleComparator =
-      new RuleComparator<ProductionRule>().thenComparing(ProductionRule::getName);
-
-  private final Comparator<RepairRule> repairRuleComparator =
-      new RuleComparator<RepairRule>().thenComparing(RepairRule::getName);
 
   public SimpleUnitPanel(final UiContext uiContext) {
     this(uiContext, Style.LARGE_ICONS_COLUMN);
@@ -69,7 +62,7 @@ public class SimpleUnitPanel extends JPanel {
       final IntegerMap<ProductionRule> units, final GamePlayer player) {
     removeAll();
 
-    final TreeSet<ProductionRule> productionRules = new TreeSet<>(productionRuleComparator);
+    final TreeSet<ProductionRule> productionRules = new TreeSet<>(new RuleComparator<>());
     productionRules.addAll(units.keySet());
     for (final ProductionRule productionRule : productionRules) {
       final int quantity = units.getInt(productionRule);
@@ -98,7 +91,7 @@ public class SimpleUnitPanel extends JPanel {
     final Set<Unit> entries = units.keySet();
     for (final Unit unit : entries) {
       final IntegerMap<RepairRule> rules = units.get(unit);
-      final TreeSet<RepairRule> repairRules = new TreeSet<>(repairRuleComparator);
+      final TreeSet<RepairRule> repairRules = new TreeSet<>(new RuleComparator<>());
       repairRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repairRules) {
         // check to see if the repair rule matches the damaged unit

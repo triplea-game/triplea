@@ -4,6 +4,8 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 public interface Rule {
+  String getName();
+
   IntegerMap<Resource> getCosts();
 
   IntegerMap<NamedAttachable> getResults();

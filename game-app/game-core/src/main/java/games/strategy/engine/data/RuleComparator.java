@@ -41,6 +41,12 @@ public class RuleComparator<T extends Rule> implements Comparator<T> {
       return n1.getName().compareTo(n2.getName());
     }
 
-    return Integer.compare(o2ResultsSize, o1ResultsSize);
+    if (o1ResultsSize > o2ResultsSize) {
+      return -1;
+    } else if (o1ResultsSize < o2ResultsSize) {
+      return 1;
+    } else {
+      return o1.getName().compareTo(o2.getName());
+    }
   }
 }
