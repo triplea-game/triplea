@@ -526,12 +526,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (!Matches.territoryIsLand().test(producer)) {
       return null;
     }
-    if (!producer.getUnitCollection().anyMatch(Matches.unitCanProduceUnits())) {
+    if (!producer.anyUnitsMatch(Matches.unitCanProduceUnits())) {
       return null;
     }
     final Predicate<Unit> ownedFighters =
         Matches.unitCanLandOnCarrier().and(Matches.unitIsOwnedBy(player));
-    if (!producer.getUnitCollection().anyMatch(ownedFighters)) {
+    if (!producer.anyUnitsMatch(ownedFighters)) {
       return null;
     }
     if (wasConquered(producer)) {
@@ -832,7 +832,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           if ((pa == null
                   || pa.getGiveUnitControl() == null
                   || !pa.getGiveUnitControl().contains(player))
-              && !to.getUnitCollection().anyMatch(Matches.unitIsOwnedBy(player))) {
+              && !to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
             return "You don't own " + to.getName();
           }
         } else {
@@ -963,7 +963,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
                 || Properties.getLhtrCarrierProductionRules(properties);
         if (canProduceFightersOnCarriers
                 && (allProducedUnits.stream().anyMatch(Matches.unitIsCarrier()))
-            || to.getUnitCollection().anyMatch(unitIsCarrierOwnedByCombinedPlayers(player))) {
+            || to.anyUnitsMatch(unitIsCarrierOwnedByCombinedPlayers(player))) {
           placeableUnits.addAll(
               CollectionUtils.getMatches(
                   units, Matches.unitIsAir().and(Matches.unitCanLandOnCarrier())));

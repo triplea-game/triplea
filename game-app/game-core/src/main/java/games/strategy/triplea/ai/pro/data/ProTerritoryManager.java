@@ -982,8 +982,7 @@ public class ProTerritoryManager {
         }
       }
       for (final Territory t : gameMap.getTerritories()) {
-        if (t.getUnitCollection()
-            .anyMatch(Matches.unitIsAlliedCarrier(player, data.getRelationshipTracker()))) {
+        if (t.anyUnitsMatch(Matches.unitIsAlliedCarrier(player, data.getRelationshipTracker()))) {
           possibleCarrierTerritories.add(t);
         }
       }

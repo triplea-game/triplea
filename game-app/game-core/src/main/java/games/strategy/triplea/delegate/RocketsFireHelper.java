@@ -206,7 +206,7 @@ public class RocketsFireHelper implements Serializable {
       if (tracker.wasConquered(current)) {
         continue;
       }
-      if (current.getUnitCollection().anyMatch(ownedRockets)) {
+      if (current.anyUnitsMatch(ownedRockets)) {
         territories.add(current);
       }
     }
