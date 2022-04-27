@@ -1077,15 +1077,8 @@ class EditPanel extends ActionPanel {
   }
 
   private static boolean doesNeutralHaveUnitsOnMap(final GameState data) {
-    final GamePlayer player = GamePlayer.NULL_PLAYERID;
-    for (final Territory t : data.getMap()) {
-      for (final Unit u : t.getUnitCollection()) {
-        if (u.getOwner().equals(player)) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return data.getMap().getTerritories().stream()
+        .anyMatch(Matches.territoryHasUnitsOwnedBy(GamePlayer.NULL_PLAYERID));
   }
 
   @Override
