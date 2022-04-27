@@ -14,10 +14,6 @@ public interface Rule {
 
   IntegerMap<NamedAttachable> getResults();
 
-  default void addCost(final Resource resource, final int quantity) {
-    getCosts().put(resource, quantity);
-  }
-
   /** Benefits must be a resource or a unit. */
   default void addResult(final NamedAttachable obj, final int quantity) {
     if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {

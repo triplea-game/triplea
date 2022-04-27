@@ -29,6 +29,10 @@ public class RepairRule extends DefaultNamed implements Rule {
     this.results = new IntegerMap<>(results);
   }
 
+  public void addCost(final Resource resource, final int quantity) {
+    costs.put(resource, quantity);
+  }
+
   @Override
   public IntegerMap<Resource> getCosts() {
     return new IntegerMap<>(costs);

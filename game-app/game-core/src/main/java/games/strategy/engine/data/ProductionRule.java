@@ -25,6 +25,10 @@ public class ProductionRule extends DefaultNamed implements Rule {
     this.costs = costs;
   }
 
+  public void addCost(final Resource resource, final int quantity) {
+    costs.put(resource, quantity);
+  }
+
   @Override
   public IntegerMap<Resource> getCosts() {
     return new IntegerMap<>(costs);
