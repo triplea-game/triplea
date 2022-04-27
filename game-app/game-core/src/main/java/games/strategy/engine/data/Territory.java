@@ -34,8 +34,9 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     getData().notifyTerritoryOwnerChanged(this);
   }
 
-  public boolean isOwnedBy(final GamePlayer player) {
-    return owner.equals(player);
+  public final boolean isOwnedBy(final GamePlayer player) {
+    // Use getOwner() to allow test mocks to override that method.
+    return getOwner().equals(player);
   }
 
   /** refers to unit holder being changed. */
