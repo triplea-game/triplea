@@ -466,7 +466,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   public List<Territory> getTerritoriesOwnedBy(final GamePlayer player) {
     return territories.stream()
-        .filter(t -> t.getOwner().equals(player))
+        .filter(Matches.isTerritoryOwnedBy(player))
         .collect(Collectors.toList());
   }
 

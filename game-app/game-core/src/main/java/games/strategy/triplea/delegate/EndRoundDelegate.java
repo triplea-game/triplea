@@ -356,7 +356,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
 
   private int getProduction(final GamePlayer gamePlayer) {
     return StreamSupport.stream(getData().getMap().spliterator(), false)
-        .filter(current -> current.getOwner().equals(gamePlayer))
+        .filter(Matches.isTerritoryOwnedBy(gamePlayer))
         .mapToInt(TerritoryAttachment::getProduction)
         .sum();
   }
