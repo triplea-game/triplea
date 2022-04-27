@@ -6,10 +6,10 @@ import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.RuleComparator;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
@@ -40,88 +40,10 @@ public class SimpleUnitPanel extends JPanel {
   }
 
   private final Comparator<ProductionRule> productionRuleComparator =
-      new Comparator<>() {
-        final UnitTypeComparator utc = new UnitTypeComparator();
-
-        @Override
-        public int compare(final ProductionRule o1, final ProductionRule o2) {
-          if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
-            final NamedAttachable n1 = o1.getAnyResultKey();
-            final NamedAttachable n2 = o2.getAnyResultKey();
-            if (n1 instanceof UnitType) {
-              final UnitType u1 = (UnitType) n1;
-              if (n2 instanceof UnitType) {
-                final UnitType u2 = (UnitType) n2;
-                return utc.compare(u1, u2);
-              } else if (n2 instanceof Resource) {
-                // final Resource r2 = (Resource) n2;
-                return -1;
-              }
-              return n1.getName().compareTo(n2.getName());
-            } else if (n1 instanceof Resource) {
-              final Resource r1 = (Resource) n1;
-              if (n2 instanceof UnitType) {
-                // final UnitType u2 = (UnitType) n2;
-                return 1;
-              } else if (n2 instanceof Resource) {
-                final Resource r2 = (Resource) n2;
-                return r1.getName().compareTo(r2.getName());
-              } else {
-                return n1.getName().compareTo(n2.getName());
-              }
-            }
-            return n1.getName().compareTo(n2.getName());
-          }
-          if (o1.getResults().size() > o2.getResults().size()) {
-            return -1;
-          } else if (o1.getResults().size() < o2.getResults().size()) {
-            return 1;
-          }
-          return o1.getName().compareTo(o2.getName());
-        }
-      };
+      new RuleComparator<ProductionRule>().thenComparing(ProductionRule::getName);
 
   private final Comparator<RepairRule> repairRuleComparator =
-      new Comparator<>() {
-        final UnitTypeComparator utc = new UnitTypeComparator();
-
-        @Override
-        public int compare(final RepairRule o1, final RepairRule o2) {
-          if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
-            final NamedAttachable n1 = o1.getAnyResultKey();
-            final NamedAttachable n2 = o2.getAnyResultKey();
-            if (n1 instanceof UnitType) {
-              final UnitType u1 = (UnitType) n1;
-              if (n2 instanceof UnitType) {
-                final UnitType u2 = (UnitType) n2;
-                return utc.compare(u1, u2);
-              } else if (n2 instanceof Resource) {
-                // final Resource r2 = (Resource) n2;
-                return -1;
-              }
-              return n1.getName().compareTo(n2.getName());
-            } else if (n1 instanceof Resource) {
-              final Resource r1 = (Resource) n1;
-              if (n2 instanceof UnitType) {
-                // final UnitType u2 = (UnitType) n2;
-                return 1;
-              } else if (n2 instanceof Resource) {
-                final Resource r2 = (Resource) n2;
-                return r1.getName().compareTo(r2.getName());
-              } else {
-                return n1.getName().compareTo(n2.getName());
-              }
-            }
-            return n1.getName().compareTo(n2.getName());
-          }
-          if (o1.getResults().size() > o2.getResults().size()) {
-            return -1;
-          } else if (o1.getResults().size() < o2.getResults().size()) {
-            return 1;
-          }
-          return o1.getName().compareTo(o2.getName());
-        }
-      };
+      new RuleComparator<RepairRule>().thenComparing(RepairRule::getName);
 
   public SimpleUnitPanel(final UiContext uiContext) {
     this(uiContext, Style.LARGE_ICONS_COLUMN);
@@ -146,6 +68,7 @@ public class SimpleUnitPanel extends JPanel {
   void setUnitsFromProductionRuleMap(
       final IntegerMap<ProductionRule> units, final GamePlayer player) {
     removeAll();
+
     final TreeSet<ProductionRule> productionRules = new TreeSet<>(productionRuleComparator);
     productionRules.addAll(units.keySet());
     for (final ProductionRule productionRule : productionRules) {

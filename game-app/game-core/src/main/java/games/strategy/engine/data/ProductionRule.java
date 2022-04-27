@@ -2,11 +2,10 @@ package games.strategy.engine.data;
 
 import games.strategy.triplea.Constants;
 import java.util.Map.Entry;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** A production rule. */
-public class ProductionRule extends DefaultNamed {
+public class ProductionRule extends DefaultNamed implements Rule {
   private static final long serialVersionUID = -6598296283127741307L;
 
   private IntegerMap<Resource> costs = new IntegerMap<>();
@@ -26,29 +25,14 @@ public class ProductionRule extends DefaultNamed {
     this.costs = costs;
   }
 
-  public void addCost(final Resource resource, final int quantity) {
-    costs.put(resource, quantity);
-  }
-
-  /** Benefits must be a resource or a unit. */
-  public void addResult(final NamedAttachable obj, final int quantity) {
-    if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
-      throw new IllegalArgumentException(
-          "results must be units or resources, not:" + obj.getClass().getName());
-    }
-    results.put(obj, quantity);
-  }
-
+  @Override
   public IntegerMap<Resource> getCosts() {
     return new IntegerMap<>(costs);
   }
 
+  @Override
   public IntegerMap<NamedAttachable> getResults() {
     return results;
-  }
-
-  public NamedAttachable getAnyResultKey() {
-    return CollectionUtils.getAny(results.keySet());
   }
 
   @Override
