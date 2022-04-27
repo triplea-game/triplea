@@ -230,7 +230,8 @@ public final class ProTerritoryValueUtils {
                     player, ProUtils.getPotentialEnemyPlayers(player), territoriesThatCantBeHeld)));
     final int numPotentialEnemyTerritories =
         CollectionUtils.countMatches(
-            allTerritories, Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
+            allTerritories,
+            Matches.isTerritoryOwnedByAnyOf(ProUtils.getPotentialEnemyPlayers(player)));
     if (enemyCapitalsAndFactories.size() * 2 >= numPotentialEnemyTerritories) {
       enemyCapitalsAndFactories.clear();
     }
