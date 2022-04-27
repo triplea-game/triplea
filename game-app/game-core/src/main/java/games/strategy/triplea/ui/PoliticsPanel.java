@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.JButtonBuilder;
@@ -350,9 +351,9 @@ public class PoliticsPanel extends ActionPanel {
         return 0;
       }
       final PoliticalActionAttachment.RelationshipChange paa1RelationshipChange =
-          paa1.getRelationshipChanges().iterator().next();
+          CollectionUtils.getAny(paa1.getRelationshipChanges());
       final PoliticalActionAttachment.RelationshipChange paa2RelationshipChange =
-          paa2.getRelationshipChanges().iterator().next();
+          CollectionUtils.getAny(paa2.getRelationshipChanges());
       final RelationshipType paa1NewType = paa1RelationshipChange.relationshipType;
       final RelationshipType paa2NewType = paa2RelationshipChange.relationshipType;
       // sort by player

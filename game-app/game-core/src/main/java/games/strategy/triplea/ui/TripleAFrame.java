@@ -146,6 +146,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.sound.ClipPlayer;
@@ -795,7 +796,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final String ok = movePhase ? "End Move Phase" : "Kill Planes";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
-    mapPanel.centerOn(airCantLand.iterator().next());
+    mapPanel.centerOn(CollectionUtils.getAny(airCantLand));
     final int choice =
         EventThreadJOptionPane.showOptionDialog(
             this,
@@ -833,7 +834,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final String ok = "Done Moving";
     final String cancel = "Keep Moving";
     final String[] options = {cancel, ok};
-    this.mapPanel.centerOn(unitsCantFight.iterator().next());
+    this.mapPanel.centerOn(CollectionUtils.getAny(unitsCantFight));
     final int choice =
         EventThreadJOptionPane.showOptionDialog(
             this,
@@ -945,7 +946,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
     if (potentialTargets.size() == 1) {
-      return potentialTargets.iterator().next();
+      return CollectionUtils.getAny(potentialTargets);
     }
     messageAndDialogThreadPool.waitForAll();
     final AtomicReference<Unit> selected = new AtomicReference<>();
@@ -1077,7 +1078,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return null;
     }
     if (candidates.size() == 1) {
-      return candidates.iterator().next();
+      return CollectionUtils.getAny(candidates);
     }
     messageAndDialogThreadPool.waitForAll();
     final Supplier<SelectTerritoryComponent> action =
@@ -1206,7 +1207,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           }
           mapPanel.centerOn(
               data.getMap()
-                  .getTerritory(possibleUnitsToAttackStringForm.keySet().iterator().next()));
+                  .getTerritory(CollectionUtils.getAny(possibleUnitsToAttackStringForm.keySet())));
           final IndividualUnitPanelGrouped unitPanel =
               new IndividualUnitPanelGrouped(
                   possibleUnitsToAttackStringForm,

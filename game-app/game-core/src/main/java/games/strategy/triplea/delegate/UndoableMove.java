@@ -62,7 +62,9 @@ public class UndoableMove extends AbstractUndoableMove {
     if (reasonCantUndo != null) {
       return reasonCantUndo;
     } else if (!dependents.isEmpty()) {
-      return "Move " + (dependents.iterator().next().getIndex() + 1) + " must be undone first";
+      return "Move "
+          + (CollectionUtils.getAny(dependents).getIndex() + 1)
+          + " must be undone first";
     } else {
       throw new IllegalStateException("no reason");
     }
@@ -142,7 +144,7 @@ public class UndoableMove extends AbstractUndoableMove {
                         .whatShouldBomberBomb(end, enemyTargets, List.of(unit));
               }
             } else if (!enemyTargets.isEmpty()) {
-              target = enemyTargets.iterator().next();
+              target = CollectionUtils.getAny(enemyTargets);
             }
             if (target != null) {
               targets = new HashMap<>();

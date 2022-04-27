@@ -77,7 +77,7 @@ public class UnitUtils {
       return null;
     }
     final IntegerMap<Unit> productionPotential = new IntegerMap<>();
-    Unit highestUnit = factories.iterator().next();
+    Unit highestUnit = CollectionUtils.getAny(factories);
     int highestCapacity = Integer.MIN_VALUE;
     for (final Unit u : factories) {
       final int capacity =

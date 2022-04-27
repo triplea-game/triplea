@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.triplea.java.collections.CollectionUtils;
 
 /** Tracks what Node in the networks is playing which roles in the game. */
 public class PlayerManager {
@@ -72,7 +73,7 @@ public class PlayerManager {
             .orElse(null);
     // we aren't playing anyone, return any
     if (local == null) {
-      final String remote = playerMapping.keySet().iterator().next();
+      final String remote = CollectionUtils.getAny(playerMapping.keySet());
       return data.getPlayerList().getPlayerId(remote);
     }
     String any = null;

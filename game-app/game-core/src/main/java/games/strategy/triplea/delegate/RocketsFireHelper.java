@@ -151,7 +151,7 @@ public class RocketsFireHelper implements Serializable {
             continue;
           }
           if (enemyTargets.size() == 1) {
-            unitTarget = enemyTargets.iterator().next();
+            unitTarget = CollectionUtils.getAny(enemyTargets);
           } else {
             final Player remotePlayer = bridge.getRemotePlayer(player);
             unitTarget =
@@ -528,7 +528,8 @@ public class RocketsFireHelper implements Serializable {
     if (attackFrom != null) {
       if (!rockets.isEmpty()) {
         // TODO: only a certain number fired...
-        final Change change = ChangeFactory.markNoMovementChange(Set.of(rockets.iterator().next()));
+        final Change change =
+            ChangeFactory.markNoMovementChange(Set.of(CollectionUtils.getAny(rockets)));
         bridge.addChange(change);
       } else {
         throw new IllegalStateException("No rockets?" + attackFrom.getUnits());

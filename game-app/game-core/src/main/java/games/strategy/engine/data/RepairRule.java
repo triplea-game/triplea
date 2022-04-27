@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** A repair rule. */
@@ -48,6 +49,10 @@ public class RepairRule extends DefaultNamed {
 
   public IntegerMap<NamedAttachable> getResults() {
     return results;
+  }
+
+  public NamedAttachable getAnyResultKey() {
+    return CollectionUtils.getAny(results.keySet());
   }
 
   @Override

@@ -773,7 +773,7 @@ public class WeakAi extends AbstractBuiltInAi {
       while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100000) {
         i++;
         for (final ProductionRule rule : rules) {
-          final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+          final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
           if (!(resourceOrUnit instanceof UnitType)) {
             continue;
           }
@@ -896,7 +896,7 @@ public class WeakAi extends AbstractBuiltInAi {
       int maxUnits = (totalPu - 1) / minimumUnitPrice;
       if ((capProduction <= maxUnits / 2 || repairFactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : repairRules) {
-          if (!capUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
+          if (!capUnit.getType().equals(rrule.getAnyResultKey())) {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(
@@ -941,8 +941,7 @@ public class WeakAi extends AbstractBuiltInAi {
       while (currentProduction < maxUnits && i < 2) {
         for (final RepairRule rrule : repairRules) {
           for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
-            if (fixUnit == null
-                || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
+            if (fixUnit == null || !fixUnit.getType().equals(rrule.getAnyResultKey())) {
               continue;
             }
             if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(
@@ -1004,7 +1003,7 @@ public class WeakAi extends AbstractBuiltInAi {
     while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100000) {
       i++;
       for (final ProductionRule rule : rules) {
-        final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+        final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
         if (!(resourceOrUnit instanceof UnitType)) {
           continue;
         }
@@ -1116,7 +1115,7 @@ public class WeakAi extends AbstractBuiltInAi {
         final Set<Territory> seaNeighbors =
             data.getMap().getNeighbors(placeAt, Matches.territoryIsWater());
         if (!seaNeighbors.isEmpty()) {
-          seaPlaceAt = seaNeighbors.iterator().next();
+          seaPlaceAt = CollectionUtils.getAny(seaNeighbors);
         }
       }
       if (seaPlaceAt != null) {

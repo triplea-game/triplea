@@ -1424,14 +1424,8 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameState data) {
-    for (final Territory t : data.getMap()) {
-      for (final Unit u : t.getUnitCollection()) {
-        if (u.getOwner().equals(player)) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return data.getMap().getTerritories().stream()
+        .anyMatch(Matches.territoryHasUnitsOwnedBy(player));
   }
 
   static boolean hasMaxRounds(final boolean isLand, final GameData data) {

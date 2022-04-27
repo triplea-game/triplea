@@ -220,16 +220,8 @@ public class TransportTracker {
 
   /** Detects if a unit has unloaded units in a previous game phase. */
   public static boolean hasTransportUnloadedInPreviousPhase(final Unit transport) {
-    final Collection<Unit> unloaded = transport.getUnloaded();
-    // See if transport has unloaded anywhere yet
-    for (final Unit unit : unloaded) {
-      // cannot unload in two different phases
-      if (GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
-          && unit.getWasUnloadedInCombatPhase()) {
-        return true;
-      }
-    }
-    return false;
+    return GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
+        && transport.getUnloaded().stream().anyMatch(Unit::getWasUnloadedInCombatPhase);
   }
 
   /**
@@ -274,7 +266,7 @@ public class TransportTracker {
     if (unloaded.isEmpty()) {
       return null;
     }
-    return unloaded.iterator().next().getUnloadedTo();
+    return CollectionUtils.getAny(unloaded).getUnloadedTo();
   }
 
   /** If a transport has been in combat, it cannot both load AND unload in NCM. */

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -41,7 +42,7 @@ public class PowerStrengthAndRolls implements TotalPowerAndTotalRolls {
 
   private PowerStrengthAndRolls(final Collection<Unit> units, final CombatValue calculator) {
     this.calculator = calculator;
-    this.diceSides = units.isEmpty() ? 0 : calculator.getDiceSides(units.iterator().next());
+    this.diceSides = units.isEmpty() ? 0 : calculator.getDiceSides(CollectionUtils.getAny(units));
     addUnits(units);
   }
 

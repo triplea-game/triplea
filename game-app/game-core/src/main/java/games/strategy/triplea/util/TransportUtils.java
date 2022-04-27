@@ -152,11 +152,10 @@ public final class TransportUtils {
         findTransportsThatUnitsCouldUnloadFrom(units, transports);
     while (!unitToPotentialTransports.isEmpty()) {
       unitToPotentialTransports = sortByTransportOptionsAscending(unitToPotentialTransports);
-      final Unit currentUnit = unitToPotentialTransports.keySet().iterator().next();
+      final Unit currentUnit = CollectionUtils.getAny(unitToPotentialTransports.keySet());
       final Unit selectedTransport =
           findOptimalTransportToUnloadFrom(currentUnit, unitToPotentialTransports);
-      unitToPotentialTransports =
-          removeTransportAndLoadedUnits(selectedTransport, unitToPotentialTransports);
+      removeTransportAndLoadedUnits(selectedTransport, unitToPotentialTransports);
       result.add(selectedTransport);
     }
     return result;
@@ -279,7 +278,7 @@ public final class TransportUtils {
     for (final Unit unit : canBeTransported) {
       final List<Unit> transportOptions = new ArrayList<>();
       for (final Unit transport : canTransport) {
-        if (containsEquivalentUnit(unit, transport.getTransporting())) {
+        if (findEquivalentUnit(unit, transport.getTransporting()).isPresent()) {
           transportOptions.add(transport);
         }
       }
@@ -310,10 +309,10 @@ public final class TransportUtils {
     for (final Unit transport : unitToPotentialTransports.get(unit)) {
       int transportOptions = 0;
       for (final Unit loadedUnit : transport.getTransporting()) {
-        if (containsEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet())) {
-          final Unit equivalentUnit =
-              getEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet());
-          transportOptions += unitToPotentialTransports.get(equivalentUnit).size();
+        final Optional<Unit> equivalentUnit =
+            findEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet());
+        if (equivalentUnit.isPresent()) {
+          transportOptions += unitToPotentialTransports.get(equivalentUnit.get()).size();
         } else {
           transportOptions = Integer.MAX_VALUE;
           break;
@@ -329,23 +328,17 @@ public final class TransportUtils {
     return selectedTransport;
   }
 
-  private static Map<Unit, List<Unit>> removeTransportAndLoadedUnits(
+  private static void removeTransportAndLoadedUnits(
       final Unit transport, final Map<Unit, List<Unit>> unitToPotentialTransports) {
     for (final Unit loadedUnit : transport.getTransporting()) {
-      if (containsEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet())) {
-        final Unit unit = getEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet());
-        unitToPotentialTransports.remove(unit);
-      }
+      final Optional<Unit> equivalentUnit =
+          findEquivalentUnit(loadedUnit, unitToPotentialTransports.keySet());
+      equivalentUnit.ifPresent(unitToPotentialTransports::remove);
     }
     unitToPotentialTransports.values().forEach(t -> t.remove(transport));
-    return unitToPotentialTransports;
   }
 
-  private static boolean containsEquivalentUnit(final Unit unit, final Collection<Unit> units) {
-    return units.stream().anyMatch(u -> u.isEquivalent(unit));
-  }
-
-  private static Unit getEquivalentUnit(final Unit unit, final Collection<Unit> units) {
-    return units.stream().filter(unit::isEquivalent).findAny().get();
+  private static Optional<Unit> findEquivalentUnit(final Unit unit, final Collection<Unit> units) {
+    return units.stream().filter(unit::isEquivalent).findAny();
   }
 }

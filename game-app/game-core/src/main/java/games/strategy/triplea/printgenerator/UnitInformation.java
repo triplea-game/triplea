@@ -3,6 +3,7 @@ package games.strategy.triplea.printgenerator;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -14,11 +15,11 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.StringUtils;
+import org.triplea.java.collections.CollectionUtils;
 
 @Slf4j
 class UnitInformation {
@@ -109,21 +110,20 @@ class UnitInformation {
   }
 
   private static int getCostInformation(final UnitType type, final GameData data) {
-    if (data.getProductionFrontierList().getProductionFrontier("production") != null) {
-      final List<ProductionRule> productionRules =
-          data.getProductionFrontierList().getProductionFrontier("production").getRules();
-      for (final ProductionRule currentRule : productionRules) {
-        final NamedAttachable currentType = currentRule.getResults().keySet().iterator().next();
+    final ProductionFrontier production =
+        data.getProductionFrontierList().getProductionFrontier("production");
+    if (production != null) {
+      for (final ProductionRule currentRule : production.getRules()) {
+        final NamedAttachable currentType = currentRule.getAnyResultKey();
         if (currentType.equals(type)) {
           return currentRule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
         }
       }
     } else {
-      if (TuvUtils.getCostsForTuv(data.getPlayerList().getPlayers().iterator().next(), data)
-              .getInt(type)
-          > 0) {
-        return TuvUtils.getCostsForTuv(data.getPlayerList().getPlayers().iterator().next(), data)
-            .getInt(type);
+      final GamePlayer player = CollectionUtils.getAny(data.getPlayerList().getPlayers());
+      final int cost = TuvUtils.getCostsForTuv(player, data).getInt(type);
+      if (cost > 0) {
+        return cost;
       }
     }
     return -1;

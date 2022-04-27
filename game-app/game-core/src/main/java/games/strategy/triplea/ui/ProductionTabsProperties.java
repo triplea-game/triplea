@@ -59,8 +59,7 @@ class ProductionTabsProperties {
           List.of(properties.getProperty(TAB_UNITS + "." + i).split(":"));
       final List<Rule> ruleList = new ArrayList<>();
       for (final Rule rule : rules) {
-        if (tabValues.contains(
-            rule.getProductionRule().getResults().keySet().iterator().next().getName())) {
+        if (tabValues.contains(rule.getProductionRule().getAnyResultKey().getName())) {
           ruleList.add(rule);
         }
       }

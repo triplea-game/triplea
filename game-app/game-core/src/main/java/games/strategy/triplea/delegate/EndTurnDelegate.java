@@ -161,7 +161,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       return null;
     }
     if (territories.size() == 1) {
-      return territories.iterator().next();
+      return CollectionUtils.getAny(territories);
     }
     // there is an issue with maps that have lots of rolls without any pause between them: they are
     // causing the crypted

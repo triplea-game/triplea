@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import org.triplea.ai.flowfield.neighbors.MapWithNeighbors;
 import org.triplea.ai.flowfield.odds.BattleDetails;
+import org.triplea.java.collections.CollectionUtils;
 
 /** Diffuses an initial value from an initial set of territories to the rest of the territories */
 @Value
@@ -41,7 +42,8 @@ public class InfluenceMap {
         influenceMapSetup.getTerritoryValuations().size() == 1,
         "A custom getBattleDetails only works if one territory has an initial value");
     diffuseBattleDetails(
-        territories.get(influenceMapSetup.getTerritoryValuations().keySet().iterator().next()),
+        territories.get(
+            CollectionUtils.getAny(influenceMapSetup.getTerritoryValuations().keySet())),
         getBattleDetails,
         mapWithNeighbors);
   }

@@ -59,7 +59,7 @@ public class ProPurchaseOptionMap {
     for (final ProductionRule rule : productionFrontier.getRules()) {
 
       // Check if rule is for a unit
-      final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+      final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
       if (!(resourceOrUnit instanceof UnitType)) {
         continue;
       }

@@ -147,12 +147,11 @@ public class FiringGroupSplitterGeneral
 
     if (targetGroups.size() == 1) {
       firingGroups.addAll(
-          buildFiringGroups(name, canFire, enemyUnits, targetGroups.iterator().next()));
-
+          buildFiringGroups(name, canFire, enemyUnits, CollectionUtils.getAny(targetGroups)));
     } else {
       // use the first unitType name of each TargetGroup as a suffix for the FiringGroup name
       for (final TargetGroup targetGroup : targetGroups) {
-        final UnitType type = targetGroup.getFiringUnits(canFire).iterator().next().getType();
+        final UnitType type = CollectionUtils.getAny(targetGroup.getFiringUnits(canFire)).getType();
         firingGroups.addAll(
             buildFiringGroups(name + " " + type.getName(), canFire, enemyUnits, targetGroup));
       }

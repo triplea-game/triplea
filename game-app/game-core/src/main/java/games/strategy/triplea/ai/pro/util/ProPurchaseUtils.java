@@ -72,7 +72,7 @@ public final class ProPurchaseUtils {
         return Optional.of(ppo);
       }
     }
-    return Optional.of(purchasePercentages.keySet().iterator().next());
+    return Optional.of(CollectionUtils.getAny(purchasePercentages.keySet()));
   }
 
   /**
@@ -266,7 +266,7 @@ public final class ProPurchaseUtils {
         return factory2.getOriginalOwner();
       }
     }
-    return factoryUnits.iterator().next().getOriginalOwner();
+    return CollectionUtils.getAny(factoryUnits).getOriginalOwner();
   }
 
   /** Comparator that sorts cheaper units before expensive ones. */

@@ -127,4 +127,8 @@ public class CollectionUtils {
     sortedCollection.addAll(elements);
     return sortedCollection;
   }
+
+  public static <T> T getAny(final Iterable<T> elements) {
+    return elements.iterator().next();
+  }
 }

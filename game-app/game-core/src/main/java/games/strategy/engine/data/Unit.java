@@ -3,13 +3,13 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -426,7 +426,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     if (unloaded == null || unloaded.isEmpty()) {
       this.unloaded = List.of();
     } else {
-      this.unloaded = new ArrayList<>(unloaded);
+      this.unloaded = ImmutableList.copyOf(unloaded);
     }
   }
 

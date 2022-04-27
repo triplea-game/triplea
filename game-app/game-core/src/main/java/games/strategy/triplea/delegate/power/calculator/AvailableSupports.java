@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -148,7 +149,7 @@ class AvailableSupports {
    */
   private Unit getNextAvailableSupporter(final UnitSupportAttachment support) {
     final Set<Unit> supporters = supportUnits.get(support).keySet();
-    final Unit u = supporters.iterator().next();
+    final Unit u = CollectionUtils.getAny(supporters);
     supportUnits.get(support).add(u, -1);
     if (supportUnits.get(support).getInt(u) <= 0) {
       supportUnits.get(support).removeKey(u);

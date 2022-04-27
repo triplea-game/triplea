@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import games.strategy.triplea.Constants;
 import java.util.Map.Entry;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** A production rule. */
@@ -44,6 +45,10 @@ public class ProductionRule extends DefaultNamed {
 
   public IntegerMap<NamedAttachable> getResults() {
     return results;
+  }
+
+  public NamedAttachable getAnyResultKey() {
+    return CollectionUtils.getAny(results.keySet());
   }
 
   @Override

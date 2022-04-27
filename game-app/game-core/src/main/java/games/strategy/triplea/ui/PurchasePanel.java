@@ -172,7 +172,7 @@ public class PurchasePanel extends ActionPanel {
       // sum production for all units except factories
       int totalProduced = 0;
       for (final ProductionRule rule : purchase.keySet()) {
-        final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+        final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
           if (!Matches.unitTypeIsConstruction().test(type)) {
