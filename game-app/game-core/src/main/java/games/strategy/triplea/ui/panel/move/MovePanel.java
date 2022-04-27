@@ -766,8 +766,8 @@ public class MovePanel extends AbstractMovePanel {
     }
 
     if (candidateTransports.size() == 1) {
-      // All transports of the same type, don't show a dialog but still run the unload algorithm
-      // so that units on incapable transports are replaced with units on capable ones.
+      // Only one transport after filtering out incapable ones. Don't show a dialog but still run
+      // the unload algorithm to substitute units on incapable transports with ones on capable ones.
       return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, candidateTransports);
     }
 
