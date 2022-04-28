@@ -1689,8 +1689,7 @@ public final class Matches {
       if (unitIsSea().test(unitWhichWillGetBonus)) {
         final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(unitIsLand());
         final Collection<Territory> neighbors = gameMap.getNeighbors(territory, territoryIsLand());
-        return neighbors.stream()
-            .anyMatch(t -> t.anyUnitsMatch(givesBonusUnitLand));
+        return neighbors.stream().anyMatch(t -> t.anyUnitsMatch(givesBonusUnitLand));
       }
       return false;
     };
