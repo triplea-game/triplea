@@ -1950,7 +1950,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setConsumesUnits(final String value) throws GameParseException {
-    addToUnitTypeMap("consumesUnits", consumesUnits, value);
+    addToUnitTypeMap("consumesUnits", consumesUnits, value, 1);
   }
 
   private void setConsumesUnits(final IntegerMap<UnitType> value) {
@@ -1966,10 +1966,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCreatesUnitsList(final String value) throws GameParseException {
-    addToUnitTypeMap("createsUnitsList", createsUnitsList, value);
+    addToUnitTypeMap("createsUnitsList", createsUnitsList, value, 0);
   }
 
-  private void addToUnitTypeMap(String description, IntegerMap<UnitType> utMap, String value)
+  private void addToUnitTypeMap(
+      String description, IntegerMap<UnitType> utMap, String value, int minValue)
       throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
@@ -1984,8 +1985,8 @@ public class UnitAttachment extends DefaultAttachment {
           description + ": No unit called:" + unitTypeToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
-    if (n < 0) {
-      throw new GameParseException(description + " cannot have negative values" + thisErrorMsg());
+    if (n < minValue) {
+      throw new GameParseException(description + " value must be >= " + minValue + thisErrorMsg());
     }
     utMap.put(ut, n);
   }
