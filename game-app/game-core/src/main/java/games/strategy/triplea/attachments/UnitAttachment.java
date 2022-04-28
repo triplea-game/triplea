@@ -1969,6 +1969,18 @@ public class UnitAttachment extends DefaultAttachment {
     addToUnitTypeMap("createsUnitsList", createsUnitsList, value, 0);
   }
 
+  private void setCreatesUnitsList(final IntegerMap<UnitType> value) {
+    createsUnitsList = value;
+  }
+
+  public IntegerMap<UnitType> getCreatesUnitsList() {
+    return createsUnitsList;
+  }
+
+  private void resetCreatesUnitsList() {
+    createsUnitsList = new IntegerMap<>();
+  }
+
   private void addToUnitTypeMap(
       String description, IntegerMap<UnitType> utMap, String value, int minValue)
       throws GameParseException {
@@ -1991,18 +2003,6 @@ public class UnitAttachment extends DefaultAttachment {
     utMap.put(ut, n);
   }
 
-  private void setCreatesUnitsList(final IntegerMap<UnitType> value) {
-    createsUnitsList = value;
-  }
-
-  public IntegerMap<UnitType> getCreatesUnitsList() {
-    return createsUnitsList;
-  }
-
-  private void resetCreatesUnitsList() {
-    createsUnitsList = new IntegerMap<>();
-  }
-
   private void setCreatesResourcesList(final String value) throws GameParseException {
     addToResourceMap("createsResourcesList", createsResourcesList, value, true);
   }
@@ -2020,7 +2020,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setFuelCost(final String value) throws GameParseException {
-    addToResourceMap("fuelCost", fuelFlatCost, value, false);
+    addToResourceMap("fuelCost", fuelCost, value, false);
   }
 
   private void setFuelCost(final IntegerMap<Resource> value) {
@@ -2037,6 +2037,18 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setFuelFlatCost(final String value) throws GameParseException {
     addToResourceMap("fuelFlatCost", fuelFlatCost, value, false);
+  }
+
+  private void setFuelFlatCost(final IntegerMap<Resource> value) {
+    fuelFlatCost = value;
+  }
+
+  public IntegerMap<Resource> getFuelFlatCost() {
+    return fuelFlatCost;
+  }
+
+  private void resetFuelFlatCost() {
+    fuelFlatCost = new IntegerMap<>();
   }
 
   private void addToResourceMap(
@@ -2058,18 +2070,6 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(description + " must have positive values" + thisErrorMsg());
     }
     resourceMap.put(r, n);
-  }
-
-  private void setFuelFlatCost(final IntegerMap<Resource> value) {
-    fuelFlatCost = value;
-  }
-
-  public IntegerMap<Resource> getFuelFlatCost() {
-    return fuelFlatCost;
-  }
-
-  private void resetFuelFlatCost() {
-    fuelFlatCost = new IntegerMap<>();
   }
 
   private void setBombingBonus(final String s) {
