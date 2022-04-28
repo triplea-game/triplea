@@ -246,11 +246,8 @@ public class RocketsFireHelper implements Serializable {
       final Route route = data.getMap().getRoute(territory, current, allowed);
       if (route != null
           && route.numberOfSteps() <= maxDistance
-          && current
-              .getUnitCollection()
-              .anyMatch(
-                  attackableUnits.and(
-                      Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
+          && current.anyUnitsMatch(
+              attackableUnits.and(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
         hasFactory.add(current);
       }
     }

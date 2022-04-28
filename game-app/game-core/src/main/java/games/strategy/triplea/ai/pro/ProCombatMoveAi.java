@@ -555,8 +555,7 @@ public class ProCombatMoveAi {
       if (!patd.isCanHold()
           && enemyAttackOptions.getMax(t) != null
           && t.isWater()
-          && !t.getUnitCollection()
-              .anyMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
+          && !t.anyUnitsMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
         ProLogger.debug(
             "Removing convoy zone that can't be held: "
                 + t.getName()

@@ -339,8 +339,7 @@ public class WeakAi extends AbstractBuiltInAi {
       if (!t.isWater()) {
         continue;
       }
-      if (!t.getUnitCollection()
-          .anyMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
+      if (!t.anyUnitsMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
         continue;
       }
       final float enemyStrength = AiUtils.strength(t.getUnits(), false, true);

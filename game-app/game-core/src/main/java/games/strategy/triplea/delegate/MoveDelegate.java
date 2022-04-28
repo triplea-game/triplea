@@ -271,8 +271,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             .build();
     return !getData().getMap().getTerritories().isEmpty()
         && getData().getMap().getTerritories().stream()
-            .map(Territory::getUnitCollection)
-            .anyMatch(units -> units.anyMatch(moveableUnitOwnedByMe));
+            .anyMatch(t -> t.anyUnitsMatch(moveableUnitOwnedByMe));
   }
 
   private Change resetBonusMovement() {
