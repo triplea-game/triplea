@@ -379,9 +379,10 @@ public class MovePerformer implements Serializable {
         && Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
         && GameStepPropertiesHelper.isNonCombatMove(data, false)
         && route
-            .getEnd().anyUnitsMatch(
-            Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
-                .and(Matches.unitIsDestroyer()))) {
+            .getEnd()
+            .anyUnitsMatch(
+                Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
+                    .and(Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we
       // want to make sure we
       // can't keep moving them if there is an enemy destroyer there
