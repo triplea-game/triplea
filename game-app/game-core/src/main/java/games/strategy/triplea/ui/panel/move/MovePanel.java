@@ -885,7 +885,7 @@ public class MovePanel extends AbstractMovePanel {
         final Collection<Unit> transporting = transport.getTransporting();
         for (final Unit candidate : transporting) {
           if (selected.getType().equals(candidate.getType())
-              && selected.getOwner().equals(candidate.getOwner())
+              && selected.isOwnedBy(candidate.getOwner())
               && selected.getHits() == candidate.getHits()) {
             hasChanged = true;
             selectedUnitsToUnload.add(candidate);
@@ -906,7 +906,7 @@ public class MovePanel extends AbstractMovePanel {
       while (candidateIter.hasNext()) {
         final Unit candidate = candidateIter.next();
         if (selected.getType().equals(candidate.getType())
-            && selected.getOwner().equals(candidate.getOwner())
+            && selected.isOwnedBy(candidate.getOwner())
             && selected.getHits() == candidate.getHits()) {
           selectedUnitsToUnload.add(candidate);
           candidateIter.remove();
@@ -1177,7 +1177,7 @@ public class MovePanel extends AbstractMovePanel {
         CollectionUtils.getMatches(
             capableTransports, Matches.transportCannotUnload(route.getEnd()));
     capableTransports.removeAll(incapableTransports);
-    final Predicate<Unit> alliedMatch = transport -> !transport.getOwner().equals(unitOwner);
+    final Predicate<Unit> alliedMatch = Matches.unitIsOwnedBy(unitOwner).negate();
     final Collection<Unit> alliedTransports =
         CollectionUtils.getMatches(capableTransports, alliedMatch);
     capableTransports.removeAll(alliedTransports);

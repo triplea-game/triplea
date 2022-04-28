@@ -39,8 +39,8 @@ final class EditValidator {
   }
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {
-    if (Matches.territoryIsWater().test(territory)
-        && territory.getOwner().equals(GamePlayer.NULL_PLAYERID)
+    if (territory.isWater()
+        && territory.isOwnedBy(GamePlayer.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }

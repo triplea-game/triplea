@@ -499,7 +499,7 @@ class WW2V3Year41Test {
     // battle already fought
     // make sure the infantry die with the transport
     assertTrue(
-        sz7.getUnitCollection().getMatches(Matches.unitOwnedBy(british)).isEmpty(),
+        sz7.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)).isEmpty(),
         sz7.getUnitCollection().toString());
   }
 
@@ -993,7 +993,7 @@ class WW2V3Year41Test {
     // move the transport out
     assertValid(
         moveDelegate.move(
-            sz7.getUnitCollection().getMatches(Matches.unitOwnedBy(british(gameData))),
+            sz7.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british(gameData))),
             new Route(sz7, sz6)));
   }
 
@@ -1257,7 +1257,7 @@ class WW2V3Year41Test {
     move(sz14.getUnits(), new Route(sz14, sz15));
     // move troops from Libya
     move(
-        li.getUnitCollection().getMatches(Matches.unitOwnedBy(italians(gameData))),
+        li.getUnitCollection().getMatches(Matches.unitIsOwnedBy(italians(gameData))),
         new Route(li, eg));
     // unload the transports
     move(sz15.getUnitCollection().getMatches(Matches.unitIsLand()), new Route(sz15, eg));
@@ -1378,7 +1378,7 @@ class WW2V3Year41Test {
     move(sz14.getUnits(), new Route(sz14, sz15));
     // move troops from Libya
     move(
-        li.getUnitCollection().getMatches(Matches.unitOwnedBy(italians(gameData))),
+        li.getUnitCollection().getMatches(Matches.unitIsOwnedBy(italians(gameData))),
         new Route(li, eg));
     // unload the transports
     move(sz15.getUnitCollection().getMatches(Matches.unitIsLand()), new Route(sz15, eg));

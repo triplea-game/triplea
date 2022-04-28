@@ -120,6 +120,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     owner = Optional.ofNullable(player).orElse(GamePlayer.NULL_PLAYERID);
   }
 
+  public final boolean isOwnedBy(final GamePlayer player) {
+    // Use getOwner() to allow test mocks to override that method.
+    return getOwner().equals(player);
+  }
+
   public boolean isEquivalent(final Unit unit) {
     return type != null
         && type.equals(unit.getType())

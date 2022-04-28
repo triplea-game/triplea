@@ -186,7 +186,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
                   .and(Matches.unitIsLand()))) {
         return true;
       }
-      if (t.getOwner().equals(this)
+      if (t.isOwnedBy(this)
           && t.getUnitCollection()
               .anyMatch(Matches.unitIsOwnedBy(this).and(Matches.unitCanProduceUnits()))) {
         return true;

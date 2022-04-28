@@ -67,7 +67,7 @@ class EditProductionPanel extends ProductionPanel {
       // art for, so only use the units on a map.
       for (final Territory t : data.getMap()) {
         for (final Unit u : t.getUnitCollection()) {
-          if (u.getOwner().equals(player)) {
+          if (u.isOwnedBy(player)) {
             final UnitType ut = u.getType();
             if (!unitsAllowed.contains(ut)) {
               unitsAllowed.add(ut);

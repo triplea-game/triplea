@@ -890,7 +890,7 @@ class ProPurchaseAi {
           final int numNearbyEnemyTerritories =
               CollectionUtils.countMatches(
                   nearbyLandTerritories,
-                  Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
+                  Matches.isTerritoryOwnedByAnyOf(ProUtils.getPotentialEnemyPlayers(player)));
           final boolean hasLocalLandSuperiority =
               ProBattleUtils.territoryHasLocalLandSuperiority(
                   proData, t, ProBattleUtils.SHORT_RANGE, player);
@@ -1030,7 +1030,7 @@ class ProPurchaseAi {
                   ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
       final List<Territory> enemyLandTerritories =
           CollectionUtils.getMatches(
-              landTerritories, Matches.isTerritoryOwnedBy(ProUtils.getEnemyPlayers(player)));
+              landTerritories, Matches.isTerritoryOwnedByAnyOf(ProUtils.getEnemyPlayers(player)));
       territoriesToCheck.addAll(enemyLandTerritories);
     }
     final Map<Territory, Double> territoryValueMap =

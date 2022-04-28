@@ -53,9 +53,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     // we can place on territories we own
     if (units.stream().anyMatch(Matches.unitIsSea())) {
       return "Cant place sea units on land";
-    } else if (to.getOwner() == null) {
-      return "You dont own " + to.getName();
-    } else if (!to.getOwner().equals(player)) {
+    } else if (!to.isOwnedBy(player)) {
       final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
       if (pa != null
           && pa.getGiveUnitControl() != null

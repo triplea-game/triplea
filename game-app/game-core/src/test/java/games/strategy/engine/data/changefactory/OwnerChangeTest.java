@@ -11,6 +11,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.CollectionUtils;
 
 class OwnerChangeTest {
 
@@ -32,7 +33,7 @@ class OwnerChangeTest {
     assertThat(
         "The (non-mobile) factory should be taken over"
             + " when the allied player takes over the territory",
-        territory.getUnits().iterator().next().getOwner().equals(americans),
+        CollectionUtils.getAny(territory.getUnits()).isOwnedBy(americans),
         is(true));
   }
 
@@ -54,7 +55,7 @@ class OwnerChangeTest {
     assertThat(
         "The (mobile) anti air gun should be taken over"
             + " when the allied player takes over the territory",
-        territory.getUnits().iterator().next().getOwner().equals(british),
+        CollectionUtils.getAny(territory.getUnits()).isOwnedBy(british),
         is(true));
   }
 }
