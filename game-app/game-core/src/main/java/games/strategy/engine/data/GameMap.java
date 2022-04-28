@@ -74,7 +74,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   private void setConnection(final Territory from, final Territory to) {
     // preserves the unmodifiable nature of the entries
-    final Set<Territory> current = connections.get(from);
+    final Set<Territory> current = getNeighbors(from);
     final Set<Territory> modified = new HashSet<>(current);
     modified.add(to);
     connections.put(from, Collections.unmodifiableSet(modified));
@@ -115,7 +115,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   private Set<Territory> getNeighbors(
       final Territory territory, final BiPredicate<Territory, Territory> routeCondition) {
-    return connections.get(territory).stream()
+    return getNeighbors(territory).stream()
         .filter(n -> routeCondition.test(territory, n))
         .collect(Collectors.toSet());
   }
@@ -396,7 +396,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
     final Set<Territory> newFrontier =
         frontier.stream()
-            .flatMap(f -> connections.get(f).stream().filter(t -> routeCond.test(f, t)))
+            .flatMap(f -> getNeighbors(f).stream().filter(t -> routeCond.test(f, t)))
             .collect(Collectors.toSet());
     if (newFrontier.contains(target)) {
       return distance + 1;
