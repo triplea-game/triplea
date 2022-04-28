@@ -4,7 +4,7 @@ import games.strategy.triplea.attachments.UnitTypeComparator;
 import java.util.Comparator;
 
 public class RuleComparator<T extends Rule> implements Comparator<T> {
-  private static final UnitTypeComparator unitTypeComparator = new UnitTypeComparator();
+  private final UnitTypeComparator unitTypeComparator = new UnitTypeComparator();
 
   @Override
   public int compare(T o1, T o2) {
