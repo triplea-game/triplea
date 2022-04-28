@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
 
@@ -27,6 +28,11 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     super(name, data);
     this.water = water;
     unitCollection = new UnitCollection(this, getData());
+  }
+
+  @Override
+  public final boolean anyUnitsMatch(final Predicate<Unit> matcher) {
+    return getUnitCollection().anyMatch(matcher);
   }
 
   public void setOwner(final @Nullable GamePlayer owner) {
