@@ -1151,7 +1151,7 @@ public final class Matches {
         // the range.
         // TODO Still need to be able to handle stops on the way
         if (hasNeighboringAlliedNavalBase(route.getStart(), unit.getOwner())
-            && hasNeighboringAlliedNavalBase(route.getStart(), unit.getOwner())) {
+            && hasNeighboringAlliedNavalBase(route.getEnd(), unit.getOwner())) {
           left = left.add(BigDecimal.ONE);
         }
       }
