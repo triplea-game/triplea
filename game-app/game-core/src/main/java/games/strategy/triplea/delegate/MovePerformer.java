@@ -347,17 +347,19 @@ public class MovePerformer implements Serializable {
     final CompositeChange change = new CompositeChange();
     // only units owned by us need to be marked
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
+    final Territory routeStart = route.getStart();
+    final Territory routeEnd = route.getEnd();
     for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(gamePlayer))) {
       BigDecimal moved = route.getMovementCost(unit);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getIsAir()) {
-        if (TerritoryAttachment.hasAirBase(route.getStart())
-            && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner())) {
+        if (TerritoryAttachment.hasAirBase(routeStart)
+            && relationshipTracker.isAllied(routeStart.getOwner(), unit.getOwner())) {
           moved = moved.subtract(BigDecimal.ONE);
         }
-        if (route.getEnd() != null
-            && TerritoryAttachment.hasAirBase(route.getEnd())
-            && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner())) {
+        if (routeEnd != null
+            && TerritoryAttachment.hasAirBase(routeEnd)
+            && relationshipTracker.isAllied(routeEnd.getOwner(), unit.getOwner())) {
           moved = moved.subtract(BigDecimal.ONE);
         }
       }
@@ -373,14 +375,12 @@ public class MovePerformer implements Serializable {
         change.add(ChangeFactory.markNoMovementChange(Set.of(unit)));
       }
     }
-    if (route.getEnd() != null
+    if (routeEnd != null
         && Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
         && GameStepPropertiesHelper.isNonCombatMove(data, false)
-        && route
-            .getEnd()
-            .anyUnitsMatch(
-                Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
-                    .and(Matches.unitIsDestroyer()))) {
+        && routeEnd.anyUnitsMatch(
+            Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
+                .and(Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we
       // want to make sure we
       // can't keep moving them if there is an enemy destroyer there
