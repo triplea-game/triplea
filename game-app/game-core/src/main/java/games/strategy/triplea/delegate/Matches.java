@@ -1280,12 +1280,18 @@ public final class Matches {
                 && relationshipTracker.isAtWar(player, t.getOwner()));
   }
 
-  public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
+  public static Predicate<Territory> isTerritoryEnemyAndNotImpassableOrRestricted(
       final GamePlayer player,
       final GameProperties properties,
       final RelationshipTracker relationshipTracker) {
+    return isTerritoryEnemy(player, relationshipTracker)
+        .and(territoryIsPassableAndNotRestricted(player, properties));
+  }
+
+  public static Predicate<Territory> territoryIsNotUnownedWaterAndCanBeTakenOverBy(
+      final GamePlayer attacker) {
     return t -> {
-      if (t.isOwnedBy(player)) {
+      if (t.isOwnedBy(attacker)) {
         return false;
       }
       // if we look at territory attachments, may have funny results for blockades or other things
@@ -1293,8 +1299,8 @@ public final class Matches {
       if (t.isOwnedBy(GamePlayer.NULL_PLAYERID) && t.isWater()) {
         return false;
       }
-      return territoryIsPassableAndNotRestricted(player, properties).test(t)
-          && relationshipTracker.isAtWar(player, t.getOwner());
+      return territoryIsPassableAndNotRestricted(attacker, t.getData().getProperties()).test(t)
+          && t.getData().getRelationshipTracker().canTakeOverOwnedTerritory(attacker, t.getOwner());
     };
   }
 
@@ -2250,23 +2256,6 @@ public final class Matches {
 
   public static Predicate<Unit> unitCanAirBattle() {
     return u -> UnitAttachment.get(u.getType()).getCanAirBattle();
-  }
-
-  public static Predicate<Territory> //
-      terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
-      final GamePlayer attacker) {
-    return t -> {
-      if (t.isOwnedBy(attacker)) {
-        return false;
-      }
-      if (t.isOwnedBy(GamePlayer.NULL_PLAYERID) && t.isWater()) {
-        return false;
-      }
-      return territoryIsPassableAndNotRestricted(attacker, t.getData().getProperties()).test(t)
-          && relationshipTypeCanTakeOverOwnedTerritory()
-              .test(
-                  t.getData().getRelationshipTracker().getRelationshipType(attacker, t.getOwner()));
-    };
   }
 
   public static Predicate<Territory> territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(

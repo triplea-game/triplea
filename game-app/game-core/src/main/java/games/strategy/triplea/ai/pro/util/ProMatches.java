@@ -59,7 +59,7 @@ public final class ProMatches {
           match.and(
               Matches.territoryIsNeutralButNotWater()
                   .or(
-                      Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
+                      Matches.isTerritoryEnemyAndNotImpassableOrRestricted(
                           player, data.getProperties(), data.getRelationshipTracker()))
                   .negate());
     }

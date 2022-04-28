@@ -516,7 +516,7 @@ public class MoveValidator {
     // See if they've already been in combat
     if (units.stream().anyMatch(Matches.unitWasInCombat())
         && units.stream().anyMatch(Matches.unitWasUnloadedThisTurn())
-        && Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
+        && Matches.isTerritoryEnemyAndNotImpassableOrRestricted(
                 player, data.getProperties(), data.getRelationshipTracker())
             .test(route.getEnd())
         && !route.getEnd().getUnitCollection().isEmpty()) {
@@ -562,7 +562,7 @@ public class MoveValidator {
     final Predicate<Territory> neutralOrEnemy =
         Matches.territoryIsNeutralButNotWater()
             .or(
-                Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
+                Matches.isTerritoryEnemyAndNotImpassableOrRestricted(
                     player, data.getProperties(), data.getRelationshipTracker()));
     final boolean navalMayNotNonComIntoControlled =
         Properties.getWW2V2(data.getProperties())
