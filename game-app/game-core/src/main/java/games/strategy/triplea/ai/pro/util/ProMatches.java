@@ -58,9 +58,7 @@ public final class ProMatches {
       match =
           match.and(
               Matches.territoryIsNeutralButNotWater()
-                  .or(
-                      Matches.isTerritoryEnemyAndNotImpassableOrRestricted(
-                          player, data.getProperties(), data.getRelationshipTracker()))
+                  .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player))
                   .negate());
     }
     return ((Predicate<Territory>) alliedTerritories::contains).or(match);

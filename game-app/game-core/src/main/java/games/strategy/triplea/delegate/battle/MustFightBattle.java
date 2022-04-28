@@ -861,8 +861,7 @@ public class MustFightBattle extends DependentBattle
 
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
     final Predicate<Territory> conqueuredOrEnemy =
-        Matches.isTerritoryEnemyAndNotImpassableOrRestricted(
-                attacker, gameData.getProperties(), gameData.getRelationshipTracker())
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(attacker)
             .or(Matches.territoryIsWater().and(Matches.territoryWasFoughtOver(battleTracker)));
     possible.removeAll(CollectionUtils.getMatches(possible, conqueuredOrEnemy));
 

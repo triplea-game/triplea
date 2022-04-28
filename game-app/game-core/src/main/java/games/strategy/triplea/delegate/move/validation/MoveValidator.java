@@ -516,8 +516,7 @@ public class MoveValidator {
     // See if they've already been in combat
     if (units.stream().anyMatch(Matches.unitWasInCombat())
         && units.stream().anyMatch(Matches.unitWasUnloadedThisTurn())
-        && Matches.isTerritoryEnemyAndNotImpassableOrRestricted(
-                player, data.getProperties(), data.getRelationshipTracker())
+        && Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player)
             .test(route.getEnd())
         && !route.getEnd().getUnitCollection().isEmpty()) {
       return result.setErrorReturnResult("Units cannot participate in multiple battles");
@@ -561,9 +560,7 @@ public class MoveValidator {
     }
     final Predicate<Territory> neutralOrEnemy =
         Matches.territoryIsNeutralButNotWater()
-            .or(
-                Matches.isTerritoryEnemyAndNotImpassableOrRestricted(
-                    player, data.getProperties(), data.getRelationshipTracker()));
+            .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player));
     final boolean navalMayNotNonComIntoControlled =
         Properties.getWW2V2(data.getProperties())
             || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(

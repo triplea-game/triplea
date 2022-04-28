@@ -282,7 +282,7 @@ public class MovePerformer implements Serializable {
                 // battle records).
                 for (final Territory t :
                     route.getMatches(
-                        Matches.territoryIsNotUnownedWaterAndCanBeTakenOverBy(gamePlayer)
+                        Matches.isTerritoryNotUnownedWaterAndCanBeTakenOverBy(gamePlayer)
                             .and(Matches.territoryIsBlitzable(gamePlayer, data)))) {
                   if (Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker()).test(t)
                       || Matches.territoryHasEnemyUnits(gamePlayer, data.getRelationshipTracker())
@@ -329,10 +329,9 @@ public class MovePerformer implements Serializable {
 
   private static Predicate<Territory> getMustFightThroughMatch(
       final GamePlayer gamePlayer, final GameState data) {
-    return Matches.isTerritoryEnemyAndNotImpassableOrRestricted(
-            gamePlayer, data.getProperties(), data.getRelationshipTracker())
+    return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer)
         .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer, data.getRelationshipTracker()))
-        .or(Matches.territoryIsNotUnownedWaterAndCanBeTakenOverBy(gamePlayer));
+        .or(Matches.isTerritoryNotUnownedWaterAndCanBeTakenOverBy(gamePlayer));
   }
 
   private Change markMovementChange(

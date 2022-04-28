@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static java.util.function.Predicate.not;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
@@ -976,7 +978,11 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsNeutralButNotWater() {
-    return t -> !t.isWater() && t.isOwnedBy(GamePlayer.NULL_PLAYERID);
+    return isTerritoryOwnedBy(GamePlayer.NULL_PLAYERID).and(territoryIsWater().negate());
+  }
+
+  public static Predicate<Territory> territoryIsUnownedWater() {
+    return isTerritoryOwnedBy(GamePlayer.NULL_PLAYERID).and(territoryIsWater());
   }
 
   public static Predicate<Territory> territoryIsImpassable() {
@@ -1280,28 +1286,25 @@ public final class Matches {
                 && relationshipTracker.isAtWar(player, t.getOwner()));
   }
 
-  public static Predicate<Territory> isTerritoryEnemyAndNotImpassableOrRestricted(
-      final GamePlayer player,
-      final GameProperties properties,
-      final RelationshipTracker relationshipTracker) {
-    return isTerritoryEnemy(player, relationshipTracker)
-        .and(territoryIsPassableAndNotRestricted(player, properties));
+  public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
+      final GamePlayer player) {
+    final RelationshipTracker relationshipTracker = player.getData().getRelationshipTracker();
+    return territoryNotImpassibleOrRestrictedOrNeutralWaterAndNotOwnedBy(player)
+        .and(t -> relationshipTracker.isAtWar(player, t.getOwner()));
   }
 
-  public static Predicate<Territory> territoryIsNotUnownedWaterAndCanBeTakenOverBy(
-      final GamePlayer attacker) {
-    return t -> {
-      if (t.isOwnedBy(attacker)) {
-        return false;
-      }
-      // if we look at territory attachments, may have funny results for blockades or other things
-      // that are passable and not owned. better to check them by alliance. (veqryn)
-      if (t.isOwnedBy(GamePlayer.NULL_PLAYERID) && t.isWater()) {
-        return false;
-      }
-      return territoryIsPassableAndNotRestricted(attacker, t.getData().getProperties()).test(t)
-          && t.getData().getRelationshipTracker().canTakeOverOwnedTerritory(attacker, t.getOwner());
-    };
+  public static Predicate<Territory> isTerritoryNotUnownedWaterAndCanBeTakenOverBy(
+      final GamePlayer player) {
+    final RelationshipTracker relationshipTracker = player.getData().getRelationshipTracker();
+    return territoryNotImpassibleOrRestrictedOrNeutralWaterAndNotOwnedBy(player)
+        .and(t -> relationshipTracker.canTakeOverOwnedTerritory(player, t.getOwner()));
+  }
+
+  private static Predicate<Territory> territoryNotImpassibleOrRestrictedOrNeutralWaterAndNotOwnedBy(
+      final GamePlayer player) {
+    return not(isTerritoryOwnedBy(player))
+        .and(not(territoryIsUnownedWater()))
+        .and(territoryIsPassableAndNotRestricted(player, player.getData().getProperties()));
   }
 
   public static Predicate<Territory> territoryIsBlitzable(
