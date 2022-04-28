@@ -526,12 +526,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (!Matches.territoryIsLand().test(producer)) {
       return null;
     }
-    if (!producer.getUnitCollection().anyMatch(Matches.unitCanProduceUnits())) {
+    if (!producer.anyUnitsMatch(Matches.unitCanProduceUnits())) {
       return null;
     }
     final Predicate<Unit> ownedFighters =
         Matches.unitCanLandOnCarrier().and(Matches.unitIsOwnedBy(player));
-    if (!producer.getUnitCollection().anyMatch(ownedFighters)) {
+    if (!producer.anyUnitsMatch(ownedFighters)) {
       return null;
     }
     if (wasConquered(producer)) {
@@ -703,8 +703,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (to.isWater()
         && (!Properties.getWW2V2(getData().getProperties())
             && !Properties.getUnitPlacementInEnemySeas(getData().getProperties()))
-        && to.getUnitCollection()
-            .anyMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
+        && to.anyUnitsMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
       return "Cannot place sea units with enemy naval units";
     }
     // make sure there is a factory
@@ -832,7 +831,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           if ((pa == null
                   || pa.getGiveUnitControl() == null
                   || !pa.getGiveUnitControl().contains(player))
-              && !to.getUnitCollection().anyMatch(Matches.unitIsOwnedBy(player))) {
+              && !to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
             return "You don't own " + to.getName();
           }
         } else {
@@ -930,8 +929,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final boolean water = to.isWater();
     if (water
         && (!Properties.getWW2V2(properties) && !Properties.getUnitPlacementInEnemySeas(properties))
-        && to.getUnitCollection()
-            .anyMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
+        && to.anyUnitsMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
       return null;
     }
     final Collection<Unit> units = new ArrayList<>(allUnits);
@@ -963,7 +961,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
                 || Properties.getLhtrCarrierProductionRules(properties);
         if (canProduceFightersOnCarriers
                 && (allProducedUnits.stream().anyMatch(Matches.unitIsCarrier()))
-            || to.getUnitCollection().anyMatch(unitIsCarrierOwnedByCombinedPlayers(player))) {
+            || to.anyUnitsMatch(unitIsCarrierOwnedByCombinedPlayers(player))) {
           placeableUnits.addAll(
               CollectionUtils.getMatches(
                   units, Matches.unitIsAir().and(Matches.unitCanLandOnCarrier())));

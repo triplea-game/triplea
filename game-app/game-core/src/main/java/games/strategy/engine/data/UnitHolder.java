@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /** An object that contains a collection of {@link Unit}s. */
 public interface UnitHolder {
@@ -15,5 +16,9 @@ public interface UnitHolder {
 
   default Collection<Unit> getUnits() {
     return getUnitCollection().getUnits();
+  }
+
+  default boolean anyUnitsMatch(final Predicate<Unit> matcher) {
+    return getUnitCollection().anyMatch(matcher);
   }
 }

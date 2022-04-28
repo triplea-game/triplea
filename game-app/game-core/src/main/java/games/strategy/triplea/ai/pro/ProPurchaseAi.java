@@ -945,9 +945,8 @@ class ProPurchaseAi {
           enemyAttackOptions.getMax(t).getMaxUnits().stream()
               .anyMatch(Matches.unitIsStrategicBomber());
       final boolean territoryCanBeBombed =
-          t.getUnitCollection().anyMatch(Matches.unitCanProduceUnitsAndCanBeDamaged());
-      final boolean hasAaBombingDefense =
-          t.getUnitCollection().anyMatch(Matches.unitIsAaForBombingThisUnitOnly());
+          t.anyUnitsMatch(Matches.unitCanProduceUnitsAndCanBeDamaged());
+      final boolean hasAaBombingDefense = t.anyUnitsMatch(Matches.unitIsAaForBombingThisUnitOnly());
       ProLogger.debug(
           t
               + ", enemyCanBomb="

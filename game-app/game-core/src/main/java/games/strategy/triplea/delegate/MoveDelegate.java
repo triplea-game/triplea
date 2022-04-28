@@ -271,8 +271,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             .build();
     return !getData().getMap().getTerritories().isEmpty()
         && getData().getMap().getTerritories().stream()
-            .map(Territory::getUnitCollection)
-            .anyMatch(units -> units.anyMatch(moveableUnitOwnedByMe));
+            .anyMatch(t -> t.anyUnitsMatch(moveableUnitOwnedByMe));
   }
 
   private Change resetBonusMovement() {
@@ -705,7 +704,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             || Properties.getLandExistingFightersOnNewCarriers(data.getProperties());
     boolean hasProducedCarriers = false;
     for (final GamePlayer p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
-      if (p.getUnitCollection().anyMatch(Matches.unitIsCarrier())) {
+      if (p.anyUnitsMatch(Matches.unitIsCarrier())) {
         hasProducedCarriers = true;
         break;
       }
@@ -720,7 +719,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (!player.equals(this.player)) {
         util.removeAirThatCantLand(
             player,
-            ((player.getUnitCollection().anyMatch(Matches.unitIsCarrier()) || hasProducedCarriers)
+            ((player.anyUnitsMatch(Matches.unitIsCarrier()) || hasProducedCarriers)
                 && lhtrCarrierProd));
       }
     }

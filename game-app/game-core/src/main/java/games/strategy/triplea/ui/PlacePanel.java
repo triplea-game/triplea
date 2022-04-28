@@ -215,9 +215,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
           if ((pa == null
                   || pa.getGiveUnitControl() == null
                   || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
-              && !territory
-                  .getUnitCollection()
-                  .anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
+              && !territory.anyUnitsMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return new PlaceableUnits();
           }
         } else {

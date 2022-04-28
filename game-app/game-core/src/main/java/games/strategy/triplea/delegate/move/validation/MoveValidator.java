@@ -1027,7 +1027,7 @@ public class MoveValidator {
     final Predicate<Unit> enemyDestroyer =
         Matches.unitIsDestroyer().and(Matches.enemyUnit(player, data.getRelationshipTracker()));
     return route.getMiddleSteps().stream()
-        .anyMatch(current -> current.getUnitCollection().anyMatch(enemyDestroyer));
+        .anyMatch(current -> current.anyUnitsMatch(enemyDestroyer));
   }
 
   private static boolean getEditMode(final GameProperties properties) {
@@ -1327,7 +1327,7 @@ public class MoveValidator {
           Matches.enemyUnit(player, data.getRelationshipTracker())
               .and(Matches.unitIsSubmerged().negate());
       if (!Properties.getUnitsCanLoadInHostileSeaZones(data.getProperties())
-          && route.getEnd().getUnitCollection().anyMatch(enemyNonSubmerged)
+          && route.getEnd().anyUnitsMatch(enemyNonSubmerged)
           && nonParatroopersPresent(player, landAndAir)
           && !onlyIgnoredUnitsOnPath(route, player, false)
           && !AbstractMoveDelegate.getBattleTracker(data)

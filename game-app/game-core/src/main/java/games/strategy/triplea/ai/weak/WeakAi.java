@@ -291,7 +291,7 @@ public class WeakAi extends AbstractBuiltInAi {
       if (t.isWater()) {
         // land units, move all towards the end point
         // and move along amphib route
-        if (t.getUnitCollection().anyMatch(Matches.unitIsLand()) && lastSeaZoneOnAmphib != null) {
+        if (t.anyUnitsMatch(Matches.unitIsLand()) && lastSeaZoneOnAmphib != null) {
           // two move route to end
           final @Nullable Route r = getMaxSeaRoute(data, t, lastSeaZoneOnAmphib, player);
           if (r != null) {
@@ -301,9 +301,7 @@ public class WeakAi extends AbstractBuiltInAi {
           }
         }
         // move toward the start of the amphib route
-        if (nonCombat
-            && t.getUnitCollection().anyMatch(ownedAndNotMoved)
-            && firstSeaZoneOnAmphib != null) {
+        if (nonCombat && t.anyUnitsMatch(ownedAndNotMoved) && firstSeaZoneOnAmphib != null) {
           final @Nullable Route r = getMaxSeaRoute(data, t, firstSeaZoneOnAmphib, player);
           if (r != null) {
             moves.add(new MoveDescription(t.getUnitCollection().getMatches(ownedAndNotMoved), r));
@@ -341,8 +339,7 @@ public class WeakAi extends AbstractBuiltInAi {
       if (!t.isWater()) {
         continue;
       }
-      if (!t.getUnitCollection()
-          .anyMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
+      if (!t.anyUnitsMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
         continue;
       }
       final float enemyStrength = AiUtils.strength(t.getUnits(), false, true);
@@ -356,7 +353,7 @@ public class WeakAi extends AbstractBuiltInAi {
             data.getMap().getNeighbors(t, Matches.territoryIsWater());
         for (final Territory owned : attackFrom) {
           // dont risk units we are carrying
-          if (owned.getUnitCollection().anyMatch(Matches.unitIsLand())) {
+          if (owned.anyUnitsMatch(Matches.unitIsLand())) {
             dontMoveFrom.add(owned);
             continue;
           }
@@ -578,10 +575,8 @@ public class WeakAi extends AbstractBuiltInAi {
           if (!ta1.isCapital() && ta2.isCapital()) {
             return 1;
           }
-          final boolean factoryInT1 =
-              o1.getUnitCollection().anyMatch(Matches.unitCanProduceUnits());
-          final boolean factoryInT2 =
-              o2.getUnitCollection().anyMatch(Matches.unitCanProduceUnits());
+          final boolean factoryInT1 = o1.anyUnitsMatch(Matches.unitCanProduceUnits());
+          final boolean factoryInT2 = o2.anyUnitsMatch(Matches.unitCanProduceUnits());
           // next take territories which can produce
           if (factoryInT1 && !factoryInT2) {
             return -1;
@@ -589,10 +584,8 @@ public class WeakAi extends AbstractBuiltInAi {
           if (!factoryInT1 && factoryInT2) {
             return 1;
           }
-          final boolean infrastructureInT1 =
-              o1.getUnitCollection().anyMatch(Matches.unitIsInfrastructure());
-          final boolean infrastructureInT2 =
-              o2.getUnitCollection().anyMatch(Matches.unitIsInfrastructure());
+          final boolean infrastructureInT1 = o1.anyUnitsMatch(Matches.unitIsInfrastructure());
+          final boolean infrastructureInT2 = o2.anyUnitsMatch(Matches.unitIsInfrastructure());
           // next take territories with infrastructure
           if (infrastructureInT1 && !infrastructureInT2) {
             return -1;
@@ -1085,7 +1078,7 @@ public class WeakAi extends AbstractBuiltInAi {
     for (final Territory t : randomTerritories) {
       if (!t.equals(capitol)
           && t.isOwnedBy(player)
-          && t.getUnitCollection().anyMatch(Matches.unitCanProduceUnits())) {
+          && t.anyUnitsMatch(Matches.unitCanProduceUnits())) {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }
     }
