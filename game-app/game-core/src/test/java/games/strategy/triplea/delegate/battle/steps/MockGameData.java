@@ -52,7 +52,6 @@ public class MockGameData {
     lenient().when(gameData.getSequence()).thenReturn(gameSequence);
     lenient().when(gameData.getTechTracker()).thenReturn(techTracker);
     lenient().when(gameData.getResourceList()).thenReturn(resourceList);
-
   }
 
   public static MockGameData givenGameData() {

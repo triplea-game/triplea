@@ -5,7 +5,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
@@ -16,7 +15,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GameDataTestUtil;
-import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;

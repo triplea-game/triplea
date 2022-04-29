@@ -14,7 +14,6 @@ import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.List;
