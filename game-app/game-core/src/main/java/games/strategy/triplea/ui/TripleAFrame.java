@@ -383,12 +383,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             .build(),
         BorderLayout.SOUTH);
 
-    final Frame parent = JOptionPane.getFrameForComponent(this);
-    if (Util.getScreenSize(parent).height < 1000) {
-      placementsPanel.collapse();
-      movePanel.getUnitScrollerPanel().collapse();
-    }
-
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
 
     addTab("Actions", actionButtons, KeyCode.C);

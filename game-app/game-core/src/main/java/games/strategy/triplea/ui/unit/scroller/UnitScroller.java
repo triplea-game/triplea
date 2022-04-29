@@ -229,7 +229,9 @@ public class UnitScroller {
   /** Constructs a UI component for the UnitScroller. */
   public CollapsiblePanel build() {
     final JPanel panel = new JPanel();
-    collapsiblePanel = new CollapsiblePanel(panel, "");
+    collapsiblePanel =
+        new CollapsiblePanel(panel, "", ClientSetting.unitScrollerCollapsed::setValueAndFlush);
+    collapsiblePanel.setCollapsed(ClientSetting.unitScrollerCollapsed.getValueOrThrow());
     updateMovesLeft();
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
