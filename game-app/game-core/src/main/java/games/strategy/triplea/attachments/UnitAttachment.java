@@ -1523,7 +1523,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getMovement(final GamePlayer player) {
     final int bonus = getTechTracker().getMovementBonus(player, getUnitType());
-    return Math.max(0, movement + getTechTracker().getMovementBonus(player, getUnitType()));
+    return Math.max(0, movement + bonus);
   }
 
   private void resetMovement() {
@@ -1569,7 +1569,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getAttackRolls(final GamePlayer player) {
     final int bonus = getTechTracker().getAttackRollsBonus(player, getUnitType());
-    ;
     return Math.max(0, attackRolls + bonus);
   }
 
@@ -1593,7 +1592,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getDefense(final GamePlayer player) {
     final int bonus = getTechTracker().getDefenseBonus(player, getUnitType());
-    ;
     int defenseValue = defense + bonus;
     if (defenseValue > 0 && getIsFirstStrike() && TechTracker.hasSuperSubs(player)) {
       final int superSubBonus = Properties.getSuperSubDefenseBonus(getData().getProperties());
@@ -1622,7 +1620,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getDefenseRolls(final GamePlayer player) {
     final int bonus = getTechTracker().getDefenseRollsBonus(player, getUnitType());
-    ;
     return Math.max(0, defenseRolls + bonus);
   }
 
