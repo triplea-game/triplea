@@ -104,7 +104,7 @@ public class GameData implements Serializable, GameState {
   private final UnitsList unitsList = new UnitsList();
   private final TechnologyFrontier technologyFrontier =
       new TechnologyFrontier("allTechsForGame", this);
-  @Getter private final TechTracker techTracker = new TechTracker(this);
+  @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
   private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
@@ -119,6 +119,7 @@ public class GameData implements Serializable, GameState {
     readWriteLock = new ReentrantReadWriteLock();
     in.defaultReadObject();
     gameDataEventListeners = new GameDataEventListeners();
+    techTracker = new TechTracker(this);
   }
 
   /**
