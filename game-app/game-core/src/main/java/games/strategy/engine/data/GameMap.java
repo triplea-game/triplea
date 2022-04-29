@@ -396,7 +396,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
     final Set<Territory> newFrontier =
         frontier.stream()
-            .flatMap(f -> getNeighbors(f).stream().filter(t -> routeCond.test(f, t)))
+            .flatMap(f -> getNeighbors(f, routeCond).stream())
             .collect(Collectors.toSet());
     if (newFrontier.contains(target)) {
       return distance + 1;
