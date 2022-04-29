@@ -13,6 +13,7 @@ import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import java.util.List;
@@ -23,6 +24,11 @@ import org.triplea.ai.flowfield.neighbors.MapWithNeighbors;
 import org.triplea.ai.flowfield.odds.BattleDetails;
 
 class InfluenceMapTest {
+  private GameData createGameDataMock() {
+    final GameData gameData = mock(GameData.class);
+    when(gameData.getTechTracker()).thenReturn(mock(TechTracker.class));
+    return gameData;
+  }
 
   @Test
   void territories3InLineValues() {
@@ -169,7 +175,7 @@ class InfluenceMapTest {
                 return List.of(territories.get(1));
               }
             });
-    final GameData gameData = mock(GameData.class);
+    final GameData gameData = createGameDataMock();
     final UnitType unitType = new UnitType("test", gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("test", unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
@@ -243,7 +249,7 @@ class InfluenceMapTest {
                 return List.of(territories.get(1));
               }
             });
-    final GameData gameData = mock(GameData.class);
+    final GameData gameData = createGameDataMock();
     final UnitType unitType = new UnitType("test", gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("test", unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
@@ -325,7 +331,7 @@ class InfluenceMapTest {
                 return List.of();
               }
             });
-    final GameData gameData = mock(GameData.class);
+    final GameData gameData = createGameDataMock();
     when(gameData.getDiceSides()).thenReturn(6);
     final UnitType unitType = new UnitType("test", gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("test", unitType, gameData);
@@ -437,7 +443,7 @@ class InfluenceMapTest {
                 return List.of();
               }
             });
-    final GameData gameData = mock(GameData.class);
+    final GameData gameData = createGameDataMock();
     when(gameData.getDiceSides()).thenReturn(6);
     final UnitType unitType = new UnitType("test", gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("test", unitType, gameData);

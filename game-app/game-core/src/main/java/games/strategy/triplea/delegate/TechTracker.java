@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 
 /** A collection of methods for tracking which players have which technology advances. */
 @AllArgsConstructor
-public final class TechTracker {
+public class TechTracker {
   private final GameData data;
 
   private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
