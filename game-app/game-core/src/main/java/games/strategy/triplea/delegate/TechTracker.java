@@ -1,17 +1,65 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /** A collection of methods for tracking which players have which technology advances. */
 public final class TechTracker {
-  private TechTracker() {}
+  private GameData data;
+
+  public TechTracker(final GameData data) {
+    this.data = data;
+  }
+
+  private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
+    return getCurrentTechAdvances(player, data.getTechnologyFrontier());
+  }
+
+  public int getAirDefenseBonus(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getAirDefenseBonus(type, getCurrentTechAdvances(player));
+  }
+
+  public int getAirAttackBonus(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getAirAttackBonus(type, getCurrentTechAdvances(player));
+  }
+
+  public int getMovementBonus(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getMovementBonus(type, getCurrentTechAdvances(player));
+  }
+
+  public int getAttackBonus(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getAttackBonus(type, getCurrentTechAdvances(player));
+  }
+
+  public int getAttackRollsBonus(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getAttackRollsBonus(type, getCurrentTechAdvances(player));
+  }
+
+  public int getDefenseBonus(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getDefenseBonus(type, getCurrentTechAdvances(player));
+  }
+
+  public int getDefenseRollsBonus(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getDefenseRollsBonus(type, getCurrentTechAdvances(player));
+  }
+
+  public int getRadarBonus(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getRadarBonus(type, getCurrentTechAdvances(player));
+  }
+
+  public boolean getUnitAbilitiesGained(GamePlayer player, UnitType type, String filterForAbility) {
+    return TechAbilityAttachment.getUnitAbilitiesGained(
+        filterForAbility, type, getCurrentTechAdvances(player));
+  }
 
   /**
    * Returns what tech advances this player already has successfully researched (including ones that

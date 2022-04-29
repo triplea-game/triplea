@@ -14,6 +14,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.ui.UiContext;
@@ -33,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import lombok.Getter;
 import org.triplea.injection.Injections;
 import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
@@ -102,6 +104,7 @@ public class GameData implements Serializable, GameState {
   private final UnitsList unitsList = new UnitsList();
   private final TechnologyFrontier technologyFrontier =
       new TechnologyFrontier("allTechsForGame", this);
+  @Getter private final TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
   private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =

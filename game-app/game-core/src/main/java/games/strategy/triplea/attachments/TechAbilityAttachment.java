@@ -174,7 +174,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return attackBonus;
   }
 
-  static int getAttackBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+  public static int getAttackBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
     return sumIntegerMap(TechAbilityAttachment::getAttackBonus, ut, techAdvances);
   }
 
@@ -194,7 +194,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return defenseBonus;
   }
 
-  static int getDefenseBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+  public static int getDefenseBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
     return sumIntegerMap(TechAbilityAttachment::getDefenseBonus, ut, techAdvances);
   }
 
@@ -214,7 +214,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return movementBonus;
   }
 
-  static int getMovementBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+  public static int getMovementBonus(
+      final UnitType ut, final Collection<TechAdvance> techAdvances) {
     return sumIntegerMap(TechAbilityAttachment::getMovementBonus, ut, techAdvances);
   }
 
@@ -234,7 +235,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return radarBonus;
   }
 
-  static int getRadarBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+  public static int getRadarBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
     return sumIntegerMap(TechAbilityAttachment::getRadarBonus, ut, techAdvances);
   }
 
@@ -254,7 +255,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airAttackBonus;
   }
 
-  static int getAirAttackBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+  public static int getAirAttackBonus(
+      final UnitType ut, final Collection<TechAdvance> techAdvances) {
     return sumIntegerMap(TechAbilityAttachment::getAirAttackBonus, ut, techAdvances);
   }
 
@@ -274,7 +276,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airDefenseBonus;
   }
 
-  static int getAirDefenseBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+  public static int getAirDefenseBonus(
+      final UnitType ut, final Collection<TechAdvance> techAdvances) {
     return sumIntegerMap(TechAbilityAttachment::getAirDefenseBonus, ut, techAdvances);
   }
 
@@ -745,7 +748,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return attackRollsBonus;
   }
 
-  static int getAttackRollsBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+  public static int getAttackRollsBonus(
+      final UnitType ut, final Collection<TechAdvance> techAdvances) {
     return sumIntegerMap(TechAbilityAttachment::getAttackRollsBonus, ut, techAdvances);
   }
 
@@ -765,7 +769,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return defenseRollsBonus;
   }
 
-  static int getDefenseRollsBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
+  public static int getDefenseRollsBonus(
+      final UnitType ut, final Collection<TechAdvance> techAdvances) {
     return sumIntegerMap(TechAbilityAttachment::getDefenseRollsBonus, ut, techAdvances);
   }
 
