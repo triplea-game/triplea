@@ -18,10 +18,6 @@ import lombok.AllArgsConstructor;
 public class TechTracker {
   private final GameData data;
 
-  private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
-    return getCurrentTechAdvances(player, data.getTechnologyFrontier());
-  }
-
   public int getAirDefenseBonus(GamePlayer player, UnitType type) {
     return TechAbilityAttachment.getAirDefenseBonus(type, getCurrentTechAdvances(player));
   }
@@ -62,6 +58,10 @@ public class TechTracker {
   public boolean canBombard(GamePlayer player, UnitType type) {
     return TechAbilityAttachment.getUnitAbilitiesGained(
         TechAbilityAttachment.ABILITY_CAN_BOMBARD, type, getCurrentTechAdvances(player));
+  }
+
+  private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
+    return getCurrentTechAdvances(player, data.getTechnologyFrontier());
   }
 
   /**
