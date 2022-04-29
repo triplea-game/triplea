@@ -11,14 +11,12 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import java.util.ArrayList;
 import java.util.Collection;
+import lombok.AllArgsConstructor;
 
 /** A collection of methods for tracking which players have which technology advances. */
+@AllArgsConstructor
 public final class TechTracker {
-  private GameData data;
-
-  public TechTracker(final GameData data) {
-    this.data = data;
-  }
+  private final GameData data;
 
   private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
     return getCurrentTechAdvances(player, data.getTechnologyFrontier());
@@ -56,9 +54,14 @@ public final class TechTracker {
     return TechAbilityAttachment.getRadarBonus(type, getCurrentTechAdvances(player));
   }
 
-  public boolean getUnitAbilitiesGained(GamePlayer player, UnitType type, String filterForAbility) {
+  public boolean canBlitz(GamePlayer player, UnitType type) {
     return TechAbilityAttachment.getUnitAbilitiesGained(
-        filterForAbility, type, getCurrentTechAdvances(player));
+        TechAbilityAttachment.ABILITY_CAN_BLITZ, type, getCurrentTechAdvances(player));
+  }
+
+  public boolean canBombard(GamePlayer player, UnitType type) {
+    return TechAbilityAttachment.getUnitAbilitiesGained(
+        TechAbilityAttachment.ABILITY_CAN_BOMBARD, type, getCurrentTechAdvances(player));
   }
 
   /**

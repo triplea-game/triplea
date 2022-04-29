@@ -628,9 +628,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBlitz(final GamePlayer player) {
-    return canBlitz
-        || getTechTracker()
-            .getUnitAbilitiesGained(player, getUnitType(), TechAbilityAttachment.ABILITY_CAN_BLITZ);
+    return canBlitz || getTechTracker().canBlitz(player, getUnitType());
   }
 
   private void resetCanBlitz() {
@@ -825,10 +823,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBombard(final GamePlayer player) {
-    return canBombard
-        || getTechTracker()
-            .getUnitAbilitiesGained(
-                player, getUnitType(), TechAbilityAttachment.ABILITY_CAN_BOMBARD);
+    return canBombard || getTechTracker().canBombard(player, getUnitType());
   }
 
   private void resetCanBombard() {
@@ -1551,7 +1546,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getAttack(final GamePlayer player) {
     final int bonus = getTechTracker().getAttackBonus(player, getUnitType());
-    ;
     return Math.min(getData().getDiceSides(), Math.max(0, attack + bonus));
   }
 
@@ -2175,7 +2169,6 @@ public class UnitAttachment extends DefaultAttachment {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something
     // other than 6, or it does not divide perfectly into attackAAmaxDieSides
     final int bonus = getTechTracker().getRadarBonus(player, getUnitType());
-    ;
     return Math.max(0, Math.min(getAttackAaMaxDieSides(), attackAa + bonus));
   }
 
@@ -2201,7 +2194,6 @@ public class UnitAttachment extends DefaultAttachment {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something
     // other than 6, or it does not divide perfectly into attackAAmaxDieSides
     final int bonus = getTechTracker().getRadarBonus(player, getUnitType());
-    ;
     return Math.max(0, Math.min(getOffensiveAttackAaMaxDieSides(), offensiveAttackAa + bonus));
   }
 
