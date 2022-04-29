@@ -30,6 +30,7 @@ import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.triplea.delegate.TechTracker;
 import java.util.Set;
 
 public class MockGameData {
@@ -39,6 +40,7 @@ public class MockGameData {
   private final GameMap gameMap = mock(GameMap.class);
   private final UnitTypeList unitTypeList = mock(UnitTypeList.class);
   private final GameSequence gameSequence = mock(GameSequence.class);
+  private final TechTracker techTracker = mock(TechTracker.class);
 
   private MockGameData() {
     lenient().when(gameData.getProperties()).thenReturn(gameProperties);
@@ -46,6 +48,7 @@ public class MockGameData {
     lenient().when(gameData.getMap()).thenReturn(gameMap);
     lenient().when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
     lenient().when(gameData.getSequence()).thenReturn(gameSequence);
+    lenient().when(gameData.getTechTracker()).thenReturn(techTracker);
   }
 
   public static MockGameData givenGameData() {
