@@ -3,6 +3,7 @@ package org.triplea.swing;
 import games.strategy.engine.framework.system.SystemProperties;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -27,11 +28,14 @@ public class CollapsiblePanel extends JPanel {
   private final JPanel content;
   private String title;
   private final JButton toggleButton;
+  private final Consumer<Boolean> toggleStatePersistence;
 
-  public CollapsiblePanel(final JPanel content, final String title) {
+  public CollapsiblePanel(
+      final JPanel content, final String title, final Consumer<Boolean> toggleStatePersistence) {
     this.content = content;
     this.title = title;
     this.toggleButton = new JButton();
+    this.toggleStatePersistence = toggleStatePersistence;
     toggleButton.addActionListener(e -> toggleState());
     setLayout(new BorderLayout());
     if (SystemProperties.isMac() && SwingComponents.isUsingNativeLookAndFeel()) {
@@ -54,12 +58,10 @@ public class CollapsiblePanel extends JPanel {
     SwingUtilities.invokeLater(this::updateButtonText);
   }
 
-  /**
-   * Called when the button is clicked by the user to toggle the state. Subclasses can override to
-   * monitor the toggle.
-   */
-  protected void toggleState() {
-    setCollapsed(!isCollapsed());
+  private void toggleState() {
+    final boolean newState = !isCollapsed();
+    setCollapsed(newState);
+    toggleStatePersistence.accept(newState);
   }
 
   public boolean isCollapsed() {

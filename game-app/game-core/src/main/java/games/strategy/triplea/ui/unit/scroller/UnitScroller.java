@@ -230,13 +230,7 @@ public class UnitScroller {
   public CollapsiblePanel build() {
     final JPanel panel = new JPanel();
     collapsiblePanel =
-        new CollapsiblePanel(panel, "") {
-          @Override
-          protected void toggleState() {
-            super.toggleState();
-            ClientSetting.unitScrollerCollapsed.setValueAndFlush(isCollapsed());
-          }
-        };
+        new CollapsiblePanel(panel, "", ClientSetting.unitScrollerCollapsed::setValueAndFlush);
     collapsiblePanel.setCollapsed(ClientSetting.unitScrollerCollapsed.getValueOrThrow());
     updateMovesLeft();
 

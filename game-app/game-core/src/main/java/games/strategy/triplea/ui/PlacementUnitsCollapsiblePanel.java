@@ -26,13 +26,8 @@ class PlacementUnitsCollapsiblePanel {
         new SimpleUnitPanel(
             uiContext, SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
     panel =
-        new CollapsiblePanel(unitsToPlacePanel, "Placements") {
-          @Override
-          protected void toggleState() {
-            super.toggleState();
-            ClientSetting.placementsCollapsed.setValueAndFlush(isCollapsed());
-          }
-        };
+        new CollapsiblePanel(
+            unitsToPlacePanel, "Placements", ClientSetting.placementsCollapsed::setValueAndFlush);
     panel.setCollapsed(ClientSetting.placementsCollapsed.getValueOrThrow());
     panel.setVisible(false);
     gameData.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
