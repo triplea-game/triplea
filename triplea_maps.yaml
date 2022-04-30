@@ -2609,3 +2609,10 @@
   description: |
    <br>Classic-10% Upkeep
    <br>Classic with Buildcaps
+- mapName: World War II Empty Start
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/World_War_II_Empty_Start/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Empty_Start/master/preview.png
+  description: |
+   <br>Revised game with most of the map starting empty
