@@ -1152,6 +1152,7 @@ public final class Matches {
       if (ua.getIsSea() && stepName.getDisplayName().equals("Non Combat Move")) {
         // If a zone adjacent to the starting and ending sea zones are allied naval bases, increase
         // the range.
+        // TODO Still need to be able to handle stops on the way
         // (history to get route.getStart()
         for (final Territory terrNext : unit.getData().getMap().getNeighbors(route.getStart(), 1)) {
           final TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
