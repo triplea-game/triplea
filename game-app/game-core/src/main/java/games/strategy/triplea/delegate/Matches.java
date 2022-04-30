@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
@@ -1138,6 +1139,7 @@ public final class Matches {
     return unit -> {
       BigDecimal left = unit.getMovementLeft();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final GamePlayer player = unit.getOwner();
       if (ua.getIsAir()) {
         if (TerritoryAttachment.hasAirBase(route.getStart())) {
           left = left.add(BigDecimal.ONE);
@@ -1146,13 +1148,27 @@ public final class Matches {
           left = left.add(BigDecimal.ONE);
         }
       }
-      if (ua.getIsSea() && unit.getData().getSequence().getStep().isNonCombat()) {
+      final GameStep stepName = unit.getData().getSequence().getStep();
+      if (ua.getIsSea() && stepName.getDisplayName().equals("Non Combat Move")) {
         // If a zone adjacent to the starting and ending sea zones are allied naval bases, increase
         // the range.
-        // TODO Still need to be able to handle stops on the way
-        if (hasNeighboringAlliedNavalBase(route.getStart(), unit.getOwner())
-            && hasNeighboringAlliedNavalBase(route.getEnd(), unit.getOwner())) {
-          left = left.add(BigDecimal.ONE);
+        // (history to get route.getStart()
+        for (final Territory terrNext : unit.getData().getMap().getNeighbors(route.getStart(), 1)) {
+          final TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
+          if (taNeighbor != null
+              && taNeighbor.getNavalBase()
+              && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player)) {
+            for (final Territory terrEnd :
+                unit.getData().getMap().getNeighbors(route.getEnd(), 1)) {
+              final TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
+              if (taEndNeighbor != null
+                  && taEndNeighbor.getNavalBase()
+                  && unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player)) {
+                left = left.add(BigDecimal.ONE);
+                break;
+              }
+            }
+          }
         }
       }
       if (left.compareTo(BigDecimal.ZERO) < 0) {
@@ -1165,16 +1181,6 @@ public final class Matches {
       }
       return hasMovementForRoute;
     };
-  }
-
-  private static boolean hasNeighboringAlliedNavalBase(Territory t, GamePlayer player) {
-    return t.getData().getMap().getNeighbors(t).stream()
-        .anyMatch(t2 -> hasAlliedNavalBase(t2, player));
-  }
-
-  private static boolean hasAlliedNavalBase(Territory t, GamePlayer player) {
-    return TerritoryAttachment.hasNavalBase(t)
-        && t.getData().getRelationshipTracker().isAllied(t.getOwner(), player);
   }
 
   public static Predicate<Unit> unitHasMovementLeft() {
