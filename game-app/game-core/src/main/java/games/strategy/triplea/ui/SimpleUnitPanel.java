@@ -19,12 +19,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.WrapLayout;
@@ -35,6 +34,7 @@ public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
   private final UiContext uiContext;
   private final Style style;
+  @Setter private double scaleFactor = 1.0;
 
   public enum Style {
     LARGE_ICONS_COLUMN,
@@ -150,22 +150,29 @@ public class SimpleUnitPanel extends JPanel {
               .disabled(disabled)
               .build();
       Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(imageKey);
-      if (icon.isEmpty() && !uiContext.isShutDown()) {
+      if (icon.isPresent()) {
+        label.setIcon(scaleIcon(icon.get(), scaleFactor));
+      } else if (!uiContext.isShutDown()) {
         final String imageName = imageKey.getFullName();
         log.error("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
       }
-      if (style == Style.SMALL_ICONS_ROW) {
-        Image newimg = icon.get().getImage().getScaledInstance(icon.get().getIconWidth()/2, icon.get().getIconHeight()/2,  java.awt.Image.SCALE_SMOOTH);
-        icon = Optional.of(new ImageIcon(newimg));
-      }
-      icon.ifPresent(label::setIcon);
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);
     } else if (unit instanceof Resource) {
-      label.setIcon(
+      ImageIcon icon =
           style == Style.LARGE_ICONS_COLUMN
               ? uiContext.getResourceImageFactory().getLargeIcon(unit.getName())
-              : uiContext.getResourceImageFactory().getIcon(unit.getName()));
+              : uiContext.getResourceImageFactory().getIcon(unit.getName());
+      label.setIcon(scaleIcon(icon, scaleFactor));
     }
     add(label);
+  }
+
+  private static ImageIcon scaleIcon(ImageIcon icon, double scaleFactor) {
+    if (scaleFactor == 1.0) {
+      return icon;
+    }
+    int width = (int) (icon.getIconWidth() * scaleFactor);
+    int height = (int) (icon.getIconHeight() * scaleFactor);
+    return new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
   }
 }

@@ -69,12 +69,6 @@ public class BottomBar extends JPanel {
         territoryInfo,
         gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.WEST).build());
 
-
-    centerPanel.add(
-        territoryUnitsPanel,
-        gridBuilder.gridX(2).weightX(1).anchor(GridBagConstraintsAnchor.EAST).build());
-
-
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
@@ -169,10 +163,11 @@ public class BottomBar extends JPanel {
       territoryInfo.add(resourceLabel, gridBuilder.gridX(count++).build());
     }
 
-    final var unitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.MINI_ICONS_ROW);
+    final var unitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
+    unitsPanel.setScaleFactor(0.5);
     unitsPanel.setUnitsFromCategories(UnitSeparator.categorize(territory.getUnits()));
     unitsPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
-    territoryInfo.add(unitsPanel, gridBuilder.gridX(count++).build());
+    territoryInfo.add(unitsPanel, gridBuilder.gridX(count).build());
 
     SwingComponents.redraw(territoryInfo);
   }
