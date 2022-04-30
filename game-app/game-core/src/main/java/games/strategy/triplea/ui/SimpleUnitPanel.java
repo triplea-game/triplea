@@ -36,7 +36,7 @@ public class SimpleUnitPanel extends JPanel {
 
   public enum Style {
     LARGE_ICONS_COLUMN,
-    SMALL_ICONS_ROW,
+    MINI_ICONS_ROW,
     SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY
   }
 
@@ -49,7 +49,7 @@ public class SimpleUnitPanel extends JPanel {
     this.style = style;
     if (style == Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY) {
       setLayout(new WrapLayout());
-    } else if (style == Style.SMALL_ICONS_ROW) {
+    } else if (style == Style.MINI_ICONS_ROW) {
       setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     } else {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -152,7 +152,7 @@ public class SimpleUnitPanel extends JPanel {
         final String imageName = imageKey.getFullName();
         log.error("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
       }
-      if (style == Style.SMALL_ICONS_ROW) {
+      if (style == Style.MINI_ICONS_ROW) {
         Image newimg =
             icon.get()
                 .getImage()

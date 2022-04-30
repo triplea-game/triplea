@@ -15,6 +15,7 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -33,7 +34,6 @@ public class BottomBar extends JPanel {
 
   private final ResourceBar resourceBar;
   private final JPanel territoryInfo = new JPanel();
-  private final SimpleUnitPanel territoryUnitsPanel;
 
   private final JLabel statusMessage = new JLabel();
 
@@ -47,9 +47,6 @@ public class BottomBar extends JPanel {
     setLayout(new BorderLayout());
 
     resourceBar = new ResourceBar(data, uiContext);
-
-    territoryUnitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
-    territoryUnitsPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
     add(createCenterPanel(), BorderLayout.CENTER);
     add(createStepPanel(usingDiceServer), BorderLayout.EAST);
@@ -70,11 +67,7 @@ public class BottomBar extends JPanel {
     territoryInfo.setPreferredSize(new Dimension(0, 0));
     centerPanel.add(
         territoryInfo,
-        gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.CENTER).build());
-
-    centerPanel.add(
-        territoryUnitsPanel,
-        gridBuilder.gridX(2).weightX(1).anchor(GridBagConstraintsAnchor.EAST).build());
+        gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.WEST).build());
 
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -112,7 +105,7 @@ public class BottomBar extends JPanel {
     }
   }
 
-  public void setTerritory(final Territory territory) {
+  public void setTerritory(final @Nullable Territory territory) {
     territoryInfo.removeAll();
 
     final JLabel nameLabel = new JLabel();
@@ -150,8 +143,7 @@ public class BottomBar extends JPanel {
 
     if (territoryEffectText.length() > 0) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
-      final JLabel territoryEffectTextLabel = new JLabel();
-      territoryEffectTextLabel.setText(" (" + territoryEffectText + ")");
+      final JLabel territoryEffectTextLabel = new JLabel("(" + territoryEffectText + ")");
       territoryInfo.add(territoryEffectTextLabel, gridBuilder.gridX(count++).build());
     }
 
@@ -170,11 +162,13 @@ public class BottomBar extends JPanel {
       resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
       territoryInfo.add(resourceLabel, gridBuilder.gridX(count++).build());
     }
-    SwingComponents.redraw(territoryInfo);
 
-    var cats = UnitSeparator.categorize(territory.getUnits());
-    territoryUnitsPanel.setUnitsFromCategories(cats);
-    SwingComponents.redraw(territoryUnitsPanel);
+    final var unitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.MINI_ICONS_ROW);
+    unitsPanel.setUnitsFromCategories(UnitSeparator.categorize(territory.getUnits()));
+    unitsPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+    territoryInfo.add(unitsPanel, gridBuilder.gridX(count++).build());
+
+    SwingComponents.redraw(territoryInfo);
   }
 
   public void gameDataChanged() {
