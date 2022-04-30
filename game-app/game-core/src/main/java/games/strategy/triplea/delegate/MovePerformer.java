@@ -232,9 +232,7 @@ public class MovePerformer implements Serializable {
                     // in case we are escorts only
                     target = CollectionUtils.getAny(enemyTargetsTotal);
                   }
-                  if (target == null) {
-                    targetedAttack = false;
-                  } else {
+                  if (target != null) {
                     targetedAttack = true;
                     final Map<Unit, Set<Unit>> targets = new HashMap<>();
                     targets.put(target, new HashSet<>(arrived));
@@ -347,27 +345,21 @@ public class MovePerformer implements Serializable {
       final Collection<Unit> units, final Route route, final GamePlayer gamePlayer) {
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
-    final Territory routeStart = route.getStart();
-    final TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);
-    final Territory routeEnd = route.getEnd();
-    TerritoryAttachment taRouteEnd = null;
-    if (routeEnd != null) {
-      taRouteEnd = TerritoryAttachment.get(routeEnd);
-    }
     // only units owned by us need to be marked
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
+    final Territory routeStart = route.getStart();
+    final Territory routeEnd = route.getEnd();
     for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(gamePlayer))) {
       BigDecimal moved = route.getMovementCost(unit);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getIsAir()) {
-        if (taRouteStart != null
-            && taRouteStart.getAirBase()
-            && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner())) {
+        if (TerritoryAttachment.hasAirBase(routeStart)
+            && relationshipTracker.isAllied(routeStart.getOwner(), unit.getOwner())) {
           moved = moved.subtract(BigDecimal.ONE);
         }
-        if (taRouteEnd != null
-            && taRouteEnd.getAirBase()
-            && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner())) {
+        if (routeEnd != null
+            && TerritoryAttachment.hasAirBase(routeEnd)
+            && relationshipTracker.isAllied(routeEnd.getOwner(), unit.getOwner())) {
           moved = moved.subtract(BigDecimal.ONE);
         }
       }
