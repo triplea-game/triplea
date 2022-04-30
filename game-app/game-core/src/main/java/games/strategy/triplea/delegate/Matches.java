@@ -1146,6 +1146,8 @@ public final class Matches {
           left = left.add(BigDecimal.ONE);
         }
       }
+      // Apply "AAP" (Pacific) Naval base bonus. Note: In "AAG40" (1940) naval bases are implemented
+      // differently: via a naval base _unit_ that boosts movement rather than territory attachment.
       if (ua.getIsSea() && unit.getData().getSequence().getStep().isNonCombat()) {
         // If a zone adjacent to the starting and ending sea zones are allied naval bases, increase
         // the range.
