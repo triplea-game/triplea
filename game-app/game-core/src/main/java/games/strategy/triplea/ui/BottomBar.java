@@ -34,7 +34,6 @@ public class BottomBar extends JPanel {
 
   private final ResourceBar resourceBar;
   private final JPanel territoryInfo = new JPanel();
-  private final SimpleUnitPanel territoryUnitsPanel;
 
   private final JLabel statusMessage = new JLabel();
 
@@ -176,11 +175,6 @@ public class BottomBar extends JPanel {
     territoryInfo.add(unitsPanel, gridBuilder.gridX(count++).build());
 
     SwingComponents.redraw(territoryInfo);
-
-
-    var cats = UnitSeparator.categorize(territory.getUnits());
-    territoryUnitsPanel.setUnitsFromCategories(cats);
-    SwingComponents.redraw(territoryUnitsPanel);
   }
 
   public void gameDataChanged() {
