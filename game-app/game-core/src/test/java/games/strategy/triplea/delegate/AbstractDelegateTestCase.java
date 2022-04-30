@@ -75,6 +75,7 @@ public abstract class AbstractDelegateTestCase {
   protected UnitType infantry = GameDataTestUtil.infantry(gameData);
   protected UnitType transport = GameDataTestUtil.transport(gameData);
   protected UnitType submarine = GameDataTestUtil.submarine(gameData);
+  protected UnitType destroyer = GameDataTestUtil.destroyer(gameData);
   protected UnitType factory = GameDataTestUtil.factory(gameData);
   protected UnitType aaGun = GameDataTestUtil.aaGun(gameData);
   protected UnitType fighter = GameDataTestUtil.fighter(gameData);
