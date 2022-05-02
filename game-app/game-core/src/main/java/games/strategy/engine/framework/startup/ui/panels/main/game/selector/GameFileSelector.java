@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.triplea.settings.ClientSetting;
+import java.awt.FileDialog;
 import java.awt.Frame;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,7 +34,7 @@ public final class GameFileSelector {
    */
   public static Optional<Path> getSaveGameLocation(final Frame frame, final GameData gameData) {
     return createFileChooser(frame)
-        .mode(FileChooser.SAVE)
+        .mode(FileDialog.SAVE)
         .title("Save Game As")
         .fileName(getSaveGameName(gameData))
         .build()
@@ -47,7 +48,7 @@ public final class GameFileSelector {
   public Optional<Path> selectGameFile(final Frame frame) {
     Optional<Path> path =
         createFileChooser(frame)
-            .mode(FileChooser.LOAD)
+            .mode(FileDialog.LOAD)
             .title("Open Saved Game")
             .build()
             .chooseFile();
