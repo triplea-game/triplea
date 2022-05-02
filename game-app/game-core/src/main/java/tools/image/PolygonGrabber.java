@@ -350,7 +350,7 @@ public final class PolygonGrabber {
                       + "3. Removes \"unnecessary\" black pixels by turning them to white, making the "
                       + "resulting lines between regions have a thickness of 1 pixel.<br><br>"
                       + "Note: You should double check that the result is as intended. If there are "
-                      + "any gaps in territory borders, the clean up may complete remove them.<br><br>"
+                      + "any gaps in territory borders, the clean up may completely remove them.<br><br>"
                       + "After clean up, you can save the updated image from the File menu.<br><br>"
                       + "Please select the minimum region size for eliminating regions:"),
               30);
