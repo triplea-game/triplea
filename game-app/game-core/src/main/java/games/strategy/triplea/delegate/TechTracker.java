@@ -62,14 +62,14 @@ public class TechTracker {
   }
 
   private int getSumOfBonuses(
-      final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
-      final UnitType type,
-      final GamePlayer player) {
+      Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
+      UnitType type,
+      GamePlayer player) {
     return TechAbilityAttachment.sumIntegerMap(mapper, type, getCurrentTechAdvances(player));
   }
 
   private boolean getUnitAbilitiesGained(
-      final String filterForAbility, final UnitType unitType, final GamePlayer player) {
+      String filterForAbility, UnitType unitType, GamePlayer player) {
     return getCurrentTechAdvances(player).stream()
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
