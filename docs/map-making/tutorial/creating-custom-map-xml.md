@@ -15,7 +15,7 @@
 	to be met:
 </p>
 <ol>
-	<li>Located in triplea_0_6_0_1/maps<br></li>
+	<li>Located in triplea/downloadedMaps<br></li>
 	<li>Name of the map directory must be same as the &quot;mapName&quot; field in the
 	XML game file for that game. For example; revised.xml has the mapName
 	field showing a value of <b>revised</b> thus the folder where TripleA will find
@@ -50,7 +50,7 @@
 	</tr>
 	<tr>
 		<td><b>1</b></td>
-		<td>Go into directory: triplea_0_6_0_1/maps</td>
+		<td>Go into directory: triplea/downloadedMaps</td>
 	</tr>
 	<tr>
 		<td><b>2</b></td>
@@ -58,11 +58,14 @@
 	</tr>
 	<tr>
 		<td><b>3</b></td>
-		<td>Go back to the base of <b>classes</b>Save the center points in our <b>viper</b> directory we made in Step No. 1</td>
+		<td>Run the Center Picker to save the centers.txt file in the <b>viper</b> directory we made in Step No. 1</td>
 	</tr>
 	<tr>
 		<td ><b>4</b></td>
-		<td>Run the PolygonGrabber and save the polygons file in our <b>viper</b> directory we made in Step No. 1</td>
+		<td>
+			Run the Polygon Grabber and save the polygons.txt file in the <b>viper</b> directory we made in Step No. 1.
+			You can use the Clean Up Image... function from the Edit menu to clean up the input map image in this step.
+		</td>
 	</tr>
 	<tr>
 		<td><b>5</b></td>
