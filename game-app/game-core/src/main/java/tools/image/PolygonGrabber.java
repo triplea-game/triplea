@@ -306,7 +306,7 @@ public final class PolygonGrabber {
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       final JMenuItem saveImageItem = new JMenuItem("Save Image...");
-      saveImageItem.addActionListener(this::saveImage);
+      saveImageItem.addActionListener(e -> saveImage());
       fileMenu.add(saveImageItem);
       fileMenu.addSeparator();
       fileMenu.add(exitItem);
@@ -316,13 +316,13 @@ public final class PolygonGrabber {
       editMenu.add(modeItem);
       editMenu.add(autoItem);
       final JMenuItem cleanImageItem = new JMenuItem("Clean Up Image...");
-      cleanImageItem.addActionListener(this::cleanImage);
+      cleanImageItem.addActionListener(e -> cleanImage());
       editMenu.add(cleanImageItem);
       menuBar.add(fileMenu);
       menuBar.add(editMenu);
     }
 
-    private void saveImage(final ActionEvent event) {
+    private void saveImage() {
       final Path target =
           FileChooser.builder().fileExtension("png").build().chooseFile().orElse(null);
       if (target == null) {
@@ -336,7 +336,7 @@ public final class PolygonGrabber {
       }
     }
 
-    private void cleanImage(final ActionEvent event) {
+    private void cleanImage() {
       final String input =
           JOptionPane.showInputDialog(
               getParent(),
