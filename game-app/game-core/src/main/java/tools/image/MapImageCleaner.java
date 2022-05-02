@@ -47,7 +47,7 @@ public class MapImageCleaner {
     for (int x = 0; x < image.getWidth(); x++) {
       for (int y = 0; y < image.getHeight(); y++) {
         final Point p = new Point(x, y);
-        if (!isColor(p, Color.WHITE) && isColor(p, Color.BLACK)) {
+        if (!isColor(p, Color.WHITE) && !isColor(p, Color.BLACK)) {
           setColor(p, Color.BLACK);
           numChanged++;
         }
