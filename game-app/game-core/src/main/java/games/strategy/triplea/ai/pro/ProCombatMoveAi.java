@@ -123,7 +123,7 @@ public class ProCombatMoveAi {
     removeTerritoriesWhereTransportsAreExposed();
 
     // Determine if capital can be held if I still own it
-    if (proData.getMyCapital() != null && proData.getMyCapital().getOwner().equals(player)) {
+    if (proData.getMyCapital() != null && proData.getMyCapital().isOwnedBy(player)) {
       removeAttacksUntilCapitalCanBeHeld(
           attackOptions, proData.getPurchaseOptions().getLandOptions());
     }
@@ -555,8 +555,7 @@ public class ProCombatMoveAi {
       if (!patd.isCanHold()
           && enemyAttackOptions.getMax(t) != null
           && t.isWater()
-          && !t.getUnitCollection()
-              .anyMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
+          && !t.anyUnitsMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
         ProLogger.debug(
             "Removing convoy zone that can't be held: "
                 + t.getName()
@@ -663,10 +662,9 @@ public class ProCombatMoveAi {
     final List<Unit> alreadyMovedUnits = new ArrayList<>();
     for (final Territory t : proData.getMyUnitTerritories()) {
       final boolean hasAlliedLandUnits =
-          t.getUnitCollection()
-              .anyMatch(
-                  ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(
-                      player, data.getRelationshipTracker(), t));
+          t.anyUnitsMatch(
+              ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(
+                  player, data.getRelationshipTracker(), t));
       final Set<Territory> enemyNeighbors =
           data.getMap()
               .getNeighbors(
@@ -895,10 +893,9 @@ public class ProCombatMoveAi {
         int maxBombingScore = MIN_BOMBING_SCORE;
         for (final Territory t : bomberMoveMap.get(unit)) {
           final boolean canBeBombedByThisUnit =
-              t.getUnitCollection()
-                  .anyMatch(
-                      Matches.unitCanProduceUnitsAndCanBeDamaged()
-                          .and(Matches.unitIsLegalBombingTargetBy(unit)));
+              t.anyUnitsMatch(
+                  Matches.unitCanProduceUnitsAndCanBeDamaged()
+                      .and(Matches.unitIsLegalBombingTargetBy(unit)));
           final boolean canCreateAirBattle =
               Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
@@ -906,7 +903,7 @@ public class ProCombatMoveAi {
               && !canCreateAirBattle
               && canAirSafelyLandAfterAttack(unit, t)) {
             final int noAaBombingDefense =
-                t.getUnitCollection().anyMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
+                t.anyUnitsMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
             int maxDamage = 0;
             final TerritoryAttachment ta = TerritoryAttachment.get(t);
             if (ta != null) {
@@ -1298,7 +1295,8 @@ public class ProCombatMoveAi {
         estimatesMap.put(estimate, t);
       }
       if (!estimatesMap.isEmpty() && estimatesMap.firstKey() < 40) {
-        final Territory minWinTerritory = estimatesMap.entrySet().iterator().next().getValue();
+        final Territory minWinTerritory =
+            CollectionUtils.getAny(estimatesMap.entrySet()).getValue();
         final List<Unit> unitsToAdd =
             ProTransportUtils.getUnitsToAdd(proData, unit, alreadyMovedUnits, attackMap);
         attackMap.get(minWinTerritory).addUnits(unitsToAdd);
@@ -1877,7 +1875,7 @@ public class ProCombatMoveAi {
             data.getMap()
                 .getNeighbors(t, ProMatches.territoryCanMoveSeaUnitsThrough(data, player, true));
         if (!possibleMoveTerritories.isEmpty()) {
-          final Territory moveToTerritory = possibleMoveTerritories.iterator().next();
+          final Territory moveToTerritory = CollectionUtils.getAny(possibleMoveTerritories);
           final List<Unit> mySeaUnits =
               t.getUnitCollection()
                   .getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true));

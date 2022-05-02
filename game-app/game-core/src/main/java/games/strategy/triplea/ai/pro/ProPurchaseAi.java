@@ -110,8 +110,7 @@ class ProPurchaseAi {
       ProLogger.debug("Factories that need repaired: " + unitsThatCanProduceNeedingRepair);
       for (final var repairRule : player.getRepairFrontier().getRules()) {
         for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
-          if (fixUnit == null
-              || !fixUnit.getType().equals(repairRule.getResults().keySet().iterator().next())) {
+          if (fixUnit == null || !fixUnit.getType().equals(repairRule.getAnyResultKey())) {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(
@@ -891,7 +890,7 @@ class ProPurchaseAi {
           final int numNearbyEnemyTerritories =
               CollectionUtils.countMatches(
                   nearbyLandTerritories,
-                  Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
+                  Matches.isTerritoryOwnedByAnyOf(ProUtils.getPotentialEnemyPlayers(player)));
           final boolean hasLocalLandSuperiority =
               ProBattleUtils.territoryHasLocalLandSuperiority(
                   proData, t, ProBattleUtils.SHORT_RANGE, player);
@@ -946,9 +945,8 @@ class ProPurchaseAi {
           enemyAttackOptions.getMax(t).getMaxUnits().stream()
               .anyMatch(Matches.unitIsStrategicBomber());
       final boolean territoryCanBeBombed =
-          t.getUnitCollection().anyMatch(Matches.unitCanProduceUnitsAndCanBeDamaged());
-      final boolean hasAaBombingDefense =
-          t.getUnitCollection().anyMatch(Matches.unitIsAaForBombingThisUnitOnly());
+          t.anyUnitsMatch(Matches.unitCanProduceUnitsAndCanBeDamaged());
+      final boolean hasAaBombingDefense = t.anyUnitsMatch(Matches.unitIsAaForBombingThisUnitOnly());
       ProLogger.debug(
           t
               + ", enemyCanBomb="
@@ -1031,7 +1029,7 @@ class ProPurchaseAi {
                   ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
       final List<Territory> enemyLandTerritories =
           CollectionUtils.getMatches(
-              landTerritories, Matches.isTerritoryOwnedBy(ProUtils.getEnemyPlayers(player)));
+              landTerritories, Matches.isTerritoryOwnedByAnyOf(ProUtils.getEnemyPlayers(player)));
       territoriesToCheck.addAll(enemyLandTerritories);
     }
     final Map<Territory, Double> territoryValueMap =

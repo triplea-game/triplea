@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
 
@@ -29,9 +30,19 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     unitCollection = new UnitCollection(this, getData());
   }
 
+  @Override
+  public final boolean anyUnitsMatch(final Predicate<Unit> matcher) {
+    return getUnitCollection().anyMatch(matcher);
+  }
+
   public void setOwner(final @Nullable GamePlayer owner) {
     this.owner = Optional.ofNullable(owner).orElse(GamePlayer.NULL_PLAYERID);
     getData().notifyTerritoryOwnerChanged(this);
+  }
+
+  public final boolean isOwnedBy(final GamePlayer player) {
+    // Use getOwner() to allow test mocks to override that method.
+    return getOwner().equals(player);
   }
 
   /** refers to unit holder being changed. */

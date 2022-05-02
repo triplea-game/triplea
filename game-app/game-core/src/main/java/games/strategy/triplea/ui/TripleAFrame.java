@@ -20,27 +20,24 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
@@ -74,7 +71,6 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.panel.move.MovePanel;
 import games.strategy.triplea.ui.panels.map.MapPanel;
-import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerSmallView;
@@ -99,7 +95,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -138,7 +133,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
@@ -146,17 +140,18 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
+import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.SwingAction;
@@ -179,23 +174,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final IGame game;
   private final MapPanel mapPanel;
   private final ImageScrollerSmallView smallView;
-  private final JPanel territoryInfo = new JPanel();
-  private final JLabel message = new JLabel("No selection");
-  private final ResourceBar resourceBar;
-  private final JLabel status = new JLabel("");
-  private final JLabel step = new JLabel("xxxxxx");
-  private final JLabel round = new JLabel("xxxxxx");
-  private final JLabel player = new JLabel("xxxxxx");
+
   private final ActionButtons actionButtons;
   private final JPanel gameMainPanel = new JPanel();
   private final JPanel rightHandSidePanel = new JPanel();
   private final JTabbedPane tabsPanel = new JTabbedPane();
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
+  private final Runnable clientLeftGame;
   private ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetails;
   private final JPanel historyComponent = new JPanel();
-  private final JPanel gameSouthPanel;
   private HistoryPanel historyPanel;
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
   private final AtomicBoolean inGame = new AtomicBoolean(true);
@@ -210,145 +199,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Getter private final ButtonModel editModeButtonModel;
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
-  private Territory territoryLastEntered;
+  private final BottomBar bottomBar;
   private GamePlayer lastStepPlayer;
   private GamePlayer currentStepPlayer;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
   private boolean isCtrlPressed = false;
-
-  private final MapSelectionListener mapSelectionListener =
-      new DefaultMapSelectionListener() {
-        @Override
-        public void mouseEntered(final Territory territory) {
-          territoryLastEntered = territory;
-          refresh();
-        }
-
-        void refresh() {
-          territoryInfo.removeAll();
-
-          message.setText((territoryLastEntered == null) ? "" : territoryLastEntered.getName());
-
-          // If territory is null or doesn't have an attachment then just display the name or "none"
-          if (territoryLastEntered == null
-              || TerritoryAttachment.get(territoryLastEntered) == null) {
-            territoryInfo.add(
-                message,
-                new GridBagConstraints(
-                    0,
-                    0,
-                    1,
-                    1,
-                    0,
-                    0,
-                    GridBagConstraints.WEST,
-                    GridBagConstraints.NONE,
-                    new Insets(0, 0, 0, 0),
-                    0,
-                    0));
-            SwingComponents.redraw(territoryInfo);
-            return;
-          }
-
-          // Display territory effects, territory name, and resources
-          final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
-          final List<TerritoryEffect> territoryEffects = ta.getTerritoryEffect();
-          int count = 0;
-          final StringBuilder territoryEffectText = new StringBuilder();
-          for (final TerritoryEffect territoryEffect : territoryEffects) {
-            try {
-              final JLabel territoryEffectLabel = new JLabel();
-              territoryEffectLabel.setToolTipText(territoryEffect.getName());
-              territoryEffectLabel.setIcon(
-                  uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
-              territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-              territoryInfo.add(
-                  territoryEffectLabel,
-                  new GridBagConstraints(
-                      count++,
-                      0,
-                      1,
-                      1,
-                      0,
-                      0,
-                      GridBagConstraints.WEST,
-                      GridBagConstraints.NONE,
-                      new Insets(0, 0, 0, 0),
-                      0,
-                      0));
-            } catch (final IllegalStateException e) {
-              territoryEffectText.append(territoryEffect.getName()).append(", ");
-            }
-          }
-
-          territoryInfo.add(
-              message,
-              new GridBagConstraints(
-                  count++,
-                  0,
-                  1,
-                  1,
-                  0,
-                  0,
-                  GridBagConstraints.WEST,
-                  GridBagConstraints.NONE,
-                  new Insets(0, 0, 0, 0),
-                  0,
-                  0));
-
-          if (territoryEffectText.length() > 0) {
-            territoryEffectText.setLength(territoryEffectText.length() - 2);
-            final JLabel territoryEffectTextLabel = new JLabel();
-            territoryEffectTextLabel.setText(" (" + territoryEffectText + ")");
-            territoryInfo.add(
-                territoryEffectTextLabel,
-                new GridBagConstraints(
-                    count++,
-                    0,
-                    1,
-                    1,
-                    0,
-                    0,
-                    GridBagConstraints.WEST,
-                    GridBagConstraints.NONE,
-                    new Insets(0, 0, 0, 0),
-                    0,
-                    0));
-          }
-
-          final int production = ta.getProduction();
-          final ResourceCollection resourceCollection = ta.getResources();
-          final IntegerMap<Resource> resources = new IntegerMap<>();
-          if (production > 0) {
-            resources.add(new Resource(Constants.PUS, data), production);
-          }
-          if (resourceCollection != null) {
-            resources.add(resourceCollection.getResourcesCopy());
-          }
-          for (final Resource resource : resources.keySet()) {
-            final JLabel resourceLabel =
-                uiContext.getResourceImageFactory().getLabel(resource, resources);
-            resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-            territoryInfo.add(
-                resourceLabel,
-                new GridBagConstraints(
-                    count++,
-                    0,
-                    1,
-                    1,
-                    0,
-                    0,
-                    GridBagConstraints.WEST,
-                    GridBagConstraints.NONE,
-                    new Insets(0, 0, 0, 0),
-                    0,
-                    0));
-          }
-          SwingComponents.redraw(territoryInfo);
-        }
-      };
 
   private final GameDataChangeListener dataChangeListener =
       new GameDataChangeListener() {
@@ -369,7 +226,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       hideEditMode();
                     }
                   }
-                  showRightHandSidePanel();
+                  rightHandSidePanel.setVisible(true);
                 });
           } catch (final Exception e) {
             log.error("Failed to process game data change", e);
@@ -404,9 +261,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final IGame game,
       final LocalPlayers players,
       final UiContext uiContext,
-      @Nullable final Chat chat) {
+      @Nullable final Chat chat,
+      final Runnable clientLeftGame) {
     super("TripleA - " + game.getData().getGameName());
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+    this.clientLeftGame = clientLeftGame;
 
     localPlayers = players;
     setIconImage(EngineImageLoader.loadFrameIcon());
@@ -447,7 +307,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     smallView = new ImageScrollerSmallView(small, model, uiContext.getMapData());
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     tooltipManager = new MapUnitTooltipManager(mapPanel);
-    mapPanel.addMapSelectionListener(mapSelectionListener);
+    mapPanel.addMapSelectionListener(
+        new DefaultMapSelectionListener() {
+          @Override
+          public void mouseEntered(final Territory territory) {
+            bottomBar.setTerritory(territory);
+          }
+        });
     mapPanel.addMouseOverUnitListener(
         (units, territory) -> tooltipManager.updateTooltip(getUnitInfo()));
     // link the small and large images
@@ -484,80 +350,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(gameMainPanel, BorderLayout.CENTER);
 
-    gameSouthPanel = new JPanel();
-    gameSouthPanel.setLayout(new BorderLayout());
-    territoryInfo.setLayout(new GridBagLayout());
-    territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    territoryInfo.setPreferredSize(new Dimension(0, 0));
-    resourceBar = new ResourceBar(data, uiContext);
-    message.setFont(
-        message.getFont().deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
-    status.setPreferredSize(new Dimension(0, 0));
-    status.setText("");
+    final boolean usingDiceServer = (game.getRandomSource() instanceof PbemDiceRoller);
+    bottomBar = new BottomBar(uiContext, data, usingDiceServer);
 
-    final JPanel bottomMessagePanel = new JPanel();
-    bottomMessagePanel.setLayout(new GridBagLayout());
-    bottomMessagePanel.setBorder(BorderFactory.createEmptyBorder());
-    bottomMessagePanel.add(
-        resourceBar,
-        new GridBagConstraints(
-            0,
-            0,
-            1,
-            1,
-            0,
-            1,
-            GridBagConstraints.WEST,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    bottomMessagePanel.add(
-        territoryInfo,
-        new GridBagConstraints(
-            1,
-            0,
-            1,
-            1,
-            1,
-            1,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    bottomMessagePanel.add(
-        status,
-        new GridBagConstraints(
-            2,
-            0,
-            1,
-            1,
-            1,
-            1,
-            GridBagConstraints.EAST,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    gameSouthPanel.add(bottomMessagePanel, BorderLayout.CENTER);
-    status.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    final JPanel stepPanel = new JPanel();
-    stepPanel.setLayout(new GridBagLayout());
-    stepPanel.add(player, gridBagConstraint(0));
-    stepPanel.add(step, gridBagConstraint(1));
-    stepPanel.add(round, gridBagConstraint(2));
-    if (game.getRandomSource() instanceof PbemDiceRoller) {
-      final JLabel diceServerLabel = new JLabel("Dice Server On");
-      diceServerLabel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-      stepPanel.add(diceServerLabel, gridBagConstraint(3));
-    }
-    step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    player.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    step.setHorizontalTextPosition(SwingConstants.LEADING);
-    gameSouthPanel.add(stepPanel, BorderLayout.EAST);
-    gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
+    gameMainPanel.add(bottomBar, BorderLayout.SOUTH);
     rightHandSidePanel.setLayout(new BorderLayout());
     final FocusAdapter focusToMapPanelFocusListener =
         new FocusAdapter() {
@@ -577,10 +373,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
+    final CollapsiblePanel placementsPanel =
+        new PlacementUnitsCollapsiblePanel(data, uiContext).getPanel();
     rightHandSidePanel.add(
         new JPanelBuilder()
             .borderLayout()
-            .addNorth(new PlacementUnitsCollapsiblePanel(data, uiContext).getPanel())
+            .addNorth(placementsPanel)
             .addSouth(movePanel.getUnitScrollerPanel())
             .build(),
         BorderLayout.SOUTH);
@@ -661,26 +459,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     uiContext.addShutdownWindow(this);
   }
 
-  private static GridBagConstraints gridBagConstraint(final int columnNumber) {
-    return new GridBagConstraints(
-        columnNumber,
-        0,
-        1,
-        1,
-        0,
-        0,
-        GridBagConstraints.EAST,
-        GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0),
-        0,
-        0);
-  }
-
   /**
    * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
    */
   public static TripleAFrame create(
-      final IGame game, final LocalPlayers players, @Nullable final Chat chat) {
+      final IGame game,
+      final LocalPlayers players,
+      @Nullable final Chat chat,
+      final Runnable clientLeftGame) {
     Preconditions.checkState(
         !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
@@ -692,7 +478,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         Interruptibles.awaitResult(
                 () ->
                     SwingAction.invokeAndWaitResult(
-                        () -> new TripleAFrame(game, players, uiContext, chat)))
+                        () -> new TripleAFrame(game, players, uiContext, chat, clientLeftGame)))
             .result
             .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
     frame.updateStep();
@@ -820,31 +606,20 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       game.getMessengers().shutDown();
       ((ClientGame) game).shutDown();
       // an ugly hack, we need a better way to get the main frame
-      new Thread(GameRunner::clientLeftGame).start();
+      new Thread(clientLeftGame).start();
     }
   }
 
   void clearStatusMessage() {
-    status.setText("");
-    status.setIcon(null);
+    bottomBar.setStatus("", Optional.empty());
   }
 
   public void setStatusErrorMessage(final String msg) {
-    setStatus(msg, mapPanel.getErrorImage());
-  }
-
-  private void setStatus(final String msg, final Optional<Image> image) {
-    status.setText(msg);
-
-    if (!msg.isEmpty() && image.isPresent()) {
-      status.setIcon(new ImageIcon(image.get()));
-    } else {
-      status.setIcon(null);
-    }
+    bottomBar.setStatus(msg, mapPanel.getErrorImage());
   }
 
   public void setStatusWarningMessage(final String msg) {
-    setStatus(msg, mapPanel.getWarningImage());
+    bottomBar.setStatus(msg, mapPanel.getWarningImage());
   }
 
   public IntegerMap<ProductionRule> getProduction(final GamePlayer player, final boolean bid) {
@@ -1015,7 +790,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final String ok = movePhase ? "End Move Phase" : "Kill Planes";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
-    mapPanel.centerOn(airCantLand.iterator().next());
+    mapPanel.centerOn(CollectionUtils.getAny(airCantLand));
     final int choice =
         EventThreadJOptionPane.showOptionDialog(
             this,
@@ -1053,7 +828,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final String ok = "Done Moving";
     final String cancel = "Keep Moving";
     final String[] options = {cancel, ok};
-    this.mapPanel.centerOn(unitsCantFight.iterator().next());
+    this.mapPanel.centerOn(CollectionUtils.getAny(unitsCantFight));
     final int choice =
         EventThreadJOptionPane.showOptionDialog(
             this,
@@ -1165,7 +940,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
     if (potentialTargets.size() == 1) {
-      return potentialTargets.iterator().next();
+      return CollectionUtils.getAny(potentialTargets);
     }
     messageAndDialogThreadPool.waitForAll();
     final AtomicReference<Unit> selected = new AtomicReference<>();
@@ -1297,32 +1072,19 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return null;
     }
     if (candidates.size() == 1) {
-      return candidates.iterator().next();
+      return CollectionUtils.getAny(candidates);
     }
     messageAndDialogThreadPool.waitForAll();
-    final Supplier<Tuple<JPanel, JList<Territory>>> action =
+    final Supplier<SelectTerritoryComponent> action =
         () -> {
-          mapPanel.centerOn(currentTerritory);
-          final JList<Territory> list = new JList<>(SwingComponents.newListModel(candidates));
-          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-          list.setSelectedIndex(0);
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final JScrollPane scroll = new JScrollPane(list);
-          final JTextArea text = new JTextArea(unitMessage, 8, 30);
-          text.setLineWrap(true);
-          text.setEditable(false);
-          text.setWrapStyleWord(true);
-          panel.add(text, BorderLayout.NORTH);
-          panel.add(scroll, BorderLayout.CENTER);
-          return Tuple.of(panel, list);
+          var panel = new SelectTerritoryComponent(currentTerritory, candidates, mapPanel);
+          panel.setLabelText(unitMessage);
+          return panel;
         };
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
         .result
         .map(
-            comps -> {
-              final JPanel panel = comps.getFirst();
-              final JList<?> list = comps.getSecond();
+            panel -> {
               final String[] options = {"OK"};
               final String title =
                   "Select territory for air units to land, current territory is "
@@ -1337,7 +1099,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   options,
                   null,
                   getUiContext().getCountDownLatchHandler());
-              return (Territory) list.getSelectedValue();
+              return panel.getSelection();
             })
         .orElse(null);
   }
@@ -1439,7 +1201,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           }
           mapPanel.centerOn(
               data.getMap()
-                  .getTerritory(possibleUnitsToAttackStringForm.keySet().iterator().next()));
+                  .getTerritory(CollectionUtils.getAny(possibleUnitsToAttackStringForm.keySet())));
           final IndividualUnitPanelGrouped unitPanel =
               new IndividualUnitPanelGrouped(
                   possibleUnitsToAttackStringForm,
@@ -1870,21 +1632,16 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final CompletableFuture<?> future =
           CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
               .thenApplyAsync(ImageIcon::new)
-              .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
+              .thenAccept(
+                  icon -> SwingUtilities.invokeLater(() -> this.bottomBar.setRoundIcon(icon)));
       CompletableFutureUtils.logExceptionWhenComplete(
           future, throwable -> log.error("Failed to set round icon for " + player, throwable));
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }
     SwingUtilities.invokeLater(
-        () -> {
-          this.round.setText("Round:" + round + " ");
-          step.setText(stepDisplayName);
-          if (player != null) {
-            this.player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
-          }
-        });
-    resourceBar.gameDataChanged(null);
+        () -> bottomBar.setStepInfo(round, stepDisplayName, player, !isPlaying));
+    bottomBar.gameDataChanged();
     // if the game control has passed to someone else and we are not just showing the map, show the
     // history
     if (player != null && !player.isNull()) {
@@ -2000,14 +1757,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   public void showActionPanelTab() {
     tabsPanel.setSelectedIndex(0);
-  }
-
-  public void showRightHandSidePanel() {
-    rightHandSidePanel.setVisible(true);
-  }
-
-  public void hideRightHandSidePanel() {
-    rightHandSidePanel.setVisible(false);
   }
 
   public HistoryPanel getHistoryPanel() {
@@ -2132,9 +1881,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       JOptionPane.INFORMATION_MESSAGE);
                   data.acquireReadLock();
                   try {
-                    final Path f = SaveGameFileChooser.getSaveGameLocation(TripleAFrame.this, data);
-                    if (f != null) {
-                      try (OutputStream fileOutputStream = Files.newOutputStream(f)) {
+                    final Optional<Path> f =
+                        GameFileSelector.getSaveGameLocation(TripleAFrame.this, data);
+                    if (f.isPresent()) {
+                      try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
                         final GameData datacopy =
                             GameDataUtils.cloneGameData(
                                     data, true, Injections.getInstance().getEngineVersion())
@@ -2189,7 +1939,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                               JOptionPane.INFORMATION_MESSAGE);
                         }
                       } catch (final IOException e) {
-                        log.error("Failed to save game: " + f.toAbsolutePath(), e);
+                        log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                       }
                     }
                   } finally {
@@ -2206,7 +1956,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           split.setRightComponent(gameCenterPanel);
           split.setDividerLocation(150);
           historyComponent.add(split, BorderLayout.CENTER);
-          historyComponent.add(gameSouthPanel, BorderLayout.SOUTH);
+          historyComponent.add(bottomBar, BorderLayout.SOUTH);
           getContentPane().removeAll();
           getContentPane().add(historyComponent, BorderLayout.CENTER);
           validate();
@@ -2250,7 +2000,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           gameMainPanel.removeAll();
           gameMainPanel.setLayout(new BorderLayout());
           gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
-          gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
+          gameMainPanel.add(bottomBar, BorderLayout.SOUTH);
           getContentPane().removeAll();
           getContentPane().add(gameMainPanel, BorderLayout.CENTER);
           validate();

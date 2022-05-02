@@ -486,7 +486,7 @@ public class HistoryLog extends JFrame {
         .append(" : \n\n");
     for (final Territory t : territories) {
       final List<Unit> ownedUnits =
-          t.getUnitCollection().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
+          t.getUnitCollection().getMatches(Matches.unitIsOwnedByAnyOf(players));
       // see if there's a flag
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       final boolean hasFlag =
@@ -560,10 +560,10 @@ public class HistoryLog extends JFrame {
           || (ta != null
               && !GamePlayer.NULL_PLAYERID.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && player.equals(OriginalOwnerTracker.getOriginalOwner(place))
-              && place.getOwner().equals(player))) {
+              && place.isOwnedBy(player))) {
         isConvoyOrLand = true;
       }
-      if (place.getOwner().equals(player) && isConvoyOrLand && ta != null) {
+      if (place.isOwnedBy(player) && isConvoyOrLand && ta != null) {
         production += ta.getProduction();
       }
     }

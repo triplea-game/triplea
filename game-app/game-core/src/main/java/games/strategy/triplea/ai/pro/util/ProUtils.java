@@ -118,7 +118,7 @@ public final class ProUtils {
     for (final Territory place : data.getMap().getTerritories()) {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea
       // Zone, or if contested
-      if (place.getOwner().equals(player)
+      if (place.isOwnedBy(player)
           && Matches.territoryCanCollectIncomeFrom(
                   player, data.getProperties(), data.getRelationshipTracker())
               .test(place)) {
@@ -147,7 +147,7 @@ public final class ProUtils {
             Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
     enemyCapitals.retainAll(
         CollectionUtils.getMatches(
-            enemyCapitals, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player))));
+            enemyCapitals, Matches.isTerritoryOwnedByAnyOf(getPotentialEnemyPlayers(player))));
     return enemyCapitals;
   }
 
@@ -184,7 +184,7 @@ public final class ProUtils {
                 ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
-            landTerritories, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player)));
+            landTerritories, Matches.isTerritoryOwnedByAnyOf(getPotentialEnemyPlayers(player)));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyLandTerritories) {
       final int distance =
@@ -218,7 +218,7 @@ public final class ProUtils {
                 ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
-            landTerritories, Matches.isTerritoryOwnedBy(getEnemyPlayers(player)));
+            landTerritories, Matches.isTerritoryOwnedByAnyOf(getEnemyPlayers(player)));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyLandTerritories) {
       if (territoryValueMap.get(enemyLandTerritory) <= 0) {

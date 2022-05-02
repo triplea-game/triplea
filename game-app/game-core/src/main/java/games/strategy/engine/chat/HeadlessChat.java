@@ -27,4 +27,7 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
 
   @Override
   public void playerLeft(final String message) {}
+
+  @Override
+  public void cancel() {}
 }

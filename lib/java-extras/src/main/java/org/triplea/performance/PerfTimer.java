@@ -15,7 +15,7 @@ import org.triplea.java.function.ThrowingSupplier;
  * <p>Example usage with auto-close try block:
  *
  * <pre>{@code
- * try(PerfTimer timer = PerfTimer.startTimer("timer_name_0")) {
+ * try (PerfTimer timer = PerfTimer.time("timer_name_0")) {
  *   // code to be timed
  * }
  * }</pre>

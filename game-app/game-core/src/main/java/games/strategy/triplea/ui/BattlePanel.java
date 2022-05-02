@@ -4,9 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
@@ -18,10 +16,8 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,12 +29,8 @@ import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +46,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 @Slf4j
 public final class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
-  private final JLabel actionLabel = new JLabel();
+
   private FightBattleDetails fightBattleMessage;
   private volatile BattleDisplay battleDisplay;
   // if we are showing a battle, then this will be set to the currently displayed battle. This will
@@ -67,6 +59,7 @@ public final class BattlePanel extends ActionPanel {
   BattlePanel(final GameData data, final MapPanel map, final JFrame parent) {
     super(data, map);
     battleWindow = new JDialog(parent);
+    battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     battleWindow.addWindowListener(
         new WindowAdapter() {
           @Override
@@ -75,6 +68,12 @@ public final class BattlePanel extends ActionPanel {
                 () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus));
           }
         });
+    final Dimension screenSize = Util.getScreenSize(battleWindow);
+    if (screenSize.width > 1024 && screenSize.height > 768) {
+      battleWindow.setMinimumSize(new Dimension(1024, 768));
+    } else {
+      battleWindow.setMinimumSize(new Dimension(800, 600));
+    }
     getMap().getUiContext().addShutdownWindow(battleWindow);
   }
 
@@ -247,7 +246,6 @@ public final class BattlePanel extends ActionPanel {
         () -> {
           if (battleDisplay != null) {
             cleanUpBattleWindow();
-            currentBattleDisplayed = null;
           }
           battleDisplay =
               new BattleDisplay(
@@ -262,47 +260,21 @@ public final class BattlePanel extends ActionPanel {
                   defendingWaitingToDieCopy,
                   BattlePanel.this.getMap(),
                   battleType);
-          final String battleStr =
-              (battleType == BattleType.NORMAL)
-                  ? ""
-                  : String.format("  (%s)", battleType.toDisplayText());
-          battleWindow.setTitle(
-              attacker.getName()
-                  + " attacks "
-                  + defender.getName()
-                  + " in "
-                  + location.getName()
-                  + battleStr);
-          battleWindow.getContentPane().removeAll();
+          battleWindow.setTitle(battleDisplay.getDescription());
           battleWindow.getContentPane().add(battleDisplay);
-          final Frame parent = JOptionPane.getFrameForComponent(BattlePanel.this);
-          final Dimension screenSize = Util.getScreenSize(parent);
-          if (screenSize.width > 1024 && screenSize.height > 768) {
-            battleWindow.setMinimumSize(new Dimension(1024, 768));
-          } else {
-            battleWindow.setMinimumSize(new Dimension(800, 600));
-          }
-          battleWindow.setLocationRelativeTo(parent);
-          boolean foundHumanInBattle = false;
-          for (final Player gamePlayer :
-              getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
-            if ((gamePlayer.getGamePlayer().equals(attacker) && gamePlayer instanceof TripleAPlayer)
-                || (gamePlayer.getGamePlayer().equals(defender)
-                    && gamePlayer instanceof TripleAPlayer)) {
-              foundHumanInBattle = true;
-              break;
-            }
-          }
-          if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
+
+          final var localPlayers = getMap().getUiContext().getLocalPlayers();
+          if (ClientSetting.showBattlesWhenObserving.getValueOrThrow()
+              || localPlayers.playing(attacker)
+              || localPlayers.playing(defender)) {
+            battleWindow.setLocationRelativeTo(battleWindow);
             battleWindow.setVisible(true);
             SwingComponents.redraw(battleWindow);
             battleWindow.toFront();
           } else {
             battleWindow.setVisible(false);
           }
-          battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
           currentBattleDisplayed = battleId;
-          SwingUtilities.invokeLater(battleWindow::toFront);
         });
   }
 
@@ -320,19 +292,33 @@ public final class BattlePanel extends ActionPanel {
       final Territory unitTerritory,
       final Collection<Territory> territories,
       final boolean noneAvailable) {
-    final Supplier<BombardComponent> action =
-        () -> new BombardComponent(unit, unitTerritory, territories, noneAvailable);
+    final Supplier<SelectTerritoryComponent> action =
+        () -> {
+          final var panel = new SelectTerritoryComponent(unitTerritory, territories, map);
+          final String unitName = unit.getType().getName() + " in " + unitTerritory;
+          panel.setLabelText("Which territory should " + unitName + " bombard?");
+          return panel;
+        };
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
         .result
         .map(
-            comp -> {
-              boolean confirmed = false;
-              while (!confirmed) {
-                confirmed =
-                    EventThreadJOptionPane.showConfirmDialog(
-                        this, comp, "Bombardment Territory Selection", ConfirmDialogType.YES_NO);
+            panel -> {
+              int choice =
+                  EventThreadJOptionPane.showOptionDialog(
+                      this,
+                      panel,
+                      "Bombardment Territory Selection",
+                      JOptionPane.OK_CANCEL_OPTION,
+                      JOptionPane.PLAIN_MESSAGE,
+                      null,
+                      noneAvailable ? new String[] {"OK", "None"} : new String[] {"OK"},
+                      null,
+                      getMap().getUiContext().getCountDownLatchHandler());
+              if (choice != JOptionPane.OK_OPTION) {
+                // User selected the "None" option.
+                return null;
               }
-              return comp.getSelection();
+              return panel.getSelection();
             })
         .orElse(null);
   }
@@ -546,41 +532,5 @@ public final class BattlePanel extends ActionPanel {
   @Override
   public String toString() {
     return "BattlePanel";
-  }
-
-  private static class BombardComponent extends JPanel {
-    private static final long serialVersionUID = -2388895995673156507L;
-    private final JList<Object> list;
-
-    BombardComponent(
-        final Unit unit,
-        final Territory unitTerritory,
-        final Collection<Territory> territories,
-        final boolean noneAvailable) {
-      this.setLayout(new BorderLayout());
-      final String unitName = unit.getType().getName() + " in " + unitTerritory;
-      final JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
-      this.add(label, BorderLayout.NORTH);
-      final List<Object> listElements = new ArrayList<>(territories);
-      if (noneAvailable) {
-        listElements.add(0, "None");
-      }
-      list = new JList<>(SwingComponents.newListModel(listElements));
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      if (!listElements.isEmpty()) {
-        list.setSelectedIndex(0);
-      }
-      final JScrollPane scroll = new JScrollPane(list);
-      this.add(scroll, BorderLayout.CENTER);
-    }
-
-    public Territory getSelection() {
-      final Object selected = list.getSelectedValue();
-      if (selected instanceof Territory) {
-        return (Territory) selected;
-      }
-      // User selected "None" option
-      return null;
-    }
   }
 }

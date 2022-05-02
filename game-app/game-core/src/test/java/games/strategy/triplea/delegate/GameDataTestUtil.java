@@ -1,6 +1,11 @@
 package games.strategy.triplea.delegate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.in;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
@@ -24,9 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
 import org.triplea.java.collections.IntegerMap;
 
@@ -210,6 +212,11 @@ public final class GameDataTestUtil {
     return unitType(Constants.UNIT_TYPE_INFANTRY, data);
   }
 
+  /** Returns a marine UnitType object for the specified GameData object. */
+  public static UnitType marine(final GameState data) {
+    return unitType(Constants.UNIT_TYPE_MARINE, data);
+  }
+
   /** Returns an artillery UnitType object for the specified GameData object. */
   public static UnitType artillery(final GameState data) {
     return unitType(Constants.UNIT_TYPE_ARTILLERY, data);
@@ -340,6 +347,7 @@ public final class GameDataTestUtil {
 
   /** Adds all units from the given Collection to the given Territory. */
   public static void addTo(final Territory t, final Collection<Unit> units) {
+    assertThat(units, everyItem(is(not(in(t.getUnits())))));
     t.getData().performChange(ChangeFactory.addUnits(t, units));
   }
 
@@ -488,33 +496,5 @@ public final class GameDataTestUtil {
         .flatMap(
             entry -> from.getUnitCollection().getUnits(entry.getKey(), entry.getValue()).stream())
         .collect(Collectors.toList());
-  }
-
-  public static class IsEquivalentUnit extends BaseMatcher<Unit> {
-    private final Unit expected;
-
-    public IsEquivalentUnit(final Unit expected) {
-      this.expected = expected;
-    }
-
-    @Override
-    public boolean matches(final Object actual) {
-      if (actual == null) {
-        return expected == null;
-      }
-      if (!(actual instanceof Unit)) {
-        return false;
-      }
-      return ((Unit) actual).isEquivalent(expected);
-    }
-
-    @Override
-    public void describeTo(final Description description) {
-      description.appendValue(expected);
-    }
-
-    public static Matcher<Unit> equivalentTo(final Unit operand) {
-      return new IsEquivalentUnit(operand);
-    }
   }
 }

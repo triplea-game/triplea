@@ -155,7 +155,7 @@ public class FiringGroup implements Serializable {
 
     // add a suffix to suicide groups that includes their type name to differentiate them
     return firingUnits.stream().allMatch(Matches.unitIsSuicideOnHit())
-        ? originalName + " suicide " + firingUnits.iterator().next().getType().getName()
+        ? originalName + " suicide " + CollectionUtils.getAny(firingUnits).getType().getName()
         : originalName;
   }
 }

@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
 
 /** This delegate is only supposed to be run once, per game, at the start of the game. */
 @Slf4j
@@ -289,16 +288,15 @@ public class InitializationDelegate extends BaseTripleADelegate {
           data.getProductionFrontierList().getProductionFrontier("production");
       final Collection<ProductionRule> rules = frontierNonShipyards.getRules();
       for (final ProductionRule rule : rules) {
-        final String ruleName = rule.getName();
-        final IntegerMap<NamedAttachable> ruleResults = rule.getResults();
-        final NamedAttachable named = ruleResults.keySet().iterator().next();
+        final NamedAttachable named = rule.getAnyResultKey();
         if (!(named instanceof UnitType)) {
           continue;
         }
         final UnitType unit = data.getUnitTypeList().getUnitType(named.getName());
         final boolean isSea = UnitAttachment.get(unit).getIsSea();
         if (!isSea) {
-          final ProductionRule prodRule = data.getProductionRuleList().getProductionRule(ruleName);
+          final ProductionRule prodRule =
+              data.getProductionRuleList().getProductionRule(rule.getName());
           change.add(ChangeFactory.addProductionRule(prodRule, frontierShipyards));
         }
       }

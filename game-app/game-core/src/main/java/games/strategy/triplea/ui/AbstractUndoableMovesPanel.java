@@ -14,11 +14,11 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -47,7 +47,9 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
   }
 
   void setMoves(final List<AbstractUndoableMove> undoableMoves) {
-    moves = undoableMoves;
+    // we want the newest move at the top
+    moves = new ArrayList<>(undoableMoves);
+    Collections.reverse(moves);
     SwingUtilities.invokeLater(this::initLayout);
   }
 
@@ -60,39 +62,33 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
   private void initLayout() {
     removeAll();
     setLayout(new BorderLayout());
+    if (movesMade()) {
+      Box box = Box.createVerticalBox();
+      JLabel titleLabel = ActionPanel.createIndentedLabel();
+      titleLabel.setText(getLabelText());
+      box.add(titleLabel);
+      box.add(new JSeparator());
+      add(box, BorderLayout.NORTH);
+    }
+    add(createScrollPane(), BorderLayout.CENTER);
+    // The two lines below are needed to ensure the view redraws at the correct size
+    // when first loaded.
+    revalidate();
+    doLayout();
+  }
+
+  private JScrollPane createScrollPane() {
     final JPanel items = new JPanel();
     items.setLayout(new BoxLayout(items, BoxLayout.Y_AXIS));
-    // we want the newest move at the top
-    moves = new ArrayList<>(moves);
-    Collections.reverse(moves);
-    final Iterator<AbstractUndoableMove> iter = moves.iterator();
-    if (iter.hasNext()) {
-      add(
-          new JLabel((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"),
-          BorderLayout.NORTH);
-    }
+
     int scrollIncrement = 10;
-    final Dimension separatorSize = new Dimension(150, 20);
-    while (iter.hasNext()) {
-      final AbstractUndoableMove item = iter.next();
+    for (final AbstractUndoableMove item : moves) {
       final JComponent moveComponent = newComponentForMove(item);
       scrollIncrement = moveComponent.getPreferredSize().height;
       items.add(moveComponent);
-      if (iter.hasNext()) {
-        final JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
-        separator.setPreferredSize(separatorSize);
-        separator.setMaximumSize(separatorSize);
-        items.add(separator);
-      }
-    }
-    if (movePanel.getUndoableMoves() != null && movePanel.getUndoableMoves().size() > 1) {
-      final JButton undoAllButton = new JButton("Undo All");
-      undoAllButton.addActionListener(new UndoAllMovesActionListener());
-      items.add(undoAllButton);
     }
 
-    final int scrollIncrementFinal = scrollIncrement + separatorSize.height;
-    // JScrollPane scroll = new JScrollPane(items);
+    final int scrollIncrementFinal = scrollIncrement;
     scroll =
         new JScrollPane(items) {
           private static final long serialVersionUID = -1064967105431785533L;
@@ -117,8 +113,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       scroll.getVerticalScrollBar().setValue(scrollBarPreviousValue);
       scrollBarPreviousValue = null;
     }
-    add(scroll, BorderLayout.CENTER);
-    SwingUtilities.invokeLater(this::validate);
+    return scroll;
   }
 
   private JComponent newComponentForMove(final AbstractUndoableMove move) {
@@ -142,19 +137,34 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final Box textBox = new Box(BoxLayout.X_AXIS);
     textBox.add(text);
     textBox.add(Box.createHorizontalGlue());
-    final JButton cancelButton = new JButton(new UndoMoveActionListener(move.getIndex()));
-    setSize(buttonSize, cancelButton);
-    final JButton viewbutton = new JButton(new ViewAction(move));
-    setSize(buttonSize, viewbutton);
+    final JButton undoButton = new JButton("Undo");
+    final int moveIndex = move.getIndex();
+    undoButton.addActionListener(
+        (e) -> {
+          // Record position of scroll bar as percentage.
+          scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
+          final String error = movePanel.undoMove(moveIndex);
+          if (error == null) {
+            // Disable the button so it can't be clicked again. Note: Undoing will cause a later
+            // setMoves() call on this object, which will re-build the UI for all the moves.
+            undoButton.setEnabled(false);
+            previousVisibleIndex = Math.max(0, moveIndex - 1);
+          } else {
+            previousVisibleIndex = null;
+          }
+        });
+    setSize(buttonSize, undoButton);
+    final JButton viewButton = new JButton(new ViewAction(move));
+    setSize(buttonSize, viewButton);
     final Box buttonsBox = new Box(BoxLayout.X_AXIS);
-    buttonsBox.add(viewbutton);
-    buttonsBox.add(cancelButton);
+    buttonsBox.add(viewButton);
+    buttonsBox.add(undoButton);
     buttonsBox.add(Box.createHorizontalGlue());
     final Box containerBox = new Box(BoxLayout.Y_AXIS);
     containerBox.add(unitsBox);
     containerBox.add(textBox);
     containerBox.add(buttonsBox);
-    containerBox.add(new JLabel(" "));
+    containerBox.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
     return containerBox;
   }
 
@@ -166,45 +176,6 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     cancelButton.setMinimumSize(buttonSize);
     cancelButton.setPreferredSize(buttonSize);
     cancelButton.setMaximumSize(buttonSize);
-  }
-
-  class UndoMoveActionListener extends AbstractAction {
-    private static final long serialVersionUID = -397312652244693138L;
-    private final int moveIndex;
-
-    UndoMoveActionListener(final int index) {
-      super("Undo");
-      moveIndex = index;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      // Record position of scroll bar as percentage.
-      scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
-      final String error = movePanel.undoMove(moveIndex);
-      if (error == null) {
-        previousVisibleIndex = Math.max(0, moveIndex - 1);
-      } else {
-        previousVisibleIndex = null;
-      }
-    }
-  }
-
-  class UndoAllMovesActionListener extends AbstractAction {
-    private static final long serialVersionUID = 7908136093303143896L;
-
-    UndoAllMovesActionListener() {
-      super("UndoAllMoves");
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final int moveCount = movePanel.getUndoableMoves().size();
-      final boolean suppressErrorMsgToUser = true;
-      for (int i = moveCount - 1; i >= 0; i--) {
-        movePanel.undoMove(i, suppressErrorMsgToUser);
-      }
-    }
   }
 
   class ViewAction extends AbstractAction {
@@ -224,6 +195,10 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       }
       specificViewAction(move);
     }
+  }
+
+  protected String getLabelText() {
+    return "Moves:";
   }
 
   protected abstract void specificViewAction(AbstractUndoableMove move);

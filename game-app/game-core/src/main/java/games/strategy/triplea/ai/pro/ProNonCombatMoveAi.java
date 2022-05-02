@@ -250,7 +250,7 @@ class ProNonCombatMoveAi {
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext(); ) {
       final Unit u = it.next();
       if (unitMoveMap.get(u).size() == 1) {
-        final Territory onlyTerritory = unitMoveMap.get(u).iterator().next();
+        final Territory onlyTerritory = CollectionUtils.getAny(unitMoveMap.get(u));
         if (onlyTerritory.equals(unitTerritoryMap.get(u))) {
           boolean canBeTransported = false;
           for (final ProTransport pad : transportMapList) {
@@ -881,7 +881,7 @@ class ProNonCombatMoveAi {
             continue; // skip moving air to water if not enough carrier capacity
           }
           if (!t.isWater()
-              && !t.getOwner().equals(player)
+              && !t.isOwnedBy(player)
               && Matches.unitIsAir().test(unit)
               && !ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
             continue; // skip moving air units to allied land without a factory
@@ -1666,7 +1666,7 @@ class ProNonCombatMoveAi {
                         ProMatches.territoryCanMoveLandUnitsAndIsAllied(data, player));
             if (!possibleUnloadTerritories.isEmpty()) {
               // Find best unload territory
-              Territory unloadToTerritory = possibleUnloadTerritories.iterator().next();
+              Territory unloadToTerritory = CollectionUtils.getAny(possibleUnloadTerritories);
               for (final Territory t : possibleUnloadTerritories) {
                 if (moveMap.get(t) != null && moveMap.get(t).isCanHold()) {
                   unloadToTerritory = t;

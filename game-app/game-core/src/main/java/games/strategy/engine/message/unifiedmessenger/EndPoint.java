@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.collections.CollectionUtils;
 
 /**
  * This is where the methods finally get called. An end point contains the implementors for a given
@@ -45,7 +46,7 @@ class EndPoint {
     if (!hasSingleImplementor()) {
       throw new IllegalStateException("Invalid implementor count, " + implementors);
     }
-    return implementors.iterator().next();
+    return CollectionUtils.getAny(implementors);
   }
 
   public long takeANumber() {

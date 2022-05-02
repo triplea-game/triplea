@@ -4,7 +4,7 @@ import games.strategy.engine.framework.HtmlUtils;
 import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.framework.startup.ui.panels.main.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
@@ -32,7 +32,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
 
-  public MetaSetupPanel(final SetupPanelModel model) {
+  public MetaSetupPanel(final HeadedServerSetupModel model) {
     final I18nResourceBundle bundle = I18nEngineFramework.get();
     final JButton connectToLobby =
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.PlayOnline.Lbl"))

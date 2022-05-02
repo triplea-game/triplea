@@ -2,15 +2,15 @@ package org.triplea.swing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.triplea.swing.SwingComponents.appendExtensionIfAbsent;
-import static org.triplea.swing.SwingComponents.extensionWithLeadingPeriod;
-import static org.triplea.swing.SwingComponents.extensionWithoutLeadingPeriod;
+import static org.triplea.swing.FileChooser.appendExtensionIfAbsent;
+import static org.triplea.swing.FileChooser.extensionWithLeadingPeriod;
+import static org.triplea.swing.FileChooser.extensionWithoutLeadingPeriod;
 
 import java.nio.file.Path;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-final class SwingComponentsTest {
+final class FileChooserTest {
   @Nested
   final class AppendExtensionIfAbsentTest {
     @Test

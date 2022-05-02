@@ -11,6 +11,7 @@ import java.text.Normalizer;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.UIManager;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
@@ -167,9 +168,7 @@ final class AutoCompletion<E> extends PlainDocument {
       // forward)
       offs = offs - str.length();
       // provide feedback to the user that his input has been received but can not be accepted
-      comboBox
-          .getToolkit()
-          .beep(); // when available use: UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+      UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
     }
     setText(item.toString());
     // select the completed part

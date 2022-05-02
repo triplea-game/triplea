@@ -997,8 +997,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       switch (exclType) {
         case "direct":
           allUnits.removeAll(
-              CollectionUtils.getMatches(
-                  allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
+              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByAnyOf(players).negate()));
           break;
         case "allied":
           allUnits.retainAll(
@@ -1085,8 +1084,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       switch (exclType) {
         case "allied": // any allied units in the territory. (does not include owned units)
           allUnits.removeAll(
-              CollectionUtils.getMatches(
-                  allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
+              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByAnyOf(players)));
           allUnits.retainAll(
               CollectionUtils.getMatches(
                   allUnits,
@@ -1094,8 +1092,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           break;
         case "direct":
           allUnits.removeAll(
-              CollectionUtils.getMatches(
-                  allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
+              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByAnyOf(players).negate()));
           break;
         case "enemy": // any enemy units in the territory
           allUnits.retainAll(
@@ -1176,7 +1173,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
     for (final Territory listedTerr : listedTerrs) {
       // if the territory owner is an ally
-      if (Matches.isTerritoryOwnedBy(allies).test(listedTerr)) {
+      if (Matches.isTerritoryOwnedByAnyOf(allies).test(listedTerr)) {
         numberMet += 1;
         if (numberMet >= numberNeeded) {
           satisfied = true;
@@ -1203,7 +1200,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     int numberMet = 0;
     boolean satisfied = false;
     for (final Territory listedTerr : listedTerrs) {
-      if (Matches.isTerritoryOwnedBy(players).test(listedTerr)) {
+      if (Matches.isTerritoryOwnedByAnyOf(players).test(listedTerr)) {
         numberMet += 1;
         if (numberMet >= numberNeeded) {
           satisfied = true;

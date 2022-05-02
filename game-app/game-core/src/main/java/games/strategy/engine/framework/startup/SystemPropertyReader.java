@@ -7,11 +7,10 @@ import com.google.common.base.Strings;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /** Provides convenience methods to read system properties. */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class SystemPropertyReader {
 
   public static boolean serverIsPassworded() {

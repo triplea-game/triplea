@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -39,6 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 
@@ -91,10 +93,11 @@ public final class PolygonGrabber {
                   + "<br>Please click near the center of every single territory and sea zone on "
                   + "your map. "
                   + "<br>The grabber will then fill in the territory based on the borders it finds."
-                  + "<br>If the territory shape or borders do not match what you intend, then your "
-                  + "borders "
-                  + "<br>might have a gap or differently colored pixel in the border."
-                  + "<br>These borders will define the shape of the territory in TripleA."
+                  + "<br><br>If the territory shape or borders do not match what you intend, then"
+                  + "<br>borders might have a gap or differently colored pixel in the border."
+                  + "<br>You can also using the Clean Up Image... function from the Edit menu "
+                  + "first to automatically fix some problems with the original image."
+                  + "<br><br>These borders will define the shape of the territory in TripleA."
                   + "<br><br>When a territory is inside of another territory, you can turn on "
                   + "'island mode' to be able to see it."
                   + "<br><br>You can also load an existing polygons.txt file, then make "
@@ -119,6 +122,7 @@ public final class PolygonGrabber {
     private List<Polygon> current;
     // holds the map image
     private final BufferedImage bufferedImage;
+    private final JPanel imagePanel;
     // maps String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     // holds the centers for the polygons
@@ -169,7 +173,7 @@ public final class PolygonGrabber {
         }
       }
       bufferedImage = newBufferedImage(mapFolder);
-      final JPanel imagePanel = newMainPanel();
+      imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
@@ -300,6 +304,9 @@ public final class PolygonGrabber {
       fileMenu.setMnemonic('F');
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
+      final JMenuItem saveImageItem = new JMenuItem("Save Image...");
+      saveImageItem.addActionListener(e -> saveImage());
+      fileMenu.add(saveImageItem);
       fileMenu.addSeparator();
       fileMenu.add(exitItem);
       final JMenu editMenu = new JMenu("Edit");
@@ -307,8 +314,57 @@ public final class PolygonGrabber {
       editMenu.setMnemonic('E');
       editMenu.add(modeItem);
       editMenu.add(autoItem);
+      final JMenuItem cleanImageItem = new JMenuItem("Clean Up Image...");
+      cleanImageItem.addActionListener(e -> cleanImage());
+      editMenu.add(cleanImageItem);
       menuBar.add(fileMenu);
       menuBar.add(editMenu);
+    }
+
+    private void saveImage() {
+      final Path target =
+          FileChooser.builder().fileExtension("png").build().chooseFile().orElse(null);
+      if (target == null) {
+        return;
+      }
+      try {
+        ImageIO.write(bufferedImage, "PNG", target.toFile());
+        JOptionPane.showMessageDialog(null, "Saved to: " + target);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    private void cleanImage() {
+      final String input =
+          JOptionPane.showInputDialog(
+              getParent(),
+              new JLabel(
+                  "<html>"
+                      + "The image cleaning tool will update the source image to do the following "
+                      + "transformations:<br>"
+                      + "1. Normalizes colors by changing pixels that aren't white to black.<br>"
+                      + "2. \"Fills in\" small regions with black pixels.<br>"
+                      + "3. Removes \"unnecessary\" black pixels by turning them to white, making "
+                      + "the resulting lines between regions have a thickness of 1 pixel.<br><br>"
+                      + "Note: You should double check that the result is as intended. If there "
+                      + "are any gaps in territory borders, the clean up may completely remove "
+                      + "them.<br><br>"
+                      + "After clean up, you can save the updated image from the File menu.<br><br>"
+                      + "Please select the minimum region size for eliminating regions:"),
+              30);
+      if (input == null) {
+        return;
+      }
+      final int minimumRegionSize;
+      try {
+        minimumRegionSize = Integer.parseInt(input);
+      } catch (final NumberFormatException e) {
+        JOptionPane.showMessageDialog(getParent(), "Minimum region size must be a number");
+        return;
+      }
+      new MapImageCleaner(bufferedImage, minimumRegionSize).cleanUpImage();
+      imagePanel.repaint();
     }
 
     /**
@@ -478,21 +534,7 @@ public final class PolygonGrabber {
 
     /** Checks to see if the given point is of color black. */
     private boolean isBlack(final Point p) {
-      return isBlack(p.x, p.y);
-    }
-
-    /**
-     * Checks to see if the x/y coordinates from a given point are inbounds and if so is it black.
-     */
-    private boolean isBlack(final int x, final int y) {
-      if (!inBounds(x, y)) {
-        // not inbounds, can't be black
-        return false;
-      }
-      // gets ARGB integer value and we LOGICAL AND mask it
-      // with ARGB value of 00,FF,FF,FF to determine if it black or not.
-      // maybe here ?
-      return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
+      return isBlack(p.x, p.y, bufferedImage);
     }
 
     private boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
@@ -506,16 +548,8 @@ public final class PolygonGrabber {
       return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
     }
 
-    /** Checks if the given x/y coordinate point is inbounds or not. */
-    private boolean inBounds(final int x, final int y) {
-      return x >= 0
-          && x < bufferedImage.getWidth(null)
-          && y >= 0
-          && y < bufferedImage.getHeight(null);
-    }
-
-    private boolean inBounds(final int x, final int y, final Image image) {
-      return x >= 0 && x < image.getWidth(null) && y >= 0 && y < image.getHeight(null);
+    private boolean inBounds(final int x, final int y, final BufferedImage image) {
+      return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();
     }
 
     /**
@@ -577,7 +611,8 @@ public final class PolygonGrabber {
     private Polygon findPolygon(final int x, final int y) {
       // walk up, find the first black point
       final Point startPoint = new Point(x, y);
-      while (inBounds(startPoint.x, startPoint.y - 1) && !isBlack(startPoint.x, startPoint.y)) {
+      while (inBounds(startPoint.x, startPoint.y - 1, bufferedImage)
+          && !isBlack(startPoint.x, startPoint.y, bufferedImage)) {
         startPoint.y--;
       }
       final List<Point> points = new ArrayList<>(100);

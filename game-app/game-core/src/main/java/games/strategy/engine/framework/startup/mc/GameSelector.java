@@ -6,16 +6,4 @@ public interface GameSelector {
   GameData getGameData();
 
   void onGameEnded();
-
-  static GameSelector fromGameData(final GameData gameData) {
-    return new GameSelector() {
-      @Override
-      public GameData getGameData() {
-        return gameData;
-      }
-
-      @Override
-      public void onGameEnded() {}
-    };
-  }
 }

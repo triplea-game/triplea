@@ -65,16 +65,6 @@ class ProductionPanel extends JPanel {
     this.uiContext = uiContext;
   }
 
-  static IntegerMap<ProductionRule> getProduction(
-      final GamePlayer gamePlayer,
-      final JFrame parent,
-      final GameData data,
-      final boolean bid,
-      final IntegerMap<ProductionRule> initialPurchase,
-      final UiContext uiContext) {
-    return new ProductionPanel(uiContext).show(gamePlayer, parent, data, bid, initialPurchase);
-  }
-
   private IntegerMap<ProductionRule> getProduction() {
     final IntegerMap<ProductionRule> prod = new IntegerMap<>();
     for (final Rule rule : rules) {

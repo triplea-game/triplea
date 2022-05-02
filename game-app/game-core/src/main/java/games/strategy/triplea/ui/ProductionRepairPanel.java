@@ -132,7 +132,7 @@ class ProductionRepairPanel extends JPanel {
       this.gamePlayer = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       Predicate<Unit> myDamagedUnits =
-          Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair)
+          Matches.unitIsOwnedByAnyOf(this.allowedPlayersToRepair)
               .and(Matches.unitHasTakenSomeBombingUnitDamage());
       if (GameStepPropertiesHelper.isOnlyRepairIfDisabled(data)) {
         myDamagedUnits = myDamagedUnits.and(Matches.unitIsDisabled());
@@ -143,7 +143,7 @@ class ProductionRepairPanel extends JPanel {
       for (final RepairRule repairRule : player.getRepairFrontier()) {
         for (final Territory terr : terrsWithPotentiallyDamagedUnits) {
           for (final Unit unit : CollectionUtils.getMatches(terr.getUnits(), myDamagedUnits)) {
-            if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
+            if (!repairRule.getAnyResultKey().equals(unit.getType())) {
               continue;
             }
             final Rule rule = new Rule(repairRule, unit, terr);
@@ -295,7 +295,7 @@ class ProductionRepairPanel extends JPanel {
       this.unit = repairUnit;
       this.rule = rule;
       cost = rule.getCosts();
-      final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
+      final UnitType type = (UnitType) rule.getAnyResultKey();
       if (!type.equals(repairUnit.getType())) {
         throw new IllegalStateException(
             "Rule unit type "

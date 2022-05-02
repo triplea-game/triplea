@@ -150,7 +150,7 @@ class DummyPlayer extends AbstractBuiltInAi {
           && enemyUnits.stream().allMatch(planeNotDestroyer)
           && !ourUnits.isEmpty()
           && ourUnits.stream().allMatch(Matches.unitCanNotBeTargetedByAll())) {
-        return possibleTerritories.iterator().next();
+        return CollectionUtils.getAny(possibleTerritories);
       }
       return null;
     }
@@ -160,7 +160,7 @@ class DummyPlayer extends AbstractBuiltInAi {
       return null;
     }
     if (retreatAfterRound > -1 && battle.getBattleRound() >= retreatAfterRound) {
-      return possibleTerritories.iterator().next();
+      return CollectionUtils.getAny(possibleTerritories);
     }
     if (!retreatWhenOnlyAirLeft && retreatAfterXUnitsLeft <= -1) {
       return null;
@@ -180,11 +180,11 @@ class DummyPlayer extends AbstractBuiltInAi {
         retreatNum += retreatAfterXUnitsLeft;
       }
       if (retreatNum >= unitsLeft.size()) {
-        return possibleTerritories.iterator().next();
+        return CollectionUtils.getAny(possibleTerritories);
       }
     }
     if (retreatAfterXUnitsLeft > -1 && retreatAfterXUnitsLeft >= unitsLeft.size()) {
-      return possibleTerritories.iterator().next();
+      return CollectionUtils.getAny(possibleTerritories);
     }
     return null;
   }

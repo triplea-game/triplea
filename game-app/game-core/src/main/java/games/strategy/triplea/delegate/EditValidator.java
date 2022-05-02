@@ -39,8 +39,8 @@ final class EditValidator {
   }
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {
-    if (Matches.territoryIsWater().test(territory)
-        && territory.getOwner().equals(GamePlayer.NULL_PLAYERID)
+    if (territory.isWater()
+        && territory.isOwnedBy(GamePlayer.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }
@@ -52,7 +52,7 @@ final class EditValidator {
     if (units.isEmpty()) {
       return "No units selected";
     }
-    final GamePlayer player = units.iterator().next().getOwner();
+    final GamePlayer player = CollectionUtils.getAny(units).getOwner();
     // check land/water sanity
     if (territory.isWater()) {
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
@@ -218,7 +218,7 @@ final class EditValidator {
     if (!territory.getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
-    final GamePlayer player = units.iterator().next().getOwner();
+    final GamePlayer player = CollectionUtils.getAny(units).getOwner();
     // all units should be same owner
     if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
@@ -252,7 +252,7 @@ final class EditValidator {
     if (!territory.getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
-    final GamePlayer player = units.iterator().next().getOwner();
+    final GamePlayer player = CollectionUtils.getAny(units).getOwner();
     // all units should be same owner
     if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";

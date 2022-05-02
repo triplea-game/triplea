@@ -292,7 +292,7 @@ public final class ProMatches {
       final RelationshipTracker relationshipTracker,
       final List<GamePlayer> players) {
     return Matches.territoryHasEnemyUnits(player, relationshipTracker)
-        .or(Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(players)));
+        .or(Matches.territoryHasUnitsThatMatch(Matches.unitIsOwnedByAnyOf(players)));
   }
 
   public static Predicate<Territory> territoryHasNoEnemyUnitsOrCleared(
@@ -331,7 +331,7 @@ public final class ProMatches {
     final Predicate<Territory> ownedAndCantBeHeld =
         Matches.isTerritoryOwnedBy(player).and(territoriesThatCantBeHeld::contains);
     final Predicate<Territory> enemyOrOwnedCantBeHeld =
-        Matches.isTerritoryOwnedBy(players).or(ownedAndCantBeHeld);
+        Matches.isTerritoryOwnedByAnyOf(players).or(ownedAndCantBeHeld);
     return territoryHasInfraFactoryAndIsLand().and(enemyOrOwnedCantBeHeld);
   }
 
@@ -398,7 +398,7 @@ public final class ProMatches {
   public static Predicate<Territory> territoryHasNeighborOwnedByAndHasLandUnit(
       final GameMap gameMap, final List<GamePlayer> players) {
     final Predicate<Territory> territoryMatch =
-        Matches.isTerritoryOwnedBy(players)
+        Matches.isTerritoryOwnedByAnyOf(players)
             .and(Matches.territoryHasUnitsThatMatch(Matches.unitIsLand()));
     return Matches.territoryHasNeighborMatching(gameMap, territoryMatch);
   }
@@ -461,7 +461,7 @@ public final class ProMatches {
       final RelationshipTracker relationshipTracker,
       final List<GamePlayer> players) {
     return Matches.isTerritoryEnemyAndNotUnownedWater(player, relationshipTracker)
-        .or(Matches.isTerritoryOwnedBy(players));
+        .or(Matches.isTerritoryOwnedByAnyOf(players));
   }
 
   public static Predicate<Territory> territoryIsPotentialEnemyOrHasPotentialEnemyUnits(
@@ -619,7 +619,7 @@ public final class ProMatches {
   }
 
   static Predicate<Unit> unitIsOwnedAir(final GamePlayer player) {
-    return Matches.unitOwnedBy(player).and(Matches.unitIsAir());
+    return Matches.unitIsOwnedBy(player).and(Matches.unitIsAir());
   }
 
   public static Predicate<Unit> unitIsOwnedAndMatchesTypeAndIsTransporting(

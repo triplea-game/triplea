@@ -62,7 +62,7 @@ public class SupportCalculator {
       }
       final Predicate<Unit> canSupport =
           Matches.unitIsOfType((UnitType) rule.getAttachedTo())
-              .and(Matches.unitOwnedBy(rule.getPlayers()));
+              .and(Matches.unitIsOwnedByAnyOf(rule.getPlayers()));
       final List<Unit> supporters = CollectionUtils.getMatches(unitsGivingTheSupport, canSupport);
       if (supporters.isEmpty()) {
         continue;

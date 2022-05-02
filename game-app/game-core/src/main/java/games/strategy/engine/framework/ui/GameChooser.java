@@ -1,14 +1,13 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.file.Path;
@@ -19,12 +18,10 @@ import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
@@ -108,11 +105,7 @@ public class GameChooser {
             0));
     mainSplit.setLeftComponent(leftPanel);
 
-    final JEditorPane notesPanel = new JEditorPane();
-    notesPanel.setEditable(false);
-    notesPanel.setContentType("text/html");
-    notesPanel.setForeground(Color.BLACK);
-
+    final GameNotesView notesPanel = new GameNotesView();
     Optional.ofNullable(gameList.getSelectedValue())
         .map(DefaultGameChooserEntry::readGameNotes)
         .ifPresent(notesPanel::setText);
@@ -155,9 +148,6 @@ public class GameChooser {
             Optional.ofNullable(gameList.getSelectedValue())
                 .map(DefaultGameChooserEntry::readGameNotes)
                 .ifPresent(notesPanel::setText);
-            // scroll to the top of the notes screen
-            SwingUtilities.invokeLater(
-                () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
           }
         });
     gameList.addMouseListener(
@@ -169,10 +159,13 @@ public class GameChooser {
             }
           }
         });
-    // scroll to the top of the notes screen
-    SwingUtilities.invokeLater(() -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
 
-    dialog.setSize(800, 600);
+    final Dimension screenSize = Util.getScreenSize(dialog);
+    if (screenSize.width > 1024 && screenSize.height > 768) {
+      dialog.setSize(new Dimension(1024, 768));
+    } else {
+      dialog.setSize(800, 600);
+    }
     dialog.setLocationRelativeTo(owner);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.setVisible(true); // Blocking and waits for user action

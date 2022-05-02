@@ -368,7 +368,7 @@ public class AirBattle extends AbstractBattle {
                     getRemote(bridge).whatShouldBomberBomb(battleSite, enemyTargets, List.of(unit));
               }
             } else {
-              target = enemyTargets.iterator().next();
+              target = CollectionUtils.getAny(enemyTargets);
             }
             if (target != null) {
               targets = new HashMap<>();
@@ -897,10 +897,10 @@ public class AirBattle extends AbstractBattle {
         }
       }
     } else {
-      return territory.getUnitCollection().anyMatch(defendingAirMatch);
+      return territory.anyUnitsMatch(defendingAirMatch);
     }
     // should we check if the territory also has an air base?
-    return territory.getUnitCollection().anyMatch(defendingAirMatch)
+    return territory.anyUnitsMatch(defendingAirMatch)
         || data.getMap().getNeighbors(territory, maxScrambleDistance).stream()
             .anyMatch(Matches.territoryHasUnitsThatMatch(defendingAirMatch));
   }

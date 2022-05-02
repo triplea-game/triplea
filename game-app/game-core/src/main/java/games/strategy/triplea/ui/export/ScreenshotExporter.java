@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.concurrency.CompletableFutureUtils;
+import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingComponents;
 
 /** Provides methods to export a screenshot for a game at a particular point in time. */
@@ -55,7 +56,13 @@ public final class ScreenshotExporter {
   }
 
   private Optional<Path> promptSaveFile() {
-    return SwingComponents.promptSaveFile(frame, "png", "Saved Map Snapshots");
+    return FileChooser.builder()
+        .parent(frame)
+        .title("Export Screenshot")
+        .fileExtension("png")
+        .filenameFilter((dir, name) -> name.toLowerCase().endsWith(".png"))
+        .build()
+        .chooseFile();
   }
 
   private void runSave(final GameData gameData, final HistoryNode node, final Path file) {

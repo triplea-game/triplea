@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -74,7 +75,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       final Territory unitTerritory,
       final Collection<Territory> territories,
       final boolean noneAvailable) {
-    return territories.iterator().next();
+    return CollectionUtils.getAny(territories);
   }
 
   @Override
@@ -105,7 +106,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
   @Override
   public Territory whereShouldRocketsAttack(
       final Collection<Territory> candidates, final Territory from) {
-    return candidates.iterator().next();
+    return CollectionUtils.getAny(candidates);
   }
 
   @Override
@@ -153,9 +154,9 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
     final Collection<Unit> factories =
         CollectionUtils.getMatches(potentialTargets, Matches.unitCanProduceUnitsAndCanBeDamaged());
     if (factories.isEmpty()) {
-      return potentialTargets.iterator().next();
+      return CollectionUtils.getAny(potentialTargets);
     }
-    return factories.iterator().next();
+    return CollectionUtils.getAny(factories);
   }
 
   @Override
@@ -175,7 +176,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       final Collection<Territory> candidates,
       final Territory currentTerritory,
       final String unitMessage) {
-    return candidates.iterator().next();
+    return CollectionUtils.getAny(candidates);
   }
 
   @Override
@@ -301,7 +302,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
           continue;
         }
         final IntegerMap<Resource> resourceMap = new IntegerMap<>();
-        final Resource resource = attackTokens.keySet().iterator().next();
+        final Resource resource = CollectionUtils.getAny(attackTokens.keySet());
         final int num =
             Math.min(
                 attackTokens.getInt(resource),
@@ -449,7 +450,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       }
     }
     final Set<Unit> unitsToPlace = new HashSet<>();
-    if (unitChoices != null && !unitChoices.isEmpty() && unitsPerPick > 0) {
+    if (!unitChoices.isEmpty() && unitsPerPick > 0) {
       Collections.shuffle(unitChoices);
       final List<Unit> nonFactory =
           CollectionUtils.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
@@ -458,7 +459,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
           unitsToPlace.add(unitChoices.get(0));
         }
       } else {
-        for (int i = 0; i < unitsPerPick && !nonFactory.isEmpty(); i++) {
+        for (int i = 0; i < unitsPerPick; i++) {
           unitsToPlace.add(nonFactory.get(0));
         }
       }
@@ -609,7 +610,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
         for (final Territory current : entry.getValue()) {
           final String error =
               battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
-          if (error != null) {
+          if (error != null && !BattleDelegate.isBattleDependencyErrorMessage(error)) {
             log.warn(error);
           }
         }

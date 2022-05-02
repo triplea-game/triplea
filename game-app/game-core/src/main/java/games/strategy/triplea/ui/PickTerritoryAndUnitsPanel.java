@@ -18,7 +18,6 @@ import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,6 @@ import org.triplea.util.Tuple;
 public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private static final long serialVersionUID = -2672163347536778594L;
   private final TripleAFrame parent;
-  private final JLabel actionLabel = new JLabel();
   private JButton doneButton = null;
   private JButton selectTerritoryButton = null;
   private JButton selectUnitsButton = null;

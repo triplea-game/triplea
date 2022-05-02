@@ -9,9 +9,7 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -20,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.java.concurrency.AsyncRunner;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 
 /** Panel used to display the current players resources. */
 public class ResourceBar extends JPanel implements GameDataChangeListener {
@@ -28,6 +28,7 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
   private final GameData gameData;
   private final UiContext uiContext;
   private final List<ResourceStat> resourceStats = new ArrayList<>();
+  private volatile boolean updateScheduled;
 
   public ResourceBar(final GameData data, final UiContext uiContext) {
     this.gameData = data;
@@ -53,51 +54,52 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
 
   @Override
   public void gameDataChanged(final Change change) {
-    gameData.acquireReadLock();
-    try {
-      final GamePlayer player = gameData.getSequence().getStep().getPlayerId();
-      if (player != null) {
-        final IntegerMap<Resource> resourceIncomes =
-            AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
-        SwingUtilities.invokeLater(
-            () -> {
-              this.removeAll();
-              int count = 0;
-              for (final ResourceStat resourceStat : resourceStats) {
-                final Resource resource = resourceStat.resource;
-                if (!resource.isDisplayedFor(player)) {
-                  continue;
-                }
-                final double quantity =
-                    resourceStat.getValue(player, gameData, uiContext.getMapData());
-                final StringBuilder text =
-                    new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity) + " (");
-                if (resourceIncomes.getInt(resource) >= 0) {
-                  text.append("+");
-                }
-                text.append(resourceIncomes.getInt(resource)).append(")");
-                final JLabel label =
-                    uiContext.getResourceImageFactory().getLabel(resource, text.toString());
-                label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-                add(
-                    label,
-                    new GridBagConstraints(
-                        count++,
-                        0,
-                        1,
-                        1,
-                        0,
-                        1,
-                        GridBagConstraints.WEST,
-                        GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0),
-                        0,
-                        0));
-              }
-            });
-      }
-    } finally {
-      gameData.releaseReadLock();
+    // When there are multiple gameDataChanged() notifications in a row, for example
+    // from an "undo all" action, no need to do this repeatedly. This will just run
+    // once if the async code runs after all the notifications have been received.
+    if (updateScheduled) {
+      return;
     }
+    updateScheduled = true;
+    // Note: The two layers of async logic is because we don't want to do the resource incomes
+    // computation immediately (since it's heavy) to benefit from the optimization above and we
+    // also don't want to do it on the UI thread to avoid a locking operation blocking UI.
+    AsyncRunner.runAsync(
+            () -> {
+              updateScheduled = false;
+              final GamePlayer player;
+              final IntegerMap<Resource> resourceIncomes;
+              try {
+                gameData.acquireReadLock();
+                player = gameData.getSequence().getStep().getPlayerId();
+                if (player == null) {
+                  return;
+                }
+                resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
+              } finally {
+                gameData.releaseReadLock();
+              }
+              SwingUtilities.invokeLater(
+                  () -> {
+                    this.removeAll();
+                    int count = 0;
+                    for (final ResourceStat resourceStat : resourceStats) {
+                      final Resource resource = resourceStat.resource;
+                      if (!resource.isDisplayedFor(player)) {
+                        continue;
+                      }
+                      final double quantity =
+                          resourceStat.getValue(player, gameData, uiContext.getMapData());
+                      final int income = resourceIncomes.getInt(resource);
+                      final var text = new StringBuilder(IStat.DECIMAL_FORMAT.format(quantity));
+                      text.append(" (").append(income >= 0 ? "+" : "").append(income).append(")");
+                      final JLabel label =
+                          uiContext.getResourceImageFactory().getLabel(resource, text.toString());
+                      label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+                      add(label, new GridBagConstraintsBuilder(count++, 0).weightY(1).build());
+                    }
+                  });
+            })
+        .exceptionally(Throwable::printStackTrace);
   }
 }

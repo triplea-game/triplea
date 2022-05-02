@@ -37,6 +37,6 @@ jobs:
           tag: ${{ env.product_version }} 
           name: ${{ env.release_name }}
           prerelease: ${{ env.is_prerelease }}
-          commit: master
+          commit: ${{ github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
 

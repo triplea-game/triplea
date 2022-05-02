@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -101,11 +102,11 @@ public final class UnitChooser extends JPanel {
   }
 
   private UnitChooser(
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final boolean allowMultipleHits,
       final UiContext uiContext,
-      final Predicate<Collection<Unit>> match) {
-    dependents = dependent;
+      final @Nullable Predicate<Collection<Unit>> match) {
+    this.dependents = dependents;
     this.allowMultipleHits = allowMultipleHits;
     NonWithdrawableFactory.makeSureNonWithdrawableFactoryMatchesUiContext(uiContext);
     this.match = match;
@@ -114,19 +115,19 @@ public final class UnitChooser extends JPanel {
   UnitChooser(
       final Collection<Unit> units,
       final CasualtyList defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final boolean retreatPossibility,
       final boolean movementForAirUnitsOnly,
       final boolean allowMultipleHits,
       final UiContext uiContext) {
-    this(dependent, allowMultipleHits, uiContext, null);
+    this(dependents, allowMultipleHits, uiContext, null);
     final List<Unit> combinedList = defaultSelections.getDamaged();
     // TODO: this adds it to the default selections list, is this intended?
     combinedList.addAll(defaultSelections.getKilled());
     createEntries(
         units,
         UnitSeparator.SeparatorCategories.builder()
-            .dependents(dependent)
+            .dependents(dependents)
             .retreatPossibility(retreatPossibility)
             .movementForAirUnitsOnly(movementForAirUnitsOnly)
             .build(),
@@ -137,11 +138,11 @@ public final class UnitChooser extends JPanel {
   public UnitChooser(
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final UnitSeparator.SeparatorCategories separatorCategories,
       final boolean allowMultipleHits,
       final UiContext uiContext) {
-    this(dependent, allowMultipleHits, uiContext, null);
+    this(dependents, allowMultipleHits, uiContext, null);
     createEntries(
         units, separatorCategories.toBuilder().dependents(dependents).build(), defaultSelections);
     layoutEntries();
@@ -150,12 +151,12 @@ public final class UnitChooser extends JPanel {
   public UnitChooser(
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final UnitSeparator.SeparatorCategories separatorCategories,
       final boolean allowMultipleHits,
       final UiContext uiContext,
-      final Predicate<Collection<Unit>> match) {
-    this(dependent, allowMultipleHits, uiContext, match);
+      final @Nullable Predicate<Collection<Unit>> match) {
+    this(dependents, allowMultipleHits, uiContext, match);
     createEntries(
         units, separatorCategories.toBuilder().dependents(dependents).build(), defaultSelections);
     layoutEntries();
@@ -498,16 +499,19 @@ public final class UnitChooser extends JPanel {
             new UnitChooserEntryIcon(damaged),
             builder.insets(new Insets(0, (i == 0 ? 0 : 8), 0, 0)).gridX(gridx++).build());
         if (i == 0) {
+          // -1 indicates a transport whose movement ended due to unloading already.
           if (category.getMovement().compareTo(new BigDecimal(-1)) != 0) {
             panel.add(
                 new JLabel("mvt " + category.getMovement()),
-                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
+                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx).build());
           }
+          gridx++; // Increment outside the if to avoid misalignment.
           if (category.getTransportCost() != -1) {
             panel.add(
                 new JLabel("cst " + category.getTransportCost()),
-                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx++).build());
+                builder.insets(new Insets(0, 4, 0, 4)).gridX(gridx).build());
           }
+          gridx++; // Increment outside the if to avoid misalignment.
         }
         panel.add(label, builder.insets(emptyInsets).gridX(gridx++).build());
         panel.add(scroll, builder.insets(new Insets(0, 4, 0, 0)).gridX(gridx++).build());
@@ -676,6 +680,8 @@ public final class UnitChooser extends JPanel {
       }
     }
 
+    // false positive
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Image getImage(final ImageKey imageKey, final boolean nonWithdrawable) {
       final Image undecoratedImage = unitImageFactoryForDecoratedImages.getImage(imageKey);
 

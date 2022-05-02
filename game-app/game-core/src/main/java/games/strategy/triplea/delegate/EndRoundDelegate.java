@@ -56,7 +56,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         final Collection<GamePlayer> winners =
             data.getAllianceTracker()
                 .getPlayersInAlliance(
-                    data.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
+                    CollectionUtils.getAny(
+                        data.getAllianceTracker().getAlliancesPlayerIsIn(japanese)));
         signalGameOver(victoryMessage, winners, bridge);
       }
     }
@@ -240,7 +241,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;
       for (final Territory t : territories) {
-        if (Matches.isTerritoryOwnedBy(teamMembers).test(t)) {
+        if (Matches.isTerritoryOwnedByAnyOf(teamMembers).test(t)) {
           final TerritoryAttachment ta = TerritoryAttachment.get(t);
           if (ta != null) {
             teamVCs += ta.getVictoryCity();
@@ -300,7 +301,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           .playSoundForAll(
               SoundPath.CLIP_GAME_WON,
               ((this.winners != null && !this.winners.isEmpty())
-                  ? this.winners.iterator().next()
+                  ? CollectionUtils.getAny(this.winners)
                   : GamePlayer.NULL_PLAYERID));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the
       // end round delegate)
@@ -355,7 +356,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
 
   private int getProduction(final GamePlayer gamePlayer) {
     return StreamSupport.stream(getData().getMap().spliterator(), false)
-        .filter(current -> current.getOwner().equals(gamePlayer))
+        .filter(Matches.isTerritoryOwnedBy(gamePlayer))
         .mapToInt(TerritoryAttachment::getProduction)
         .sum();
   }

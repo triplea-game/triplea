@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import org.triplea.java.collections.CollectionUtils;
 
 /** The hub node in a spoke-hub messaging architecture. */
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
@@ -131,7 +132,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
             "Too many nodes:" + remote + " for remote name " + hubInvoke.call);
       }
       final InvocationInProgress invocationInProgress =
-          new InvocationInProgress(remote.iterator().next(), hubInvoke, from);
+          new InvocationInProgress(CollectionUtils.getAny(remote), hubInvoke, from);
       invocations.put(hubInvoke.methodCallId, invocationInProgress);
     }
     // invoke remotely

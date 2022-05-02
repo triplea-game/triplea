@@ -10,5 +10,10 @@ class UndoablePlacementsPanel extends AbstractUndoableMovesPanel {
   }
 
   @Override
+  protected String getLabelText() {
+    return "Placements:";
+  }
+
+  @Override
   protected void specificViewAction(final AbstractUndoableMove move) {}
 }

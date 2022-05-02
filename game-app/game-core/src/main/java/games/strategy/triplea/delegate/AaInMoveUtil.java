@@ -97,7 +97,7 @@ class AaInMoveUtil implements Serializable {
       final Collection<Unit> currentPossibleAa =
           CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
       final Set<UnitType> targetUnitTypesForThisTypeAa =
-          UnitAttachment.get(currentPossibleAa.iterator().next().getType())
+          UnitAttachment.get(CollectionUtils.getAny(currentPossibleAa).getType())
               .getTargetsAa(getData().getUnitTypeList());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
@@ -263,12 +263,12 @@ class AaInMoveUtil implements Serializable {
     // AA guns in transports shouldn't be able to fire
     final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();
     for (final Territory current : route.getMiddleSteps()) {
-      if (current.getUnitCollection().anyMatch(hasAa)) {
+      if (current.anyUnitsMatch(hasAa)) {
         territoriesWhereAaWillFire.add(current);
       }
     }
     if (Properties.getForceAaAttacksForLastStepOfFlyOver(data.getProperties())) {
-      if (route.getEnd().getUnitCollection().anyMatch(hasAa)) {
+      if (route.getEnd().anyUnitsMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }
     } else {
@@ -281,7 +281,7 @@ class AaInMoveUtil implements Serializable {
       // TODO: there is a bug in which if you move an air unit to a battle site in the middle of non
       // combat, it wont
       // fire
-      if (route.getStart().getUnitCollection().anyMatch(hasAa)
+      if (route.getStart().anyUnitsMatch(hasAa)
           && !getBattleTracker().wasBattleFought(route.getStart())) {
         territoriesWhereAaWillFire.add(route.getStart());
       }
