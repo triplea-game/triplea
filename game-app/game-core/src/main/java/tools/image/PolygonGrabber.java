@@ -534,21 +534,7 @@ public final class PolygonGrabber {
 
     /** Checks to see if the given point is of color black. */
     private boolean isBlack(final Point p) {
-      return isBlack(p.x, p.y);
-    }
-
-    /**
-     * Checks to see if the x/y coordinates from a given point are inbounds and if so is it black.
-     */
-    private boolean isBlack(final int x, final int y) {
-      if (!inBounds(x, y)) {
-        // not inbounds, can't be black
-        return false;
-      }
-      // gets ARGB integer value and we LOGICAL AND mask it
-      // with ARGB value of 00,FF,FF,FF to determine if it black or not.
-      // maybe here ?
-      return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
+      return isBlack(p.x, p.y, bufferedImage);
     }
 
     private boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
@@ -562,16 +548,8 @@ public final class PolygonGrabber {
       return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
     }
 
-    /** Checks if the given x/y coordinate point is inbounds or not. */
-    private boolean inBounds(final int x, final int y) {
-      return x >= 0
-          && x < bufferedImage.getWidth(null)
-          && y >= 0
-          && y < bufferedImage.getHeight(null);
-    }
-
-    private boolean inBounds(final int x, final int y, final Image image) {
-      return x >= 0 && x < image.getWidth(null) && y >= 0 && y < image.getHeight(null);
+    private boolean inBounds(final int x, final int y, final BufferedImage image) {
+      return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();
     }
 
     /**
@@ -633,7 +611,8 @@ public final class PolygonGrabber {
     private Polygon findPolygon(final int x, final int y) {
       // walk up, find the first black point
       final Point startPoint = new Point(x, y);
-      while (inBounds(startPoint.x, startPoint.y - 1) && !isBlack(startPoint.x, startPoint.y)) {
+      while (inBounds(startPoint.x, startPoint.y - 1, bufferedImage)
+          && !isBlack(startPoint.x, startPoint.y, bufferedImage)) {
         startPoint.y--;
       }
       final List<Point> points = new ArrayList<>(100);
