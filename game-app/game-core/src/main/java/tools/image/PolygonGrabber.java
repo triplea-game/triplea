@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -39,6 +41,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 
@@ -91,9 +94,11 @@ public final class PolygonGrabber {
                   + "<br>Please click near the center of every single territory and sea zone on "
                   + "your map. "
                   + "<br>The grabber will then fill in the territory based on the borders it finds."
-                  + "<br>If the territory shape or borders do not match what you intend, then your "
+                  + "<br><br>If the territory shape or borders do not match what you intend, then your "
                   + "borders "
                   + "<br>might have a gap or differently colored pixel in the border."
+                  + "<br>You can also using the Clean Up Image... function from the Edit menu "
+                  + "first to automatically fix some problems with the original image.<br>"
                   + "<br>These borders will define the shape of the territory in TripleA."
                   + "<br><br>When a territory is inside of another territory, you can turn on "
                   + "'island mode' to be able to see it."
@@ -119,6 +124,7 @@ public final class PolygonGrabber {
     private List<Polygon> current;
     // holds the map image
     private final BufferedImage bufferedImage;
+    private final JPanel imagePanel;
     // maps String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     // holds the centers for the polygons
@@ -169,7 +175,7 @@ public final class PolygonGrabber {
         }
       }
       bufferedImage = newBufferedImage(mapFolder);
-      final JPanel imagePanel = newMainPanel();
+      imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
@@ -300,6 +306,9 @@ public final class PolygonGrabber {
       fileMenu.setMnemonic('F');
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
+      final JMenuItem saveImageItem = new JMenuItem("Save Image...");
+      saveImageItem.addActionListener(this::saveImage);
+      fileMenu.add(saveImageItem);
       fileMenu.addSeparator();
       fileMenu.add(exitItem);
       final JMenu editMenu = new JMenu("Edit");
@@ -307,8 +316,56 @@ public final class PolygonGrabber {
       editMenu.setMnemonic('E');
       editMenu.add(modeItem);
       editMenu.add(autoItem);
+      final JMenuItem cleanImageItem = new JMenuItem("Clean Up Image...");
+      cleanImageItem.addActionListener(this::cleanImage);
+      editMenu.add(cleanImageItem);
       menuBar.add(fileMenu);
       menuBar.add(editMenu);
+    }
+
+    private void saveImage(final ActionEvent event) {
+      final Path target =
+          FileChooser.builder().fileExtension("png").build().chooseFile().orElse(null);
+      if (target == null) {
+        return;
+      }
+      try {
+        ImageIO.write(bufferedImage, "PNG", target.toFile());
+        JOptionPane.showMessageDialog(null, "Saved to: " + target);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    private void cleanImage(final ActionEvent event) {
+      final String input =
+          JOptionPane.showInputDialog(
+              getParent(),
+              new JLabel(
+                  "<html>"
+                      + "The image cleaning tool will update the source image to do the following "
+                      + "transformations:<br>"
+                      + "1. Normalizes colors by changing pixels that aren't white to black.<br>"
+                      + "2. \"Fills in\" small regions with black pixels.<br>"
+                      + "3. Removes \"unnecessary\" black pixels by turning them to white, making the "
+                      + "resulting lines between regions have a thickness of 1 pixel.<br><br>"
+                      + "Note: You should double check that the result is as intended. If there are "
+                      + "any gaps in territory borders, the clean up may complete remove them.<br><br>"
+                      + "After clean up, you can save the updated image from the File menu.<br><br>"
+                      + "Please select the minimum region size for eliminating regions:"),
+              30);
+      if (input == null) {
+        return;
+      }
+      final int minimumRegionSize;
+      try {
+        minimumRegionSize = Integer.parseInt(input);
+      } catch (final NumberFormatException e) {
+        JOptionPane.showMessageDialog(getParent(), "Minimum region size must be a number");
+        return;
+      }
+      new MapImageCleaner(bufferedImage, minimumRegionSize).cleanUpImage();
+      imagePanel.repaint();
     }
 
     /**
