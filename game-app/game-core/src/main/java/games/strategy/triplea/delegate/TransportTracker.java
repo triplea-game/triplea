@@ -43,7 +43,9 @@ public class TransportTracker {
     }
   }
 
-  /** @return Unmodifiable map of transport -> collection of transported units. */
+  /**
+   * @return Unmodifiable map of transport -> collection of transported units.
+   */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return transporting(units, Unit::getTransporting);
   }

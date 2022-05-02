@@ -409,12 +409,16 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return List.of();
   }
 
-  /** @return Unmodifiable collection of units in the territory that this unit is transporting */
+  /**
+   * @return Unmodifiable collection of units in the territory that this unit is transporting
+   */
   public List<Unit> getTransporting(final Territory territory) {
     return getTransporting(territory.getUnitCollection());
   }
 
-  /** @return Unmodifiable collection of a subset of the units that this unit is transporting */
+  /**
+   * @return Unmodifiable collection of a subset of the units that this unit is transporting
+   */
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
