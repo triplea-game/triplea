@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.data;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
@@ -17,13 +18,12 @@ import java.util.Comparator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CasualtyDetailsTest {
 
-  @Mock private GameData gameData;
+  private GameData gameData = givenGameData().build();
   private GamePlayer player1 = new GamePlayer("player1", gameData);
   private GamePlayer player2 = new GamePlayer("player2", gameData);
 
