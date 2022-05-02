@@ -31,6 +31,7 @@ public class MapImageCleanerTest {
     image.setRGB(1, 0, Color.BLACK.getRGB());
     image.setRGB(1, 1, Color.BLACK.getRGB());
 
+    // Clean the image with a min region size of 2.
     new MapImageCleaner(image, 2).cleanUpImage();
     // Check that the line splitting the image is still there.
     for (int x = 0; x < image.getWidth(); x++) {
@@ -40,7 +41,7 @@ public class MapImageCleanerTest {
     for (int x = 0; x < image.getWidth() - 1; x++) {
       assertThat(image.getRGB(x, 7), is(Color.WHITE.getRGB()));
     }
-    // Check that the corner region has been clearer.
+    // Check that the corner region has been removed, since it's below the min size.
     assertThat(image.getRGB(0, 1), is(Color.WHITE.getRGB()));
     assertThat(image.getRGB(1, 0), is(Color.WHITE.getRGB()));
     assertThat(image.getRGB(1, 1), is(Color.WHITE.getRGB()));
