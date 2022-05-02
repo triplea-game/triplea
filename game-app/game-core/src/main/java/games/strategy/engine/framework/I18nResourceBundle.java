@@ -74,7 +74,9 @@ public abstract class I18nResourceBundle {
     return DateFormat.getDateInstance(style, locale).format(date);
   }*/
 
-  /** @return List of supported languages */
+  /**
+   * @return List of supported languages
+   */
   public static List<Locale> getSupportedLanguages() {
     return Arrays.asList(Locale.ENGLISH, Locale.GERMAN);
   }
@@ -92,7 +94,9 @@ public abstract class I18nResourceBundle {
     return Arrays.asList(availableLocales).contains(locale);
   }
 
-  /** @return Path to resource bundle property file */
+  /**
+   * @return Path to resource bundle property file
+   */
   protected abstract String getResourcePath();
 
   /**

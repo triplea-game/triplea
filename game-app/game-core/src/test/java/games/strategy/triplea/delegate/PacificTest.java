@@ -1,22 +1,31 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
+import static games.strategy.triplea.delegate.GameDataTestUtil.assertMoveError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.load;
 import static games.strategy.triplea.delegate.GameDataTestUtil.move;
+import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
@@ -27,62 +36,45 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
-class PacificTest extends AbstractDelegateTestCase {
-  private UnitType marine;
-  // Define players
-  private GamePlayer americans;
-  private GamePlayer chinese;
-  // Define territories
-  private Territory queensland;
-  private Territory unitedStates;
-  private Territory newBritain;
-  private Territory midway;
-  private Territory bonin;
-  // Define Sea Zones
-  private Territory sz4;
-  private Territory sz5;
-  private Territory sz7;
-  private Territory sz8;
-  private Territory sz10;
-  private Territory sz16;
-  private Territory sz20;
-  private Territory sz24;
-  private Territory sz27;
+class PacificTest {
+  private final GameData gameData = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();
   private IDelegateBridge bridge;
   private MoveDelegate delegate;
 
+  private final UnitType infantry = GameDataTestUtil.infantry(gameData);
+  private final UnitType marine = GameDataTestUtil.marine(gameData);
+  private final UnitType transport = GameDataTestUtil.transport(gameData);
+  private final UnitType submarine = GameDataTestUtil.submarine(gameData);
+  private final UnitType destroyer = GameDataTestUtil.destroyer(gameData);
+  private final UnitType carrier = GameDataTestUtil.carrier(gameData);
+  private final UnitType fighter = GameDataTestUtil.fighter(gameData);
+  // Define players
+  private final GamePlayer americans = GameDataTestUtil.americans(gameData);
+  private final GamePlayer chinese = GameDataTestUtil.chinese(gameData);
+  private final GamePlayer japanese = GameDataTestUtil.japanese(gameData);
+  // Define territories
+  private final Territory queensland = territory("Queensland", gameData);
+  private final Territory unitedStates = territory("United States", gameData);
+  private final Territory newBritain = territory("New Britain", gameData);
+  private final Territory midway = territory("Midway", gameData);
+  private final Territory bonin = territory("Bonin", gameData);
+  private final Territory canada = territory("Canada", gameData);
+  // Define Sea Zones
+  private final Territory sz4 = territory("4 Sea Zone", gameData);
+  private final Territory sz5 = territory("5 Sea Zone", gameData);
+  private final Territory sz7 = territory("7 Sea Zone", gameData);
+  private final Territory sz8 = territory("8 Sea Zone", gameData);
+  private final Territory sz10 = territory("10 Sea Zone", gameData);
+  private final Territory sz14 = territory("14 Sea Zone", gameData);
+  private final Territory sz16 = territory("16 Sea Zone", gameData);
+  private final Territory sz20 = territory("20 Sea Zone", gameData);
+  private final Territory sz21 = territory("21 Sea Zone", gameData);
+  private final Territory sz24 = territory("24 Sea Zone", gameData);
+  private final Territory sz27 = territory("27 Sea Zone", gameData);
+  private final Territory sz30 = territory("30 Sea Zone", gameData);
+
   @BeforeEach
   void setupPacificTest() {
-    gameData = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();
-    // Define units
-    infantry = GameDataTestUtil.infantry(gameData);
-    marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
-    fighter = GameDataTestUtil.fighter(gameData);
-    bomber = GameDataTestUtil.bomber(gameData);
-    carrier = GameDataTestUtil.carrier(gameData);
-    transport = GameDataTestUtil.transport(gameData);
-    // Define players
-    americans = GameDataTestUtil.americans(gameData);
-    chinese = GameDataTestUtil.chinese(gameData);
-    british = GameDataTestUtil.british(gameData);
-    japanese = GameDataTestUtil.japanese(gameData);
-    // Define territories
-    queensland = gameData.getMap().getTerritory("Queensland");
-    japan = gameData.getMap().getTerritory("Japan");
-    unitedStates = gameData.getMap().getTerritory("United States");
-    newBritain = gameData.getMap().getTerritory("New Britain");
-    midway = gameData.getMap().getTerritory("Midway");
-    bonin = gameData.getMap().getTerritory("Bonin");
-    // Define Sea Zones
-    sz4 = gameData.getMap().getTerritory("4 Sea Zone");
-    sz5 = gameData.getMap().getTerritory("5 Sea Zone");
-    sz7 = gameData.getMap().getTerritory("7 Sea Zone");
-    sz8 = gameData.getMap().getTerritory("8 Sea Zone");
-    sz10 = gameData.getMap().getTerritory("10 Sea Zone");
-    sz16 = gameData.getMap().getTerritory("16 Sea Zone");
-    sz20 = gameData.getMap().getTerritory("20 Sea Zone");
-    sz24 = gameData.getMap().getTerritory("24 Sea Zone");
-    sz27 = gameData.getMap().getTerritory("27 Sea Zone");
     bridge = newDelegateBridge(americans);
     advanceToStep(bridge, "japaneseCombatMove");
     delegate = new MoveDelegate();
@@ -322,12 +314,47 @@ class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testCanMoveNavalBase() {
-    advanceToStep(bridge, "americanNonCombatMove");
-    final Route route = new Route(sz5, sz7, sz8, sz20);
+  void testCanMoveFurtherBetweenNavalBases() throws MutableProperty.InvalidValueException {
+    // Remove Japanese units from sz20 so that we can move ships there non-combat.
+    removeFrom(sz20, sz20.getUnits());
+
     final IntegerMap<UnitType> map = new IntegerMap<>();
-    map.put(fighter, 1);
-    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    map.put(submarine, 1);
+    addTo(sz5, submarine.create(10, americans));
+    map.put(transport, 1);
+    addTo(sz5, transport.create(10, americans));
+    map.put(destroyer, 1);
+    addTo(sz5, destroyer.create(10, americans));
+    map.put(carrier, 1);
+    addTo(sz5, carrier.create(10, americans));
+
+    advanceToStep(bridge, "americanCombatMove");
+    // During combat move, naval bases do not boost movement.
+    final Route toSz20 = new Route(sz5, sz7, sz8, sz20);
+    assertMoveError(GameDataTestUtil.getUnits(map, toSz20.getStart()), toSz20);
+
+    // But they do, during non-combat.
+    advanceToStep(bridge, "americanNonCombatMove");
+    // Moving 3 spaces to sz20 is allowed, since there's a Naval base at the destination.
+    move(GameDataTestUtil.getUnits(map, toSz20.getStart()), toSz20);
+
+    // Moving 3 spaces to sz21 is not allowed, since there is no naval base at destination.
+    final Route toSz21 = new Route(sz5, sz7, sz8, sz21);
+    assertMoveError(GameDataTestUtil.getUnits(map, toSz21.getStart()), toSz21);
+
+    // Going 3 spaces to sz14 is OK, since it's an allied naval base.
+    final Route toSz14 = new Route(sz5, sz4, sz10, sz14);
+    move(GameDataTestUtil.getUnits(map, toSz14.getStart()), toSz14);
+
+    // But can't go 4 spaces to sz30, even with a base at the destination.
+    final Route toSz30 = new Route(sz5, sz4, sz10, sz14, sz30);
+    assertMoveError(GameDataTestUtil.getUnits(map, toSz30.getStart()), toSz30);
+
+    // Finally, adding a naval base in Canada shouldn't boost movement further.
+    TerritoryAttachment.get(canada).getPropertyMap().get("navalBase").setValue(true);
+    assertThat(TerritoryAttachment.hasNavalBase(canada), is(true));
+    // Should still fail to move 4.
+    assertMoveError(GameDataTestUtil.getUnits(map, toSz30.getStart()), toSz30);
   }
 
   @Test

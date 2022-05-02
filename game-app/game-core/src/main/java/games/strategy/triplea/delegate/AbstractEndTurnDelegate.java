@@ -418,7 +418,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
               currTerritory
                   .getUnitCollection()
                   .getMatches(
-                      Matches.unitOwnedBy(player)
+                      Matches.unitIsOwnedBy(player)
                           .and(Matches.unitCanBeGivenByTerritoryTo(newOwner)));
           if (!units.isEmpty()) {
             change.add(ChangeFactory.changeOwner(units, newOwner, currTerritory));

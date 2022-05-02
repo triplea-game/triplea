@@ -212,6 +212,11 @@ public final class GameDataTestUtil {
     return unitType(Constants.UNIT_TYPE_INFANTRY, data);
   }
 
+  /** Returns a marine UnitType object for the specified GameData object. */
+  public static UnitType marine(final GameState data) {
+    return unitType(Constants.UNIT_TYPE_MARINE, data);
+  }
+
   /** Returns an artillery UnitType object for the specified GameData object. */
   public static UnitType artillery(final GameState data) {
     return unitType(Constants.UNIT_TYPE_ARTILLERY, data);

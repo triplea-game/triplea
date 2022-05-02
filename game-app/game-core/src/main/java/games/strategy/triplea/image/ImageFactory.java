@@ -1,14 +1,15 @@
 package games.strategy.triplea.image;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import games.strategy.triplea.ResourceLoader;
 import java.awt.Image;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 
 /**
@@ -19,9 +20,25 @@ import javax.imageio.ImageIO;
  */
 public class ImageFactory {
   private ResourceLoader resourceLoader;
+  private final LoadingCache<String, Optional<Image>> cache =
+      CacheBuilder.newBuilder()
+          .softValues()
+          .build(
+              new CacheLoader<>() {
+                @Override
+                public @Nonnull Optional<Image> load(@Nonnull String key) throws IOException {
+                  URL url = resourceLoader.getResource(key);
+                  if (url == null) {
+                    return Optional.empty();
+                  }
+                  ImageIO.setUseCache(false); // refers whether to "use a disk based cache"
+                  return Optional.of(ImageIO.read(url));
+                }
+              });
 
   public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
+    cache.invalidateAll();
   }
 
   /**
@@ -29,9 +46,9 @@ public class ImageFactory {
    *
    * @throws IllegalStateException thrown if none of the image keys can be found
    */
-  protected Image getImageOrThrow(final String key, String... additionalKeys) {
-    return getImage(key, additionalKeys)
-        .orElseThrow(() -> new IllegalStateException("Image Not Found:" + key));
+  protected Image getImageOrThrow(final String... keys) {
+    return getImage(keys)
+        .orElseThrow(() -> new IllegalStateException("Image Not Found:" + keys[0]));
   }
 
   /**
@@ -40,26 +57,11 @@ public class ImageFactory {
    * @return An empty optional if no image can be found under any key, otherwise a loaded image is
    *     returned.
    */
-  protected Optional<Image> getImage(final String key, String... additionalKeys) {
-    List<String> keys = new ArrayList<>(additionalKeys.length + 1);
-    keys.add(key);
-    keys.addAll(Arrays.asList(additionalKeys));
-
-    return keys.stream() //
-        .map(resourceLoader::getResource)
-        .filter(Objects::nonNull)
-        .findFirst()
-        .map(this::loadImageFromUrl);
-  }
-
-  private Image loadImageFromUrl(URL url) {
-    try {
-      // use cache refers whether to "use a disk based cache" or to use a memory based
-      // cache
-      ImageIO.setUseCache(false);
-      return ImageIO.read(url);
-    } catch (final IOException e) {
-      throw new IllegalStateException(e);
-    }
+  protected Optional<Image> getImage(final String... keys) {
+    return Arrays.stream(keys)
+        .map(cache::getUnchecked)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .findFirst();
   }
 }

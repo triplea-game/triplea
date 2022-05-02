@@ -178,17 +178,15 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
    */
   public boolean amNotDeadYet(final GameMap gameMap) {
     for (final Territory t : gameMap.getTerritories()) {
-      if (t.getUnitCollection()
-          .anyMatch(
-              Matches.unitIsOwnedBy(this)
-                  .and(Matches.unitHasAttackValueOfAtLeast(1))
-                  .and(Matches.unitCanMove())
-                  .and(Matches.unitIsLand()))) {
+      if (t.anyUnitsMatch(
+          Matches.unitIsOwnedBy(this)
+              .and(Matches.unitHasAttackValueOfAtLeast(1))
+              .and(Matches.unitCanMove())
+              .and(Matches.unitIsLand()))) {
         return true;
       }
-      if (t.getOwner().equals(this)
-          && t.getUnitCollection()
-              .anyMatch(Matches.unitIsOwnedBy(this).and(Matches.unitCanProduceUnits()))) {
+      if (t.isOwnedBy(this)
+          && t.anyUnitsMatch(Matches.unitIsOwnedBy(this).and(Matches.unitCanProduceUnits()))) {
         return true;
       }
     }

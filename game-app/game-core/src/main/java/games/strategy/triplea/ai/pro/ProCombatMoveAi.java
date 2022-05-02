@@ -128,7 +128,7 @@ public class ProCombatMoveAi {
     removeTerritoriesWhereTransportsAreExposed();
 
     // Determine if capital can be held if I still own it
-    if (proData.getMyCapital() != null && proData.getMyCapital().getOwner().equals(player)) {
+    if (proData.getMyCapital() != null && proData.getMyCapital().isOwnedBy(player)) {
       removeAttacksUntilCapitalCanBeHeld(
           attackOptions, proData.getPurchaseOptions().getLandOptions());
     }
@@ -560,8 +560,7 @@ public class ProCombatMoveAi {
       if (!patd.isCanHold()
           && enemyAttackOptions.getMax(t) != null
           && t.isWater()
-          && !t.getUnitCollection()
-              .anyMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
+          && !t.anyUnitsMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
         ProLogger.debug(
             "Removing convoy zone that can't be held: "
                 + t.getName()
@@ -668,10 +667,9 @@ public class ProCombatMoveAi {
     final List<Unit> alreadyMovedUnits = new ArrayList<>();
     for (final Territory t : proData.getMyUnitTerritories()) {
       final boolean hasAlliedLandUnits =
-          t.getUnitCollection()
-              .anyMatch(
-                  ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(
-                      player, data.getRelationshipTracker(), t));
+          t.anyUnitsMatch(
+              ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(
+                  player, data.getRelationshipTracker(), t));
       final Set<Territory> enemyNeighbors =
           data.getMap()
               .getNeighbors(

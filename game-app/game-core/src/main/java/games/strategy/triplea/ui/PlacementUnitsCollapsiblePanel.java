@@ -6,6 +6,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.UnitSeparator;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +25,10 @@ class PlacementUnitsCollapsiblePanel {
     unitsToPlacePanel =
         new SimpleUnitPanel(
             uiContext, SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-    panel = new CollapsiblePanel(unitsToPlacePanel, "Placements");
+    panel =
+        new CollapsiblePanel(
+            unitsToPlacePanel, "Placements", ClientSetting.placementsCollapsed::setValueAndFlush);
+    panel.setCollapsed(ClientSetting.placementsCollapsed.getValueOrThrow());
     panel.setVisible(false);
     gameData.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
   }

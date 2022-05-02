@@ -124,25 +124,39 @@ public interface IBattle extends Serializable {
    */
   boolean isEmpty();
 
-  /** @return Unmodifiable collection of units that are dependent on the given units. */
+  /**
+   * @return Unmodifiable collection of units that are dependent on the given units.
+   */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
-  /** @return Unmodifiable collection of units that are bombarding. */
+  /**
+   * @return Unmodifiable collection of units that are bombarding.
+   */
   Collection<Unit> getBombardingUnits();
 
-  /** @return What round this battle is in. Read-only. */
+  /**
+   * @return What round this battle is in. Read-only.
+   */
   int getBattleRound();
 
-  /** @return Unmodifiable collection of the attacking units. */
+  /**
+   * @return Unmodifiable collection of the attacking units.
+   */
   Collection<Unit> getAttackingUnits();
 
-  /** @return Unmodifiable collection of the defending units. */
+  /**
+   * @return Unmodifiable collection of the defending units.
+   */
   Collection<Unit> getDefendingUnits();
 
-  /** @return Unmodifiable collection of the remaining attacking units. */
+  /**
+   * @return Unmodifiable collection of the remaining attacking units.
+   */
   Collection<Unit> getRemainingAttackingUnits();
 
-  /** @return Unmodifiable collection of the remaining defending units. */
+  /**
+   * @return Unmodifiable collection of the remaining defending units.
+   */
   Collection<Unit> getRemainingDefendingUnits();
 
   WhoWon getWhoWon();

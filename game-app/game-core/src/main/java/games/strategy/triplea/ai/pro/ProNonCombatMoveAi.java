@@ -881,7 +881,7 @@ class ProNonCombatMoveAi {
             continue; // skip moving air to water if not enough carrier capacity
           }
           if (!t.isWater()
-              && !t.getOwner().equals(player)
+              && !t.isOwnedBy(player)
               && Matches.unitIsAir().test(unit)
               && !ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
             continue; // skip moving air units to allied land without a factory

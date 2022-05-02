@@ -1,6 +1,7 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -340,5 +342,47 @@ public final class TransportUtils {
 
   private static Optional<Unit> findEquivalentUnit(final Unit unit, final Collection<Unit> units) {
     return units.stream().filter(unit::isEquivalent).findAny();
+  }
+
+  /**
+   * Returns a collection of units with some substituted with equivalent ones to allow unloading.
+   *
+   * <p>If the route isn't an unload or no substitutions were made, the returned collection will
+   * have the same content as the input parameter. Units that can't be unloaded for which no
+   * substitutes could be found will remain in the returned collection.
+   *
+   * @param route The route of the move.
+   * @param units The units being moved.
+   * @return A collection of units with possible substitutions.
+   */
+  public static Collection<Unit> chooseEquivalentUnitsToUnload(
+      final Route route, final Collection<Unit> units) {
+    if (!route.isUnload() || !units.stream().anyMatch(Matches.unitIsLand())) {
+      return new ArrayList<>(units);
+    }
+    final List<Unit> updatedUnits = new ArrayList<>(units);
+    // Loop by index, so we can replace entries within the loop.
+    for (int i = 0; i < updatedUnits.size(); i++) {
+      final Unit origUnit = updatedUnits.get(i);
+      if (!canUnload(origUnit, route.getEnd())) {
+        final int unitIndex = i;
+        // Can't unload the unit - find an equivalent one that can be unloaded
+        // and that's not in our current list of units. Note: This takes into
+        // account previous replacements.
+        route.getStart().getUnits().stream()
+            .filter(u -> u.isEquivalent(origUnit))
+            .filter(Predicate.not(updatedUnits::contains))
+            .filter(u -> canUnload(u, route.getEnd()))
+            // Replace the orig unit with the equivalent one.
+            .findAny()
+            .ifPresent(u -> updatedUnits.set(unitIndex, u));
+      }
+    }
+    return updatedUnits;
+  }
+
+  private static boolean canUnload(final Unit unit, final Territory territory) {
+    final Unit transport = unit.getTransportedBy();
+    return transport != null && !Matches.transportCannotUnload(territory).test(transport);
   }
 }

@@ -209,15 +209,13 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     getData().acquireReadLock();
     try {
       // not our territory
-      if (!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer())) {
+      if (!territory.isWater() && !territory.isOwnedBy(getCurrentPlayer())) {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
           if ((pa == null
                   || pa.getGiveUnitControl() == null
                   || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
-              && !territory
-                  .getUnitCollection()
-                  .anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
+              && !territory.anyUnitsMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return new PlaceableUnits();
           }
         } else {

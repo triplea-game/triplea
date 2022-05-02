@@ -120,6 +120,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     owner = Optional.ofNullable(player).orElse(GamePlayer.NULL_PLAYERID);
   }
 
+  public final boolean isOwnedBy(final GamePlayer player) {
+    // Use getOwner() to allow test mocks to override that method.
+    return getOwner().equals(player);
+  }
+
   public boolean isEquivalent(final Unit unit) {
     return type != null
         && type.equals(unit.getType())
@@ -404,12 +409,16 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return List.of();
   }
 
-  /** @return Unmodifiable collection of units in the territory that this unit is transporting */
+  /**
+   * @return Unmodifiable collection of units in the territory that this unit is transporting
+   */
   public List<Unit> getTransporting(final Territory territory) {
     return getTransporting(territory.getUnitCollection());
   }
 
-  /** @return Unmodifiable collection of a subset of the units that this unit is transporting */
+  /**
+   * @return Unmodifiable collection of a subset of the units that this unit is transporting
+   */
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units

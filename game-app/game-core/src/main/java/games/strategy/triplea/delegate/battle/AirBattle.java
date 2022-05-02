@@ -897,10 +897,10 @@ public class AirBattle extends AbstractBattle {
         }
       }
     } else {
-      return territory.getUnitCollection().anyMatch(defendingAirMatch);
+      return territory.anyUnitsMatch(defendingAirMatch);
     }
     // should we check if the territory also has an air base?
-    return territory.getUnitCollection().anyMatch(defendingAirMatch)
+    return territory.anyUnitsMatch(defendingAirMatch)
         || data.getMap().getNeighbors(territory, maxScrambleDistance).stream()
             .anyMatch(Matches.territoryHasUnitsThatMatch(defendingAirMatch));
   }
