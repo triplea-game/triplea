@@ -58,7 +58,7 @@
 	</tr>
 	<tr>
 		<td><b>3</b></td>
-		<td>Run the Center Picker to save the centers.txt in the <b>viper</b> directory we made in Step No. 1</td>
+		<td>Run the Center Picker to save the centers.txt file in the <b>viper</b> directory we made in Step No. 1</td>
 	</tr>
 	<tr>
 		<td ><b>4</b></td>
