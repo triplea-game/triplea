@@ -766,9 +766,10 @@ public class MovePanel extends AbstractMovePanel {
       return List.of();
     }
 
-    // Just one transport, don't bother to ask
     if (candidateTransports.size() == 1) {
-      return ImmutableList.copyOf(unitsToUnload);
+      // Only one transport after filtering out incapable ones. Don't show a dialog but still run
+      // the unload algorithm to substitute units on incapable transports with ones on capable ones.
+      return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, candidateTransports);
     }
 
     // Are the transports all of the same type and if they are, then don't ask
@@ -780,7 +781,9 @@ public class MovePanel extends AbstractMovePanel {
                 .movement(true)
                 .build());
     if (categories.size() == 1) {
-      return ImmutableList.copyOf(unitsToUnload);
+      // All transports of the same type, don't show a dialog but still run the unload algorithm
+      // so that units on incapable transports are replaced with units on capable ones.
+      return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, candidateTransports);
     }
     sortTransportsToUnload(candidateTransports, route);
 
@@ -863,6 +866,14 @@ public class MovePanel extends AbstractMovePanel {
     }
     final Collection<Unit> chosenTransports =
         CollectionUtils.getMatches(chooser.getSelected(), Matches.unitIsTransport());
+    return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, chosenTransports);
+  }
+
+  private List<Unit> chooseUnitsToUnload(
+      final Route route,
+      final Collection<Unit> unitsToUnload,
+      final Collection<Unit> candidateUnits,
+      final Collection<Unit> chosenTransports) {
     final List<Unit> allUnitsInSelectedTransports = new ArrayList<>();
     for (final Unit transport : chosenTransports) {
       final Collection<Unit> transporting = transport.getTransporting();
@@ -1063,7 +1074,8 @@ public class MovePanel extends AbstractMovePanel {
             moveType,
             getUndoableMoves(),
             dependentUnits);
-    final var result = unitsFilter.filterUnitsThatCanMove(units);
+    Collection<Unit> candidateUnits = TransportUtils.chooseEquivalentUnitsToUnload(route, units);
+    final var result = unitsFilter.filterUnitsThatCanMove(candidateUnits);
     switch (result.getStatus()) {
       case NO_UNITS_CAN_MOVE:
         setStatusErrorMessage(result.getWarningOrErrorMessage().orElseThrow());
