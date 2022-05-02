@@ -2,7 +2,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'com.install4j.gradle' version '9.0.6'
-    id 'de.undercouch.download' version '5.0.4'
+    id 'de.undercouch.download' version '5.0.5'
 }
 
 archivesBaseName = "$group-$name"
@@ -15,8 +15,10 @@ ext {
 dependencies {
     implementation "org.pushing-pixels:radiance-substance:$substanceVersion"
     implementation project(":game-app:ai")
+    implementation project(":game-app:domain-data")
     implementation project(":game-app:game-core")
     implementation project(":game-app:map-data")
+    implementation project(":http-clients:lobby-client")
     implementation project(":lib:java-extras")
     implementation project(":lib:swing-lib")
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"

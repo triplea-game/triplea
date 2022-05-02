@@ -306,12 +306,11 @@ public class MoveValidator {
           }
           failureMessage = canPassThroughCanal(canalAttachment, unit, player);
           final boolean canPass = failureMessage.isEmpty();
-          if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
-                  && canPass)
-              || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
-                  && !canPass)) {
-            break; // If need to control any canal and can pass OR need to control all canals and
-            // can't pass
+          final boolean mustControlAllCanals =
+              Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
+          if (mustControlAllCanals != canPass) {
+            // If need to control any canal and can pass OR need to control all and can't pass.
+            break;
           }
         }
         if (failureMessage.isPresent()) {
@@ -363,11 +362,11 @@ public class MoveValidator {
       final Collection<Unit> unitsWithoutDependents =
           findNonDependentUnits(units, route, new HashMap<>());
       canPass = canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player).isEmpty();
-      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties()) && canPass)
-          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties())
-              && !canPass)) {
-        break; // If need to control any canal and can pass OR need to control all canals and can't
-        // pass
+      final boolean mustControlAllCanals =
+          Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
+      if (mustControlAllCanals != canPass) {
+        // If need to control any canal and can pass OR need to control all and can't pass.
+        break;
       }
     }
     return canPass;
@@ -1028,7 +1027,7 @@ public class MoveValidator {
     final Predicate<Unit> enemyDestroyer =
         Matches.unitIsDestroyer().and(Matches.enemyUnit(player, data.getRelationshipTracker()));
     return route.getMiddleSteps().stream()
-        .anyMatch(current -> current.getUnitCollection().anyMatch(enemyDestroyer));
+        .anyMatch(current -> current.anyUnitsMatch(enemyDestroyer));
   }
 
   private static boolean getEditMode(final GameProperties properties) {
@@ -1172,11 +1171,7 @@ public class MoveValidator {
       final GamePlayer player,
       final Map<Unit, Unit> unitsToTransports,
       final MoveValidationResult result) {
-    final boolean isEditMode = getEditMode(data.getProperties());
-    if (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir())) {
-      return result;
-    }
-    if (!route.hasWater()) {
+    if (!route.hasWater() || (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir()))) {
       return result;
     }
     // If there are non-sea transports return
@@ -1190,6 +1185,7 @@ public class MoveValidator {
     final Territory routeEnd = route.getEnd();
     final Territory routeStart = route.getStart();
     // if unloading make sure length of route is only 1
+    final boolean isEditMode = getEditMode(data.getProperties());
     if (!isEditMode && route.isUnload()) {
       if (route.hasMoreThenOneStep()) {
         return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
@@ -1246,8 +1242,8 @@ public class MoveValidator {
           }
         }
         // TODO This is very sensitive to the order of the transport collection. The users may need
-        // to modify the order
-        // in which they perform their actions. check whether transport has already unloaded
+        // to modify the order in which they perform their actions. check whether transport has
+        // already unloaded
         if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
           for (final Unit unit : transport.getTransporting()) {
             result.addDisallowedUnit(
@@ -1314,7 +1310,7 @@ public class MoveValidator {
             result.addDisallowedUnit("Transports cannot leave their units", unit);
           }
         }
-        // make sure units dont leave their transports behind
+        // make sure units don't leave their transports behind
         if (ua.getTransportCost() != -1) {
           final Unit transport = unit.getTransportedBy();
           if (transport != null && !units.contains(transport)) {
@@ -1331,7 +1327,7 @@ public class MoveValidator {
           Matches.enemyUnit(player, data.getRelationshipTracker())
               .and(Matches.unitIsSubmerged().negate());
       if (!Properties.getUnitsCanLoadInHostileSeaZones(data.getProperties())
-          && route.getEnd().getUnitCollection().anyMatch(enemyNonSubmerged)
+          && route.getEnd().anyUnitsMatch(enemyNonSubmerged)
           && nonParatroopersPresent(player, landAndAir)
           && !onlyIgnoredUnitsOnPath(route, player, false)
           && !AbstractMoveDelegate.getBattleTracker(data)

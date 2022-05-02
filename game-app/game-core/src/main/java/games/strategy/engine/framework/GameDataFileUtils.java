@@ -25,19 +25,6 @@ public final class GameDataFileUtils {
     return fileName + getExtension();
   }
 
-  /**
-   * Appends the game data file extension to the specified file name if the file name does not end
-   * with the game data file extension.
-   *
-   * @param fileName The file name.
-   * @return The file name ending with at most one occurrence of the game data file extension.
-   */
-  public static String addExtensionIfAbsent(final String fileName) {
-    checkNotNull(fileName);
-
-    return addExtensionIfAbsent(fileName, DEFAULT_IO_CASE);
-  }
-
   @VisibleForTesting
   static String addExtensionIfAbsent(final String fileName, final IOCase ioCase) {
     return ioCase.checkEndsWith(fileName, getExtension()) ? fileName : addExtension(fileName);
@@ -47,8 +34,7 @@ public final class GameDataFileUtils {
     final String legacyExtension = ".svg";
 
     // Macs download a game data file as "tsvg.gz", so that extension must be used when evaluating
-    // candidate game data
-    // files.
+    // candidate game data files.
     final String macOsAlternativeExtension = "tsvg.gz";
 
     return List.of(getExtension(), legacyExtension, macOsAlternativeExtension);

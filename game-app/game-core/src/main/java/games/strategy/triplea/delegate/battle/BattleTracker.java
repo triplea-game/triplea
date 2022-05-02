@@ -780,7 +780,7 @@ public class BattleTracker implements Serializable {
         newOwner = gamePlayer;
         for (final Territory current :
             TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap())) {
-          if (territory.equals(current) || current.getOwner().equals(GamePlayer.NULL_PLAYERID)) {
+          if (territory.equals(current) || current.isOwnedBy(GamePlayer.NULL_PLAYERID)) {
             // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
             newOwner = terrOrigOwner;
             break;
@@ -877,7 +877,7 @@ public class BattleTracker implements Serializable {
               Matches.isTerritoryAllied(terrOrigOwner, data.getRelationshipTracker()));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
-        if (item.getOwner().equals(terrOrigOwner)) {
+        if (item.isOwnedBy(terrOrigOwner)) {
           continue;
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
@@ -1415,7 +1415,8 @@ public class BattleTracker implements Serializable {
   public void fightBattleIfOnlyOne(final IDelegateBridge bridge) {
     final Collection<Territory> territories = getPendingBattleSites(false);
     if (territories.size() == 1) {
-      final IBattle battle = getPendingBattle(territories.iterator().next(), BattleType.NORMAL);
+      final IBattle battle =
+          getPendingBattle(CollectionUtils.getAny(territories), BattleType.NORMAL);
       battle.fight(bridge);
     }
   }

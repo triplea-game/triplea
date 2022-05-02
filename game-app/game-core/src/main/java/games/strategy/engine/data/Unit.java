@@ -3,13 +3,13 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -120,6 +120,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     owner = Optional.ofNullable(player).orElse(GamePlayer.NULL_PLAYERID);
   }
 
+  public final boolean isOwnedBy(final GamePlayer player) {
+    // Use getOwner() to allow test mocks to override that method.
+    return getOwner().equals(player);
+  }
+
   public boolean isEquivalent(final Unit unit) {
     return type != null
         && type.equals(unit.getType())
@@ -208,6 +213,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
     private UnitDeserializationErrorLazyMessage() {}
 
+    // false positive
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static void printError(final String errorMessage) {
       if (!shownError) {
         shownError = true;
@@ -402,12 +409,16 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return List.of();
   }
 
-  /** @return Unmodifiable collection of units in the territory that this unit is transporting */
+  /**
+   * @return Unmodifiable collection of units in the territory that this unit is transporting
+   */
   public List<Unit> getTransporting(final Territory territory) {
     return getTransporting(territory.getUnitCollection());
   }
 
-  /** @return Unmodifiable collection of a subset of the units that this unit is transporting */
+  /**
+   * @return Unmodifiable collection of a subset of the units that this unit is transporting
+   */
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
@@ -424,7 +435,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     if (unloaded == null || unloaded.isEmpty()) {
       this.unloaded = List.of();
     } else {
-      this.unloaded = new ArrayList<>(unloaded);
+      this.unloaded = ImmutableList.copyOf(unloaded);
     }
   }
 

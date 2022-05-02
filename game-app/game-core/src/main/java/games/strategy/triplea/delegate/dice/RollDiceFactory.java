@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.experimental.UtilityClass;
+import org.triplea.java.collections.CollectionUtils;
 
 @UtilityClass
 public class RollDiceFactory {
@@ -35,8 +36,8 @@ public class RollDiceFactory {
       final Territory battleSite,
       final CombatValue combatValueCalculator) {
 
-    final String typeAa = UnitAttachment.get(aaUnits.iterator().next().getType()).getTypeAa();
-    final GamePlayer player = aaUnits.iterator().next().getOwner();
+    final String typeAa = UnitAttachment.get(CollectionUtils.getAny(aaUnits).getType()).getTypeAa();
+    final GamePlayer player = CollectionUtils.getAny(aaUnits).getOwner();
     final String annotation =
         player.getName() + " roll " + typeAa + " dice in " + battleSite.getName();
 

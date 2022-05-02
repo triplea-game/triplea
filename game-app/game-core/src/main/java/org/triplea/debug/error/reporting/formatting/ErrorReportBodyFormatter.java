@@ -78,6 +78,7 @@ public class ErrorReportBodyFormatter {
                     }
                     return "Exception: "
                         + exception.getExceptionClassName()
+                        + " "
                         + Optional.ofNullable(exception.getExceptionMessage()).orElse("")
                         + "\n"
                         + outputStream.toString(StandardCharsets.UTF_8)

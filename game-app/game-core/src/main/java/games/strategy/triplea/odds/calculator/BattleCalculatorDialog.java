@@ -20,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
@@ -119,8 +120,7 @@ public class BattleCalculatorDialog extends JDialog {
     // with the most units in the selected territory.
     if (!currentPanel.hasAttackingUnitsAdded()
         && t.getUnitCollection().stream()
-            .filter(u -> u.getOwner() != null)
-            .noneMatch(u -> u.getOwner().equals(currentPanel.getAttacker()))) {
+            .noneMatch(Matches.unitIsOwnedBy(currentPanel.getAttacker()))) {
       // Find possible attackers (enemies) of the current defender.
       // Count how many units each one has and find the max.
       final List<Unit> units =
@@ -148,7 +148,7 @@ public class BattleCalculatorDialog extends JDialog {
     // select the defending side to match any unit in the current territory
     if (!currentDialog.panel.hasAttackingUnitsAdded()
         && !currentDialog.panel.hasDefendingUnitsAdded()) {
-      Optional.ofNullable(t.getUnitCollection().iterator().next())
+      Optional.ofNullable(CollectionUtils.getAny(t.getUnitCollection()))
           .map(Unit::getOwner)
           .ifPresent(currentDialog.panel::setDefender);
     }

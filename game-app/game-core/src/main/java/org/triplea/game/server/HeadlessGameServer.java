@@ -43,8 +43,8 @@ public class HeadlessGameServer {
 
   private final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-  private final HeadlessServerSetupPanelModel setupPanelModel =
-      new HeadlessServerSetupPanelModel(gameSelectorModel);
+  private final HeadlessServerSetupModel setupPanelModel =
+      new HeadlessServerSetupModel(gameSelectorModel);
   private ServerGame game = null;
   private boolean shutDown = false;
 
@@ -207,8 +207,7 @@ public class HeadlessGameServer {
   }
 
   private static synchronized boolean startHeadlessGame(
-      final HeadlessServerSetupPanelModel setupPanelModel,
-      final GameSelectorModel gameSelectorModel) {
+      final HeadlessServerSetupModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
     try {
       if (setupPanelModel != null
           && setupPanelModel.getPanel() != null
@@ -250,9 +249,9 @@ public class HeadlessGameServer {
     instance.waitForUsersHeadless();
   }
 
-  private static ServerModel getServerModel(final HeadlessServerSetupPanelModel setupPanelModel) {
+  private static ServerModel getServerModel(final HeadlessServerSetupModel setupPanelModel) {
     return Optional.ofNullable(setupPanelModel)
-        .map(HeadlessServerSetupPanelModel::getPanel)
+        .map(HeadlessServerSetupModel::getPanel)
         .map(HeadlessServerSetup::getModel)
         .orElse(null);
   }

@@ -215,10 +215,6 @@ public final class ProTransportUtils {
     return movedUnits;
   }
 
-  public static List<Unit> findBestUnitsToLandTransport(final Unit unit, final Territory t) {
-    return findBestUnitsToLandTransport(unit, t, new ArrayList<>());
-  }
-
   /**
    * Check if unit is can land transport and if there are any unused units that could be
    * transported.

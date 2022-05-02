@@ -24,10 +24,4 @@ public class FlagDrawMode {
     ClientSetting.unitFlagDrawMode.setValueAndFlush(drawMode);
     mapPanel.resetMap();
   }
-
-  /** Toggles to the next flag draw mode. */
-  static void toggleNextDrawMode(final MapPanel mapPanel) {
-    final var currentDrawMode = ClientSetting.unitFlagDrawMode.getValueOrThrow();
-    toggleDrawMode(currentDrawMode.nextDrawMode(), mapPanel);
-  }
 }

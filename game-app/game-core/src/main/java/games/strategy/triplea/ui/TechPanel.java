@@ -20,10 +20,10 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -40,11 +40,8 @@ import org.triplea.swing.SwingComponents;
 
 class TechPanel extends ActionPanel {
   private static final long serialVersionUID = -6477919141575138007L;
-  private final JLabel actionLabel = new JLabel();
   private TechRoll techRoll;
   private int currTokens = 0;
-  private int quantity;
-  private IntegerMap<GamePlayer> whoPaysHowMuch = null;
 
   private final Action getTechRollsAction =
       SwingAction.of(
@@ -167,9 +164,9 @@ class TechPanel extends ActionPanel {
             if (choice != JOptionPane.OK_OPTION) {
               return;
             }
-            quantity = techTokenPanel.getValue();
-            whoPaysHowMuch = techTokenPanel.getWhoPaysHowMuch();
+            final int quantity = techTokenPanel.getValue();
             currTokens += quantity;
+            final IntegerMap<GamePlayer> whoPaysHowMuch = techTokenPanel.getWhoPaysHowMuch();
             techRoll = new TechRoll(category, currTokens, quantity, whoPaysHowMuch);
             techRoll.setNewTokens(quantity);
             release();
@@ -290,24 +287,15 @@ class TechPanel extends ActionPanel {
     if (techList.size() <= 1) {
       return null;
     }
-    final Collection<TechAdvance> listedAlready = new HashSet<>();
-    final StringBuilder strTechCategory = new StringBuilder("Available Techs:  ");
-    final Iterator<TechAdvance> iterTechList = techList.iterator();
-    while (iterTechList.hasNext()) {
-      final TechAdvance advance = iterTechList.next();
-      if (listedAlready.contains(advance)) {
-        continue;
-      }
-      listedAlready.add(advance);
-      final int freq = Collections.frequency(techList, advance);
-      strTechCategory
-          .append(advance.getName())
-          .append(freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
-      if (iterTechList.hasNext()) {
-        strTechCategory.append(", ");
-      }
-    }
-    return strTechCategory.toString();
+    return techList.stream()
+        .distinct()
+        .map(
+            advance -> {
+              final int freq = Collections.frequency(techList, advance);
+              return advance.getName()
+                  + (freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
+            })
+        .collect(Collectors.joining(", "));
   }
 
   private static final class TechRollPanel extends JPanel {
@@ -407,7 +395,7 @@ class TechPanel extends ActionPanel {
     final JLabel right = new JLabel();
     final JLabel totalCost = new JLabel();
     final ScrollableTextField textField;
-    Map<GamePlayer, ScrollableTextField> whoPaysTextFields = null;
+    final Map<GamePlayer, ScrollableTextField> whoPaysTextFields = new HashMap<>();
 
     TechTokenPanel(
         final int pus,
@@ -525,9 +513,6 @@ class TechPanel extends ActionPanel {
               0,
               0));
       if (helpPay != null && !helpPay.isEmpty()) {
-        if (whoPaysTextFields == null) {
-          whoPaysTextFields = new HashMap<>();
-        }
         helpPay.remove(player);
         int row = 4;
         add(
@@ -644,7 +629,7 @@ class TechPanel extends ActionPanel {
     }
 
     private void setWidgetActivation() {
-      if (whoPaysTextFields == null || whoPaysTextFields.isEmpty()) {
+      if (whoPaysTextFields.isEmpty()) {
         return;
       }
       final int cost = TechTracker.getTechCost(player) * textField.getValue();
@@ -710,7 +695,7 @@ class TechPanel extends ActionPanel {
       final int numberOfTechRolls = getValue();
       final int totalCost = numberOfTechRolls * techCost;
       final IntegerMap<GamePlayer> whoPaysHowMuch = new IntegerMap<>();
-      if (whoPaysTextFields == null || whoPaysTextFields.isEmpty()) {
+      if (whoPaysTextFields.isEmpty()) {
         whoPaysHowMuch.put(player, totalCost);
       } else {
         int runningTotal = 0;

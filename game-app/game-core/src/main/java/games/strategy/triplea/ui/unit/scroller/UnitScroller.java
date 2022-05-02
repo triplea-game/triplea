@@ -12,7 +12,6 @@ import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -228,9 +227,11 @@ public class UnitScroller {
   }
 
   /** Constructs a UI component for the UnitScroller. */
-  public Component build() {
+  public CollapsiblePanel build() {
     final JPanel panel = new JPanel();
-    collapsiblePanel = new CollapsiblePanel(panel, "");
+    collapsiblePanel =
+        new CollapsiblePanel(panel, "", ClientSetting.unitScrollerCollapsed::setValueAndFlush);
+    collapsiblePanel.setCollapsed(ClientSetting.unitScrollerCollapsed.getValueOrThrow());
     updateMovesLeft();
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

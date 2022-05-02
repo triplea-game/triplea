@@ -4,8 +4,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacOsIntegration;
@@ -14,6 +14,7 @@ import games.strategy.triplea.ui.history.HistoryLog;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.nio.file.Path;
+import java.util.Optional;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -51,9 +52,9 @@ final class FileMenu extends JMenu {
         .accelerator(KeyCode.S)
         .actionListener(
             () -> {
-              final Path f = SaveGameFileChooser.getSaveGameLocation(frame, gameData);
-              if (f != null) {
-                game.saveGame(f);
+              final Optional<Path> f = GameFileSelector.getSaveGameLocation(frame, gameData);
+              if (f.isPresent()) {
+                game.saveGame(f.get());
                 JOptionPane.showMessageDialog(
                     frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
               }

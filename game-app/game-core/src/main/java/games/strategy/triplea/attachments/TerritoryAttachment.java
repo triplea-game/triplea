@@ -31,6 +31,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.triplea.java.collections.CollectionUtils;
 
 /** An attachment for instances of {@link Territory}. */
 public class TerritoryAttachment extends DefaultAttachment {
@@ -100,10 +101,10 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
     }
     if (!capitals.isEmpty()) {
-      return capitals.iterator().next();
+      return CollectionUtils.getAny(capitals);
     }
     if (!noNeighborCapitals.isEmpty()) {
-      return noNeighborCapitals.iterator().next();
+      return CollectionUtils.getAny(noNeighborCapitals);
     }
     // Added check for optional players- no error thrown for them
     if (player.getOptional()) {
@@ -536,6 +537,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     convoyAttached = new HashSet<>();
   }
 
+  public static boolean hasNavalBase(final Territory t) {
+    final TerritoryAttachment ta = TerritoryAttachment.get(t);
+    return ta != null && ta.getNavalBase();
+  }
+
   private void setNavalBase(final String value) {
     navalBase = getBool(value);
   }
@@ -550,6 +556,11 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   private void resetNavalBase() {
     navalBase = false;
+  }
+
+  public static boolean hasAirBase(final Territory t) {
+    final TerritoryAttachment ta = TerritoryAttachment.get(t);
+    return ta != null && ta.getAirBase();
   }
 
   private void setAirBase(final String value) {
@@ -735,7 +746,7 @@ public class TerritoryAttachment extends DefaultAttachment {
               .append(
                   resources.toStringForHtml().replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {
-          sb.append(resources.toString());
+          sb.append(resources);
         }
         sb.append(br);
       }

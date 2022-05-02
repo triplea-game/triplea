@@ -115,8 +115,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   private Set<Territory> getNeighbors(
       final Territory territory, final BiPredicate<Territory, Territory> routeCondition) {
-
-    return connections.getOrDefault(territory, Set.of()).parallelStream()
+    return connections.get(territory).stream()
         .filter(n -> routeCondition.test(territory, n))
         .collect(Collectors.toSet());
   }
@@ -266,10 +265,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighborsByMovementCost(
       final Territory territory,
-      final Unit unit,
       final BigDecimal movementLeft,
       final Predicate<Territory> territoryCondition) {
-    checkNotNull(unit);
     checkArgument(
         movementLeft.compareTo(BigDecimal.ZERO) >= 0,
         "MovementLeft must be non-negative: " + movementLeft);
@@ -469,7 +466,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   public List<Territory> getTerritoriesOwnedBy(final GamePlayer player) {
     return territories.stream()
-        .filter(t -> t.getOwner().equals(player))
+        .filter(Matches.isTerritoryOwnedBy(player))
         .collect(Collectors.toList());
   }
 

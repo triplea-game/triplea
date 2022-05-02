@@ -12,7 +12,7 @@ public class CliProperties {
   public static final String LOBBY_URI = "triplea.lobby.uri";
   public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
   public static final String MAP_FOLDER = "triplea.map.folder";
-  static final String TRIPLEA_MAP_DOWNLOAD = "triplea.map.download";
+  public static final String TRIPLEA_MAP_DOWNLOAD = "triplea.map.download";
 
   private CliProperties() {}
 }

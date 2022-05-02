@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,12 +56,11 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   public int getUnitCount(final UnitType type, final GamePlayer owner) {
-    return (int)
-        units.stream().filter(u -> u.getType().equals(type) && u.getOwner().equals(owner)).count();
+    return (int) units.stream().filter(u -> u.getType().equals(type) && u.isOwnedBy(owner)).count();
   }
 
   int getUnitCount(final GamePlayer owner) {
-    return (int) units.stream().filter(u -> u.getOwner().equals(owner)).count();
+    return (int) units.stream().filter(u -> u.isOwnedBy(owner)).count();
   }
 
   @Override
@@ -133,7 +133,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   public IntegerMap<UnitType> getUnitsByType(final GamePlayer gamePlayer) {
     final IntegerMap<UnitType> count = new IntegerMap<>();
     units.stream()
-        .filter(unit -> unit.getOwner().equals(gamePlayer))
+        .filter(Matches.unitIsOwnedBy(gamePlayer))
         .forEach(unit -> count.add(unit.getType(), 1));
     return count;
   }

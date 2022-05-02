@@ -124,8 +124,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   // aa related
   // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa
-  // related setters. Must
-  // keep.
+  // related setters. Must keep.
   private boolean isAaForCombatOnly = false;
   private boolean isAaForBombingThisUnitOnly = false;
   private boolean isAaForFlyOverOnly = false;
@@ -175,8 +174,7 @@ public class UnitAttachment extends DefaultAttachment {
   private int hitPoints = 1;
   private boolean canBeDamaged = false;
   // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the
-  // territory value
-  // they are in, of damage.
+  // territory value they are in, of damage.
   private int maxDamage = 2;
   // -1 if can't be disabled
   private int maxOperationalDamage = -1;
@@ -193,8 +191,7 @@ public class UnitAttachment extends DefaultAttachment {
   // -1 means anywhere
   private int canOnlyBePlacedInTerritoryValuedAtX = -1;
   // multiple colon delimited lists of the unit combos required for this unit to be built somewhere.
-  // (units must be in
-  // same territory, owned by player, not be disabled)
+  // (units must be in the same territory, owned by player, not be disabled)
   private List<String[]> requiresUnits = new ArrayList<>();
   private IntegerMap<UnitType> consumesUnits = new IntegerMap<>();
   // multiple colon delimited lists of the unit combos required for
@@ -226,8 +223,7 @@ public class UnitAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> givesMovement = new IntegerMap<>();
   private List<Tuple<String, GamePlayer>> destroyedWhenCapturedBy = new ArrayList<>();
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create
-  // destroyedWhenCapturedBy with a
-  // specific list
+  // destroyedWhenCapturedBy with a specific list
   private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsDamagedChangesInto = new HashMap<>();
   private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsRepairedChangesInto = new HashMap<>();
   private Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto =
@@ -265,13 +261,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
-    final Collection<UnitType> types = new ArrayList<>();
-    for (final Unit u : units) {
-      if (!types.contains(u.getType())) {
-        types.add(u.getType());
-      }
-    }
-    return types;
+    return units.stream().map(Unit::getType).collect(Collectors.toSet());
   }
 
   private void setCanIntercept(final String value) {
@@ -352,16 +342,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAirDefense(final GamePlayer player) {
-
-    return (Math.min(
-        getData().getDiceSides(),
-        Math.max(
-            0,
-            airDefense
-                + TechAbilityAttachment.getAirDefenseBonus(
-                    (UnitType) this.getAttachedTo(),
-                    TechTracker.getCurrentTechAdvances(
-                        player, getData().getTechnologyFrontier())))));
+    final int bonus =
+        TechAbilityAttachment.getAirDefenseBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    return Math.min(getData().getDiceSides(), Math.max(0, airDefense + bonus));
   }
 
   private void resetAirDefense() {
@@ -382,16 +367,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAirAttack(final GamePlayer player) {
-
-    return (Math.min(
-        getData().getDiceSides(),
-        Math.max(
-            0,
-            airAttack
-                + TechAbilityAttachment.getAirAttackBonus(
-                    (UnitType) this.getAttachedTo(),
-                    TechTracker.getCurrentTechAdvances(
-                        player, getData().getTechnologyFrontier())))));
+    final int bonus =
+        TechAbilityAttachment.getAirAttackBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    return Math.min(getData().getDiceSides(), Math.max(0, airAttack + bonus));
   }
 
   private void resetAirAttack() {
@@ -1550,13 +1530,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getMovement(final GamePlayer player) {
-
-    return Math.max(
-        0,
-        movement
-            + TechAbilityAttachment.getMovementBonus(
-                (UnitType) this.getAttachedTo(),
-                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier())));
+    final int bonus =
+        TechAbilityAttachment.getMovementBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    return Math.max(0, movement + bonus);
   }
 
   private void resetMovement() {
@@ -1578,12 +1556,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttack(final GamePlayer player) {
-    final int attackValue =
-        attack
-            + TechAbilityAttachment.getAttackBonus(
-                (UnitType) this.getAttachedTo(),
-                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
-    return Math.min(getData().getDiceSides(), Math.max(0, attackValue));
+    final int bonus =
+        TechAbilityAttachment.getAttackBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    return Math.min(getData().getDiceSides(), Math.max(0, attack + bonus));
   }
 
   private void resetAttack() {
@@ -1605,13 +1582,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttackRolls(final GamePlayer player) {
-
-    return Math.max(
-        0,
-        attackRolls
-            + TechAbilityAttachment.getAttackRollsBonus(
-                (UnitType) this.getAttachedTo(),
-                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier())));
+    final int bonus =
+        TechAbilityAttachment.getAttackRollsBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    return Math.max(0, attackRolls + bonus);
   }
 
   private void resetAttackRolls() {
@@ -1633,14 +1608,14 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getDefense(final GamePlayer player) {
-    int defenseValue =
-        defense
-            + TechAbilityAttachment.getDefenseBonus(
-                (UnitType) this.getAttachedTo(),
-                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    final int bonus =
+        TechAbilityAttachment.getDefenseBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    int defenseValue = defense + bonus;
     if (defenseValue > 0 && getIsFirstStrike() && TechTracker.hasSuperSubs(player)) {
-      final int bonus = Properties.getSuperSubDefenseBonus(getData().getProperties());
-      defenseValue += bonus;
+      final int superSubBonus = Properties.getSuperSubDefenseBonus(getData().getProperties());
+      defenseValue += superSubBonus;
     }
     return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
   }
@@ -1664,12 +1639,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getDefenseRolls(final GamePlayer player) {
-    return Math.max(
-        0,
-        defenseRolls
-            + TechAbilityAttachment.getDefenseRollsBonus(
-                (UnitType) this.getAttachedTo(),
-                TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier())));
+    final int bonus =
+        TechAbilityAttachment.getDefenseRollsBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    return Math.max(0, defenseRolls + bonus);
   }
 
   private void resetDefenseRolls() {
@@ -1976,21 +1950,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setConsumesUnits(final String value) throws GameParseException {
-    final String[] s = splitOnColon(value);
-    if (s.length != 2) {
-      throw new GameParseException("consumesUnits must have two fields" + thisErrorMsg());
-    }
-    final String unitTypeToProduce = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
-    }
-    final int n = getInt(s[0]);
-    if (n < 1) {
-      throw new GameParseException("consumesUnits must have positive values" + thisErrorMsg());
-    }
-    consumesUnits.put(ut, n);
+    addToUnitTypeMap("consumesUnits", consumesUnits, value, 1);
   }
 
   private void setConsumesUnits(final IntegerMap<UnitType> value) {
@@ -2006,23 +1966,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCreatesUnitsList(final String value) throws GameParseException {
-    final String[] s = splitOnColon(value);
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException(
-          "createsUnitsList cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitTypeToProduce = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-    if (ut == null) {
-      throw new GameParseException(
-          "createsUnitsList: No unit called:" + unitTypeToProduce + thisErrorMsg());
-    }
-    final int n = getInt(s[0]);
-    if (n < 0) {
-      throw new GameParseException("createsUnitsList cannot have negative values" + thisErrorMsg());
-    }
-    createsUnitsList.put(ut, n);
+    addToUnitTypeMap("createsUnitsList", createsUnitsList, value, 0);
   }
 
   private void setCreatesUnitsList(final IntegerMap<UnitType> value) {
@@ -2037,21 +1981,30 @@ public class UnitAttachment extends DefaultAttachment {
     createsUnitsList = new IntegerMap<>();
   }
 
-  private void setCreatesResourcesList(final String value) throws GameParseException {
+  private void addToUnitTypeMap(
+      String description, IntegerMap<UnitType> utMap, String value, int minValue)
+      throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException(
-          "createsResourcesList cannot be empty or have more than two fields" + thisErrorMsg());
+          description + " cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String resourceToProduce = s[1];
-    // validate that this resource exists in the xml
-    final Resource r = getData().getResourceList().getResource(resourceToProduce);
-    if (r == null) {
+    final String unitTypeToProduce = s[1];
+    // validate that this unit exists in the xml
+    final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
+    if (ut == null) {
       throw new GameParseException(
-          "createsResourcesList: No resource called:" + resourceToProduce + thisErrorMsg());
+          description + ": No unit called:" + unitTypeToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
-    createsResourcesList.put(r, n);
+    if (n < minValue) {
+      throw new GameParseException(description + " value must be >= " + minValue + thisErrorMsg());
+    }
+    utMap.put(ut, n);
+  }
+
+  private void setCreatesResourcesList(final String value) throws GameParseException {
+    addToResourceMap("createsResourcesList", createsResourcesList, value, true);
   }
 
   private void setCreatesResourcesList(final IntegerMap<Resource> value) {
@@ -2067,22 +2020,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setFuelCost(final String value) throws GameParseException {
-    final String[] s = splitOnColon(value);
-    if (s.length != 2) {
-      throw new GameParseException("fuelCost must have two fields" + thisErrorMsg());
-    }
-    final String resourceToProduce = s[1];
-    // validate that this resource exists in the xml
-    final Resource r = getData().getResourceList().getResource(resourceToProduce);
-    if (r == null) {
-      throw new GameParseException(
-          "fuelCost: No resource called:" + resourceToProduce + thisErrorMsg());
-    }
-    final int n = getInt(s[0]);
-    if (n < 0) {
-      throw new GameParseException("fuelCost must have positive values" + thisErrorMsg());
-    }
-    fuelCost.put(r, n);
+    addToResourceMap("fuelCost", fuelCost, value, false);
   }
 
   private void setFuelCost(final IntegerMap<Resource> value) {
@@ -2098,22 +2036,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setFuelFlatCost(final String value) throws GameParseException {
-    final String[] s = splitOnColon(value);
-    if (s.length != 2) {
-      throw new GameParseException("fuelFlatCost must have two fields" + thisErrorMsg());
-    }
-    final String resourceToProduce = s[1];
-    // validate that this resource exists in the xml
-    final Resource r = getData().getResourceList().getResource(resourceToProduce);
-    if (r == null) {
-      throw new GameParseException(
-          "fuelFlatCost: No resource called:" + resourceToProduce + thisErrorMsg());
-    }
-    final int n = getInt(s[0]);
-    if (n < 0) {
-      throw new GameParseException("fuelFlatCost must have positive values" + thisErrorMsg());
-    }
-    fuelFlatCost.put(r, n);
+    addToResourceMap("fuelFlatCost", fuelFlatCost, value, false);
   }
 
   private void setFuelFlatCost(final IntegerMap<Resource> value) {
@@ -2126,6 +2049,27 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void resetFuelFlatCost() {
     fuelFlatCost = new IntegerMap<>();
+  }
+
+  private void addToResourceMap(
+      String description, IntegerMap<Resource> resourceMap, String value, boolean allowNegative)
+      throws GameParseException {
+    final String[] s = splitOnColon(value);
+    if (s.length != 2) {
+      throw new GameParseException(description + " must have two fields" + thisErrorMsg());
+    }
+    final String resourceToProduce = s[1];
+    // validate that this resource exists in the xml
+    final Resource r = getData().getResourceList().getResource(resourceToProduce);
+    if (r == null) {
+      throw new GameParseException(
+          description + ": No resource called:" + resourceToProduce + thisErrorMsg());
+    }
+    final int n = getInt(s[0]);
+    if (!allowNegative && n < 0) {
+      throw new GameParseException(description + " must have positive values" + thisErrorMsg());
+    }
+    resourceMap.put(r, n);
   }
 
   private void setBombingBonus(final String s) {
@@ -2190,7 +2134,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (bombingTargets != null) {
       return bombingTargets;
     }
-    return new HashSet<>(unitTypeList.getAllUnitTypes());
+    return unitTypeList.getAllUnitTypes();
   }
 
   private void resetBombingTargets() {
@@ -2207,9 +2151,7 @@ public class UnitAttachment extends DefaultAttachment {
     for (final Unit u : bombersOrRockets) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       final Set<UnitType> bombingTargets = ua.getBombingTargets(unitTypeList);
-      if (bombingTargets != null) {
-        allowedTargets = CollectionUtils.intersection(allowedTargets, bombingTargets);
-      }
+      allowedTargets = CollectionUtils.intersection(allowedTargets, bombingTargets);
     }
     return new HashSet<>(allowedTargets);
   }
@@ -2243,18 +2185,12 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getAttackAa(final GamePlayer player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something
-    // other than 6, or it
-    // does not divide perfectly into attackAAmaxDieSides
-
-    return Math.max(
-        0,
-        Math.min(
-            getAttackAaMaxDieSides(),
-            attackAa
-                + TechAbilityAttachment.getRadarBonus(
-                    (UnitType) this.getAttachedTo(),
-                    TechTracker.getCurrentTechAdvances(
-                        player, getData().getTechnologyFrontier()))));
+    // other than 6, or it does not divide perfectly into attackAAmaxDieSides
+    int bonus =
+        TechAbilityAttachment.getRadarBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    return Math.max(0, Math.min(getAttackAaMaxDieSides(), attackAa + bonus));
   }
 
   private void resetAttackAa() {
@@ -2277,18 +2213,12 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getOffensiveAttackAa(final GamePlayer player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something
-    // other than 6, or it
-    // does not divide perfectly into attackAAmaxDieSides
-
-    return Math.max(
-        0,
-        Math.min(
-            getOffensiveAttackAaMaxDieSides(),
-            offensiveAttackAa
-                + TechAbilityAttachment.getRadarBonus(
-                    (UnitType) this.getAttachedTo(),
-                    TechTracker.getCurrentTechAdvances(
-                        player, getData().getTechnologyFrontier()))));
+    // other than 6, or it does not divide perfectly into attackAAmaxDieSides
+    int bonus =
+        TechAbilityAttachment.getRadarBonus(
+            (UnitType) this.getAttachedTo(),
+            TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier()));
+    return Math.max(0, Math.min(getOffensiveAttackAaMaxDieSides(), offensiveAttackAa + bonus));
   }
 
   private void resetOffensiveAttackAa() {
@@ -3541,7 +3471,7 @@ public class UnitAttachment extends DefaultAttachment {
 
     if (getConsumesUnits() != null && getConsumesUnits().totalValues() == 1) {
       formatter.append(
-          "Unit is an Upgrade Of", getConsumesUnits().keySet().iterator().next().getName());
+          "Unit is an Upgrade Of", CollectionUtils.getAny(getConsumesUnits().keySet()).getName());
     } else if (getConsumesUnits() != null && getConsumesUnits().totalValues() > 0) {
       if (getConsumesUnits().size() <= 4) {
         formatter.append(

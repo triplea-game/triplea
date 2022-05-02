@@ -178,6 +178,10 @@ public class UnitCategory implements Comparable<UnitCategory> {
     return owner;
   }
 
+  public boolean isOwnedBy(GamePlayer player) {
+    return owner.equals(player);
+  }
+
   public void addUnit(final Unit unit) {
     units.add(unit);
   }

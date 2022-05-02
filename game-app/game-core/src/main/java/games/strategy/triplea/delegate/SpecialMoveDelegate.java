@@ -335,7 +335,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
 
   private static Predicate<Unit> getAirborneMatch(
       final Set<UnitType> types, final Collection<GamePlayer> unitOwners) {
-    return Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners)
+    return Matches.unitIsOwnedByAnyOf(unitOwners)
         .and(Matches.unitIsOfTypes(types))
         .and(Matches.unitIsNotDisabled())
         .and(Matches.unitHasNotMoved())

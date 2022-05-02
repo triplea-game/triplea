@@ -118,15 +118,14 @@ public final class ContentDownloader implements CloseableDownloader {
             uri,
             e.getStatusCode(),
             e.getMessage());
-        return Optional.empty();
       } else {
         log.warn(
             "Check internet connection. Error downloading: {}, status: {}, error: {}",
             uri,
             e.getStatusCode(),
             e.getMessage());
-        return Optional.empty();
       }
+      return Optional.empty();
     }
   }
 

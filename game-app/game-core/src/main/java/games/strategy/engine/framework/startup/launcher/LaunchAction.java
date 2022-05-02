@@ -6,11 +6,17 @@ import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.startup.WatcherThreadMessaging;
+import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
+import games.strategy.net.Messengers;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.Set;
+import org.triplea.game.chat.ChatModel;
 import org.triplea.sound.ISound;
 
 /**
@@ -33,4 +39,14 @@ public interface LaunchAction {
   void onLaunch(ServerGame serverGame);
 
   AutoSaveFileUtils getAutoSaveFileUtils();
+
+  ChatModel createChatModel(String chatName, Messengers messengers);
+
+  PlayerTypes.Type getDefaultPlayerType();
+
+  WatcherThreadMessaging createThreadMessaging();
+
+  Optional<ServerConnectionProps> getFallbackConnection(Runnable cancelAction);
+
+  void handleError(String error);
 }

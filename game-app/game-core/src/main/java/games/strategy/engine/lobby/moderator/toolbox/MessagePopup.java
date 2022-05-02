@@ -4,7 +4,6 @@ import java.time.Duration;
 import javax.swing.JFrame;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.Toast;
 
 /**
@@ -20,13 +19,5 @@ public final class MessagePopup {
         .sleepTime(Duration.ofMillis(350))
         .build()
         .showToast();
-  }
-
-  public static void showServerError(final RuntimeException e) {
-    SwingComponents.showDialog(
-        "Server Error",
-        "Http server operation failed. Report this to TripleA support if it keeps happening."
-            + " Error:\n"
-            + e.getMessage());
   }
 }

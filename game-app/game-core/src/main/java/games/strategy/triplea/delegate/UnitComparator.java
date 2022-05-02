@@ -12,13 +12,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.experimental.UtilityClass;
 
 /** A collection of comparators for sorting units based on various heuristics. */
+@UtilityClass
 public final class UnitComparator {
-  private UnitComparator() {}
 
   public static Comparator<Unit> getLowestToHighestMovementComparator() {
-    return Comparator.comparing(Unit::getMovementLeft);
+    final Map<Unit, BigDecimal> cache = new HashMap<>();
+    return Comparator.comparing(u -> cache.computeIfAbsent(u, Unit::getMovementLeft));
   }
 
   public static Comparator<Unit> getHighestToLowestMovementComparator() {
@@ -67,11 +69,12 @@ public final class UnitComparator {
   /** Return a Comparator that will order the specified units in preferred move order. */
   public static Comparator<Unit> getMovableUnitsComparator(
       final List<Unit> units, final Route route) {
+    final Map<Unit, BigDecimal> cache = new HashMap<>();
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator();
     return (u1, u2) -> {
       // Ensure units have enough movement
-      final BigDecimal left1 = u1.getMovementLeft();
-      final BigDecimal left2 = u2.getMovementLeft();
+      final BigDecimal left1 = cache.computeIfAbsent(u1, Unit::getMovementLeft);
+      final BigDecimal left2 = cache.computeIfAbsent(u2, Unit::getMovementLeft);
       if (route != null) {
         if (left1.compareTo(route.getMovementCost(u1)) >= 0
             && left2.compareTo(route.getMovementCost(u2)) < 0) {

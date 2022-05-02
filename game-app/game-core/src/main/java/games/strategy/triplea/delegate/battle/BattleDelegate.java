@@ -61,6 +61,8 @@ import org.triplea.util.Tuple;
 /** Delegate to track and fight all battles. */
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate {
+  private static final String MUST_COMPLETE_BATTLE_PREFIX = "Must complete ";
+
   private BattleTracker battleTracker = new BattleTracker();
   private boolean needToInitialize = true;
   private boolean needToScramble = true;
@@ -236,17 +238,21 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // are there battles that must occur first
     final Collection<IBattle> allMustPrecede = battleTracker.getDependentOn(battle);
     if (!allMustPrecede.isEmpty()) {
-      final IBattle firstPrecede = allMustPrecede.iterator().next();
+      final IBattle firstPrecede = CollectionUtils.getAny(allMustPrecede);
       final String name = firstPrecede.getTerritory().getName();
-      return "Must complete " + getFightingWord(firstPrecede) + " in " + name + " first";
+      return MUST_COMPLETE_BATTLE_PREFIX + getFightingWord(firstPrecede) + " in " + name + " first";
     }
     currentBattle = battle;
     battle.fight(bridge);
     return null;
   }
 
+  public static boolean isBattleDependencyErrorMessage(String message) {
+    return message.startsWith(MUST_COMPLETE_BATTLE_PREFIX);
+  }
+
   private static String getFightingWord(final IBattle battle) {
-    return battle.getBattleType().toString();
+    return battle.getBattleType().toDisplayText();
   }
 
   @Override
@@ -342,8 +348,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private IBattle selectBombardingBattle(
       final Unit u, final Territory unitTerritory, final Collection<IBattle> battles) {
     // If only one battle to select from just return that battle
-    if ((battles.size() == 1)) {
-      return battles.iterator().next();
+    if (battles.size() == 1) {
+      return CollectionUtils.getAny(battles);
     }
     final List<Territory> territories = new ArrayList<>();
     final Map<Territory, IBattle> battleTerritories = new HashMap<>();
@@ -960,7 +966,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                             + "): "
                             + MyFormatter.unitsToText(List.of(u)));
           } else if (possible.size() == 1) {
-            landingTerr = possible.iterator().next();
+            landingTerr = CollectionUtils.getAny(possible);
           }
           if (landingTerr == null || landingTerr.equals(t)) {
             carrierCostOfCurrentTerr += AirMovementValidator.carrierCost(List.of(u));
@@ -1103,7 +1109,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                           + MyFormatter.unitsToText(defendingAir));
           // added for test script
           if (territory == null) {
-            territory = canLandHere.iterator().next();
+            territory = CollectionUtils.getAny(canLandHere);
           }
           if (territory.isWater()) {
             landPlanesOnCarriers(
@@ -1123,7 +1129,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
         // Land in the last remaining territory
         if (!canLandHere.isEmpty() && !defendingAir.isEmpty()) {
-          territory = canLandHere.iterator().next();
+          territory = CollectionUtils.getAny(canLandHere);
           if (territory.isWater()) {
             landPlanesOnCarriers(
                 bridge,
@@ -1519,7 +1525,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         data.getMap()
             .getNeighborsByMovementCost(
                 currentTerr,
-                strandedAir,
                 new BigDecimal(maxDistance),
                 Matches.airCanFlyOver(
                     alliedPlayer,

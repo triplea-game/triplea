@@ -40,10 +40,9 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     if (to.isWater()) {
       if (units.stream().anyMatch(Matches.unitIsLand())) {
         return "Cant place land units at sea";
-      } else if (to.getUnitCollection()
-          .anyMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
+      } else if (to.anyUnitsMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
         return "Cant place in sea zone containing enemy units";
-      } else if (!to.getUnitCollection().anyMatch(Matches.unitIsOwnedBy(player))) {
+      } else if (!to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
         return "Cant place in sea zone that does not contain a unit owned by you";
       } else {
         return null;
@@ -53,15 +52,13 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     // we can place on territories we own
     if (units.stream().anyMatch(Matches.unitIsSea())) {
       return "Cant place sea units on land";
-    } else if (to.getOwner() == null) {
-      return "You dont own " + to.getName();
-    } else if (!to.getOwner().equals(player)) {
+    } else if (!to.isOwnedBy(player)) {
       final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
       if (pa != null
           && pa.getGiveUnitControl() != null
           && pa.getGiveUnitControl().contains(player)) {
         return null;
-      } else if (to.getUnitCollection().anyMatch(Matches.unitIsOwnedBy(player))) {
+      } else if (to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
         return null;
       }
       return "You dont own " + to.getName();

@@ -69,10 +69,10 @@ public class PlayerUnitsPanel extends JPanel {
 
     categories.sort(
         (c1, c2) -> {
-          if (!c1.getOwner().equals(c2.getOwner())) {
-            if (c1.getOwner().equals(gamePlayer)) {
+          if (!c1.isOwnedBy(c2.getOwner())) {
+            if (c1.isOwnedBy(gamePlayer)) {
               return -1;
-            } else if (c2.getOwner().equals(gamePlayer)) {
+            } else if (c2.isOwnedBy(gamePlayer)) {
               return 1;
             } else {
               return c1.getOwner().getName().compareTo(c2.getOwner().getName());
@@ -130,7 +130,7 @@ public class PlayerUnitsPanel extends JPanel {
     JPanel panel = null;
     for (final UnitCategory category : categories) {
       if (predicate.test(category.getType())) {
-        if (!category.getOwner().equals(previousPlayer)) {
+        if (!category.isOwnedBy(previousPlayer)) {
           panel = new JPanel();
           panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
           panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
@@ -209,7 +209,7 @@ public class PlayerUnitsPanel extends JPanel {
     }
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {
-        if (u.getOwner().equals(player)) {
+        if (u.isOwnedBy(player)) {
           unitTypes.add(u.getType());
         }
       }

@@ -4,14 +4,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class for verifying toolbox tab data. Notably most tabs have table-like views and this
  * class provides utility support for it.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class ToolboxTabModelTestUtil {
   /**
    * Given a set of table data, verifies that the values at a given row match a set of expected

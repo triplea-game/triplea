@@ -418,7 +418,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
               currTerritory
                   .getUnitCollection()
                   .getMatches(
-                      Matches.unitOwnedBy(player)
+                      Matches.unitIsOwnedBy(player)
                           .and(Matches.unitCanBeGivenByTerritoryTo(newOwner)));
           if (!units.isEmpty()) {
             change.add(ChangeFactory.changeOwner(units, newOwner, currTerritory));
@@ -429,7 +429,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     }
     if (!change.isEmpty() && !changeList.isEmpty()) {
       if (changeList.size() == 1) {
-        final Tuple<Territory, Collection<Unit>> tuple = changeList.iterator().next();
+        final Tuple<Territory, Collection<Unit>> tuple = CollectionUtils.getAny(changeList);
         bridge
             .getHistoryWriter()
             .startEvent(
@@ -541,7 +541,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
               bridge.getRandom(
                   CONVOY_BLOCKADE_DICE_SIDES,
                   numberOfDice,
-                  enemies.iterator().next().getOwner(),
+                  CollectionUtils.getAny(enemies).getOwner(),
                   DiceType.BOMBING,
                   transcript);
           transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));

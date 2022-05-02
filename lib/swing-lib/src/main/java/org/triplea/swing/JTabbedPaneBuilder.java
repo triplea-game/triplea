@@ -29,8 +29,8 @@ public class JTabbedPaneBuilder {
 
   @Value
   private static class Tab {
-    private final String tabName;
-    private final Component contents;
+    String tabName;
+    Component contents;
   }
 
   private final List<Tab> components = new ArrayList<>();
