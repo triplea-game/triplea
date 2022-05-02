@@ -1807,7 +1807,9 @@ public class ProCombatMoveAi {
       }
     }
 
-    /** @return whether at least one target unit damage is exceeding its minimum */
+    /**
+     * @return whether at least one target unit damage is exceeding its minimum
+     */
     public boolean bombingWithSufficientDamage() {
       for (Pair<Integer, Integer> unitDamageEntry : minNeededAndMaxDamageMap.values()) {
         if (unitDamageEntry.getFirst() <= unitDamageEntry.getSecond()) {
