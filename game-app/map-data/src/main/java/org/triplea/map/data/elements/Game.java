@@ -21,7 +21,9 @@ import org.triplea.generic.xml.reader.annotations.Tag;
 @AllArgsConstructor
 @ToString
 public class Game {
-  /** @deprecated Do not use, game name should be read from map.yml file instead. */
+  /**
+   * @deprecated Do not use, game name should be read from map.yml file instead.
+   */
   @Deprecated @XmlElement @Tag private Info info;
 
   @XmlElement @Tag private Triplea triplea;

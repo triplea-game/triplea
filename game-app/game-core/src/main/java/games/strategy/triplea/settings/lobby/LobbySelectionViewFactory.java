@@ -5,7 +5,9 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class LobbySelectionViewFactory {
 
-  /** @see LobbySelectionView */
+  /**
+   * @see LobbySelectionView
+   */
   public static LobbySelectionView build() {
     final LobbySelectionSwingEventQueue lobbySelectionEventQueue =
         new LobbySelectionSwingEventQueue();
