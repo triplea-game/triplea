@@ -68,12 +68,12 @@ public class BottomBar extends JPanel {
     territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
         territoryInfo,
-        gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.SOUTHWEST).build());
+        gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.CENTER).build());
 
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
-        statusMessage, gridBuilder.gridX(3).anchor(GridBagConstraintsAnchor.EAST).build());
+        statusMessage, gridBuilder.gridX(2).anchor(GridBagConstraintsAnchor.EAST).build());
     return centerPanel;
   }
 
@@ -122,22 +122,21 @@ public class BottomBar extends JPanel {
     territoryInfo.setLayout(new BoxLayout(territoryInfo, BoxLayout.LINE_AXIS));
     territoryInfo.add(Box.createHorizontalGlue());
 
-    // Display territory effects, territory name, and resources
-    final StringBuilder territoryEffectText = new StringBuilder();
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta != null) {
-      final List<TerritoryEffect> territoryEffects = ta.getTerritoryEffect();
-      for (final TerritoryEffect territoryEffect : territoryEffects) {
-        try {
-          final JLabel territoryEffectLabel = new JLabel();
-          territoryEffectLabel.setToolTipText(territoryEffect.getName());
-          territoryEffectLabel.setIcon(
-              uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
-          territoryInfo.add(territoryEffectLabel);
-          territoryInfo.add(Box.createHorizontalStrut(10));
-        } catch (final IllegalStateException e) {
-          territoryEffectText.append(territoryEffect.getName()).append(", ");
-        }
+
+    // Display territory effects, territory name, resources and units.
+    final StringBuilder territoryEffectText = new StringBuilder();
+    final List<TerritoryEffect> territoryEffects = ta != null ? ta.getTerritoryEffect() : List.of();
+    for (final TerritoryEffect territoryEffect : territoryEffects) {
+      try {
+        final JLabel territoryEffectLabel = new JLabel();
+        territoryEffectLabel.setToolTipText(territoryEffect.getName());
+        territoryEffectLabel.setIcon(
+            uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
+        territoryInfo.add(territoryEffectLabel);
+        territoryInfo.add(Box.createHorizontalStrut(10));
+      } catch (final IllegalStateException e) {
+        territoryEffectText.append(territoryEffect.getName()).append(", ");
       }
     }
 
