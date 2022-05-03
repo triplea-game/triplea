@@ -11,6 +11,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.util.List;
@@ -64,6 +65,7 @@ public class BottomBar extends JPanel {
 
     territoryInfo.setLayout(new GridBagLayout());
     territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
     territoryInfo.setPreferredSize(new Dimension(0, 0));
     centerPanel.add(
         territoryInfo,
@@ -108,66 +110,66 @@ public class BottomBar extends JPanel {
   public void setTerritory(final @Nullable Territory territory) {
     territoryInfo.removeAll();
 
-    final JLabel nameLabel = new JLabel();
-    if (territory != null) {
-      nameLabel.setText("<html><b>" + territory.getName());
-    }
-
     final var gridBuilder = new GridBagConstraintsBuilder(0, 0);
-    // If territory is null or doesn't have an attachment then just display the name or "none"
-    if (territory == null || TerritoryAttachment.get(territory) == null) {
-      territoryInfo.add(nameLabel, gridBuilder.build());
+    int gridX = 0;
+    if (territory == null) {
+      territoryInfo.add(new JLabel(), gridBuilder.build());
       SwingComponents.redraw(territoryInfo);
       return;
     }
 
     // Display territory effects, territory name, and resources
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    final List<TerritoryEffect> territoryEffects = ta.getTerritoryEffect();
-    int count = 0;
     final StringBuilder territoryEffectText = new StringBuilder();
-    for (final TerritoryEffect territoryEffect : territoryEffects) {
-      try {
-        final JLabel territoryEffectLabel = new JLabel();
-        territoryEffectLabel.setToolTipText(territoryEffect.getName());
-        territoryEffectLabel.setIcon(
-            uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
-        territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-        territoryInfo.add(territoryEffectLabel, gridBuilder.gridX(count++).build());
-      } catch (final IllegalStateException e) {
-        territoryEffectText.append(territoryEffect.getName()).append(", ");
+    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+    if (ta != null) {
+      final List<TerritoryEffect> territoryEffects = ta.getTerritoryEffect();
+      for (final TerritoryEffect territoryEffect : territoryEffects) {
+        try {
+          final JLabel territoryEffectLabel = new JLabel();
+          territoryEffectLabel.setToolTipText(territoryEffect.getName());
+          territoryEffectLabel.setIcon(
+              uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
+          territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+          territoryInfo.add(territoryEffectLabel, gridBuilder.gridX(gridX++).build());
+        } catch (final IllegalStateException e) {
+          territoryEffectText.append(territoryEffect.getName()).append(", ");
+        }
       }
     }
 
-    territoryInfo.add(nameLabel, gridBuilder.gridX(count++).build());
+    final JLabel nameLabel = new JLabel(territory.getName());
+    nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
+    territoryInfo.add(nameLabel, gridBuilder.gridX(gridX++).build());
 
     if (territoryEffectText.length() > 0) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
       final JLabel territoryEffectTextLabel = new JLabel("(" + territoryEffectText + ")");
-      territoryInfo.add(territoryEffectTextLabel, gridBuilder.gridX(count++).build());
+      territoryInfo.add(territoryEffectTextLabel, gridBuilder.gridX(gridX++).build());
     }
 
-    final IntegerMap<Resource> resources = new IntegerMap<>();
-    final int production = ta.getProduction();
-    if (production > 0) {
-      resources.add(new Resource(Constants.PUS, data), production);
-    }
-    final ResourceCollection resourceCollection = ta.getResources();
-    if (resourceCollection != null) {
-      resources.add(resourceCollection.getResourcesCopy());
-    }
-    for (final Resource resource : resources.keySet()) {
-      final JLabel resourceLabel =
-          uiContext.getResourceImageFactory().getLabel(resource, resources);
-      resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-      territoryInfo.add(resourceLabel, gridBuilder.gridX(count++).build());
+    if (ta != null) {
+      final IntegerMap<Resource> resources = new IntegerMap<>();
+      final int production = ta.getProduction();
+      if (production > 0) {
+        resources.add(new Resource(Constants.PUS, data), production);
+      }
+      final ResourceCollection resourceCollection = ta.getResources();
+      if (resourceCollection != null) {
+        resources.add(resourceCollection.getResourcesCopy());
+      }
+      for (final Resource resource : resources.keySet()) {
+        final JLabel resourceLabel =
+            uiContext.getResourceImageFactory().getLabel(resource, resources);
+        resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        territoryInfo.add(resourceLabel, gridBuilder.gridX(gridX++).build());
+      }
     }
 
     final var unitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
     unitsPanel.setScaleFactor(0.5);
     unitsPanel.setUnitsFromCategories(UnitSeparator.categorize(territory.getUnits()));
     unitsPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
-    territoryInfo.add(unitsPanel, gridBuilder.gridX(count).build());
+    territoryInfo.add(unitsPanel, gridBuilder.gridX(gridX).build());
 
     SwingComponents.redraw(territoryInfo);
   }
