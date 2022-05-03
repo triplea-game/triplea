@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -22,10 +21,10 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingComponents;
@@ -60,7 +59,6 @@ public class BottomBar extends JPanel {
   private JPanel createCenterPanel() {
     final JPanel centerPanel = new JPanel();
     centerPanel.setLayout(new GridBagLayout());
-    centerPanel.setBorder(BorderFactory.createEmptyBorder());
     final var gridBuilder =
         new GridBagConstraintsBuilder(0, 0).weightY(1).fill(GridBagConstraintsFill.BOTH);
 
@@ -112,12 +110,18 @@ public class BottomBar extends JPanel {
 
   public void setTerritory(final @Nullable Territory territory) {
     territoryInfo.removeAll();
-    territoryInfo.add(Box.createHorizontalGlue());
 
     if (territory == null) {
       SwingComponents.redraw(territoryInfo);
       return;
     }
+
+    // Box layout with horizontal glue on both sides achieves the following desirable properties:
+    //   1. If the content is narrower than the available space, it will be centered.
+    //   2. If the content is wider than the available space, then the beginning will be shown,
+    //      which is the more important information (territory name, income, etc).
+    //   3. Elements are vertically centered.
+    territoryInfo.add(Box.createHorizontalGlue());
 
     // Display territory effects, territory name, and resources
     final StringBuilder territoryEffectText = new StringBuilder();
@@ -130,8 +134,8 @@ public class BottomBar extends JPanel {
           territoryEffectLabel.setToolTipText(territoryEffect.getName());
           territoryEffectLabel.setIcon(
               uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
-          territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
           territoryInfo.add(territoryEffectLabel);
+          territoryInfo.add(Box.createHorizontalStrut(10));
         } catch (final IllegalStateException e) {
           territoryEffectText.append(territoryEffect.getName()).append(", ");
         }
@@ -140,6 +144,10 @@ public class BottomBar extends JPanel {
 
     final JLabel nameLabel = new JLabel(territory.getName());
     nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
+    // Ensure the text position is always the same, regardless of other components, by padding to
+    // fill available height.
+    final int labelHeight = nameLabel.getPreferredSize().height;
+    nameLabel.setBorder(createBorderToFillAvailableHeight(labelHeight, getHeight()));
     territoryInfo.add(nameLabel);
 
     if (territoryEffectText.length() > 0) {
@@ -161,7 +169,7 @@ public class BottomBar extends JPanel {
       for (final Resource resource : resources.keySet()) {
         final JLabel resourceLabel =
             uiContext.getResourceImageFactory().getLabel(resource, resources);
-        resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        territoryInfo.add(Box.createHorizontalStrut(10));
         territoryInfo.add(resourceLabel);
       }
     }
@@ -169,20 +177,22 @@ public class BottomBar extends JPanel {
     final var unitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
     unitsPanel.setScaleFactor(0.5);
     unitsPanel.setUnitsFromCategories(UnitSeparator.categorize(territory.getUnits()));
-    unitsPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
-    unitsPanel.setPreferredSize(
-        new Dimension(
-            unitsPanel.getPreferredSize().width,
-            getHeight() - getBorderVerticalSpace(territoryInfo)));
+    // Constrain the preferred size to the available size so that unit images that may not fully fit
+    // don't cause layout issues.
+    final int unitsWidth = unitsPanel.getPreferredSize().width;
+    unitsPanel.setPreferredSize(new Dimension(unitsWidth, getHeight()));
+    territoryInfo.add(Box.createHorizontalStrut(20));
     territoryInfo.add(unitsPanel);
-    territoryInfo.add(Box.createHorizontalGlue());
 
+    territoryInfo.add(Box.createHorizontalGlue());
     SwingComponents.redraw(territoryInfo);
   }
 
-  private int getBorderVerticalSpace(JComponent c) {
-    Insets insets = c.getBorder().getBorderInsets(c);
-    return insets.top + insets.bottom;
+  private Border createBorderToFillAvailableHeight(int componentHeight, int availableHeight) {
+    int extraVerticalSpace = Math.max(availableHeight - componentHeight, 0);
+    int topPad = extraVerticalSpace / 2;
+    int bottomPad = extraVerticalSpace - topPad; // Might != topPad if extraVerticalSpace is odd.
+    return BorderFactory.createEmptyBorder(topPad, 0, bottomPad, 0);
   }
 
   public void gameDataChanged() {
