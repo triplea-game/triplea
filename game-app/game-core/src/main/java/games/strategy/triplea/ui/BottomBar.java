@@ -14,11 +14,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -63,13 +67,12 @@ public class BottomBar extends JPanel {
     centerPanel.add(
         resourceBar, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.WEST).build());
 
-    territoryInfo.setLayout(new GridBagLayout());
+    territoryInfo.setLayout(new BoxLayout(territoryInfo, BoxLayout.LINE_AXIS));
     territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-
     territoryInfo.setPreferredSize(new Dimension(0, 0));
     centerPanel.add(
         territoryInfo,
-        gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.WEST).build());
+        gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.SOUTHWEST).build());
 
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -109,11 +112,9 @@ public class BottomBar extends JPanel {
 
   public void setTerritory(final @Nullable Territory territory) {
     territoryInfo.removeAll();
+    territoryInfo.add(Box.createHorizontalGlue());
 
-    final var gridBuilder = new GridBagConstraintsBuilder(0, 0);
-    int gridX = 0;
     if (territory == null) {
-      territoryInfo.add(new JLabel(), gridBuilder.build());
       SwingComponents.redraw(territoryInfo);
       return;
     }
@@ -130,7 +131,7 @@ public class BottomBar extends JPanel {
           territoryEffectLabel.setIcon(
               uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
           territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-          territoryInfo.add(territoryEffectLabel, gridBuilder.gridX(gridX++).build());
+          territoryInfo.add(territoryEffectLabel);
         } catch (final IllegalStateException e) {
           territoryEffectText.append(territoryEffect.getName()).append(", ");
         }
@@ -139,12 +140,12 @@ public class BottomBar extends JPanel {
 
     final JLabel nameLabel = new JLabel(territory.getName());
     nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
-    territoryInfo.add(nameLabel, gridBuilder.gridX(gridX++).build());
+    territoryInfo.add(nameLabel);
 
     if (territoryEffectText.length() > 0) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
       final JLabel territoryEffectTextLabel = new JLabel("(" + territoryEffectText + ")");
-      territoryInfo.add(territoryEffectTextLabel, gridBuilder.gridX(gridX++).build());
+      territoryInfo.add(territoryEffectTextLabel);
     }
 
     if (ta != null) {
@@ -161,7 +162,7 @@ public class BottomBar extends JPanel {
         final JLabel resourceLabel =
             uiContext.getResourceImageFactory().getLabel(resource, resources);
         resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        territoryInfo.add(resourceLabel, gridBuilder.gridX(gridX++).build());
+        territoryInfo.add(resourceLabel);
       }
     }
 
@@ -169,9 +170,19 @@ public class BottomBar extends JPanel {
     unitsPanel.setScaleFactor(0.5);
     unitsPanel.setUnitsFromCategories(UnitSeparator.categorize(territory.getUnits()));
     unitsPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
-    territoryInfo.add(unitsPanel, gridBuilder.gridX(gridX).build());
+    unitsPanel.setPreferredSize(
+        new Dimension(
+            unitsPanel.getPreferredSize().width,
+            getHeight() - getBorderVerticalSpace(territoryInfo)));
+    territoryInfo.add(unitsPanel);
+    territoryInfo.add(Box.createHorizontalGlue());
 
     SwingComponents.redraw(territoryInfo);
+  }
+
+  private int getBorderVerticalSpace(JComponent c) {
+    Insets insets = c.getBorder().getBorderInsets(c);
+    return insets.top + insets.bottom;
   }
 
   public void gameDataChanged() {
