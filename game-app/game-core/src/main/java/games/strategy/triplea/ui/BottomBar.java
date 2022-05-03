@@ -160,15 +160,10 @@ public class BottomBar extends JPanel {
       if (production > 0) {
         resources.add(new Resource(Constants.PUS, data), production);
       }
-      final ResourceCollection resourceCollection = ta.getResources();
-      if (resourceCollection != null) {
-        resources.add(resourceCollection.getResourcesCopy());
-      }
+      Optional.ofNullable(ta.getResources()).ifPresent(r -> resources.add(r.getResourcesCopy()));
       for (final Resource resource : resources.keySet()) {
-        final JLabel resourceLabel =
-            uiContext.getResourceImageFactory().getLabel(resource, resources);
         territoryInfo.add(Box.createHorizontalStrut(10));
-        territoryInfo.add(resourceLabel);
+        territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
       }
     }
 
