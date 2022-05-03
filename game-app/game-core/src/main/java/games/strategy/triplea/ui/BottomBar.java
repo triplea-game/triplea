@@ -48,10 +48,9 @@ public class BottomBar extends JPanel {
   public BottomBar(final UiContext uiContext, final GameData data, final boolean usingDiceServer) {
     this.uiContext = uiContext;
     this.data = data;
+    this.resourceBar = new ResourceBar(data, uiContext);
+
     setLayout(new BorderLayout());
-
-    resourceBar = new ResourceBar(data, uiContext);
-
     add(createCenterPanel(), BorderLayout.CENTER);
     add(createStepPanel(usingDiceServer), BorderLayout.EAST);
   }
@@ -65,9 +64,8 @@ public class BottomBar extends JPanel {
     centerPanel.add(
         resourceBar, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.WEST).build());
 
-    territoryInfo.setLayout(new BoxLayout(territoryInfo, BoxLayout.LINE_AXIS));
-    territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     territoryInfo.setPreferredSize(new Dimension(0, 0));
+    territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
         territoryInfo,
         gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.SOUTHWEST).build());
@@ -121,6 +119,7 @@ public class BottomBar extends JPanel {
     //   2. If the content is wider than the available space, then the beginning will be shown,
     //      which is the more important information (territory name, income, etc).
     //   3. Elements are vertically centered.
+    territoryInfo.setLayout(new BoxLayout(territoryInfo, BoxLayout.LINE_AXIS));
     territoryInfo.add(Box.createHorizontalGlue());
 
     // Display territory effects, territory name, and resources
