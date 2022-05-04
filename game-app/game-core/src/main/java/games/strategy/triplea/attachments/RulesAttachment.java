@@ -947,8 +947,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   /**
-   * Checks for the collection of territories to see if they have units owned by the exclType
-   * alliance.
+   * Checks for the collection of territories to see if they have sufficient units matching the
+   * unit filter.
    */
   private boolean checkUnitPresence(
       final String[] territoryStrings,
@@ -960,10 +960,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         getTerritoryListBasedOnInputFromXml(territoryStrings, players, data), predicate);
   }
 
-  /**
-   * Checks for the collection of territories to see if they have units owned by the exclType
-   * alliance. It doesn't yet threshold the data
-   */
   private boolean checkUnitPresenceForTerritory(
       final Territory t, final Predicate<Unit> unitFilter) {
     final Collection<Unit> matchingUnits = t.getUnitCollection().getMatches(unitFilter);
@@ -985,16 +981,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return true;
   }
 
-  private Predicate<Unit> getUnitTypesPredicate(GameState data, String uc) {
-    if (uc == null || uc.equals("ANY") || uc.equals("any")) {
-      return unit -> true;
-    }
-    return Matches.unitIsOfTypes(data.getUnitTypeList().getUnitTypes(splitOnColon(uc)));
-  }
-
   /**
-   * Checks for the collection of territories to see if they have units owned by the exclType
-   * alliance. It doesn't yet threshold the data
+   * Checks for the collection of territories to see if they have sufficient units not matching the
+   * unit filter.
    */
   private boolean checkUnitExclusions(
       final String[] territories,
@@ -1004,15 +993,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final Predicate<Territory> predicate = t -> checkUnitExclusionsForTerritory(t, unitFilter);
     return matchTerritories(
         getTerritoryListBasedOnInputFromXml(territories, players, data), predicate);
-  }
-
-  private boolean matchTerritories(
-      final Collection<Territory> territories, final Predicate<Territory> predicate) {
-    final int numberMet = CollectionUtils.countMatches(territories, predicate);
-    if (getCountEach()) {
-      eachMultiple = numberMet;
-    }
-    return numberMet >= getTerritoryCount();
   }
 
   /**
@@ -1039,6 +1019,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     return false;
   }
+
+  private Predicate<Unit> getUnitTypesPredicate(GameState data, String uc) {
+    if (uc == null || uc.equals("ANY") || uc.equals("any")) {
+      return unit -> true;
+    }
+    return Matches.unitIsOfTypes(data.getUnitTypeList().getUnitTypes(splitOnColon(uc)));
+  }
+
   /**
    * Checks for allied ownership of the collection of territories. Once the needed number threshold
    * is reached, the satisfied flag is set to true and returned.
@@ -1051,8 +1039,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         CollectionUtils.getMatches(
             data.getPlayerList().getPlayers(),
             Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
-    final Predicate<Territory> predicate = Matches.isTerritoryOwnedByAnyOf(allies);
-    return matchTerritories(territories, predicate);
+    return matchTerritories(territories, Matches.isTerritoryOwnedByAnyOf(allies));
   }
 
   /**
@@ -1062,6 +1049,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkDirectOwnership(
       final Collection<Territory> territories, final Collection<GamePlayer> players) {
     return matchTerritories(territories, Matches.isTerritoryOwnedByAnyOf(players));
+  }
+
+  private boolean matchTerritories(
+      final Collection<Territory> territories, final Predicate<Territory> predicate) {
+    final int numberMet = CollectionUtils.countMatches(territories, predicate);
+    if (getCountEach()) {
+      eachMultiple = numberMet;
+    }
+    return numberMet >= getTerritoryCount();
   }
 
   private boolean checkAtWar(
