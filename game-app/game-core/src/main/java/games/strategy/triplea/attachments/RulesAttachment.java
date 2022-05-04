@@ -657,7 +657,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getDirectPresenceTerritories() != null) {
-      // Get the listed territories
       objectiveMet =
           checkUnitPresence(getDirectPresenceTerritories(), directOwnership(), players, data);
     }
@@ -928,7 +927,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private Predicate<Unit> directOwnership() {
-    return Matches.unitIsOwnedByAnyOf(players).negate();
+    return Matches.unitIsOwnedByAnyOf(players);
   }
 
   private Predicate<Unit> alliedOwnership(GameState data) {
