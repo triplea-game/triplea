@@ -121,7 +121,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
               + " with name: "
               + nameOfAttachment);
     }
-    return ra;
+    return null;
   }
 
   /**
@@ -954,27 +954,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Predicate<Unit> unitFilter,
       final List<GamePlayer> players,
       final GameState data) {
-    final Predicate<Territory> predicate = t -> checkUnitPresenceForTerritory(t, unitFilter);
+    final Predicate<Territory> predicate =
+        t -> {
+          final Collection<Unit> units = t.getUnitCollection().getMatches(unitFilter);
+          return !units.isEmpty()
+              && checkUnitPresenceByType(t.getData(), units, false).orElse(true);
+        };
     return matchTerritories(
         getTerritoryListBasedOnInputFromXml(territoryStrings, players, data), predicate);
-  }
-
-  private boolean checkUnitPresenceForTerritory(
-      final Territory t, final Predicate<Unit> unitFilter) {
-    final Collection<Unit> matchingUnits = t.getUnitCollection().getMatches(unitFilter);
-    if (matchingUnits.isEmpty()) {
-      return false;
-    }
-    final IntegerMap<String> unitPresenceMap = getUnitPresence();
-    if (unitPresenceMap != null && !unitPresenceMap.keySet().isEmpty()) {
-      return unitPresenceMap.keySet().stream()
-          .allMatch(
-              uc -> {
-                final int unitsNeeded = unitPresenceMap.getInt(uc);
-                return countUnitTypeMatches(t.getData(), matchingUnits, uc) >= unitsNeeded;
-              });
-    }
-    return true;
   }
 
   /**
@@ -986,35 +973,34 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Predicate<Unit> unitFilter,
       final List<GamePlayer> players,
       final GameState data) {
-    final Predicate<Territory> predicate = t -> checkUnitExclusionsForTerritory(t, unitFilter);
+    final Predicate<Territory> predicate =
+        t -> {
+          final Collection<Unit> units = t.getUnitCollection().getMatches(unitFilter);
+          return units.isEmpty()
+              || checkUnitPresenceByType(t.getData(), units, true).orElse(false);
+        };
     return matchTerritories(
         getTerritoryListBasedOnInputFromXml(territories, players, data), predicate);
   }
 
-  /**
-   * Checks for the collection of territories to see if they have units owned by the exclType
-   * alliance. It doesn't yet threshold the data
-   */
-  private boolean checkUnitExclusionsForTerritory(
-      final Territory t, final Predicate<Unit> unitFilter) {
-    final Collection<Unit> matchingUnits = t.getUnitCollection().getMatches(unitFilter);
-    if (matchingUnits.isEmpty()) {
-      return true;
-    }
+  private Optional<Boolean> checkUnitPresenceByType(
+      GameState data, Collection<Unit> units, boolean lessThanOrEqual) {
     final IntegerMap<String> unitPresenceMap = getUnitPresence();
     if (unitPresenceMap != null && !unitPresenceMap.keySet().isEmpty()) {
-      return unitPresenceMap.keySet().stream()
-          .allMatch(
-              uc -> {
-                final int unitsNeeded = unitPresenceMap.getInt(uc);
-                return countUnitTypeMatches(t.getData(), matchingUnits, uc) <= unitsNeeded;
-              });
+      final Predicate<String> predicate =
+          uc -> {
+            final int unitsNeeded = unitPresenceMap.getInt(uc);
+            final int unitsMatched =
+                CollectionUtils.countMatches(units, getUnitTypesPredicate(data, uc));
+            if (lessThanOrEqual) {
+              return unitsMatched <= unitsNeeded;
+            } else {
+              return unitsMatched >= unitsNeeded;
+            }
+          };
+      return Optional.of(unitPresenceMap.keySet().stream().allMatch(predicate));
     }
-    return false;
-  }
-
-  private int countUnitTypeMatches(GameState data, Collection<Unit> units, String uc) {
-    return CollectionUtils.countMatches(units, getUnitTypesPredicate(data, uc));
+    return Optional.empty();
   }
 
   private Predicate<Unit> getUnitTypesPredicate(GameState data, String uc) {
