@@ -947,8 +947,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   /**
-   * Checks for the collection of territories to see if they have sufficient units matching the
-   * unit filter.
+   * Checks for the collection of territories to see if they have sufficient units matching the unit
+   * filter.
    */
   private boolean checkUnitPresence(
       final String[] territoryStrings,
