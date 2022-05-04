@@ -17,14 +17,13 @@ public class UnitsStat implements IStat {
 
   @Override
   public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
-    final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player);
     final Predicate<Unit> visible = u -> mapData.shouldDrawUnit(u.getType().getName());
 
     // sum the total match count
     return data.getMap().getTerritories().stream()
         .map(UnitHolder::getUnits)
         .flatMap(Collection::stream)
-        .filter(ownedBy)
+        .filter(Matches.unitIsOwnedBy(player))
         .filter(visible)
         .count();
   }

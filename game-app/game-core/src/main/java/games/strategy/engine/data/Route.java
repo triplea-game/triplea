@@ -317,7 +317,7 @@ public class Route implements Serializable, Iterable<Territory> {
   public boolean hasNeutralBeforeEnd() {
     for (final Territory current : getMiddleSteps()) {
       // neutral is owned by null and is not sea
-      if (!current.isWater() && current.getOwner().equals(GamePlayer.NULL_PLAYERID)) {
+      if (!current.isWater() && current.isOwnedBy(GamePlayer.NULL_PLAYERID)) {
         return true;
       }
     }

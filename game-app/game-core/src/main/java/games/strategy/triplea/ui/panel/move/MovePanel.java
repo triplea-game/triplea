@@ -54,6 +54,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -160,7 +161,7 @@ public class MovePanel extends AbstractMovePanel {
           }
 
           // basic match criteria only
-          final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, null);
+          final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, List.of());
           if (units.isEmpty() && selectedUnits.isEmpty() && !mouseDetails.isShiftDown()) {
             final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
             if (unitsToMove.isEmpty()) {
@@ -765,9 +766,10 @@ public class MovePanel extends AbstractMovePanel {
       return List.of();
     }
 
-    // Just one transport, don't bother to ask
     if (candidateTransports.size() == 1) {
-      return ImmutableList.copyOf(unitsToUnload);
+      // Only one transport after filtering out incapable ones. Don't show a dialog but still run
+      // the unload algorithm to substitute units on incapable transports with ones on capable ones.
+      return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, candidateTransports);
     }
 
     // Are the transports all of the same type and if they are, then don't ask
@@ -779,7 +781,9 @@ public class MovePanel extends AbstractMovePanel {
                 .movement(true)
                 .build());
     if (categories.size() == 1) {
-      return ImmutableList.copyOf(unitsToUnload);
+      // All transports of the same type, don't show a dialog but still run the unload algorithm
+      // so that units on incapable transports are replaced with units on capable ones.
+      return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, candidateTransports);
     }
     sortTransportsToUnload(candidateTransports, route);
 
@@ -862,6 +866,14 @@ public class MovePanel extends AbstractMovePanel {
     }
     final Collection<Unit> chosenTransports =
         CollectionUtils.getMatches(chooser.getSelected(), Matches.unitIsTransport());
+    return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, chosenTransports);
+  }
+
+  private List<Unit> chooseUnitsToUnload(
+      final Route route,
+      final Collection<Unit> unitsToUnload,
+      final Collection<Unit> candidateUnits,
+      final Collection<Unit> chosenTransports) {
     final List<Unit> allUnitsInSelectedTransports = new ArrayList<>();
     for (final Unit transport : chosenTransports) {
       final Collection<Unit> transporting = transport.getTransporting();
@@ -885,7 +897,7 @@ public class MovePanel extends AbstractMovePanel {
         final Collection<Unit> transporting = transport.getTransporting();
         for (final Unit candidate : transporting) {
           if (selected.getType().equals(candidate.getType())
-              && selected.getOwner().equals(candidate.getOwner())
+              && selected.isOwnedBy(candidate.getOwner())
               && selected.getHits() == candidate.getHits()) {
             hasChanged = true;
             selectedUnitsToUnload.add(candidate);
@@ -906,7 +918,7 @@ public class MovePanel extends AbstractMovePanel {
       while (candidateIter.hasNext()) {
         final Unit candidate = candidateIter.next();
         if (selected.getType().equals(candidate.getType())
-            && selected.getOwner().equals(candidate.getOwner())
+            && selected.isOwnedBy(candidate.getOwner())
             && selected.getHits() == candidate.getHits()) {
           selectedUnitsToUnload.add(candidate);
           candidateIter.remove();
@@ -969,27 +981,22 @@ public class MovePanel extends AbstractMovePanel {
         movableBuilder.and(Matches.unitIsNotSea());
       }
     }
-    if (units != null && !units.isEmpty()) {
+    if (!units.isEmpty()) {
       // force all units to have the same owner in edit mode
-      final GamePlayer owner = getUnitOwner(units);
+      final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(getUnitOwner(units));
       if (isEditMode()) {
-        movableBuilder.and(Matches.unitIsOwnedBy(owner));
+        movableBuilder.and(ownedBy);
       }
-      movableBuilder.and(areOwnedUnitsOfType(units, owner));
+      // Filter to only units with the same types as the input list.
+      final Set<UnitType> typesOfOwnedUnits =
+          units.stream().filter(ownedBy).map(Unit::getType).collect(Collectors.toSet());
+      movableBuilder.and(u -> typesOfOwnedUnits.contains(u.getType()));
     }
     return movableBuilder.build();
   }
 
   private boolean isEditMode() {
     return BaseEditDelegate.getEditMode(getData().getProperties());
-  }
-
-  private static Predicate<Unit> areOwnedUnitsOfType(
-      final Collection<Unit> units, final GamePlayer owner) {
-    return mainUnit ->
-        units.stream()
-            .filter(unit -> unit.getOwner().equals(owner))
-            .anyMatch(Matches.unitIsOfType(mainUnit.getType()));
   }
 
   private Route getRoute(
@@ -1067,7 +1074,8 @@ public class MovePanel extends AbstractMovePanel {
             moveType,
             getUndoableMoves(),
             dependentUnits);
-    final var result = unitsFilter.filterUnitsThatCanMove(units);
+    Collection<Unit> candidateUnits = TransportUtils.chooseEquivalentUnitsToUnload(route, units);
+    final var result = unitsFilter.filterUnitsThatCanMove(candidateUnits);
     switch (result.getStatus()) {
       case NO_UNITS_CAN_MOVE:
         setStatusErrorMessage(result.getWarningOrErrorMessage().orElseThrow());
@@ -1177,7 +1185,7 @@ public class MovePanel extends AbstractMovePanel {
         CollectionUtils.getMatches(
             capableTransports, Matches.transportCannotUnload(route.getEnd()));
     capableTransports.removeAll(incapableTransports);
-    final Predicate<Unit> alliedMatch = transport -> !transport.getOwner().equals(unitOwner);
+    final Predicate<Unit> alliedMatch = Matches.unitIsOwnedBy(unitOwner).negate();
     final Collection<Unit> alliedTransports =
         CollectionUtils.getMatches(capableTransports, alliedMatch);
     capableTransports.removeAll(alliedTransports);

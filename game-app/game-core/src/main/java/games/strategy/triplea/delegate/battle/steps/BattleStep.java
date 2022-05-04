@@ -80,10 +80,14 @@ public interface BattleStep extends IExecutable {
     FIRE_ROUND_REMOVE_CASUALTIES,
   }
 
-  /** @return a list of names that will be shown in {@link games.strategy.triplea.ui.BattlePanel} */
+  /**
+   * @return a list of names that will be shown in {@link games.strategy.triplea.ui.BattlePanel}
+   */
   List<String> getNames();
 
-  /** @return The order in which this step should be called */
+  /**
+   * @return The order in which this step should be called
+   */
   Order getOrder();
 
   static List<BattleStep> getAll(final BattleState battleState, final BattleActions battleActions) {

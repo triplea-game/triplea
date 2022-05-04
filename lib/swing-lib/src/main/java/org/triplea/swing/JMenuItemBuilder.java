@@ -93,7 +93,9 @@ public class JMenuItemBuilder {
     return this;
   }
 
-  /** @param selected Whether the menu item should be selected. */
+  /**
+   * @param selected Whether the menu item should be selected.
+   */
   public JMenuItemBuilder selected(final boolean selected) {
     this.selected = selected;
     return this;

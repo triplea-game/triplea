@@ -243,7 +243,7 @@ public final class ProSimulateTurnUtils {
               Matches.isTerritoryAllied(terrOrigOwner, data.getRelationshipTracker()));
       friendlyTerritories.add(t);
       for (final Territory item : friendlyTerritories) {
-        if (item.getOwner().equals(terrOrigOwner)) {
+        if (item.isOwnedBy(terrOrigOwner)) {
           continue;
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);

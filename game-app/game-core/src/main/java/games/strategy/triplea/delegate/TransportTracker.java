@@ -43,7 +43,9 @@ public class TransportTracker {
     }
   }
 
-  /** @return Unmodifiable map of transport -> collection of transported units. */
+  /**
+   * @return Unmodifiable map of transport -> collection of transported units.
+   */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return transporting(units, Unit::getTransporting);
   }
@@ -211,7 +213,7 @@ public class TransportTracker {
       // the owner of the unit
       if (unit.getWasLoadedThisTurn()
           && unit.getTransportedBy() != null
-          && !unit.getTransportedBy().getOwner().equals(unit.getOwner())) {
+          && !unit.getTransportedBy().isOwnedBy(unit.getOwner())) {
         loadedUnits.add(unit);
       }
     }

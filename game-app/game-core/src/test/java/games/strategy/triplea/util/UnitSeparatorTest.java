@@ -2,6 +2,7 @@ package games.strategy.triplea.util;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -28,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class UnitSeparatorTest {
-  @Mock private GameData gameData;
+  private GameData gameData = givenGameData().build();
   private GamePlayer player1 = new GamePlayer("player1", gameData);
 
   @Mock private MapData mockMapData;

@@ -174,7 +174,8 @@ public class BattleStepsTest {
       final BattleState.Side side,
       final String aaType) {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unit.getData()).thenReturn(mock(GameData.class));
+    final GameData gameData = givenGameData().build();
+    when(unitAndAttachment.unit.getData()).thenReturn(gameData);
     when(unitAndAttachment.unitAttachment.getTypeAa()).thenReturn(aaType);
     when(unitAndAttachment.unitAttachment.getTargetsAa(any())).thenReturn(aaTarget);
     when(unitAndAttachment.unitAttachment.getIsAaForCombatOnly()).thenReturn(true);

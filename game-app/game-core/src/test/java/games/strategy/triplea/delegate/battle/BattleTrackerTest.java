@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle;
 
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,7 +28,7 @@ class BattleTrackerTest {
 
   @Mock private IDelegateBridge mockDelegateBridge;
 
-  @Mock private GameData mockGameData;
+  private GameData mockGameData = givenGameData().build();
 
   @Mock private GameProperties mockGameProperties;
 

@@ -17,15 +17,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI battle utilities. */
+@UtilityClass
 public final class ProTerritoryValueUtils {
-
-  protected static final int MIN_FACTORY_CHECK_DISTANCE = 9;
-
-  private ProTerritoryValueUtils() {}
+  static final int MIN_FACTORY_CHECK_DISTANCE = 9;
 
   /**
    * Returns the relative value of attacking the specified territory compared to other territories.
@@ -59,7 +59,6 @@ public final class ProTerritoryValueUtils {
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack,
       final Set<Territory> territoriesToCheck) {
-
     final int maxLandMassSize = findMaxLandMassSize(player);
     final Map<Territory, Double> enemyCapitalsAndFactoriesMap =
         findEnemyCapitalsAndFactoriesValue(
@@ -182,7 +181,7 @@ public final class ProTerritoryValueUtils {
     return territoryValueMap;
   }
 
-  protected static int findMaxLandMassSize(final GamePlayer player) {
+  static int findMaxLandMassSize(final GamePlayer player) {
     final GameState data = player.getData();
     final Predicate<Territory> cond =
         ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
@@ -217,7 +216,6 @@ public final class ProTerritoryValueUtils {
       final int maxLandMassSize,
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack) {
-
     // Get all enemy factories and capitals (check if most territories have factories and if so
     // remove them)
     final GameState data = player.getData();
@@ -230,7 +228,8 @@ public final class ProTerritoryValueUtils {
                     player, ProUtils.getPotentialEnemyPlayers(player), territoriesThatCantBeHeld)));
     final int numPotentialEnemyTerritories =
         CollectionUtils.countMatches(
-            allTerritories, Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
+            allTerritories,
+            Matches.isTerritoryOwnedByAnyOf(ProUtils.getPotentialEnemyPlayers(player)));
     if (enemyCapitalsAndFactories.size() * 2 >= numPotentialEnemyTerritories) {
       enemyCapitalsAndFactories.clear();
     }
@@ -240,7 +239,6 @@ public final class ProTerritoryValueUtils {
     // Find value for each enemy capital and factory
     final Map<Territory, Double> enemyCapitalsAndFactoriesMap = new HashMap<>();
     for (final Territory t : enemyCapitalsAndFactories) {
-
       // Get factory production if factory
       int factoryProduction = 0;
       if (ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
@@ -284,7 +282,6 @@ public final class ProTerritoryValueUtils {
       final Map<Territory, Double> enemyCapitalsAndFactoriesMap,
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack) {
-
     if (territoriesThatCantBeHeld.contains(t)) {
       return 0.0;
     }
@@ -294,16 +291,12 @@ public final class ProTerritoryValueUtils {
     final GameData data = proData.getData();
     final Collection<Territory> nearbyEnemyCapitalsAndFactories =
         findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap.keySet());
+    final BiPredicate<Territory, Territory> routeCond =
+        (t1, t2) ->
+            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()).test(t2)
+                && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2);
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
-      final int distance =
-          data.getMap()
-              .getDistance(
-                  t,
-                  enemyCapitalOrFactory,
-                  (t1, t2) ->
-                      ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties())
-                              .test(t2)
-                          && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2));
+      final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory, routeCond);
       if (distance > 0) {
         values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
       }
@@ -317,15 +310,7 @@ public final class ProTerritoryValueUtils {
 
     // Determine value based on nearby territory production
     double nearbyEnemyValue = 0;
-    final Set<Territory> nearbyTerritories =
-        data.getMap()
-            .getNeighbors(
-                t,
-                2,
-                (t1, t2) ->
-                    ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties())
-                            .test(t2)
-                        && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2));
+    final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 2, routeCond);
     final List<Territory> nearbyEnemyTerritories =
         CollectionUtils.getMatches(
             nearbyTerritories,
@@ -333,15 +318,7 @@ public final class ProTerritoryValueUtils {
                 player, data.getRelationshipTracker(), territoriesThatCantBeHeld));
     nearbyEnemyTerritories.removeAll(territoriesToAttack);
     for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories) {
-      final int distance =
-          data.getMap()
-              .getDistance(
-                  t,
-                  nearbyEnemyTerritory,
-                  (t1, t2) ->
-                      ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties())
-                              .test(t2)
-                          && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2));
+      final int distance = data.getMap().getDistance(t, nearbyEnemyTerritory, routeCond);
       if (distance > 0) {
         double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
@@ -356,18 +333,7 @@ public final class ProTerritoryValueUtils {
         }
       }
     }
-    final int landMassSize =
-        1
-            + data.getMap()
-                .getNeighbors(
-                    t,
-                    6,
-                    (t1, t2) ->
-                        ProMatches.territoryCanPotentiallyMoveLandUnits(
-                                    player, data.getProperties())
-                                .test(t2)
-                            && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2))
-                .size();
+    final int landMassSize = 1 + data.getMap().getNeighbors(t, 6, routeCond).size();
     double value = nearbyEnemyValue * landMassSize / maxLandMassSize + capitalOrFactoryValue;
     if (ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
       value *= 1.1; // prefer territories with factories
@@ -385,7 +351,6 @@ public final class ProTerritoryValueUtils {
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack,
       final Map<Territory, Double> territoryValueMap) {
-
     final GameState data = proData.getData();
     if (territoriesThatCantBeHeld.contains(t)
         || data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
@@ -473,7 +438,7 @@ public final class ProTerritoryValueUtils {
   }
 
   /**
-   * Finds enemy capitals / factors from a list that are "nearby" a given territory.
+   * Finds enemy capitals / factories from a list that are "nearby" a given territory.
    *
    * <p>If any of the target territories exist within a distance of 9, returns the subset that do.
    * Otherwise, proceeds to check the territories at each subsequent distance until at least one
@@ -486,7 +451,7 @@ public final class ProTerritoryValueUtils {
    * @param enemyCapitalsAndFactories The territories to search for.
    * @return Subset of enemyCapitalsAndFactories that were found.
    */
-  protected static Collection<Territory> findNearbyEnemyCapitalsAndFactories(
+  static Collection<Territory> findNearbyEnemyCapitalsAndFactories(
       final Territory startTerritory, final Set<Territory> enemyCapitalsAndFactories) {
     final var found = new HashSet<Territory>();
     new BreadthFirstSearch(startTerritory)

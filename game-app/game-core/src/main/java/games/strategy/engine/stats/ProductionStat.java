@@ -17,7 +17,7 @@ public class ProductionStat implements IStat {
   public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
     final int production =
         data.getMap().getTerritories().stream()
-            .filter(place -> place.getOwner().equals(player))
+            .filter(Matches.isTerritoryOwnedBy(player))
             .filter(
                 Matches.territoryCanCollectIncomeFrom(
                     player, data.getProperties(), data.getRelationshipTracker()))

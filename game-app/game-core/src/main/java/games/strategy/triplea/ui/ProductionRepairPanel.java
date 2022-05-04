@@ -132,7 +132,7 @@ class ProductionRepairPanel extends JPanel {
       this.gamePlayer = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       Predicate<Unit> myDamagedUnits =
-          Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair)
+          Matches.unitIsOwnedByAnyOf(this.allowedPlayersToRepair)
               .and(Matches.unitHasTakenSomeBombingUnitDamage());
       if (GameStepPropertiesHelper.isOnlyRepairIfDisabled(data)) {
         myDamagedUnits = myDamagedUnits.and(Matches.unitIsDisabled());

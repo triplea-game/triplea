@@ -241,7 +241,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;
       for (final Territory t : territories) {
-        if (Matches.isTerritoryOwnedBy(teamMembers).test(t)) {
+        if (Matches.isTerritoryOwnedByAnyOf(teamMembers).test(t)) {
           final TerritoryAttachment ta = TerritoryAttachment.get(t);
           if (ta != null) {
             teamVCs += ta.getVictoryCity();
@@ -356,7 +356,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
 
   private int getProduction(final GamePlayer gamePlayer) {
     return StreamSupport.stream(getData().getMap().spliterator(), false)
-        .filter(current -> current.getOwner().equals(gamePlayer))
+        .filter(Matches.isTerritoryOwnedBy(gamePlayer))
         .mapToInt(TerritoryAttachment::getProduction)
         .sum();
   }

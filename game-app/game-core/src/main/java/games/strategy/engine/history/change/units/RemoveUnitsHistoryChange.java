@@ -42,7 +42,9 @@ public class RemoveUnitsHistoryChange implements HistoryChange {
   /** The units that were created after a transformation */
   Collection<Unit> newUnits = new ArrayList<>();
 
-  /** @param messageTemplate ${units} and ${territory} will be replaced in this template */
+  /**
+   * @param messageTemplate ${units} and ${territory} will be replaced in this template
+   */
   public RemoveUnitsHistoryChange(
       final Territory location, final Collection<Unit> killedUnits, final String messageTemplate) {
     this.location = location;

@@ -879,7 +879,8 @@ public final class GameParser {
                 () ->
                     new GameParseException(
                         "Attachment of type " + className + " could not be instantiated"));
-    attachable.addAttachment(name, attachment);
+    // replace-all to automatically correct legacy (1.8) attachment spelling
+    attachable.addAttachment(name.replaceAll("ttatchment", "ttachment"), attachment);
 
     final List<Tuple<String, String>> attachmentOptionValues =
         setOptions(attachment, current.getOptions(), foreach, variables);

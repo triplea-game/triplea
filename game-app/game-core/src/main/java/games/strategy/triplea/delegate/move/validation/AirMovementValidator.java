@@ -621,7 +621,9 @@ public final class AirMovementValidator {
   private static List<Unit> getAirUnitsToValidate(
       final Collection<Unit> units, final Route route, final GamePlayer player) {
     final Predicate<Unit> ownedAirMatch =
-        Matches.unitIsAir().and(Matches.unitOwnedBy(player)).and(Matches.unitIsKamikaze().negate());
+        Matches.unitIsAir()
+            .and(Matches.unitIsOwnedBy(player))
+            .and(Matches.unitIsKamikaze().negate());
     final List<Unit> ownedAir = new ArrayList<>();
     ownedAir.addAll(CollectionUtils.getMatches(route.getEnd().getUnits(), ownedAirMatch));
     ownedAir.addAll(CollectionUtils.getMatches(units, ownedAirMatch));

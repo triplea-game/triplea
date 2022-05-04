@@ -120,8 +120,7 @@ public class BattleCalculatorDialog extends JDialog {
     // with the most units in the selected territory.
     if (!currentPanel.hasAttackingUnitsAdded()
         && t.getUnitCollection().stream()
-            .filter(u -> u.getOwner() != null)
-            .noneMatch(u -> u.getOwner().equals(currentPanel.getAttacker()))) {
+            .noneMatch(Matches.unitIsOwnedBy(currentPanel.getAttacker()))) {
       // Find possible attackers (enemies) of the current defender.
       // Count how many units each one has and find the max.
       final List<Unit> units =

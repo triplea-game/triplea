@@ -1,17 +1,88 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.function.Function;
+import lombok.AllArgsConstructor;
+import org.triplea.java.collections.IntegerMap;
 
 /** A collection of methods for tracking which players have which technology advances. */
-public final class TechTracker {
-  private TechTracker() {}
+@AllArgsConstructor
+public class TechTracker {
+  private final GameData data;
+
+  public int getAirDefenseBonus(GamePlayer player, UnitType type) {
+    return getSumOfBonuses(TechAbilityAttachment::getAirDefenseBonus, type, player);
+  }
+
+  public int getAirAttackBonus(GamePlayer player, UnitType type) {
+    return getSumOfBonuses(TechAbilityAttachment::getAirAttackBonus, type, player);
+  }
+
+  public int getMovementBonus(GamePlayer player, UnitType type) {
+    return getSumOfBonuses(TechAbilityAttachment::getMovementBonus, type, player);
+  }
+
+  public int getAttackBonus(GamePlayer player, UnitType type) {
+    return getSumOfBonuses(TechAbilityAttachment::getAttackBonus, type, player);
+  }
+
+  public int getAttackRollsBonus(GamePlayer player, UnitType type) {
+    return getSumOfBonuses(TechAbilityAttachment::getAttackRollsBonus, type, player);
+  }
+
+  public int getDefenseBonus(GamePlayer player, UnitType type) {
+    return getSumOfBonuses(TechAbilityAttachment::getDefenseBonus, type, player);
+  }
+
+  public int getDefenseRollsBonus(GamePlayer player, UnitType type) {
+    return getSumOfBonuses(TechAbilityAttachment::getDefenseRollsBonus, type, player);
+  }
+
+  public int getRadarBonus(GamePlayer player, UnitType type) {
+    return getSumOfBonuses(TechAbilityAttachment::getRadarBonus, type, player);
+  }
+
+  public boolean canBlitz(GamePlayer player, UnitType type) {
+    return getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ, type, player);
+  }
+
+  public boolean canBombard(GamePlayer player, UnitType type) {
+    return getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD, type, player);
+  }
+
+  private int getSumOfBonuses(
+      Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
+      UnitType type,
+      GamePlayer player) {
+    return TechAbilityAttachment.sumIntegerMap(mapper, type, getCurrentTechAdvances(player));
+  }
+
+  private boolean getUnitAbilitiesGained(
+      String filterForAbility, UnitType unitType, GamePlayer player) {
+    return getCurrentTechAdvances(player).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .map(TechAbilityAttachment::getUnitAbilitiesGained)
+        .map(m -> m.get(unitType))
+        .filter(Objects::nonNull)
+        .flatMap(Collection::stream)
+        .anyMatch(filterForAbility::equals);
+  }
+
+  private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
+    return getCurrentTechAdvances(player, data.getTechnologyFrontier());
+  }
 
   /**
    * Returns what tech advances this player already has successfully researched (including ones that
