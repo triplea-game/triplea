@@ -972,10 +972,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           .allMatch(
               uc -> {
                 final int unitsNeeded = unitPresenceMap.getInt(uc);
-                final int unitsFound =
-                    CollectionUtils.countMatches(
-                        matchingUnits, getUnitTypesPredicate(t.getData(), uc));
-                return unitsFound >= unitsNeeded;
+                return countUnitTypeMatches(t.getData(), matchingUnits, uc) >= unitsNeeded;
               });
     }
     return true;
@@ -1011,13 +1008,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           .allMatch(
               uc -> {
                 final int unitsNeeded = unitPresenceMap.getInt(uc);
-                final int unitsFound =
-                    CollectionUtils.countMatches(
-                        matchingUnits, getUnitTypesPredicate(t.getData(), uc));
-                return unitsFound <= unitsNeeded;
+                return countUnitTypeMatches(t.getData(), matchingUnits, uc) <= unitsNeeded;
               });
     }
     return false;
+  }
+
+  private int countUnitTypeMatches(GameState data, Collection<Unit> units, String uc) {
+    return CollectionUtils.countMatches(units, getUnitTypesPredicate(data, uc));
   }
 
   private Predicate<Unit> getUnitTypesPredicate(GameState data, String uc) {
