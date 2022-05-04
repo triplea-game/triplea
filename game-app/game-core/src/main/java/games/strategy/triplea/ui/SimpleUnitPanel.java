@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -35,6 +36,7 @@ public class SimpleUnitPanel extends JPanel {
   private final UiContext uiContext;
   private final Style style;
   @Setter private double scaleFactor = 1.0;
+  @Setter private boolean showCountsForSingleUnits = true;
 
   public enum Style {
     LARGE_ICONS_COLUMN,
@@ -138,10 +140,11 @@ public class SimpleUnitPanel extends JPanel {
       final boolean damaged,
       final boolean disabled) {
     final JLabel label = new JLabel();
-    label.setText(" x " + quantity + " ");
+    if (showCountsForSingleUnits || quantity > 1) {
+      label.setText("x " + quantity);
+    }
     if (unit instanceof UnitType) {
       final UnitType unitType = (UnitType) unit;
-
       final UnitImageFactory.ImageKey imageKey =
           UnitImageFactory.ImageKey.builder()
               .player(player)
@@ -165,6 +168,9 @@ public class SimpleUnitPanel extends JPanel {
       label.setIcon(scaleIcon(icon, scaleFactor));
     }
     add(label);
+    if (style == Style.SMALL_ICONS_ROW) {
+      add(Box.createHorizontalStrut(8));
+    }
   }
 
   private static ImageIcon scaleIcon(ImageIcon icon, double scaleFactor) {

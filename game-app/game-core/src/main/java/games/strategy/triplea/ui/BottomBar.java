@@ -7,12 +7,14 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -22,6 +24,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -139,13 +142,7 @@ public class BottomBar extends JPanel {
       }
     }
 
-    final JLabel nameLabel = new JLabel(territory.getName());
-    nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
-    // Ensure the text position is always the same, regardless of other components, by padding to
-    // fill available height.
-    final int labelHeight = nameLabel.getPreferredSize().height;
-    nameLabel.setBorder(createBorderToFillAvailableHeight(labelHeight, getHeight()));
-    territoryInfo.add(nameLabel);
+    territoryInfo.add(createTerritoryNameLabel(territory.getName()));
 
     if (territoryEffectText.length() > 0) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
@@ -153,31 +150,29 @@ public class BottomBar extends JPanel {
       territoryInfo.add(territoryEffectTextLabel);
     }
 
-    if (ta != null) {
-      final IntegerMap<Resource> resources = new IntegerMap<>();
-      final int production = ta.getProduction();
-      if (production > 0) {
-        resources.add(new Resource(Constants.PUS, data), production);
-      }
-      Optional.ofNullable(ta.getResources()).ifPresent(r -> resources.add(r.getResourcesCopy()));
-      for (final Resource resource : resources.keySet()) {
-        territoryInfo.add(Box.createHorizontalStrut(10));
-        territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
-      }
-    }
+    Optional.ofNullable(ta).ifPresent(this::addTerritoryResourceDetails);
 
-    final var unitsPanel = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
-    unitsPanel.setScaleFactor(0.5);
-    unitsPanel.setUnitsFromCategories(UnitSeparator.categorize(territory.getUnits()));
-    // Constrain the preferred size to the available size so that unit images that may not fully fit
-    // don't cause layout issues.
-    final int unitsWidth = unitsPanel.getPreferredSize().width;
-    unitsPanel.setPreferredSize(new Dimension(unitsWidth, getHeight()));
-    territoryInfo.add(Box.createHorizontalStrut(20));
-    territoryInfo.add(unitsPanel);
+    final Collection<UnitCategory> units = UnitSeparator.categorize(territory.getUnits());
+    if (!units.isEmpty()) {
+      JSeparator separator = new JSeparator(JSeparator.VERTICAL);
+      separator.setMaximumSize(new Dimension(40, getHeight()));
+      separator.setPreferredSize(separator.getMaximumSize());
+      territoryInfo.add(separator);
+      territoryInfo.add(createUnitBar(units));
+    }
 
     territoryInfo.add(Box.createHorizontalGlue());
     SwingComponents.redraw(territoryInfo);
+  }
+
+  private JLabel createTerritoryNameLabel(String territoryName) {
+    final JLabel nameLabel = new JLabel(territoryName);
+    nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
+    // Ensure the text position is always the same, regardless of other components, by padding to
+    // fill available height.
+    final int labelHeight = nameLabel.getPreferredSize().height;
+    nameLabel.setBorder(createBorderToFillAvailableHeight(labelHeight, getHeight()));
+    return nameLabel;
   }
 
   private Border createBorderToFillAvailableHeight(int componentHeight, int availableHeight) {
@@ -185,6 +180,31 @@ public class BottomBar extends JPanel {
     int topPad = extraVerticalSpace / 2;
     int bottomPad = extraVerticalSpace - topPad; // Might != topPad if extraVerticalSpace is odd.
     return BorderFactory.createEmptyBorder(topPad, 0, bottomPad, 0);
+  }
+
+  private void addTerritoryResourceDetails(TerritoryAttachment ta) {
+    final IntegerMap<Resource> resources = new IntegerMap<>();
+    final int production = ta.getProduction();
+    if (production > 0) {
+      resources.add(new Resource(Constants.PUS, data), production);
+    }
+    Optional.ofNullable(ta.getResources()).ifPresent(r -> resources.add(r.getResourcesCopy()));
+    for (final Resource resource : resources.keySet()) {
+      territoryInfo.add(Box.createHorizontalStrut(10));
+      territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
+    }
+  }
+
+  private SimpleUnitPanel createUnitBar(Collection<UnitCategory> units) {
+    final var unitBar = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
+    unitBar.setScaleFactor(0.5);
+    unitBar.setShowCountsForSingleUnits(false);
+    unitBar.setUnitsFromCategories(units);
+    // Constrain the preferred size to the available size so that unit images that may not fully fit
+    // don't cause layout issues.
+    final int unitsWidth = unitBar.getPreferredSize().width;
+    unitBar.setPreferredSize(new Dimension(unitsWidth, getHeight()));
+    return unitBar;
   }
 
   public void gameDataChanged() {
