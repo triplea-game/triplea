@@ -976,8 +976,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final Predicate<Territory> predicate =
         t -> {
           final Collection<Unit> units = t.getUnitCollection().getMatches(unitFilter);
-          return units.isEmpty()
-              || checkUnitPresenceByType(t.getData(), units, true).orElse(false);
+          return units.isEmpty() || checkUnitPresenceByType(t.getData(), units, true).orElse(false);
         };
     return matchTerritories(
         getTerritoryListBasedOnInputFromXml(territories, players, data), predicate);
