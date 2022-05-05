@@ -122,12 +122,6 @@ public class PurchaseDelegate extends BaseTripleADelegate
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if ((player.getProductionFrontier() == null
-            || player.getProductionFrontier().getRules().isEmpty())
-        && (player.getRepairFrontier() == null
-            || player.getRepairFrontier().getRules().isEmpty())) {
-      return false;
-    }
     if (!canWePurchaseOrRepair()) {
       return false;
     }
