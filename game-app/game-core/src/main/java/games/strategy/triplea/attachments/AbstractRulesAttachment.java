@@ -32,7 +32,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
-  protected List<GamePlayer> players = new ArrayList<>();
+  // Note: Subclasses should use getPlayers() which take into account getAttachedTo().
+  private List<GamePlayer> players = new ArrayList<>();
   protected int objectiveValue = 0;
   // only matters for objectiveValue, does not affect the condition
   protected int uses = -1;

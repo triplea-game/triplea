@@ -658,42 +658,50 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     // Check for unit presence (Veqryn)
     if (objectiveMet && getDirectPresenceTerritories() != null) {
       objectiveMet =
-          checkUnitPresence(getDirectPresenceTerritories(), directOwnership(), players, data);
+          checkUnitPresence(
+              getDirectPresenceTerritories(), directOwnership(players), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getAlliedPresenceTerritories() != null) {
       objectiveMet =
-          checkUnitPresence(getAlliedPresenceTerritories(), alliedOwnership(data), players, data);
+          checkUnitPresence(
+              getAlliedPresenceTerritories(), alliedOwnership(data, players), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getEnemyPresenceTerritories() != null) {
       objectiveMet =
-          checkUnitPresence(getEnemyPresenceTerritories(), enemyOwnership(data), players, data);
+          checkUnitPresence(
+              getEnemyPresenceTerritories(), enemyOwnership(data, players), players, data);
     }
     // Check for direct unit exclusions (veqryn)
     if (objectiveMet && getDirectExclusionTerritories() != null) {
       objectiveMet =
-          checkUnitExclusions(getDirectExclusionTerritories(), directOwnership(), players, data);
+          checkUnitExclusions(
+              getDirectExclusionTerritories(), directOwnership(players), players, data);
     }
     // Check for allied unit exclusions
     if (objectiveMet && getAlliedExclusionTerritories() != null) {
       objectiveMet =
           checkUnitExclusions(
               getAlliedExclusionTerritories(),
-              directOwnership().negate().and(alliedOwnership(data)),
+              directOwnership(players).negate().and(alliedOwnership(data, players)),
               players,
               data);
     }
     // Check for enemy unit exclusions (ANY UNITS)
     if (objectiveMet && getEnemyExclusionTerritories() != null) {
       objectiveMet =
-          checkUnitExclusions(getEnemyExclusionTerritories(), enemyOwnership(data), players, data);
+          checkUnitExclusions(
+              getEnemyExclusionTerritories(), enemyOwnership(data, players), players, data);
     }
     // Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
     if (objectiveMet && getEnemySurfaceExclusionTerritories() != null) {
       objectiveMet =
           checkUnitExclusions(
-              getEnemySurfaceExclusionTerritories(), enemySurfaceOwnership(data), players, data);
+              getEnemySurfaceExclusionTerritories(),
+              enemySurfaceOwnership(data, players),
+              players,
+              data);
     }
     // Check for Territory Ownership rules
     if (objectiveMet && getAlliedOwnershipTerritories() != null) {
@@ -926,19 +934,19 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         >= relationshipsExistence;
   }
 
-  private Predicate<Unit> directOwnership() {
+  private Predicate<Unit> directOwnership(Collection<GamePlayer> players) {
     return Matches.unitIsOwnedByAnyOf(players);
   }
 
-  private Predicate<Unit> alliedOwnership(GameState data) {
+  private Predicate<Unit> alliedOwnership(GameState data, Collection<GamePlayer> players) {
     return Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker());
   }
 
-  private Predicate<Unit> enemyOwnership(GameState data) {
+  private Predicate<Unit> enemyOwnership(GameState data, Collection<GamePlayer> players) {
     return Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker());
   }
 
-  private Predicate<Unit> enemySurfaceOwnership(GameState data) {
+  private Predicate<Unit> enemySurfaceOwnership(GameState data, Collection<GamePlayer> players) {
     return Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())
         .and(Matches.unitIsSea())
         .and(Matches.unitCanEvade().negate())
