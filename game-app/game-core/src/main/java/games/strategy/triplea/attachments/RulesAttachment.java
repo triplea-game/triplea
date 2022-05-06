@@ -91,7 +91,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * @return new rule attachment
    */
   public static RulesAttachment get(final GamePlayer player, final String nameOfAttachment) {
-    return get(player, nameOfAttachment, null, false);
+    return get(player, nameOfAttachment, List.of(), false);
   }
 
   static RulesAttachment get(
@@ -103,15 +103,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (ra != null) {
       return ra;
     }
-    if (playersToSearch != null) {
-      for (final GamePlayer otherPlayer : playersToSearch) {
-        if (otherPlayer.equals(player)) {
-          continue;
-        }
-        ra = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
-        if (ra != null) {
-          return ra;
-        }
+    for (final GamePlayer otherPlayer : playersToSearch) {
+      if (otherPlayer.equals(player)) {
+        continue;
+      }
+      ra = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
+      if (ra != null) {
+        return ra;
       }
     }
     if (!allowNull) {
