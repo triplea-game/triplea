@@ -107,22 +107,22 @@ public class UnitImageFactory {
       StringBuilder name = new StringBuilder(32);
       name.append(type.getName());
       if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
+        final UnitAttachment ua = UnitAttachment.get(type);
         if (type.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
-          if (TechTracker.hasRocket(gamePlayer) && UnitAttachment.get(type).getIsRocket()) {
+          if (TechTracker.hasRocket(gamePlayer) && ua.getIsRocket()) {
             name = new StringBuilder("rockets");
           }
           if (TechTracker.hasAaRadar(gamePlayer) && Matches.unitTypeIsAaForAnything().test(type)) {
             name.append("_r");
           }
-        } else if (UnitAttachment.get(type).getIsRocket()
-            && Matches.unitTypeIsAaForAnything().test(type)) {
+        } else if (ua.getIsRocket() && Matches.unitTypeIsAaForAnything().test(type)) {
           if (TechTracker.hasRocket(gamePlayer)) {
             name.append("_rockets");
           }
           if (TechTracker.hasAaRadar(gamePlayer)) {
             name.append("_r");
           }
-        } else if (UnitAttachment.get(type).getIsRocket()) {
+        } else if (ua.getIsRocket()) {
           if (TechTracker.hasRocket(gamePlayer)) {
             name.append("_rockets");
           }
@@ -131,19 +131,16 @@ public class UnitImageFactory {
             name.append("_r");
           }
         }
-        if (UnitAttachment.get(type).getIsAir()
-            && !UnitAttachment.get(type).getIsStrategicBomber()) {
+        if (ua.getIsAir() && !ua.getIsStrategicBomber()) {
           if (TechTracker.hasLongRangeAir(gamePlayer)) {
             name.append("_lr");
           }
           if (TechTracker.hasJetFighter(gamePlayer)
-              && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
-                  || UnitAttachment.get(type).getDefense(gamePlayer) > 0)) {
+              && (ua.getAttack(gamePlayer) > 0 || ua.getDefense(gamePlayer) > 0)) {
             name.append("_jp");
           }
         }
-        if (UnitAttachment.get(type).getIsAir()
-            && UnitAttachment.get(type).getIsStrategicBomber()) {
+        if (ua.getIsAir() && ua.getIsStrategicBomber()) {
           if (TechTracker.hasLongRangeAir(gamePlayer)) {
             name.append("_lr");
           }
@@ -151,15 +148,13 @@ public class UnitImageFactory {
             name.append("_hb");
           }
         }
-        if (UnitAttachment.get(type).getIsFirstStrike()
-            && UnitAttachment.get(type).getCanEvade()
-            && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
-                || UnitAttachment.get(type).getDefense(gamePlayer) > 0)
+        if (ua.getIsFirstStrike()
+            && ua.getCanEvade()
+            && (ua.getAttack(gamePlayer) > 0 || ua.getDefense(gamePlayer) > 0)
             && TechTracker.hasSuperSubs(gamePlayer)) {
           name.append("_ss");
         }
-        if ((type.getName().equals(Constants.UNIT_TYPE_FACTORY)
-                || UnitAttachment.get(type).getCanProduceUnits())
+        if ((type.getName().equals(Constants.UNIT_TYPE_FACTORY) || ua.getCanProduceUnits())
             && (TechTracker.hasIndustrialTechnology(gamePlayer)
                 || TechTracker.hasIncreasedFactoryProduction(gamePlayer))) {
           name.append("_it");
@@ -267,22 +262,40 @@ public class UnitImageFactory {
   }
 
   private Image loadImageAndTransform(URL imageLocation, ImageKey imageKey) {
-    final GamePlayer gamePlayer = imageKey.getPlayer();
-    final UnitType type = imageKey.getType();
-
-    final Image image = Toolkit.getDefaultToolkit().getImage(imageLocation);
+    Image image = Toolkit.getDefaultToolkit().getImage(imageLocation);
     Util.ensureImageLoaded(image);
-    if (!mapData.ignoreTransformingUnit(type.getName())) {
-      Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
-      if (unitColor.isPresent()) {
-        final int brightness = mapData.getUnitBrightness(gamePlayer.getName());
-        ImageTransformer.colorize(unitColor.get(), brightness, image);
-      }
-      if (mapData.shouldFlipUnit(gamePlayer.getName())) {
-        ImageTransformer.flipHorizontally(image);
-      }
+    return transformImageIfNeeded(image, imageKey);
+  }
+
+  private Image transformImageIfNeeded(Image image, ImageKey imageKey) {
+    if (mapData.ignoreTransformingUnit(imageKey.getType().getName())) {
+      return image;
+    }
+    final String playerName = imageKey.getPlayer().getName();
+    Optional<Color> unitColor = mapData.getUnitColor(playerName);
+    boolean shouldFlip = mapData.shouldFlipUnit(playerName);
+    if (unitColor.isEmpty() && !shouldFlip) {
+      return image;
+    }
+    // Create an image copy so we don't modify the one returned by the toolkit which may be cached.
+    image = createImageCopy(image);
+    if (unitColor.isPresent()) {
+      final int brightness = mapData.getUnitBrightness(playerName);
+      ImageTransformer.colorize(unitColor.get(), brightness, image);
+    }
+    if (shouldFlip) {
+      ImageTransformer.flipHorizontally(image);
     }
     return image;
+  }
+
+  private static Image createImageCopy(Image image) {
+    final var copy =
+        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+    Graphics g = copy.createGraphics();
+    g.drawImage(image, 0, 0, null);
+    g.dispose();
+    return copy;
   }
 
   /**
