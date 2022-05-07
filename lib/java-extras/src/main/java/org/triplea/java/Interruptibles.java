@@ -108,7 +108,6 @@ public final class Interruptibles {
     if (millis == 0) {
       return true;
     }
-    new Exception().printStackTrace();
     return await(() -> Thread.sleep(millis));
   }
 
