@@ -101,32 +101,14 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           }
         }
         if (!toAdd.isEmpty()) {
-          final String transcriptText =
-              player.getName()
-                  + " creates "
-                  + MyFormatter.unitsToTextNoOwner(toAdd)
-                  + " in "
-                  + t.getName();
-          bridge.getHistoryWriter().startEvent(transcriptText, toAdd);
-          endTurnReport.append(transcriptText).append("<br />");
-          final Change place = ChangeFactory.addUnits(t, toAdd);
-          change.add(place);
+          createUnits(t, toAdd, change, endTurnReport);
         }
         if (!toAddSea.isEmpty()) {
           final Predicate<Territory> myTerrs = Matches.territoryIsWater();
           final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (!waterNeighbors.isEmpty()) {
-            final Territory tw = getRandomTerritory(data, waterNeighbors, bridge);
-            final String transcriptText =
-                player.getName()
-                    + " creates "
-                    + MyFormatter.unitsToTextNoOwner(toAddSea)
-                    + " in "
-                    + tw.getName();
-            bridge.getHistoryWriter().startEvent(transcriptText, toAddSea);
-            endTurnReport.append(transcriptText).append("<br />");
-            final Change place = ChangeFactory.addUnits(tw, toAddSea);
-            change.add(place);
+            final Territory location = getRandomTerritory(data, waterNeighbors, bridge);
+            createUnits(location, toAddSea, change, endTurnReport);
           }
         }
         if (!toAddLand.isEmpty()) {
@@ -134,17 +116,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
               Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (!landNeighbors.isEmpty()) {
-            final Territory tl = getRandomTerritory(data, landNeighbors, bridge);
-            final String transcriptText =
-                player.getName()
-                    + " creates "
-                    + MyFormatter.unitsToTextNoOwner(toAddLand)
-                    + " in "
-                    + tl.getName();
-            bridge.getHistoryWriter().startEvent(transcriptText, toAddLand);
-            endTurnReport.append(transcriptText).append("<br />");
-            final Change place = ChangeFactory.addUnits(tl, toAddLand);
-            change.add(place);
+            final Territory location = getRandomTerritory(data, landNeighbors, bridge);
+            createUnits(location, toAddLand, change, endTurnReport);
           }
         }
       }
@@ -153,6 +126,23 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       bridge.addChange(change);
     }
     return endTurnReport.toString();
+  }
+
+  private void createUnits(
+      final Territory location,
+      Collection<Unit> units,
+      CompositeChange change,
+      StringBuilder endTurnReport) {
+    final String transcriptText =
+        player.getName()
+            + " creates "
+            + MyFormatter.unitsToTextNoOwner(units)
+            + " in "
+            + location.getName();
+    bridge.getHistoryWriter().startEvent(transcriptText, units);
+    endTurnReport.append(transcriptText).append("<br />");
+    final Change place = ChangeFactory.addUnits(location, units);
+    change.add(place);
   }
 
   private static Territory getRandomTerritory(
