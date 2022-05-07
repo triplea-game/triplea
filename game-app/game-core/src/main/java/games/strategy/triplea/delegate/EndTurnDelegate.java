@@ -13,6 +13,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -80,7 +81,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits(), myCreatorsMatch);
-      if (myCreators != null && !myCreators.isEmpty()) {
+      if (!myCreators.isEmpty()) {
         final Collection<Unit> toAdd = new ArrayList<>();
         final Collection<Unit> toAddSea = new ArrayList<>();
         final Collection<Unit> toAddLand = new ArrayList<>();
@@ -89,11 +90,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           final IntegerMap<UnitType> createsUnitsMap = ua.getCreatesUnitsList();
           final Collection<UnitType> willBeCreated = createsUnitsMap.keySet();
           for (final UnitType ut : willBeCreated) {
-            if (UnitAttachment.get(ut).getIsSea() && Matches.territoryIsLand().test(t)) {
+            final UnitAttachment uaToCreate = UnitAttachment.get(ut);
+            if (uaToCreate.getIsSea() && !t.isWater()) {
               toAddSea.addAll(ut.create(createsUnitsMap.getInt(ut), player));
-            } else if (!UnitAttachment.get(ut).getIsSea()
-                && !UnitAttachment.get(ut).getIsAir()
-                && Matches.territoryIsWater().test(t)) {
+            } else if (!uaToCreate.getIsSea() && !uaToCreate.getIsAir() && t.isWater()) {
               toAddLand.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else {
               toAdd.addAll(ut.create(createsUnitsMap.getInt(ut), player));
@@ -115,8 +115,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         if (!toAddSea.isEmpty()) {
           final Predicate<Territory> myTerrs = Matches.territoryIsWater();
           final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
-          if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
-            final Territory tw = getRandomTerritory(waterNeighbors, bridge);
+          if (!waterNeighbors.isEmpty()) {
+            final Territory tw = getRandomTerritory(data, waterNeighbors, bridge);
             final String transcriptText =
                 player.getName()
                     + " creates "
@@ -133,8 +133,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           final Predicate<Territory> myTerrs =
               Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
-          if (landNeighbors != null && !landNeighbors.isEmpty()) {
-            final Territory tl = getRandomTerritory(landNeighbors, bridge);
+          if (!landNeighbors.isEmpty()) {
+            final Territory tl = getRandomTerritory(data, landNeighbors, bridge);
             final String transcriptText =
                 player.getName()
                     + " creates "
@@ -156,20 +156,17 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   }
 
   private static Territory getRandomTerritory(
-      final Collection<Territory> territories, final IDelegateBridge bridge) {
-    if (territories == null || territories.isEmpty()) {
-      return null;
-    }
+      final GameState data, final Collection<Territory> territories, final IDelegateBridge bridge) {
     if (territories.size() == 1) {
       return CollectionUtils.getAny(territories);
     }
     // there is an issue with maps that have lots of rolls without any pause between them: they are
-    // causing the crypted
-    // random source (ie: live and pbem games) to lock up or error out
-    // so we need to slow them down a bit, until we come up with a better solution (like aggregating
-    // all the chances
-    // together, then getting a ton of random numbers at once instead of one at a time)
-    Interruptibles.sleep(100);
+    // causing the crypted random source (ie: live and pbem games) to lock up or error out so we
+    // need to slow them down a bit, until we come up with a better solution (like aggregating all
+    // the chances together, then getting a ton of random numbers at once instead of one at a time)
+    if (PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(data)) {
+      Interruptibles.sleep(100);
+    }
     final List<Territory> list = new ArrayList<>(territories);
     final int random =
         // ZERO BASED
