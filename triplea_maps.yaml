@@ -2616,3 +2616,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Empty_Start/master/preview.png
   description: |
    <br>Revised game with most of the map starting empty
+- mapName: NWO VICHY 1941
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/nwovichy/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/nwovichy/master/preview.png
+  description: |
+   <br>World War II in Europe with Vichy France acting as a full member of the Axis. Uses New World Order map.
