@@ -307,10 +307,7 @@ public final class ProUtils {
       return true;
     }
     return Streams.stream(player.getData().getSequence())
-        .noneMatch(
-            s ->
-                player.equals(s.getPlayerId())
-                    && s.getName().endsWith("CombatMove")
-                    && !s.getName().endsWith("NonCombatMove"));
+        .filter(s -> player.equals(s.getPlayerId()))
+        .noneMatch(s -> GameStep.isCombatMoveStep(s.getName()));
   }
 }
