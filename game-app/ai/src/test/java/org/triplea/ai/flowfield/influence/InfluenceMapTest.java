@@ -1,6 +1,7 @@
 package org.triplea.ai.flowfield.influence;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.is;
@@ -23,7 +24,6 @@ import org.triplea.ai.flowfield.neighbors.MapWithNeighbors;
 import org.triplea.ai.flowfield.odds.BattleDetails;
 
 class InfluenceMapTest {
-
   @Test
   void territories3InLineValues() {
     final List<Territory> territories =
@@ -169,7 +169,7 @@ class InfluenceMapTest {
                 return List.of(territories.get(1));
               }
             });
-    final GameData gameData = mock(GameData.class);
+    final GameData gameData = givenGameData().build();
     final UnitType unitType = new UnitType("test", gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("test", unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
@@ -243,7 +243,7 @@ class InfluenceMapTest {
                 return List.of(territories.get(1));
               }
             });
-    final GameData gameData = mock(GameData.class);
+    final GameData gameData = givenGameData().build();
     final UnitType unitType = new UnitType("test", gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("test", unitType, gameData);
     unitType.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
@@ -325,7 +325,7 @@ class InfluenceMapTest {
                 return List.of();
               }
             });
-    final GameData gameData = mock(GameData.class);
+    final GameData gameData = givenGameData().build();
     when(gameData.getDiceSides()).thenReturn(6);
     final UnitType unitType = new UnitType("test", gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("test", unitType, gameData);
@@ -437,7 +437,7 @@ class InfluenceMapTest {
                 return List.of();
               }
             });
-    final GameData gameData = mock(GameData.class);
+    final GameData gameData = givenGameData().build();
     when(gameData.getDiceSides()).thenReturn(6);
     final UnitType unitType = new UnitType("test", gameData);
     final UnitAttachment unitAttachment = new UnitAttachment("test", unitType, gameData);

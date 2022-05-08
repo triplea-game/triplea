@@ -314,17 +314,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     // for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we
     // change at end of each round)
     if (initialFireTriggerParams.useUses) {
-      setUsesForWhenTriggers(triggersToFire, bridge, true);
+      setUsesForWhenTriggers(triggersToFire, bridge);
     }
   }
 
   protected static void setUsesForWhenTriggers(
-      final Set<TriggerAttachment> triggersToBeFired,
-      final IDelegateBridge bridge,
-      final boolean useUses) {
-    if (!useUses) {
-      return;
-    }
+      final Set<TriggerAttachment> triggersToBeFired, final IDelegateBridge bridge) {
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment trig : triggersToBeFired) {
       final int currentUses = trig.getUses();
@@ -2190,14 +2185,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final GamePlayer player : t.getPlayers()) {
         for (final String usaString : t.getSupport().keySet()) {
-          UnitSupportAttachment usa = null;
-          for (final UnitSupportAttachment support :
-              UnitSupportAttachment.get(data.getUnitTypeList())) {
-            if (support.getName().equals(usaString)) {
-              usa = support;
-              break;
-            }
-          }
+          final UnitSupportAttachment usa =
+              UnitSupportAttachment.get(data.getUnitTypeList()).stream()
+                  .filter(s -> s.getName().equals(usaString))
+                  .findAny()
+                  .orElse(null);
           if (usa == null) {
             throw new IllegalStateException(
                 "Could not find unitSupportAttachment. name:" + usaString);
@@ -2214,7 +2206,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                           + ": "
                           + player.getName()
                           + " is removed from "
-                          + usa.toString());
+                          + usa);
             }
           } else {
             if (t.getSupport().get(usa.getName())) {
@@ -2227,7 +2219,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                           + ": "
                           + player.getName()
                           + " is added to "
-                          + usa.toString());
+                          + usa);
             }
           }
         }

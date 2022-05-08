@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
@@ -10,9 +11,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -68,9 +67,8 @@ class DummyPlayerTest {
           final var unitAttachment = mock(UnitAttachment.class);
           when(unitType.getAttachment(any())).thenReturn(unitAttachment);
           when(unitAttachment.getIsAir()).thenReturn(!unit.equals(unitPool.get(0)));
-          final var gameData = mock(GameData.class);
+          final var gameData = givenGameData().build();
           when(unit.getData()).thenReturn(gameData);
-          when(gameData.getResourceList()).thenReturn(mock(ResourceList.class));
           final var playerId = mock(GamePlayer.class);
           when(unit.getOwner()).thenReturn(playerId);
         }

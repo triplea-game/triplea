@@ -7,6 +7,7 @@ import java.util.Comparator;
 import javax.annotation.Nonnull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Represents a version string. versions are of the form major.minor.point */
 @Getter
@@ -23,7 +24,7 @@ public final class Version implements Serializable, Comparable<Version> {
    *
    * @deprecated Do not use, use 'buildNumber' instead.
    */
-  @Deprecated private int point;
+  @RemoveOnNextMajorRelease @Deprecated private int point;
 
   private final String buildNumber;
 
