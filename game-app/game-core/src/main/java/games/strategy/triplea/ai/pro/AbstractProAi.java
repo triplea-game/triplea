@@ -223,7 +223,8 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
             storedFactoryMoveMap =
                 ProSimulateTurnUtils.transferMoveMap(proData, factoryMoveMap, data, player);
           }
-        } else if (GameStep.isCombatMoveStep(stepName) && !GameStep.isAirborneCombatMoveStep(stepName)) {
+        } else if (GameStep.isCombatMoveStep(stepName)
+            && !GameStep.isAirborneCombatMoveStep(stepName)) {
           proData.initializeSimulation(this, dataCopy, playerCopy);
           final Map<Territory, ProTerritory> moveMap = combatMoveAi.doCombatMove(moveDel);
           if (storedCombatMoveMap == null) {
