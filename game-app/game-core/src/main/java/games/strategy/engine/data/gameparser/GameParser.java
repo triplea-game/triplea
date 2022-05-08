@@ -661,7 +661,7 @@ public final class GameParser {
       }
       if (result == null) {
         throw new GameParseException(
-            "Could not find resource or unit" + current.getResourceOrUnit());
+            "Could not find resource or unit " + current.getResourceOrUnit());
       }
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addResult(result, quantity);
@@ -682,7 +682,7 @@ public final class GameParser {
       }
       if (result == null) {
         throw new GameParseException(
-            "Could not find resource or unit" + current.getResourceOrUnit());
+            "Could not find resource or unit " + current.getResourceOrUnit());
       }
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addResult(result, quantity);

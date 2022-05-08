@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -90,7 +91,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * @return new rule attachment
    */
   public static RulesAttachment get(final GamePlayer player, final String nameOfAttachment) {
-    return get(player, nameOfAttachment, null, false);
+    return get(player, nameOfAttachment, List.of(), false);
   }
 
   static RulesAttachment get(
@@ -99,35 +100,26 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Collection<GamePlayer> playersToSearch,
       final boolean allowNull) {
     RulesAttachment ra = (RulesAttachment) player.getAttachment(nameOfAttachment);
-    if (ra == null) {
-      if (playersToSearch == null) {
-        if (!allowNull) {
-          throw new IllegalStateException(
-              "Rules & Conditions: No rule attachment for:"
-                  + player.getName()
-                  + " with name: "
-                  + nameOfAttachment);
-        }
-      } else {
-        for (final GamePlayer otherPlayer : playersToSearch) {
-          if (otherPlayer.equals(player)) {
-            continue;
-          }
-          ra = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (ra != null) {
-            return ra;
-          }
-        }
-        if (!allowNull) {
-          throw new IllegalStateException(
-              "Rules & Conditions: No rule attachment for:"
-                  + player.getName()
-                  + " with name: "
-                  + nameOfAttachment);
-        }
+    if (ra != null) {
+      return ra;
+    }
+    for (final GamePlayer otherPlayer : playersToSearch) {
+      if (otherPlayer.equals(player)) {
+        continue;
+      }
+      ra = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
+      if (ra != null) {
+        return ra;
       }
     }
-    return ra;
+    if (!allowNull) {
+      throw new IllegalStateException(
+          "Rules & Conditions: No rule attachment for:"
+              + player.getName()
+              + " with name: "
+              + nameOfAttachment);
+    }
+    return null;
   }
 
   /**
@@ -663,85 +655,49 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getDirectPresenceTerritories() != null) {
-      // Get the listed territories
-      final String[] terrs = getDirectPresenceTerritories();
       objectiveMet =
           checkUnitPresence(
-              getTerritoryListBasedOnInputFromXml(terrs, players, data),
-              "direct",
-              getTerritoryCount(),
-              players,
-              data);
+              getDirectPresenceTerritories(), directOwnership(players), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getAlliedPresenceTerritories() != null) {
-      // Get the listed territories
-      final String[] terrs = getAlliedPresenceTerritories();
       objectiveMet =
           checkUnitPresence(
-              getTerritoryListBasedOnInputFromXml(terrs, players, data),
-              "allied",
-              getTerritoryCount(),
-              players,
-              data);
+              getAlliedPresenceTerritories(), alliedOwnership(data, players), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getEnemyPresenceTerritories() != null) {
-      // Get the listed territories
-      final String[] terrs = getEnemyPresenceTerritories();
       objectiveMet =
           checkUnitPresence(
-              getTerritoryListBasedOnInputFromXml(terrs, players, data),
-              "enemy",
-              getTerritoryCount(),
-              players,
-              data);
+              getEnemyPresenceTerritories(), enemyOwnership(data, players), players, data);
     }
     // Check for direct unit exclusions (veqryn)
     if (objectiveMet && getDirectExclusionTerritories() != null) {
-      // Get the listed territories
-      final String[] terrs = getDirectExclusionTerritories();
       objectiveMet =
           checkUnitExclusions(
-              getTerritoryListBasedOnInputFromXml(terrs, players, data),
-              "direct",
-              getTerritoryCount(),
-              players,
-              data);
+              getDirectExclusionTerritories(), directOwnership(players), players, data);
     }
     // Check for allied unit exclusions
     if (objectiveMet && getAlliedExclusionTerritories() != null) {
-      // Get the listed territories
-      final String[] terrs = getAlliedExclusionTerritories();
       objectiveMet =
           checkUnitExclusions(
-              getTerritoryListBasedOnInputFromXml(terrs, players, data),
-              "allied",
-              getTerritoryCount(),
+              getAlliedExclusionTerritories(),
+              directOwnership(players).negate().and(alliedOwnership(data, players)),
               players,
               data);
     }
     // Check for enemy unit exclusions (ANY UNITS)
     if (objectiveMet && getEnemyExclusionTerritories() != null) {
-      // Get the listed territories
-      final String[] terrs = getEnemyExclusionTerritories();
       objectiveMet =
           checkUnitExclusions(
-              getTerritoryListBasedOnInputFromXml(terrs, players, data),
-              "enemy",
-              getTerritoryCount(),
-              players,
-              data);
+              getEnemyExclusionTerritories(), enemyOwnership(data, players), players, data);
     }
     // Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
     if (objectiveMet && getEnemySurfaceExclusionTerritories() != null) {
-      // Get the listed territories
-      final String[] terrs = getEnemySurfaceExclusionTerritories();
       objectiveMet =
           checkUnitExclusions(
-              getTerritoryListBasedOnInputFromXml(terrs, players, data),
-              "enemy_surface",
-              getTerritoryCount(),
+              getEnemySurfaceExclusionTerritories(),
+              enemySurfaceOwnership(data, players),
               players,
               data);
     }
@@ -793,7 +749,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       } else {
         listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
       }
-      objectiveMet = checkAlliedOwnership(listedTerritories, getTerritoryCount(), players, data);
+      objectiveMet = checkAlliedOwnership(listedTerritories, players, data);
     }
     // Check for Direct Territory Ownership rules
     if (objectiveMet && getDirectOwnershipTerritories() != null) {
@@ -823,7 +779,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       } else {
         listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
       }
-      objectiveMet = checkDirectOwnership(listedTerritories, getTerritoryCount(), players);
+      objectiveMet = checkDirectOwnership(listedTerritories, players);
     }
     // get attached to player
     final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
@@ -976,184 +932,87 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         >= relationshipsExistence;
   }
 
-  /**
-   * Checks for the collection of territories to see if they have units owned by the exclType
-   * alliance.
-   */
-  private boolean checkUnitPresence(
-      final Collection<Territory> territories,
-      final String exclType,
-      final int numberNeeded,
-      final List<GamePlayer> players,
-      final GameState data) {
-    boolean useSpecific = false;
-    if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
-      useSpecific = true;
-    }
-    boolean satisfied = false;
-    int numberMet = 0;
-    for (final Territory terr : territories) {
-      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits());
-      switch (exclType) {
-        case "direct":
-          allUnits.removeAll(
-              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByAnyOf(players).negate()));
-          break;
-        case "allied":
-          allUnits.retainAll(
-              CollectionUtils.getMatches(
-                  allUnits,
-                  Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
-          break;
-        case "enemy":
-          allUnits.retainAll(
-              CollectionUtils.getMatches(
-                  allUnits,
-                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
-          break;
-        default:
-          return false;
-      }
-      if (!allUnits.isEmpty()) {
-        if (!useSpecific) {
-          numberMet += 1;
-          if (numberMet >= numberNeeded) {
-            satisfied = true;
-            if (!getCountEach()) {
-              break;
-            }
-          }
-        } else {
-          final IntegerMap<String> unitComboMap = getUnitPresence();
-          final Set<String> unitCombos = unitComboMap.keySet();
-          boolean hasEnough = false;
-          for (final String uc : unitCombos) {
-            final int unitsNeeded = unitComboMap.getInt(uc);
-            if (uc == null || uc.equals("ANY") || uc.equals("any")) {
-              hasEnough = allUnits.size() >= unitsNeeded;
-            } else {
-              final Set<UnitType> typesAllowed =
-                  data.getUnitTypeList().getUnitTypes(splitOnColon(uc));
-              hasEnough =
-                  CollectionUtils.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size()
-                      >= unitsNeeded;
-            }
-            if (!hasEnough) {
-              break;
-            }
-          }
-          if (hasEnough) {
-            numberMet += 1;
-            if (numberMet >= numberNeeded) {
-              satisfied = true;
-              if (!getCountEach()) {
-                break;
-              }
-            }
-          }
-        }
-      }
-    }
-    if (getCountEach()) {
-      eachMultiple = numberMet;
-    }
-    return satisfied;
+  private Predicate<Unit> directOwnership(Collection<GamePlayer> players) {
+    return Matches.unitIsOwnedByAnyOf(players);
+  }
+
+  private Predicate<Unit> alliedOwnership(GameState data, Collection<GamePlayer> players) {
+    return Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker());
+  }
+
+  private Predicate<Unit> enemyOwnership(GameState data, Collection<GamePlayer> players) {
+    return Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker());
+  }
+
+  private Predicate<Unit> enemySurfaceOwnership(GameState data, Collection<GamePlayer> players) {
+    return Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())
+        .and(Matches.unitIsSea())
+        .and(Matches.unitCanEvade().negate())
+        .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
   }
 
   /**
-   * Checks for the collection of territories to see if they have units owned by the exclType
-   * alliance. It doesn't yet threshold the data
+   * Checks for the collection of territories to see if they have sufficient units matching the unit
+   * filter.
    */
-  private boolean checkUnitExclusions(
-      final Collection<Territory> territories,
-      final String exclType,
-      final int numberNeeded,
+  private boolean checkUnitPresence(
+      final String[] territoryStrings,
+      final Predicate<Unit> unitFilter,
       final List<GamePlayer> players,
       final GameState data) {
-    boolean useSpecific = false;
-    if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
-      useSpecific = true;
-    }
-    // Go through the owned territories and see if there are any units owned by allied/enemy based
-    // on exclType
-    boolean satisfied = false;
-    int numberMet = 0;
-    for (final Territory terr : territories) {
-      // get all the units in the territory
-      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits());
-      switch (exclType) {
-        case "allied": // any allied units in the territory. (does not include owned units)
-          allUnits.removeAll(
-              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByAnyOf(players)));
-          allUnits.retainAll(
-              CollectionUtils.getMatches(
-                  allUnits,
-                  Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
-          break;
-        case "direct":
-          allUnits.removeAll(
-              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByAnyOf(players).negate()));
-          break;
-        case "enemy": // any enemy units in the territory
-          allUnits.retainAll(
-              CollectionUtils.getMatches(
-                  allUnits,
-                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())));
-          break;
-        case "enemy_surface": // any enemy sea units (not trn/sub) in the territory
-          allUnits.retainAll(
-              CollectionUtils.getMatches(
-                  allUnits,
-                  Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())
-                      .and(Matches.unitIsSea())
-                      .and(Matches.unitCanEvade().negate())
-                      .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));
-          break;
-        default:
-          return false;
-      }
-      if (allUnits.isEmpty()) {
-        numberMet += 1;
-        if (numberMet >= numberNeeded) {
-          satisfied = true;
-          if (!getCountEach()) {
-            break;
-          }
-        }
-      } else if (useSpecific) {
-        final IntegerMap<String> unitComboMap = getUnitPresence();
-        final Set<String> unitCombos = unitComboMap.keySet();
-        boolean hasLess = false;
-        for (final String uc : unitCombos) {
-          final int unitsMax = unitComboMap.getInt(uc);
-          if (uc == null || uc.equals("ANY") || uc.equals("any")) {
-            hasLess = allUnits.size() <= unitsMax;
-          } else {
-            final Set<UnitType> typesAllowed =
-                data.getUnitTypeList().getUnitTypes(splitOnColon(uc));
-            hasLess =
-                CollectionUtils.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size()
-                    <= unitsMax;
-          }
-          if (!hasLess) {
-            break;
-          }
-        }
-        if (hasLess) {
-          numberMet += 1;
-          if (numberMet >= numberNeeded) {
-            satisfied = true;
-            if (!getCountEach()) {
-              break;
+    final Predicate<Territory> predicate =
+        t -> {
+          final Collection<Unit> units = t.getUnitCollection().getMatches(unitFilter);
+          return !units.isEmpty()
+              && checkUnitPresenceByType(t.getData(), units, false).orElse(true);
+        };
+    return matchTerritories(
+        getTerritoryListBasedOnInputFromXml(territoryStrings, players, data), predicate);
+  }
+
+  /**
+   * Checks for the collection of territories to see if they have sufficient units not matching the
+   * unit filter.
+   */
+  private boolean checkUnitExclusions(
+      final String[] territories,
+      final Predicate<Unit> unitFilter,
+      final List<GamePlayer> players,
+      final GameState data) {
+    final Predicate<Territory> predicate =
+        t -> {
+          final Collection<Unit> units = t.getUnitCollection().getMatches(unitFilter);
+          return units.isEmpty() || checkUnitPresenceByType(t.getData(), units, true).orElse(false);
+        };
+    return matchTerritories(
+        getTerritoryListBasedOnInputFromXml(territories, players, data), predicate);
+  }
+
+  private Optional<Boolean> checkUnitPresenceByType(
+      GameState data, Collection<Unit> units, boolean lessThanOrEqual) {
+    final IntegerMap<String> unitPresenceMap = getUnitPresence();
+    if (unitPresenceMap != null && !unitPresenceMap.keySet().isEmpty()) {
+      final Predicate<String> predicate =
+          uc -> {
+            final int unitsNeeded = unitPresenceMap.getInt(uc);
+            final int unitsMatched =
+                CollectionUtils.countMatches(units, getUnitTypesPredicate(data, uc));
+            if (lessThanOrEqual) {
+              return unitsMatched <= unitsNeeded;
+            } else {
+              return unitsMatched >= unitsNeeded;
             }
-          }
-        }
-      }
+          };
+      return Optional.of(unitPresenceMap.keySet().stream().allMatch(predicate));
     }
-    if (getCountEach()) {
-      eachMultiple = numberMet;
+    return Optional.empty();
+  }
+
+  private Predicate<Unit> getUnitTypesPredicate(GameState data, String uc) {
+    if (uc == null || uc.equals("ANY") || uc.equals("any")) {
+      return unit -> true;
     }
-    return satisfied;
+    return Matches.unitIsOfTypes(data.getUnitTypeList().getUnitTypes(splitOnColon(uc)));
   }
 
   /**
@@ -1161,32 +1020,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * is reached, the satisfied flag is set to true and returned.
    */
   private boolean checkAlliedOwnership(
-      final Collection<Territory> listedTerrs,
-      final int numberNeeded,
+      final Collection<Territory> territories,
       final Collection<GamePlayer> players,
       final GameState data) {
-    int numberMet = 0;
-    boolean satisfied = false;
     final Collection<GamePlayer> allies =
         CollectionUtils.getMatches(
             data.getPlayerList().getPlayers(),
             Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
-    for (final Territory listedTerr : listedTerrs) {
-      // if the territory owner is an ally
-      if (Matches.isTerritoryOwnedByAnyOf(allies).test(listedTerr)) {
-        numberMet += 1;
-        if (numberMet >= numberNeeded) {
-          satisfied = true;
-          if (!getCountEach()) {
-            break;
-          }
-        }
-      }
-    }
-    if (getCountEach()) {
-      eachMultiple = numberMet;
-    }
-    return satisfied;
+    return matchTerritories(territories, Matches.isTerritoryOwnedByAnyOf(allies));
   }
 
   /**
@@ -1194,26 +1035,17 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * is reached, return true.
    */
   private boolean checkDirectOwnership(
-      final Collection<Territory> listedTerrs,
-      final int numberNeeded,
-      final Collection<GamePlayer> players) {
-    int numberMet = 0;
-    boolean satisfied = false;
-    for (final Territory listedTerr : listedTerrs) {
-      if (Matches.isTerritoryOwnedByAnyOf(players).test(listedTerr)) {
-        numberMet += 1;
-        if (numberMet >= numberNeeded) {
-          satisfied = true;
-          if (!getCountEach()) {
-            break;
-          }
-        }
-      }
-    }
+      final Collection<Territory> territories, final Collection<GamePlayer> players) {
+    return matchTerritories(territories, Matches.isTerritoryOwnedByAnyOf(players));
+  }
+
+  private boolean matchTerritories(
+      final Collection<Territory> territories, final Predicate<Territory> predicate) {
+    final int numberMet = CollectionUtils.countMatches(territories, predicate);
     if (getCountEach()) {
       eachMultiple = numberMet;
     }
-    return satisfied;
+    return numberMet >= getTerritoryCount();
   }
 
   private boolean checkAtWar(
