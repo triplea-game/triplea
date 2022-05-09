@@ -850,9 +850,7 @@ public final class GameParser {
       if (foreach == null || foreach.isBlank()) {
         parseAttachment(current, Map.of());
       } else {
-        final List<Map<String, String>> combinations =
-            variableParser.expandVariableCombinations(foreach);
-        for (Map<String, String> foreachMap : combinations) {
+        for (Map<String, String> foreachMap : variableParser.expandVariableCombinations(foreach)) {
           parseAttachment(current, foreachMap);
         }
       }
