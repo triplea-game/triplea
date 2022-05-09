@@ -25,6 +25,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.Tuple;
 
 /** For choosing territories and units for them, during RandomStartDelegate. */
@@ -159,6 +160,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           doneButton = new JButton(doneAction);
           doneButton.setToolTipText(ActionButtons.DONE_BUTTON_TOOLTIP);
           add(doneButton);
+          SwingComponents.redraw(this);
           SwingUtilities.invokeLater(() -> selectTerritoryButton.requestFocusInWindow());
         });
   }
