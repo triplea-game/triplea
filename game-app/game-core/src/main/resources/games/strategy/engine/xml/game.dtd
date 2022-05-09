@@ -103,7 +103,7 @@
 	>
 	<!-- if no player given, then delegate is initialized with a null player -->
 	<!-- max run count is the maximum number of times that a delegate can run, if specified must be > 0, if not specified its infinity-->
-	<!ELEMENT sequence (step+)>
+	<!ELEMENT sequence (step+ forEach*)>
 		<!ELEMENT step (stepProperty*)>
 		<!ATTLIST step
 			name ID #REQUIRED
@@ -117,6 +117,15 @@
 				name CDATA #REQUIRED
 				value CDATA #REQUIRED
 			>
+		<!ELEMENT forEach (step*)>
+		<!ATTLIST forEach variable CDATA #REQUIRED>
+			<!ATTLIST step
+					name ID #REQUIRED
+					delegate CDATA #REQUIRED
+					player CDATA #IMPLIED
+					maxRunCount CDATA #IMPLIED
+					display CDATA #IMPLIED
+					>
 	<!ELEMENT offset EMPTY>
 	<!ATTLIST offset
 		round CDATA #REQUIRED
