@@ -67,6 +67,11 @@ public class XmlMapper implements Closeable {
       final T instance = ReflectionUtils.newInstance(pojo);
       final AnnotatedFields<T> annotatedFields = new AnnotatedFields<>(pojo);
 
+      final Field offsetField = annotatedFields.getXmlOffsetField();
+      if (offsetField != null) {
+        offsetField.set(instance, xmlStreamReader.getLocation().getCharacterOffset());
+      }
+
       // set attributes on the current object
       for (final Field field : annotatedFields.getAttributeFields()) {
 

@@ -4,11 +4,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.BodyText;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
+import org.triplea.generic.xml.reader.annotations.XmlOffset;
 import org.triplea.generic.xml.reader.exceptions.JavaDataModelException;
 
 /**
@@ -25,6 +27,7 @@ class AnnotatedFields<T> {
   private final List<Field> tagFields = new ArrayList<>();
   private final List<Field> tagListFields = new ArrayList<>();
   private final List<Field> bodyTextFields = new ArrayList<>();
+  private @Nullable Field xmlOffsetField;
 
   AnnotatedFields(final Class<T> pojo) throws JavaDataModelException {
     for (final Field field : pojo.getDeclaredFields()) {
@@ -41,6 +44,9 @@ class AnnotatedFields<T> {
       } else if (field.getAnnotation(BodyText.class) != null) {
         field.setAccessible(true);
         bodyTextFields.add(field);
+      } else if (field.getAnnotation(XmlOffset.class) != null) {
+        field.setAccessible(true);
+        xmlOffsetField = field;
       }
     }
     if (bodyTextFields.size() > 1) {

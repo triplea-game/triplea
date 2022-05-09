@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
+import org.triplea.generic.xml.reader.annotations.XmlOffset;
 
 @Getter
 @Builder
@@ -43,6 +44,22 @@ public class GamePlay {
     @TagList
     private List<Step> steps;
 
+    @XmlElement(name = "forEach")
+    @TagList
+    private List<ForEach> forEach;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ForEach {
+      @XmlAttribute @Attribute private String variable;
+
+      @XmlElement(name = "step")
+      @TagList
+      private List<Step> steps;
+    }
+
     @Getter
     @Builder
     @NoArgsConstructor
@@ -53,6 +70,7 @@ public class GamePlay {
       @XmlAttribute @Attribute private String player;
       @XmlAttribute @Attribute private Integer maxRunCount;
       @XmlAttribute @Attribute private String display;
+      @XmlOffset private int xmlOffset;
 
       @XmlElement(name = "stepProperty")
       @TagList
