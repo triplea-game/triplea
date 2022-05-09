@@ -3581,7 +3581,7 @@ public class UnitAttachment extends DefaultAttachment {
               || Properties.getMultipleAaPerTerritory(getData().getProperties()))) {
         formatter.append(
             "Max " + stackingLimit.getSecond() + " Units " + description + " per Territory", "1");
-      } else if (getPlacementLimit().getFirst() < 10000) {
+      } else if (stackingLimit.getFirst() < 10000) {
         formatter.append(
             "Max " + stackingLimit.getSecond() + " Units " + description + " per Territory",
             String.valueOf(stackingLimit.getFirst()));
