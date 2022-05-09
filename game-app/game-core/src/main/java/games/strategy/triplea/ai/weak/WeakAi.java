@@ -105,8 +105,7 @@ public class WeakAi extends AbstractBuiltInAi {
     final Route invasionRoute =
         Utils.findNearest(
             capitol,
-            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
-                player, data.getProperties(), data.getRelationshipTracker()),
+            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player),
             Matches.territoryIsLand().and(Matches.territoryIsNeutralButNotWater().negate()),
             data);
     return invasionRoute == null;
@@ -539,8 +538,7 @@ public class WeakAi extends AbstractBuiltInAi {
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
     final Predicate<Territory> walkInto =
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
-                player, data.getProperties(), data.getRelationshipTracker())
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player)
             .or(Matches.isTerritoryFreeNeutral(data.getProperties()));
     final List<Territory> enemyOwned =
         CollectionUtils.getMatches(data.getMap().getTerritories(), walkInto);
