@@ -145,7 +145,6 @@ final class GameParserTest {
         GameParser.parse(mapFile, new XmlGameElementMapper(), new Version("2.6.0")).orElseThrow();
     assertNotNullGameData(gameData);
     final var steps = gameData.getSequence().getSteps();
-    assertThat(steps, hasSize(18));
     assertThat(
         steps.stream().map(GameStep::getName).collect(Collectors.toList()),
         equalTo(
