@@ -1,11 +1,16 @@
 package games.strategy.engine.data.gameparser;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.GameStep;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -13,6 +18,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,9 +30,7 @@ final class GameParserTest {
   @Test
   @DisplayName("Verify backward compatibility can parse 1.8 maps")
   void backwardCompatibilityCheck() throws Exception {
-    final Path mapFile =
-        Path.of(GameParserTest.class.getClassLoader().getResource("v1_8_map__270BC.xml").toURI());
-
+    final Path mapFile = getTestMap("v1_8_map__270BC.xml");
     final GameData gameData =
         GameParser.parse(mapFile, new XmlGameElementMapper(), new Version("2.0.0")).orElseThrow();
     assertNotNullGameData(gameData);
@@ -133,6 +137,45 @@ final class GameParserTest {
         is(Map.of(1, 1, 2, 2)));
   }
 
+  @Test
+  @DisplayName("Verify functionality of <forEach> for step parsing")
+  void stepSequenceForEach() throws Exception {
+    final Path mapFile = getTestMap("minimap_steps_forEach.xml");
+    final GameData gameData =
+        GameParser.parse(mapFile, new XmlGameElementMapper(), new Version("2.6.0")).orElseThrow();
+    assertNotNullGameData(gameData);
+    final var steps = gameData.getSequence().getSteps();
+    assertThat(steps, hasSize(18));
+    assertThat(
+        steps.stream().map(GameStep::getName).collect(Collectors.toList()),
+        equalTo(
+            List.of(
+                "gameInitDelegate",
+                "RedBid",
+                "RedBidPlace",
+                "BlueBid",
+                "BlueBidPlace",
+                "RedPurchase",
+                "RedCombatMove",
+                "RedBattle",
+                "RedNonCombatMove",
+                "RedPlace",
+                "RedEndTurn",
+                "BluePurchase",
+                "BlueCombatMove",
+                "BlueBattle",
+                "BlueNonCombatMove",
+                "BluePlace",
+                "BlueEndTurn",
+                "endRoundStep")));
+    var blueSteps =
+        steps.stream().filter(s -> s.getName().startsWith("Blue")).collect(Collectors.toList());
+    assertThat(blueSteps, everyItem(hasProperty("playerId", hasProperty("name", is("Blue")))));
+    var redSteps =
+        steps.stream().filter(s -> s.getName().startsWith("Red")).collect(Collectors.toList());
+    assertThat(redSteps, everyItem(hasProperty("playerId", hasProperty("name", is("Red")))));
+  }
+
   @Nested
   final class DecapitalizeTest {
     @Test
@@ -153,5 +196,9 @@ final class GameParserTest {
                     is(decapitalizedValue));
               });
     }
+  }
+
+  private Path getTestMap(String name) throws Exception {
+    return Path.of(GameParserTest.class.getClassLoader().getResource(name).toURI());
   }
 }
