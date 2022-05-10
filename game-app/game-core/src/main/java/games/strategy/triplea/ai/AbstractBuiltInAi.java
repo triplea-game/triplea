@@ -309,10 +309,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
                 (UnitAttachment.get(u.getType()).getHitPoints()
                     * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
         resourceMap.put(resource, num);
-        final Map<Unit, IntegerMap<Resource>> attMap =
-            kamikazeSuicideAttacks.getOrDefault(t, new HashMap<>());
-        attMap.put(u, resourceMap);
-        kamikazeSuicideAttacks.put(t, attMap);
+        kamikazeSuicideAttacks.computeIfAbsent(t, key -> new HashMap<>()).put(u, resourceMap);
         attackTokens.add(resource, -num);
         if (attackTokens.getInt(resource) <= 0) {
           attackTokens.removeKey(resource);
