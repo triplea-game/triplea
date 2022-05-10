@@ -1298,10 +1298,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             continue;
           }
         }
-        final Collection<Territory> currentTerrs =
-            kamikazeZonesByEnemy.getOrDefault(owner, new ArrayList<>());
-        currentTerrs.add(t);
-        kamikazeZonesByEnemy.put(owner, currentTerrs);
+        kamikazeZonesByEnemy.computeIfAbsent(owner, key -> new ArrayList<>()).add(t);
       }
     }
     if (kamikazeZonesByEnemy.isEmpty()) {
