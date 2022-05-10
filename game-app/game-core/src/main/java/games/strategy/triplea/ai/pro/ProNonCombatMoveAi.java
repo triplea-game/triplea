@@ -2541,7 +2541,7 @@ class ProNonCombatMoveAi {
   }
 
   private Stream<Unit> combinedStream(Collection<Unit> units1, Collection<Unit> units2) {
-    return Stream.concat(units2.stream(), units2.stream());
+    return Stream.concat(units1.stream(), units2.stream());
   }
 
   private void logAttackMoves(final List<ProTerritory> prioritizedTerritories) {
