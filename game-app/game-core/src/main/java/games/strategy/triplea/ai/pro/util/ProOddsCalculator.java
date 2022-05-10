@@ -151,7 +151,6 @@ public class ProOddsCalculator {
       final Collection<Unit> defendingUnits,
       final Collection<Unit> bombardingUnits,
       final boolean checkSubmerge) {
-
     final ProBattleResult result =
         checkIfNoAttackersOrDefenders(proData, t, attackingUnits, defendingUnits, checkSubmerge);
     if (result != null) {

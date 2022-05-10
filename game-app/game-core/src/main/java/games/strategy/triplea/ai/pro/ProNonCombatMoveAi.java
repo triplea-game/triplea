@@ -122,7 +122,7 @@ class ProNonCombatMoveAi {
             proData,
             player,
             territoriesThatCantBeHeld,
-            new ArrayList<>(),
+            List.of(),
             new HashSet<>(territoryManager.getDefendTerritories()));
     final Map<Territory, Double> seaTerritoryValueMap =
         ProTerritoryValueUtils.findSeaTerritoryValues(
@@ -433,7 +433,7 @@ class ProNonCombatMoveAi {
           calc.calculateBattleResults(
               proData,
               t,
-              new ArrayList<>(enemyAttackingUnits),
+              enemyAttackingUnits,
               minDefendingUnitsAndNotAa,
               enemyAttackOptions.getMax(t).getMaxBombardUnits());
       patd.setMinBattleResult(minResult);
@@ -465,7 +465,7 @@ class ProNonCombatMoveAi {
           calc.calculateBattleResults(
               proData,
               t,
-              new ArrayList<>(enemyAttackingUnits),
+              enemyAttackingUnits,
               defendingUnitsAndNotAa,
               enemyAttackOptions.getMax(t).getMaxBombardUnits());
       int isFactory = 0;
@@ -690,7 +690,7 @@ class ProNonCombatMoveAi {
             proData,
             player,
             territoryManager.getCantHoldTerritories(),
-            new ArrayList<>(),
+            List.of(),
             territoriesToCheck);
     for (final Territory t : seaFactories) {
       if (territoryValueMap.get(t) >= 1) {
@@ -2429,9 +2429,8 @@ class ProNonCombatMoveAi {
             final int production = TerritoryAttachment.get(t).getProduction();
             double value = 0.1 * proTerritory.getValue();
             if (ProMatches.territoryIsNotConqueredOwnedLand(player, data).test(t)) {
-              var units =
-                  Stream.concat(
-                      proTerritory.getCantMoveUnits().stream(), proTerritory.getUnits().stream());
+              final Stream<Unit> units =
+                  combinedStream(proTerritory.getCantMoveUnits(), proTerritory.getUnits());
               if (units.noneMatch(Matches.unitCanProduceUnitsAndIsInfrastructure())) {
                 value = proTerritory.getValue() * production + 0.01 * production;
               }
@@ -2502,7 +2501,7 @@ class ProNonCombatMoveAi {
                       currentTerritory,
                       t,
                       ProMatches.territoryCanMoveLandUnitsThrough(
-                          data, player, u, currentTerritory, false, new ArrayList<>()),
+                          data, player, u, currentTerritory, false, List.of()),
                       u,
                       player);
           final MoveValidationResult mvr =
@@ -2513,9 +2512,9 @@ class ProNonCombatMoveAi {
           }
 
           // Find value and try to move to territory that doesn't already have AA
-          final List<Unit> units = new ArrayList<>(proTerritory.getCantMoveUnits());
-          units.addAll(proTerritory.getUnits());
-          final boolean hasAa = units.stream().anyMatch(Matches.unitIsAaForAnything());
+          final Stream<Unit> units =
+              combinedStream(proTerritory.getCantMoveUnits(), proTerritory.getUnits());
+          final boolean hasAa = units.anyMatch(Matches.unitIsAaForAnything());
           double value = proTerritory.getValue();
           if (hasAa) {
             value *= 0.01;
@@ -2539,6 +2538,10 @@ class ProNonCombatMoveAi {
       }
     }
     return factoryMoveMap;
+  }
+
+  private Stream<Unit> combinedStream(Collection<Unit> units1, Collection<Unit> units2) {
+    return Stream.concat(units2.stream(), units2.stream());
   }
 
   private void logAttackMoves(final List<ProTerritory> prioritizedTerritories) {
