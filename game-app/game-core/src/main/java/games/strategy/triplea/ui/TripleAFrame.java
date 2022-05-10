@@ -211,26 +211,21 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       new GameDataChangeListener() {
         @Override
         public void gameDataChanged(final Change change) {
-          try {
-            SwingUtilities.invokeLater(
-                () -> {
-                  if (uiContext == null) {
-                    return;
+          // Update the bottomBar, since resources may have changed, e.g. by triggers.
+          bottomBar.gameDataChanged();
+          SwingUtilities.invokeLater(
+              () -> {
+                if (mapPanel.getEditMode()) {
+                  if (tabsPanel.indexOfComponent(editPanel) == -1) {
+                    showEditMode();
                   }
-                  if (mapPanel.getEditMode()) {
-                    if (tabsPanel.indexOfComponent(editPanel) == -1) {
-                      showEditMode();
-                    }
-                  } else {
-                    if (tabsPanel.indexOfComponent(editPanel) != -1) {
-                      hideEditMode();
-                    }
+                } else {
+                  if (tabsPanel.indexOfComponent(editPanel) != -1) {
+                    hideEditMode();
                   }
-                  rightHandSidePanel.setVisible(true);
-                });
-          } catch (final Exception e) {
-            log.error("Failed to process game data change", e);
-          }
+                }
+                rightHandSidePanel.setVisible(true);
+              });
         }
       };
 
@@ -543,10 +538,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   /** Stops the game and closes this frame window. */
   public void stopGame() {
-    // we have already shut down
-    if (uiContext == null) {
-      return;
-    }
     this.setVisible(false);
     TripleAFrame.this.dispose();
     messageAndDialogThreadPool.shutdown();
@@ -1578,7 +1569,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           if (from != null) {
             panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
           }
-          final String[] options = {"OK", "Dont attack"};
+          final String[] options = {"OK", "Don't attack"};
           final String message = "Select Rocket Target";
           final int selection =
               JOptionPane.showOptionDialog(
@@ -1608,7 +1599,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private void updateStepFromEdt() {
     Preconditions.checkState(
         !SwingUtilities.isEventDispatchThread(), "This method must not be invoked on the EDT!");
-    if (uiContext == null || uiContext.isShutDown()) {
+    if (uiContext.isShutDown()) {
       return;
     }
     final int round;
