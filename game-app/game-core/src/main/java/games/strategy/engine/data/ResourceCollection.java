@@ -50,7 +50,7 @@ public class ResourceCollection extends GameDataComponent {
     final int current = getQuantity(resource);
     if ((current - quantity) < 0) {
       throw new IllegalArgumentException(
-          "Cant remove more than player has of resource: "
+          "Can't remove more than player has of resource: "
               + resource.getName()
               + ". current:"
               + current
@@ -58,10 +58,6 @@ public class ResourceCollection extends GameDataComponent {
               + quantity);
     }
     change(resource, -quantity);
-  }
-
-  public void removeAllOfResource(final Resource resource) {
-    resources.removeKey(resource);
   }
 
   private void change(final Resource resource, final int quantity) {

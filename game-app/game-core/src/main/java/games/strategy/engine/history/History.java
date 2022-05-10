@@ -88,7 +88,7 @@ public class History extends DefaultTreeModel {
     } else if (node instanceof EventChild) {
       lastChangeIndex = ((Event) node.getParent()).getChangeEndIndex();
     } else if (node instanceof IndexedHistoryNode) {
-      lastChangeIndex = ((IndexedHistoryNode) node).getChangeStartIndex();
+      lastChangeIndex = ((IndexedHistoryNode) node).getChangeEndIndex();
     } else {
       lastChangeIndex = 0;
     }
@@ -114,7 +114,7 @@ public class History extends DefaultTreeModel {
   /** Changes the game state to reflect the historical state at {@code node}. */
   public synchronized void gotoNode(final HistoryNode node) {
     assertCorrectThread();
-    getGameData().acquireWriteLock();
+    gameData.acquireWriteLock();
     try {
       if (currentNode == null) {
         currentNode = getLastNode();
@@ -125,7 +125,7 @@ public class History extends DefaultTreeModel {
         gameData.performChange(dataChange);
       }
     } finally {
-      getGameData().releaseWriteLock();
+      gameData.releaseWriteLock();
     }
   }
 
@@ -136,7 +136,7 @@ public class History extends DefaultTreeModel {
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
     gotoNode(removeAfterNode);
     assertCorrectThread();
-    getGameData().acquireWriteLock();
+    gameData.acquireWriteLock();
     try {
       final int lastChange = getLastChange(removeAfterNode) + 1;
       while (changes.size() > lastChange) {
@@ -163,7 +163,7 @@ public class History extends DefaultTreeModel {
         this.removeNodeFromParent(nodesToRemove.remove(0));
       }
     } finally {
-      getGameData().releaseWriteLock();
+      gameData.releaseWriteLock();
     }
   }
 
