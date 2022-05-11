@@ -121,7 +121,8 @@ public class ProTerritoryManager {
   }
 
   public void populateEnemyAttackOptions(
-      final List<Territory> clearedTerritories, final List<Territory> territoriesToCheck) {
+      final Collection<Territory> clearedTerritories,
+      final Collection<Territory> territoriesToCheck) {
     enemyAttackOptions =
         findEnemyAttackOptions(proData, player, clearedTerritories, territoriesToCheck);
   }
@@ -415,7 +416,7 @@ public class ProTerritoryManager {
       final List<ProTransport> transportMapList,
       final List<Territory> enemyTerritories,
       final List<Territory> alliedTerritories,
-      final List<Territory> territoriesToCheck,
+      final Collection<Territory> territoriesToCheck,
       final boolean isCheckingEnemyAttacks,
       final boolean isIgnoringRelationships) {
     final GameState data = proData.getData();
@@ -534,8 +535,8 @@ public class ProTerritoryManager {
   private static ProOtherMoveOptions findEnemyAttackOptions(
       final ProData proData,
       final GamePlayer player,
-      final List<Territory> clearedTerritories,
-      final List<Territory> territoriesToCheck) {
+      final Collection<Territory> clearedTerritories,
+      final Collection<Territory> territoriesToCheck) {
     final GameState data = proData.getData();
 
     // Get enemy players in order of turn
