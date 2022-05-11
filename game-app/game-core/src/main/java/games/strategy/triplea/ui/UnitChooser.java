@@ -241,12 +241,12 @@ public final class UnitChooser extends JPanel {
                   Postconditions.assertState(
                       unit.getOwner() != null,
                       "Contract problem: All units in UnitChooser are expected to have an owner,"
-                          + " but now one appeared to how none.");
+                          + " but now one appeared to have none.");
 
                   Postconditions.assertState(
                       unit.getOwner().getData() != null,
                       "All units owners are expected to relate to a gameData object,"
-                          + "but now one appeared to how none.");
+                          + " but now one appeared to have none.");
 
                   return Properties.getPartialAmphibiousRetreat(
                           unit.getOwner().getData().getProperties())

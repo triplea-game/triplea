@@ -316,28 +316,26 @@ public final class GameStepPropertiesHelper {
   }
 
   private static boolean isNonCombatDelegate(final GameState data) {
-    return data.getSequence().getStep().getName().endsWith("NonCombatMove");
+    return GameStep.isNonCombatMoveStep(data.getSequence().getStep().getName());
   }
 
   private static boolean isCombatDelegate(final GameState data) {
-    // NonCombatMove endsWith CombatMove so check for NCM first
-    return !data.getSequence().getStep().getName().endsWith("NonCombatMove")
-        && data.getSequence().getStep().getName().endsWith("CombatMove");
+    return GameStep.isCombatMoveStep(data.getSequence().getStep().getName());
   }
 
   private static boolean isAirborneDelegate(final GameState data) {
-    return data.getSequence().getStep().getName().endsWith("AirborneCombatMove");
+    return GameStep.isAirborneCombatMoveStep(data.getSequence().getStep().getName());
   }
 
   private static boolean isBidPurchaseDelegate(final GameState data) {
-    return data.getSequence().getStep().getName().endsWith("Bid");
+    return GameStep.isBidStep(data.getSequence().getStep().getName());
   }
 
   private static boolean isBidPlaceDelegate(final GameState data) {
-    return data.getSequence().getStep().getName().endsWith("BidPlace");
+    return GameStep.isBidPlaceStep(data.getSequence().getStep().getName());
   }
 
   private static boolean isPurchaseDelegate(final GameState data) {
-    return data.getSequence().getStep().getName().endsWith("Purchase");
+    return GameStep.isPurchaseStep(data.getSequence().getStep().getName());
   }
 }

@@ -100,10 +100,10 @@ final class FileMenu extends JMenu {
         new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
-      // so set the command-L key combo for the Leave Game action
+      // so set the command-W key combo for the Leave Game action
       leaveGameMenuExit.setAccelerator(
           KeyStroke.getKeyStroke(
-              KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+              KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
     } else { // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
       leaveGameMenuExit.setAccelerator(
           KeyStroke.getKeyStroke(

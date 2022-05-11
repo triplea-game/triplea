@@ -163,7 +163,7 @@ public class GameStep extends GameDataComponent {
     return Optional.ofNullable(properties.getProperty(GameStep.PropertyKeys.NON_COMBAT_MOVE))
             .map(Boolean::parseBoolean)
             .orElse(false)
-        || name.endsWith("NonCombatMove");
+        || GameStep.isNonCombatMoveStep(name);
   }
 
   public static boolean isTechStep(final String stepName) {
@@ -176,6 +176,15 @@ public class GameStep extends GameDataComponent {
 
   public static boolean isNonCombatMoveStep(final String stepName) {
     return stepName.endsWith("NonCombatMove");
+  }
+
+  public static boolean isCombatMoveStep(final String stepName) {
+    // NonCombatMove endsWith CombatMove so check for NCM first.
+    return !isNonCombatMoveStep(stepName) && stepName.endsWith("CombatMove");
+  }
+
+  public static boolean isAirborneCombatMoveStep(final String stepName) {
+    return stepName.endsWith("AirborneCombatMove");
   }
 
   public static boolean isBattleStep(final String stepName) {
@@ -204,6 +213,10 @@ public class GameStep extends GameDataComponent {
 
   public static boolean isBidStep(final String stepName) {
     return stepName.endsWith("Bid");
+  }
+
+  public static boolean isBidPlaceStep(final String stepName) {
+    return stepName.endsWith("BidPlace");
   }
 
   public static boolean isPlaceStep(final String stepName) {

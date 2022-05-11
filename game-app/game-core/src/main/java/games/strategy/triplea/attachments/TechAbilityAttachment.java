@@ -480,7 +480,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     final String unitType = s[0];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
-    final Set<String> abilities = unitAbilitiesGained.getOrDefault(ut, new HashSet<>());
+    final Set<String> abilities = unitAbilitiesGained.computeIfAbsent(ut, key -> new HashSet<>());
     // start at 1
     for (int i = 1; i < s.length; i++) {
       final String ability = s[i];
@@ -494,7 +494,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
       }
       abilities.add(ability);
     }
-    unitAbilitiesGained.put(ut, abilities);
   }
 
   private void setUnitAbilitiesGained(final Map<UnitType, Set<String>> value) {
@@ -678,10 +677,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
         final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAa();
         if (mapAa != null && !mapAa.isEmpty()) {
           for (final Entry<String, Set<UnitType>> entry : mapAa.entrySet()) {
-            final Set<UnitType> current =
-                airborneTargettedByAa.getOrDefault(entry.getKey(), new HashSet<>());
-            current.addAll(entry.getValue());
-            airborneTargettedByAa.put(entry.getKey(), current);
+            airborneTargettedByAa
+                .computeIfAbsent(entry.getKey(), key -> new HashSet<>())
+                .addAll(entry.getValue());
           }
         }
       }
