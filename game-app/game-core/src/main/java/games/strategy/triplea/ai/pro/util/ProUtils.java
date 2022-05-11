@@ -81,17 +81,17 @@ public final class ProUtils {
     return getFilteredPlayers(data, Matches.isAllied(player, data.getRelationshipTracker()));
   }
 
-  private static List<GamePlayer> getFilteredPlayers(
-      final GameState data, final Predicate<GamePlayer> filter) {
-    return data.getPlayerList().getPlayers().stream().filter(filter).collect(Collectors.toList());
-  }
-
   /** Given a player, finds all non-allied (enemy) players. */
   public static List<GamePlayer> getPotentialEnemyPlayers(final GamePlayer player) {
     final var relationshipTracker = player.getData().getRelationshipTracker();
     final Predicate<GamePlayer> potentialEnemy =
         Matches.isAllied(player, relationshipTracker).negate().or(ProUtils::isPassiveNeutralPlayer);
     return getFilteredPlayers(player.getData(), potentialEnemy);
+  }
+
+  private static List<GamePlayer> getFilteredPlayers(
+      final GameState data, final Predicate<GamePlayer> filter) {
+    return data.getPlayerList().getPlayers().stream().filter(filter).collect(Collectors.toList());
   }
 
   /** Computes PU production amount a given player currently has based on a given game data. */
