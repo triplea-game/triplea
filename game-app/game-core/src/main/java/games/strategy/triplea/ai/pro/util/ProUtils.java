@@ -1,21 +1,22 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static java.util.function.Predicate.not;
+
 import com.google.common.collect.Streams;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
-import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -25,9 +26,8 @@ public final class ProUtils {
 
   /** Returns a list of all players in turn order excluding {@code player}. */
   public static List<GamePlayer> getOtherPlayersInTurnOrder(final GamePlayer player) {
-    final GameState data = player.getData();
     final List<GamePlayer> players = new ArrayList<>();
-    final GameSequence sequence = data.getSequence();
+    final GameSequence sequence = player.getData().getSequence();
     final int startIndex = sequence.getStepIndex();
     for (int i = 0; i < sequence.size(); i++) {
       int currentIndex = startIndex + i;
@@ -47,18 +47,16 @@ public final class ProUtils {
   }
 
   public static List<GamePlayer> getAlliedPlayersInTurnOrder(final GamePlayer player) {
-    final GameState data = player.getData();
+    final var relationshipTracker = player.getData().getRelationshipTracker();
     final List<GamePlayer> players = getOtherPlayersInTurnOrder(player);
-    players.removeIf(
-        currentPlayer -> !data.getRelationshipTracker().isAllied(player, currentPlayer));
+    players.removeIf(currentPlayer -> !relationshipTracker.isAllied(player, currentPlayer));
     return players;
   }
 
   public static List<GamePlayer> getEnemyPlayersInTurnOrder(final GamePlayer player) {
-    final GameState data = player.getData();
+    final var relationshipTracker = player.getData().getRelationshipTracker();
     final List<GamePlayer> players = getOtherPlayersInTurnOrder(player);
-    players.removeIf(
-        currentPlayer -> data.getRelationshipTracker().isAllied(player, currentPlayer));
+    players.removeIf(currentPlayer -> relationshipTracker.isAllied(player, currentPlayer));
     return players;
   }
 
@@ -76,52 +74,39 @@ public final class ProUtils {
 
   public static List<GamePlayer> getEnemyPlayers(final GamePlayer player) {
     final GameState data = player.getData();
-    final List<GamePlayer> enemyPlayers = new ArrayList<>();
-    for (final GamePlayer players : data.getPlayerList().getPlayers()) {
-      if (!data.getRelationshipTracker().isAllied(player, players)) {
-        enemyPlayers.add(players);
-      }
-    }
-    return enemyPlayers;
+    return getFilteredPlayers(
+        data, Matches.isAllied(player, data.getRelationshipTracker()).negate());
   }
 
   private static List<GamePlayer> getAlliedPlayers(final GamePlayer player) {
     final GameState data = player.getData();
-    final List<GamePlayer> alliedPlayers = new ArrayList<>();
-    for (final GamePlayer players : data.getPlayerList().getPlayers()) {
-      if (data.getRelationshipTracker().isAllied(player, players)) {
-        alliedPlayers.add(players);
-      }
-    }
-    return alliedPlayers;
+    return getFilteredPlayers(data, Matches.isAllied(player, data.getRelationshipTracker()));
   }
 
   /** Given a player, finds all non-allied (enemy) players. */
   public static List<GamePlayer> getPotentialEnemyPlayers(final GamePlayer player) {
-    final GameState data = player.getData();
-    final List<GamePlayer> otherPlayers = data.getPlayerList().getPlayers();
-    for (final Iterator<GamePlayer> it = otherPlayers.iterator(); it.hasNext(); ) {
-      final GamePlayer otherPlayer = it.next();
-      final RelationshipType relation =
-          data.getRelationshipTracker().getRelationshipType(player, otherPlayer);
-      if (Matches.relationshipTypeIsAllied().test(relation)
-          || isPassiveNeutralPlayer(otherPlayer)) {
-        it.remove();
-      }
-    }
-    return otherPlayers;
+    final var tracker = player.getData().getRelationshipTracker();
+    // Remove allied and passive neutrals.
+    final Predicate<GamePlayer> potentialEnemy =
+        not(Matches.isAllied(player, tracker)).and(not(ProUtils::isPassiveNeutralPlayer));
+    return getFilteredPlayers(player.getData(), potentialEnemy);
+  }
+
+  private static List<GamePlayer> getFilteredPlayers(
+      final GameState data, final Predicate<GamePlayer> filter) {
+    return data.getPlayerList().getPlayers().stream().filter(filter).collect(Collectors.toList());
   }
 
   /** Computes PU production amount a given player currently has based on a given game data. */
   public static double getPlayerProduction(final GamePlayer player, final GameState data) {
+    final Predicate<Territory> canCollectIncomeFrom =
+        Matches.territoryCanCollectIncomeFrom(
+            player, data.getProperties(), data.getRelationshipTracker());
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea
       // Zone, or if contested
-      if (place.isOwnedBy(player)
-          && Matches.territoryCanCollectIncomeFrom(
-                  player, data.getProperties(), data.getRelationshipTracker())
-              .test(place)) {
+      if (place.isOwnedBy(player) && canCollectIncomeFrom.test(place)) {
         production += TerritoryAttachment.getProduction(place);
       }
     }
@@ -176,23 +161,15 @@ public final class ProUtils {
    */
   public static int getClosestEnemyLandTerritoryDistance(
       final GameState data, final GamePlayer player, final Territory t) {
-    final Set<Territory> landTerritories =
-        data.getMap()
-            .getNeighbors(
-                t,
-                9,
-                ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
+    final Predicate<Territory> canMoveLandUnits =
+        ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
+    final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, canMoveLandUnits);
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
             landTerritories, Matches.isTerritoryOwnedByAnyOf(getPotentialEnemyPlayers(player)));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyLandTerritories) {
-      final int distance =
-          data.getMap()
-              .getDistance(
-                  t,
-                  enemyLandTerritory,
-                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
+      final int distance = data.getMap().getDistance(t, enemyLandTerritory, canMoveLandUnits);
       if (distance < minDistance) {
         minDistance = distance;
       }
@@ -210,12 +187,9 @@ public final class ProUtils {
       final GamePlayer player,
       final Territory t,
       final Map<Territory, Double> territoryValueMap) {
-    final Set<Territory> landTerritories =
-        data.getMap()
-            .getNeighbors(
-                t,
-                9,
-                ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
+    final Predicate<Territory> canMoveLandUnits =
+        ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
+    final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, canMoveLandUnits);
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
             landTerritories, Matches.isTerritoryOwnedByAnyOf(getEnemyPlayers(player)));
@@ -224,12 +198,7 @@ public final class ProUtils {
       if (territoryValueMap.get(enemyLandTerritory) <= 0) {
         continue;
       }
-      int distance =
-          data.getMap()
-              .getDistance(
-                  t,
-                  enemyLandTerritory,
-                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
+      int distance = data.getMap().getDistance(t, enemyLandTerritory, canMoveLandUnits);
       if (ProUtils.isNeutralLand(enemyLandTerritory)) {
         distance++;
       }

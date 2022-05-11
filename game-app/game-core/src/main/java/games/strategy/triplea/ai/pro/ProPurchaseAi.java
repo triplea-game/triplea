@@ -141,7 +141,6 @@ class ProPurchaseAi {
    */
   Map<Territory, ProPurchaseTerritory> bid(
       final int pus, final IPurchaseDelegate purchaseDelegate, final GameState startOfTurnData) {
-
     // Current data fields
     data = proData.getData();
     this.startOfTurnData = startOfTurnData;
@@ -162,7 +161,6 @@ class ProPurchaseAi {
 
     int previousNumUnits = 0;
     while (true) {
-
       // Determine max enemy attack units and current allied defenders
       territoryManager.populateEnemyAttackOptions(
           new ArrayList<>(), new ArrayList<>(purchaseTerritories.keySet()));
@@ -257,7 +255,6 @@ class ProPurchaseAi {
 
   Map<Territory, ProPurchaseTerritory> purchase(
       final IPurchaseDelegate purchaseDelegate, final GameState startOfTurnData) {
-
     // Current data fields
     data = proData.getData();
     this.startOfTurnData = startOfTurnData;
@@ -279,15 +276,14 @@ class ProPurchaseAi {
         new HashSet<>(
             CollectionUtils.getMatches(
                 data.getMap().getTerritoriesOwnedBy(player), Matches.territoryIsLand()));
-    for (final Territory t : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+    for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+      for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
         placeTerritories.add(ppt.getTerritory());
       }
     }
 
     // Determine max enemy attack units and current allied defenders
-    territoryManager.populateEnemyAttackOptions(
-        new ArrayList<>(), new ArrayList<>(placeTerritories));
+    territoryManager.populateEnemyAttackOptions(List.of(), placeTerritories);
     findDefendersInPlaceTerritories(purchaseTerritories);
 
     // Prioritize land territories that need defended and purchase additional defenders
@@ -660,7 +656,6 @@ class ProPurchaseAi {
       final List<ProPurchaseOption> zeroMoveDefensePurchaseOptions,
       final List<ProPurchaseOption> airPurchaseOptions,
       final boolean isLand) {
-
     if (resourceTracker.isEmpty()) {
       return;
     }
@@ -696,12 +691,10 @@ class ProPurchaseAi {
               + unusedLocalCarrierCapacity);
 
       // Determine if need destroyer
-      boolean needDestroyer = false;
-      if (enemyAttackOptions.getMax(t).getMaxUnits().stream()
-              .anyMatch(Matches.unitHasSubBattleAbilities())
-          && ownedLocalUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
-        needDestroyer = true;
-      }
+      boolean needDestroyer =
+          enemyAttackOptions.getMax(t).getMaxUnits().stream()
+                  .anyMatch(Matches.unitHasSubBattleAbilities())
+              && ownedLocalUnits.stream().noneMatch(Matches.unitIsDestroyer());
 
       // Find all purchase territories for place territory
       final List<Unit> unitsToPlace = new ArrayList<>();
@@ -709,7 +702,6 @@ class ProPurchaseAi {
       final List<ProPurchaseTerritory> selectedPurchaseTerritories =
           getPurchaseTerritories(placeTerritory, purchaseTerritories);
       for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
-
         // Check remaining production
         int remainingUnitProduction = purchaseTerritory.getRemainingUnitProduction();
         int remainingConstructions =
@@ -741,7 +733,6 @@ class ProPurchaseAi {
 
         // Purchase necessary defenders
         while (true) {
-
           // Select purchase option
           ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
               player,
@@ -1020,17 +1011,14 @@ class ProPurchaseAi {
 
     // Loop through prioritized territories and purchase land units
     final Set<Territory> territoriesToCheck = new HashSet<>();
+    final Predicate<Territory> canMoveLandUnits =
+        ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
+    final Predicate<Territory> isEnemyTerritory =
+        Matches.isTerritoryOwnedByAnyOf(ProUtils.getEnemyPlayers(player));
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
       final Set<Territory> landTerritories =
-          data.getMap()
-              .getNeighbors(
-                  placeTerritory.getTerritory(),
-                  9,
-                  ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
-      final List<Territory> enemyLandTerritories =
-          CollectionUtils.getMatches(
-              landTerritories, Matches.isTerritoryOwnedByAnyOf(ProUtils.getEnemyPlayers(player)));
-      territoriesToCheck.addAll(enemyLandTerritories);
+          data.getMap().getNeighbors(placeTerritory.getTerritory(), 9, canMoveLandUnits);
+      territoriesToCheck.addAll(CollectionUtils.getMatches(landTerritories, isEnemyTerritory));
     }
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(
@@ -1081,7 +1069,7 @@ class ProPurchaseAi {
       for (final Iterator<Unit> it = unplacedUnits.iterator(); it.hasNext(); ) {
         final Unit u = it.next();
         if (remainingUnitProduction > 0
-            && ProPurchaseValidationUtils.canUnitsBePlaced(proData, List.of(u), player, t, isBid)) {
+            && ProPurchaseValidationUtils.canUnitBePlaced(proData, u, player, t, isBid)) {
           remainingUnitProduction--;
           unitsToPlace.add(u);
           it.remove();
@@ -1094,7 +1082,6 @@ class ProPurchaseAi {
       double attackAndDefenseDifference = 0;
       boolean selectFodderUnit = true;
       while (true) {
-
         // Remove options that cost too much PUs or production
         ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
             player,
