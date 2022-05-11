@@ -11,6 +11,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -75,6 +76,15 @@ public class UnitsDrawer extends AbstractDrawable {
 
   public Point getPlacementPoint() {
     return placementPoint;
+  }
+
+  public Rectangle getPlacementRectangle() {
+    UnitImageFactory factory = uiContext.getUnitImageFactory();
+    return new Rectangle(
+        placementPoint.x,
+        placementPoint.y,
+        factory.getUnitImageWidth(),
+        factory.getUnitImageHeight());
   }
 
   public String getPlayer() {

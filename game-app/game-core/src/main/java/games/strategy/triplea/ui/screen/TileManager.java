@@ -353,7 +353,7 @@ public class TileManager {
               uiContext);
       drawing.add(drawable);
       allUnitDrawables.add(drawable);
-      for (final Tile tile : getTiles(getUnitRectangleAt(lastPlace))) {
+      for (final Tile tile : getTiles(drawable.getPlacementRectangle())) {
         tile.addDrawable(drawable);
         drawnOn.add(tile);
       }
@@ -508,7 +508,7 @@ public class TileManager {
         for (final UnitsDrawer drawer : allUnitDrawables) {
           final List<Unit> drawerUnits = drawer.getUnits(data);
           if (!drawerUnits.isEmpty() && units.containsAll(drawerUnits)) {
-            return getUnitRectangleAt(drawer.getPlacementPoint());
+            return drawer.getPlacementRectangle();
           }
         }
         return null;
@@ -516,11 +516,6 @@ public class TileManager {
     } finally {
       data.releaseReadLock();
     }
-  }
-
-  private Rectangle getUnitRectangleAt(Point p) {
-    final var factory = uiContext.getUnitImageFactory();
-    return new Rectangle(p.x, p.y, factory.getUnitImageWidth(), factory.getUnitImageHeight());
   }
 
   /**
@@ -533,11 +528,7 @@ public class TileManager {
     try {
       synchronized (mutex) {
         for (final UnitsDrawer drawer : allUnitDrawables) {
-          final Point placementPoint = drawer.getPlacementPoint();
-          if (x > placementPoint.x
-              && x < placementPoint.x + uiContext.getUnitImageFactory().getUnitImageWidth()
-              && y > placementPoint.y
-              && y < placementPoint.y + uiContext.getUnitImageFactory().getUnitImageHeight()) {
+          if (drawer.getPlacementRectangle().contains(x, y)) {
             return Tuple.of(drawer.getTerritory(gameData), drawer.getUnits(gameData));
           }
         }
