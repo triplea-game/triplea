@@ -23,6 +23,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.List;
 import java.util.function.Predicate;
+import org.triplea.util.Tuple;
 
 /**
  * Draws units for the associated territory.
@@ -47,7 +48,7 @@ public class UnitsDrawer extends AbstractDrawable {
   public enum UnitFlagDrawMode {
     NONE,
     SMALL_FLAG,
-    LARGE_FLAG,
+    LARGE_FLAG;
   }
 
   public UnitsDrawer(
@@ -268,7 +269,7 @@ public class UnitsDrawer extends AbstractDrawable {
     }
   }
 
-  List<Unit> getUnits(final GameState data) {
+  Tuple<Territory, List<Unit>> getUnits(final GameState data) {
     // note - it may be the case where the territory is being changed as a result to a mouse click,
     // and the map units
     // haven't updated yet, so the unit count from the territory wont match the units in count
@@ -283,11 +284,7 @@ public class UnitsDrawer extends AbstractDrawable {
                 bombingUnitDamage > 0
                     ? Matches.unitHasTakenSomeBombingUnitDamage()
                     : Matches.unitHasNotTakenAnyBombingUnitDamage());
-    return t.getUnitCollection().getMatches(selectedUnits);
-  }
-
-  public Territory getTerritory(GameData data) {
-    return data.getMap().getTerritory(territoryName);
+    return Tuple.of(t, t.getUnitCollection().getMatches(selectedUnits));
   }
 
   @Override

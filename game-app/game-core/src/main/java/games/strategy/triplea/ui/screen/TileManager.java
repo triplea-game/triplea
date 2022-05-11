@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import org.triplea.util.Tuple;
 
 /** Orchestrates the rendering of all map tiles. */
@@ -353,7 +352,13 @@ public class TileManager {
               uiContext);
       drawing.add(drawable);
       allUnitDrawables.add(drawable);
-      for (final Tile tile : getTiles(getUnitRectangleAt(lastPlace))) {
+      for (final Tile tile :
+          getTiles(
+              new Rectangle(
+                  lastPlace.x,
+                  lastPlace.y,
+                  uiContext.getUnitImageFactory().getUnitImageWidth(),
+                  uiContext.getUnitImageFactory().getUnitImageHeight()))) {
         tile.addDrawable(drawable);
         drawnOn.add(tile);
       }
@@ -498,7 +503,7 @@ public class TileManager {
    * null} if no such rectangle exists. Because the units are assumed to be drawn stacked, the
    * returned rectangle will always have a size equal to the standard unit image size.
    */
-  public @Nullable Rectangle getUnitRect(final List<Unit> units, final GameData data) {
+  public Rectangle getUnitRect(final List<Unit> units, final GameData data) {
     if (units.isEmpty()) {
       return null;
     }
@@ -506,9 +511,14 @@ public class TileManager {
     try {
       synchronized (mutex) {
         for (final UnitsDrawer drawer : allUnitDrawables) {
-          final List<Unit> drawerUnits = drawer.getUnits(data);
+          final List<Unit> drawerUnits = drawer.getUnits(data).getSecond();
           if (!drawerUnits.isEmpty() && units.containsAll(drawerUnits)) {
-            return getUnitRectangleAt(drawer.getPlacementPoint());
+            final Point placementPoint = drawer.getPlacementPoint();
+            return new Rectangle(
+                placementPoint.x,
+                placementPoint.y,
+                uiContext.getUnitImageFactory().getUnitImageWidth(),
+                uiContext.getUnitImageFactory().getUnitImageHeight());
           }
         }
         return null;
@@ -518,16 +528,11 @@ public class TileManager {
     }
   }
 
-  private Rectangle getUnitRectangleAt(Point p) {
-    final var factory = uiContext.getUnitImageFactory();
-    return new Rectangle(p.x, p.y, factory.getUnitImageWidth(), factory.getUnitImageHeight());
-  }
-
   /**
    * Returns the territory and units at the specified point or {@code null} if the point does not
    * lie within the bounds of any {@link UnitsDrawer}.
    */
-  public @Nullable Tuple<Territory, List<Unit>> getUnitsAtPoint(
+  public Tuple<Territory, List<Unit>> getUnitsAtPoint(
       final double x, final double y, final GameData gameData) {
     gameData.acquireReadLock();
     try {
@@ -538,7 +543,7 @@ public class TileManager {
               && x < placementPoint.x + uiContext.getUnitImageFactory().getUnitImageWidth()
               && y > placementPoint.y
               && y < placementPoint.y + uiContext.getUnitImageFactory().getUnitImageHeight()) {
-            return Tuple.of(drawer.getTerritory(gameData), drawer.getUnits(gameData));
+            return drawer.getUnits(gameData);
           }
         }
         return null;
