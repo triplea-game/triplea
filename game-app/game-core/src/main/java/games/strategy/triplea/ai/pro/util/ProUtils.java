@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static java.util.function.Predicate.not;
+
 import com.google.common.collect.Streams;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
@@ -83,9 +85,10 @@ public final class ProUtils {
 
   /** Given a player, finds all non-allied (enemy) players. */
   public static List<GamePlayer> getPotentialEnemyPlayers(final GamePlayer player) {
-    final var relationshipTracker = player.getData().getRelationshipTracker();
+    final var tracker = player.getData().getRelationshipTracker();
+    // Remove allied and passive neutrals.
     final Predicate<GamePlayer> potentialEnemy =
-        Matches.isAllied(player, relationshipTracker).negate().or(ProUtils::isPassiveNeutralPlayer);
+        not(Matches.isAllied(player, tracker)).and(not(ProUtils::isPassiveNeutralPlayer));
     return getFilteredPlayers(player.getData(), potentialEnemy);
   }
 
