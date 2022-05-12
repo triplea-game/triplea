@@ -80,7 +80,7 @@ public class History extends DefaultTreeModel {
   }
 
   private int getLastChange(final HistoryNode node) {
-    final int lastChangeIndex;
+    int lastChangeIndex;
     if (node == getRoot()) {
       lastChangeIndex = 0;
     } else if (node instanceof Event) {
@@ -89,6 +89,11 @@ public class History extends DefaultTreeModel {
       lastChangeIndex = ((Event) node.getParent()).getChangeEndIndex();
     } else if (node instanceof IndexedHistoryNode) {
       lastChangeIndex = ((IndexedHistoryNode) node).getChangeEndIndex();
+      // If this node is still current, or comes from an old save game where we didn't set it, get
+      // the last change index from its last child node.
+      if (lastChangeIndex == -1 && node.getChildCount() > 0) {
+        lastChangeIndex = getLastChange((HistoryNode)node.getLastChild());
+      }
     } else {
       lastChangeIndex = 0;
     }
