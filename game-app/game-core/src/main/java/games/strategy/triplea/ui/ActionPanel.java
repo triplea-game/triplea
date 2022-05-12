@@ -59,7 +59,7 @@ public abstract class ActionPanel extends JPanel {
   }
 
   protected static JPanel createButtonsPanel(JButton... buttons) {
-    final JPanel buttonsPanel = new JPanel();
+    JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
     for (JButton button : buttons) {
       buttonsPanel.add(button);

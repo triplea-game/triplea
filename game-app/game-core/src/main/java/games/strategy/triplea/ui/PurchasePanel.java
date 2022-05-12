@@ -19,7 +19,6 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -91,7 +90,6 @@ public class PurchasePanel extends ActionPanel {
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
           actionLabel.setText(gamePlayer.getName() + " production");
           add(SwingComponents.leftBox(actionLabel));
 
