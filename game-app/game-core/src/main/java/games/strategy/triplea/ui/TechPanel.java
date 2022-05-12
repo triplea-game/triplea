@@ -224,18 +224,13 @@ class TechPanel extends ActionPanel {
         () -> {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " Tech Roll");
-          add(actionLabel);
           add(SwingComponents.leftBox(actionLabel));
 
-          final JPanel buttonsPanel = new JPanel();
           if (Properties.getWW2V3TechModel(getData().getProperties())) {
-            buttonsPanel.add(new JButton(getTechTokenAction));
-            buttonsPanel.add(new JButton(justRollTech));
+            add(createButtonsPanel(new JButton(getTechTokenAction), new JButton(justRollTech)));
           } else {
-            buttonsPanel.add(new JButton(getTechRollsAction));
-            buttonsPanel.add(createDoneButton());
+            add(createButtonsPanel(new JButton(getTechRollsAction), createDoneButton()));
           }
-          add(buttonsPanel);
         });
   }
 

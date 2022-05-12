@@ -121,7 +121,6 @@ public class UserActionPanel extends ActionPanel {
         () -> {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " Actions and Operations");
-          add(actionLabel);
           add(SwingComponents.leftBox(actionLabel));
 
           selectUserActionButton = new JButton(selectUserActionAction);
@@ -129,10 +128,7 @@ public class UserActionPanel extends ActionPanel {
           doneButton = createDoneButton();
           doneButton.setEnabled(false);
 
-          final JPanel buttonsPanel = new JPanel();
-          buttonsPanel.add(selectUserActionButton);
-          buttonsPanel.add(doneButton);
-          add(buttonsPanel);
+          add(createButtonsPanel(selectUserActionButton, doneButton));
 
           SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
         });

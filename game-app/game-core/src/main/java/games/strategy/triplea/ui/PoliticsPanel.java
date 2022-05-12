@@ -176,7 +176,6 @@ public class PoliticsPanel extends ActionPanel {
         () -> {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " Politics");
-          add(actionLabel);
           add(SwingComponents.leftBox(actionLabel));
 
           selectPoliticalActionButton = new JButton(selectPoliticalActionAction);
@@ -184,10 +183,7 @@ public class PoliticsPanel extends ActionPanel {
           doneButton = createDoneButton();
           doneButton.setEnabled(false);
 
-          final JPanel buttonsPanel = new JPanel();
-          buttonsPanel.add(selectPoliticalActionButton);
-          buttonsPanel.add(doneButton);
-          add(buttonsPanel);
+          add(createButtonsPanel(selectPoliticalActionButton, doneButton));
 
           SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
         });

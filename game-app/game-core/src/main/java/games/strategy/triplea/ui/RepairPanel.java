@@ -16,7 +16,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingComponents;
@@ -75,14 +74,10 @@ class RepairPanel extends ActionPanel {
         () -> {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " repair");
-          add(actionLabel);
           add(SwingComponents.leftBox(actionLabel));
 
           buyButton.setText(BUY);
-          final JPanel buttonsPanel = new JPanel();
-          buttonsPanel.add(buyButton);
-          buttonsPanel.add(createDoneButton());
-          add(buttonsPanel);
+          add(createButtonsPanel(buyButton, createDoneButton()));
 
           repairedSoFar.setText("");
           add(Box.createVerticalStrut(9));
