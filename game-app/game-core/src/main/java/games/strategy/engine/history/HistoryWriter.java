@@ -88,6 +88,7 @@ public class HistoryWriter implements Serializable {
           parent.remove(current);
           history.nodesWereRemoved(parent, new int[] {index}, new Object[] {current});
         }
+        ((Step) current).setChangeEndIndex(history.getChanges().size());
         current = parent;
         return;
       }
