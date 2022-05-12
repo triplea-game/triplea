@@ -92,7 +92,7 @@ public class History extends DefaultTreeModel {
       // If this node is still current, or comes from an old save game where we didn't set it, get
       // the last change index from its last child node.
       if (lastChangeIndex == -1 && node.getChildCount() > 0) {
-        lastChangeIndex = getLastChange((HistoryNode)node.getLastChild());
+        lastChangeIndex = getLastChange((HistoryNode) node.getLastChild());
       }
     } else {
       lastChangeIndex = 0;
