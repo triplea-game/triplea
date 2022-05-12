@@ -23,7 +23,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -92,24 +91,20 @@ public class PurchasePanel extends ActionPanel {
         () -> {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " production");
-          add(actionLabel);
           add(SwingComponents.leftBox(actionLabel));
 
           buyButton.setText(BUY);
-          final JPanel buttonsPanel = new JPanel();
-          buttonsPanel.add(buyButton);
-          buttonsPanel.add(createDoneButton());
-          add(buttonsPanel);
+          add(createButtonsPanel(buyButton, createDoneButton()));
 
           add(Box.createVerticalStrut(9));
 
           purchasedLabel.setText("");
-          add(purchasedLabel);
+          add(SwingComponents.leftBox(purchasedLabel));
 
           add(Box.createVerticalStrut(4));
 
           purchasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), gamePlayer);
-          add(purchasedUnits);
+          add(SwingComponents.leftBox(purchasedUnits));
 
           getData().acquireReadLock();
           try {
@@ -117,9 +112,9 @@ public class PurchasePanel extends ActionPanel {
                 UnitSeparator.categorize(gamePlayer.getUnits()));
             add(Box.createVerticalStrut(4));
             if (!gamePlayer.getUnitCollection().isEmpty()) {
-              add(purchasedPreviousRoundsLabel);
+              add(SwingComponents.leftBox(purchasedPreviousRoundsLabel));
             }
-            add(purchasedPreviousRoundsUnits);
+            add(SwingComponents.leftBox(purchasedPreviousRoundsUnits));
           } finally {
             getData().releaseReadLock();
           }

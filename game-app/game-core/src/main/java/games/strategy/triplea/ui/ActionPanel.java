@@ -58,6 +58,15 @@ public abstract class ActionPanel extends JPanel {
     return new JLabelBuilder().border(BorderFactory.createEmptyBorder(0, 5, 0, 0)).build();
   }
 
+  protected static JPanel createButtonsPanel(JButton... buttons) {
+    JPanel buttonsPanel = new JPanel();
+    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+    for (JButton button : buttons) {
+      buttonsPanel.add(button);
+    }
+    return buttonsPanel;
+  }
+
   /**
    * Wait for another thread to call release. If the thread is interrupted, we will return silently.
    *
