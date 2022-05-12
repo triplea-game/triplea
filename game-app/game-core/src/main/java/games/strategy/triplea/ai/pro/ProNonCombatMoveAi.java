@@ -2240,7 +2240,8 @@ class ProNonCombatMoveAi {
         final Collection<Unit> defendingUnits = proTerritory.getAllDefenders();
         defendingUnits.add(u);
         if (proTerritory.getBattleResult() == null) {
-          proTerritory.setBattleResult(calc.calculateBattleResults(proData, proTerritory));
+          proTerritory.setBattleResult(
+              calc.calculateBattleResults(proData, proTerritory, defendingUnits));
         }
         final ProBattleResult result = proTerritory.getBattleResult();
         ProLogger.trace(
