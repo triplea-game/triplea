@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Enumeration;
+import java.util.Optional;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -220,7 +221,6 @@ public class HistoryPanel extends JPanel {
     }
     final TreePath path = tree.getSelectionPath();
     final TreeNode selected = (TreeNode) path.getLastPathComponent();
-    @SuppressWarnings("unchecked")
     final Enumeration<TreeNode> nodeEnum =
         ((DefaultMutableTreeNode) tree.getModel().getRoot()).depthFirstEnumeration();
     TreeNode previous = null;
@@ -263,7 +263,6 @@ public class HistoryPanel extends JPanel {
     }
     final TreePath path = tree.getSelectionPath();
     final TreeNode selected = (TreeNode) path.getLastPathComponent();
-    @SuppressWarnings("unchecked")
     final Enumeration<TreeNode> nodeEnum =
         ((DefaultMutableTreeNode) tree.getModel().getRoot()).preorderEnumeration();
     TreeNode next = null;
@@ -297,8 +296,10 @@ public class HistoryPanel extends JPanel {
     // If this is not a leaf node, set the game state to the last leaf node before it. This way,
     // selecting something like "Round 3" shows the state at the start of the round, which ensures
     // chronological order when moving up/down the nodes using arrow keys even if some are expanded.
-    if (!node.isLeaf() && !node.isRoot()) {
-      data.getHistory().gotoNode((HistoryNode) node.getPreviousLeaf());
+    if (!node.isLeaf()) {
+      final TreeNode leaf = node.getPreviousLeaf();
+      // If no previous leaf, select the root node.
+      data.getHistory().gotoNode((HistoryNode) Optional.ofNullable(leaf).orElse(node.getRoot()));
     } else {
       data.getHistory().gotoNode(node);
     }
@@ -452,7 +453,7 @@ public class HistoryPanel extends JPanel {
       if (value instanceof Step) {
         final GamePlayer player = ((Step) value).getPlayerId();
         if (player != null) {
-          final String text = value.toString() + " (" + player.getName() + ")";
+          final String text = value + " (" + player.getName() + ")";
           if (uiContext != null) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
             icon.setImage(uiContext.getFlagImageFactory().getSmallFlag(player));

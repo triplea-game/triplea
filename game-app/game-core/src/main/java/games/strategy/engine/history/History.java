@@ -1,5 +1,6 @@
 package games.strategy.engine.history;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -118,6 +119,9 @@ public class History extends DefaultTreeModel {
 
   /** Changes the game state to reflect the historical state at {@code node}. */
   public synchronized void gotoNode(final HistoryNode node) {
+    // Setting node to null causes problems, because we'll restore the state to the start, but then
+    // next gotoNode() call will reset currentNode to getLastNode() causing an invalid delta.
+    Preconditions.checkNotNull(node);
     assertCorrectThread();
     gameData.acquireWriteLock();
     try {
