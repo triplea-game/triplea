@@ -294,7 +294,14 @@ public class HistoryPanel extends JPanel {
     if (details != null) {
       details.render(node);
     }
-    data.getHistory().gotoNode(node);
+    // If this is not a leaf node, set the game state to the last leaf node before it. This way,
+    // selecting something like "Round 3" shows the state at the start of the round, which ensures
+    // chronological order when moving up/down the nodes using arrow keys even if some are expanded.
+    if (!node.isLeaf() && !node.isRoot()) {
+      data.getHistory().gotoNode((HistoryNode) node.getPreviousLeaf());
+    } else {
+      data.getHistory().gotoNode(node);
+    }
   }
 
   public HistoryNode getCurrentNode() {
