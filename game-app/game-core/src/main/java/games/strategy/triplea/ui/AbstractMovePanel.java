@@ -45,12 +45,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   private final JButton cancelMoveButton =
       new JButtonBuilder().title("Cancel").actionListener(this::cancelMove).build();
-  private final JButton doneButton =
-      new JButtonBuilder()
-          .title("Done")
-          .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
-          .actionListener(this::performDone)
-          .build();
+  private final JButton doneButton = createDoneButton();
   private final JButton undoAllButton =
       new JButtonBuilder().title("Undo All").actionListener(this::undoAll).build();
 
@@ -158,7 +153,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return error;
   }
 
-  private final void undoAll() {
+  private void undoAll() {
     final int moveCount = getUndoableMoves().size();
     final boolean suppressErrorMsgToUser = true;
     for (int i = moveCount - 1; i >= 0; i--) {

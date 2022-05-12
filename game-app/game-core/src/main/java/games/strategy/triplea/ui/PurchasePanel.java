@@ -23,10 +23,11 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingComponents;
 
 /** The action panel displayed during the purchase action. */
 public class PurchasePanel extends ActionPanel {
@@ -92,16 +93,13 @@ public class PurchasePanel extends ActionPanel {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " production");
           add(actionLabel);
+          add(SwingComponents.leftBox(actionLabel));
 
           buyButton.setText(BUY);
-          add(buyButton);
-
-          add(
-              new JButtonBuilder()
-                  .title("Done")
-                  .actionListener(this::performDone)
-                  .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
-                  .build());
+          final JPanel buttonsPanel = new JPanel();
+          buttonsPanel.add(buyButton);
+          buttonsPanel.add(createDoneButton());
+          add(buttonsPanel);
 
           add(Box.createVerticalStrut(9));
 
@@ -137,7 +135,7 @@ public class PurchasePanel extends ActionPanel {
       final int selectedOption =
           JOptionPane.showConfirmDialog(
               JOptionPane.getFrameForComponent(PurchasePanel.this),
-              "Are you sure you dont want to buy anything?",
+              "Are you sure you don't want to buy anything?",
               "End Purchase",
               JOptionPane.YES_NO_OPTION);
       if (selectedOption != JOptionPane.YES_OPTION) {
