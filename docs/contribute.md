@@ -49,11 +49,14 @@ to help.
 
 - Especially for new releases test
   and [report bugs](https://github.com/triplea-game/triplea/issues/new?assignees=&labels=Problem&template=problem_report.md&title=)
-  on GitHub
+  on GitHub, **BUT**: For any problems found, please check if there is the same problem in the previous release.
 
 #### _How to become one_
 
-- tbd
+- Check the forum ([Development](https://forums.triplea-game.org/category/60/development)) whether release testing is ongoing
+- Download & install the [latest release](https://github.com/triplea-game/triplea/releases)
+- Once the game is launched, select 'settings > testing' and select the 'prerelease' lobby (note, your lobby account is not shared between 'prod' and 'prerelease')
+- Test: We generally need every aspect of the game tested, i.e. every button, every menu, every setting, every game rule, etc.
 
 ### :moneybag: Donor
 
@@ -192,4 +195,4 @@ to help.
 
 #### _How to become one_
 
-- tbd
+- Start as [:wrench: Developer w/o Merge Rights](#wrench-Developer-wo-Merge-Rights) and gain knowledge and trust in carefully working on our project
