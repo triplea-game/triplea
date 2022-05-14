@@ -18,10 +18,10 @@ import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -49,38 +49,22 @@ public final class ProPurchaseValidationUtils {
       final Territory t,
       final Territory factoryTerritory,
       final boolean isBid) {
-    final List<ProPurchaseOption> result = new ArrayList<>();
-    for (final ProPurchaseOption ppo : purchaseOptions) {
-      if (ProPurchaseValidationUtils.canTerritoryUsePurchaseOption(
-          proData, player, ppo, t, factoryTerritory, isBid)) {
-        result.add(ppo);
-      }
-    }
-    return result;
+    final Predicate<ProPurchaseOption> canUsePurchaseOption =
+        ppo -> {
+          final List<Unit> units = ppo.getUnitType().createTemp(ppo.getQuantity(), player);
+          return ProPurchaseValidationUtils.canUnitsBePlaced(
+              proData, units, player, t, factoryTerritory, isBid);
+        };
+    return purchaseOptions.stream().filter(canUsePurchaseOption).collect(Collectors.toList());
   }
 
-  private static boolean canTerritoryUsePurchaseOption(
+  public static boolean canUnitBePlaced(
       final ProData proData,
-      final GamePlayer player,
-      final ProPurchaseOption ppo,
-      final Territory t,
-      final Territory factoryTerritory,
-      final boolean isBid) {
-    if (ppo == null) {
-      return false;
-    }
-    final List<Unit> units = ppo.getUnitType().createTemp(ppo.getQuantity(), player);
-    return ProPurchaseValidationUtils.canUnitsBePlaced(
-        proData, units, player, t, factoryTerritory, isBid);
-  }
-
-  public static boolean canUnitsBePlaced(
-      final ProData proData,
-      final List<Unit> units,
+      final Unit unit,
       final GamePlayer player,
       final Territory t,
       final boolean isBid) {
-    return ProPurchaseValidationUtils.canUnitsBePlaced(proData, units, player, t, t, isBid);
+    return ProPurchaseValidationUtils.canUnitsBePlaced(proData, List.of(unit), player, t, t, isBid);
   }
 
   /** Check if units can be placed in given territory by specified factory. */

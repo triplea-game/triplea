@@ -215,7 +215,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
                 dataCopy.getSequence().getRound(), step.getDisplayName(), step.getPlayerId());
         final String stepName = step.getName();
         ProLogger.info("Simulating phase: " + stepName);
-        if (stepName.endsWith("NonCombatMove")) {
+        if (GameStep.isNonCombatMoveStep(stepName)) {
           proData.initializeSimulation(this, dataCopy, playerCopy);
           final Map<Territory, ProTerritory> factoryMoveMap =
               nonCombatMoveAi.simulateNonCombatMove(moveDel);
@@ -223,21 +223,22 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
             storedFactoryMoveMap =
                 ProSimulateTurnUtils.transferMoveMap(proData, factoryMoveMap, data, player);
           }
-        } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
+        } else if (GameStep.isCombatMoveStep(stepName)
+            && !GameStep.isAirborneCombatMoveStep(stepName)) {
           proData.initializeSimulation(this, dataCopy, playerCopy);
           final Map<Territory, ProTerritory> moveMap = combatMoveAi.doCombatMove(moveDel);
           if (storedCombatMoveMap == null) {
             storedCombatMoveMap =
                 ProSimulateTurnUtils.transferMoveMap(proData, moveMap, data, player);
           }
-        } else if (stepName.endsWith("Battle")) {
+        } else if (GameStep.isBattleStep(stepName)) {
           proData.initializeSimulation(this, dataCopy, playerCopy);
           ProSimulateTurnUtils.simulateBattles(proData, dataCopy, playerCopy, bridge, calc);
-        } else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn")) {
+        } else if (GameStep.isPlaceStep(stepName) || GameStep.isEndTurnStep(stepName)) {
           proData.initializeSimulation(this, dataCopy, player);
           storedPurchaseTerritories = purchaseAi.purchase(purchaseDelegate, data);
           break;
-        } else if (stepName.endsWith("Politics")) {
+        } else if (GameStep.isPoliticsStep(stepName)) {
           proData.initializeSimulation(this, dataCopy, player);
           // Can only do politics if this player still owns its capital.
           if (proData.getMyCapital() == null || proData.getMyCapital().isOwnedBy(player)) {

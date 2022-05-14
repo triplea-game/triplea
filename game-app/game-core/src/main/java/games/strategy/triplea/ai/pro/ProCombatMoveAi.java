@@ -110,8 +110,7 @@ public class ProCombatMoveAi {
       }
     }
     possibleTransportTerritories.addAll(clearedTerritories);
-    territoryManager.populateEnemyAttackOptions(
-        clearedTerritories, new ArrayList<>(possibleTransportTerritories));
+    territoryManager.populateEnemyAttackOptions(clearedTerritories, possibleTransportTerritories);
     determineTerritoriesThatCanBeHeld(attackOptions, clearedTerritories);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
