@@ -11,6 +11,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
@@ -182,12 +183,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
       return false;
     }
     // there is an issue with maps using thousands of chance triggers: they are causing the cypted
-    // random source (ie:
-    // live and pbem games) to lock up or error out
-    // so we need to slow them down a bit, until we come up with a better solution (like aggregating
-    // all the chances
-    // together, then getting a ton of random numbers at once instead of one at a time)
-    Interruptibles.sleep(100);
+    // random source (ie: live and pbem games) to lock up or error out so we need to slow them down
+    // a bit, until we come up with a better solution (like aggregating all the chances together,
+    // then getting a ton of random numbers at once instead of one at a time)
+    if (PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(getData())) {
+      Interruptibles.sleep(100);
+    }
     final int rollResult =
         bridge.getRandom(
                 diceSides,

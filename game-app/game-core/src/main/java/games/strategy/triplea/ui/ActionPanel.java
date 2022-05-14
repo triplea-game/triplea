@@ -7,12 +7,14 @@ import java.awt.Dimension;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -54,6 +56,15 @@ public abstract class ActionPanel extends JPanel {
    */
   public static JLabel createIndentedLabel() {
     return new JLabelBuilder().border(BorderFactory.createEmptyBorder(0, 5, 0, 0)).build();
+  }
+
+  protected static JPanel createButtonsPanel(JButton... buttons) {
+    JPanel buttonsPanel = new JPanel();
+    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+    for (JButton button : buttons) {
+      buttonsPanel.add(button);
+    }
+    return buttonsPanel;
   }
 
   /**
@@ -108,6 +119,14 @@ public abstract class ActionPanel extends JPanel {
   public void display(final GamePlayer player) {
     currentPlayer = player;
     setActive(true);
+  }
+
+  protected JButton createDoneButton() {
+    return new JButtonBuilder()
+        .title("Done")
+        .actionListener(this::performDone)
+        .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+        .build();
   }
 
   /**

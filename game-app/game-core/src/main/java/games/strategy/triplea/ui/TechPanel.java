@@ -34,7 +34,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -225,18 +224,12 @@ class TechPanel extends ActionPanel {
         () -> {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " Tech Roll");
-          add(actionLabel);
+          add(SwingComponents.leftBox(actionLabel));
+
           if (Properties.getWW2V3TechModel(getData().getProperties())) {
-            add(new JButton(getTechTokenAction));
-            add(new JButton(justRollTech));
+            add(createButtonsPanel(new JButton(getTechTokenAction), new JButton(justRollTech)));
           } else {
-            add(new JButton(getTechRollsAction));
-            add(
-                new JButtonBuilder()
-                    .title("Done")
-                    .actionListener(this::performDone)
-                    .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
-                    .build());
+            add(createButtonsPanel(new JButton(getTechRollsAction), createDoneButton()));
           }
         });
   }
