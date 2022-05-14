@@ -18,7 +18,8 @@ import org.triplea.java.collections.IntegerMap;
 
 /**
  * Abstract class for holding various action/condition things for PoliticalActionAttachment and
- * UserActionAttachment.
+ * UserActionAttachment. Note: Empty collection fields default to null to minimize memory use and
+ * serialization size.
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
@@ -35,18 +36,17 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    */
   @Deprecated protected int costPu = 0;
   // cost in any resources to attempt this action
-  protected IntegerMap<Resource> costResources = new IntegerMap<>();
+  protected IntegerMap<Resource> costResources = null;
   // how many times can you perform this action each round?
   protected int attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
   protected int attemptsLeftThisTurn = 1;
   // which players should accept this action? this could be the player who is the target of this
-  // action in the case of
-  // proposing a treaty or the players in your 'alliance' in case you want to declare war...
-  // especially for actions such as when france declares war on germany and it automatically causes
-  // UK to declare war as
-  // well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
-  protected List<GamePlayer> actionAccept = new ArrayList<>();
+  // action in the case of  proposing a treaty or the players in your 'alliance' in case you want to
+  // declare war... especially for actions such as when france declares war on germany and it
+  // automatically causes UK to declare war as well. it is good to set "actionAccept" to "UK" so UK
+  // an accept this action to go through.
+  protected List<GamePlayer> actionAccept = null;
 
   protected AbstractUserActionAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -81,6 +81,9 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   @Deprecated
   public void setCostPu(final Integer s) {
     final Resource r = getData().getResourceList().getResource(Constants.PUS);
+    if (costResources == null) {
+      costResources = new IntegerMap<>();
+    }
     costResources.put(r, s);
   }
 
@@ -107,6 +110,9 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
           "costResources: No resource called: " + resourceToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
+    if (costResources == null) {
+      costResources = new IntegerMap<>();
+    }
     costResources.put(r, n);
   }
 
@@ -115,11 +121,11 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   public IntegerMap<Resource> getCostResources() {
-    return costResources;
+    return getIntegerMapProperty(costResources);
   }
 
   private void resetCostResources() {
-    costResources = new IntegerMap<>();
+    costResources = null;
   }
 
   private void setActionAccept(final String value) throws GameParseException {
@@ -127,6 +133,9 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     for (final String name : temp) {
       final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
+        if (actionAccept == null) {
+          actionAccept = new ArrayList<>();
+        }
         actionAccept.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
@@ -140,11 +149,11 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   /** Returns a list of players that must accept this action before it takes effect. */
   public List<GamePlayer> getActionAccept() {
-    return actionAccept;
+    return getListProperty(actionAccept);
   }
 
   private void resetActionAccept() {
-    actionAccept = new ArrayList<>();
+    actionAccept = null;
   }
 
   /**

@@ -33,11 +33,15 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.triplea.java.collections.CollectionUtils;
 
-/** An attachment for instances of {@link Territory}. */
+/**
+ * An attachment for instances of {@link Territory}.
+ *
+ * <p>Note: Empty collection fields default to null to minimize memory use and serialization size.
+ */
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
-  private String capital = null;
+  private @Nullable String capital = null;
   private boolean originalFactory = false;
   // "setProduction" will set both production and unitProduction.
   // While "setProductionOnly" sets only production.
@@ -46,17 +50,17 @@ public class TerritoryAttachment extends DefaultAttachment {
   private boolean isImpassable = false;
   private GamePlayer originalOwner = null;
   private boolean convoyRoute = false;
-  private Set<Territory> convoyAttached = new HashSet<>();
-  private List<GamePlayer> changeUnitOwners = new ArrayList<>();
-  private List<GamePlayer> captureUnitOnEnteringBy = new ArrayList<>();
+  private @Nullable Set<Territory> convoyAttached = null;
+  private @Nullable List<GamePlayer> changeUnitOwners = null;
+  private @Nullable List<GamePlayer> captureUnitOnEnteringBy = null;
   private boolean navalBase = false;
   private boolean airBase = false;
   private boolean kamikazeZone = false;
   private int unitProduction = 0;
   private boolean blockadeZone = false;
-  private List<TerritoryEffect> territoryEffect = new ArrayList<>();
-  private List<String> whenCapturedByGoesTo = new ArrayList<>();
-  private ResourceCollection resources = null;
+  private @Nullable List<TerritoryEffect> territoryEffect = null;
+  private @Nullable List<String> whenCapturedByGoesTo = null;
+  private @Nullable ResourceCollection resources = null;
 
   public TerritoryAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -239,7 +243,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     resources = value;
   }
 
-  public ResourceCollection getResources() {
+  public @Nullable ResourceCollection getResources() {
     return resources;
   }
 
@@ -400,9 +404,12 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
+        if (changeUnitOwners == null) {
+          changeUnitOwners = new ArrayList<>();
+        }
         changeUnitOwners.add(tempPlayer);
       } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
-        changeUnitOwners.clear();
+        changeUnitOwners = null;
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -414,11 +421,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public List<GamePlayer> getChangeUnitOwners() {
-    return changeUnitOwners;
+    return getListProperty(changeUnitOwners);
   }
 
   private void resetChangeUnitOwners() {
-    changeUnitOwners = new ArrayList<>();
+    changeUnitOwners = null;
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
@@ -426,6 +433,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
+        if (captureUnitOnEnteringBy == null) {
+          captureUnitOnEnteringBy = new ArrayList<>();
+        }
         captureUnitOnEnteringBy.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
@@ -438,11 +448,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public List<GamePlayer> getCaptureUnitOnEnteringBy() {
-    return captureUnitOnEnteringBy;
+    return getListProperty(captureUnitOnEnteringBy);
   }
 
   private void resetCaptureUnitOnEnteringBy() {
-    captureUnitOnEnteringBy = new ArrayList<>();
+    captureUnitOnEnteringBy = null;
   }
 
   @VisibleForTesting
@@ -458,6 +468,9 @@ public class TerritoryAttachment extends DefaultAttachment {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
     }
+    if (whenCapturedByGoesTo == null) {
+      whenCapturedByGoesTo = new ArrayList<>();
+    }
     whenCapturedByGoesTo.add(value);
   }
 
@@ -466,15 +479,15 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private List<String> getWhenCapturedByGoesTo() {
-    return whenCapturedByGoesTo;
+    return getListProperty(whenCapturedByGoesTo);
   }
 
   private void resetWhenCapturedByGoesTo() {
-    whenCapturedByGoesTo = new ArrayList<>();
+    whenCapturedByGoesTo = null;
   }
 
   public Collection<CaptureOwnershipChange> getCaptureOwnershipChanges() {
-    return whenCapturedByGoesTo.stream()
+    return getWhenCapturedByGoesTo().stream()
         .map(this::parseCaptureOwnershipChange)
         .collect(Collectors.toList());
   }
@@ -493,6 +506,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final String name : s) {
       final TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
       if (effect != null) {
+        if (territoryEffect == null) {
+          territoryEffect = new ArrayList<>();
+        }
         territoryEffect.add(effect);
       } else {
         throw new GameParseException("No TerritoryEffect named: " + name + thisErrorMsg());
@@ -505,11 +521,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public List<TerritoryEffect> getTerritoryEffect() {
-    return territoryEffect;
+    return getListProperty(territoryEffect);
   }
 
   private void resetTerritoryEffect() {
-    territoryEffect = new ArrayList<>();
+    territoryEffect = null;
   }
 
   private void setConvoyAttached(final String value) throws GameParseException {
@@ -521,6 +537,9 @@ public class TerritoryAttachment extends DefaultAttachment {
       if (territory == null) {
         throw new GameParseException("No territory called:" + subString + thisErrorMsg());
       }
+      if (convoyAttached == null) {
+        convoyAttached = new HashSet<>();
+      }
       convoyAttached.add(territory);
     }
   }
@@ -530,11 +549,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public Set<Territory> getConvoyAttached() {
-    return convoyAttached;
+    return getSetProperty(convoyAttached);
   }
 
   private void resetConvoyAttached() {
-    convoyAttached = new HashSet<>();
+    convoyAttached = null;
   }
 
   public static boolean hasNavalBase(final Territory t) {
@@ -696,7 +715,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append(br);
     }
     if (convoyRoute) {
-      if (!convoyAttached.isEmpty()) {
+      if (!getConvoyAttached().isEmpty()) {
         sb.append("Needs: ").append(MyFormatter.defaultNamedToTextList(convoyAttached)).append(br);
       }
       final Collection<Territory> requiredBy =
@@ -707,15 +726,15 @@ public class TerritoryAttachment extends DefaultAttachment {
             .append(br);
       }
     }
-    if (changeUnitOwners != null && !changeUnitOwners.isEmpty()) {
+    if (!getChangeUnitOwners().isEmpty()) {
       sb.append("Units May Change Ownership Here");
       sb.append(br);
     }
-    if (captureUnitOnEnteringBy != null && !captureUnitOnEnteringBy.isEmpty()) {
+    if (!getCaptureUnitOnEnteringBy().isEmpty()) {
       sb.append("May Allow The Capture of Some Units");
       sb.append(br);
     }
-    if (whenCapturedByGoesTo != null && !whenCapturedByGoesTo.isEmpty()) {
+    if (!getWhenCapturedByGoesTo().isEmpty()) {
       sb.append("Captured By -> Ownership Goes To");
       sb.append(br);
       for (final String value : whenCapturedByGoesTo) {
@@ -751,16 +770,15 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append(br);
       }
     }
-    if (!territoryEffect.isEmpty()) {
+    if (!getTerritoryEffect().isEmpty()) {
       sb.append("Territory Effects: ");
       sb.append(br);
+      sb.append(
+          territoryEffect.stream()
+              .map(TerritoryEffect::getName)
+              .map(name -> "&nbsp;&nbsp;&nbsp;&nbsp;" + name + br)
+              .collect(Collectors.joining()));
     }
-    sb.append(
-        territoryEffect.stream()
-            .map(TerritoryEffect::getName)
-            .map(name -> "&nbsp;&nbsp;&nbsp;&nbsp;" + name + br)
-            .collect(Collectors.joining()));
-
     return sb.toString();
   }
 

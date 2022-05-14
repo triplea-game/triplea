@@ -6,8 +6,15 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import games.strategy.triplea.Constants;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import javax.annotation.Nullable;
+import org.checkerframework.checker.units.qual.K;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * Contains some utility methods that subclasses can use to make writing attachments easier. FYI:
@@ -155,5 +162,33 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
         && Objects.equals(
             Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
         && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
+  }
+
+  public static <T> List<T> getListProperty(@Nullable List<T> value) {
+    if (value == null) {
+      return List.of();
+    }
+    return Collections.unmodifiableList(value);
+  }
+
+  public static <K, V> Map<K, V> getMapProperty(@Nullable Map<K, V> value) {
+    if (value == null) {
+      return Map.of();
+    }
+    return Collections.unmodifiableMap(value);
+  }
+
+  public static <T> Set<T> getSetProperty(@Nullable Set<T> value) {
+    if (value == null) {
+      return Set.of();
+    }
+    return Collections.unmodifiableSet(value);
+  }
+
+  public static <T> IntegerMap<T> getIntegerMapProperty(@Nullable IntegerMap<T> value) {
+    if (value == null) {
+      return IntegerMap.of();
+    }
+    return IntegerMap.unmodifiableViewOf(value);
   }
 }

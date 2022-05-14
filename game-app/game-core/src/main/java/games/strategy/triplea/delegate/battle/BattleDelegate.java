@@ -1312,7 +1312,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       Predicate<Unit> canBeAttacked = canBeAttackedDefault;
       final Set<UnitType> suicideAttackTargets = pa.getSuicideAttackTargets();
-      if (suicideAttackTargets != null) {
+      if (!suicideAttackTargets.isEmpty()) {
         canBeAttacked =
             Matches.unitIsOwnedBy(player).and(Matches.unitIsOfTypes(suicideAttackTargets));
       }
