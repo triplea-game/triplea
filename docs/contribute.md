@@ -17,7 +17,7 @@ to help.
 - [:golf: Map Maker](#golf-Map-Maker)
 - [:trident: Map Admin](#trident-Map-Admin)
 - [:book: Rule Expert](#book-Rule-Expert)
-- [:speech_balloon: Forum Moderator](#speech_balloon-Forum-Moderator)
+- [:speech_balloon: Lobby Moderator](#speech_balloon-Lobby-Moderator)
 - [:bulb: Issue Manager](#bulb-Issue-Manager)
 - [:wrench: Developer w/o Merge Rights](#wrench-Developer-wo-Merge-Rights)
 - [:hammer: Developer with Merge Rights](#hammer-Developer-with-Merge-Rights)
@@ -139,11 +139,13 @@ to help.
 
 #### _Contributions_
 
-- Answer lobby user questions. Help provide a fun and safe lobby experience for all users. Discipline inappropriate user behaviour.
+- Answer lobby user questions
+- Help provide a fun and safe lobby experience for all users
+- Discipline inappropriate user behaviour
 
 #### _How to become one_
 
-- Be sponsored by an existing moderator and added by a Developer with merge rights.
+- Be sponsored by an existing moderator and added by a [:hammer: Developer with Merge Rights](#hammer-Developer-with-Merge-Rights).
 
 ### :bulb: Issue Manager
 
