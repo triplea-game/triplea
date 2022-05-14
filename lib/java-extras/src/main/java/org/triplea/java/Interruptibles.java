@@ -105,6 +105,9 @@ public final class Interruptibles {
    * @throws IllegalArgumentException If {@code millis} is negative.
    */
   public static boolean sleep(final long millis) {
+    if (millis == 0) {
+      return true;
+    }
     return await(() -> Thread.sleep(millis));
   }
 

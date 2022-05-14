@@ -13,6 +13,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -80,7 +81,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits(), myCreatorsMatch);
-      if (myCreators != null && !myCreators.isEmpty()) {
+      if (!myCreators.isEmpty()) {
         final Collection<Unit> toAdd = new ArrayList<>();
         final Collection<Unit> toAddSea = new ArrayList<>();
         final Collection<Unit> toAddLand = new ArrayList<>();
@@ -89,11 +90,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           final IntegerMap<UnitType> createsUnitsMap = ua.getCreatesUnitsList();
           final Collection<UnitType> willBeCreated = createsUnitsMap.keySet();
           for (final UnitType ut : willBeCreated) {
-            if (UnitAttachment.get(ut).getIsSea() && Matches.territoryIsLand().test(t)) {
+            final UnitAttachment uaToCreate = UnitAttachment.get(ut);
+            if (uaToCreate.getIsSea() && !t.isWater()) {
               toAddSea.addAll(ut.create(createsUnitsMap.getInt(ut), player));
-            } else if (!UnitAttachment.get(ut).getIsSea()
-                && !UnitAttachment.get(ut).getIsAir()
-                && Matches.territoryIsWater().test(t)) {
+            } else if (!uaToCreate.getIsSea() && !uaToCreate.getIsAir() && t.isWater()) {
               toAddLand.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else {
               toAdd.addAll(ut.create(createsUnitsMap.getInt(ut), player));
@@ -101,50 +101,23 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           }
         }
         if (!toAdd.isEmpty()) {
-          final String transcriptText =
-              player.getName()
-                  + " creates "
-                  + MyFormatter.unitsToTextNoOwner(toAdd)
-                  + " in "
-                  + t.getName();
-          bridge.getHistoryWriter().startEvent(transcriptText, toAdd);
-          endTurnReport.append(transcriptText).append("<br />");
-          final Change place = ChangeFactory.addUnits(t, toAdd);
-          change.add(place);
+          createUnits(t, toAdd, change, endTurnReport);
         }
         if (!toAddSea.isEmpty()) {
           final Predicate<Territory> myTerrs = Matches.territoryIsWater();
           final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
-          if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
-            final Territory tw = getRandomTerritory(waterNeighbors, bridge);
-            final String transcriptText =
-                player.getName()
-                    + " creates "
-                    + MyFormatter.unitsToTextNoOwner(toAddSea)
-                    + " in "
-                    + tw.getName();
-            bridge.getHistoryWriter().startEvent(transcriptText, toAddSea);
-            endTurnReport.append(transcriptText).append("<br />");
-            final Change place = ChangeFactory.addUnits(tw, toAddSea);
-            change.add(place);
+          if (!waterNeighbors.isEmpty()) {
+            final Territory location = getRandomTerritory(data, waterNeighbors, bridge);
+            createUnits(location, toAddSea, change, endTurnReport);
           }
         }
         if (!toAddLand.isEmpty()) {
           final Predicate<Territory> myTerrs =
               Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
-          if (landNeighbors != null && !landNeighbors.isEmpty()) {
-            final Territory tl = getRandomTerritory(landNeighbors, bridge);
-            final String transcriptText =
-                player.getName()
-                    + " creates "
-                    + MyFormatter.unitsToTextNoOwner(toAddLand)
-                    + " in "
-                    + tl.getName();
-            bridge.getHistoryWriter().startEvent(transcriptText, toAddLand);
-            endTurnReport.append(transcriptText).append("<br />");
-            final Change place = ChangeFactory.addUnits(tl, toAddLand);
-            change.add(place);
+          if (!landNeighbors.isEmpty()) {
+            final Territory location = getRandomTerritory(data, landNeighbors, bridge);
+            createUnits(location, toAddLand, change, endTurnReport);
           }
         }
       }
@@ -155,21 +128,35 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return endTurnReport.toString();
   }
 
+  private void createUnits(
+      final Territory location,
+      Collection<Unit> units,
+      CompositeChange change,
+      StringBuilder endTurnReport) {
+    final String transcriptText =
+        player.getName()
+            + " creates "
+            + MyFormatter.unitsToTextNoOwner(units)
+            + " in "
+            + location.getName();
+    bridge.getHistoryWriter().startEvent(transcriptText, units);
+    endTurnReport.append(transcriptText).append("<br />");
+    final Change place = ChangeFactory.addUnits(location, units);
+    change.add(place);
+  }
+
   private static Territory getRandomTerritory(
-      final Collection<Territory> territories, final IDelegateBridge bridge) {
-    if (territories == null || territories.isEmpty()) {
-      return null;
-    }
+      final GameState data, final Collection<Territory> territories, final IDelegateBridge bridge) {
     if (territories.size() == 1) {
       return CollectionUtils.getAny(territories);
     }
     // there is an issue with maps that have lots of rolls without any pause between them: they are
-    // causing the crypted
-    // random source (ie: live and pbem games) to lock up or error out
-    // so we need to slow them down a bit, until we come up with a better solution (like aggregating
-    // all the chances
-    // together, then getting a ton of random numbers at once instead of one at a time)
-    Interruptibles.sleep(100);
+    // causing the crypted random source (ie: live and pbem games) to lock up or error out so we
+    // need to slow them down a bit, until we come up with a better solution (like aggregating all
+    // the chances together, then getting a ton of random numbers at once instead of one at a time)
+    if (PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(data)) {
+      Interruptibles.sleep(100);
+    }
     final List<Territory> list = new ArrayList<>(territories);
     final int random =
         // ZERO BASED

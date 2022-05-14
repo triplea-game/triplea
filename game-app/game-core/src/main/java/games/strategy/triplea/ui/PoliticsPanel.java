@@ -31,8 +31,8 @@ import javax.swing.SwingUtilities;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
-import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import org.triplea.swing.key.binding.ButtonDownMask;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.KeyCombination;
@@ -176,19 +176,16 @@ public class PoliticsPanel extends ActionPanel {
         () -> {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " Politics");
-          add(actionLabel);
+          add(SwingComponents.leftBox(actionLabel));
+
           selectPoliticalActionButton = new JButton(selectPoliticalActionAction);
           selectPoliticalActionButton.setEnabled(false);
-          add(selectPoliticalActionButton);
-          doneButton =
-              new JButtonBuilder()
-                  .title("Done")
-                  .actionListener(this::performDone)
-                  .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
-                  .enabled(false)
-                  .build();
+          doneButton = createDoneButton();
+          doneButton.setEnabled(false);
+
+          add(createButtonsPanel(selectPoliticalActionButton, doneButton));
+
           SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
-          add(doneButton);
         });
   }
 
@@ -305,7 +302,7 @@ public class PoliticsPanel extends ActionPanel {
     final int selectedOption =
         JOptionPane.showConfirmDialog(
             JOptionPane.getFrameForComponent(PoliticsPanel.this),
-            "Are you sure you dont want to do anything?",
+            "Are you sure you don't want to do anything?",
             "End Politics",
             JOptionPane.YES_NO_OPTION);
     return selectedOption == JOptionPane.YES_OPTION;
@@ -370,7 +367,7 @@ public class PoliticsPanel extends ActionPanel {
           return order;
         }
       }
-      // sort by achetype
+      // sort by archetype
       if (!paa1NewType.equals(paa2NewType)) {
         if (paa1NewType.getRelationshipTypeAttachment().isWar()
             && !paa2NewType.getRelationshipTypeAttachment().isWar()) {

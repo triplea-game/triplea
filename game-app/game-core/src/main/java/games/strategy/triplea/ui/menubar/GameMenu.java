@@ -154,9 +154,10 @@ final class GameMenu extends JMenu {
                       frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
                 }));
     politicsMenuItem.setMnemonic(KeyEvent.VK_P);
+    // On Mac, Cmd-W is the standard "close window" shortcut, which we use for "Leave Game".
+    final int keyCode = (SystemProperties.isMac() ? KeyEvent.VK_P : KeyEvent.VK_W);
     politicsMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(
-            KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        KeyStroke.getKeyStroke(keyCode, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
   }
 
   private void addNotificationSettings() {

@@ -34,7 +34,7 @@ class FastOddsEstimator implements IBattleCalculator {
       final int runCount) {
     final double winPercentage =
         ProBattleUtils.estimateStrengthDifference(
-            proData, location, new ArrayList<>(attackingUnits), new ArrayList<>(defendingUnits));
+            proData, location, attackingUnits, new ArrayList<>(defendingUnits));
     List<Unit> remainingAttackingUnits = new ArrayList<>();
     List<Unit> remainingDefendingUnits = new ArrayList<>();
     if (winPercentage > 50) {

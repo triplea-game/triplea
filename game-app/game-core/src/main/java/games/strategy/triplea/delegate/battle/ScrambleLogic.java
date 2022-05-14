@@ -152,15 +152,11 @@ public class ScrambleLogic {
             ((DependentBattle) battle).getAmphibiousAttackTerritories();
         amphibFromTerrs.removeAll(territoriesWithBattlesWater);
         for (final Territory amphibFrom : amphibFromTerrs) {
-          final Set<Territory> canScrambleFrom =
-              scrambleTerrs.getOrDefault(amphibFrom, new HashSet<>());
           if (toAnyAmphibious) {
-            canScrambleFrom.addAll(getCanScrambleFromTerritories(amphibFrom));
+            final Collection<Territory> territories = getCanScrambleFromTerritories(amphibFrom);
+            scrambleTerrs.computeIfAbsent(amphibFrom, key -> new HashSet<>()).addAll(territories);
           } else if (canScrambleFromPredicate.test(battleTerr)) {
-            canScrambleFrom.add(battleTerr);
-          }
-          if (!canScrambleFrom.isEmpty()) {
-            scrambleTerrs.put(amphibFrom, canScrambleFrom);
+            scrambleTerrs.computeIfAbsent(amphibFrom, key -> new HashSet<>()).add(battleTerr);
           }
         }
       }

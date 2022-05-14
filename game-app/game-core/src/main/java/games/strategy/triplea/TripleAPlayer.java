@@ -780,15 +780,12 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet()) {
         final Territory territory = selectionEntry.getKey();
         final Map<Unit, IntegerMap<Resource>> currentTerr =
-            kamikazeSuicideAttacks.getOrDefault(territory, new HashMap<>());
+            kamikazeSuicideAttacks.computeIfAbsent(territory, key -> new HashMap<>());
         for (final Entry<Unit, Integer> unitEntry : selectionEntry.getValue().entrySet()) {
           final Unit unit = unitEntry.getKey();
-          final IntegerMap<Resource> currentUnit =
-              currentTerr.getOrDefault(unit, new IntegerMap<>());
-          currentUnit.add(resource, unitEntry.getValue());
-          currentTerr.put(unit, currentUnit);
+          final Integer amount = unitEntry.getValue();
+          currentTerr.computeIfAbsent(unit, key -> new IntegerMap<>()).add(resource, amount);
         }
-        kamikazeSuicideAttacks.put(territory, currentTerr);
       }
     }
     return kamikazeSuicideAttacks;
