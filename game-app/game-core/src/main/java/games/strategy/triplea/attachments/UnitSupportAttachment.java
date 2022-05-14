@@ -27,7 +27,8 @@ import lombok.Value;
 
 /**
  * An attachment for instances of {@link UnitType} that defines properties for unit types that
- * support other units.
+ * support other units. Note: Empty collection fields default to null to minimize memory use and
+ * serialization size.
  *
  * <p>The set of UnitSupportAttachments do not change during a game.
  */
@@ -39,7 +40,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   private static final long serialVersionUID = -3015679930172496082L;
 
-  private Set<UnitType> unitType = null;
+  private @Nullable Set<UnitType> unitType = null;
   private boolean offence = false;
   private boolean defence = false;
   private boolean roll = false;
@@ -50,15 +51,15 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private int number = 0;
   private boolean allied = false;
   private boolean enemy = false;
-  private BonusType bonusType = null;
-  private List<GamePlayer> players = new ArrayList<>();
+  private @Nullable BonusType bonusType = null;
+  private @Nullable List<GamePlayer> players = null;
   private boolean impArtTech = false;
   // strings
   // roll or strength or AAroll or AAstrength
-  private String dice;
+  private @Nullable String dice;
   // offence or defence
-  private String side;
-  private String faction;
+  private @Nullable String side;
+  private @Nullable String faction;
 
   /** Type to represent name and count */
   @Value
@@ -284,6 +285,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
       }
+      if (players == null) {
+        players = new ArrayList<>();
+      }
       players.add(player);
     }
   }
@@ -295,11 +299,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   public List<GamePlayer> getPlayers() {
-    return players;
+    return getListProperty(players);
   }
 
   private void resetPlayers() {
-    players = new ArrayList<>();
+    players = null;
   }
 
   private void setImpArtTech(final String tech) {

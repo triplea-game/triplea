@@ -16,18 +16,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
  * An attachment for instances of {@link Territory} that defines a canal through which certain land
- * units may pass from one bordering territory to another.
+ * units may pass from one bordering territory to another. Note: Empty collection fields default to
+ * null to minimize memory use and serialization size.
  */
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
 
-  private String canalName = null;
-  private Set<Territory> landTerritories = null;
-  private Set<UnitType> excludedUnits = null;
+  private String canalName = "";
+  private @Nullable Set<Territory> landTerritories = null;
+  private @Nullable Set<UnitType> excludedUnits = null;
   private boolean canNotMoveThroughDuringCombatMove = false;
 
   public CanalAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -71,10 +73,6 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   private void setCanalName(final String name) {
-    if (name == null) {
-      canalName = null;
-      return;
-    }
     canalName = name;
   }
 
@@ -83,7 +81,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   private void resetCanalName() {
-    canalName = null;
+    canalName = "";
   }
 
   private void setLandTerritories(final String landTerritories) {
@@ -107,7 +105,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   public Set<Territory> getLandTerritories() {
-    return landTerritories;
+    return getSetProperty(landTerritories);
   }
 
   private void resetLandTerritories() {
@@ -165,10 +163,10 @@ public class CanalAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameState data) throws GameParseException {
-    if (canalName == null) {
+    if (canalName.isEmpty()) {
       throw new GameParseException("Canals must have a canalName set!" + thisErrorMsg());
     }
-    if (landTerritories == null || landTerritories.isEmpty()) {
+    if (getLandTerritories().isEmpty()) {
       throw new GameParseException(
           "Canal named " + canalName + " must have landTerritories set!" + thisErrorMsg());
     }

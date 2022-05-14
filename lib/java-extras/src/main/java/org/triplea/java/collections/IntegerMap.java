@@ -2,6 +2,7 @@ package org.triplea.java.collections;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -23,8 +24,12 @@ public final class IntegerMap<T> implements Serializable {
     mapValues = new LinkedHashMap<>();
   }
 
+  private IntegerMap(final Map<T, Integer> map, boolean copy) {
+    mapValues = copy ? new LinkedHashMap<>(map) : map;
+  }
+
   public IntegerMap(final Map<T, Integer> map) {
-    mapValues = new LinkedHashMap<>(map);
+    this(map, true);
   }
 
   /**
@@ -51,6 +56,16 @@ public final class IntegerMap<T> implements Serializable {
 
   public static <X> IntegerMap<X> of(final Map<X, Integer> map) {
     return new IntegerMap<>(map);
+  }
+
+  /** Returns an immutable empty integer map. */
+  public static <X> IntegerMap<X> of() {
+    return new IntegerMap<>(Map.of(), false);
+  }
+
+  /** Returns an unmodifiable view of the specified map. */
+  public static <X> IntegerMap<X> unmodifiableViewOf(IntegerMap<X> other) {
+    return new IntegerMap<>(Collections.unmodifiableMap(other.mapValues), false);
   }
 
   public int size() {

@@ -37,13 +37,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.Value;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
-/** Despite the misleading name, this attaches not to individual Units but to UnitTypes. */
+/**
+ * Despite the misleading name, this attaches not to individual Units but to UnitTypes. Note: Empty
+ * collection fields default to null to minimize memory use and serialization size.
+ */
 public class UnitAttachment extends DefaultAttachment {
   public static final String UNITS_MAY_NOT_LAND_ON_CARRIER = "unitsMayNotLandOnCarrier";
   public static final String UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER = "unitsMayNotLeaveAlliedCarrier";
@@ -73,11 +77,11 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean isKamikaze = false;
   // a colon delimited list of transports where this unit may invade from, it supports "none"
   // and if empty it allows you to invade from all
-  private String[] canInvadeOnlyFrom = null;
-  private IntegerMap<Resource> fuelCost = new IntegerMap<>();
-  private IntegerMap<Resource> fuelFlatCost = new IntegerMap<>();
+  private @Nullable String[] canInvadeOnlyFrom = null;
+  private @Nullable IntegerMap<Resource> fuelCost = null;
+  private @Nullable IntegerMap<Resource> fuelFlatCost = null;
   private boolean canNotMoveDuringCombatMove = false;
-  private Tuple<Integer, String> movementLimit = null;
+  private @Nullable Tuple<Integer, String> movementLimit = null;
 
   // combat related
   private int attack = 0;
@@ -92,17 +96,17 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean isSuicideOnAttack = false;
   private boolean isSuicideOnDefense = false;
   private boolean isSuicideOnHit = false;
-  private Tuple<Integer, String> attackingLimit = null;
+  private @Nullable Tuple<Integer, String> attackingLimit = null;
   private int attackRolls = 1;
   private int defenseRolls = 1;
   private boolean chooseBestRoll = false;
-  private Boolean canRetreatOnStalemate;
+  private @Nullable Boolean canRetreatOnStalemate;
 
   // sub/destroyer related
   private boolean canEvade = false;
   private boolean isFirstStrike = false;
-  private Set<UnitType> canNotTarget = new HashSet<>();
-  private Set<UnitType> canNotBeTargetedBy = new HashSet<>();
+  private @Nullable Set<UnitType> canNotTarget = null;
+  private @Nullable Set<UnitType> canNotBeTargetedBy = null;
   private boolean canMoveThroughEnemies = false;
   private boolean canBeMovedThroughByEnemies = false;
   private boolean isDestroyer = false;
@@ -140,13 +144,13 @@ public class UnitAttachment extends DefaultAttachment {
   // default value for when it is not set
   private String typeAa = "AA";
   // null means targeting air units only
-  private Set<UnitType> targetsAa = null;
+  private @Nullable Set<UnitType> targetsAa = null;
   // if false, we cannot shoot more times than there are number of planes
   private boolean mayOverStackAa = false;
   // if false, we instantly kill anything our AA shot hits
   private boolean damageableAa = false;
   // if these enemy units are present, the gun does not fire at all
-  private Set<UnitType> willNotFireIfPresent = new HashSet<>();
+  private @Nullable Set<UnitType> willNotFireIfPresent = null;
 
   // strategic bombing related
   private boolean isStrategicBomber = false;
@@ -167,8 +171,8 @@ public class UnitAttachment extends DefaultAttachment {
   // -1 means either it can't produce any, or it produces at the value of the territory it is
   // located in
   private int canProduceXUnits = -1;
-  private IntegerMap<UnitType> createsUnitsList = new IntegerMap<>();
-  private IntegerMap<Resource> createsResourcesList = new IntegerMap<>();
+  private IntegerMap<UnitType> createsUnitsList = null;
+  private IntegerMap<Resource> createsResourcesList = null;
 
   // damage related
   private int hitPoints = 1;
@@ -192,11 +196,11 @@ public class UnitAttachment extends DefaultAttachment {
   private int canOnlyBePlacedInTerritoryValuedAtX = -1;
   // multiple colon delimited lists of the unit combos required for this unit to be built somewhere.
   // (units must be in the same territory, owned by player, not be disabled)
-  private List<String[]> requiresUnits = new ArrayList<>();
-  private IntegerMap<UnitType> consumesUnits = new IntegerMap<>();
+  private List<String[]> requiresUnits = null;
+  private IntegerMap<UnitType> consumesUnits = null;
   // multiple colon delimited lists of the unit combos required for
   // this unit to move into a territory. (units must be owned by player, not be disabled)
-  private List<String[]> requiresUnitsToMove = new ArrayList<>();
+  private List<String[]> requiresUnitsToMove = null;
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates unitPlacementRestrictions with an inverted list of territories
@@ -219,28 +223,26 @@ public class UnitAttachment extends DefaultAttachment {
   private int blockade = 0;
   // a colon delimited list of the units this unit can repair.
   // (units must be in same territory, unless this unit is land and the repaired unit is sea)
-  private IntegerMap<UnitType> repairsUnits = new IntegerMap<>();
-  private IntegerMap<UnitType> givesMovement = new IntegerMap<>();
-  private List<Tuple<String, GamePlayer>> destroyedWhenCapturedBy = new ArrayList<>();
+  private IntegerMap<UnitType> repairsUnits = null;
+  private IntegerMap<UnitType> givesMovement = null;
+  private List<Tuple<String, GamePlayer>> destroyedWhenCapturedBy = null;
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create
   // destroyedWhenCapturedBy with a specific list
-  private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsDamagedChangesInto = new HashMap<>();
-  private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsRepairedChangesInto = new HashMap<>();
-  private Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto =
-      new LinkedHashMap<>();
+  private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsDamagedChangesInto = null;
+  private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsRepairedChangesInto = null;
+  private Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto = null;
   private int whenCapturedSustainsDamage = 0;
-  private List<GamePlayer> canBeCapturedOnEnteringBy = new ArrayList<>();
-  private List<GamePlayer> canBeGivenByTerritoryTo = new ArrayList<>();
+  private List<GamePlayer> canBeCapturedOnEnteringBy = null;
+  private List<GamePlayer> canBeGivenByTerritoryTo = null;
   // a set of information for dealing with special abilities or loss of abilities when a unit takes
   // x-y amount of damage
   @ChangeOnNextMajorRelease("This should be a list of WhenCombatDamaged objects instead of Tuples")
-  private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged =
-      new ArrayList<>();
+  private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged = null;
   // a kind of support attachment for giving actual unit attachment abilities or other to a unit,
   // when in the presence or on the same route with another unit
-  private List<String> receivesAbilityWhenWith = new ArrayList<>();
+  private List<String> receivesAbilityWhenWith = null;
   // currently used for: placement in original territories only
-  private Set<String> special = new HashSet<>();
+  private Set<String> special = null;
   // Manually set TUV
   private int tuv = -1;
 
@@ -417,9 +419,12 @@ public class UnitAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
+        if (canBeGivenByTerritoryTo == null) {
+          canBeGivenByTerritoryTo = new ArrayList<>();
+        }
         canBeGivenByTerritoryTo.add(tempPlayer);
       } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
-        canBeGivenByTerritoryTo.clear();
+        canBeGivenByTerritoryTo = null;
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -431,11 +436,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public List<GamePlayer> getCanBeGivenByTerritoryTo() {
-    return canBeGivenByTerritoryTo;
+    return getListProperty(canBeGivenByTerritoryTo);
   }
 
   private void resetCanBeGivenByTerritoryTo() {
-    canBeGivenByTerritoryTo = new ArrayList<>();
+    canBeGivenByTerritoryTo = null;
   }
 
   private void setCanBeCapturedOnEnteringBy(final String value) throws GameParseException {
@@ -443,6 +448,9 @@ public class UnitAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
+        if (canBeCapturedOnEnteringBy == null) {
+          canBeCapturedOnEnteringBy = new ArrayList<>();
+        }
         canBeCapturedOnEnteringBy.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
@@ -455,11 +463,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public List<GamePlayer> getCanBeCapturedOnEnteringBy() {
-    return canBeCapturedOnEnteringBy;
+    return getListProperty(canBeCapturedOnEnteringBy);
   }
 
   private void resetCanBeCapturedOnEnteringBy() {
-    canBeCapturedOnEnteringBy = new ArrayList<>();
+    canBeCapturedOnEnteringBy = null;
   }
 
   private void setWhenHitPointsDamagedChangesInto(final String value) throws GameParseException {
@@ -474,6 +482,9 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "setWhenHitPointsDamagedChangesInto: No unit type: " + s[2] + thisErrorMsg());
     }
+    if (whenHitPointsDamagedChangesInto == null) {
+      whenHitPointsDamagedChangesInto = new HashMap<>();
+    }
     whenHitPointsDamagedChangesInto.put(getInt(s[0]), Tuple.of(getBool(s[1]), unitType));
   }
 
@@ -483,11 +494,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Map<Integer, Tuple<Boolean, UnitType>> getWhenHitPointsDamagedChangesInto() {
-    return whenHitPointsDamagedChangesInto;
+    return getMapProperty(whenHitPointsDamagedChangesInto);
   }
 
   private void resetWhenHitPointsDamagedChangesInto() {
-    whenHitPointsDamagedChangesInto = new HashMap<>();
+    whenHitPointsDamagedChangesInto = null;
   }
 
   private void setWhenHitPointsRepairedChangesInto(final String value) throws GameParseException {
@@ -502,6 +513,9 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "setWhenHitPointsRepairedChangesInto: No unit type: " + s[2] + thisErrorMsg());
     }
+    if (whenHitPointsDamagedChangesInto == null) {
+      whenHitPointsDamagedChangesInto = new HashMap<>();
+    }
     whenHitPointsRepairedChangesInto.put(getInt(s[0]), Tuple.of(getBool(s[1]), unitType));
   }
 
@@ -511,11 +525,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Map<Integer, Tuple<Boolean, UnitType>> getWhenHitPointsRepairedChangesInto() {
-    return whenHitPointsRepairedChangesInto;
+    return getMapProperty(whenHitPointsRepairedChangesInto);
   }
 
   private void resetWhenHitPointsRepairedChangesInto() {
-    whenHitPointsRepairedChangesInto = new HashMap<>();
+    whenHitPointsRepairedChangesInto = null;
   }
 
   @VisibleForTesting
@@ -548,6 +562,9 @@ public class UnitAttachment extends DefaultAttachment {
       }
       unitsToMake.put(ut, getInt(s[i + 1]));
     }
+    if (whenCapturedChangesInto == null) {
+      whenCapturedChangesInto = new LinkedHashMap<>();
+    }
     whenCapturedChangesInto.put(s[0] + ":" + s[1], Tuple.of(s[2], unitsToMake));
   }
 
@@ -557,11 +574,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Map<String, Tuple<String, IntegerMap<UnitType>>> getWhenCapturedChangesInto() {
-    return whenCapturedChangesInto;
+    return getMapProperty(whenCapturedChangesInto);
   }
 
   private void resetWhenCapturedChangesInto() {
-    whenCapturedChangesInto = new LinkedHashMap<>();
+    whenCapturedChangesInto = null;
   }
 
   private void setWhenCapturedSustainsDamage(final int s) {
@@ -588,6 +605,9 @@ public class UnitAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
+        if (destroyedWhenCapturedBy == null) {
+          destroyedWhenCapturedBy = new ArrayList<>();
+        }
         destroyedWhenCapturedBy.add(Tuple.of(byOrFrom, tempPlayer));
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
@@ -608,11 +628,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public List<Tuple<String, GamePlayer>> getDestroyedWhenCapturedBy() {
-    return destroyedWhenCapturedBy;
+    return getListProperty(destroyedWhenCapturedBy);
   }
 
   private void resetDestroyedWhenCapturedBy() {
-    destroyedWhenCapturedBy = new ArrayList<>();
+    destroyedWhenCapturedBy = null;
   }
 
   private void setCanBlitz(final String s) {
@@ -642,13 +662,8 @@ public class UnitAttachment extends DefaultAttachment {
   @VisibleForTesting
   public void setIsSub(final Boolean s) {
     isSub = true;
-    if (s) {
-      canNotTarget = null;
-      canNotBeTargetedBy = null;
-    } else {
-      resetCanNotTarget();
-      resetCanNotBeTargetedBy();
-    }
+    resetCanNotTarget();
+    resetCanNotBeTargetedBy();
   }
 
   private void setCanEvade(final Boolean s) {
@@ -687,7 +702,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCanNotTarget(final String value) throws GameParseException {
-    if (canNotTarget == null) {
+    if (isSub || isSuicide) {
       throw new GameParseException(
           "Can't use canNotTarget with isSub/isSuicide, replace isSub with individual sub "
               + "properties or isSuicide with isSuicideOnAttack/isSuicideOnDefense: "
@@ -698,6 +713,9 @@ public class UnitAttachment extends DefaultAttachment {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
         throw new GameParseException("canNotTarget: no such unit type: " + u + thisErrorMsg());
+      }
+      if (canNotTarget == null) {
+        canNotTarget = new HashSet<>();
       }
       canNotTarget.add(ut);
     }
@@ -710,7 +728,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Set<UnitType> getCanNotTarget() {
-    if (canNotTarget == null) {
+    if (canNotTarget == null && (isSub || isSuicide)) {
       final Predicate<UnitType> unitTypeMatch =
           (getIsSuicideOnAttack() && getIsFirstStrike())
               ? Matches.unitTypeIsSuicideOnAttack().or(Matches.unitTypeIsSuicideOnDefense())
@@ -720,11 +738,11 @@ public class UnitAttachment extends DefaultAttachment {
               CollectionUtils.getMatches(
                   getData().getUnitTypeList().getAllUnitTypes(), unitTypeMatch));
     }
-    return canNotTarget;
+    return getSetProperty(canNotTarget);
   }
 
   private void resetCanNotTarget() {
-    canNotTarget = new HashSet<>();
+    canNotTarget = null;
   }
 
   private void setCanNotBeTargetedBy(final String value) throws GameParseException {
@@ -734,6 +752,9 @@ public class UnitAttachment extends DefaultAttachment {
       if (ut == null) {
         throw new GameParseException(
             "canNotBeTargetedBy: no such unit type: " + u + thisErrorMsg());
+      }
+      if (canNotBeTargetedBy == null) {
+        canNotBeTargetedBy = new HashSet<>();
       }
       canNotBeTargetedBy.add(ut);
     }
@@ -745,7 +766,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Set<UnitType> getCanNotBeTargetedBy() {
-    if (canNotBeTargetedBy == null) {
+    if (canNotBeTargetedBy == null && isSub) {
       canNotBeTargetedBy =
           Properties.getAirAttackSubRestricted(getData().getProperties())
               ? new HashSet<>(
@@ -753,11 +774,11 @@ public class UnitAttachment extends DefaultAttachment {
                       getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()))
               : new HashSet<>();
     }
-    return canNotBeTargetedBy;
+    return getSetProperty(canNotBeTargetedBy);
   }
 
   private void resetCanNotBeTargetedBy() {
-    canNotBeTargetedBy = new HashSet<>();
+    canNotBeTargetedBy = null;
   }
 
   private void setIsCombatTransport(final String s) {
@@ -985,6 +1006,9 @@ public class UnitAttachment extends DefaultAttachment {
       if (ut == null) {
         throw new GameParseException("No unit called:" + s[i] + thisErrorMsg());
       }
+      if (repairsUnits == null) {
+        repairsUnits = new IntegerMap<>();
+      }
       repairsUnits.put(ut, amount);
     }
   }
@@ -994,11 +1018,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getRepairsUnits() {
-    return repairsUnits;
+    return getIntegerMapProperty(repairsUnits);
   }
 
   private void resetRepairsUnits() {
-    repairsUnits = new IntegerMap<>();
+    repairsUnits = null;
   }
 
   private void setSpecial(final String value) throws GameParseException {
@@ -1006,6 +1030,9 @@ public class UnitAttachment extends DefaultAttachment {
     for (final String option : s) {
       if (!(option.equals("none") || option.equals("canOnlyPlaceInOriginalTerritories"))) {
         throw new GameParseException("special does not allow: " + option + thisErrorMsg());
+      }
+      if (special == null) {
+        special = new HashSet<>();
       }
       special.add(option);
     }
@@ -1016,11 +1043,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Set<String> getSpecial() {
-    return special;
+    return getSetProperty(special);
   }
 
   private void resetSpecial() {
-    special = new HashSet<>();
+    special = null;
   }
 
   private void setCanInvadeOnlyFrom(final String value) {
@@ -1061,6 +1088,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setRequiresUnits(final String value) {
+    if (requiresUnits == null) {
+      requiresUnits = new ArrayList<>();
+    }
     requiresUnits.add(splitOnColon(value));
   }
 
@@ -1069,11 +1099,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public List<String[]> getRequiresUnits() {
-    return requiresUnits;
+    return getListProperty(requiresUnits);
   }
 
   private void resetRequiresUnits() {
-    requiresUnits = new ArrayList<>();
+    requiresUnits = null;
   }
 
   private void setRequiresUnitsToMove(final String value) throws GameParseException {
@@ -1088,6 +1118,9 @@ public class UnitAttachment extends DefaultAttachment {
         throw new GameParseException("No unit called:" + s + thisErrorMsg());
       }
     }
+    if (requiresUnitsToMove == null) {
+      requiresUnitsToMove = new ArrayList<>();
+    }
     requiresUnitsToMove.add(array);
   }
 
@@ -1096,11 +1129,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public List<String[]> getRequiresUnitsToMove() {
-    return requiresUnitsToMove;
+    return getListProperty(requiresUnitsToMove);
   }
 
   private void resetRequiresUnitsToMove() {
-    requiresUnitsToMove = new ArrayList<>();
+    requiresUnitsToMove = null;
   }
 
   private void setWhenCombatDamaged(final String value) throws GameParseException {
@@ -1126,6 +1159,9 @@ public class UnitAttachment extends DefaultAttachment {
     } else {
       effectNum = Tuple.of(s[2], s[3]);
     }
+    if (whenCombatDamaged == null) {
+      whenCombatDamaged = new ArrayList<>();
+    }
     whenCombatDamaged.add(Tuple.of(fromTo, effectNum));
   }
 
@@ -1134,7 +1170,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public List<WhenCombatDamaged> getWhenCombatDamaged() {
-    return whenCombatDamaged.stream().map(WhenCombatDamaged::new).collect(Collectors.toList());
+    return getListProperty(whenCombatDamaged).stream()
+        .map(WhenCombatDamaged::new)
+        .collect(Collectors.toList());
   }
 
   @Value
@@ -1157,10 +1195,13 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void resetWhenCombatDamaged() {
-    whenCombatDamaged = new ArrayList<>();
+    whenCombatDamaged = null;
   }
 
   private void setReceivesAbilityWhenWith(final String value) {
+    if (receivesAbilityWhenWith == null) {
+      receivesAbilityWhenWith = new ArrayList<>();
+    }
     receivesAbilityWhenWith.add(value);
   }
 
@@ -1169,11 +1210,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public List<String> getReceivesAbilityWhenWith() {
-    return receivesAbilityWhenWith;
+    return getListProperty(receivesAbilityWhenWith);
   }
 
   private void resetReceivesAbilityWhenWith() {
-    receivesAbilityWhenWith = new ArrayList<>();
+    receivesAbilityWhenWith = null;
   }
 
   private static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(
@@ -1811,11 +1852,7 @@ public class UnitAttachment extends DefaultAttachment {
   @VisibleForTesting
   public void setIsSuicide(final Boolean s) {
     isSuicide = true;
-    if (s) {
-      canNotTarget = null;
-    } else {
-      resetCanNotTarget();
-    }
+    resetCanNotTarget();
   }
 
   @Deprecated
@@ -1910,6 +1947,9 @@ public class UnitAttachment extends DefaultAttachment {
       }
       // we should allow positive and negative numbers, since you can give bonuses to units or take
       // away a unit's movement
+      if (givesMovement == null) {
+        givesMovement = new IntegerMap<>();
+      }
       givesMovement.put(type, movement);
     }
   }
@@ -1919,14 +1959,17 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getGivesMovement() {
-    return givesMovement;
+    return getIntegerMapProperty(givesMovement);
   }
 
   private void resetGivesMovement() {
-    givesMovement = new IntegerMap<>();
+    givesMovement = null;
   }
 
   private void setConsumesUnits(final String value) throws GameParseException {
+    if (consumesUnits == null) {
+      consumesUnits = new IntegerMap<>();
+    }
     addToUnitTypeMap("consumesUnits", consumesUnits, value, 1);
   }
 
@@ -1935,14 +1978,17 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getConsumesUnits() {
-    return consumesUnits;
+    return getIntegerMapProperty(consumesUnits);
   }
 
   private void resetConsumesUnits() {
-    consumesUnits = new IntegerMap<>();
+    consumesUnits = null;
   }
 
   private void setCreatesUnitsList(final String value) throws GameParseException {
+    if (createsUnitsList == null) {
+      createsUnitsList = new IntegerMap<>();
+    }
     addToUnitTypeMap("createsUnitsList", createsUnitsList, value, 0);
   }
 
@@ -1951,11 +1997,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getCreatesUnitsList() {
-    return createsUnitsList;
+    return getIntegerMapProperty(createsUnitsList);
   }
 
   private void resetCreatesUnitsList() {
-    createsUnitsList = new IntegerMap<>();
+    createsUnitsList = null;
   }
 
   private void addToUnitTypeMap(
@@ -1981,6 +2027,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCreatesResourcesList(final String value) throws GameParseException {
+    if (createsResourcesList == null) {
+      createsResourcesList = new IntegerMap<>();
+    }
     addToResourceMap("createsResourcesList", createsResourcesList, value, true);
   }
 
@@ -1989,14 +2038,17 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<Resource> getCreatesResourcesList() {
-    return createsResourcesList;
+    return getIntegerMapProperty(createsResourcesList);
   }
 
   private void resetCreatesResourcesList() {
-    createsResourcesList = new IntegerMap<>();
+    createsResourcesList = null;
   }
 
   private void setFuelCost(final String value) throws GameParseException {
+    if (fuelCost == null) {
+      fuelCost = new IntegerMap<>();
+    }
     addToResourceMap("fuelCost", fuelCost, value, false);
   }
 
@@ -2005,14 +2057,17 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<Resource> getFuelCost() {
-    return fuelCost;
+    return getIntegerMapProperty(fuelCost);
   }
 
   private void resetFuelCost() {
-    fuelCost = new IntegerMap<>();
+    fuelCost = null;
   }
 
   private void setFuelFlatCost(final String value) throws GameParseException {
+    if (fuelFlatCost == null) {
+      fuelFlatCost = new IntegerMap<>();
+    }
     addToResourceMap("fuelFlatCost", fuelFlatCost, value, false);
   }
 
@@ -2021,11 +2076,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<Resource> getFuelFlatCost() {
-    return fuelFlatCost;
+    return getIntegerMapProperty(fuelFlatCost);
   }
 
   private void resetFuelFlatCost() {
-    fuelFlatCost = new IntegerMap<>();
+    fuelFlatCost = null;
   }
 
   private void addToResourceMap(
@@ -2453,6 +2508,9 @@ public class UnitAttachment extends DefaultAttachment {
         throw new GameParseException(
             "willNotFireIfPresent: no such unit type: " + u + thisErrorMsg());
       }
+      if (willNotFireIfPresent == null) {
+        willNotFireIfPresent = new HashSet<>();
+      }
       willNotFireIfPresent.add(ut);
     }
   }
@@ -2463,11 +2521,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Set<UnitType> getWillNotFireIfPresent() {
-    return willNotFireIfPresent;
+    return getSetProperty(willNotFireIfPresent);
   }
 
   private void resetWillNotFireIfPresent() {
-    willNotFireIfPresent = new HashSet<>();
+    willNotFireIfPresent = null;
   }
 
   private void setIsAaMovement(final String s) throws GameParseException {
@@ -2796,26 +2854,24 @@ public class UnitAttachment extends DefaultAttachment {
         }
       }
     }
-    if (!receivesAbilityWhenWith.isEmpty()) {
-      for (final String value : receivesAbilityWhenWith) {
-        // first is ability, second is unit that we get it from
-        final String[] s = splitOnColon(value);
-        if (s.length != 2) {
-          throw new GameParseException(
-              "receivesAbilityWhenWith must have 2 parts, 'ability:unit'" + thisErrorMsg());
-        }
-        if (data.getUnitTypeList().getUnitType(s[1]) == null) {
-          throw new GameParseException(
-              "receivesAbilityWhenWith, unit does not exist, name:" + s[1] + thisErrorMsg());
-        }
-        // currently only supports canBlitz (canBlitz)
-        if (!s[0].equals("canBlitz")) {
-          throw new GameParseException(
-              "receivesAbilityWhenWith so far only supports: canBlitz" + thisErrorMsg());
-        }
+    for (final String value : getReceivesAbilityWhenWith()) {
+      // first is ability, second is unit that we get it from
+      final String[] s = splitOnColon(value);
+      if (s.length != 2) {
+        throw new GameParseException(
+            "receivesAbilityWhenWith must have 2 parts, 'ability:unit'" + thisErrorMsg());
+      }
+      if (data.getUnitTypeList().getUnitType(s[1]) == null) {
+        throw new GameParseException(
+            "receivesAbilityWhenWith, unit does not exist, name:" + s[1] + thisErrorMsg());
+      }
+      // currently only supports canBlitz (canBlitz)
+      if (!s[0].equals("canBlitz")) {
+        throw new GameParseException(
+            "receivesAbilityWhenWith so far only supports: canBlitz" + thisErrorMsg());
       }
     }
-    if (!whenCombatDamaged.isEmpty()) {
+    if (!getWhenCombatDamaged().isEmpty()) {
       for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key : whenCombatDamaged) {
         final String obj = key.getSecond().getFirst();
         if (obj.equals(UNITS_MAY_NOT_LAND_ON_CARRIER)) {
@@ -3414,8 +3470,7 @@ public class UnitAttachment extends DefaultAttachment {
       formatter.append("Max Built Allowed", String.valueOf(getMaxBuiltPerPlayer()));
     }
 
-    if (getRepairsUnits() != null
-        && !getRepairsUnits().isEmpty()
+    if (!getRepairsUnits().isEmpty()
         && Properties.getTwoHitPointUnitsRequireRepairFacilities(getData().getProperties())
         && (Properties.getBattleshipsRepairAtBeginningOfRound(getData().getProperties())
             || Properties.getBattleshipsRepairAtEndOfRound(getData().getProperties()))) {
@@ -3428,8 +3483,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
 
-    if (getGivesMovement() != null
-        && getGivesMovement().totalValues() > 0
+    if (getGivesMovement().totalValues() > 0
         && Properties.getUnitsMayGiveBonusMovement(getData().getProperties())) {
       if (getGivesMovement().size() <= 4) {
         formatter.append(
@@ -3467,7 +3521,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
 
-    if (getRequiresUnitsToMove() != null && !getRequiresUnitsToMove().isEmpty()) {
+    if (!getRequiresUnitsToMove().isEmpty()) {
       final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnitsToMove()) {
         totalUnitsListed.addAll(List.of(list));

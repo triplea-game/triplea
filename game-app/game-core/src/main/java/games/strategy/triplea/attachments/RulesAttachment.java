@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -44,40 +45,41 @@ import org.triplea.util.Tuple;
 
 /**
  * An attachment for instances of {@link GamePlayer} that defines various conditions for enabling
- * certain rules (see the class description of {@link AbstractPlayerRulesAttachment}).
+ * certain rules (see the class description of {@link AbstractPlayerRulesAttachment}). Note: Empty
+ * collection fields default to null to minimize memory use and serialization size.
  */
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
 
   // condition for having techs
-  private List<TechAdvance> techs = null;
+  private @Nullable List<TechAdvance> techs = null;
   private int techCount = -1;
   // condition for having specific relationships
-  private List<String> relationship = new ArrayList<>();
+  private @Nullable List<String> relationship = null;
   // condition for being at war
-  private Set<GamePlayer> atWarPlayers = null;
+  private @Nullable Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
   // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according
   // to
   // the prices the defender pays for the units]
-  private String destroyedTuv = null;
+  private @Nullable String destroyedTuv = null;
   // condition for having had a battle in some territory, attacker or defender, win
   // or lost, etc. these next 9 variables use territoryCount for determining the number needed.
-  private List<Tuple<String, List<Territory>>> battle = new ArrayList<>();
+  private @Nullable List<Tuple<String, List<Territory>>> battle = null;
   // ownership related
-  private String[] alliedOwnershipTerritories = null;
-  private String[] directOwnershipTerritories = null;
+  private @Nullable String[] alliedOwnershipTerritories = null;
+  private @Nullable String[] directOwnershipTerritories = null;
   // exclusion of units
-  private String[] alliedExclusionTerritories = null;
-  private String[] directExclusionTerritories = null;
-  private String[] enemyExclusionTerritories = null;
-  private String[] enemySurfaceExclusionTerritories = null;
+  private @Nullable String[] alliedExclusionTerritories = null;
+  private @Nullable String[] directExclusionTerritories = null;
+  private @Nullable String[] enemyExclusionTerritories = null;
+  private @Nullable String[] enemySurfaceExclusionTerritories = null;
   // presence of units
-  private String[] directPresenceTerritories = null;
-  private String[] alliedPresenceTerritories = null;
-  private String[] enemyPresenceTerritories = null;
+  private @Nullable String[] directPresenceTerritories = null;
+  private @Nullable String[] alliedPresenceTerritories = null;
+  private @Nullable String[] enemyPresenceTerritories = null;
   // used with above 3 to determine the type of unit that must be present
-  private IntegerMap<String> unitPresence = new IntegerMap<>();
+  private @Nullable IntegerMap<String> unitPresence = null;
 
   public RulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -169,7 +171,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     destroyedTuv = value;
   }
 
-  private String getDestroyedTuv() {
+  private @Nullable String getDestroyedTuv() {
     return destroyedTuv;
   }
 
@@ -215,6 +217,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
       terrs.add(t);
     }
+    if (battle == null) {
+      battle = new ArrayList<>();
+    }
     battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
   }
 
@@ -223,11 +228,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private List<Tuple<String, List<Territory>>> getBattle() {
-    return battle;
+    return getListProperty(battle);
   }
 
   private void resetBattle() {
-    battle = new ArrayList<>();
+    battle = null;
   }
 
   /**
@@ -276,6 +281,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
               + "default value if you don't know what to put"
               + thisErrorMsg());
     }
+    if (relationship == null) {
+      relationship = new ArrayList<>();
+    }
     relationship.add((s.length == 3) ? (value + ":-1") : value);
   }
 
@@ -284,11 +292,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private List<String> getRelationship() {
-    return relationship;
+    return getListProperty(relationship);
   }
 
   private void resetRelationship() {
-    relationship = new ArrayList<>();
+    relationship = null;
   }
 
   private void setAlliedOwnershipTerritories(final String value) {
@@ -503,6 +511,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }
+    if (unitPresence == null) {
+      unitPresence = new IntegerMap<>();
+    }
     unitPresence.put(value.replaceFirst(s[0] + ":", ""), n);
   }
 
@@ -511,11 +522,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private IntegerMap<String> getUnitPresence() {
-    return unitPresence;
+    return unitPresence == null ? new IntegerMap<>() : unitPresence;
   }
 
   private void resetUnitPresence() {
-    unitPresence = new IntegerMap<>();
+    unitPresence = null;
   }
 
   private int getAtWarCount() {
@@ -560,7 +571,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private Set<GamePlayer> getAtWarPlayers() {
-    return atWarPlayers;
+    return getSetProperty(atWarPlayers);
   }
 
   private void resetAtWarPlayers() {
@@ -605,7 +616,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private List<TechAdvance> getTechs() {
-    return techs;
+    return getListProperty(techs);
   }
 
   private void resetTechs() {
@@ -630,7 +641,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final List<GamePlayer> players = getPlayers();
     final GameState data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
-    if (!conditions.isEmpty()) {
+    if (!getConditions().isEmpty()) {
       final Map<ICondition, Boolean> actualTestedConditions =
           Optional.ofNullable(testedConditions)
               .orElseGet(
@@ -648,7 +659,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     // check turn limits
     if (objectiveMet && turns != null) {
-      objectiveMet = checkTurns(data);
+      objectiveMet = checkRounds(data);
     }
     // check custom game property options
     if (objectiveMet && gameProperty != null) {
@@ -784,14 +795,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     // get attached to player
     final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
-    if (objectiveMet && getAtWarPlayers() != null) {
+    if (objectiveMet && getAtWarPlayers().isEmpty()) {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);
     }
-    if (objectiveMet && techs != null) {
+    if (objectiveMet && getTechs().isEmpty()) {
       objectiveMet = checkTechs(playerAttachedTo, data.getTechnologyFrontier());
     }
     // check for relationships
-    if (objectiveMet && !relationship.isEmpty()) {
+    if (objectiveMet && getRelationship().isEmpty()) {
       objectiveMet = checkRelationships();
     }
     // check for battle stats
@@ -817,7 +828,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     // check for battles
-    if (objectiveMet && !battle.isEmpty()) {
+    if (objectiveMet && !getBattle().isEmpty()) {
       final BattleRecordsList brl = data.getBattleRecordsList();
       final int round = data.getSequence().getRound();
       for (final Tuple<String, List<Territory>> entry : battle) {
@@ -899,7 +910,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * @return whether all relationships as are required are set correctly.
    */
   private boolean checkRelationships() {
-    for (final String encodedRelationCheck : relationship) {
+    for (final String encodedRelationCheck : getRelationship()) {
       final String[] relationCheck = splitOnColon(encodedRelationCheck);
       final GamePlayer p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
       final GamePlayer p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
@@ -1071,9 +1082,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   private boolean checkTechs(final GamePlayer player, final TechnologyFrontier technologyFrontier) {
     int found = 0;
-    for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, technologyFrontier)) {
-      if (techs.contains(a)) {
-        found++;
+    if (techs != null) {
+      for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, technologyFrontier)) {
+        if (techs.contains(a)) {
+          found++;
+        }
       }
     }
     if (techCount == 0) {
