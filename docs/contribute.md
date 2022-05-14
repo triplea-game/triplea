@@ -131,7 +131,7 @@ to help.
 - Show your expertise by answering related questions on Github or the forum, then ... 
 - ... be appointed by the forum admin team
 
-### :speech_balloon: Forum Moderator
+### :speech_balloon: Lobby Moderator
 
 #### _Skillset_
 
@@ -149,15 +149,19 @@ to help.
 
 #### _Skillset_
 
-- tbd
+- GitHub account
+- Basic knowledge of GitHub (Web) workflow
+- Expertise on one or more of these spheres: user software support, rules, game workflow, coding 
 
 #### _Contributions_
 
-- tbd
+- Analyze issues regarding their validity 
+- Accept or deny issues
+- Sort valid issues according to their priority
 
 #### _How to become one_
 
-- tbd
+- Be appointed by a developer with merge rights
 
 ### :wrench: Developer w/o Merge Rights
 
