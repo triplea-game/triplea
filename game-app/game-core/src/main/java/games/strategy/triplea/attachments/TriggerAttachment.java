@@ -1371,15 +1371,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!s[1].equalsIgnoreCase("any")) {
-      final GamePlayer oldOwner = getData().getPlayerList().getPlayerId(s[1]);
-      if (oldOwner == null) {
-        throw new GameParseException("No such player: " + s[1] + thisErrorMsg());
-      }
+      getPlayerOrThrow(s[1]);
     }
-    final GamePlayer newOwner = getData().getPlayerList().getPlayerId(s[2]);
-    if (newOwner == null) {
-      throw new GameParseException("No such player: " + s[2] + thisErrorMsg());
-    }
+    getPlayerOrThrow(s[2]);
     getBool(s[3]);
     if (changeOwnership == null) {
       changeOwnership = new ArrayList<>();
