@@ -105,11 +105,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private void setUnitType(final String names) throws GameParseException {
     unitType = new HashSet<>();
     for (final String element : splitOnColon(names)) {
-      final UnitType type = getData().getUnitTypeList().getUnitType(element);
-      if (type == null) {
-        throw new GameParseException("Could not find unitType. name:" + element + thisErrorMsg());
-      }
-      unitType.add(type);
+      unitType.add(getUnitTypeOrThrow(element));
     }
   }
 

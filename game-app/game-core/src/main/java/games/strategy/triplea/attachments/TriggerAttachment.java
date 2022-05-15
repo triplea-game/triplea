@@ -470,7 +470,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     victory = s;
   }
 
-  private String getVictory() {
+  private @Nullable String getVictory() {
     return victory;
   }
 
@@ -664,16 +664,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setUnitType(final String names) throws GameParseException {
-    final String[] s = splitOnColon(names);
-    for (final String element : s) {
-      final UnitType type = getData().getUnitTypeList().getUnitType(element);
-      if (type == null) {
-        throw new GameParseException("Could not find unitType. name:" + element + thisErrorMsg());
-      }
+    for (final String element : splitOnColon(names)) {
       if (unitTypes == null) {
         unitTypes = new ArrayList<>();
       }
-      unitTypes.add(type);
+      unitTypes.add(getUnitTypeOrThrow(element));
     }
   }
 
@@ -1211,11 +1206,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     i++;
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (; i < s.length; i++) {
-      final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
-      if (type == null) {
-        throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
-      }
-      map.add(type, count);
+      map.add(getUnitTypeOrThrow(s[i]), count);
     }
     if (placement == null) {
       placement = new HashMap<>();
@@ -1335,11 +1326,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       purchase = new IntegerMap<>();
     }
     for (; i < s.length; i++) {
-      final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
-      if (type == null) {
-        throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
-      }
-      purchase.add(type, count);
+      purchase.add(getUnitTypeOrThrow(s[i]), count);
     }
   }
 
