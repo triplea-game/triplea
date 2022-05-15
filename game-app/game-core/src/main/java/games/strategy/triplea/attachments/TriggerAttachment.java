@@ -755,14 +755,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private void setTerritories(final String names) throws GameParseException {
     final String[] s = splitOnColon(names);
     for (final String element : s) {
-      final Territory terr = getData().getMap().getTerritory(element);
-      if (terr == null) {
-        throw new GameParseException("Could not find territory. name:" + element + thisErrorMsg());
-      }
       if (territories == null) {
         territories = new ArrayList<>();
       }
-      territories.add(terr);
+      territories.add(getTerritoryOrThrow(element));
     }
   }
 
@@ -1191,10 +1187,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
-    final Territory territory = getData().getMap().getTerritory(s[i]);
-    if (territory == null) {
-      throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
-    }
+    final Territory territory = getTerritoryOrThrow(s[i]);
 
     i++;
     final IntegerMap<UnitType> map = new IntegerMap<>();
@@ -1345,10 +1338,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + thisErrorMsg());
     }
     if (!s[0].equalsIgnoreCase("all")) {
-      final Territory t = getData().getMap().getTerritory(s[0]);
-      if (t == null) {
-        throw new GameParseException("No such territory: " + s[0] + thisErrorMsg());
-      }
+      getTerritoryOrThrow(s[0]);
     }
     if (!s[1].equalsIgnoreCase("any")) {
       getPlayerOrThrow(s[1]);
