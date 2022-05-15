@@ -232,10 +232,6 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setSuicideAttackTargets(final String value) throws GameParseException {
-    if (value == null) {
-      suicideAttackTargets = null;
-      return;
-    }
     if (suicideAttackTargets == null) {
       suicideAttackTargets = new HashSet<>();
     }
@@ -352,18 +348,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setGiveUnitControl(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (giveUnitControl == null) {
-          giveUnitControl = new ArrayList<>();
-        }
-        giveUnitControl.add(tempPlayer);
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
-    }
+    giveUnitControl = parsePlayerList(value, giveUnitControl);
   }
 
   private void setGiveUnitControl(final List<GamePlayer> value) {
@@ -387,18 +372,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (captureUnitOnEnteringBy == null) {
-          captureUnitOnEnteringBy = new ArrayList<>();
-        }
-        captureUnitOnEnteringBy.add(tempPlayer);
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
-    }
+    captureUnitOnEnteringBy = parsePlayerList(value, captureUnitOnEnteringBy);
   }
 
   private void setCaptureUnitOnEnteringBy(final List<GamePlayer> value) {
@@ -414,18 +388,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setShareTechnology(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (shareTechnology == null) {
-          shareTechnology = new ArrayList<>();
-        }
-        shareTechnology.add(tempPlayer);
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
-    }
+    shareTechnology = parsePlayerList(value, shareTechnology);
   }
 
   private void setShareTechnology(final List<GamePlayer> value) {
@@ -441,18 +404,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setHelpPayTechCost(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (helpPayTechCost == null) {
-          helpPayTechCost = new ArrayList<>();
-        }
-        helpPayTechCost.add(tempPlayer);
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
-    }
+    helpPayTechCost = parsePlayerList(value, helpPayTechCost);
   }
 
   private void setHelpPayTechCost(final List<GamePlayer> value) {
