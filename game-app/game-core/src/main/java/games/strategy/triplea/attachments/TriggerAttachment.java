@@ -866,17 +866,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setPlayers(final String names) throws GameParseException {
-    final String[] s = splitOnColon(names);
-    for (final String element : s) {
-      final GamePlayer player = getData().getPlayerList().getPlayerId(element);
-      if (player == null) {
-        throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
-      }
-      if (players == null) {
-        players = new ArrayList<>();
-      }
-      players.add(player);
-    }
+    players = parsePlayerList(names, players);
   }
 
   private void setPlayers(final List<GamePlayer> value) {

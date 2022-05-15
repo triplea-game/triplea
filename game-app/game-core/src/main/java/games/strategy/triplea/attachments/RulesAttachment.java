@@ -554,11 +554,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     atWarPlayers = new HashSet<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
-      final GamePlayer player = getData().getPlayerList().getPlayerId(s[i]);
-      if (player == null) {
-        throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
-      }
-      atWarPlayers.add(player);
+      atWarPlayers.add(getPlayerOrThrow(s[i]));
     }
   }
 
