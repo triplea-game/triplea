@@ -165,10 +165,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       unitTypeToProduce = s[1];
     }
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-    if (ut == null) {
-      throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
-    }
+    final UnitType ut = getUnitTypeOrThrow(unitTypeToProduce);
     final int n = getInt(s[0]);
     if (n <= 0) {
       throw new GameParseException(

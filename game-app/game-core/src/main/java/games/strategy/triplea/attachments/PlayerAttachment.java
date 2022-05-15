@@ -161,11 +161,7 @@ public class PlayerAttachment extends DefaultAttachment {
       types.addAll(getData().getUnitTypeList().getAllUnitTypes());
     } else {
       for (int i = 2; i < s.length; i++) {
-        final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
-        if (ut == null) {
-          throw new GameParseException("No unit called: " + s[i] + thisErrorMsg());
-        }
-        types.add(ut);
+        types.add(getUnitTypeOrThrow(s[i]));
       }
     }
     return Triple.of(max, s[1], types);
@@ -232,18 +228,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setSuicideAttackTargets(final String value) throws GameParseException {
-    if (suicideAttackTargets == null) {
-      suicideAttackTargets = new HashSet<>();
-    }
-    final String[] s = splitOnColon(value);
-    for (final String u : s) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(u);
-      if (ut == null) {
-        throw new GameParseException(
-            "suicideAttackTargets: no such unit called " + u + thisErrorMsg());
-      }
-      suicideAttackTargets.add(ut);
-    }
+    suicideAttackTargets = parseUnitTypes("suicideAttackTargets", value, suicideAttackTargets);
   }
 
   private void setSuicideAttackTargets(final Set<UnitType> value) {

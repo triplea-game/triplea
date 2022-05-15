@@ -97,11 +97,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     final Iterator<String> iter = List.of(s).iterator();
     final int effect = getInt(iter.next());
     while (iter.hasNext()) {
-      final String unitTypeToProduce = iter.next();
-      final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-      if (ut == null) {
-        throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
-      }
+      final UnitType ut = getUnitTypeOrThrow(iter.next());
       if (defending) {
         if (combatDefenseEffect == null) {
           combatDefenseEffect = new IntegerMap<>();
@@ -131,15 +127,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     final Iterator<String> iter = List.of(s).iterator();
     final BigDecimal effect = getBigDecimal(iter.next());
     while (iter.hasNext()) {
-      final String unitTypeToProduce = iter.next();
-      final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-      if (ut == null) {
-        throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
-      }
       if (movementCostModifier == null) {
         movementCostModifier = new HashMap<>();
       }
-      movementCostModifier.put(ut, effect);
+      movementCostModifier.put(getUnitTypeOrThrow(iter.next()), effect);
     }
   }
 
@@ -161,14 +152,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
       throw new GameParseException("noBlitz must have at least one unitType" + thisErrorMsg());
     }
     for (final String unitTypeName : s) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
-      if (ut == null) {
-        throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
-      }
       if (noBlitz == null) {
         noBlitz = new ArrayList<>();
       }
-      noBlitz.add(ut);
+      noBlitz.add(getUnitTypeOrThrow(unitTypeName));
     }
   }
 
@@ -191,14 +178,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
           "unitsNotAllowed must have at least one unitType" + thisErrorMsg());
     }
     for (final String unitTypeName : s) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
-      if (ut == null) {
-        throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
-      }
       if (unitsNotAllowed == null) {
         unitsNotAllowed = new ArrayList<>();
       }
-      unitsNotAllowed.add(ut);
+      unitsNotAllowed.add(getUnitTypeOrThrow(unitTypeName));
     }
   }
 

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -97,12 +96,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @VisibleForTesting
-  UnitType getUnitType(final String value) throws GameParseException {
-    return Optional.ofNullable(getData().getUnitTypeList().getUnitType(value))
-        .orElseThrow(() -> new GameParseException("No unit called:" + value + thisErrorMsg()));
-  }
-
-  @VisibleForTesting
   String[] splitAndValidate(final String name, final String value) throws GameParseException {
     final String[] stringArray = splitOnColon(value);
     if (value.isEmpty() || stringArray.length > 2) {
@@ -118,7 +111,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final String name, final String value, final BiConsumer<UnitType, Integer> putter)
       throws GameParseException {
     final String[] s = splitAndValidate(name, value);
-    putter.accept(getUnitType(s[1]), getInt(s[0]));
+    putter.accept(getUnitTypeOrThrow(s[1]), getInt(s[0]));
   }
 
   public static int sumIntegerMap(
@@ -418,7 +411,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (rocketDiceNumber == null) {
       rocketDiceNumber = new IntegerMap<>();
     }
-    rocketDiceNumber.put(getUnitType(s[1]), getInt(s[0]));
+    rocketDiceNumber.put(getUnitTypeOrThrow(s[1]), getInt(s[0]));
   }
 
   private void setRocketDiceNumber(final IntegerMap<UnitType> value) {
@@ -502,7 +495,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[0];
     // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
+    final UnitType ut = getUnitTypeOrThrow(unitType);
     if (unitAbilitiesGained == null) {
       unitAbilitiesGained = new HashMap<>();
     }
@@ -592,12 +585,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setAirborneTypes(final String value) throws GameParseException {
-    for (final String unit : splitOnColon(value)) {
-      if (airborneTypes == null) {
-        airborneTypes = new HashSet<>();
-      }
-      airborneTypes.add(getUnitType(unit));
-    }
+    airborneTypes = parseUnitTypes("airborneTypes", value, airborneTypes);
   }
 
   private void setAirborneTypes(final Set<UnitType> value) {
@@ -648,12 +636,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setAirborneBases(final String value) throws GameParseException {
-    for (final String u : splitOnColon(value)) {
-      if (airborneBases == null) {
-        airborneBases = new HashSet<>();
-      }
-      airborneBases.add(getUnitType(u));
-    }
+    airborneBases = parseUnitTypes("airborneBases", value, airborneBases);
   }
 
   private void setAirborneBases(final Set<UnitType> value) {
@@ -685,7 +668,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final Set<UnitType> unitTypes = new HashSet<>();
     for (int i = 1; i < s.length; i++) {
-      unitTypes.add(getUnitType(s[i]));
+      unitTypes.add(getUnitTypeOrThrow(s[i]));
     }
     if (airborneTargetedByAa == null) {
       airborneTargetedByAa = new HashMap<>();

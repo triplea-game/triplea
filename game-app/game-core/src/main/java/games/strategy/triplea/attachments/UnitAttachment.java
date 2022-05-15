@@ -467,7 +467,7 @@ public class UnitAttachment extends DefaultAttachment {
           "setWhenHitPointsDamagedChangesInto must have damage:translateAttributes:unitType "
               + thisErrorMsg());
     }
-    final UnitType unitType = getUnitTypeOrThrow("setWhenHitPointsDamagedChangesInto", s[2]);
+    final UnitType unitType = getUnitTypeOrThrow(s[2]);
     if (whenHitPointsDamagedChangesInto == null) {
       whenHitPointsDamagedChangesInto = new HashMap<>();
     }
@@ -494,7 +494,7 @@ public class UnitAttachment extends DefaultAttachment {
           "setWhenHitPointsRepairedChangesInto must have damage:translateAttributes:unitType "
               + thisErrorMsg());
     }
-    final UnitType unitType = getUnitTypeOrThrow("setWhenHitPointsRepairedChangesInto", s[2]);
+    final UnitType unitType = getUnitTypeOrThrow(s[2]);
     if (whenHitPointsRepairedChangesInto == null) {
       whenHitPointsRepairedChangesInto = new HashMap<>();
     }
@@ -537,8 +537,7 @@ public class UnitAttachment extends DefaultAttachment {
     getBool(s[2]);
     final IntegerMap<UnitType> unitsToMake = new IntegerMap<>();
     for (int i = 3; i < s.length; i += 2) {
-      final UnitType ut = getUnitTypeOrThrow("whenCapturedChangesInto", s[i]);
-      unitsToMake.put(ut, getInt(s[i + 1]));
+      unitsToMake.put(getUnitTypeOrThrow(s[i]), getInt(s[i + 1]));
     }
     if (whenCapturedChangesInto == null) {
       whenCapturedChangesInto = new LinkedHashMap<>();
@@ -950,11 +949,10 @@ public class UnitAttachment extends DefaultAttachment {
       amount = 1;
     }
     for (; i < s.length; i++) {
-      final UnitType ut = getUnitTypeOrThrow("repairsUnits", s[i]);
       if (repairsUnits == null) {
         repairsUnits = new IntegerMap<>();
       }
-      repairsUnits.put(ut, amount);
+      repairsUnits.put(getUnitTypeOrThrow(s[i]), amount);
     }
   }
 
@@ -1054,7 +1052,7 @@ public class UnitAttachment extends DefaultAttachment {
           "requiresUnitsToMove must have at least 1 unit type" + thisErrorMsg());
     }
     for (final String s : array) {
-      getUnitTypeOrThrow("requiresUnitsToMove", s);
+      getUnitTypeOrThrow(s);
     }
     if (requiresUnitsToMove == null) {
       requiresUnitsToMove = new ArrayList<>();
@@ -1877,14 +1875,12 @@ public class UnitAttachment extends DefaultAttachment {
     }
     final int movement = getInt(s[0]);
     for (int i = 1; i < s.length; i++) {
-      final String unitTypeName = s[i];
-      final UnitType type = getUnitTypeOrThrow("givesMovement", unitTypeName);
       // we should allow positive and negative numbers, since you can give bonuses to units or take
       // away a unit's movement
       if (givesMovement == null) {
         givesMovement = new IntegerMap<>();
       }
-      givesMovement.put(type, movement);
+      givesMovement.put(getUnitTypeOrThrow(s[i]), movement);
     }
   }
 
@@ -1946,7 +1942,7 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           context + " cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final UnitType ut = getUnitTypeOrThrow(context, s[1]);
+    final UnitType ut = getUnitTypeOrThrow(s[1]);
     final int n = getInt(s[0]);
     if (n < minValue) {
       throw new GameParseException(context + " value must be >= " + minValue + thisErrorMsg());
@@ -2417,25 +2413,6 @@ public class UnitAttachment extends DefaultAttachment {
     willNotFireIfPresent = null;
   }
 
-  private Set<UnitType> parseUnitTypes(String context, String value, Set<UnitType> existingSet)
-      throws GameParseException {
-    for (final String u : splitOnColon(value)) {
-      if (existingSet == null) {
-        existingSet = new HashSet<>();
-      }
-      existingSet.add(getUnitTypeOrThrow(context, u));
-    }
-    return existingSet;
-  }
-
-  private UnitType getUnitTypeOrThrow(String context, String unitType) throws GameParseException {
-    return Optional.ofNullable(getData().getUnitTypeList().getUnitType(unitType))
-        .orElseThrow(
-            () ->
-                new GameParseException(
-                    context + ": no such unit type: " + unitType + thisErrorMsg()));
-  }
-
   private void setIsAaMovement(final String s) throws GameParseException {
     setIsAaMovement(getBool(s));
   }
@@ -2744,7 +2721,7 @@ public class UnitAttachment extends DefaultAttachment {
         && !canInvadeOnlyFrom[0].equals("all")
         && !canInvadeOnlyFrom[0].equals("none")) {
       for (final String transport : canInvadeOnlyFrom) {
-        final UnitType ut = getUnitTypeOrThrow("canInvadeOnlyFrom", transport);
+        final UnitType ut = getUnitTypeOrThrow(transport);
         if (ut.getAttachments() == null || ut.getAttachments().isEmpty()) {
           throw new GameParseException(
               transport
@@ -2766,7 +2743,7 @@ public class UnitAttachment extends DefaultAttachment {
         throw new GameParseException(
             "receivesAbilityWhenWith must have 2 parts, 'ability:unit'" + thisErrorMsg());
       }
-      getUnitTypeOrThrow("receivesAbilityWhenWith", s[1]);
+      getUnitTypeOrThrow(s[1]);
       // currently only supports canBlitz (canBlitz)
       if (!s[0].equals("canBlitz")) {
         throw new GameParseException(

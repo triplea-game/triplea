@@ -9,6 +9,7 @@ import games.strategy.triplea.Constants;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -178,6 +179,23 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   protected GamePlayer getPlayerOrThrow(String name) throws GameParseException {
     return Optional.ofNullable(getData().getPlayerList().getPlayerId(name))
         .orElseThrow(() -> new GameParseException("No player named: " + name + thisErrorMsg()));
+  }
+
+  protected Set<UnitType> parseUnitTypes(String context, String value, Set<UnitType> existingSet)
+      throws GameParseException {
+    for (final String u : splitOnColon(value)) {
+      if (existingSet == null) {
+        existingSet = new HashSet<>();
+      }
+      existingSet.add(getUnitTypeOrThrow(u));
+    }
+    return existingSet;
+  }
+
+
+  protected UnitType getUnitTypeOrThrow(String unitType) throws GameParseException {
+    return Optional.ofNullable(getData().getUnitTypeList().getUnitType(unitType))
+        .orElseThrow(() -> new GameParseException("No unit type: " + unitType + thisErrorMsg()));
   }
 
   public static <T> List<T> getListProperty(@Nullable List<T> value) {
