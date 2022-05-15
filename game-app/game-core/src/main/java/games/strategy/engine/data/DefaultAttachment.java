@@ -16,6 +16,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.Setter;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -32,8 +34,8 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   private static final long serialVersionUID = -1985116207387301730L;
   private static final Splitter COLON_SPLITTER = Splitter.on(':');
 
-  private Attachable attachedTo;
-  private String name;
+  @Getter @Setter private Attachable attachedTo;
+  @Getter private String name;
 
   protected DefaultAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -110,21 +112,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   /** Returns null or the toString() of the field value. */
   public String getRawPropertyString(final String property) {
     return getProperty(property).map(MutableProperty::getValue).map(Object::toString).orElse(null);
-  }
-
-  @Override
-  public Attachable getAttachedTo() {
-    return attachedTo;
-  }
-
-  @Override
-  public void setAttachedTo(final Attachable attachable) {
-    attachedTo = attachable;
-  }
-
-  @Override
-  public String getName() {
-    return name;
   }
 
   @Override
