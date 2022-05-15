@@ -192,7 +192,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     return existingSet;
   }
 
-
   protected UnitType getUnitTypeOrThrow(String unitType) throws GameParseException {
     return Optional.ofNullable(getData().getUnitTypeList().getUnitType(unitType))
         .orElseThrow(() -> new GameParseException("No unit type: " + unitType + thisErrorMsg()));

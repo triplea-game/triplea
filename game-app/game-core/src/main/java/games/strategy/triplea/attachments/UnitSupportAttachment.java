@@ -194,7 +194,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return this;
   }
 
-  @Nullable String getDice() {
+  @Nullable
+  String getDice() {
     return dice;
   }
 
