@@ -605,23 +605,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + " \n Use: player1:player2:oldRelation:newRelation\n"
               + thisErrorMsg());
     }
-    if (getData().getPlayerList().getPlayerId(s[0]) == null) {
-      throw new GameParseException(
-          "Invalid relationshipChange declaration: "
-              + relChange
-              + " \n player: "
-              + s[0]
-              + " unknown "
-              + thisErrorMsg());
-    }
-    if (getData().getPlayerList().getPlayerId(s[1]) == null) {
-      throw new GameParseException(
-          "Invalid relationshipChange declaration: "
-              + relChange
-              + " \n player: "
-              + s[1]
-              + " unknown "
-              + thisErrorMsg());
+    for (int i = 0; i < 2; i++) {
+      if (getData().getPlayerList().getPlayerId(s[i]) == null) {
+        throw new GameParseException(
+            "Invalid relationshipChange declaration: "
+                + relChange
+                + " \n player: "
+                + s[i]
+                + " unknown "
+                + thisErrorMsg());
+      }
     }
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
@@ -2164,25 +2157,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                           new IllegalStateException(
                               "Could not find unitSupportAttachment. name:" + entry.getKey()));
           final List<GamePlayer> p = new ArrayList<>(usa.getPlayers());
-          if (p.contains(player) != entry.getValue()) {
-            final String text;
-            if (entry.getValue()) { // Add.
-              text = " is added to ";
-              p.add(player);
-            } else { // Remove.
-              text = " is removed from ";
-              p.remove(player);
-            }
-            change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
-            bridge
-                .getHistoryWriter()
-                .startEvent(
-                    MyFormatter.attachmentNameToText(t.getName())
-                        + ": "
-                        + player.getName()
-                        + text
-                        + usa);
+          final boolean addPlayer = entry.getValue();
+          if (p.contains(player) == addPlayer) {
+            continue;
           }
+          if (addPlayer) {
+            p.add(player);
+          } else {
+            p.remove(player);
+          }
+          change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
+          final String historyText =
+              MyFormatter.attachmentNameToText(t.getName())
+                  + ": "
+                  + player.getName()
+                  + (addPlayer ? " is added to " : " is removed from ")
+                  + usa;
+          bridge.getHistoryWriter().startEvent(historyText);
         }
       }
     }
