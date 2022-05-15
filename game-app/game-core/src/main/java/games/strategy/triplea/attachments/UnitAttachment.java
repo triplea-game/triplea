@@ -502,8 +502,8 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "setWhenHitPointsRepairedChangesInto: No unit type: " + s[2] + thisErrorMsg());
     }
-    if (whenHitPointsDamagedChangesInto == null) {
-      whenHitPointsDamagedChangesInto = new HashMap<>();
+    if (whenHitPointsRepairedChangesInto == null) {
+      whenHitPointsRepairedChangesInto = new HashMap<>();
     }
     whenHitPointsRepairedChangesInto.put(getInt(s[0]), Tuple.of(getBool(s[1]), unitType));
   }
