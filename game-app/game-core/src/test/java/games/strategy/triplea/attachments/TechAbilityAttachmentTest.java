@@ -141,7 +141,7 @@ class TechAbilityAttachmentTest {
 
   @Test
   void getUnitType() throws Exception {
-    assertEquals(dummyUnitType, attachment.getUnitType(testUnitType));
+    assertEquals(dummyUnitType, attachment.getUnitTypeOrThrow(testUnitType));
     verify(list).getUnitType(testUnitType);
     verify(list).getUnitType(any());
   }
@@ -149,7 +149,8 @@ class TechAbilityAttachmentTest {
   @Test
   void getUnitTypeWithNoValue() {
     final String test = "someNonExistentKey";
-    final Exception e = assertThrows(GameParseException.class, () -> attachment.getUnitType(test));
+    final Exception e =
+        assertThrows(GameParseException.class, () -> attachment.getUnitTypeOrThrow(test));
     verify(list).getUnitType(test);
     verify(list).getUnitType(any());
     assertTrue(e.getMessage().contains(test));

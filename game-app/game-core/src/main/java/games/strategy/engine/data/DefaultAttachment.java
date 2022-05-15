@@ -192,33 +192,33 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     return existingSet;
   }
 
-  protected UnitType getUnitTypeOrThrow(String unitType) throws GameParseException {
+  public UnitType getUnitTypeOrThrow(String unitType) throws GameParseException {
     return Optional.ofNullable(getData().getUnitTypeList().getUnitType(unitType))
         .orElseThrow(() -> new GameParseException("No unit type: " + unitType + thisErrorMsg()));
   }
 
-  public static <T> List<T> getListProperty(@Nullable List<T> value) {
+  protected static <T> List<T> getListProperty(@Nullable List<T> value) {
     if (value == null) {
       return List.of();
     }
     return Collections.unmodifiableList(value);
   }
 
-  public static <K, V> Map<K, V> getMapProperty(@Nullable Map<K, V> value) {
+  protected static <K, V> Map<K, V> getMapProperty(@Nullable Map<K, V> value) {
     if (value == null) {
       return Map.of();
     }
     return Collections.unmodifiableMap(value);
   }
 
-  public static <T> Set<T> getSetProperty(@Nullable Set<T> value) {
+  protected static <T> Set<T> getSetProperty(@Nullable Set<T> value) {
     if (value == null) {
       return Set.of();
     }
     return Collections.unmodifiableSet(value);
   }
 
-  public static <T> IntegerMap<T> getIntegerMapProperty(@Nullable IntegerMap<T> value) {
+  protected static <T> IntegerMap<T> getIntegerMapProperty(@Nullable IntegerMap<T> value) {
     if (value == null) {
       return IntegerMap.of();
     }
