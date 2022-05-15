@@ -969,8 +969,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setRelationshipTypes(final String names) throws GameParseException {
-    final String[] s = splitOnColon(names);
-    for (final String element : s) {
+    for (final String element : splitOnColon(names)) {
       final RelationshipType relation =
           getData().getRelationshipTypeList().getRelationshipType(element);
       if (relation == null) {
@@ -1068,13 +1067,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipTypeProperty = null;
   }
 
-  private void setTerritoryEffects(final String names) throws GameParseException {
-    final String[] s = splitOnColon(names);
-    for (final String element : s) {
-      final TerritoryEffect effect = getData().getTerritoryEffectList().get(element);
+  private void setTerritoryEffects(final String effectNames) throws GameParseException {
+    for (final String name : splitOnColon(effectNames)) {
+      final TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
       if (effect == null) {
         throw new GameParseException(
-            "Could not find territoryEffect. name:" + element + thisErrorMsg());
+            "Could not find territoryEffect. name:" + name + thisErrorMsg());
       }
       if (territoryEffects == null) {
         territoryEffects = new ArrayList<>();
