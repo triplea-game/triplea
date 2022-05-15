@@ -1925,7 +1925,7 @@ class WW2V3Year41Test {
     // Remove original capital
     final TerritoryAttachment taMongolia = TerritoryAttachment.get(mongolia);
     final TerritoryAttachment taKiangsu = TerritoryAttachment.get(kiangsu);
-    taMongolia.setCapital(null);
+    taMongolia.getProperty("capital").get().resetValue();
     // Set as NEW capital
     taKiangsu.setCapital(Constants.PLAYER_NAME_CHINESE);
     // Remove all units
