@@ -11,7 +11,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.triplea.java.collections.IntegerMap;
@@ -129,18 +128,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   private void setActionAccept(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (actionAccept == null) {
-          actionAccept = new ArrayList<>();
-        }
-        actionAccept.add(tempPlayer);
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
-    }
+    actionAccept = parsePlayerList(value, actionAccept);
   }
 
   private void setActionAccept(final List<GamePlayer> value) {

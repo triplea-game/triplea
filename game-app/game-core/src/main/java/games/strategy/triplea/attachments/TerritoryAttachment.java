@@ -429,18 +429,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (captureUnitOnEnteringBy == null) {
-          captureUnitOnEnteringBy = new ArrayList<>();
-        }
-        captureUnitOnEnteringBy.add(tempPlayer);
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
-    }
+    captureUnitOnEnteringBy = parsePlayerList(value, captureUnitOnEnteringBy);
   }
 
   private void setCaptureUnitOnEnteringBy(final List<GamePlayer> value) {

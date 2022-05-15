@@ -581,15 +581,10 @@ public class UnitAttachment extends DefaultAttachment {
     }
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (destroyedWhenCapturedBy == null) {
-          destroyedWhenCapturedBy = new ArrayList<>();
-        }
-        destroyedWhenCapturedBy.add(Tuple.of(byOrFrom, tempPlayer));
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
+      if (destroyedWhenCapturedBy == null) {
+        destroyedWhenCapturedBy = new ArrayList<>();
       }
+      destroyedWhenCapturedBy.add(Tuple.of(byOrFrom, getPlayerOrThrow(name)));
     }
   }
 
@@ -2389,7 +2384,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private Set<UnitType> getTargetsAa() {
-    return targetsAa;
+    return getSetProperty(targetsAa);
   }
 
   public Set<UnitType> getTargetsAa(final UnitTypeList unitTypeList) {
@@ -2482,7 +2477,7 @@ public class UnitAttachment extends DefaultAttachment {
     movementLimit = value;
   }
 
-  public Tuple<Integer, String> getMovementLimit() {
+  public @Nullable Tuple<Integer, String> getMovementLimit() {
     return movementLimit;
   }
 
@@ -2498,7 +2493,7 @@ public class UnitAttachment extends DefaultAttachment {
     attackingLimit = value;
   }
 
-  public Tuple<Integer, String> getAttackingLimit() {
+  public @Nullable Tuple<Integer, String> getAttackingLimit() {
     return attackingLimit;
   }
 
@@ -2569,7 +2564,7 @@ public class UnitAttachment extends DefaultAttachment {
     canRetreatOnStalemate = getBool(value);
   }
 
-  public Boolean getCanRetreatOnStalemate() {
+  public @Nullable Boolean getCanRetreatOnStalemate() {
     return canRetreatOnStalemate;
   }
 

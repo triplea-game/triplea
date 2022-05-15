@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.checkerframework.checker.units.qual.K;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -134,7 +133,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
             // replace-all to automatically correct legacy (1.8) attachment spelling
             .map(attachmentName -> attachmentName.replaceAll("ttatch", "ttach"))
             .orElse(null);
-    ;
   }
 
   /**
@@ -169,17 +167,17 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   protected List<GamePlayer> parsePlayerList(final String value, List<GamePlayer> existingList)
       throws GameParseException {
     for (final String name : splitOnColon(value)) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (existingList == null) {
-          existingList = new ArrayList<>();
-        }
-        existingList.add(tempPlayer);
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
+      if (existingList == null) {
+        existingList = new ArrayList<>();
       }
+      existingList.add(getPlayerOrThrow(name));
     }
     return existingList;
+  }
+
+  protected GamePlayer getPlayerOrThrow(String name) throws GameParseException {
+    return Optional.ofNullable(getData().getPlayerList().getPlayerId(name))
+        .orElseThrow(() -> new GameParseException("No player named: " + name + thisErrorMsg()));
   }
 
   public static <T> List<T> getListProperty(@Nullable List<T> value) {
