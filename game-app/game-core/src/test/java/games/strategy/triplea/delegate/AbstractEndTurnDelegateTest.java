@@ -23,7 +23,7 @@ final class AbstractEndTurnDelegateTest {
   @Nested
   final class FindEstimatedIncomeTest extends AbstractDelegateTestCase {
     @Test
-    void testFindEstimatedIncome() throws Exception {
+    void testFindEstimatedIncome() {
       final GameData global40Data = TestMapGameData.GLOBAL1940.getGameData();
       final GamePlayer germans = GameDataTestUtil.germans(global40Data);
       final IntegerMap<Resource> results =

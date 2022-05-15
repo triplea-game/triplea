@@ -119,10 +119,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   private void setMovementRestrictionTerritories(final String value) {
-    if (value == null) {
-      movementRestrictionTerritories = null;
-      return;
-    }
     movementRestrictionTerritories = splitOnColon(value);
     validateNames(movementRestrictionTerritories);
   }
@@ -140,10 +136,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   private void setMovementRestrictionType(final String value) throws GameParseException {
-    if (value == null) {
-      movementRestrictionType = null;
-      return;
-    }
     if (!(value.equals("disallowed") || value.equals("allowed"))) {
       throw new GameParseException(
           "movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
