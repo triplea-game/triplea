@@ -103,10 +103,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void setUnitType(final String names) throws GameParseException {
-    if (names == null) {
-      unitType = null;
-      return;
-    }
     unitType = new HashSet<>();
     for (final String element : splitOnColon(names)) {
       final UnitType type = getData().getUnitTypeList().getUnitType(element);
@@ -130,10 +126,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @VisibleForTesting
   public UnitSupportAttachment setFaction(final String faction) throws GameParseException {
     this.faction = faction;
-    if (faction == null) {
-      resetFaction();
-      return this;
-    }
     allied = false;
     enemy = false;
     for (final String element : splitOnColon(faction)) {
@@ -160,10 +152,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @VisibleForTesting
   public UnitSupportAttachment setSide(final String side) throws GameParseException {
-    if (side == null) {
-      resetSide();
-      return this;
-    }
     defence = false;
     offence = false;
     for (final String element : splitOnColon(side)) {
@@ -192,9 +180,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @VisibleForTesting
   public UnitSupportAttachment setDice(final String dice) throws GameParseException {
     resetDice();
-    if (dice == null) {
-      return this;
-    }
     this.dice = dice;
     for (final String element : splitOnColon(dice)) {
       if (element.equalsIgnoreCase("roll")) {
@@ -399,7 +384,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private static Set<UnitType> getTargets(final UnitTypeList unitTypeList) {
-    Set<UnitType> types = null;
+    Set<UnitType> types = Set.of();
     for (final UnitSupportAttachment rule : get(unitTypeList)) {
       if (rule.getBonusType().isOldArtilleryRule()) {
         types = rule.getUnitType();
@@ -416,9 +401,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void addUnitTypes(final Set<UnitType> types) {
-    if (types == null) {
-      return;
-    }
     if (unitType == null) {
       unitType = new HashSet<>();
     }

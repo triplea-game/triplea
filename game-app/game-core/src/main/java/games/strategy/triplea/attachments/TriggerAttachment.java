@@ -398,10 +398,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setFrontier(final String s) throws GameParseException {
-    if (s == null) {
-      frontier = null;
-      return;
-    }
     final ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
     if (front == null) {
       throw new GameParseException("Could not find frontier. name:" + s + thisErrorMsg());
@@ -422,10 +418,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setProductionRule(final String prop) throws GameParseException {
-    if (prop == null) {
-      productionRule = null;
-      return;
-    }
     final String[] s = splitOnColon(prop);
     if (s.length != 2) {
       throw new GameParseException("Invalid productionRule declaration: " + prop + thisErrorMsg());
@@ -475,10 +467,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setVictory(final String s) {
-    if (s == null) {
-      victory = null;
-      return;
-    }
     victory = s;
   }
 
@@ -519,10 +507,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setAvailableTech(final String techs) throws GameParseException {
-    if (techs == null) {
-      availableTech = null;
-      return;
-    }
     final String[] s = splitOnColon(techs);
     if (s.length < 2) {
       throw new GameParseException(
@@ -597,10 +581,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setResource(final String s) throws GameParseException {
-    if (s == null) {
-      resource = null;
-      return;
-    }
     final Resource r = getData().getResourceList().getResource(s);
     if (r == null) {
       throw new GameParseException("Invalid resource: " + s + thisErrorMsg());
@@ -608,7 +588,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     resource = s;
   }
 
-  private String getResource() {
+  private @Nullable String getResource() {
     return resource;
   }
 
@@ -2213,7 +2193,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                           new IllegalStateException(
                               "Could not find unitSupportAttachment. name:" + entry.getKey()));
           final List<GamePlayer> p = new ArrayList<>(usa.getPlayers());
-          final boolean add = entry.getValue();
           if (p.contains(player) != entry.getValue()) {
             final String text;
             if (entry.getValue()) { // Add.

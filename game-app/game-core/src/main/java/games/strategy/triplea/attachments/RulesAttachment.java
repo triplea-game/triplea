@@ -147,10 +147,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setDestroyedTuv(final String value) throws GameParseException {
-    if (value == null) {
-      destroyedTuv = null;
-      return;
-    }
     final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException(
@@ -795,14 +791,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     // get attached to player
     final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
-    if (objectiveMet && getAtWarPlayers().isEmpty()) {
+    if (objectiveMet && !getAtWarPlayers().isEmpty()) {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);
     }
-    if (objectiveMet && getTechs().isEmpty()) {
+    if (objectiveMet && !getTechs().isEmpty()) {
       objectiveMet = checkTechs(playerAttachedTo, data.getTechnologyFrontier());
     }
     // check for relationships
-    if (objectiveMet && getRelationship().isEmpty()) {
+    if (objectiveMet && !getRelationship().isEmpty()) {
       objectiveMet = checkRelationships();
     }
     // check for battle stats

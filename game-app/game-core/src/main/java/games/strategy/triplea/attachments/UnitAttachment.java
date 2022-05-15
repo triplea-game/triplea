@@ -945,10 +945,6 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setUnitPlacementRestrictions(final String value) throws GameParseException {
-    if (value == null) {
-      unitPlacementRestrictions = null;
-      return;
-    }
     final Collection<Territory> restrictedTerritories = getListedTerritories(splitOnColon(value));
     unitPlacementRestrictions =
         restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
@@ -1040,10 +1036,6 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCanInvadeOnlyFrom(final String value) {
-    if (value == null) {
-      canInvadeOnlyFrom = null;
-      return;
-    }
     final String[] canOnlyInvadeFrom = splitOnColon(value);
     if (canOnlyInvadeFrom[0].equalsIgnoreCase("none")) {
       canInvadeOnlyFrom = new String[] {"none"};
