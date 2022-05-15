@@ -505,10 +505,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       return;
     }
     for (final String subString : splitOnColon(value)) {
-      final Territory territory = getData().getMap().getTerritory(subString);
-      if (territory == null) {
-        throw new GameParseException("No territory called:" + subString + thisErrorMsg());
-      }
+      final Territory territory = getTerritoryOrThrow(subString);
       if (convoyAttached == null) {
         convoyAttached = new HashSet<>();
       }

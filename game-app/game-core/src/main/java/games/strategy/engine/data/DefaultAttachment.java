@@ -165,6 +165,11 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
         && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
   }
 
+  protected Territory getTerritoryOrThrow(String name) throws GameParseException {
+    return Optional.ofNullable(getData().getMap().getTerritory(name))
+        .orElseThrow(() -> new GameParseException("No territory named: " + name + thisErrorMsg()));
+  }
+
   protected List<GamePlayer> parsePlayerList(final String value, List<GamePlayer> existingList)
       throws GameParseException {
     for (final String name : splitOnColon(value)) {
