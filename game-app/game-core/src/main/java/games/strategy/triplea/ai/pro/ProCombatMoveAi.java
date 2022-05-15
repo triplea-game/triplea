@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitCollection;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProOtherMoveOptions;
@@ -40,9 +39,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import org.apache.commons.math3.util.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro combat move AI. */
@@ -876,9 +872,7 @@ public class ProCombatMoveAi {
           tryToAttackTerritories(prioritizedTerritories, alreadyMovedUnits);
 
       // Clear bombers
-      for (final ProTerritory t : attackMap.values()) {
-        t.getBombers().clear();
-      }
+      attackMap.values().forEach(proTerritory -> proTerritory.getBombers().clear());
 
       // Get all units that have already moved
       final Set<Unit> alreadyAttackedWithUnits = new HashSet<>();
@@ -888,67 +882,8 @@ public class ProCombatMoveAi {
       }
 
       // Check to see if any territories can be bombed
-      final Map<Territory, BombedTerritoryData> bombedTerritoryDataMap = new HashMap<>();
-      final Map<Unit, Set<Territory>> bomberMoveMap =
-          territoryManager.getAttackOptions().getBomberMoveMap();
-      for (final Unit attackUnit : bomberMoveMap.keySet()) {
-        if (alreadyAttackedWithUnits.contains(attackUnit)) {
-          continue;
-        }
-        final Predicate<Unit> bombingTargetMatch =
-            Matches.unitCanProduceUnitsAndCanBeDamaged()
-                .and(Matches.unitIsLegalBombingTargetBy(attackUnit));
-        Optional<Territory> maxBombingTerritory = Optional.empty();
-        int maxBombingScore = MIN_BOMBING_SCORE;
-        for (final Territory t : bomberMoveMap.get(attackUnit)) {
-          final UnitCollection targetUnits = t.getUnitCollection();
-          final boolean canBeBombedByThisUnit = targetUnits.anyMatch(bombingTargetMatch);
-          final boolean canCreateAirBattle =
-              Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
-                  && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
-          if (canBeBombedByThisUnit
-              && !canCreateAirBattle
-              && canAirSafelyLandAfterAttack(attackUnit, t)) {
-            // get territory data
-            final BombedTerritoryData bombedTerritoryData =
-                bombedTerritoryDataMap.computeIfAbsent(
-                    t, territory -> new BombedTerritoryData(targetUnits));
-            // update territory data for potential targets of the current attack unit
-            final List<Unit> potentialTargetUnits = targetUnits.getMatches(bombingTargetMatch);
-            bombedTerritoryData.addPotentialTargets(potentialTargetUnits);
-            // calculate bombingScore
-            int maxDamage = 0;
-            final TerritoryAttachment ta = TerritoryAttachment.get(t);
-            if (ta != null) {
-              maxDamage = ta.getProduction();
-            }
-            final int numExistingBombers = attackMap.get(t).getBombers().size();
-            final int remainingDamagePotential = maxDamage - 3 * numExistingBombers;
-            final int bombingScore =
-                (1 + 9 * bombedTerritoryData.getNoAaBombingDefense()) * remainingDamagePotential;
-            if (bombingScore >= maxBombingScore) {
-              maxBombingScore = bombingScore;
-              maxBombingTerritory = Optional.of(t);
-            }
-            // collect bombingScore for the target units of this territory
-            bombedTerritoryData.addMaxDamage(bombingScore, potentialTargetUnits);
-          }
-        }
-        if (maxBombingTerritory.isPresent()) {
-          final Territory t = maxBombingTerritory.get();
-          attackMap.get(t).getBombers().add(attackUnit);
-          sortedUnitAttackOptions.remove(attackUnit);
-          ProLogger.debug("Add bomber (" + attackUnit + ") to " + t);
-        }
-      }
-
-      // filter out bombings without sufficient damage
-      bombedTerritoryDataMap.forEach(
-          (bombedTerr, bombedTerritoryData) -> {
-            if (!bombedTerritoryData.bombingWithSufficientDamage()) {
-              attackMap.remove(bombedTerr);
-            }
-          });
+      determineTerritoriesThatCanBeBombed(
+          attackMap, sortedUnitAttackOptions, alreadyAttackedWithUnits);
 
       // Re-sort attack options
       sortedUnitAttackOptions =
@@ -1224,6 +1159,86 @@ public class ProCombatMoveAi {
 
       prioritizedTerritories.remove(territoryToRemove);
       ProLogger.debug("Removing " + territoryToRemove.getTerritory().getName());
+    }
+  }
+
+  private void determineTerritoriesThatCanBeBombed(
+      final Map<Territory, ProTerritory> attackMap,
+      final Map<Unit, Set<Territory>> sortedUnitAttackOptions,
+      final Set<Unit> alreadyAttackedWithUnits) {
+    final Map<Unit, Set<Territory>> bomberMoveMap =
+        territoryManager.getAttackOptions().getBomberMoveMap();
+    final Set<Unit> bombers = bomberMoveMap.keySet();
+    bombers.removeAll(alreadyAttackedWithUnits);
+    final boolean raidsMayBePrecededByAirBattles =
+        Properties.getRaidsMayBePreceededByAirBattles(data.getProperties());
+    for (final Unit bomber : bombers) {
+      final Set<Territory> bomberTargetTerritories = bomberMoveMap.get(bomber);
+      bomberTargetTerritories.removeIf(
+          terr ->
+              raidsMayBePrecededByAirBattles
+                  && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
+                      terr, player, data, true));
+      determineBestBombingAttackForBomber(
+          attackMap, sortedUnitAttackOptions, bomberTargetTerritories, bomber);
+    }
+  }
+
+  /**
+   * Determines the best bombing attack territory for a single {@code bomber}.
+   *
+   * @param attackMap Attack map
+   * @param sortedUnitAttackOptions Sorted attack options
+   * @param bomberTargetTerritories Target territories
+   * @param bomber Bomber unit
+   */
+  private void determineBestBombingAttackForBomber(
+      final Map<Territory, ProTerritory> attackMap,
+      final Map<Unit, Set<Territory>> sortedUnitAttackOptions,
+      final Set<Territory> bomberTargetTerritories,
+      final Unit bomber) {
+    final Predicate<Unit> bombingTargetMatch =
+        Matches.unitCanProduceUnitsAndCanBeDamaged()
+            .and(Matches.unitIsLegalBombingTargetBy(bomber));
+    Optional<Territory> maxBombingTerritory = Optional.empty();
+    int maxBombingScore = MIN_BOMBING_SCORE;
+    for (final Territory t : bomberTargetTerritories) {
+      final List<Unit> targetUnits = t.getUnitCollection().getMatches(bombingTargetMatch);
+      if (!targetUnits.isEmpty() && canAirSafelyLandAfterAttack(bomber, t)) {
+        final int noAaBombingDefense =
+            t.anyUnitsMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
+        int maxDamageProduction = 0; // territory damage + target unit damage(s)
+        final TerritoryAttachment ta = TerritoryAttachment.get(t);
+        if (ta != null) {
+          maxDamageProduction = ta.getProduction();
+        }
+        int neededDamageUnits = 0;
+        final List<Unit> existingAttackingBombers = attackMap.get(t).getBombers();
+        for (Unit target : targetUnits) {
+          neededDamageUnits += target.getHowMuchDamageCanThisUnitTakeTotal(t);
+          int numExistingBombers = 0;
+          for (Unit existingBomber : existingAttackingBombers) {
+            if (Matches.unitCanProduceUnitsAndCanBeDamaged()
+                .and(Matches.unitIsLegalBombingTargetBy(existingBomber))
+                .test(target)) {
+              ++numExistingBombers;
+            }
+          }
+          final int remainingDamagePotential =
+              maxDamageProduction - neededDamageUnits - 3 * numExistingBombers;
+          final int bombingScore = (1 + 9 * noAaBombingDefense) * remainingDamagePotential;
+          if (bombingScore >= maxBombingScore) {
+            maxBombingScore = bombingScore;
+            maxBombingTerritory = Optional.of(t);
+          }
+        }
+      }
+    }
+    if (maxBombingTerritory.isPresent()) {
+      final Territory t = maxBombingTerritory.get();
+      attackMap.get(t).getBombers().add(bomber);
+      sortedUnitAttackOptions.remove(bomber);
+      ProLogger.debug("Add bomber (" + bomber + ") to " + t);
     }
   }
 
@@ -1767,56 +1782,6 @@ public class ProCombatMoveAi {
       }
     }
     return sortedUnitAttackOptions;
-  }
-
-  /** Data storage class for territories that could be bombed. */
-  static class BombedTerritoryData {
-    final Map<Unit, Pair<Integer, Integer>> minNeededAndMaxDamageMap = new HashMap<>();
-    @Getter final int noAaBombingDefense;
-
-    public BombedTerritoryData(UnitCollection targetUnits) {
-      this.noAaBombingDefense =
-          targetUnits.anyMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
-    }
-
-    public void addPotentialTargets(List<Unit> targetUnits) {
-      for (Unit targetUnit : targetUnits) {
-        minNeededAndMaxDamageMap.compute(
-            targetUnit,
-            (existingTargetUnit, existingDamagePair) -> {
-              Integer unitMinDamageNeeded =
-                  (existingDamagePair == null ? 0 : existingDamagePair.getFirst());
-              unitMinDamageNeeded = Math.max(unitMinDamageNeeded, targetUnit.getUnitDamage());
-              return new Pair<>(unitMinDamageNeeded, 0);
-            });
-      }
-    }
-
-    public void addMaxDamage(final int newDamage, @NotNull List<Unit> targetUnits) {
-      for (Unit targetUnit : targetUnits) {
-        minNeededAndMaxDamageMap.compute(
-            targetUnit,
-            (existingTargetUnit, existingDamagePair) -> {
-              if (existingDamagePair == null) {
-                return new Pair<>(0, 0);
-              }
-              return new Pair<>(
-                  existingDamagePair.getFirst(), existingDamagePair.getSecond() + newDamage);
-            });
-      }
-    }
-
-    /**
-     * @return whether at least one target unit damage is exceeding its minimum
-     */
-    public boolean bombingWithSufficientDamage() {
-      for (Pair<Integer, Integer> unitDamageEntry : minNeededAndMaxDamageMap.values()) {
-        if (unitDamageEntry.getFirst() <= unitDamageEntry.getSecond()) {
-          return true;
-        }
-      }
-      return false;
-    }
   }
 
   private void removeAttacksUntilCapitalCanBeHeld(
