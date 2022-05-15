@@ -149,10 +149,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   private void setNotification(final String notification) {
-    if (notification == null) {
-      this.notification = null;
-      return;
-    }
     this.notification = notification;
   }
 

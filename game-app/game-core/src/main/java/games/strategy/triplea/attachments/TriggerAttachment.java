@@ -566,34 +566,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     availableTech = null;
   }
 
-  private void setSupport(final String sup) throws GameParseException {
-    if (sup == null) {
-      support = null;
-      return;
-    }
-    final String[] s = splitOnColon(sup);
-    for (int i = 0; i < s.length; i++) {
-      boolean add = true;
-      if (s[i].startsWith("-")) {
-        add = false;
-        s[i] = s[i].substring(1);
+  private void setSupport(final String value) throws GameParseException {
+    for (final String entry : splitOnColon(value)) {
+      final boolean remove = entry.startsWith("-");
+      final String name = remove ? entry.substring(1) : entry;
+      UnitSupportAttachment.get(getData().getUnitTypeList()).stream()
+          .filter(support -> support.getName().equals(name))
+          .findAny()
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      "Could not find unitSupportAttachment. name:" + name + thisErrorMsg()));
+      if (support == null) {
+        support = new LinkedHashMap<>();
       }
-      boolean found = false;
-      for (final UnitSupportAttachment support :
-          UnitSupportAttachment.get(getData().getUnitTypeList())) {
-        if (support.getName().equals(s[i])) {
-          found = true;
-          if (this.support == null) {
-            this.support = new LinkedHashMap<>();
-          }
-          this.support.put(s[i], add);
-          break;
-        }
-      }
-      if (!found) {
-        throw new GameParseException(
-            "Could not find unitSupportAttachment. name:" + s[i] + thisErrorMsg());
-      }
+      support.put(name, !remove);
     }
   }
 
@@ -2216,43 +2203,35 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final GamePlayer player : t.getPlayers()) {
-        for (final String usaString : t.getSupport().keySet()) {
+        for (final Map.Entry<String, Boolean> entry : t.getSupport().entrySet()) {
           final UnitSupportAttachment usa =
               UnitSupportAttachment.get(data.getUnitTypeList()).stream()
-                  .filter(s -> s.getName().equals(usaString))
+                  .filter(s -> s.getName().equals(entry.getKey()))
                   .findAny()
-                  .orElse(null);
-          if (usa == null) {
-            throw new IllegalStateException(
-                "Could not find unitSupportAttachment. name:" + usaString);
-          }
+                  .orElseThrow(
+                      () ->
+                          new IllegalStateException(
+                              "Could not find unitSupportAttachment. name:" + entry.getKey()));
           final List<GamePlayer> p = new ArrayList<>(usa.getPlayers());
-          if (p.contains(player)) {
-            if (!t.getSupport().get(usa.getName())) {
-              p.remove(player);
-              change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
-              bridge
-                  .getHistoryWriter()
-                  .startEvent(
-                      MyFormatter.attachmentNameToText(t.getName())
-                          + ": "
-                          + player.getName()
-                          + " is removed from "
-                          + usa);
-            }
-          } else {
-            if (t.getSupport().get(usa.getName())) {
+          final boolean add = entry.getValue();
+          if (p.contains(player) != entry.getValue()) {
+            final String text;
+            if (entry.getValue()) { // Add.
+              text = " is added to ";
               p.add(player);
-              change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
-              bridge
-                  .getHistoryWriter()
-                  .startEvent(
-                      MyFormatter.attachmentNameToText(t.getName())
-                          + ": "
-                          + player.getName()
-                          + " is added to "
-                          + usa);
+            } else { // Remove.
+              text = " is removed from ";
+              p.remove(player);
             }
+            change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
+            bridge
+                .getHistoryWriter()
+                .startEvent(
+                    MyFormatter.attachmentNameToText(t.getName())
+                        + ": "
+                        + player.getName()
+                        + text
+                        + usa);
           }
         }
       }
@@ -2659,7 +2638,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> supportMatch() {
-    return t -> t.getSupport().isEmpty();
+    return t -> !t.getSupport().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> changeOwnershipMatch() {
@@ -2667,23 +2646,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> unitPropertyMatch() {
-    return t -> !t.getUnitType().isEmpty() && t.getUnitProperty() != null;
+    return t -> !t.getUnitType().isEmpty() && !t.getUnitProperty().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> territoryPropertyMatch() {
-    return t -> !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null;
+    return t -> !t.getTerritories().isEmpty() && !t.getTerritoryProperty().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> playerPropertyMatch() {
-    return t -> t.getPlayerProperty() != null;
+    return t -> !t.getPlayerProperty().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> relationshipTypePropertyMatch() {
-    return t -> !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null;
+    return t -> !t.getRelationshipTypes().isEmpty() && !t.getRelationshipTypeProperty().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> territoryEffectPropertyMatch() {
-    return t -> !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null;
+    return t -> !t.getTerritoryEffects().isEmpty() && !t.getTerritoryEffectProperty().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> relationshipChangeMatch() {
