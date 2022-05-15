@@ -415,19 +415,10 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCanBeGivenByTerritoryTo(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (canBeGivenByTerritoryTo == null) {
-          canBeGivenByTerritoryTo = new ArrayList<>();
-        }
-        canBeGivenByTerritoryTo.add(tempPlayer);
-      } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
-        canBeGivenByTerritoryTo = null;
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
+    if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+      canBeGivenByTerritoryTo = null;
+    } else {
+      canBeGivenByTerritoryTo = parsePlayerList(value, canBeGivenByTerritoryTo);
     }
   }
 
