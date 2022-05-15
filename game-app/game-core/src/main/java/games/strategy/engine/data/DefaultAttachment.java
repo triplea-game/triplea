@@ -4,8 +4,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -162,6 +164,22 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
         && Objects.equals(
             Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
         && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
+  }
+
+  protected List<GamePlayer> parsePlayerList(final String value, List<GamePlayer> existingList)
+      throws GameParseException {
+    for (final String name : splitOnColon(value)) {
+      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
+      if (tempPlayer != null) {
+        if (existingList == null) {
+          existingList = new ArrayList<>();
+        }
+        existingList.add(tempPlayer);
+      } else {
+        throw new GameParseException("No player named: " + name + thisErrorMsg());
+      }
+    }
+    return existingList;
   }
 
   public static <T> List<T> getListProperty(@Nullable List<T> value) {

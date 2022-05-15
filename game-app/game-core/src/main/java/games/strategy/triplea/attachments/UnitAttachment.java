@@ -444,18 +444,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCanBeCapturedOnEnteringBy(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (canBeCapturedOnEnteringBy == null) {
-          canBeCapturedOnEnteringBy = new ArrayList<>();
-        }
-        canBeCapturedOnEnteringBy.add(tempPlayer);
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
-    }
+    canBeCapturedOnEnteringBy = parsePlayerList(value, canBeCapturedOnEnteringBy);
   }
 
   private void setCanBeCapturedOnEnteringBy(final List<GamePlayer> value) {
