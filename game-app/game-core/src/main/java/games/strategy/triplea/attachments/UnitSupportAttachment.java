@@ -141,7 +141,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return this;
   }
 
-  private String getFaction() {
+  private @Nullable String getFaction() {
     return faction;
   }
 
@@ -167,7 +167,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return this;
   }
 
-  private String getSide() {
+  private @Nullable String getSide() {
     return side;
   }
 
@@ -198,7 +198,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return this;
   }
 
-  String getDice() {
+  @Nullable String getDice() {
     return dice;
   }
 
@@ -264,17 +264,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void setPlayers(final String names) throws GameParseException {
-    final String[] s = splitOnColon(names);
-    for (final String element : s) {
-      final GamePlayer player = getData().getPlayerList().getPlayerId(element);
-      if (player == null) {
-        throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
-      }
-      if (players == null) {
-        players = new ArrayList<>();
-      }
-      players.add(player);
-    }
+    players = parsePlayerList(names, players);
   }
 
   @VisibleForTesting
@@ -350,7 +340,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return offence;
   }
 
-  public BonusType getBonusType() {
+  public @Nullable BonusType getBonusType() {
     return bonusType;
   }
 
