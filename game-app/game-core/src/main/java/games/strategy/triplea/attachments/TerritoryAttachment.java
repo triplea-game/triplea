@@ -268,14 +268,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void setCapital(final String value) throws GameParseException {
-    if (value == null) {
-      capital = null;
-      return;
-    }
-    final GamePlayer p = getData().getPlayerList().getPlayerId(value);
-    if (p == null) {
-      throw new GameParseException("No Player named: " + value + thisErrorMsg());
-    }
+    getPlayerOrThrow(value);
     capital = value;
   }
 
@@ -365,14 +358,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setOriginalOwner(final String player) throws GameParseException {
-    if (player == null) {
-      originalOwner = null;
-    }
-    final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(player);
-    if (tempPlayer == null) {
-      throw new GameParseException("No player named: " + player + thisErrorMsg());
-    }
-    originalOwner = tempPlayer;
+    originalOwner = getPlayerOrThrow(player);
   }
 
   public GamePlayer getOriginalOwner() {
@@ -452,10 +438,7 @@ public class TerritoryAttachment extends DefaultAttachment {
           "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
     }
     for (final String name : s) {
-      final GamePlayer player = getData().getPlayerList().getPlayerId(name);
-      if (player == null) {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
+      getPlayerOrThrow(name);
     }
     if (whenCapturedByGoesTo == null) {
       whenCapturedByGoesTo = new ArrayList<>();
