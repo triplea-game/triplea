@@ -386,19 +386,10 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setChangeUnitOwners(final String value) throws GameParseException {
-    final String[] temp = splitOnColon(value);
-    for (final String name : temp) {
-      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
-      if (tempPlayer != null) {
-        if (changeUnitOwners == null) {
-          changeUnitOwners = new ArrayList<>();
-        }
-        changeUnitOwners.add(tempPlayer);
-      } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
-        changeUnitOwners = null;
-      } else {
-        throw new GameParseException("No player named: " + name + thisErrorMsg());
-      }
+    if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+      changeUnitOwners = null;
+    } else {
+      changeUnitOwners = parsePlayerList(value, changeUnitOwners);
     }
   }
 
