@@ -13,7 +13,6 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   private static final long serialVersionUID = -5245743727479551766L;
 
   private final List<TechAdvance> techs = new ArrayList<>();
-  private List<TechAdvance> cachedTechs;
   private final String name;
 
   public TechnologyFrontier(final String name, final GameData data) {
@@ -31,28 +30,29 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     final GameData gameData = getData();
     if (gameData != null) {
       techs.sort(Comparator.comparingInt(gameData.getTechnologyFrontier().getTechs()::indexOf));
-      cachedTechs = null;
     }
   }
 
   public void addAdvance(final TechAdvance t) {
-    cachedTechs = null;
     techs.add(t);
     reorderTechsToMatchGameTechsOrder();
+    getData().getTechTracker().onTechnologyChanged();
   }
 
   public void addAdvance(final List<TechAdvance> list) {
     for (final TechAdvance t : list) {
-      addAdvance(t);
+      techs.add(t);
     }
+    reorderTechsToMatchGameTechsOrder();
+    getData().getTechTracker().onTechnologyChanged();
   }
 
   public void removeAdvance(final TechAdvance t) {
     if (!techs.contains(t)) {
       throw new IllegalStateException("Advance not present:" + t);
     }
-    cachedTechs = null;
     techs.remove(t);
+    getData().getTechTracker().onTechnologyChanged();
   }
 
   public TechAdvance getAdvanceByProperty(final String property) {
@@ -64,10 +64,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   }
 
   public List<TechAdvance> getTechs() {
-    if (cachedTechs == null) {
-      cachedTechs = Collections.unmodifiableList(techs);
-    }
-    return cachedTechs;
+    return Collections.unmodifiableList(techs);
   }
 
   @Override
