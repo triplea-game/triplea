@@ -163,7 +163,7 @@ public class UnitAttachment extends DefaultAttachment {
   private int airDefense = 0;
   private int airAttack = 0;
   // null means they can target any unit that can be damaged
-  private Set<UnitType> bombingTargets = null;
+  private @Nullable Set<UnitType> bombingTargets = null;
 
   // production related
   // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
@@ -171,8 +171,8 @@ public class UnitAttachment extends DefaultAttachment {
   // -1 means either it can't produce any, or it produces at the value of the territory it is
   // located in
   private int canProduceXUnits = -1;
-  private IntegerMap<UnitType> createsUnitsList = null;
-  private IntegerMap<Resource> createsResourcesList = null;
+  private @Nullable IntegerMap<UnitType> createsUnitsList = null;
+  private @Nullable IntegerMap<Resource> createsResourcesList = null;
 
   // damage related
   private int hitPoints = 1;
@@ -196,18 +196,18 @@ public class UnitAttachment extends DefaultAttachment {
   private int canOnlyBePlacedInTerritoryValuedAtX = -1;
   // multiple colon delimited lists of the unit combos required for this unit to be built somewhere.
   // (units must be in the same territory, owned by player, not be disabled)
-  private List<String[]> requiresUnits = null;
-  private IntegerMap<UnitType> consumesUnits = null;
+  private @Nullable List<String[]> requiresUnits = null;
+  private @Nullable IntegerMap<UnitType> consumesUnits = null;
   // multiple colon delimited lists of the unit combos required for
   // this unit to move into a territory. (units must be owned by player, not be disabled)
-  private List<String[]> requiresUnitsToMove = null;
+  private @Nullable List<String[]> requiresUnitsToMove = null;
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates unitPlacementRestrictions with an inverted list of territories
-  private String[] unitPlacementRestrictions = null;
+  private @Nullable String[] unitPlacementRestrictions = null;
   // -1 if infinite (infinite is default)
   private int maxBuiltPerPlayer = -1;
-  private Tuple<Integer, String> placementLimit = null;
+  private @Nullable Tuple<Integer, String> placementLimit = null;
 
   // scrambling related
   private boolean canScramble = false;
@@ -223,26 +223,27 @@ public class UnitAttachment extends DefaultAttachment {
   private int blockade = 0;
   // a colon delimited list of the units this unit can repair.
   // (units must be in same territory, unless this unit is land and the repaired unit is sea)
-  private IntegerMap<UnitType> repairsUnits = null;
-  private IntegerMap<UnitType> givesMovement = null;
-  private List<Tuple<String, GamePlayer>> destroyedWhenCapturedBy = null;
+  private @Nullable IntegerMap<UnitType> repairsUnits = null;
+  private @Nullable IntegerMap<UnitType> givesMovement = null;
+  private @Nullable List<Tuple<String, GamePlayer>> destroyedWhenCapturedBy = null;
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create
   // destroyedWhenCapturedBy with a specific list
-  private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsDamagedChangesInto = null;
-  private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsRepairedChangesInto = null;
-  private Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto = null;
+  private @Nullable Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsDamagedChangesInto = null;
+  private @Nullable Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsRepairedChangesInto = null;
+  private @Nullable Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto = null;
   private int whenCapturedSustainsDamage = 0;
-  private List<GamePlayer> canBeCapturedOnEnteringBy = null;
-  private List<GamePlayer> canBeGivenByTerritoryTo = null;
+  private @Nullable List<GamePlayer> canBeCapturedOnEnteringBy = null;
+  private @Nullable List<GamePlayer> canBeGivenByTerritoryTo = null;
   // a set of information for dealing with special abilities or loss of abilities when a unit takes
   // x-y amount of damage
   @ChangeOnNextMajorRelease("This should be a list of WhenCombatDamaged objects instead of Tuples")
-  private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged = null;
+  private @Nullable List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged =
+      null;
   // a kind of support attachment for giving actual unit attachment abilities or other to a unit,
   // when in the presence or on the same route with another unit
-  private List<String> receivesAbilityWhenWith = null;
+  private @Nullable List<String> receivesAbilityWhenWith = null;
   // currently used for: placement in original territories only
-  private Set<String> special = null;
+  private @Nullable Set<String> special = null;
   // Manually set TUV
   private int tuv = -1;
 
@@ -2059,7 +2060,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private Set<UnitType> getBombingTargets() {
-    return bombingTargets;
+    return getSetProperty(bombingTargets);
   }
 
   public Set<UnitType> getBombingTargets(final UnitTypeList unitTypeList) {
@@ -2476,7 +2477,7 @@ public class UnitAttachment extends DefaultAttachment {
     placementLimit = value;
   }
 
-  private Tuple<Integer, String> getPlacementLimit() {
+  private @Nullable Tuple<Integer, String> getPlacementLimit() {
     return placementLimit;
   }
 
