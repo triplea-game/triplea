@@ -518,7 +518,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private IntegerMap<String> getUnitPresence() {
-    return unitPresence == null ? new IntegerMap<>() : unitPresence;
+    return getIntegerMapProperty(unitPresence);
   }
 
   private void resetUnitPresence() {

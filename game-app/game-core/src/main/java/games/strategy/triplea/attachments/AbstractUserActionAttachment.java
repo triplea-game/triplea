@@ -13,6 +13,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -35,7 +36,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    */
   @Deprecated protected int costPu = 0;
   // cost in any resources to attempt this action
-  protected IntegerMap<Resource> costResources = null;
+  protected @Nullable IntegerMap<Resource> costResources = null;
   // how many times can you perform this action each round?
   protected int attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
@@ -45,7 +46,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // declare war... especially for actions such as when france declares war on germany and it
   // automatically causes UK to declare war as well. it is good to set "actionAccept" to "UK" so UK
   // an accept this action to go through.
-  protected List<GamePlayer> actionAccept = null;
+  protected @Nullable List<GamePlayer> actionAccept = null;
 
   protected AbstractUserActionAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
