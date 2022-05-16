@@ -15,7 +15,6 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
@@ -102,11 +101,9 @@ public class RocketsFireHelper implements Serializable {
     final GameData data = bridge.getData();
     final GamePlayer player = bridge.getGamePlayer();
     final Map<Territory, Integer> previouslyAttackedTerritories = new LinkedHashMap<>();
+    final int maxAttacks = data.getTechTracker().getRocketNumberPerTerritory(player);
     for (final Territory attackFrom : getTerritoriesWithRockets(data, player)) {
       final Set<Territory> targets = getTargetsWithinRange(attackFrom, data, player);
-      final int maxAttacks =
-          TechAbilityAttachment.getRocketNumberPerTerritory(
-              TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()));
       for (final Territory t : previouslyAttackedTerritories.keySet()) {
         // negative Rocket Number per Territory == unlimited
         if (maxAttacks >= 0 && maxAttacks <= previouslyAttackedTerritories.get(t)) {
@@ -223,11 +220,7 @@ public class RocketsFireHelper implements Serializable {
 
   private static Set<Territory> getTargetsWithinRange(
       final Territory territory, final GameState data, final GamePlayer player) {
-
-    final int maxDistance =
-        TechAbilityAttachment.getRocketDistance(
-            TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()));
-
+    final int maxDistance = data.getTechTracker().getRocketDistance(player);
     final Set<Territory> hasFactory = new HashSet<>();
     final Predicate<Territory> allowed =
         PredicateBuilder.of(Matches.territoryAllowsRocketsCanFlyOver(player))
@@ -283,13 +276,13 @@ public class RocketsFireHelper implements Serializable {
       rockets = new ArrayList<>();
       numberOfAttacks = 1;
     } else {
-      rockets =
-          new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
+      rockets = CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player));
+      int rocketDiceNumber = 0;
+      for (final Unit u : rockets) {
+        rocketDiceNumber += data.getTechTracker().getRocketDiceNumber(u.getOwner(), u.getType());
+      }
       numberOfAttacks =
-          Math.min(
-              TechAbilityAttachment.getRocketNumberPerTerritory(
-                  TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier())),
-              TechAbilityAttachment.getRocketDiceNumber(rockets, data.getTechnologyFrontier()));
+          Math.min(rocketDiceNumber, data.getTechTracker().getRocketNumberPerTerritory(player));
     }
     if (numberOfAttacks <= 0) {
       return;

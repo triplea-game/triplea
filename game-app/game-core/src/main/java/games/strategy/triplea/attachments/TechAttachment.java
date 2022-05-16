@@ -309,6 +309,7 @@ public class TechAttachment extends DefaultAttachment {
 
   public void setGenericTech(final String name, final boolean value) {
     genericTech.put(name, value);
+    getData().getTechTracker().onTechnologyChanged();
   }
 
   public Map<String, Boolean> getGenericTech() {

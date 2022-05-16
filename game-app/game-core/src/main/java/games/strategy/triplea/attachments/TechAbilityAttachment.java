@@ -7,7 +7,6 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
@@ -16,7 +15,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.TechTracker;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,8 +24,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
@@ -112,32 +108,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
       throws GameParseException {
     final String[] s = splitAndValidate(name, value);
     putter.accept(getUnitTypeOrThrow(s[1]), getInt(s[0]));
-  }
-
-  public static int sumIntegerMap(
-      final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
-      final UnitType ut,
-      final Collection<TechAdvance> techAdvances) {
-    return techAdvances.stream()
-        .map(TechAbilityAttachment::get)
-        .filter(Objects::nonNull)
-        .map(mapper)
-        .mapToInt(m -> m.getInt(ut))
-        .sum();
-  }
-
-  @VisibleForTesting
-  static int sumNumbers(
-      final ToIntFunction<TechAbilityAttachment> mapper,
-      final String attachmentType,
-      final Collection<TechAdvance> techAdvances) {
-    return techAdvances.stream()
-        .map(TechAbilityAttachment::get)
-        .filter(Objects::nonNull)
-        .filter(i -> i.getAttachedTo().toString().equals(attachmentType))
-        .mapToInt(mapper)
-        .filter(i -> i > 0)
-        .sum();
   }
 
   @VisibleForTesting
@@ -279,13 +249,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     productionBonus = value;
   }
 
-  private IntegerMap<UnitType> getProductionBonus() {
+  public IntegerMap<UnitType> getProductionBonus() {
     return getIntegerMapProperty(productionBonus);
-  }
-
-  public static int getProductionBonus(
-      final UnitType ut, final Collection<TechAdvance> techAdvances) {
-    return sumIntegerMap(TechAbilityAttachment::getProductionBonus, ut, techAdvances);
   }
 
   private void resetProductionBonus() {
@@ -302,21 +267,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     minimumTerritoryValueForProductionBonus = value;
   }
 
-  private int getMinimumTerritoryValueForProductionBonus() {
+  public int getMinimumTerritoryValueForProductionBonus() {
     return minimumTerritoryValueForProductionBonus;
-  }
-
-  public static int getMinimumTerritoryValueForProductionBonus(
-      final Collection<TechAdvance> techAdvances) {
-    return Math.max(
-        0,
-        techAdvances.stream()
-            .map(TechAbilityAttachment::get)
-            .filter(Objects::nonNull)
-            .mapToInt(TechAbilityAttachment::getMinimumTerritoryValueForProductionBonus)
-            .filter(i -> i != -1)
-            .min()
-            .orElse(-1));
   }
 
   private void resetMinimumTerritoryValueForProductionBonus() {
@@ -418,24 +370,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     rocketDiceNumber = value;
   }
 
-  private IntegerMap<UnitType> getRocketDiceNumber() {
+  public IntegerMap<UnitType> getRocketDiceNumber() {
     return getIntegerMapProperty(rocketDiceNumber);
-  }
-
-  private static int getRocketDiceNumber(
-      final UnitType ut, final Collection<TechAdvance> techAdvances) {
-    return sumIntegerMap(TechAbilityAttachment::getRocketDiceNumber, ut, techAdvances);
-  }
-
-  public static int getRocketDiceNumber(
-      final Collection<Unit> rockets, final TechnologyFrontier technologyFrontier) {
-    int rocketDiceNumber = 0;
-    for (final Unit u : rockets) {
-      rocketDiceNumber +=
-          getRocketDiceNumber(
-              u.getType(), TechTracker.getCurrentTechAdvances(u.getOwner(), technologyFrontier));
-    }
-    return rocketDiceNumber;
   }
 
   private void resetRocketDiceNumber() {
@@ -450,13 +386,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     rocketDistance = value;
   }
 
-  private int getRocketDistance() {
+  public int getRocketDistance() {
     return rocketDistance;
-  }
-
-  public static int getRocketDistance(final Collection<TechAdvance> techAdvances) {
-    return sumNumbers(
-        TechAbilityAttachment::getRocketDistance, TechAdvance.TECH_NAME_ROCKETS, techAdvances);
   }
 
   private void resetRocketDistance() {
@@ -471,15 +402,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     rocketNumberPerTerritory = value;
   }
 
-  private int getRocketNumberPerTerritory() {
+  public int getRocketNumberPerTerritory() {
     return rocketNumberPerTerritory;
-  }
-
-  public static int getRocketNumberPerTerritory(final Collection<TechAdvance> techAdvances) {
-    return sumNumbers(
-        TechAbilityAttachment::getRocketNumberPerTerritory,
-        TechAdvance.TECH_NAME_ROCKETS,
-        techAdvances);
   }
 
   private void resetRocketNumberPerTerritory() {
@@ -761,12 +685,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     bombingBonus = value;
   }
 
-  private IntegerMap<UnitType> getBombingBonus() {
+  public IntegerMap<UnitType> getBombingBonus() {
     return getIntegerMapProperty(bombingBonus);
-  }
-
-  public static int getBombingBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
-    return sumIntegerMap(TechAbilityAttachment::getBombingBonus, ut, techAdvances);
   }
 
   private void resetBombingBonus() {

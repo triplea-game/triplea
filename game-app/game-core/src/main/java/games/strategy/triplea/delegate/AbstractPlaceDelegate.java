@@ -1249,7 +1249,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             unitsAtStartOfStepInTerritory(producer),
             producer,
             player,
-            getData().getTechnologyFrontier(),
             getData().getProperties(),
             true,
             true);

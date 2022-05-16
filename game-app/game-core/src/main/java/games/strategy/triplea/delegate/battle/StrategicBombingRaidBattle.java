@@ -882,14 +882,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
         }
 
-        costThisUnit =
-            Math.max(
-                0,
-                (costThisUnit
-                    + TechAbilityAttachment.getBombingBonus(
-                        attacker.getType(),
-                        TechTracker.getCurrentTechAdvances(
-                            attacker.getOwner(), gameData.getTechnologyFrontier()))));
+        final int bonus =
+            gameData.getTechTracker().getBombingBonus(attacker.getOwner(), attacker.getType());
+        costThisUnit = Math.max(0, (costThisUnit + bonus));
         if (limitDamage) {
           costThisUnit = Math.min(costThisUnit, damageLimit);
         }

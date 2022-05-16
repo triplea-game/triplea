@@ -100,7 +100,7 @@ class ProPurchaseAi {
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
-                data.getTechnologyFrontier(),
+                data.getTechTracker(),
                 data.getProperties(),
                 false);
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {

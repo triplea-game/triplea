@@ -24,6 +24,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
@@ -41,7 +43,7 @@ import org.triplea.sound.SoundPath;
  */
 public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate {
   private int techCost;
-  private Map<GamePlayer, Collection<TechAdvance>> techs;
+  private @Nullable Map<GamePlayer, Collection<TechAdvance>> techs;
   private TechnologyFrontier techCategory;
   private boolean needToInitialize = true;
 
@@ -153,8 +155,14 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return true;
   }
 
-  public Map<GamePlayer, Collection<TechAdvance>> getAdvances() {
-    return techs;
+  public @Nullable Collection<TechAdvance> getAdvances(GamePlayer player) {
+    return techs == null ? null : techs.get(player);
+  }
+
+  public void clearAdvances(GamePlayer player) {
+    if (techs != null) {
+      techs.remove(player);
+    }
   }
 
   @Override
@@ -200,13 +208,12 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     } else if (Properties.getLowLuckTechOnly(getData().getProperties())) {
       techHits = techRolls / diceSides;
       remainder = techRolls % diceSides;
+      random = bridge.getRandom(diceSides, 1, player, DiceType.TECH, annotation);
       if (remainder > 0) {
-        random = bridge.getRandom(diceSides, 1, player, DiceType.TECH, annotation);
         if (random[0] + 1 <= remainder) {
           techHits++;
         }
       } else {
-        random = bridge.getRandom(diceSides, 1, player, DiceType.TECH, annotation);
         remainder = diceSides;
       }
     } else {
