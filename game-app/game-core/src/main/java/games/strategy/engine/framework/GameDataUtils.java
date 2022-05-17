@@ -52,7 +52,7 @@ public final class GameDataUtils {
     try {
       return Optional.of(
           IoUtils.writeToMemory(
-              os -> GameDataManager.saveGame(os, data, copyDelegates, engineVersion)));
+              os -> GameDataManager.saveGameUncompressed(os, data, copyDelegates, engineVersion)));
     } catch (final IOException e) {
       log.error("Failed to clone game data", e);
       return Optional.empty();
@@ -63,7 +63,7 @@ public final class GameDataUtils {
       final byte[] bytes, final Version engineVersion) {
     try {
       return IoUtils.readFromMemory(
-          bytes, inputStream -> GameDataManager.loadGame(engineVersion, inputStream));
+          bytes, inputStream -> GameDataManager.loadGameUncompressed(engineVersion, inputStream));
     } catch (final IOException e) {
       log.error("Failed to clone game data", e);
       return Optional.empty();
