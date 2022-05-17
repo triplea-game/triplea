@@ -778,8 +778,7 @@ public class BattleTracker implements Serializable {
         newOwner = gamePlayer;
         for (final Territory current :
             TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap())) {
-          if (territory.equals(current)
-              || current.isOwnedBy(data.getPlayerList().getNullPlayer())) {
+          if (territory.equals(current) || current.getOwner().isNull()) {
             // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
             newOwner = terrOrigOwner;
             break;
