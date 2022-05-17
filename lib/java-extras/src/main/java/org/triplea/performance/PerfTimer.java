@@ -55,9 +55,9 @@ public class PerfTimer implements Closeable {
   }
 
   /**
-   * Creates a perf timer with a reporting frequency. The reporting frequency specifies N specifies
-   * that performance information should be printed every N executions of the timer. If 0, no
-   * information is printed.
+   * Creates a perf timer with a reporting frequency. The reporting frequency N specifies that
+   * performance information should be printed every N executions of the timer. If 0, no information
+   * is printed.
    *
    * @param title The name of the timer
    * @param reportingFrequency The reporting frequency.

@@ -35,7 +35,11 @@ abstract class RemoveUnits implements BattleStep {
       final IDelegateBridge bridge, final Predicate<Unit> unitMatch, final BattleState.Side side) {
     final Collection<Unit> suicideUnits =
         CollectionUtils.getMatches(
-            battleState.filterUnits(ALIVE, side), unitMatch.and(Matches.unitIsSuicideOnAttack()));
+            battleState.filterUnits(ALIVE, side),
+            unitMatch.and(
+                side == OFFENSE
+                    ? Matches.unitIsSuicideOnAttack()
+                    : Matches.unitIsSuicideOnDefense()));
     bridge
         .getDisplayChannelBroadcaster()
         .deadUnitNotification(

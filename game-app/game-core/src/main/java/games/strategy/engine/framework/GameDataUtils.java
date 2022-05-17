@@ -40,12 +40,30 @@ public final class GameDataUtils {
    */
   public static Optional<GameData> cloneGameData(
       final GameData data, final boolean copyDelegates, final Version engineVersion) {
+    final byte[] bytes = gameDataToBytes(data, copyDelegates, engineVersion).orElse(null);
+    if (bytes != null) {
+      return createGameDataFromBytes(bytes, engineVersion);
+    }
+    return Optional.empty();
+  }
+
+  public static Optional<byte[]> gameDataToBytes(
+      GameData data, boolean copyDelegates, Version engineVersion) {
     try {
-      final byte[] bytes =
+      return Optional.of(
           IoUtils.writeToMemory(
-              os -> GameDataManager.saveGame(os, data, copyDelegates, engineVersion));
+              os -> GameDataManager.saveGameUncompressed(os, data, copyDelegates, engineVersion)));
+    } catch (final IOException e) {
+      log.error("Failed to clone game data", e);
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<GameData> createGameDataFromBytes(
+      final byte[] bytes, final Version engineVersion) {
+    try {
       return IoUtils.readFromMemory(
-          bytes, inputStream -> GameDataManager.loadGame(engineVersion, inputStream));
+          bytes, inputStream -> GameDataManager.loadGameUncompressed(engineVersion, inputStream));
     } catch (final IOException e) {
       log.error("Failed to clone game data", e);
       return Optional.empty();
