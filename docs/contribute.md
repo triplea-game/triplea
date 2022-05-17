@@ -1,7 +1,5 @@
 # How to contribute to Triplea
 
-*So far still work in progress...*
-
 TripleA is a community project and always looking for new members to join.
 
 If you are interested in supporting the project, just pick a contribution role from below and find out what you can do
