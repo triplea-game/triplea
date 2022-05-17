@@ -178,7 +178,7 @@ public class TuvUtils {
             ? TuvUtils.getResourceCostsForTuvForAllPlayersMergedAndAveraged(data)
             : new HashMap<>();
     final List<GamePlayer> players = data.getPlayerList().getPlayers();
-    players.add(GamePlayer.NULL_PLAYERID);
+    players.add(data.getPlayerList().getNullPlayer());
     for (final GamePlayer p : players) {
       final ProductionFrontier frontier = p.getProductionFrontier();
       // any one will do then

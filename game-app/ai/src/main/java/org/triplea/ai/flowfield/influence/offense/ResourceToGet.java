@@ -26,7 +26,8 @@ public class ResourceToGet {
       final RelationshipTracker relationshipTracker,
       final Collection<Territory> territories,
       final Resource resource) {
-    final Collection<GamePlayer> enemies = new ArrayList<>(List.of(GamePlayer.NULL_PLAYERID));
+    final Collection<GamePlayer> enemies =
+        new ArrayList<>(List.of(gamePlayer.getData().getPlayerList().getNullPlayer()));
     enemies.addAll(relationshipTracker.getEnemies(gamePlayer));
 
     final Map<Territory, Long> territoryValuations =

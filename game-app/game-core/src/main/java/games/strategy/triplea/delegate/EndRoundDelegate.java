@@ -302,7 +302,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
               SoundPath.CLIP_GAME_WON,
               ((this.winners != null && !this.winners.isEmpty())
                   ? CollectionUtils.getAny(this.winners)
-                  : GamePlayer.NULL_PLAYERID));
+                  : getData().getPlayerList().getNullPlayer()));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the
       // end round delegate)
       final String title =

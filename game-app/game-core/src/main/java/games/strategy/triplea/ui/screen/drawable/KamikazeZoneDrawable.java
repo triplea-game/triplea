@@ -38,15 +38,15 @@ public class KamikazeZoneDrawable extends AbstractDrawable {
     if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data.getProperties())) {
       owner = terr.getOwner();
       if (owner == null) {
-        owner = GamePlayer.NULL_PLAYERID;
+        owner = data.getPlayerList().getNullPlayer();
       }
     } else {
       if (ta == null) {
-        owner = GamePlayer.NULL_PLAYERID;
+        owner = data.getPlayerList().getNullPlayer();
       } else {
         owner = ta.getOriginalOwner();
         if (owner == null) {
-          owner = GamePlayer.NULL_PLAYERID;
+          owner = data.getPlayerList().getNullPlayer();
         }
       }
     }

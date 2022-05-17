@@ -1078,7 +1078,7 @@ class EditPanel extends ActionPanel {
 
   private static boolean doesNeutralHaveUnitsOnMap(final GameState data) {
     return data.getMap().getTerritories().stream()
-        .anyMatch(Matches.territoryHasUnitsOwnedBy(GamePlayer.NULL_PLAYERID));
+        .anyMatch(Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getNullPlayer()));
   }
 
   @Override

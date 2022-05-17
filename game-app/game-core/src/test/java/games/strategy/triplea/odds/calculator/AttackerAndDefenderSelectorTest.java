@@ -44,7 +44,13 @@ public class AttackerAndDefenderSelectorTest {
   private final Territory russia = gameData.getMap().getTerritory("Russia");
 
   private final List<GamePlayer> players =
-      List.of(russians, germans, british, japanese, americans, GamePlayer.NULL_PLAYERID);
+      List.of(
+          russians,
+          germans,
+          british,
+          japanese,
+          americans,
+          gameData.getPlayerList().getNullPlayer());
 
   @Test
   void testNoCurrentPlayer() {
@@ -306,7 +312,7 @@ public class AttackerAndDefenderSelectorTest {
     assertThat(
         gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
         is(true));
-    assertThat(defender.orElseThrow(), is(not(GamePlayer.NULL_PLAYERID)));
+    assertThat(defender.orElseThrow(), is(not(gameData.getPlayerList().getNullPlayer())));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }

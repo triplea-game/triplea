@@ -209,14 +209,14 @@ final class MatchesTest {
 
     @Test
     void shouldMatchWhenLandTerritoryIsUnownedAndHasTerritoryAttachment() {
-      landTerritory.setOwner(GamePlayer.NULL_PLAYERID);
+      landTerritory.setOwner(gameData.getPlayerList().getNullPlayer());
 
       assertThat(newMatch(), matches(landTerritory));
     }
 
     @Test
     void shouldMatchWhenLandTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
-      landTerritory.setOwner(GamePlayer.NULL_PLAYERID);
+      landTerritory.setOwner(gameData.getPlayerList().getNullPlayer());
       TerritoryAttachment.remove(landTerritory);
 
       assertThat(newMatch(), matches(landTerritory));
@@ -236,14 +236,14 @@ final class MatchesTest {
 
     @Test
     void shouldMatchWhenSeaTerritoryIsUnownedAndHasTerritoryAttachment() {
-      seaTerritory.setOwner(GamePlayer.NULL_PLAYERID);
+      seaTerritory.setOwner(gameData.getPlayerList().getNullPlayer());
 
       assertThat(newMatch(), matches(seaTerritory));
     }
 
     @Test
     void shouldNotMatchWhenSeaTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
-      seaTerritory.setOwner(GamePlayer.NULL_PLAYERID);
+      seaTerritory.setOwner(gameData.getPlayerList().getNullPlayer());
       TerritoryAttachment.remove(seaTerritory);
 
       assertThat(newMatch(), notMatches(seaTerritory));

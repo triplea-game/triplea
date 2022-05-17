@@ -558,7 +558,9 @@ public class HistoryLog extends JFrame {
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       if (!place.isWater()
           || (ta != null
-              && !GamePlayer.NULL_PLAYERID.equals(OriginalOwnerTracker.getOriginalOwner(place))
+              && !data.getPlayerList()
+                  .getNullPlayer()
+                  .equals(OriginalOwnerTracker.getOriginalOwner(place))
               && player.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && place.isOwnedBy(player))) {
         isConvoyOrLand = true;
