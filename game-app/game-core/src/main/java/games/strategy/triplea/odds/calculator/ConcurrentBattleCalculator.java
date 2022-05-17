@@ -117,16 +117,15 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private void createWorkers(final GameData data) {
     workers.clear();
     if (data != null && cancelCurrentOperation.get() >= 0) {
-      final long startMemory =
-          Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
       // see how long 1 copy takes (some games can get REALLY big)
       final long startTime = System.currentTimeMillis();
+      final long startMemory =
+          Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
       final Version engineVersion = Injections.getInstance().getEngineVersion();
       final byte[] serializedData;
       try {
         // Serialize the data, then release lock on it so game can continue (ie: we don't want to
-        // lock on it while we copy it 16 times). Don't let the data change while we make the first
-        // copy.
+        // lock on it while we copy it 16 times).
         data.acquireWriteLock();
         serializedData = GameDataUtils.gameDataToBytes(data, false, engineVersion).orElse(null);
         if (serializedData == null) {
