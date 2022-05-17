@@ -44,6 +44,28 @@ public final class GameDataUtils {
       final byte[] bytes =
           IoUtils.writeToMemory(
               os -> GameDataManager.saveGame(os, data, copyDelegates, engineVersion));
+      return createGameDataFromBytes(bytes, engineVersion);
+    } catch (final IOException e) {
+      log.error("Failed to clone game data", e);
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<byte[]> gameDataToBytes(
+      GameData data, boolean copyDelegates, Version engineVersion) {
+    try {
+      return Optional.of(
+          IoUtils.writeToMemory(
+              os -> GameDataManager.saveGame(os, data, copyDelegates, engineVersion)));
+    } catch (final IOException e) {
+      log.error("Failed to clone game data", e);
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<GameData> createGameDataFromBytes(
+      final byte[] bytes, final Version engineVersion) {
+    try {
       return IoUtils.readFromMemory(
           bytes, inputStream -> GameDataManager.loadGame(engineVersion, inputStream));
     } catch (final IOException e) {

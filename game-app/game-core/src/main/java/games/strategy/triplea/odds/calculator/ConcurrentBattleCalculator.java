@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
+import org.triplea.util.Version;
 
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up
@@ -120,17 +121,16 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final long startTime = System.currentTimeMillis();
       final long startMemory =
           Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-      final GameData newData;
+      final byte[] serializedData;
       try {
         // make first copy, then release lock on it so game can continue (ie: we don't want to lock
         // on it while we copy
         // it 16 times, when once is enough) don't let the data change while we make the first copy
         data.acquireWriteLock();
-        newData =
-            GameDataUtils.cloneGameDataWithoutHistory(
-                    data, false, Injections.getInstance().getEngineVersion())
+        serializedData =
+            GameDataUtils.gameDataToBytes(data, false, Injections.getInstance().getEngineVersion())
                 .orElse(null);
-        if (newData == null) {
+        if (serializedData == null) {
           return;
         }
       } finally {
@@ -138,40 +138,13 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       }
       final int currentThreads =
           getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
-      try {
-        // make sure all workers are using the same data
-        newData.acquireReadLock();
-        int i = 0;
-        // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
-        if (currentThreads <= 2 || MAX_THREADS <= 2) {
-          // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once
-          // above, so at most
-          // only 1 more copy to make)
-          while (cancelCurrentOperation.get() >= 0 && i < currentThreads) {
-            // the last one will use our already copied data from above, without copying it again
-            workers.add(
-                new BattleCalculator(
-                    newData, (currentThreads == ++i), Injections.getInstance().getEngineVersion()));
-          }
-        } else {
-          // multi-thread our copying, cus why the heck not
-          // (it increases the speed of copying by about double)
-          workers.addAll(
-              IntStream.range(1, currentThreads)
-                  .parallel()
-                  .filter(j -> cancelCurrentOperation.get() >= 0)
-                  .mapToObj(
-                      j ->
-                          new BattleCalculator(
-                              newData, false, Injections.getInstance().getEngineVersion()))
-                  .collect(Collectors.toList()));
-          // the last one will use our already copied data from above, without copying it again
-          workers.add(
-              new BattleCalculator(newData, true, Injections.getInstance().getEngineVersion()));
-        }
-      } finally {
-        newData.releaseReadLock();
-      }
+      final Version engineVersion = Injections.getInstance().getEngineVersion();
+      workers.addAll(
+          IntStream.range(0, currentThreads)
+              .parallel()
+              .filter(j -> cancelCurrentOperation.get() >= 0)
+              .mapToObj(j -> new BattleCalculator(serializedData, engineVersion))
+              .collect(Collectors.toList()));
     }
     if (cancelCurrentOperation.get() < 0 || data == null) {
       // we could have cancelled while setting data, so clear the workers again if so
