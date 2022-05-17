@@ -2623,3 +2623,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/nwovichy/master/preview.png
   description: |
    <br>World War II in Europe with Vichy France acting as a full member of the Axis. Uses New World Order map.
+- mapName: World War I 1914
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world_war_i_1914/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_i_1914/master/preview.png
+  description: |
+   <br>Based upon the Axis & Allies: 1914 boardgamew
