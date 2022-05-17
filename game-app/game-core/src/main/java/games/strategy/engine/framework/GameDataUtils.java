@@ -40,15 +40,11 @@ public final class GameDataUtils {
    */
   public static Optional<GameData> cloneGameData(
       final GameData data, final boolean copyDelegates, final Version engineVersion) {
-    try {
-      final byte[] bytes =
-          IoUtils.writeToMemory(
-              os -> GameDataManager.saveGame(os, data, copyDelegates, engineVersion));
+    final byte[] bytes = gameDataToBytes(data, copyDelegates, engineVersion).orElse(null);
+    if (bytes != null) {
       return createGameDataFromBytes(bytes, engineVersion);
-    } catch (final IOException e) {
-      log.error("Failed to clone game data", e);
-      return Optional.empty();
     }
+    return Optional.empty();
   }
 
   public static Optional<byte[]> gameDataToBytes(
