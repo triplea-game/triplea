@@ -118,33 +118,35 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     workers.clear();
     if (data != null && cancelCurrentOperation.get() >= 0) {
       // see how long 1 copy takes (some games can get REALLY big)
-      final long startTime = System.currentTimeMillis();
-      final long startMemory =
-          Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+      final Version engineVersion = Injections.getInstance().getEngineVersion();
       final byte[] serializedData;
       try {
-        // make first copy, then release lock on it so game can continue (ie: we don't want to lock
-        // on it while we copy
-        // it 16 times, when once is enough) don't let the data change while we make the first copy
+        // Serialize the data, then release lock on it so game can continue (ie: we don't want to
+        // lock on it while we copy it 16 times). Don't let the data change while we make the first
+        // copy.
         data.acquireWriteLock();
-        serializedData =
-            GameDataUtils.gameDataToBytes(data, false, Injections.getInstance().getEngineVersion())
-                .orElse(null);
+        serializedData = GameDataUtils.gameDataToBytes(data, false, engineVersion).orElse(null);
         if (serializedData == null) {
           return;
         }
       } finally {
         data.releaseWriteLock();
       }
-      final int currentThreads =
-          getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
-      final Version engineVersion = Injections.getInstance().getEngineVersion();
-      workers.addAll(
-          IntStream.range(0, currentThreads)
-              .parallel()
-              .filter(j -> cancelCurrentOperation.get() >= 0)
-              .mapToObj(j -> new BattleCalculator(serializedData, engineVersion))
-              .collect(Collectors.toList()));
+      if (cancelCurrentOperation.get() >= 0) {
+        // Create the first data on this thread and see how long it takes.
+        final long startTime = System.currentTimeMillis();
+        final long startMemory =
+            Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        workers.add(new BattleCalculator(serializedData, engineVersion));
+        int threadsToUse = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
+        // Now, create the remaining ones in parallel.
+        workers.addAll(
+            IntStream.range(1, threadsToUse)
+                .parallel()
+                .filter(j -> cancelCurrentOperation.get() >= 0)
+                .mapToObj(j -> new BattleCalculator(serializedData, engineVersion))
+                .collect(Collectors.toList()));
+      }
     }
     if (cancelCurrentOperation.get() < 0 || data == null) {
       // we could have cancelled while setting data, so clear the workers again if so
