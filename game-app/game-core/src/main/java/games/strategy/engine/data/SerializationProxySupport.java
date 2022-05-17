@@ -12,8 +12,8 @@ package games.strategy.engine.data;
  *   <li>https://youtu.be/V1vQf4qyMXg?t=56m12s
  * </ul>
  *
- * <p>A typical usage of this annotation will and pattern will look like this: Code formatted below
- * for easy copy paste:
+ * <p>A typical usage of this annotation and pattern will look like this: Code formatted below for
+ * easy copy paste:
  *
  * <pre>
  * &#64;SerializationProxySupport
