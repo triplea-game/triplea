@@ -161,7 +161,7 @@ function useStaticImportsInTest() {
   local found=0
   while read -r file; do
     grep --color=auto -EHn \
-      "Mockito.when[^;]|Mockito.verify[^;]|MatcherAssert.assertThat[^;]|Is\.is[^;]|IsInstanceOf\.instanceOf[^;]" \
+      "Mockito.when[^;]|Mockito.verify[^;|NoMoreInteractions;]|MatcherAssert.assertThat[^;]|Is\.is[^;]|IsInstanceOf\.instanceOf[^;]" \
       "$file" \
      && status=1 && found=1
   done <<< "$(cat "$testFiles")"
