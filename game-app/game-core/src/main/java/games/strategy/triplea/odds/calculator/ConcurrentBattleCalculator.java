@@ -117,7 +117,10 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private void createWorkers(final GameData data) {
     workers.clear();
     if (data != null && cancelCurrentOperation.get() >= 0) {
+      final long startMemory =
+          Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
       // see how long 1 copy takes (some games can get REALLY big)
+      final long startTime = System.currentTimeMillis();
       final Version engineVersion = Injections.getInstance().getEngineVersion();
       final byte[] serializedData;
       try {
@@ -133,10 +136,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         data.releaseWriteLock();
       }
       if (cancelCurrentOperation.get() >= 0) {
-        // Create the first data on this thread and see how long it takes.
-        final long startTime = System.currentTimeMillis();
-        final long startMemory =
-            Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        // Create the first battle calc on the current thread to measure the end-to-end copy time.
         workers.add(new BattleCalculator(serializedData, engineVersion));
         int threadsToUse = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
         // Now, create the remaining ones in parallel.
