@@ -108,6 +108,20 @@ public class BattleStepsTest {
     return unitAndAttachment.unit;
   }
 
+  public static Unit givenUnitFirstStrikeSuicideOnAttack() {
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    lenient().when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    lenient().when(unitAndAttachment.unitAttachment.getIsSuicideOnAttack()).thenReturn(true);
+    return unitAndAttachment.unit;
+  }
+
+  public static Unit givenUnitFirstStrikeSuicideOnDefense() {
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    lenient().when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    lenient().when(unitAndAttachment.unitAttachment.getIsSuicideOnDefense()).thenReturn(true);
+    return unitAndAttachment.unit;
+  }
+
   public static Unit givenUnitFirstStrikeAndEvade() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
