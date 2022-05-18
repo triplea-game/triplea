@@ -285,7 +285,7 @@ public class UnitImageFactory {
               } catch (IOException e) {
                 log.error("Failed to create temp file: ", e);
               }
-              return url.get();
+              return null;
             }));
   }
 
