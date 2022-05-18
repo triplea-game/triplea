@@ -624,7 +624,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   @VisibleForTesting
   public void setIsSub(final Boolean s) {
-    isSub = true;
+    isSub = s;
     resetCanNotTarget();
     resetCanNotBeTargetedBy();
   }
@@ -1778,7 +1778,7 @@ public class UnitAttachment extends DefaultAttachment {
   @Deprecated
   @VisibleForTesting
   public void setIsSuicide(final Boolean s) {
-    isSuicide = true;
+    isSuicide = s;
     resetCanNotTarget();
   }
 
