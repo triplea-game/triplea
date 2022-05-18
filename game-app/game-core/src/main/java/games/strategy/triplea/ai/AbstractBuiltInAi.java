@@ -127,8 +127,11 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
       throw new IllegalStateException(
-          "Select Casualties showing different numbers for number of hits to take vs total "
-              + "size of default casualty selections");
+          "Select Casualties showing different numbers for number of hits to take ("
+              + count
+              + ") vs total size of default casualty selections ("
+              + defaultCasualties.size()
+              + ")");
     }
     if (defaultCasualties.getKilled().isEmpty()) {
       return new CasualtyDetails(defaultCasualties, false);
