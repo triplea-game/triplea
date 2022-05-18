@@ -1024,7 +1024,7 @@ public final class GameParser {
 
       final GamePlayer owner;
       if (ownerString == null || ownerString.isBlank()) {
-        owner = GamePlayer.NULL_PLAYERID;
+        owner = territory.getData().getPlayerList().getNullPlayer();
       } else {
         owner = getPlayerIdOptional(current.getOwner()).orElse(null);
       }

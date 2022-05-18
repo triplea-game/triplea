@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** A game player (nation, power, etc.). */
 public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
@@ -24,7 +25,9 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   private static final String DEFAULT_TYPE_AI = "AI";
   private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
 
-  public static final GamePlayer NULL_PLAYERID =
+  @RemoveOnNextMajorRelease @Deprecated
+  private static final GamePlayer NULL_PLAYERID =
+      // Kept for save game compatibility, or we'll get a class not found error loading neutrals.
       new GamePlayer(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
         private static final long serialVersionUID = -6596127754502509049L;
 

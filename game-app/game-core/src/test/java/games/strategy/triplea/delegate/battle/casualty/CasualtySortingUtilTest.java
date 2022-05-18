@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.lenient;
@@ -23,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class CasualtySortingUtilTest {
 
-  @Mock GameData gameData;
+  final GameData gameData = givenGameData().build();
   @Mock GamePlayer player;
 
   @Test

@@ -269,7 +269,7 @@ abstract class AbstractBattle implements IBattle {
   static GamePlayer findDefender(
       final Territory battleSite, final GamePlayer attacker, final GameState data) {
     if (battleSite == null) {
-      return GamePlayer.NULL_PLAYERID;
+      return data.getPlayerList().getNullPlayer();
     }
     GamePlayer defender = null;
     if (!battleSite.isWater()) {
@@ -278,7 +278,7 @@ abstract class AbstractBattle implements IBattle {
     if (data == null || attacker == null) {
       // This is needed for many TESTs, so do not delete
       if (defender == null) {
-        return GamePlayer.NULL_PLAYERID;
+        return data.getPlayerList().getNullPlayer();
       }
       return defender;
     }
@@ -300,7 +300,7 @@ abstract class AbstractBattle implements IBattle {
       }
     }
     if (defender == null) {
-      return GamePlayer.NULL_PLAYERID;
+      return data.getPlayerList().getNullPlayer();
     }
     return defender;
   }

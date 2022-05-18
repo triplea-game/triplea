@@ -264,14 +264,14 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   private static Predicate<Territory> getTerritoryPickableMatch() {
     return Matches.territoryIsLand()
         .and(Matches.territoryIsNotImpassable())
-        .and(Matches.isTerritoryOwnedBy(GamePlayer.NULL_PLAYERID))
+        .and(Matches.isTerritoryNeutral())
         .and(Matches.territoryIsEmpty());
   }
 
   private static Predicate<GamePlayer> getPlayerCanPickMatch() {
     return player ->
         player != null
-            && !player.equals(GamePlayer.NULL_PLAYERID)
+            && !player.isNull()
             && !player.getUnitCollection().isEmpty()
             && !player.getIsDisabled();
   }

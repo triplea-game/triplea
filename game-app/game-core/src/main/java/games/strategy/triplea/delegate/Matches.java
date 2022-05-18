@@ -879,10 +879,7 @@ public final class Matches {
       // if it's water, it is a Convoy Center
       // Can't get PUs for capturing a CC, only original owner can get them. (Except capturing
       // null player CCs)
-      if (t.isWater()
-          && !(origOwner == null
-              || origOwner.equals(GamePlayer.NULL_PLAYERID)
-              || origOwner.equals(player))) {
+      if (t.isWater() && !(origOwner == null || origOwner.isNull() || origOwner.equals(player))) {
         return false;
       }
       if (ta.getConvoyRoute() && !ta.getConvoyAttached().isEmpty()) {
@@ -974,11 +971,11 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsNeutralButNotWater() {
-    return isTerritoryOwnedBy(GamePlayer.NULL_PLAYERID).and(territoryIsWater().negate());
+    return isTerritoryNeutral().and(territoryIsWater().negate());
   }
 
   public static Predicate<Territory> territoryIsUnownedWater() {
-    return isTerritoryOwnedBy(GamePlayer.NULL_PLAYERID).and(territoryIsWater());
+    return isTerritoryNeutral().and(territoryIsWater());
   }
 
   public static Predicate<Territory> territoryIsImpassable() {
@@ -1233,6 +1230,10 @@ public final class Matches {
     return t -> t.isOwnedBy(player);
   }
 
+  public static Predicate<Territory> isTerritoryNeutral() {
+    return t -> t.getOwner().isNull();
+  }
+
   public static Predicate<Territory> isTerritoryOwnedByAnyOf(final Collection<GamePlayer> players) {
     return t -> players.contains(t.getOwner());
   }
@@ -1268,7 +1269,7 @@ public final class Matches {
     // that are passable and not owned. better to check them by alliance. (veqryn)
     return t ->
         !t.isOwnedBy(player)
-            && ((!t.isOwnedBy(GamePlayer.NULL_PLAYERID) || !t.isWater())
+            && ((!t.getOwner().isNull() || !t.isWater())
                 && relationshipTracker.isAtWar(player, t.getOwner()));
   }
 
@@ -1301,8 +1302,7 @@ public final class Matches {
         return false;
       }
       // cant blitz on neutrals
-      if (t.isOwnedBy(GamePlayer.NULL_PLAYERID)
-          && !Properties.getNeutralsBlitzable(data.getProperties())) {
+      if (t.getOwner().isNull() && !Properties.getNeutralsBlitzable(data.getProperties())) {
         return false;
       }
       // was conquered but not blitzed
@@ -1325,16 +1325,13 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryFreeNeutral(final GameProperties properties) {
-    return t ->
-        t.isOwnedBy(GamePlayer.NULL_PLAYERID) && Properties.getNeutralCharge(properties) <= 0;
+    return isTerritoryNeutral().and(t -> Properties.getNeutralCharge(properties) <= 0);
   }
 
   public static Predicate<Territory> territoryDoesNotCostMoneyToEnter(
       final GameProperties properties) {
     return t ->
-        t.isWater()
-            || !t.isOwnedBy(GamePlayer.NULL_PLAYERID)
-            || Properties.getNeutralCharge(properties) <= 0;
+        t.isWater() || !t.getOwner().isNull() || Properties.getNeutralCharge(properties) <= 0;
   }
 
   public static Predicate<Unit> enemyUnit(
@@ -2238,7 +2235,7 @@ public final class Matches {
       final GamePlayer movingPlayer) {
     return t ->
         t.isOwnedBy(movingPlayer)
-            || ((t.isOwnedBy(GamePlayer.NULL_PLAYERID) && t.isWater())
+            || ((t.getOwner().isNull() && t.isWater())
                 || t.getData()
                     .getRelationshipTracker()
                     .canMoveIntoDuringCombatMove(movingPlayer, t.getOwner()));

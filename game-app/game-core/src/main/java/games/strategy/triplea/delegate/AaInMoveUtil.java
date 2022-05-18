@@ -146,14 +146,13 @@ class AaInMoveUtil implements Serializable {
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               if (!validTargetedUnitsForThisRoll.isEmpty()) {
                 final int hitCount = dice.get().getHits();
+                GamePlayer defender = findDefender(getData(), currentPossibleAa, territory);
                 if (hitCount == 0) {
                   if (currentTypeAa.equals("AA")) {
                     AaInMoveUtil.this
                         .bridge
                         .getSoundChannelBroadcaster()
-                        .playSoundForAll(
-                            SoundPath.CLIP_BATTLE_AA_MISS,
-                            findDefender(currentPossibleAa, territory));
+                        .playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, defender);
                   } else {
                     AaInMoveUtil.this
                         .bridge
@@ -162,7 +161,7 @@ class AaInMoveUtil implements Serializable {
                             SoundPath.CLIP_BATTLE_X_PREFIX
                                 + currentTypeAa.toLowerCase()
                                 + SoundPath.CLIP_BATTLE_X_MISS,
-                            findDefender(currentPossibleAa, territory));
+                            defender);
                   }
                   AaInMoveUtil.this
                       .bridge
@@ -175,9 +174,7 @@ class AaInMoveUtil implements Serializable {
                     AaInMoveUtil.this
                         .bridge
                         .getSoundChannelBroadcaster()
-                        .playSoundForAll(
-                            SoundPath.CLIP_BATTLE_AA_HIT,
-                            findDefender(currentPossibleAa, territory));
+                        .playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, defender);
                   } else {
                     AaInMoveUtil.this
                         .bridge
@@ -186,7 +183,7 @@ class AaInMoveUtil implements Serializable {
                             SoundPath.CLIP_BATTLE_X_PREFIX
                                 + currentTypeAa.toLowerCase()
                                 + SoundPath.CLIP_BATTLE_X_HIT,
-                            findDefender(currentPossibleAa, territory));
+                            defender);
                   }
                   selectCasualties(
                       dice.get(),
@@ -303,16 +300,16 @@ class AaInMoveUtil implements Serializable {
         .map(Unit::getOwner)
         .filter(Objects::nonNull)
         .findAny()
-        .orElse(GamePlayer.NULL_PLAYERID);
+        .orElse(player.getData().getPlayerList().getNullPlayer());
   }
 
   private static GamePlayer findDefender(
-      final Collection<Unit> defendingUnits, final Territory territory) {
+      final GameData data, final Collection<Unit> defendingUnits, final Territory territory) {
     if (defendingUnits == null || defendingUnits.isEmpty()) {
       if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()) {
         return territory.getOwner();
       }
-      return GamePlayer.NULL_PLAYERID;
+      return data.getPlayerList().getNullPlayer();
     } else if (territory != null
         && territory.getOwner() != null
         && !territory.getOwner().isNull()
@@ -324,7 +321,7 @@ class AaInMoveUtil implements Serializable {
         .map(Unit::getOwner)
         .filter(Objects::nonNull)
         .findAny()
-        .orElse(GamePlayer.NULL_PLAYERID);
+        .orElse(data.getPlayerList().getNullPlayer());
   }
 
   /**

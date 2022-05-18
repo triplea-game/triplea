@@ -7,6 +7,7 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,7 +17,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -129,7 +129,7 @@ class SubmergeSubsVsOnlyAirStepTest {
     when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
     when(unitAttachment.getCanEvade()).thenReturn(true);
     when(unitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
-    final Unit sub = new Unit(unitType, mock(GamePlayer.class), mock(GameData.class));
+    final Unit sub = new Unit(unitType, mock(GamePlayer.class), givenGameData().build());
     return List.of(
         Arguments.of(
             "Attacking subs submerge",
