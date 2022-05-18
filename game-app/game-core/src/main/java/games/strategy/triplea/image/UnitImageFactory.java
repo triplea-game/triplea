@@ -285,7 +285,8 @@ public class UnitImageFactory {
               } catch (IOException e) {
                 log.error("Failed to create temp file: ", e);
               }
-              return null;
+              // Return the non-colorized URL on error.
+              return url.get();
             }));
   }
 
