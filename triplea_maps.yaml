@@ -2630,3 +2630,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/world_war_i_1914/master/preview.png
   description: |
    <br>Based upon the Axis & Allies: 1914 boardgame
+- mapName: Imperialism (1974)
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/imperialism_1974/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/imperialism_1974/master/preview.png
+  description: |
+   <br>Adaptation of the 1974 board game "Imperialism"
