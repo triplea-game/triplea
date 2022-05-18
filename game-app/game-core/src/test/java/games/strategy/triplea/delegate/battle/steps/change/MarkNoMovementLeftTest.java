@@ -4,6 +4,7 @@ import static games.strategy.engine.data.CompositeChangeMatcher.compositeChangeC
 import static games.strategy.engine.data.changefactory.ObjectPropertyChangeMatcher.propertyChange;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -13,7 +14,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -85,7 +85,7 @@ class MarkNoMovementLeftTest {
     final UnitAttachment unitAttachment = mock(UnitAttachment.class);
     when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
     when(unitAttachment.getIsAir()).thenReturn(false);
-    final Unit unit = spy(new Unit(unitType, mock(GamePlayer.class), mock(GameData.class)));
+    final Unit unit = spy(new Unit(unitType, mock(GamePlayer.class), givenGameData().build()));
     doReturn(movement).when(unit).getMovementLeft();
     return unit;
   }

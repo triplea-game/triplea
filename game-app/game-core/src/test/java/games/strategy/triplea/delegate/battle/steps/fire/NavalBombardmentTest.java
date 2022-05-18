@@ -4,6 +4,7 @@ import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaBattleSite;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -16,7 +17,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -43,7 +43,7 @@ class NavalBombardmentTest {
   @Test
   @DisplayName("Has bombardment units and first round")
   void bombardmentHappensIfHasBombardmentUnitsAndIsFirstRound() {
-    final UnitType unitType = spy(new UnitType("type", mock(GameData.class)));
+    final UnitType unitType = spy(new UnitType("type", givenGameData().build()));
     when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(mock(UnitAttachment.class));
     final Unit bombarder = spy(unitType.createTemp(1, mock(GamePlayer.class)).get(0));
 
