@@ -220,8 +220,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   protected boolean checkRounds(final GameState data) {
     final int turn = data.getSequence().getRound();
-    for (final int t : getRounds().keySet()) {
-      if (turn >= t && turn <= getRounds().get(t)) {
+    for (final Map.Entry<Integer, Integer> entry : getRounds().entrySet()) {
+      if (turn >= entry.getKey() && turn <= entry.getValue()) {
         return true;
       }
     }
