@@ -27,6 +27,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
 
   @RemoveOnNextMajorRelease @Deprecated
   private static final GamePlayer NULL_PLAYERID =
+      // Kept for save game compatibility, or we'll get a class not found error loading neutrals.
       new GamePlayer(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
         private static final long serialVersionUID = -6596127754502509049L;
 
