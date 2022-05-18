@@ -26,6 +26,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
 
   @RemoveOnNextMajorRelease
+  @Deprecated
   private static final GamePlayer NULL_PLAYERID =
       new GamePlayer(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
         private static final long serialVersionUID = -6596127754502509049L;
