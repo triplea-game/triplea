@@ -2637,3 +2637,12 @@
   img: https://raw.githubusercontent.com/triplea-maps/imperialism_1974/master/preview.png
   description: |
    <br>Adaptation of the 1974 board game "Imperialism"
+- mapName: WW2 V3 Build Caps & Upkeep
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ww2_v3_buildcap_upkeep/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/ww2_v3_buildcap_upkeep/master/preview.png
+  description: |
+   <br>All these scenarios use the WW2v3 map & rules
+   <br>WW2v3-1941-Buildcap & WW2v3-1942-Buildcap limit the number of units of each that can be built
+   <br>WW2v3-1941-Upkeep & WW2v3-1942-Upkeep multiplies costs & income by 10, and applies a 10%/turn upkeep cost
