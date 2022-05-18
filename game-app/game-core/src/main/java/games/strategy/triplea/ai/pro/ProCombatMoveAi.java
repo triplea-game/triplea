@@ -1878,13 +1878,7 @@ public class ProCombatMoveAi {
           final List<Unit> mySeaUnits =
               t.getUnitCollection()
                   .getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true));
-          if (attackMap.containsKey(moveToTerritory)) {
-            attackMap.get(moveToTerritory).addUnits(mySeaUnits);
-          } else {
-            final ProTerritory moveTerritoryData = new ProTerritory(moveToTerritory, proData);
-            moveTerritoryData.addUnits(mySeaUnits);
-            attackMap.put(moveToTerritory, moveTerritoryData);
-          }
+          proData.getProTerritory(attackMap, moveToTerritory).addUnits(mySeaUnits);
           ProLogger.info(t + " is a contested territory so moving subs to " + moveToTerritory);
         }
       }

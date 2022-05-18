@@ -825,10 +825,7 @@ public class ProTerritoryManager {
           }
 
           // Populate territories with sea unit
-          moveMap
-              .computeIfAbsent(
-                  potentialTerritory, k -> new ProTerritory(potentialTerritory, proData))
-              .addMaxUnit(mySeaUnit);
+          proData.getProTerritory(moveMap, potentialTerritory).addMaxUnit(mySeaUnit);
 
           // Populate appropriate unit move options map
           if (Matches.unitIsTransport().test(mySeaUnit)) {
@@ -932,8 +929,7 @@ public class ProTerritoryManager {
 
           // Populate territories with land units
           final ProTerritory potentialTerritoryMove =
-              moveMap.computeIfAbsent(
-                  potentialTerritory, k -> new ProTerritory(potentialTerritory, proData));
+              proData.getProTerritory(moveMap, potentialTerritory);
           final List<Unit> unitsToAdd =
               ProTransportUtils.findBestUnitsToLandTransport(
                   myLandUnit, startTerritory, potentialTerritoryMove.getMaxUnits());
@@ -1064,10 +1060,7 @@ public class ProTerritoryManager {
           }
 
           // Populate enemy territories with air unit
-          moveMap
-              .computeIfAbsent(
-                  potentialTerritory, k -> new ProTerritory(potentialTerritory, proData))
-              .addMaxUnit(myAirUnit);
+          proData.getProTerritory(moveMap, potentialTerritory).addMaxUnit(myAirUnit);
 
           // Populate unit attack options map
           unitMoveMap.computeIfAbsent(myAirUnit, k -> new HashSet<>()).add(potentialTerritory);
@@ -1254,9 +1247,7 @@ public class ProTerritoryManager {
                     player, transport, territoriesCanLoadFrom, alreadyAddedToMaxAmphibUnits);
 
         // Add amphib units to attack map
-        moveMap
-            .computeIfAbsent(moveTerritory, k -> new ProTerritory(moveTerritory, proData))
-            .addMaxAmphibUnits(amphibUnits);
+        proData.getProTerritory(moveMap, moveTerritory).addMaxAmphibUnits(amphibUnits);
       }
     }
   }

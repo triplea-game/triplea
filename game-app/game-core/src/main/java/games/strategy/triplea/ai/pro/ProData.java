@@ -9,6 +9,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOptionMap;
+import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvUtils;
@@ -99,5 +100,9 @@ public final class ProData {
       }
     }
     return minCostPerHitPoint;
+  }
+
+  public ProTerritory getProTerritory(Map<Territory, ProTerritory> moveMap, Territory t) {
+    return moveMap.computeIfAbsent(t, k -> new ProTerritory(t, this));
   }
 }
