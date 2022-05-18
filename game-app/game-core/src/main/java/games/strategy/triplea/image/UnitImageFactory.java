@@ -32,8 +32,10 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 /** A factory with an image cache for creating unit images. */
+@Slf4j
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
   private static final String FILE_NAME_BASE = "units/";
@@ -281,7 +283,7 @@ public class UnitImageFactory {
                 ImageIO.write(bufferedImage, "PNG", file);
                 return file.toURI().toURL();
               } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Failed to create temp file: ", e);
               }
               return url.get();
             }));
