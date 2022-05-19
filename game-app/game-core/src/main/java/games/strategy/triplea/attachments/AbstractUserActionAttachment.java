@@ -59,7 +59,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   private void setText(final String text) {
-    this.text = text;
+    this.text = text.intern();
   }
 
   /**

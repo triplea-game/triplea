@@ -533,7 +533,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (whenCapturedChangesInto == null) {
       whenCapturedChangesInto = new LinkedHashMap<>();
     }
-    whenCapturedChangesInto.put(s[0] + ":" + s[1], Tuple.of(s[2], unitsToMake));
+    whenCapturedChangesInto.put((s[0] + ":" + s[1]).intern(), Tuple.of(s[2].intern(), unitsToMake));
   }
 
   private void setWhenCapturedChangesInto(
@@ -574,7 +574,7 @@ public class UnitAttachment extends DefaultAttachment {
       if (destroyedWhenCapturedBy == null) {
         destroyedWhenCapturedBy = new ArrayList<>();
       }
-      destroyedWhenCapturedBy.add(Tuple.of(byOrFrom, getPlayerOrThrow(name)));
+      destroyedWhenCapturedBy.add(Tuple.of(byOrFrom.intern(), getPlayerOrThrow(name)));
     }
   }
 
@@ -968,7 +968,7 @@ public class UnitAttachment extends DefaultAttachment {
       if (special == null) {
         special = new HashSet<>();
       }
-      special.add(option);
+      special.add(option.intern());
     }
   }
 
@@ -993,6 +993,9 @@ public class UnitAttachment extends DefaultAttachment {
     if (canOnlyInvadeFrom[0].equalsIgnoreCase("all")) {
       canInvadeOnlyFrom = new String[] {"all"};
       return;
+    }
+    for (int i = 0; i < canOnlyInvadeFrom.length; i++) {
+      canOnlyInvadeFrom[i] = canOnlyInvadeFrom[i].intern();
     }
     canInvadeOnlyFrom = canOnlyInvadeFrom;
   }
@@ -1021,7 +1024,11 @@ public class UnitAttachment extends DefaultAttachment {
     if (requiresUnits == null) {
       requiresUnits = new ArrayList<>();
     }
-    requiresUnits.add(splitOnColon(value));
+    final String[] s = splitOnColon(value);
+    for (int i = 0; i < s.length; i++) {
+      s[i] = s[i].intern();
+    }
+    requiresUnits.add(s);
   }
 
   private void setRequiresUnits(final List<String[]> value) {
@@ -1042,8 +1049,9 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "requiresUnitsToMove must have at least 1 unit type" + thisErrorMsg());
     }
-    for (final String s : array) {
-      getUnitTypeOrThrow(s);
+    for (int i = 0; i < array.length; i++) {
+      getUnitTypeOrThrow(array[i]);
+      array[i] = array[i].intern();
     }
     if (requiresUnitsToMove == null) {
       requiresUnitsToMove = new ArrayList<>();
@@ -1082,9 +1090,9 @@ public class UnitAttachment extends DefaultAttachment {
     final Tuple<Integer, Integer> fromTo = Tuple.of(from, to);
     final Tuple<String, String> effectNum;
     if (s.length == 3) {
-      effectNum = Tuple.of(s[2], null);
+      effectNum = Tuple.of(s[2].intern(), null);
     } else {
-      effectNum = Tuple.of(s[2], s[3]);
+      effectNum = Tuple.of(s[2].intern(), s[3].intern());
     }
     if (whenCombatDamaged == null) {
       whenCombatDamaged = new ArrayList<>();
@@ -1129,7 +1137,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (receivesAbilityWhenWith == null) {
       receivesAbilityWhenWith = new ArrayList<>();
     }
-    receivesAbilityWhenWith.add(value);
+    receivesAbilityWhenWith.add(value.intern());
   }
 
   private void setReceivesAbilityWhenWith(final List<String> value) {
@@ -2339,7 +2347,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   @VisibleForTesting
   public void setTypeAa(final String s) {
-    typeAa = s;
+    typeAa = s.intern();
   }
 
   public String getTypeAa() {
@@ -2502,7 +2510,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException(type + " value must owned, allied, or total" + thisErrorMsg());
     }
-    return Tuple.of(max, s[1]);
+    return Tuple.of(max, s[1].intern());
   }
 
   private void setTuv(final String s) {

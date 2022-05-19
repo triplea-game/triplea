@@ -73,7 +73,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   private void setCanalName(final String name) {
-    canalName = name;
+    canalName = name.intern();
   }
 
   public String getCanalName() {

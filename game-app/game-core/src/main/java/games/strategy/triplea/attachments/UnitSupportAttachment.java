@@ -159,7 +159,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
         throw new GameParseException(side + " side must be defence or offence" + thisErrorMsg());
       }
     }
-    this.side = side;
+    this.side = side.intern();
     return this;
   }
 
@@ -176,7 +176,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @VisibleForTesting
   public UnitSupportAttachment setDice(final String dice) throws GameParseException {
     resetDice();
-    this.dice = dice;
+    this.dice = dice.intern();
     for (final String element : splitOnColon(dice)) {
       if (element.equalsIgnoreCase("roll")) {
         roll = true;

@@ -140,7 +140,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       throw new GameParseException(
           "movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
     }
-    movementRestrictionType = value;
+    movementRestrictionType = value.intern();
   }
 
   public @Nullable String getMovementRestrictionType() {

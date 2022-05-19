@@ -113,7 +113,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (uppercaseValue.matches("AND|OR|\\d+(?:-\\d+)?")) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
-        conditionType = uppercaseValue;
+        conditionType = uppercaseValue.intern();
         return;
       }
     }

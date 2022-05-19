@@ -131,7 +131,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     if (relationshipChange == null) {
       relationshipChange = new ArrayList<>();
     }
-    relationshipChange.add(relChange);
+    relationshipChange.add(relChange.intern());
   }
 
   private void setRelationshipChange(final List<String> value) {

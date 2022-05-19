@@ -164,7 +164,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       throw new GameParseException(
           "destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
     }
-    destroyedTuv = value;
+    destroyedTuv = value.intern();
   }
 
   private @Nullable String getDestroyedTuv() {
@@ -216,7 +216,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (battle == null) {
       battle = new ArrayList<>();
     }
-    battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
+    battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]).intern(), terrs));
   }
 
   private void setBattle(final List<Tuple<String, List<Territory>>> value) {
@@ -280,7 +280,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (relationship == null) {
       relationship = new ArrayList<>();
     }
-    relationship.add((s.length == 3) ? (value + ":-1") : value);
+    String str = (s.length == 3) ? (value + ":-1") : value;
+    relationship.add(str.intern());
   }
 
   private void setRelationship(final List<String> value) {

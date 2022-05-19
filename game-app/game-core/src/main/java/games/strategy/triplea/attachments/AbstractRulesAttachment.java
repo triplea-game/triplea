@@ -161,7 +161,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   private void setGameProperty(final String value) {
-    gameProperty = value;
+    gameProperty = value.intern();
   }
 
   private @Nullable String getGameProperty() {

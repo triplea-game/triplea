@@ -261,7 +261,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (sb.length() > 0 && sb.substring(0, 1).equals(":")) {
       sb.replace(0, 1, "");
     }
-    return sb.toString();
+    return sb.toString().intern();
   }
 
   public static int getEachMultiple(final AbstractTriggerAttachment t) {
