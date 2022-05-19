@@ -107,7 +107,7 @@ public class GameData implements Serializable, GameState {
   @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
-  private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
+  private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
@@ -399,6 +399,11 @@ public class GameData implements Serializable, GameState {
 
   public List<Tuple<IAttachment, List<Tuple<String, String>>>> getAttachmentOrderAndValues() {
     return attachmentOrderAndValues;
+  }
+
+  public void setAttachmentOrderAndValues(
+      List<Tuple<IAttachment, List<Tuple<String, String>>>> values) {
+    attachmentOrderAndValues = values;
   }
 
   /**

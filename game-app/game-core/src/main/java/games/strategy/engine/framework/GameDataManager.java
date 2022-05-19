@@ -207,7 +207,7 @@ public final class GameDataManager {
   public static void saveGameUncompressed(
       final OutputStream sink,
       final GameData data,
-      final boolean saveDelegateInfo,
+      final boolean saveDelegateInfoHistoryAndAttachmentsOrder,
       final Version engineVersion)
       throws IOException {
     // write to temporary file first in case of error
@@ -215,10 +215,19 @@ public final class GameDataManager {
       outStream.writeObject(engineVersion);
       data.acquireReadLock();
       try {
-        outStream.writeObject(data);
-        if (saveDelegateInfo) {
+        if (saveDelegateInfoHistoryAndAttachmentsOrder) {
+          outStream.writeObject(data);
           writeDelegates(data, outStream);
         } else {
+          // TODO: Attachment order data is only used for XML export and takes up lots of memory.
+          // Could we remove it and just get the info again from the XML when exporting?
+          final var attachments = data.getAttachmentOrderAndValues();
+          final var history = data.getHistory();
+          data.setAttachmentOrderAndValues(null);
+          data.resetHistory();
+          outStream.writeObject(data);
+          data.setAttachmentOrderAndValues(attachments);
+          data.setHistory(history);
           outStream.writeObject(DELEGATE_LIST_END);
         }
       } finally {
