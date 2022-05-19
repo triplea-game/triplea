@@ -1054,13 +1054,14 @@ class BattleCalculatorPanel extends JPanel {
     }
     setupAttackerAndDefender();
 
-    Instant t = Instant.now();
+    final Instant t = Instant.now();
     calculator =
         new ConcurrentBattleCalculator(
             () ->
                 SwingUtilities.invokeLater(
                     () -> {
-                      calculateButton.setText("Calculate Odds " + Duration.between(t, Instant.now()));
+                      log.debug("Battle Calculator ready in " + Duration.between(t, Instant.now()));
+                      calculateButton.setText("Calculate Odds");
                       calculateButton.setEnabled(true);
                       calculateButton.requestFocusInWindow();
                     }));
