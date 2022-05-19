@@ -21,15 +21,21 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 /** A factory with an image cache for creating unit images. */
+@Slf4j
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
   private static final String FILE_NAME_BASE = "units/";
@@ -51,6 +57,8 @@ public class UnitImageFactory {
   private final Map<ImageKey, Image> images = new HashMap<>();
   // maps Point -> Icon
   private final Map<String, ImageIcon> icons = new HashMap<>();
+  // Temporary colorized image files used for URLs for html views (e.g. unit stats table).
+  private final Map<ImageKey, URL> colorizedTempFiles = new HashMap<>();
   // Scaling factor for unit images
   private final double scaleFactor;
   private final ResourceLoader resourceLoader;
@@ -216,9 +224,7 @@ public class UnitImageFactory {
                         baseImage -> {
                           // We want to scale units according to the given scale factor.
                           // We use smooth scaling since the images are cached to allow to take our
-                          // time in
-                          // doing the
-                          // scaling.
+                          // time in doing the scaling.
                           // Image observer is null, since the image should have been guaranteed to
                           // be loaded.
                           final int width = (int) (baseImage.getWidth(null) * scaleFactor);
@@ -256,6 +262,34 @@ public class UnitImageFactory {
     return Optional.ofNullable(url);
   }
 
+  public Optional<URL> getPossiblyTransformedImageUrl(final ImageKey imageKey) {
+    final Optional<URL> url = getBaseImageUrl(imageKey);
+    if (url.isEmpty() || !shouldTransformImage(imageKey)) {
+      return url;
+    }
+    return Optional.of(
+        colorizedTempFiles.computeIfAbsent(
+            imageKey,
+            key -> {
+              // The cast is safe because we use BufferedImage when transforming images.
+              BufferedImage bufferedImage = (BufferedImage) loadImageAndTransform(url.get(), key);
+              try {
+                // Create a temp file that can be used in URLs. Note: JEditorPane doesn't support
+                // base64-encoded data: URLs, so we need to actually have a file on disk. We use
+                // a cache so that we don't create the same files multiple times.
+                File file = Files.createTempFile(key.getFullName(), ".png").toFile();
+                // Delete the file on exit.
+                file.deleteOnExit();
+                ImageIO.write(bufferedImage, "PNG", file);
+                return file.toURI().toURL();
+              } catch (IOException e) {
+                log.error("Failed to create temp file: ", e);
+              }
+              // Return the non-colorized URL on error.
+              return url.get();
+            }));
+  }
+
   private Optional<Image> getTransformedImage(final ImageKey imageKey) {
     return getBaseImageUrl(imageKey)
         .map(imageLocation -> loadImageAndTransform(imageLocation, imageKey));
@@ -268,28 +302,32 @@ public class UnitImageFactory {
   }
 
   private Image transformImageIfNeeded(Image image, ImageKey imageKey) {
-    if (mapData.ignoreTransformingUnit(imageKey.getType().getName())) {
+    if (!shouldTransformImage(imageKey)) {
       return image;
     }
     final String playerName = imageKey.getPlayer().getName();
-    Optional<Color> unitColor = mapData.getUnitColor(playerName);
-    boolean shouldFlip = mapData.shouldFlipUnit(playerName);
-    if (unitColor.isEmpty() && !shouldFlip) {
-      return image;
-    }
     // Create an image copy so we don't modify the one returned by the toolkit which may be cached.
     image = createImageCopy(image);
+    Optional<Color> unitColor = mapData.getUnitColor(playerName);
     if (unitColor.isPresent()) {
       final int brightness = mapData.getUnitBrightness(playerName);
       ImageTransformer.colorize(unitColor.get(), brightness, image);
     }
-    if (shouldFlip) {
+    if (mapData.shouldFlipUnit(playerName)) {
       ImageTransformer.flipHorizontally(image);
     }
     return image;
   }
 
-  private static Image createImageCopy(Image image) {
+  private boolean shouldTransformImage(ImageKey imageKey) {
+    if (mapData.ignoreTransformingUnit(imageKey.getType().getName())) {
+      return false;
+    }
+    final String playerName = imageKey.getPlayer().getName();
+    return mapData.getUnitColor(playerName).isPresent() || mapData.shouldFlipUnit(playerName);
+  }
+
+  private static BufferedImage createImageCopy(Image image) {
     final var copy =
         new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
     Graphics g = copy.createGraphics();

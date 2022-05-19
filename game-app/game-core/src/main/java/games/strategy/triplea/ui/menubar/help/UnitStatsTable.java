@@ -130,8 +130,7 @@ public class UnitStatsTable {
     // this next part is purely to allow people to "add" neutral (null player) units to
     // territories.
     // This is because the null player does not have a production frontier, and we also do not
-    // know what units we have
-    // art for, so only use the units on a map.
+    // know what units we have art for, so only use the units on a map.
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {
         if (u.isOwnedBy(player)) {
@@ -145,8 +144,7 @@ public class UnitStatsTable {
       if (!unitTypes.contains(ut)) {
         try {
           final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
-          if (imageFactory != null
-              && imageFactory.hasImage(ImageKey.builder().player(player).type(ut).build())) {
+          if (imageFactory.hasImage(ImageKey.builder().player(player).type(ut).build())) {
             unitTypes.add(ut);
           }
         } catch (final Exception e) {
@@ -167,7 +165,8 @@ public class UnitStatsTable {
     }
     final String imageLocation =
         unitImageFactory
-            .getBaseImageUrl(ImageKey.builder().type(unitType).player(player).build())
+            .getPossiblyTransformedImageUrl(
+                ImageKey.builder().type(unitType).player(player).build())
             .map(Object::toString)
             .orElse("");
     return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
