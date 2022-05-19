@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
@@ -17,6 +18,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -24,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.injection.Injections;
+import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
@@ -207,7 +210,7 @@ public final class GameDataManager {
   public static void saveGameUncompressed(
       final OutputStream sink,
       final GameData data,
-      final boolean saveDelegateInfo,
+      final boolean saveDelegateInfoHistoryAndAttachmentsOrder,
       final Version engineVersion)
       throws IOException {
     // write to temporary file first in case of error
@@ -215,10 +218,18 @@ public final class GameDataManager {
       outStream.writeObject(engineVersion);
       data.acquireReadLock();
       try {
-        outStream.writeObject(data);
-        if (saveDelegateInfo) {
+        if (saveDelegateInfoHistoryAndAttachmentsOrder) {
+          outStream.writeObject(data);
           writeDelegates(data, outStream);
         } else {
+          // TODO: Can we get rid of this and just compute it lazily when needed?
+          var attachments = data.getAttachmentOrderAndValues();
+          data.setAttachmentOrderAndValues(null);
+          var history = data.getHistory();
+          data.resetHistory();
+          outStream.writeObject(data);
+          data.setAttachmentOrderAndValues(attachments);
+          data.setHistory(history);
           outStream.writeObject(DELEGATE_LIST_END);
         }
       } finally {
