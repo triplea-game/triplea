@@ -219,7 +219,8 @@ public final class GameDataManager {
           outStream.writeObject(data);
           writeDelegates(data, outStream);
         } else {
-          // TODO: Can we get rid of this and just compute it lazily when needed?
+          // TODO: Attachment order data is only used for XML export and takes up lots of memory.
+          // Could we remove it and just get the info again from the XML when exporting?
           var attachments = data.getAttachmentOrderAndValues();
           data.setAttachmentOrderAndValues(null);
           var history = data.getHistory();
