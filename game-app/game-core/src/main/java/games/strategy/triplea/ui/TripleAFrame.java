@@ -1763,7 +1763,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     try {
       // we want to use a clone of the data, so we can make changes to it as we walk up and down the
       // history
-      clonedGameData = GameDataUtils.cloneGameData(data).orElse(null);
+      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).withDelegates(true).build();
+      clonedGameData = GameDataUtils.cloneGameData(data, cloneOptions).orElse(null);
       if (clonedGameData == null) {
         return;
       }
@@ -1878,7 +1879,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
                         final GameData datacopy =
                             GameDataUtils.cloneGameData(
-                                    data, true, Injections.getInstance().getEngineVersion())
+                                    data,
+                                    GameDataManager.Options.withEverything(),
+                                    Injections.getInstance().getEngineVersion())
                                 .orElse(null);
                         if (datacopy != null) {
                           datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());

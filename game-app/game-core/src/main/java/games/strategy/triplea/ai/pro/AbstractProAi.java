@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractBuiltInAi;
@@ -180,8 +181,10 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
       try {
         data.acquireWriteLock();
         dataCopy =
-            GameDataUtils.cloneGameDataWithoutHistory(
-                    data, true, Injections.getInstance().getEngineVersion())
+            GameDataUtils.cloneGameData(
+                    data,
+                    GameDataManager.Options.builder().withDelegates(true).build(),
+                    Injections.getInstance().getEngineVersion())
                 .orElse(null);
         if (dataCopy == null) {
           return;

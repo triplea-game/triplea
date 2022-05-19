@@ -2,11 +2,11 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameObjectOutputStream;
-import games.strategy.engine.history.History;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Optional;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
@@ -14,24 +14,10 @@ import org.triplea.util.Version;
 
 /** A collection of useful methods for working with instances of {@link GameData}. */
 @Slf4j
+@UtilityClass
 public final class GameDataUtils {
-  private GameDataUtils() {}
-
-  /**
-   * Create a deep copy of GameData without history as it can get large. <strong>You should have the
-   * game data's write lock before calling this method</strong>
-   */
-  public static Optional<GameData> cloneGameDataWithoutHistory(
-      final GameData data, final boolean copyDelegates, final Version engineVersion) {
-    final History temp = data.getHistory();
-    data.resetHistory();
-    final Optional<GameData> dataCopy = cloneGameData(data, copyDelegates, engineVersion);
-    data.setHistory(temp);
-    return dataCopy;
-  }
-
-  public static Optional<GameData> cloneGameData(final GameData data) {
-    return cloneGameData(data, false, Injections.getInstance().getEngineVersion());
+  public static Optional<GameData> cloneGameData(GameData data, GameDataManager.Options options) {
+    return cloneGameData(data, options, Injections.getInstance().getEngineVersion());
   }
 
   /**
@@ -39,8 +25,8 @@ public final class GameDataUtils {
    * before calling this method</strong>
    */
   public static Optional<GameData> cloneGameData(
-      final GameData data, final boolean copyDelegates, final Version engineVersion) {
-    final byte[] bytes = gameDataToBytes(data, copyDelegates, engineVersion).orElse(null);
+      final GameData data, GameDataManager.Options options, final Version engineVersion) {
+    final byte[] bytes = gameDataToBytes(data, options, engineVersion).orElse(null);
     if (bytes != null) {
       return createGameDataFromBytes(bytes, engineVersion);
     }
@@ -48,11 +34,11 @@ public final class GameDataUtils {
   }
 
   public static Optional<byte[]> gameDataToBytes(
-      GameData data, boolean copyDelegates, Version engineVersion) {
+      GameData data, GameDataManager.Options options, Version engineVersion) {
     try {
       return Optional.of(
           IoUtils.writeToMemory(
-              os -> GameDataManager.saveGameUncompressed(os, data, copyDelegates, engineVersion)));
+              os -> GameDataManager.saveGameUncompressed(os, data, options, engineVersion)));
     } catch (final IOException e) {
       log.error("Failed to clone game data", e);
       return Optional.empty();
