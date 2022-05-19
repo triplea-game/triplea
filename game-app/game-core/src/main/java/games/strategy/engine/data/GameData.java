@@ -401,10 +401,10 @@ public class GameData implements Serializable, GameState {
     return attachmentOrderAndValues;
   }
 
-  public void setAttachmentOrderAndValues(List<Tuple<IAttachment, List<Tuple<String, String>>>> values) {
+  public void setAttachmentOrderAndValues(
+      List<Tuple<IAttachment, List<Tuple<String, String>>>> values) {
     attachmentOrderAndValues = values;
   }
-
 
   /**
    * Returns all relationshipTypes that are valid in this game, default there is the NullRelation
