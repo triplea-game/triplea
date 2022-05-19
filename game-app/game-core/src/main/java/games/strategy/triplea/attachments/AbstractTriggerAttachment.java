@@ -18,14 +18,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.util.Tuple;
 
 /**
- * Superclass for all attachments that trigger an action based on an event.
+ * Superclass for all attachments that trigger an action based on an event. Note: Empty collection
+ * fields default to null to minimize memory use and serialization size.
  *
  * <p>TODO: Merge with {@link TriggerAttachment}, as that is the only subclass.
  */
+@RemoveOnNextMajorRelease
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
@@ -38,8 +42,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   // backwards compatibility.
   private int uses = -1;
   private boolean usedThisRound = false;
-  private String notification = null;
-  private List<Tuple<String, String>> when = new ArrayList<>();
+  private @Nullable String notification = null;
+  private @Nullable List<Tuple<String, String>> when = null;
 
   protected AbstractTriggerAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -126,6 +130,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
       throw new GameParseException(
           "when must start with: " + BEFORE + " or " + AFTER + thisErrorMsg());
     }
+    if (this.when == null) {
+      this.when = new ArrayList<>();
+    }
     this.when.add(Tuple.of(s[0], s[1]));
   }
 
@@ -134,22 +141,18 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   protected List<Tuple<String, String>> getWhen() {
-    return when;
+    return getListProperty(when);
   }
 
   private void resetWhen() {
-    when = new ArrayList<>();
+    when = null;
   }
 
   private void setNotification(final String notification) {
-    if (notification == null) {
-      this.notification = null;
-      return;
-    }
     this.notification = notification;
   }
 
-  protected String getNotification() {
+  protected @Nullable String getNotification() {
     return notification;
   }
 
@@ -159,14 +162,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   protected void use(final IDelegateBridge bridge) {
     // instead of using up a "use" with every action, we will instead use up a "use" if the trigger
-    // is fired during this
-    // round
+    // is fired during this round
     // this is in order to let a trigger that contains multiple actions, fire all of them in a
     // single use
     // we only do this for things that do not have when set. triggers with when set have their uses
-    // modified
-    // elsewhere.
-    if (!usedThisRound && uses > 0 && when.isEmpty()) {
+    // modified elsewhere.
+    if (!usedThisRound && uses > 0 && getWhen().isEmpty()) {
       bridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
     }
   }
@@ -275,11 +276,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @Override
-  public void validate(final GameState data) throws GameParseException {
-    if (conditions == null) {
-      throw new GameParseException("must contain at least one condition: " + thisErrorMsg());
-    }
-  }
+  public void validate(final GameState data) throws GameParseException {}
 
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {

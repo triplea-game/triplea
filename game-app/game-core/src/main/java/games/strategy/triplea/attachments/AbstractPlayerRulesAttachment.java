@@ -11,6 +11,7 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.util.Collection;
 import java.util.Map;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 
@@ -24,7 +25,8 @@ import org.triplea.java.collections.IntegerMap;
  * ownership of territories, or objectiveValue (the money given if the condition is true), would NOT
  * go in This class. <br>
  * Please do not add new things to this class. Any new Player-Rules type of stuff should go in
- * "PlayerAttachment".
+ * "PlayerAttachment". Note: Empty collection fields default to null to minimize memory use and
+ * serialization size.
  */
 @Slf4j
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
@@ -34,8 +36,8 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   // These variables are related to a "rulesAttachment" that changes certain rules for the attached
   // player. They are
   // not related to conditions at all.
-  protected String movementRestrictionType = null;
-  protected String[] movementRestrictionTerritories = null;
+  protected @Nullable String movementRestrictionType = null;
+  protected @Nullable String[] movementRestrictionTerritories = null;
   // allows placing units in any owned land
   protected boolean placementAnyTerritory = false;
   // allows placing units in any sea by owned land
@@ -51,7 +53,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   // negates dominatingFirstRoundAttack
   protected boolean negateDominatingFirstRoundAttack = false;
   // automatically produces 1 unit of a certain
-  protected IntegerMap<UnitType> productionPerXTerritories = new IntegerMap<>();
+  protected @Nullable IntegerMap<UnitType> productionPerXTerritories = null;
   // type per every X territories owned
   // stops the user from placing units in any territory that already contains more than this
   protected int placementPerTerritory = -1;
@@ -117,10 +119,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   private void setMovementRestrictionTerritories(final String value) {
-    if (value == null) {
-      movementRestrictionTerritories = null;
-      return;
-    }
     movementRestrictionTerritories = splitOnColon(value);
     validateNames(movementRestrictionTerritories);
   }
@@ -138,10 +136,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   private void setMovementRestrictionType(final String value) throws GameParseException {
-    if (value == null) {
-      movementRestrictionType = null;
-      return;
-    }
     if (!(value.equals("disallowed") || value.equals("allowed"))) {
       throw new GameParseException(
           "movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
@@ -149,7 +143,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     movementRestrictionType = value;
   }
 
-  public String getMovementRestrictionType() {
+  public @Nullable String getMovementRestrictionType() {
     return movementRestrictionType;
   }
 
@@ -171,14 +165,14 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       unitTypeToProduce = s[1];
     }
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-    if (ut == null) {
-      throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
-    }
+    final UnitType ut = getUnitTypeOrThrow(unitTypeToProduce);
     final int n = getInt(s[0]);
     if (n <= 0) {
       throw new GameParseException(
           "productionPerXTerritories must be a positive integer" + thisErrorMsg());
+    }
+    if (productionPerXTerritories == null) {
+      productionPerXTerritories = new IntegerMap<>();
     }
     productionPerXTerritories.put(ut, n);
   }
@@ -188,11 +182,11 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   public IntegerMap<UnitType> getProductionPerXTerritories() {
-    return productionPerXTerritories;
+    return getIntegerMapProperty(productionPerXTerritories);
   }
 
   private void resetProductionPerXTerritories() {
-    productionPerXTerritories = new IntegerMap<>();
+    productionPerXTerritories = null;
   }
 
   private void setPlacementPerTerritory(final String value) {

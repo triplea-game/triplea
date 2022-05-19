@@ -20,17 +20,19 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
 /**
  * A class of attachments that can be "activated" during a user action delegate. For now they will
- * just be conditions that can then fire triggers.
+ * just be conditions that can then fire triggers. Note: Empty collection fields default to null to
+ * minimize memory use and serialization size.
  */
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
 
-  private List<Tuple<String, String>> activateTrigger = new ArrayList<>();
+  private @Nullable List<Tuple<String, String>> activateTrigger = null;
 
   public UserActionAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -82,6 +84,9 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     getBool(s[3]);
     getBool(s[4]);
     getBool(s[5]);
+    if (activateTrigger == null) {
+      activateTrigger = new ArrayList<>();
+    }
     activateTrigger.add(Tuple.of(s[0], options));
   }
 
@@ -90,11 +95,11 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   private List<Tuple<String, String>> getActivateTrigger() {
-    return activateTrigger;
+    return getListProperty(activateTrigger);
   }
 
   private void resetActivateTrigger() {
-    activateTrigger = new ArrayList<>();
+    activateTrigger = null;
   }
 
   /**

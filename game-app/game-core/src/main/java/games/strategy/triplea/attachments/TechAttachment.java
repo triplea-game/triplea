@@ -15,7 +15,8 @@ import java.util.Map;
 
 /**
  * An attachment for instances of {@link GamePlayer} that defines properties related to technology
- * advances.
+ * advances. Note: Empty collection fields default to null to minimize memory use and serialization
+ * size.
  */
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
