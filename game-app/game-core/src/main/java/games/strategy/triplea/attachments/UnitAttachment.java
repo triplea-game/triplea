@@ -2487,9 +2487,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private Tuple<Integer, String> parseStackingLimit(final String type, final String value)
       throws GameParseException {
-    if (value == null) {
-      return null;
-    }
     final UnitType ut = (UnitType) this.getAttachedTo();
     if (ut == null) {
       throw new GameParseException("getAttachedTo returned null" + thisErrorMsg());

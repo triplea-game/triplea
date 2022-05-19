@@ -219,10 +219,6 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setResources(final String value) throws GameParseException {
-    if (value == null) {
-      resources = null;
-      return;
-    }
     if (resources == null) {
       resources = new ResourceCollection(getData());
     }

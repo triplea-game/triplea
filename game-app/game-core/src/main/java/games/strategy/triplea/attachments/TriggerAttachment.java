@@ -1214,10 +1214,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setRemoveUnits(final String value) throws GameParseException {
-    if (value == null) {
-      removeUnits = null;
-      return;
-    }
     if (removeUnits == null) {
       removeUnits = new HashMap<>();
     }

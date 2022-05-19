@@ -296,10 +296,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setAlliedOwnershipTerritories(final String value) {
-    if (value == null) {
-      alliedOwnershipTerritories = null;
-      return;
-    }
     alliedOwnershipTerritories = splitOnColon(value);
     validateNames(alliedOwnershipTerritories);
   }
@@ -318,10 +314,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   // exclusion types = controlled, controlledNoWater, original, all, or list
   private void setAlliedExclusionTerritories(final String value) {
-    if (value == null) {
-      alliedExclusionTerritories = null;
-      return;
-    }
     alliedExclusionTerritories = splitOnColon(value);
     validateNames(alliedExclusionTerritories);
   }
@@ -339,10 +331,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setDirectExclusionTerritories(final String value) {
-    if (value == null) {
-      directExclusionTerritories = null;
-      return;
-    }
     directExclusionTerritories = splitOnColon(value);
     validateNames(directExclusionTerritories);
   }
@@ -361,10 +349,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   // exclusion types = original or list
   private void setEnemyExclusionTerritories(final String value) {
-    if (value == null) {
-      enemyExclusionTerritories = null;
-      return;
-    }
     enemyExclusionTerritories = splitOnColon(value);
     validateNames(enemyExclusionTerritories);
   }
@@ -382,10 +366,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setDirectPresenceTerritories(final String value) {
-    if (value == null) {
-      directPresenceTerritories = null;
-      return;
-    }
     directPresenceTerritories = splitOnColon(value);
     validateNames(directPresenceTerritories);
   }
@@ -403,10 +383,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setAlliedPresenceTerritories(final String value) {
-    if (value == null) {
-      alliedPresenceTerritories = null;
-      return;
-    }
     alliedPresenceTerritories = splitOnColon(value);
     validateNames(alliedPresenceTerritories);
   }
@@ -424,10 +400,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setEnemyPresenceTerritories(final String value) {
-    if (value == null) {
-      enemyPresenceTerritories = null;
-      return;
-    }
     enemyPresenceTerritories = splitOnColon(value);
     validateNames(enemyPresenceTerritories);
   }
@@ -446,10 +418,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   // exclusion types = original or list
   private void setEnemySurfaceExclusionTerritories(final String value) {
-    if (value == null) {
-      enemySurfaceExclusionTerritories = null;
-      return;
-    }
     enemySurfaceExclusionTerritories = splitOnColon(value);
     validateNames(enemySurfaceExclusionTerritories);
   }
@@ -467,10 +435,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setDirectOwnershipTerritories(final String value) {
-    if (value == null) {
-      directOwnershipTerritories = null;
-      return;
-    }
     directOwnershipTerritories = splitOnColon(value);
     validateNames(directOwnershipTerritories);
   }

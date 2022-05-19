@@ -113,10 +113,6 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   private void setExcludedUnits(final String value) {
-    if (value == null) {
-      excludedUnits = null;
-      return;
-    }
     if (excludedUnits == null) {
       excludedUnits = new HashSet<>();
     }
