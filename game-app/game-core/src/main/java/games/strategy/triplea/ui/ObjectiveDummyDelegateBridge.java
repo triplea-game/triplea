@@ -102,7 +102,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public GamePlayer getGamePlayer() {
-    return GamePlayer.NULL_PLAYERID;
+    return gameData.getPlayerList().getNullPlayer();
   }
 
   @Override

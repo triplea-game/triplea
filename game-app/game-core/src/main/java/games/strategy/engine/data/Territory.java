@@ -12,21 +12,23 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
 
   private final boolean water;
   /**
-   * The territory owner; defaults to {@link GamePlayer#NULL_PLAYERID} if the territory is not
+   * The territory owner; defaults to {@link PlayerList#getNullPlayer()} if the territory is not
    * owned.
    */
-  private GamePlayer owner = GamePlayer.NULL_PLAYERID;
+  private GamePlayer owner;
 
   @Getter(onMethod_ = {@Override})
   private final UnitCollection unitCollection;
 
   public Territory(final String name, final GameData data) {
     this(name, false, data);
+    owner = data.getPlayerList().getNullPlayer();
   }
 
   public Territory(final String name, final boolean water, final GameData data) {
     super(name, data);
     this.water = water;
+    owner = data.getPlayerList().getNullPlayer();
     unitCollection = new UnitCollection(this, getData());
   }
 
@@ -36,7 +38,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   }
 
   public void setOwner(final @Nullable GamePlayer owner) {
-    this.owner = Optional.ofNullable(owner).orElse(GamePlayer.NULL_PLAYERID);
+    this.owner = Optional.ofNullable(owner).orElse(getData().getPlayerList().getNullPlayer());
     getData().notifyTerritoryOwnerChanged(this);
   }
 

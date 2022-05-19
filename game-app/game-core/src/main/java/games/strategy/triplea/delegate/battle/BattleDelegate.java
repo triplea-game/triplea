@@ -730,7 +730,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               });
 
       boolean scrambledHere = false;
-      GamePlayer defender = GamePlayer.NULL_PLAYERID;
+      GamePlayer defender = data.getPlayerList().getNullPlayer();
       if (!scramblers.isEmpty()) {
         // Determine defender.
         if (battleTracker.hasPendingNonBombingBattle(to)) {
@@ -743,7 +743,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   .map(from -> AbstractBattle.findDefender(from, player, data))
                   .filter(player -> !player.isNull())
                   .findFirst()
-                  .orElse(GamePlayer.NULL_PLAYERID);
+                  .orElse(data.getPlayerList().getNullPlayer());
         }
         if (defender.isNull()) {
           continue;

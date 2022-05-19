@@ -2437,13 +2437,7 @@ class ProNonCombatMoveAi {
                     + " with value="
                     + maxValue);
             moveMap.get(maxValueTerritory).addUnit(u);
-            if (factoryMoveMap.containsKey(maxValueTerritory)) {
-              factoryMoveMap.get(maxValueTerritory).addUnit(u);
-            } else {
-              final ProTerritory patd = new ProTerritory(maxValueTerritory, proData);
-              patd.addUnit(u);
-              factoryMoveMap.put(maxValueTerritory, patd);
-            }
+            proData.getProTerritory(factoryMoveMap, maxValueTerritory).addUnit(u);
             it.remove();
           }
         }

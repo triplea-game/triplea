@@ -19,7 +19,7 @@
 #               But the map name may NOT be: "HexGlobe10", or "Hex Globe 10"
 #
 # url: This is the location where a map zip can be downloaded. This should be a location on github and
-#      should be pretty similar to any of the other map downaod URLs
+#      should be pretty similar to any of the other map download URLs
 #
 # version: The map download version, used by the game to determine if an existing map is out of date.
 #          The game engine uses the map version number found in XML for any other usages (yeah, that is confusing.)
@@ -141,7 +141,7 @@
       <li><b>A 12-sided dice based game system</b></li>
       <li><b>New units like Heavy Tanks unlocked by technologies</b></li>
       <li><b>New unit abilities that offer strategic/tactical advantages when facing certain terrains or enemy units</b></li>
-      <li><b>Lend & Lease possiblities for the Allied nations</b></li>
+      <li><b>Lend & Lease possibilities for the Allied nations</b></li>
       <li><b>Beautiful in-game pop-up newspaper images</b></li>
       <li><b>Major & Minor nations: limiting regional capabilities</b></li>
       <li><b>Optional Politics (ever wanted to be allied with Spain in a WWII scenario?)</b></li>
@@ -150,7 +150,7 @@
       <li><b>Scorched Earth - Production buildings get reduced or destroyed</b></li>
       <li><b>Freedom of play - no rewards/national objectives forcing players into a specific direction in order to win</b></li>
       <li><b>Advanced Infrastructure (destroy your enemies Units and Buildings with Bombing Raids)</b></li>
-      <li><b>Custom Options like National Technolgy advantages</b></li>
+      <li><b>Custom Options like National Technology advantages</b></li>
       <li><b>Historical events (Pearl Harbour, Battle of Java Sea, etc) and historically accurate setup as much as possible while making the game playable for either side!</b></li>
       <li><b>and many more...</b></li>
     </ul>
@@ -212,7 +212,7 @@
       <li>Fully functional and cuttable railroad lines.</li>
       <li>Deep, upgradable infrastructure tree.</li>
       <li>5 resource types, collected from upgradable economic infrastructure, not territory value.</li>
-      <li>Assymmetric victory conditions.</li>
+      <li>Asymmetric victory conditions.</li>
       <li>Manpower limitations keeps size of armies under realistic control.</li>
       <li>Only 2 rounds of combat per battle, instead of fight to the death.</li>
       <li>Can take loans and repay with interest.</li>
@@ -275,7 +275,7 @@
     <br>WW1 mod of Domination map.
     <br>
     <br>Fall 1914. With the death of the Arch Duke Franz Ferdinand, Europe is plunged into war.
-    <br>Titantic armies never seen before muster for battle.
+    <br>Titanic armies never seen before muster for battle.
     <br>Colonial forces of the great powers skirmish around the world.
     <br>Soldiers of all sides are told they will be home for Christmas.
     <br>No one suspects they will battle for years over a few miles of no man's land.
@@ -527,7 +527,7 @@
     <br>in a completely custom world.
     <br>
     <br>Grow your population, build cities and factories, expand militarily, and use diplomacy to advance your
-    <br>nation to supremacy.  Develop nuclear capabilities, control the seas, and use canals to out-manuever your
+    <br>nation to supremacy.  Develop nuclear capabilities, control the seas, and use canals to out-maneuver your
     <br>enemies.  Units fight and move differently depending on terrain.  Use generals and admirals.
     <br>Neutral units control most of the land at the start, some are very difficult to defeat.
     <br>In addition to resources from gaining territory, use merchant ships to gain income from trade.
@@ -549,13 +549,13 @@
     <br>Big World 2 : Rise of the Axis
     <br>
     <br>b.) Rough overview:
-    <br>This is a World War 2 themed global map like ww2v3, ww2 revised, Big World 1942 and TWW. This is an averaged sized map. The game play is slower than ww2v3 and ww2 revised, but far faster than NWO and TWW. The game can be decided as quickly as round 6 (appromimately 3 hours) but could sometimes drag on to rounds 10+ between experienced players.
+    <br>This is a World War 2 themed global map like ww2v3, ww2 revised, Big World 1942 and TWW. This is an averaged sized map. The game play is slower than ww2v3 and ww2 revised, but far faster than NWO and TWW. The game can be decided as quickly as round 6 (approximately 3 hours) but could sometimes drag on to rounds 10+ between experienced players.
     <br>
     <br>Features common in both scenarios
     <br>- give players a choice of v3 style or NWO/revised style transport and submarine rules.
     <br>- automatically balances starting position under either v3 style or revised rules
     <br>- optional national objectives for extra income
-    <br>- optional national advatages for unique units or abilities
+    <br>- optional national advantages for unique units or abilities
     <br>- optional balanced techs. Each tech is more-or-less balanced so that no single tech is overpowered.
     <br>- been in development since 2011, playtested over 4 years for balance.
     <br>
@@ -591,7 +591,7 @@
     <br>
     <br>May 31, 1916, the two greatest navies in the world set sail to meet in the greatest and only full-scale clash of battleships in history.
     <br>The German High Seas Fleet planned to use its scouting battlecruisers to draw the Royal Navy's battlecruiser group of the Grand Fleet into a trap and
-        destroy it before the rest of the Grand Fleet could arrive.  The Royal Navy seeked to cut the germans off from their port, then use their numerical
+        destroy it before the rest of the Grand Fleet could arrive.  The Royal Navy sought to cut the germans off from their port, then use their numerical
         advantage to annihilate the Germans.
     <br>
     <br><b>TO WIN:</b>
@@ -702,10 +702,10 @@
       <br><b>Japan, in the 16th century, faced one of the longest and bloodiest civil wars in history, called the Sengoku Era or Warring States period.
       <br>In this game (inspired by the Shogun/Samurai Swords board game) you control one of 17 historical clans struggling for the domination of Japan.
       <br>The map expands the ideas of the board game with: Cavalry, Ships, Objectives and Alliances.
-      <br>Each clan starts with only his captial and claims more and more territories from his foe.
+      <br>Each clan starts with only his capital and claims more and more territories from his foe.
       <br>After a few rounds of easy expanding into passive minor Clan territories, the real fight for domination starts.
       <br>Each Clan fights for its own and most of them will be controlled by the AI to make it lively and every game unique.
-      <br>The AI gets many useful boni (all optional) and is challenging for a single player match, too.
+      <br>The AI gets many useful bonuses (all optional) and is challenging for a single player match, too.
       <br>Defeat your rivals and claim the title of Shogun for your clan! There is much to be conquered!</b>
       <br>
       <br>Requires Triplea 1.6.1 or higher
@@ -840,7 +840,7 @@
         alternative for the HTML PBEM TI systems that exist, and allow groups of people to play real TI long distance with only one copy of the game.
     <br>But, even without all the cards that come with the game, it stands alone just fine as a good game by it's own right."
     <br>
-    <br>EB: "I am taking a risk here, putting it in the main section right away, since I did not test this mod. But it is so awesomely well done, looking great, perfect documention,
+    <br>EB: "I am taking a risk here, putting it in the main section right away, since I did not test this mod. But it is so awesomely well done, looking great, perfect documentation,
         and it is also based on an established board game, that I trust it in terms of balance and mechanics."
     <br>
     <br>if you play it, help it be perfected by giving feedback!
@@ -1271,7 +1271,7 @@
     <br>This has to be one of the best looking world maps I've seen.  Scale is a bit bigger than Big World and Ultimate World, but smaller than Domination.  Includes a v3
         rules version by veqryn.
     <br>
-    <br>Filesize is huge, 33mb, so may take a while to download. External sf.net link used. If download does not work, please visit this website:
+    <br>File size is huge, 33mb, so may take a while to download. External sf.net link used. If download does not work, please visit this website:
     <br>http://www.mediafire.com/file/z0zmzqz1umm/Global_War.zip
     <br>
     <br>Converted up to TripleA 1.2.x.x by Veqryn
@@ -1454,9 +1454,9 @@
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/cold_war/master/preview.png
   description: |
-    <br>October 1962: Cuban Missle Crisis
+    <br>October 1962: Cuban Missile Crisis
     <br>
-    <br>Instead of following demands by the U.S. to remove missles in Cuba, Cuba is alligned with the United Soviet Socialist Republics(USSR) to not follow those orders,
+    <br>Instead of following demands by the U.S. to remove missiles in Cuba, Cuba is aligned with the United Soviet Socialist Republics(USSR) to not follow those orders,
         which then leads to war between the North Atlantic Trade Organisation(NATO) members and the Warsaw-Pact members including Cuba.
     <br>
     <br>created by ???
@@ -1819,8 +1819,8 @@
     <br>
     <br>11 faction PvP map including two solo player campaigns
     <br>2x map and units larger than 270 BC.
-    <br>Unit maintenace costs.
-    <br>Uses real seige warfare.
+    <br>Unit maintenance costs.
+    <br>Uses real siege warfare.
     <br>12 ancient technologies to develop.
     <br>Each faction has a unique selection of units.
     <br>Pit armies with leaders and navies with flagships against your opponent.
@@ -1843,8 +1843,8 @@
     <br>Original fantasy-based strategy game. Fully compatible with AI and player versus player.
     <br>Music by Torley Wong, edited by Zim Xero.
     <br>
-    <br>To enjoy all the custom sounds the designer had choosen,
-    <br>go to maps folder( engine prefrences, open user maps and savegames folder) and
+    <br>To enjoy all the custom sounds the designer had chosen,
+    <br>go to maps folder( engine preferences, open user maps and savegames folder) and
     <br>unpack Elemental_Forces.zip. Download sounds.zip from:
     <br>http://www.mediafire.com/download/y7gj9t6afna4ijm/sounds.zip (manually, browser download)
     <br>and simply unpack those into your new Elemental_Forces folder from above. Delete
@@ -1971,9 +1971,9 @@
     <br>The top player is unique with a special dinosaur; Dimorphodon.
     <br>All other players have a full list of other dinosaurs from the Jurassic Period.
     <br>The first player is meant to be a nuisance; a leftover from the Triassic.
-    <br>Even though the capital is impassable, you can still create but cannot return; like deamons emerging from the pit of Hell.
+    <br>Even though the capital is impassable, you can still create but cannot return; like demons emerging from the pit of Hell.
     <br>
-    <br>The map is colored for topologic elevation and not actual vegetation conditions. Sea level after the last Ice Age, ten-thousand years ago, was nearly 400-feet lower than today.
+    <br>The map is colored for topological elevation and not actual vegetation conditions. Sea level after the last Ice Age, ten-thousand years ago, was nearly 400-feet lower than today.
     <br>This is easy to see as the continental shelves (light blue areas). Sadly, all that topology has been washed clean.
     <br>Territory Effects are employed to allow land reptiles to swim, and ocean dwellers to flop around on land.
     <br>Study the Effects chart in the NOTES, or snap a screen shot and place it on your desktop for reference.
@@ -2127,7 +2127,7 @@
     <br>Version 1.0 for TripleA 2.0
     <br>
     <p style="font-size:14px;color:FFFFFF">
-        In Labyrinth, you assume the role of a reknowned adventurer trying to discover what is in the middle of this mysterious Labyrinth out in the middle
+        In Labyrinth, you assume the role of a renowned adventurer trying to discover what is in the middle of this mysterious Labyrinth out in the middle
         of the Great Ocean. No one who enters ever returns, so speculation runs amok!
     </p><br>
     <h3 style="font-size:16px;color:F0D06B">Victory Conditions:</h3>
@@ -2452,7 +2452,7 @@
      <li><b>Units have 1 upkeep and movement costs.</b></li>
      <li><b>Factory and aaGuns are destroyed when captured.</b></li>
      <li><b>Victory is achieved by controlling 5 capitals.</b></li>
-     <li><b>Balance hasn't extensivelt tested yet. Still in progress.</b></li>
+     <li><b>Balance hasn't been extensively tested yet. Still in progress.</b></li>
      <li><b>By Navalland</b></li>
    </ul>
    <br>
@@ -2623,3 +2623,17 @@
   img: https://raw.githubusercontent.com/triplea-maps/nwovichy/master/preview.png
   description: |
    <br>World War II in Europe with Vichy France acting as a full member of the Axis. Uses New World Order map.
+- mapName: World War I 1914
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world_war_i_1914/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_i_1914/master/preview.png
+  description: |
+   <br>Based upon the Axis & Allies: 1914 boardgame
+- mapName: Imperialism 1974 Board Game
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/imperialism_1974_board_game/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/imperialism_1974_board_game/master/preview.png
+  description: |
+   <br>Adaptation of the 1974 board game "Imperialism"

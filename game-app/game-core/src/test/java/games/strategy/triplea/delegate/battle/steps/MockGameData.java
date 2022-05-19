@@ -25,6 +25,7 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -43,6 +44,7 @@ public class MockGameData {
   private final GameSequence gameSequence = mock(GameSequence.class);
   private final TechTracker techTracker = mock(TechTracker.class);
   private final ResourceList resourceList = mock(ResourceList.class);
+  private final PlayerList playerList = mock(PlayerList.class);
 
   private MockGameData() {
     lenient().when(gameData.getProperties()).thenReturn(gameProperties);
@@ -52,6 +54,7 @@ public class MockGameData {
     lenient().when(gameData.getSequence()).thenReturn(gameSequence);
     lenient().when(gameData.getTechTracker()).thenReturn(techTracker);
     lenient().when(gameData.getResourceList()).thenReturn(resourceList);
+    lenient().when(gameData.getPlayerList()).thenReturn(playerList);
   }
 
   public static MockGameData givenGameData() {

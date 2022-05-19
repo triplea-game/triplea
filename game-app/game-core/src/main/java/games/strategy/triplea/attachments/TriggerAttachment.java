@@ -1397,20 +1397,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final IntegerMap<UnitType> utMap,
       final GamePlayer player,
       final IDelegateBridge bridge) {
-    // createUnits
+    // create the units
     final List<Unit> units = new ArrayList<>();
-    for (final UnitType u : utMap.keySet()) {
-      units.addAll(u.create(utMap.getInt(u), player));
+    for (final Map.Entry<UnitType, Integer> entry : utMap.entrySet()) {
+      units.addAll(entry.getKey().create(entry.getValue(), player));
     }
     final CompositeChange change = new CompositeChange();
-    // mark no movement
+    // mark no movement and original owner
+    final Predicate<Unit> unitIsInfra = Matches.unitIsInfrastructure();
     for (final Unit unit : units) {
       change.add(ChangeFactory.markNoMovementChange(unit));
+      if (unitIsInfra.test(unit)) {
+        change.add(OriginalOwnerTracker.addOriginalOwnerChange(unit, player));
+      }
     }
     // place units
-    final Collection<Unit> factoryAndInfrastructure =
-        CollectionUtils.getMatches(units, Matches.unitIsInfrastructure());
-    change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
+    change.add(ChangeFactory.addUnits(terr, units));
+    bridge.addChange(change);
     final String transcriptText =
         MyFormatter.attachmentNameToText(t.getName())
             + ": "
@@ -1420,9 +1423,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             + " placed in "
             + terr.getName();
     bridge.getHistoryWriter().startEvent(transcriptText, units);
-    final Change place = ChangeFactory.addUnits(terr, units);
-    change.add(place);
-    bridge.addChange(change);
   }
 
   /**

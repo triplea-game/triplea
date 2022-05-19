@@ -117,7 +117,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   public void setOwner(final @Nullable GamePlayer player) {
-    owner = Optional.ofNullable(player).orElse(GamePlayer.NULL_PLAYERID);
+    owner = Optional.ofNullable(player).orElse(getData().getPlayerList().getNullPlayer());
   }
 
   public final boolean isOwnedBy(final GamePlayer player) {

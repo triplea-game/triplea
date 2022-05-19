@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -915,7 +914,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
               // we subtract the base rolls to get the bonus
               final int heavyBomberDiceRollsBonus =
                   heavyBomberDiceRollsTotal
-                      - UnitAttachment.get(bomber).getAttackRolls(GamePlayer.NULL_PLAYERID);
+                      - UnitAttachment.get(bomber)
+                          .getAttackRolls(data.getPlayerList().getNullPlayer());
               taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
               if (heavyBombersLhtr) {
                 // TODO: this all happens WHEN the xml is parsed. Which means if the user changes

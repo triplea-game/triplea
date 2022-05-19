@@ -110,8 +110,8 @@ class BattleCalculatorPanel extends JPanel {
     data.acquireReadLock();
     try {
       final Collection<GamePlayer> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
-      if (doesPlayerHaveUnitsOnMap(GamePlayer.NULL_PLAYERID, data)) {
-        playerList.add(GamePlayer.NULL_PLAYERID);
+      if (doesPlayerHaveUnitsOnMap(data.getPlayerList().getNullPlayer(), data)) {
+        playerList.add(data.getPlayerList().getNullPlayer());
       }
       attackerCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));

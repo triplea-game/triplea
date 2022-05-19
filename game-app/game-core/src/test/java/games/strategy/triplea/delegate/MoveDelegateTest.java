@@ -14,7 +14,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
@@ -310,7 +309,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(equatorialAfrica, westAfrica);
     assertEquals(4, equatorialAfrica.getUnitCollection().size());
     assertEquals(0, westAfrica.getUnitCollection().size());
-    assertEquals(GamePlayer.NULL_PLAYERID, westAfrica.getOwner());
+    assertEquals(gameData.getPlayerList().getNullPlayer(), westAfrica.getOwner());
     assertEquals(35, british.getResources().getQuantity(pus));
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);

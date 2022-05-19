@@ -46,7 +46,7 @@ class PlayerChooser extends JOptionPane {
   private void createComponents() {
     final Collection<GamePlayer> players = new ArrayList<>(this.players.getPlayers());
     if (allowNeutral) {
-      players.add(GamePlayer.NULL_PLAYERID);
+      players.add(this.players.getNullPlayer());
     }
     list = new JList<>(players.toArray(new GamePlayer[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -99,9 +99,9 @@ class PlayerChooser extends JOptionPane {
         final int index,
         final boolean isSelected,
         final boolean cellHasFocus) {
-      super.getListCellRendererComponent(
-          list, ((GamePlayer) value).getName(), index, isSelected, cellHasFocus);
-      if (uiContext == null || value == GamePlayer.NULL_PLAYERID) {
+      GamePlayer player = (GamePlayer) value;
+      super.getListCellRendererComponent(list, player.getName(), index, isSelected, cellHasFocus);
+      if (uiContext == null || player.isNull()) {
         setIcon(new ImageIcon(Util.newImage(32, 32, true)));
       } else {
         setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value)));

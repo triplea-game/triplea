@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.Getter;
 import lombok.ToString;
 
 /** Wrapper around the set of players in a game to provide utility functions and methods. */
@@ -20,9 +22,19 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
 
   // maps String playerName -> PlayerId
   private final Map<String, GamePlayer> players = new LinkedHashMap<>();
+  @Getter private final GamePlayer nullPlayer;
 
   public PlayerList(final GameData data) {
     super(data);
+    nullPlayer =
+        new GamePlayer(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, data) {
+          private static final long serialVersionUID = 1;
+
+          @Override
+          public boolean isNull() {
+            return true;
+          }
+        };
   }
 
   @VisibleForTesting
@@ -35,8 +47,8 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
   }
 
   public GamePlayer getPlayerId(final String name) {
-    if (GamePlayer.NULL_PLAYERID.getName().equals(name)) {
-      return GamePlayer.NULL_PLAYERID;
+    if (getNullPlayer().getName().equals(name)) {
+      return getNullPlayer();
     }
     return players.get(name);
   }

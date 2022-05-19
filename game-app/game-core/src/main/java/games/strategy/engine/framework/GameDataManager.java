@@ -68,7 +68,17 @@ public final class GameDataManager {
    * @return The loaded game data, or an empty optional if an error occurs.
    */
   public static Optional<GameData> loadGame(final Version ourVersion, final InputStream is) {
-    try (ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is))) {
+    try (GZIPInputStream input = new GZIPInputStream(is)) {
+      return loadGameUncompressed(ourVersion, input);
+    } catch (final Throwable e) {
+      log.error("Error loading game data", e);
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<GameData> loadGameUncompressed(
+      final Version ourVersion, final InputStream is) {
+    try (ObjectInputStream input = new ObjectInputStream(is)) {
       final Object version = input.readObject();
 
       if (isCompatibleVersion(ourVersion, version)
@@ -162,26 +172,17 @@ public final class GameDataManager {
   /**
    * Saves the specified game data to the specified stream.
    *
-   * @param os The stream to which the game data will be saved. Note that this stream will be closed
-   *     if this method returns successfully.
+   * @param out The stream to which the game data will be saved. Note that this stream will be
+   *     closed if this method returns successfully.
    * @param gameData The game data to save.
    * @throws IOException If an error occurs while saving the game.
    */
   public static void saveGame(
-      final OutputStream os, final GameData gameData, final Version engineVersion)
+      final OutputStream out, final GameData gameData, final Version engineVersion)
       throws IOException {
-    checkNotNull(os);
+    checkNotNull(out);
     checkNotNull(gameData);
 
-    saveGame(os, gameData, true, engineVersion);
-  }
-
-  static void saveGame(
-      final OutputStream sink,
-      final GameData data,
-      final boolean saveDelegateInfo,
-      final Version engineVersion)
-      throws IOException {
     final Path tempFile =
         Files.createTempFile(
             GameDataManager.class.getSimpleName(), GameDataFileUtils.getExtension());
@@ -189,29 +190,40 @@ public final class GameDataManager {
       // write to temporary file first in case of error
       try (OutputStream os = Files.newOutputStream(tempFile);
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
-          OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream);
-          ObjectOutputStream outStream = new ObjectOutputStream(zippedOutStream)) {
-        outStream.writeObject(engineVersion);
-        data.acquireReadLock();
-        try {
-          outStream.writeObject(data);
-          if (saveDelegateInfo) {
-            writeDelegates(data, outStream);
-          } else {
-            outStream.writeObject(DELEGATE_LIST_END);
-          }
-        } finally {
-          data.releaseReadLock();
-        }
+          OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
+        saveGameUncompressed(zippedOutStream, gameData, true, engineVersion);
       }
 
       // now write to sink (ensure sink is closed per method contract)
       try (InputStream is = Files.newInputStream(tempFile);
-          OutputStream os = new BufferedOutputStream(sink)) {
+          OutputStream os = new BufferedOutputStream(out)) {
         IOUtils.copy(is, os);
       }
     } finally {
       Files.delete(tempFile);
+    }
+  }
+
+  public static void saveGameUncompressed(
+      final OutputStream sink,
+      final GameData data,
+      final boolean saveDelegateInfo,
+      final Version engineVersion)
+      throws IOException {
+    // write to temporary file first in case of error
+    try (ObjectOutputStream outStream = new ObjectOutputStream(sink)) {
+      outStream.writeObject(engineVersion);
+      data.acquireReadLock();
+      try {
+        outStream.writeObject(data);
+        if (saveDelegateInfo) {
+          writeDelegates(data, outStream);
+        } else {
+          outStream.writeObject(DELEGATE_LIST_END);
+        }
+      } finally {
+        data.releaseReadLock();
+      }
     }
   }
 

@@ -76,9 +76,9 @@ final class FileMenu extends JMenu {
                 final GameStep step = gameData.getSequence().getStep();
                 final GamePlayer currentPlayer =
                     (step == null
-                        ? GamePlayer.NULL_PLAYERID
+                        ? gameData.getPlayerList().getNullPlayer()
                         : (step.getPlayerId() == null
-                            ? GamePlayer.NULL_PLAYERID
+                            ? gameData.getPlayerList().getNullPlayer()
                             : step.getPlayerId()));
                 final int round = gameData.getSequence().getRound();
                 final HistoryLog historyLog = new HistoryLog();

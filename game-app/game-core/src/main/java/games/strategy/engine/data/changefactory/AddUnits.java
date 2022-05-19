@@ -46,7 +46,7 @@ public class AddUnits extends Change {
                 Unit::getId,
                 unit -> {
                   if (unit.getOwner() == null || unit.getOwner().getName() == null) {
-                    return GamePlayer.NULL_PLAYERID.getName();
+                    return unit.getData().getPlayerList().getNullPlayer().getName();
                   }
                   return unit.getOwner().getName();
                 }));

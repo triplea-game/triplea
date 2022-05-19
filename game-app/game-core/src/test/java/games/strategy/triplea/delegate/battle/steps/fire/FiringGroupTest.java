@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -23,7 +24,7 @@ class FiringGroupTest {
 
   private static final String GROUP_NAME = "test";
 
-  @Mock GameData gameData;
+  final GameData gameData = givenGameData().build();
   @Mock GamePlayer player;
 
   @Test
