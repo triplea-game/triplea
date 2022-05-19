@@ -175,7 +175,8 @@ public class TerritoryDetailPanel extends JPanel {
     final String unitsLabel;
 
     // Get the unit information under lock as otherwise they may change on the game thread causing a
-    // ConcurrentModificationException.
+    // ConcurrentModificationException. Use local variable to ensure we lock/unlock the same object.
+    final GameData gameData = this.gameData;
     gameData.acquireReadLock();
     try {
       unitsList = UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
