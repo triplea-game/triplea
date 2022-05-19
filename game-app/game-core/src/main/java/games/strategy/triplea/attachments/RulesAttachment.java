@@ -499,10 +499,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setAtWarPlayers(final String players) throws GameParseException {
-    if (players == null) {
-      atWarPlayers = null;
-      return;
-    }
     final String[] s = splitOnColon(players);
     if (s.length < 1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
@@ -536,10 +532,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setTechs(final String newTechs) throws GameParseException {
-    if (newTechs == null) {
-      techs = null;
-      return;
-    }
     final String[] s = splitOnColon(newTechs);
     if (s.length < 1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());

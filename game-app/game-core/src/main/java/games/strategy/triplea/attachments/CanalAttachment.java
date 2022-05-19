@@ -85,10 +85,6 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   private void setLandTerritories(final String landTerritories) {
-    if (landTerritories == null) {
-      this.landTerritories = null;
-      return;
-    }
     final Set<Territory> terrs = new HashSet<>();
     for (final String name : splitOnColon(landTerritories)) {
       final Territory territory = getData().getMap().getTerritory(name);

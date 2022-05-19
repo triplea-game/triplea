@@ -678,10 +678,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setUnitAttachmentName(final String name) throws GameParseException {
-    if (name == null) {
-      unitAttachmentName = null;
-      return;
-    }
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
