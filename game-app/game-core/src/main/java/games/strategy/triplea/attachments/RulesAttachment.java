@@ -474,7 +474,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (unitPresence == null) {
       unitPresence = new IntegerMap<>();
     }
-    unitPresence.put(value.replaceFirst(s[0] + ":", ""), n);
+    unitPresence.put(value.replaceFirst(s[0] + ":", "").intern(), n);
   }
 
   private void setUnitPresence(final IntegerMap<String> value) {

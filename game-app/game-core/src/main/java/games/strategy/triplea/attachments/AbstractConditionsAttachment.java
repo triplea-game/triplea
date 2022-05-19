@@ -280,7 +280,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
               + " format: \"1:10\" for 10% chance"
               + thisErrorMsg());
     }
-    this.chance = chance;
+    this.chance = chance.intern();
   }
 
   /**

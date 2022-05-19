@@ -133,7 +133,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (this.when == null) {
       this.when = new ArrayList<>();
     }
-    this.when.add(Tuple.of(s[0], s[1]));
+    this.when.add(Tuple.of(s[0].intern(), s[1].intern()));
   }
 
   private void setWhen(final List<Tuple<String, String>> value) {
