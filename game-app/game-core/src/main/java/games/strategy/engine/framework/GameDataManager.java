@@ -221,9 +221,9 @@ public final class GameDataManager {
         } else {
           // TODO: Attachment order data is only used for XML export and takes up lots of memory.
           // Could we remove it and just get the info again from the XML when exporting?
-          var attachments = data.getAttachmentOrderAndValues();
+          final var attachments = data.getAttachmentOrderAndValues();
+          final var history = data.getHistory();
           data.setAttachmentOrderAndValues(null);
-          var history = data.getHistory();
           data.resetHistory();
           outStream.writeObject(data);
           data.setAttachmentOrderAndValues(attachments);
