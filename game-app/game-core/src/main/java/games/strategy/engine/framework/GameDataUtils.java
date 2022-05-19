@@ -25,7 +25,7 @@ public final class GameDataUtils {
    * before calling this method</strong>
    */
   public static Optional<GameData> cloneGameData(
-      final GameData data, GameDataManager.Options options, final Version engineVersion) {
+      GameData data, GameDataManager.Options options, Version engineVersion) {
     final byte[] bytes = gameDataToBytes(data, options, engineVersion).orElse(null);
     if (bytes != null) {
       return createGameDataFromBytes(bytes, engineVersion);
