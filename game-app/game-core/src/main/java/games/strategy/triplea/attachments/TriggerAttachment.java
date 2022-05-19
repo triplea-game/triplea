@@ -726,10 +726,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setUnitProperty(final String prop) {
-    if (prop == null) {
-      unitProperty = null;
-      return;
-    }
     final String[] s = splitOnColon(prop);
     if (unitProperty == null) {
       unitProperty = new ArrayList<>();
@@ -980,10 +976,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setRelationshipTypeAttachmentName(final String name) throws GameParseException {
-    if (name == null) {
-      relationshipTypeAttachmentName = null;
-      return;
-    }
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
@@ -1024,10 +1016,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setRelationshipTypeProperty(final String prop) {
-    if (prop == null) {
-      relationshipTypeProperty = null;
-      return;
-    }
     final String[] s = splitOnColon(prop);
     if (relationshipTypeProperty == null) {
       relationshipTypeProperty = new ArrayList<>();
@@ -1078,10 +1066,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setTerritoryEffectAttachmentName(final String name) throws GameParseException {
-    if (name == null) {
-      territoryEffectAttachmentName = null;
-      return;
-    }
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
