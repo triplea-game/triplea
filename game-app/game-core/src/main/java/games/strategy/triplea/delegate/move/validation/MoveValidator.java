@@ -180,8 +180,7 @@ public class MoveValidator {
       final Collection<Unit> matches =
           CollectionUtils.getMatches(
               units,
-              Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
-                      units, player, data.getRelationshipTracker(), true)
+              Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, player, true)
                   .negate());
       if (matches.isEmpty() || !matches.stream().allMatch(Matches.unitIsOwnedBy(player))) {
         result.setError(
@@ -1752,7 +1751,7 @@ public class MoveValidator {
             CollectionUtils.getMatches(
                 units,
                 Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
-                        units, player, data.getRelationshipTracker(), true)
+                        units, player, true)
                     .negate()));
 
     // If start and end are land, try a land route. Don't force a land route, since planes may be

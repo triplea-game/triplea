@@ -414,7 +414,7 @@ public class BattleTracker implements Serializable {
         CollectionUtils.getMatches(
             units,
             Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
-                    units, gamePlayer, data.getRelationshipTracker(), false)
+                    units, gamePlayer, false)
                 .negate());
     if (canConquer.stream().noneMatch(Matches.unitIsNotAir())) {
       return;

@@ -432,7 +432,7 @@ public class Route implements Serializable, Iterable<Territory> {
         CollectionUtils.getMatches(
             units,
             Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
-                units, player, data.getRelationshipTracker(), true)));
+                units, player, true)));
 
     // Find fuel cost and whether to charge flat fuel cost
     final ResourceCollection movementCharge = new ResourceCollection(data);

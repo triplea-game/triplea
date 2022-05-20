@@ -545,7 +545,7 @@ public final class ProMatches {
             .and(Matches.isUnitAllied(player))
             .and(
                 Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
-                        t.getUnits(), player, relationshipTracker, false)
+                        t.getUnits(), player, false)
                     .negate());
     return myUnitHasNoMovementMatch.or(alliedUnitMatch);
   }

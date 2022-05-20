@@ -1427,14 +1427,11 @@ public final class Matches {
    *
    * @param units Referring unit.
    * @param currentPlayer Current player
-   * @param relationshipTracker Relationship Tracker
    * @param forceLoadParatroopersIfPossible Should we load paratroopers? (if not, we assume they are
-   *     already loaded).
    */
   public static Predicate<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
       final Collection<Unit> units,
       final GamePlayer currentPlayer,
-      final RelationshipTracker relationshipTracker,
       final boolean forceLoadParatroopersIfPossible) {
     final Map<Unit, Unit> paratrooperMap =
         forceLoadParatroopersIfPossible ? TransportUtils.mapParatroopers(units) : Map.of();
