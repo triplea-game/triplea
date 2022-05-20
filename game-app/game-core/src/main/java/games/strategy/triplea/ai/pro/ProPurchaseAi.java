@@ -991,9 +991,7 @@ class ProPurchaseAi {
       resourceTracker.purchase(bestAaOption);
       final List<Unit> unitsToPlace =
           bestAaOption.getUnitType().createTemp(bestAaOption.getQuantity(), player);
-      placeTerritory.getPlaceUnits().addAll(unitsToPlace);
-      reserveUnitsThatNeedToBeConsumed(t, unitsToPlace);
-      ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
+      addUnitsToPlace(placeTerritory, unitsToPlace);
     }
   }
 
@@ -1156,9 +1154,7 @@ class ProPurchaseAi {
       }
 
       // Add units to place territory
-      placeTerritory.getPlaceUnits().addAll(unitsToPlace);
-      reserveUnitsThatNeedToBeConsumed(t, unitsToPlace);
-      ProLogger.debug(t + ", placedUnits=" + unitsToPlace);
+      addUnitsToPlace(placeTerritory, unitsToPlace);
     }
   }
 
@@ -1365,8 +1361,7 @@ class ProPurchaseAi {
           if (ppt.getTerritory().equals(maxTerritory)) {
             final List<Unit> factory =
                 bestFactoryOption.getUnitType().createTemp(bestFactoryOption.getQuantity(), player);
-            ppt.getPlaceUnits().addAll(factory);
-            reserveUnitsThatNeedToBeConsumed(ppt.getTerritory(), factory);
+            addUnitsToPlace(ppt, factory);
             if (resourceTracker.hasEnough(bestFactoryOption)) {
               resourceTracker.purchase(bestFactoryOption);
               ProLogger.debug(maxTerritory + ", placedFactory=" + factory);
@@ -2056,11 +2051,9 @@ class ProPurchaseAi {
         // Add transport units to sea place territory and amphib units to land place territory
         for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
           if (landTerritory.equals(ppt.getTerritory())) {
-            ppt.getPlaceUnits().addAll(amphibUnitsToPlace);
-            reserveUnitsThatNeedToBeConsumed(ppt.getTerritory(), amphibUnitsToPlace);
+            addUnitsToPlace(ppt, amphibUnitsToPlace);
           } else if (placeTerritory.equals(ppt)) {
-            ppt.getPlaceUnits().addAll(transportUnitsToPlace);
-            reserveUnitsThatNeedToBeConsumed(ppt.getTerritory(), transportUnitsToPlace);
+            addUnitsToPlace(ppt, transportUnitsToPlace);
           }
         }
         ProLogger.trace(
@@ -2161,9 +2154,7 @@ class ProPurchaseAi {
         remainingUnitProduction -= bestAttackOption.getQuantity();
         final List<Unit> newUnits =
             bestAttackOption.getUnitType().createTemp(bestAttackOption.getQuantity(), player);
-        placeTerritory.getPlaceUnits().addAll(newUnits);
-        reserveUnitsThatNeedToBeConsumed(t, newUnits);
-        ProLogger.trace(t + ", newUnits=" + newUnits);
+        addUnitsToPlace(placeTerritory, newUnits);
       }
     }
 
@@ -2223,9 +2214,7 @@ class ProPurchaseAi {
         remainingUnitProduction -= selectedOption.getQuantity();
         final List<Unit> newUnits =
             selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player);
-        placeTerritory.getPlaceUnits().addAll(newUnits);
-        reserveUnitsThatNeedToBeConsumed(t, newUnits);
-        ProLogger.trace(t + ", newUnits=" + newUnits);
+        addUnitsToPlace(placeTerritory, newUnits);
       }
     }
   }
@@ -2364,9 +2353,7 @@ class ProPurchaseAi {
             resourceTracker.purchase(bestUpgradeOption);
             final List<Unit> newUnits =
                 bestUpgradeOption.getUnitType().createTemp(bestUpgradeOption.getQuantity(), player);
-            placeTerritory.getPlaceUnits().addAll(newUnits);
-            reserveUnitsThatNeedToBeConsumed(t, newUnits);
-            ProLogger.trace(t + ", newUnits=" + newUnits);
+            addUnitsToPlace(placeTerritory, newUnits);
           }
         }
       }
@@ -2564,27 +2551,27 @@ class ProPurchaseAi {
           final List<Unit> constructions =
               CollectionUtils.getMatches(unitsToPlace, Matches.unitIsConstruction());
           unitsToPlace.removeAll(constructions);
-          ppt.getPlaceUnits().addAll(constructions);
-          reserveUnitsThatNeedToBeConsumed(ppt.getTerritory(), constructions);
+          addUnitsToPlace(ppt, constructions);
           final int numUnits =
               Math.min(purchaseTerritory.getRemainingUnitProduction(), unitsToPlace.size());
           final List<Unit> units = unitsToPlace.subList(0, numUnits);
           ppt.getPlaceUnits().addAll(units);
-          reserveUnitsThatNeedToBeConsumed(ppt.getTerritory(), units);
+          addUnitsToPlace(ppt, units);
           units.clear();
         }
       }
     }
   }
 
-  private void reserveUnitsThatNeedToBeConsumed(
-      final Territory t, final Collection<Unit> unitsToPlace) {
+  private void addUnitsToPlace(ProPlaceTerritory ppt, Collection<Unit> unitsToPlace) {
+    ppt.getPlaceUnits().addAll(unitsToPlace);
     // TODO: If consumed units can come from the place territory, this will need to change.
     Collection<Unit> existingUnits =
-        CollectionUtils.difference(t.getUnits(), proData.getUnitsToBeConsumed());
+        CollectionUtils.difference(ppt.getTerritory().getUnits(), proData.getUnitsToBeConsumed());
     proData
         .getUnitsToBeConsumed()
         .addAll(ProPurchaseUtils.getUnitsToConsume(player, existingUnits, unitsToPlace));
+    ProLogger.trace(ppt.getTerritory() + ", placedUnits=" + unitsToPlace);
   }
 
   private static void setCantHoldPlaceTerritory(
