@@ -69,19 +69,20 @@ public class CollectionUtils {
     checkArgument(max >= 0, "max must not be negative");
     checkNotNull(predicate);
 
-    return collection.stream()
-        .filter(predicate)
-        .limit(max)
-        .collect(Collectors.toList());
+    return collection.stream().filter(predicate).limit(max).collect(Collectors.toList());
   }
 
   /** return a such that a exists in c1 and a exists in c2. always returns a new collection. */
   public static <T> List<T> intersection(
       final Collection<T> collection1, final Collection<T> collection2) {
-    if (collection1 == null || collection2 == null || collection1.isEmpty() || collection2.isEmpty()) {
+    if (collection1 == null
+        || collection2 == null
+        || collection1.isEmpty()
+        || collection2.isEmpty()) {
       return new ArrayList<>();
     }
-    final Collection<T> c2 = (collection2 instanceof Set) ? collection2 : ImmutableSet.copyOf(collection2);
+    final Collection<T> c2 =
+        (collection2 instanceof Set) ? collection2 : ImmutableSet.copyOf(collection2);
     return collection1.stream().distinct().filter(c2::contains).collect(Collectors.toList());
   }
 
@@ -95,7 +96,8 @@ public class CollectionUtils {
       return new ArrayList<>(collection1);
     }
 
-    final Collection<T> c2 = (collection2 instanceof Set) ? collection2 : ImmutableSet.copyOf(collection2);
+    final Collection<T> c2 =
+        (collection2 instanceof Set) ? collection2 : ImmutableSet.copyOf(collection2);
     return collection1.stream().distinct().filter(not(c2::contains)).collect(Collectors.toList());
   }
 
