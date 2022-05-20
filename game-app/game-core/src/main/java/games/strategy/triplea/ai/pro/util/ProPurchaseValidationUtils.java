@@ -16,14 +16,17 @@ import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProResourceTracker;
 import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * Pro AI utility methods for finding purchase options and validating which ones a territory can
@@ -76,10 +79,10 @@ public final class ProPurchaseValidationUtils {
       final Territory factoryTerritory,
       final boolean isBid) {
     final GameData data = player.getData();
-    AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegate("place");
-    if (isBid) {
-      placeDelegate = (AbstractPlaceDelegate) data.getDelegate("placeBid");
-    } else if (!t.equals(factoryTerritory)
+    final var placeDelegate =
+        (AbstractPlaceDelegate) data.getDelegate(isBid ? "placeBid" : "place");
+    if (!isBid
+        && !t.equals(factoryTerritory)
         && !units.stream()
             .allMatch(
                 Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(
@@ -88,11 +91,42 @@ public final class ProPurchaseValidationUtils {
     }
     final IDelegateBridge bridge = new ProDummyDelegateBridge(proData.getProAi(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
-    return isPlacingFightersOnNewCarriers(t, units)
-        ? placeDelegate.canUnitsBePlaced(
-                t, CollectionUtils.getMatches(units, Matches.unitIsNotAir()), player)
-            == null
-        : placeDelegate.canUnitsBePlaced(t, units, player) == null;
+    final String error;
+    if (isPlacingFightersOnNewCarriers(t, units)) {
+      Collection<Unit> nonAirUnits = CollectionUtils.getMatches(units, Matches.unitIsNotAir());
+      error = placeDelegate.canUnitsBePlaced(t, nonAirUnits, player);
+    } else {
+      error = placeDelegate.canUnitsBePlaced(t, units, player);
+    }
+    if (error != null) {
+      return false;
+    }
+    return allRequiredUnitsPresent(proData, player, t, units);
+  }
+
+  private boolean allRequiredUnitsPresent(
+      ProData proData, GamePlayer player, Territory t, Collection<Unit> units) {
+    // Check if units that must be consumed are all present, taking into account units that we
+    // are already planning to consume.
+    IntegerMap<UnitType> requiredUnits = new IntegerMap<>();
+    for (Unit unitToBuild : units) {
+      final UnitAttachment ua = UnitAttachment.get(unitToBuild.getType());
+      if (ua != null) {
+        requiredUnits.add(ua.getConsumesUnits());
+      }
+    }
+    if (requiredUnits.isEmpty()) {
+      return true;
+    }
+    IntegerMap<UnitType> eligibleTerritoryUnits = new IntegerMap<>();
+    // TODO: This will need to change if consumed units may come from other territories.
+    for (Unit u : t.getUnits()) {
+      if (!proData.getUnitsToBeConsumed().contains(u)
+          && Matches.eligibleUnitToConsume(player, u.getType()).test(u)) {
+        eligibleTerritoryUnits.add(u.getType(), 1);
+      }
+    }
+    return eligibleTerritoryUnits.greaterThanOrEqualTo(requiredUnits);
   }
 
   private static boolean isPlacingFightersOnNewCarriers(final Territory t, final List<Unit> units) {

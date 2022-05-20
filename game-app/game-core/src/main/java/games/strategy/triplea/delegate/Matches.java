@@ -1722,14 +1722,14 @@ public final class Matches {
   public static Predicate<UnitType> unitTypeConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit);
-      return ua != null && ua.getConsumesUnits() != null && !ua.getConsumesUnits().isEmpty();
+      return ua != null && !ua.getConsumesUnits().isEmpty();
     };
   }
 
-  static Predicate<Unit> unitConsumesUnitsOnCreation() {
+  public static Predicate<Unit> unitConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getConsumesUnits() != null && !ua.getConsumesUnits().isEmpty();
+      return ua != null && !ua.getConsumesUnits().isEmpty();
     };
   }
 
@@ -1744,16 +1744,11 @@ public final class Matches {
       final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
       boolean canBuild = true;
       for (final UnitType ut : requiredUnits) {
-        final Predicate<Unit> unitIsOwnedByAndOfTypeAndNotDamaged =
-            unitIsOwnedBy(unitWhichRequiresUnits.getOwner())
-                .and(unitIsOfType(ut))
-                .and(unitHasNotTakenAnyBombingUnitDamage())
-                .and(unitHasNotTakenAnyDamage())
-                .and(unitIsNotDisabled());
         final int requiredNumber = requiredUnitsMap.getInt(ut);
         final int numberInTerritory =
             CollectionUtils.countMatches(
-                unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
+                unitsInTerritoryAtStartOfTurn,
+                eligibleUnitToConsume(unitWhichRequiresUnits.getOwner(), ut));
         if (numberInTerritory < requiredNumber) {
           canBuild = false;
         }
@@ -1763,6 +1758,14 @@ public final class Matches {
       }
       return canBuild;
     };
+  }
+
+  public static Predicate<Unit> eligibleUnitToConsume(GamePlayer owner, UnitType ut) {
+    return unitIsOwnedBy(owner)
+        .and(unitIsOfType(ut))
+        .and(unitHasNotTakenAnyBombingUnitDamage())
+        .and(unitHasNotTakenAnyDamage())
+        .and(unitIsNotDisabled());
   }
 
   public static Predicate<Unit> unitRequiresUnitsOnCreation() {
