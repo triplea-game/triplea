@@ -53,7 +53,7 @@ public class ProPurchaseTerritory {
       for (final Territory t : data.getMap().getNeighbors(territory, Matches.territoryIsWater())) {
         if (Properties.getWW2V2(data.getProperties())
             || Properties.getUnitPlacementInEnemySeas(data.getProperties())
-            || !t.anyUnitsMatch(Matches.enemyUnit(player, data.getRelationshipTracker()))) {
+            || !t.anyUnitsMatch(Matches.enemyUnit(player))) {
           canPlaceTerritories.add(new ProPlaceTerritory(t));
         }
       }

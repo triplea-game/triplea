@@ -430,8 +430,7 @@ public class BattleTracker implements Serializable {
         Matches.isTerritoryNotUnownedWaterAndCanBeTakenOverBy(gamePlayer)
             .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer));
     final Predicate<Territory> conquerable =
-        Matches.territoryIsEmptyOfCombatUnits(data.getRelationshipTracker(), gamePlayer)
-            .and(passableLandAndNotRestricted);
+        Matches.territoryIsEmptyOfCombatUnits(gamePlayer).and(passableLandAndNotRestricted);
     final Collection<Territory> conquered = new ArrayList<>();
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
@@ -444,12 +443,9 @@ public class BattleTracker implements Serializable {
     conquered.remove(route.getEnd());
     final Collection<Territory> blitzed =
         CollectionUtils.getMatches(conquered, Matches.territoryIsBlitzable(gamePlayer, data));
-    this.blitzed.addAll(
-        CollectionUtils.getMatches(
-            blitzed, Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker())));
+    this.blitzed.addAll(CollectionUtils.getMatches(blitzed, Matches.isTerritoryEnemy(gamePlayer)));
     this.conquered.addAll(
-        CollectionUtils.getMatches(
-            conquered, Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker())));
+        CollectionUtils.getMatches(conquered, Matches.isTerritoryEnemy(gamePlayer)));
     for (final Territory current : conquered) {
       IBattle nonFight = getPendingBattle(current, BattleType.NORMAL);
       // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this
@@ -502,8 +498,7 @@ public class BattleTracker implements Serializable {
           addDependency(nonFight, precede);
         }
       } else {
-        if (Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker())
-            .test(route.getEnd())) {
+        if (Matches.isTerritoryEnemy(gamePlayer).test(route.getEnd())) {
           if (Matches.territoryIsBlitzable(gamePlayer, data).test(route.getEnd())) {
             this.blitzed.add(route.getEnd());
           }
@@ -599,8 +594,7 @@ public class BattleTracker implements Serializable {
         final GamePlayer convoyOwner = convoy.getOwner();
         if (relationshipTracker.isAllied(gamePlayer, convoyOwner)) {
           if (CollectionUtils.getMatches(
-                      cta.getConvoyAttached(),
-                      Matches.isTerritoryAllied(convoyOwner, data.getRelationshipTracker()))
+                      cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
                   .size()
               <= 0) {
             bridge
@@ -616,8 +610,7 @@ public class BattleTracker implements Serializable {
           }
         } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
             && CollectionUtils.getMatches(
-                        cta.getConvoyAttached(),
-                        Matches.isTerritoryAllied(convoyOwner, data.getRelationshipTracker()))
+                        cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
                     .size()
                 == 1) {
           bridge
@@ -870,9 +863,7 @@ public class BattleTracker implements Serializable {
       final Collection<Territory> originallyOwned =
           OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
-          CollectionUtils.getMatches(
-              originallyOwned,
-              Matches.isTerritoryAllied(terrOrigOwner, data.getRelationshipTracker()));
+          CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
         if (item.isOwnedBy(terrOrigOwner)) {
@@ -919,8 +910,7 @@ public class BattleTracker implements Serializable {
     // destroy any units that should be destroyed on capture
     if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data.getProperties())) {
       final Predicate<Unit> enemyToBeDestroyed =
-          Matches.enemyUnit(gamePlayer, data.getRelationshipTracker())
-              .and(Matches.unitDestroyedWhenCapturedByOrFrom(gamePlayer));
+          Matches.enemyUnit(gamePlayer).and(Matches.unitDestroyedWhenCapturedByOrFrom(gamePlayer));
       final Collection<Unit> destroyed =
           territory.getUnitCollection().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
@@ -957,7 +947,7 @@ public class BattleTracker implements Serializable {
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
     final Predicate<Unit> enemyToBeDestroyed =
-        Matches.enemyUnit(gamePlayer, data.getRelationshipTracker())
+        Matches.enemyUnit(gamePlayer)
             .and(Matches.unitIsDisabled())
             .and(Matches.unitIsInfrastructure().negate());
     final Collection<Unit> destroyed = territory.getUnitCollection().getMatches(enemyToBeDestroyed);
@@ -974,8 +964,7 @@ public class BattleTracker implements Serializable {
     }
     // take over non combatants
     final Predicate<Unit> enemyNonCom =
-        Matches.enemyUnit(gamePlayer, data.getRelationshipTracker())
-            .and(Matches.unitIsInfrastructure());
+        Matches.enemyUnit(gamePlayer).and(Matches.unitIsInfrastructure());
     final Predicate<Unit> willBeCaptured =
         enemyNonCom.or(
             Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
@@ -1101,13 +1090,12 @@ public class BattleTracker implements Serializable {
       site = route.getStart();
     }
     // this will be taken care of by the non fighting battle
-    if (!Matches.territoryHasEnemyUnits(gamePlayer, data.getRelationshipTracker()).test(site)) {
+    if (!Matches.territoryHasEnemyUnits(gamePlayer).test(site)) {
       return ChangeFactory.EMPTY_CHANGE;
     }
     // if just an enemy factory &/or AA then no battle
     final Collection<Unit> enemyUnits =
-        CollectionUtils.getMatches(
-            site.getUnits(), Matches.enemyUnit(gamePlayer, data.getRelationshipTracker()));
+        CollectionUtils.getMatches(site.getUnits(), Matches.enemyUnit(gamePlayer));
     if (route.getEnd() != null
         && !enemyUnits.isEmpty()
         && enemyUnits.stream().allMatch(Matches.unitIsInfrastructure())) {

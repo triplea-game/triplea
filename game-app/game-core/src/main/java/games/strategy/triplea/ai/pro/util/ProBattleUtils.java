@@ -201,9 +201,7 @@ public final class ProBattleUtils {
       final List<Unit> alliedUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
         alliedUnits.addAll(
-            nearbyTerritory
-                .getUnitCollection()
-                .getMatches(Matches.isUnitAllied(player, data.getRelationshipTracker())));
+            nearbyTerritory.getUnitCollection().getMatches(Matches.isUnitAllied(player)));
       }
       for (final ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
         for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {

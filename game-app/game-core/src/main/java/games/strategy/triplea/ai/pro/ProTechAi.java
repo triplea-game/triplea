@@ -184,8 +184,7 @@ final class ProTechAi {
                 enemyPlayer,
                 data,
                 enemyShip,
-                Matches.territoryIsBlockedSea(
-                    enemyPlayer, data.getProperties(), data.getRelationshipTracker()),
+                Matches.territoryIsBlockedSea(enemyPlayer, data.getProperties()),
                 r,
                 true);
         secondStrength = strength(ships, true, true, transportsFirst);
@@ -237,9 +236,7 @@ final class ProTechAi {
               availOther += other;
             }
             final Set<Territory> transNeighbors =
-                data.getMap()
-                    .getNeighbors(
-                        t4, Matches.isTerritoryAllied(enemyPlayer, data.getRelationshipTracker()));
+                data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer));
             for (final Territory transNeighbor : transNeighbors) {
               final List<Unit> transUnits =
                   transNeighbor.getUnitCollection().getMatches(enemyTransportable);
@@ -388,7 +385,7 @@ final class ProTechAi {
     final Predicate<Unit> blitzUnit =
         Matches.unitIsOwnedBy(enemyPlayer).and(Matches.unitCanBlitz()).and(Matches.unitCanMove());
     final Predicate<Territory> validBlitzRoute =
-        Matches.territoryHasNoEnemyUnits(enemyPlayer, data.getRelationshipTracker())
+        Matches.territoryHasNoEnemyUnits(enemyPlayer)
             .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data.getProperties()));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
@@ -499,7 +496,7 @@ final class ProTechAi {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
           if (lz == null
-              && Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(neighbor)
+              && Matches.isTerritoryAllied(player).test(neighbor)
               && !neighbor.isWater()) {
             lz = neighbor;
           }
@@ -559,7 +556,7 @@ final class ProTechAi {
         Matches.unitIsTransport().negate().and(Matches.unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
-            .and(Matches.alliedUnit(player, data.getRelationshipTracker()).negate())
+            .and(Matches.alliedUnit(player).negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
             .andIf(Properties.getIgnoreTransportInMovement(data.getProperties()), transport)
             .build();
@@ -588,7 +585,7 @@ final class ProTechAi {
     final List<Territory> territories = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, data);
     for (final Territory t : checkList) {
-      if (Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(t)
+      if (Matches.isTerritoryAllied(player).test(t)
           && Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties()).test(t)) {
         territories.add(t);
       }

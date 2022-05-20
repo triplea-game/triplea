@@ -149,9 +149,7 @@ public class MustFightBattle extends DependentBattle
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
     defendingUnits.addAll(
-        this.battleSite
-            .getUnitCollection()
-            .getMatches(Matches.enemyUnit(attacker, data.getRelationshipTracker())));
+        this.battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker)));
     maxRounds =
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
@@ -160,10 +158,7 @@ public class MustFightBattle extends DependentBattle
 
   void resetDefendingUnits(final GamePlayer attacker, final GameState data) {
     defendingUnits.clear();
-    defendingUnits.addAll(
-        battleSite
-            .getUnitCollection()
-            .getMatches(Matches.enemyUnit(attacker, data.getRelationshipTracker())));
+    defendingUnits.addAll(battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker)));
   }
 
   /** Used for head-less battles. */
@@ -292,8 +287,7 @@ public class MustFightBattle extends DependentBattle
       remaining.addAll(
           CollectionUtils.getMatches(
               unitsLeftInTerritory,
-              Matches.unitIsOwnedBy(defender)
-                  .or(Matches.enemyUnit(attacker, gameData.getRelationshipTracker()))));
+              Matches.unitIsOwnedBy(defender).or(Matches.enemyUnit(attacker))));
     }
     return new ArrayList<>(remaining);
   }
@@ -833,7 +827,7 @@ public class MustFightBattle extends DependentBattle
     // there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
     final Predicate<Unit> enemyUnitsThatPreventRetreat =
-        PredicateBuilder.of(Matches.enemyUnit(attacker, gameData.getRelationshipTracker()))
+        PredicateBuilder.of(Matches.enemyUnit(attacker))
             .and(Matches.unitIsNotInfrastructure())
             .and(Matches.unitIsBeingTransported().negate())
             .and(Matches.unitIsSubmerged().negate())
@@ -1459,8 +1453,7 @@ public class MustFightBattle extends DependentBattle
 
     // do we need to change ownership
     if (attackingUnits.stream().anyMatch(Matches.unitIsNotAir())) {
-      if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker, gameData.getRelationshipTracker())
-          .test(battleSite)) {
+      if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker).test(battleSite)) {
         battleTracker.addToConquered(battleSite);
       }
       battleTracker.takeOver(battleSite, attacker, bridge, null, attackingUnits);

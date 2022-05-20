@@ -566,7 +566,7 @@ class ProNonCombatMoveAi {
             data.getMap().getNeighbors(t, Matches.territoryIsLand());
         for (final Territory neighbor : landNeighbors) {
           double neighborProduction = TerritoryAttachment.getProduction(neighbor);
-          if (Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(neighbor)) {
+          if (Matches.isTerritoryAllied(player).test(neighbor)) {
             neighborProduction = 0.1 * neighborProduction;
           }
           neighborValue += neighborProduction;
@@ -2274,7 +2274,7 @@ class ProNonCombatMoveAi {
         final int numSeaAttackTerritories =
             CollectionUtils.countMatches(
                 possibleAttackTerritories,
-                Matches.territoryHasEnemySeaUnits(player, data.getRelationshipTracker())
+                Matches.territoryHasEnemySeaUnits(player)
                     .and(
                         Matches.territoryHasUnitsThatMatch(
                             Matches.unitHasSubBattleAbilities().negate())));

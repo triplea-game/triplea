@@ -332,7 +332,7 @@ public class TransportTracker {
         CollectionUtils.getMatches(attackingUnits, Matches.unitIsCarrier());
     if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data.getProperties())) {
       final Predicate<Unit> alliedFighters =
-          Matches.isUnitAllied(attacker, data.getRelationshipTracker())
+          Matches.isUnitAllied(attacker)
               .and(Matches.unitIsOwnedBy(attacker).negate())
               .and(Matches.unitIsAir())
               .and(Matches.unitCanLandOnCarrier());

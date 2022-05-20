@@ -97,7 +97,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         TechAbilityAttachment.getAirborneTargettedByAa(
             TechTracker.getCurrentTechAdvances(attacker, gameData.getTechnologyFrontier()));
     final Predicate<Unit> defenders =
-        Matches.enemyUnit(attacker, gameData.getRelationshipTracker())
+        Matches.enemyUnit(attacker)
             .and(
                 Matches.unitCanBeDamaged()
                     .or(
@@ -107,8 +107,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                             attacker,
                             Matches.unitIsAaForBombingThisUnitOnly(),
                             round,
-                            true,
-                            gameData.getRelationshipTracker())));
+                            true)));
     if (targets.isEmpty()) {
       defendingUnits = CollectionUtils.getMatches(battleSite.getUnits(), defenders);
     } else {
@@ -121,8 +120,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   attacker,
                   Matches.unitIsAaForBombingThisUnitOnly(),
                   round,
-                  true,
-                  gameData.getRelationshipTracker()));
+                  true));
       targets.addAll(this.targets.keySet());
       defendingUnits = targets;
     }
@@ -217,8 +215,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                     attacker,
                     Matches.unitIsAaForBombingThisUnitOnly(),
                     round,
-                    true,
-                    gameData.getRelationshipTracker()));
+                    true));
     aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
     // reverse since stacks are in reverse order
     Collections.reverse(aaTypes);

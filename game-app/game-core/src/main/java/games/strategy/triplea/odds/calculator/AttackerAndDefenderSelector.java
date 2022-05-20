@@ -91,9 +91,7 @@ public class AttackerAndDefenderSelector {
       final List<Unit> defendingUnits =
           defender == null
               ? List.of()
-              : territory
-                  .getUnitCollection()
-                  .getMatches(Matches.alliedUnit(defender, relationshipTracker));
+              : territory.getUnitCollection().getMatches(Matches.alliedUnit(defender));
 
       return AttackerAndDefender.builder()
           .attacker(currentPlayer)

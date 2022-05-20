@@ -100,8 +100,7 @@ public final class ProUtils {
   /** Computes PU production amount a given player currently has based on a given game data. */
   public static double getPlayerProduction(final GamePlayer player, final GameState data) {
     final Predicate<Territory> canCollectIncomeFrom =
-        Matches.territoryCanCollectIncomeFrom(
-            player, data.getProperties(), data.getRelationshipTracker());
+        Matches.territoryCanCollectIncomeFrom(player, data.getProperties());
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea
@@ -148,9 +147,7 @@ public final class ProUtils {
     capitals.retainAll(
         CollectionUtils.getMatches(
             capitals, Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
-    capitals.retainAll(
-        CollectionUtils.getMatches(
-            capitals, Matches.isTerritoryAllied(player, data.getRelationshipTracker())));
+    capitals.retainAll(CollectionUtils.getMatches(capitals, Matches.isTerritoryAllied(player)));
     return capitals;
   }
 

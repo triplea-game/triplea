@@ -351,7 +351,7 @@ public class AirBattle extends AbstractBattle {
             battleSite
                 .getUnitCollection()
                 .getMatches(
-                    Matches.enemyUnit(bridge.getGamePlayer(), gameData.getRelationshipTracker())
+                    Matches.enemyUnit(bridge.getGamePlayer())
                         .and(Matches.unitCanBeDamaged())
                         .and(Matches.unitIsBeingTransported().negate()));
         for (final Unit unit : bombers) {
