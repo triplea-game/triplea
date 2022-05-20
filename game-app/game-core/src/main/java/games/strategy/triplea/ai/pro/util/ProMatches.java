@@ -245,7 +245,7 @@ public final class ProMatches {
   public static Predicate<Territory> territoryCanMoveSeaUnitsThrough(
       final GameState data, final GamePlayer player, final boolean isCombatMove) {
     return territoryCanMoveSeaUnits(data, player, isCombatMove)
-        .and(territoryHasOnlyIgnoredUnits(player, data.getRelationshipTracker()));
+        .and(territoryHasOnlyIgnoredUnits(player));
   }
 
   public static Predicate<Territory> territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
@@ -255,15 +255,13 @@ public final class ProMatches {
       final List<Territory> clearedTerritories,
       final List<Territory> notTerritories) {
     final Predicate<Territory> onlyIgnoredOrClearedMatch =
-        territoryHasOnlyIgnoredUnits(player, data.getRelationshipTracker())
-            .or(clearedTerritories::contains);
+        territoryHasOnlyIgnoredUnits(player).or(clearedTerritories::contains);
     return territoryCanMoveSeaUnits(data, player, isCombatMove)
         .and(onlyIgnoredOrClearedMatch)
         .and(not(notTerritories::contains));
   }
 
-  private static Predicate<Territory> territoryHasOnlyIgnoredUnits(
-      final GamePlayer player, final RelationshipTracker relationshipTracker) {
+  private static Predicate<Territory> territoryHasOnlyIgnoredUnits(final GamePlayer player) {
     return t -> {
       final Predicate<Unit> subOnly =
           Matches.unitIsInfrastructure()

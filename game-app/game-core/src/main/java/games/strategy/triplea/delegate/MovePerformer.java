@@ -4,7 +4,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
@@ -148,8 +147,7 @@ public class MovePerformer implements Serializable {
             // if any non enemy territories on route or if any enemy units on route the battles
             // on (note water could have enemy but its not owned)
             final GameData data = bridge.getData();
-            final Predicate<Territory> mustFightThrough =
-                getMustFightThroughMatch(gamePlayer, data);
+            final Predicate<Territory> mustFightThrough = getMustFightThroughMatch(gamePlayer);
             final Collection<Unit> arrived =
                 Collections.unmodifiableList(CollectionUtils.intersection(units, arrivingUnits));
             // Reset Optional
@@ -321,8 +319,7 @@ public class MovePerformer implements Serializable {
     executionStack.execute(bridge);
   }
 
-  private static Predicate<Territory> getMustFightThroughMatch(
-      final GamePlayer gamePlayer, final GameState data) {
+  private static Predicate<Territory> getMustFightThroughMatch(final GamePlayer gamePlayer) {
     return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer)
         .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer))
         .or(Matches.isTerritoryNotUnownedWaterAndCanBeTakenOverBy(gamePlayer));

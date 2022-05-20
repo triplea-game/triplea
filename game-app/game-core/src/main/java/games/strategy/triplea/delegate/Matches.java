@@ -1317,9 +1317,8 @@ public final class Matches {
     return unit -> player.isAtWar(unit.getOwner());
   }
 
-  public static Predicate<Unit> enemyUnitOfAnyOfThesePlayers(
-      final Collection<GamePlayer> players, final RelationshipTracker relationshipTracker) {
-    return unit -> relationshipTracker.isAtWarWithAnyOfThesePlayers(unit.getOwner(), players);
+  public static Predicate<Unit> enemyUnitOfAnyOfThesePlayers(final Collection<GamePlayer> players) {
+    return unit -> unit.getOwner().isAtWarWithAnyOfThesePlayers(players);
   }
 
   public static Predicate<Unit> alliedUnit(final GamePlayer player) {
@@ -1447,7 +1446,7 @@ public final class Matches {
       }
       // cargo on a carrier
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-          MoveValidator.carrierMustMoveWith(units, units, relationshipTracker, currentPlayer);
+          MoveValidator.carrierMustMoveWith(units, units, currentPlayer);
       if (carrierMustMoveWith.values().stream().anyMatch(c -> c.contains(dependent))) {
         return true;
       }

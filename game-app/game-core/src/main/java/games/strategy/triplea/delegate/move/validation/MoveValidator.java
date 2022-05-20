@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -1573,9 +1572,7 @@ public class MoveValidator {
     sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>(transportsMustMoveWith(sortedUnits));
     // Check if there are combined transports (carriers that are transports) and load them.
-    addToMapping(
-        mapping,
-        carrierMustMoveWith(sortedUnits, start, start.getData().getRelationshipTracker(), player));
+    addToMapping(mapping, carrierMustMoveWith(sortedUnits, start, player));
     addToMapping(mapping, airTransportsMustMoveWith(sortedUnits, newDependents));
     return mapping;
   }
@@ -1627,18 +1624,12 @@ public class MoveValidator {
   }
 
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
-      final Collection<Unit> units,
-      final Territory start,
-      final RelationshipTracker relationshipTracker,
-      final GamePlayer player) {
-    return carrierMustMoveWith(units, start.getUnits(), relationshipTracker, player);
+      final Collection<Unit> units, final Territory start, final GamePlayer player) {
+    return carrierMustMoveWith(units, start.getUnits(), player);
   }
 
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
-      final Collection<Unit> units,
-      final Collection<Unit> startUnits,
-      final RelationshipTracker relationshipTracker,
-      final GamePlayer player) {
+      final Collection<Unit> units, final Collection<Unit> startUnits, final GamePlayer player) {
     // we want to get all air units that are owned by our allies but not us that can land on a
     // carrier
     final Predicate<Unit> friendlyNotOwnedAir =
@@ -1657,8 +1648,7 @@ public class MoveValidator {
     final Collection<Unit> alliedCarrier =
         CollectionUtils.getMatches(startUnits, friendlyNotOwnedCarrier);
     for (final Unit carrier : alliedCarrier) {
-      final Collection<Unit> carrying =
-          getCanCarry(carrier, alliedAir, player, relationshipTracker);
+      final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player);
       alliedAir.removeAll(carrying);
     }
     if (alliedAir.isEmpty()) {
@@ -1670,8 +1660,7 @@ public class MoveValidator {
         CollectionUtils.getMatches(
             units, Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player)));
     for (final Unit carrier : ownedCarrier) {
-      final Collection<Unit> carrying =
-          getCanCarry(carrier, alliedAir, player, relationshipTracker);
+      final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player);
       alliedAir.removeAll(carrying);
       mapping.put(carrier, carrying);
     }
@@ -1681,8 +1670,7 @@ public class MoveValidator {
   private static Collection<Unit> getCanCarry(
       final Unit carrier,
       final Collection<Unit> selectFrom,
-      final GamePlayer playerWhoIsDoingTheMovement,
-      final RelationshipTracker relationshipTracker) {
+      final GamePlayer playerWhoIsDoingTheMovement) {
     final UnitAttachment ua = UnitAttachment.get(carrier.getType());
     final Collection<Unit> canCarry = new ArrayList<>();
     int available = ua.getCarrierCapacity();

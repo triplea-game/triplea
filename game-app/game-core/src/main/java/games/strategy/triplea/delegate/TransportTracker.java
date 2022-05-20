@@ -293,7 +293,7 @@ public class TransportTracker {
       final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
     final Collection<Unit> alliedAir = new ArrayList<>();
-    MoveValidator.carrierMustMoveWith(units, units, relationshipTracker, player)
+    MoveValidator.carrierMustMoveWith(units, units, player)
         .forEach(
             (carrier, dependencies) -> {
               final UnitAttachment ua = UnitAttachment.get(carrier.getType());
