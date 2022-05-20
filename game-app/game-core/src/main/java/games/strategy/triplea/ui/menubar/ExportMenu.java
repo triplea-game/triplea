@@ -7,6 +7,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.export.GameDataExporter;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.history.HistoryNode;
@@ -167,7 +168,8 @@ final class ExportMenu extends JMenu {
     try (PrintWriter writer =
         new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8.toString())) {
       gameData.acquireReadLock();
-      final GameData clone = GameDataUtils.cloneGameData(gameData).orElse(null);
+      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+      final GameData clone = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
       if (clone == null) {
         return;
       }
@@ -394,7 +396,8 @@ final class ExportMenu extends JMenu {
     final GameData clonedGameData;
     gameData.acquireReadLock();
     try {
-      clonedGameData = GameDataUtils.cloneGameData(gameData).orElse(null);
+      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+      clonedGameData = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
       if (clonedGameData == null) {
         return;
       }

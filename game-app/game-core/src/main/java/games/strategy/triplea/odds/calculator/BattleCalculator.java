@@ -9,6 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.battle.BattleResults;
@@ -38,7 +39,10 @@ class BattleCalculator implements IBattleCalculator {
   }
 
   BattleCalculator(GameData data, Version engineVersion) {
-    this(GameDataUtils.cloneGameData(data, false, engineVersion).orElse(null));
+    this(
+        GameDataUtils.cloneGameData(
+                data, GameDataManager.Options.forBattleCalculator(), engineVersion)
+            .orElse(null));
   }
 
   BattleCalculator(byte[] data, Version engineVersion) {
