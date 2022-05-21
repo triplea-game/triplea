@@ -390,6 +390,8 @@ class ProPurchaseAi {
     territoryManager = new ProTerritoryManager(calc, proData);
 
     // Clear list of units to be consumed, since we only used for movement phase.
+    // Additionally, we omit units in this list when checking for eligible units to consume, so
+    // we need to clear it before we actually do placement.
     proData.getUnitsToBeConsumed().clear();
 
     if (purchaseTerritories != null) {

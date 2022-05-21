@@ -101,19 +101,16 @@ public final class ProPurchaseValidationUtils {
     if (error != null) {
       return false;
     }
-    return allRequiredUnitsPresent(proData, player, t, units);
+    return unitsToConsumeAreAllPresent(proData, player, t, units);
   }
 
-  private boolean allRequiredUnitsPresent(
-      ProData proData, GamePlayer player, Territory t, Collection<Unit> units) {
+  private boolean unitsToConsumeAreAllPresent(
+      ProData proData, GamePlayer player, Territory t, Collection<Unit> unitsToBuild) {
     // Check if units that must be consumed are all present, taking into account units that we
     // are already planning to consume.
     IntegerMap<UnitType> requiredUnits = new IntegerMap<>();
-    for (Unit unitToBuild : units) {
-      final UnitAttachment ua = UnitAttachment.get(unitToBuild.getType());
-      if (ua != null) {
-        requiredUnits.add(ua.getConsumesUnits());
-      }
+    for (Unit unitToBuild : unitsToBuild) {
+      requiredUnits.add(UnitAttachment.get(unitToBuild.getType()).getConsumesUnits());
     }
     if (requiredUnits.isEmpty()) {
       return true;
@@ -121,6 +118,7 @@ public final class ProPurchaseValidationUtils {
     IntegerMap<UnitType> eligibleTerritoryUnits = new IntegerMap<>();
     // TODO: This will need to change if consumed units may come from other territories.
     for (Unit u : t.getUnits()) {
+      // Don't consider units that we've already marked for use.
       if (!proData.getUnitsToBeConsumed().contains(u)
           && Matches.eligibleUnitToConsume(player, u.getType()).test(u)) {
         eligibleTerritoryUnits.add(u.getType(), 1);
