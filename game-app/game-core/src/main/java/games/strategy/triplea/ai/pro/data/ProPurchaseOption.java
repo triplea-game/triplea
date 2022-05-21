@@ -285,7 +285,7 @@ public class ProPurchaseOption {
     final List<Unit> units = new ArrayList<>();
     units.addAll(unitsToPlace);
     units.addAll(unitType.createTemp(1, player));
-    // Omit any units that will be consumed by the placed units here.
+    // Omit units that will be consumed by placing units here.
     Collection<Unit> toConsume = ProPurchaseUtils.getUnitsToConsume(player, ownedLocalUnits, units);
     units.addAll(CollectionUtils.difference(ownedLocalUnits, toConsume));
 

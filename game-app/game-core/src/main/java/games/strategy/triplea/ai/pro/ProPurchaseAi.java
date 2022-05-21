@@ -389,6 +389,7 @@ class ProPurchaseAi {
     player = proData.getPlayer();
     territoryManager = new ProTerritoryManager(calc, proData);
 
+    // Clear list of units to be consumed, since we only used for movement phase.
     proData.getUnitsToBeConsumed().clear();
 
     if (purchaseTerritories != null) {
@@ -2555,7 +2556,6 @@ class ProPurchaseAi {
           final int numUnits =
               Math.min(purchaseTerritory.getRemainingUnitProduction(), unitsToPlace.size());
           final List<Unit> units = unitsToPlace.subList(0, numUnits);
-          ppt.getPlaceUnits().addAll(units);
           addUnitsToPlace(ppt, units);
           units.clear();
         }
@@ -2565,13 +2565,16 @@ class ProPurchaseAi {
 
   private void addUnitsToPlace(ProPlaceTerritory ppt, Collection<Unit> unitsToPlace) {
     ppt.getPlaceUnits().addAll(unitsToPlace);
-    // TODO: If consumed units can come from the place territory, this will need to change.
-    Collection<Unit> existingUnits =
-        CollectionUtils.difference(ppt.getTerritory().getUnits(), proData.getUnitsToBeConsumed());
-    proData
-        .getUnitsToBeConsumed()
-        .addAll(ProPurchaseUtils.getUnitsToConsume(player, existingUnits, unitsToPlace));
     ProLogger.trace(ppt.getTerritory() + ", placedUnits=" + unitsToPlace);
+    // TODO: If consumed units can come from a different territory, this will need to change.
+    Collection<Unit> candidateUnitsToConsume =
+        CollectionUtils.difference(ppt.getTerritory().getUnits(), proData.getUnitsToBeConsumed());
+    Collection<Unit> toConsume =
+        ProPurchaseUtils.getUnitsToConsume(player, candidateUnitsToConsume, unitsToPlace);
+    if (!toConsume.isEmpty()) {
+      ProLogger.trace(" toConsume=" + toConsume);
+      proData.getUnitsToBeConsumed().addAll(toConsume);
+    }
   }
 
   private static void setCantHoldPlaceTerritory(

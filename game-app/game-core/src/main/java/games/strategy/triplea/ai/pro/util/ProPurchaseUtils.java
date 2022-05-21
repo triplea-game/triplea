@@ -336,14 +336,12 @@ public final class ProPurchaseUtils {
     Collection<Unit> unitsThatConsume =
         CollectionUtils.getMatches(unitsToPlace, Matches.unitConsumesUnitsOnCreation());
     Set<Unit> unitsToConsume = new HashSet<>();
-    for (Unit unitThatConsumes : unitsThatConsume) {
-      final UnitType unitThatConsumesType = unitThatConsumes.getType();
-      IntegerMap<UnitType> needed = UnitAttachment.get(unitThatConsumesType).getConsumesUnits();
-      for (UnitType neededUnitType : needed.keySet()) {
+    for (Unit unitToBuild : unitsThatConsume) {
+      IntegerMap<UnitType> needed = UnitAttachment.get(unitToBuild.getType()).getConsumesUnits();
+      for (UnitType neededType : needed.keySet()) {
         final Predicate<Unit> matcher =
-            Matches.eligibleUnitToConsume(player, neededUnitType)
-                .and(u -> !unitsToConsume.contains(u));
-        int neededCount = needed.getInt(neededUnitType);
+            Matches.eligibleUnitToConsume(player, neededType).and(u -> !unitsToConsume.contains(u));
+        int neededCount = needed.getInt(neededType);
         Collection<Unit> found = CollectionUtils.getNMatches(existingUnits, neededCount, matcher);
         // The caller should have already validated that the required units are present.
         Preconditions.checkState(found.size() == neededCount);
