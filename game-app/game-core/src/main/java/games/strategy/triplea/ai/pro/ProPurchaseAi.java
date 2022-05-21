@@ -1070,14 +1070,17 @@ class ProPurchaseAi {
 
       // Check for unplaced units
       final List<Unit> unitsToPlace = new ArrayList<>();
-      for (final Iterator<Unit> it = unplacedUnits.iterator(); it.hasNext(); ) {
+      for (final Iterator<Unit> it = unplacedUnits.iterator();
+          it.hasNext() && remainingUnitProduction > 0; ) {
         final Unit u = it.next();
-        if (remainingUnitProduction > 0
-            && ProPurchaseValidationUtils.canUnitBePlaced(proData, u, player, t, isBid)) {
+        unitsToPlace.add(u);
+        if (ProPurchaseValidationUtils.canUnitsBePlaced(
+            proData, unitsToPlace, player, t, t, isBid)) {
           remainingUnitProduction--;
-          unitsToPlace.add(u);
           it.remove();
           ProLogger.trace("Selected unplaced unit=" + u);
+        } else {
+          unitsToPlace.remove(unitsToPlace.size() - 1);
         }
       }
 
