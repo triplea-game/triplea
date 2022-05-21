@@ -158,7 +158,11 @@ public final class ProPurchaseValidationUtils {
                     purchaseOption, player, data, unitsToPlace, purchaseTerritories)
                 || hasReachedConstructionLimits(
                     purchaseOption, data, unitsToPlace, purchaseTerritories, territory)
-    || !unitsToConsumeAreAllPresent(proData, player, territory, combineLists(unitsToPlace, purchaseOption.createTempUnits())));
+                || !unitsToConsumeAreAllPresent(
+                    proData,
+                    player,
+                    territory,
+                    combineLists(unitsToPlace, purchaseOption.createTempUnits())));
   }
 
   private List<Unit> combineLists(List<Unit> l1, List<Unit> l2) {

@@ -2582,7 +2582,6 @@ class ProPurchaseAi {
       return;
     }
     ppt.getPlaceUnits().addAll(unitsToPlace);
-    System.err.println(ppt.getTerritory() + ", placedUnits=" + unitsToPlace);
     ProLogger.trace(ppt.getTerritory() + ", placedUnits=" + unitsToPlace);
     // TODO: If consumed units can come from a different territory, this will need to change.
     Collection<Unit> candidateUnitsToConsume =
@@ -2591,7 +2590,6 @@ class ProPurchaseAi {
         ProPurchaseUtils.getUnitsToConsume(player, candidateUnitsToConsume, unitsToPlace);
     if (!toConsume.isEmpty()) {
       ProLogger.trace(" toConsume=" + toConsume);
-      System.err.println("Planning to consume: " + toConsume + " in " + ppt.getTerritory());
       proData.getUnitsToBeConsumed().addAll(toConsume);
     }
   }
