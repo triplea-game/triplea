@@ -46,7 +46,7 @@ public class ProPurchaseUtilsTest {
 
   @Test
   void getUnitsToConsumeMultipleTypes() {
-    // Trench requires 1 material.
+    // Trench requires 1 material + fort requires 1 trench and 1 material.
     assertThat(
         getUnitsToConsume(List.of(fort2, material1, material2, trench2), List.of(trench1, fort1)),
         containsInAnyOrder(material1, material2, trench2));
@@ -54,7 +54,7 @@ public class ProPurchaseUtilsTest {
 
   @Test
   void getUnitsToConsumeNotEnough() {
-    /// An exception should be thrown if insufficient units.
+    // An exception should be thrown if insufficient units.
     assertThrows(
         IllegalStateException.class,
         () -> getUnitsToConsume(List.of(material1, material2), List.of(fort1)));
