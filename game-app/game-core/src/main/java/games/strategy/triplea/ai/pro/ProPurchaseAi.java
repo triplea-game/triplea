@@ -739,6 +739,7 @@ class ProPurchaseAi {
         while (true) {
           // Select purchase option
           ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+              proData,
               player,
               startOfTurnData,
               purchaseOptionsForTerritory,
@@ -782,8 +783,7 @@ class ProPurchaseAi {
           } else {
             remainingUnitProduction -= selectedOption.getQuantity();
           }
-          unitsToPlace.addAll(
-              selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player));
+          unitsToPlace.addAll(selectedOption.createTempUnits());
           if (selectedOption.isCarrier() || selectedOption.isAir()) {
             unusedCarrierCapacity =
                 ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
@@ -959,13 +959,16 @@ class ProPurchaseAi {
           ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, specialPurchaseOptions, t, isBid);
       ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+          proData,
           player,
           startOfTurnData,
           purchaseOptionsForTerritory,
           resourceTracker,
           remainingUnitProduction,
-          new ArrayList<>(),
-          purchaseTerritories);
+          List.of(),
+          purchaseTerritories,
+          0,
+          t);
       if (purchaseOptionsForTerritory.isEmpty()) {
         continue;
       }
@@ -992,9 +995,7 @@ class ProPurchaseAi {
 
       // Create new temp units
       resourceTracker.purchase(bestAaOption);
-      final List<Unit> unitsToPlace =
-          bestAaOption.getUnitType().createTemp(bestAaOption.getQuantity(), player);
-      addUnitsToPlace(placeTerritory, unitsToPlace);
+      addUnitsToPlace(placeTerritory, bestAaOption.createTempUnits());
     }
   }
 
@@ -1087,29 +1088,38 @@ class ProPurchaseAi {
       while (true) {
         // Remove options that cost too much PUs or production
         ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+            proData,
             player,
             startOfTurnData,
             landFodderOptions,
             resourceTracker,
             remainingUnitProduction,
             unitsToPlace,
-            purchaseTerritories);
+            purchaseTerritories,
+            0,
+            t);
         ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+            proData,
             player,
             startOfTurnData,
             landAttackOptions,
             resourceTracker,
             remainingUnitProduction,
             unitsToPlace,
-            purchaseTerritories);
+            purchaseTerritories,
+            0,
+            t);
         ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+            proData,
             player,
             startOfTurnData,
             landDefenseOptions,
             resourceTracker,
             remainingUnitProduction,
             unitsToPlace,
-            purchaseTerritories);
+            purchaseTerritories,
+            0,
+            t);
 
         // Select purchase option
         Optional<ProPurchaseOption> optionalSelectedOption = Optional.empty();
@@ -1149,8 +1159,7 @@ class ProPurchaseAi {
         // Create new temp units
         resourceTracker.purchase(selectedOption);
         remainingUnitProduction -= selectedOption.getQuantity();
-        unitsToPlace.addAll(
-            selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player));
+        unitsToPlace.addAll(selectedOption.createTempUnits());
         attackAndDefenseDifference += (selectedOption.getAttack() - selectedOption.getDefense());
         selectFodderUnit = ((double) addedFodderUnits / unitsToPlace.size() * 100) <= fodderPercent;
         ProLogger.trace("Selected unit=" + selectedOption.getUnitType().getName());
@@ -1333,12 +1342,13 @@ class ProPurchaseAi {
               proData, player, purchaseOptions.getFactoryOptions(), maxTerritory, isBid);
       resourceTracker.removeTempPurchase(maxPlacedOption);
       ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+          proData,
           player,
           startOfTurnData,
           purchaseOptionsForTerritory,
           resourceTracker,
           0,
-          new ArrayList<>(),
+          List.of(),
           purchaseTerritories,
           1,
           maxTerritory);
@@ -1362,8 +1372,7 @@ class ProPurchaseAi {
         factoryPurchaseTerritories.put(maxTerritory, factoryPurchaseTerritory);
         for (final ProPlaceTerritory ppt : factoryPurchaseTerritory.getCanPlaceTerritories()) {
           if (ppt.getTerritory().equals(maxTerritory)) {
-            final List<Unit> factory =
-                bestFactoryOption.getUnitType().createTemp(bestFactoryOption.getQuantity(), player);
+            final List<Unit> factory = bestFactoryOption.createTempUnits();
             addUnitsToPlace(ppt, factory);
             if (resourceTracker.hasEnough(bestFactoryOption)) {
               resourceTracker.purchase(bestFactoryOption);
@@ -1573,13 +1582,16 @@ class ProPurchaseAi {
 
             // Select purchase option
             ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+                proData,
                 player,
                 startOfTurnData,
                 seaPurchaseOptionsForTerritory,
                 resourceTracker,
                 remainingUnitProduction,
                 unitsToPlace,
-                purchaseTerritories);
+                purchaseTerritories,
+                0,
+                t);
             final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
             for (final ProPurchaseOption ppo : seaPurchaseOptionsForTerritory) {
               defenseEfficiencies.put(
@@ -1605,8 +1617,7 @@ class ProPurchaseAi {
             // Create new temp defenders
             resourceTracker.tempPurchase(selectedOption);
             remainingUnitProduction -= selectedOption.getQuantity();
-            unitsToPlace.addAll(
-                selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player));
+            unitsToPlace.addAll(selectedOption.createTempUnits());
             if (selectedOption.isCarrier() || selectedOption.isAir()) {
               unusedCarrierCapacity =
                   ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
@@ -1798,13 +1809,16 @@ class ProPurchaseAi {
 
           // Select purchase option
           ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+              proData,
               player,
               startOfTurnData,
               seaPurchaseOptionsForTerritory,
               resourceTracker,
               remainingUnitProduction,
               unitsToPlace,
-              purchaseTerritories);
+              purchaseTerritories,
+              0,
+              t);
           final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : seaPurchaseOptionsForTerritory) {
             defenseEfficiencies.put(
@@ -1830,8 +1844,7 @@ class ProPurchaseAi {
           // Create new temp units
           resourceTracker.purchase(selectedOption);
           remainingUnitProduction -= selectedOption.getQuantity();
-          unitsToPlace.addAll(
-              selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player));
+          unitsToPlace.addAll(selectedOption.createTempUnits());
           if (selectedOption.isCarrier() || selectedOption.isAir()) {
             unusedCarrierCapacity =
                 ProTransportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
@@ -1978,16 +1991,18 @@ class ProPurchaseAi {
 
             // Purchase units until transport is full
             while (transportCapacity > 0) {
-
               // Select amphib purchase option and add units
               ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+                  proData,
                   player,
                   startOfTurnData,
                   amphibPurchaseOptionsForTerritory,
                   resourceTracker,
                   remainingUnitProduction,
                   amphibUnitsToPlace,
-                  purchaseTerritories);
+                  purchaseTerritories,
+                  0,
+                  t);
               final Map<ProPurchaseOption, Double> amphibEfficiencies = new HashMap<>();
               for (final ProPurchaseOption ppo : amphibPurchaseOptionsForTerritory) {
                 if (ppo.getTransportCost() <= transportCapacity) {
@@ -2004,9 +2019,7 @@ class ProPurchaseAi {
               final ProPurchaseOption ppo = optionalSelectedOption.get();
 
               // Add amphib unit
-              final List<Unit> amphibUnits =
-                  ppo.getUnitType().createTemp(ppo.getQuantity(), player);
-              amphibUnitsToPlace.addAll(amphibUnits);
+              amphibUnitsToPlace.addAll(ppo.createTempUnits());
               resourceTracker.purchase(ppo);
               remainingUnitProduction -= ppo.getQuantity();
               transportCapacity -= ppo.getTransportCost();
@@ -2014,16 +2027,18 @@ class ProPurchaseAi {
             }
             transportsThatNeedUnits.remove(transport);
           } else {
-
             // Select purchase option
             ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+                proData,
                 player,
                 startOfTurnData,
                 seaTransportPurchaseOptionsForTerritory,
                 resourceTracker,
                 remainingUnitProduction,
                 transportUnitsToPlace,
-                purchaseTerritories);
+                purchaseTerritories,
+                0,
+                t);
             final Map<ProPurchaseOption, Double> transportEfficiencies = new HashMap<>();
             for (final ProPurchaseOption ppo : seaTransportPurchaseOptionsForTerritory) {
               transportEfficiencies.put(ppo, ppo.getTransportEfficiencyRatio());
@@ -2036,7 +2051,7 @@ class ProPurchaseAi {
             final ProPurchaseOption ppo = optionalSelectedOption.get();
 
             // Add transports
-            final List<Unit> transports = ppo.getUnitType().createTemp(ppo.getQuantity(), player);
+            final List<Unit> transports = ppo.createTempUnits();
             transportUnitsToPlace.addAll(transports);
             resourceTracker.purchase(ppo);
             remainingUnitProduction -= ppo.getQuantity();
@@ -2120,16 +2135,18 @@ class ProPurchaseAi {
       // Purchase long range attack units for any remaining production
       int remainingUnitProduction = purchaseTerritories.get(t).getRemainingUnitProduction();
       while (true) {
-
         // Remove options that cost too much PUs or production
         ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+            proData,
             player,
             startOfTurnData,
             purchaseOptionsForTerritory,
             resourceTracker,
             remainingUnitProduction,
             List.of(),
-            purchaseTerritories);
+            purchaseTerritories,
+            0,
+            t);
         if (purchaseOptionsForTerritory.isEmpty()) {
           break;
         }
@@ -2155,9 +2172,7 @@ class ProPurchaseAi {
         // Purchase unit
         resourceTracker.purchase(bestAttackOption);
         remainingUnitProduction -= bestAttackOption.getQuantity();
-        final List<Unit> newUnits =
-            bestAttackOption.getUnitType().createTemp(bestAttackOption.getQuantity(), player);
-        addUnitsToPlace(placeTerritory, newUnits);
+        addUnitsToPlace(placeTerritory, bestAttackOption.createTempUnits());
       }
     }
 
@@ -2187,16 +2202,18 @@ class ProPurchaseAi {
       // Purchase defense units for any remaining production
       int remainingUnitProduction = purchaseTerritories.get(t).getRemainingUnitProduction();
       while (true) {
-
         // Select purchase option
         ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+            proData,
             player,
             startOfTurnData,
             purchaseOptionsForTerritory,
             resourceTracker,
             remainingUnitProduction,
-            new ArrayList<>(),
-            purchaseTerritories);
+            List.of(),
+            purchaseTerritories,
+            0,
+            t);
         final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
         for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
           defenseEfficiencies.put(
@@ -2215,9 +2232,7 @@ class ProPurchaseAi {
         // Purchase unit
         resourceTracker.purchase(selectedOption);
         remainingUnitProduction -= selectedOption.getQuantity();
-        final List<Unit> newUnits =
-            selectedOption.getUnitType().createTemp(selectedOption.getQuantity(), player);
-        addUnitsToPlace(placeTerritory, newUnits);
+        addUnitsToPlace(placeTerritory, selectedOption.createTempUnits());
       }
     }
   }
@@ -2284,13 +2299,16 @@ class ProPurchaseAi {
         // Remove options that cost too much PUs or production
         resourceTracker.removeTempPurchase(minPurchaseOption);
         ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+            proData,
             player,
             startOfTurnData,
             purchaseOptionsForTerritory,
             resourceTracker,
             1,
-            new ArrayList<>(),
-            purchaseTerritories);
+            List.of(),
+            purchaseTerritories,
+            0,
+            t);
         resourceTracker.clearTempPurchases();
         if (purchaseOptionsForTerritory.isEmpty()) {
           break;
@@ -2354,9 +2372,7 @@ class ProPurchaseAi {
         for (int i = 0; i < unitsToRemove.size(); i++) {
           if (resourceTracker.hasEnough(bestUpgradeOption)) {
             resourceTracker.purchase(bestUpgradeOption);
-            final List<Unit> newUnits =
-                bestUpgradeOption.getUnitType().createTemp(bestUpgradeOption.getQuantity(), player);
-            addUnitsToPlace(placeTerritory, newUnits);
+            addUnitsToPlace(placeTerritory, bestUpgradeOption.createTempUnits());
           }
         }
       }
@@ -2406,7 +2422,6 @@ class ProPurchaseAi {
       final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories,
       final List<ProPlaceTerritory> needToDefendTerritories,
       final IAbstractPlaceDelegate placeDelegate) {
-
     ProLogger.info("Place defenders with units=" + player.getUnits());
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
@@ -2446,7 +2461,6 @@ class ProPurchaseAi {
       final List<Unit> unitsToPlace = new ArrayList<>();
       ProBattleResult finalResult = new ProBattleResult();
       for (int i = 0; i < landPlaceCount; i++) {
-
         // Add defender
         unitsToPlace.add(unitsThatCanBePlaced.get(i));
 
@@ -2500,7 +2514,6 @@ class ProPurchaseAi {
       final List<ProPlaceTerritory> prioritizedTerritories,
       final IAbstractPlaceDelegate placeDelegate,
       final Predicate<Unit> unitMatch) {
-
     ProLogger.info("Place units=" + player.getUnits());
 
     // Loop through prioritized territories and place units
@@ -2536,7 +2549,6 @@ class ProPurchaseAi {
       final ProPlaceTerritory placeTerritory,
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
-
     // Add units to place territory
     for (final ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
       for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
@@ -2566,7 +2578,11 @@ class ProPurchaseAi {
   }
 
   private void addUnitsToPlace(ProPlaceTerritory ppt, Collection<Unit> unitsToPlace) {
+    if (unitsToPlace.isEmpty()) {
+      return;
+    }
     ppt.getPlaceUnits().addAll(unitsToPlace);
+    System.err.println(ppt.getTerritory() + ", placedUnits=" + unitsToPlace);
     ProLogger.trace(ppt.getTerritory() + ", placedUnits=" + unitsToPlace);
     // TODO: If consumed units can come from a different territory, this will need to change.
     Collection<Unit> candidateUnitsToConsume =
@@ -2575,6 +2591,7 @@ class ProPurchaseAi {
         ProPurchaseUtils.getUnitsToConsume(player, candidateUnitsToConsume, unitsToPlace);
     if (!toConsume.isEmpty()) {
       ProLogger.trace(" toConsume=" + toConsume);
+      System.err.println("Planning to consume: " + toConsume + " in " + ppt.getTerritory());
       proData.getUnitsToBeConsumed().addAll(toConsume);
     }
   }
@@ -2598,10 +2615,8 @@ class ProPurchaseAi {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
     final List<ProPurchaseTerritory> territories = new ArrayList<>();
     for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
-      for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
-        if (placeTerritory.equals(ppt)) {
-          territories.add(t);
-        }
+      if (t.getCanPlaceTerritories().contains(placeTerritory)) {
+        territories.add(t);
       }
     }
     return territories;

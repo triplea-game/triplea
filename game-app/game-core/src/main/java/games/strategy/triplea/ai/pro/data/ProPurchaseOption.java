@@ -399,4 +399,8 @@ public class ProPurchaseOption {
             30)
         / quantity;
   }
+
+  public List<Unit> createTempUnits() {
+    return getUnitType().createTemp(getQuantity(), player);
+  }
 }

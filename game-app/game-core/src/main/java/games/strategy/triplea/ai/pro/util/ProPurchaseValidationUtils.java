@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -134,28 +135,9 @@ public final class ProPurchaseValidationUtils {
         && units.stream().anyMatch(Matches.unitIsCarrier());
   }
 
-  public static void removeInvalidPurchaseOptions(
-      final GamePlayer player,
-      final GameState data,
-      final List<ProPurchaseOption> purchaseOptions,
-      final ProResourceTracker resourceTracker,
-      final int remainingUnitProduction,
-      final List<Unit> unitsToPlace,
-      final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
-    ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
-        player,
-        data,
-        purchaseOptions,
-        resourceTracker,
-        remainingUnitProduction,
-        unitsToPlace,
-        purchaseTerritories,
-        0,
-        null);
-  }
-
   /** Removes any invalid purchase options from {@code purchaseOptions}. */
   public static void removeInvalidPurchaseOptions(
+      final ProData proData,
       final GamePlayer player,
       final GameState data,
       final List<ProPurchaseOption> purchaseOptions,
@@ -165,7 +147,6 @@ public final class ProPurchaseValidationUtils {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final int remainingConstructions,
       final Territory territory) {
-
     purchaseOptions.removeIf(
         purchaseOption ->
             !hasEnoughResourcesAndProduction(
@@ -176,7 +157,12 @@ public final class ProPurchaseValidationUtils {
                 || hasReachedMaxUnitBuiltPerPlayer(
                     purchaseOption, player, data, unitsToPlace, purchaseTerritories)
                 || hasReachedConstructionLimits(
-                    purchaseOption, data, unitsToPlace, purchaseTerritories, territory));
+                    purchaseOption, data, unitsToPlace, purchaseTerritories, territory)
+    || !unitsToConsumeAreAllPresent(proData, player, territory, combineLists(unitsToPlace, purchaseOption.createTempUnits())));
+  }
+
+  private List<Unit> combineLists(List<Unit> l1, List<Unit> l2) {
+    return Stream.concat(l1.stream(), l2.stream()).collect(Collectors.toList());
   }
 
   private static boolean hasEnoughResourcesAndProduction(
@@ -195,14 +181,12 @@ public final class ProPurchaseValidationUtils {
       final GameState data,
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
-
     // Check max unit limits (-1 is unlimited)
     final int maxBuilt = purchaseOption.getMaxBuiltPerPlayer();
     final UnitType type = purchaseOption.getUnitType();
     if (maxBuilt == 0) {
       return true;
     } else if (maxBuilt > 0) {
-
       // Find number of unit type that are already built and about to be placed
       final Predicate<Unit> unitTypeOwnedBy =
           Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
@@ -229,9 +213,7 @@ public final class ProPurchaseValidationUtils {
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Territory territory) {
-
     if (purchaseOption.isConstruction() && territory != null) {
-
       final int numConstructionTypeToPlace =
           ProPurchaseValidationUtils.findNumberOfConstructionTypeToPlace(
               purchaseOption, unitsToPlace, purchaseTerritories, territory);
@@ -255,7 +237,6 @@ public final class ProPurchaseValidationUtils {
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Territory territory) {
-
     int numConstructionTypeToPlace =
         CollectionUtils.countMatches(
             unitsToPlace, Matches.unitIsOfType(purchaseOption.getUnitType()));
@@ -274,7 +255,6 @@ public final class ProPurchaseValidationUtils {
 
   private static int findMaxConstructionTypeAllowed(
       final ProPurchaseOption purchaseOption, final GameState data, final Territory territory) {
-
     int maxConstructionType = purchaseOption.getMaxConstructionType();
     final String constructionType = purchaseOption.getConstructionType();
     if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)

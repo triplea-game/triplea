@@ -344,7 +344,8 @@ public final class ProPurchaseUtils {
         int neededCount = needed.getInt(neededType);
         Collection<Unit> found = CollectionUtils.getNMatches(existingUnits, neededCount, matcher);
         // The caller should have already validated that the required units are present.
-        Preconditions.checkState(found.size() == neededCount);
+        Preconditions.checkState(found.size() == neededCount,
+            "Not found: " + neededCount + " of " + neededType + " for " + unitsToPlace);
         unitsToConsume.addAll(found);
       }
     }
