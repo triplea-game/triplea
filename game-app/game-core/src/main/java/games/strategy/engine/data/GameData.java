@@ -19,6 +19,7 @@ import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.Util;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -53,19 +54,15 @@ import org.triplea.util.Version;
  * Units...) are protected by a read/write lock. If you are reading the game data, you should read
  * while you have the read lock as below.
  *
- * <p><code>
- * data.acquireReadLock();
- * try
- * {
- *   //read data here
+ * <pre>{@code
+ * try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
+ *   gameData.getStuff();
  * }
- * finally
- * {
- *   data.releaseReadLock();
- * }
- * </code> The exception is delegates within a start(), end() or any method called from an
- * IRemotePlayer through the delegates remote interface. The delegate will have a read lock for the
- * duration of those methods.
+ * }</pre>
+ *
+ * <p>The exception is delegates within a start(), end() or any method called from an IRemotePlayer
+ * through the delegates remote interface. The delegate will have a read lock for the duration of
+ * those methods.
  *
  * <p>Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made
  * through a DelegateBridge or through a History object.
@@ -368,12 +365,26 @@ public class GameData implements Serializable, GameState {
     delegates = new HashMap<>();
   }
 
+  public interface Unlocker extends Closeable {
+    @Override
+    void close();
+  }
+
   /**
    * No changes to the game data should be made unless this lock is held. calls to acquire lock will
-   * block if the lock is held, and will be held until the release method is called
+   * block if the lock is held, and will be held until the release method is called.
+   *
+   * <p>Example use:
+   *
+   * <pre>{@code
+   * try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
+   *   gameData.getStuff();
+   * }
+   * }</pre>
    */
-  public void acquireReadLock() {
+  public Unlocker acquireReadLock() {
     readWriteLock.readLock().lock();
+    return () -> releaseReadLock();
   }
 
   public void releaseReadLock() {
@@ -382,10 +393,19 @@ public class GameData implements Serializable, GameState {
 
   /**
    * No changes to the game data should be made unless this lock is held. calls to acquire lock will
-   * block if the lock is held, and will be held until the release method is called
+   * block if the lock is held, and will be held until the release method is called.
+   *
+   * <p>Example use:
+   *
+   * <pre>{@code
+   * try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
+   *   gameData.doStuff();
+   * }
+   * }</pre>
    */
-  public void acquireWriteLock() {
+  public Unlocker acquireWriteLock() {
     readWriteLock.writeLock().lock();
+    return () -> releaseWriteLock();
   }
 
   public void releaseWriteLock() {
@@ -503,11 +523,8 @@ public class GameData implements Serializable, GameState {
     if (areChangesOnlyInSwingEventThread()) {
       Util.ensureOnEventDispatchThread();
     }
-    try {
-      acquireWriteLock();
+    try (Unlocker ignored = acquireWriteLock()) {
       change.perform(this);
-    } finally {
-      releaseWriteLock();
     }
     dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
     GameDataEvent.lookupEvent(change).ifPresent(this::fireGameDataEvent);
@@ -530,11 +547,8 @@ public class GameData implements Serializable, GameState {
    * the lock will have been to no effect anyways!
    */
   public int getCurrentRound() {
-    try {
-      acquireReadLock();
+    try (GameData.Unlocker ignored = acquireReadLock()) {
       return getSequence().getRound();
-    } finally {
-      releaseReadLock();
     }
   }
 
