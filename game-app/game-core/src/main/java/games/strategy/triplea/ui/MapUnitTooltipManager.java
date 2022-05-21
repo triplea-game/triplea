@@ -153,7 +153,7 @@ public final class MapUnitTooltipManager implements ActionListener {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    if (text != null && text.length() > 0) {
+    if (text != null && text.length() > 0 && window != null && window.isActive()) {
       final Point currentPoint = MouseInfo.getPointerInfo().getLocation();
       if (isPointWithinParentBounds(currentPoint)) {
         final PopupFactory popupFactory = PopupFactory.getSharedInstance();
