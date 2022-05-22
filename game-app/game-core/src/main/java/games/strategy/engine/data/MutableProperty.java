@@ -2,8 +2,15 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.function.ThrowingConsumer;
 import org.triplea.java.function.ThrowingFunction;
 
@@ -101,6 +108,21 @@ public final class MutableProperty<T> {
 
   public T getValue() {
     return getter.get();
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public T getValueCopy() {
+    T value = getter.get();
+    if (value instanceof List) {
+      return (T) new ArrayList((List) value);
+    } else if (value instanceof IntegerMap) {
+      return (T) new IntegerMap((IntegerMap) value);
+    } else if (value instanceof Set) {
+      return (T) new HashSet((Set) value);
+    } else if (value instanceof Map) {
+      return (T) new HashMap((Map) value);
+    }
+    return value;
   }
 
   public void resetValue() {

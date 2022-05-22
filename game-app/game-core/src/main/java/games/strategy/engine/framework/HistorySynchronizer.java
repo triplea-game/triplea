@@ -4,7 +4,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.EventChild;
-import java.util.ConcurrentModificationException;
 import javax.swing.SwingUtilities;
 
 /**
@@ -27,15 +26,9 @@ public class HistorySynchronizer {
         public void gameDataChanged(final Change change) {
           SwingUtilities.invokeLater(
               () -> {
-                try {
+                try (GameData.Unlocker unused = gameData.acquireWriteLock()) {
                   final Change localizedChange = (Change) translateIntoMyData(change);
                   gameData.getHistory().getHistoryWriter().addChange(localizedChange);
-                } catch (ConcurrentModificationException e) {
-                  // Temporary instrumentation to diagnose root cause of:
-                  // https://github.com/triplea-game/triplea/issues/10274
-                  // Include the Change subclass name in the error.
-                  throw new ConcurrentModificationException(
-                      "Translating " + change.getClass().getName(), e);
                 }
               });
         }
