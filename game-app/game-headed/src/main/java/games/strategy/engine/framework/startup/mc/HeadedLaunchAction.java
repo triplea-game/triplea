@@ -156,9 +156,6 @@ public class HeadedLaunchAction implements LaunchAction {
                       ClientSetting.flush();
                       final int port = options.getPort();
                       if (port >= 65536 || port == 0) {
-                        if (HeadlessGameServer.headless()) {
-                          throw new IllegalStateException("Invalid Port: " + port);
-                        }
                         JOptionPane.showMessageDialog(
                             ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
                         return null;
