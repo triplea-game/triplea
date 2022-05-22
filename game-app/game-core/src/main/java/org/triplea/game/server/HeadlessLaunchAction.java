@@ -10,6 +10,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
+import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
@@ -107,5 +108,11 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public void handleError(String error) {
     log.error(error);
+  }
+
+  @Override
+  public IServerStartupRemote getStartupRemote(
+      IServerStartupRemote.ServerModelView serverModelView) {
+    return new HeadlessServerStartupRemote(serverModelView);
   }
 }

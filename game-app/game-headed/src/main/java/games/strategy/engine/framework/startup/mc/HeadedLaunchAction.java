@@ -184,4 +184,10 @@ public class HeadedLaunchAction implements LaunchAction {
   public void handleError(String error) {
     SwingComponents.showError(null, "Connection problem", error);
   }
+
+  @Override
+  public IServerStartupRemote getStartupRemote(
+      IServerStartupRemote.ServerModelView serverModelView) {
+    return new HeadedServerStartupRemote(serverModelView);
+  }
 }

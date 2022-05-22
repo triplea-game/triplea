@@ -16,7 +16,6 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameState;
-import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
@@ -30,12 +29,9 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.BindException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -106,161 +102,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
   @Getter @Nullable private LobbyWatcherThread lobbyWatcherThread;
   @Nullable private GameToLobbyConnection gameToLobbyConnection;
-
-  private final IServerStartupRemote serverStartupRemote =
-      new IServerStartupRemote() {
-        @Override
-        public PlayerListing getPlayerListing() {
-          return getPlayerListingInternal();
-        }
-
-        @Override
-        public void takePlayer(final INode who, final String playerName) {
-          takePlayerInternal(who, true, playerName);
-        }
-
-        @Override
-        public void releasePlayer(final INode who, final String playerName) {
-          takePlayerInternal(who, false, playerName);
-        }
-
-        @Override
-        public void disablePlayer(final String playerName) {
-          if (!HeadlessGameServer.headless()) {
-            return;
-          }
-          // we don't want the client's changing stuff for anyone but a bot
-          setPlayerEnabled(playerName, false);
-        }
-
-        @Override
-        public void enablePlayer(final String playerName) {
-          if (!HeadlessGameServer.headless()) {
-            return;
-          }
-          // we don't want the client's changing stuff for anyone but a bot
-          setPlayerEnabled(playerName, true);
-        }
-
-        @Override
-        public boolean isGameStarted(final INode newNode) {
-          if (serverLauncher != null) {
-            final RemoteName remoteName = getObserverWaitingToStartName(newNode);
-            final IObserverWaitingToJoin observerWaitingToJoinBlocking =
-                (IObserverWaitingToJoin) messengers.getRemote(remoteName);
-            final IObserverWaitingToJoin observerWaitingToJoinNonBlocking =
-                (IObserverWaitingToJoin) messengers.getRemote(remoteName, true);
-            serverLauncher.addObserver(
-                observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
-            return true;
-          }
-          return false;
-        }
-
-        @Override
-        public boolean getIsServerHeadless() {
-          return HeadlessGameServer.headless();
-        }
-
-        /**
-         * This should not be called from within game, only from the game setup screen, while
-         * everyone is waiting for game to start.
-         */
-        @Override
-        public byte[] getSaveGame() {
-          try {
-            return IoUtils.writeToMemory(
-                os ->
-                    GameDataManager.saveGame(
-                        os, data, Injections.getInstance().getEngineVersion()));
-          } catch (final IOException e) {
-            throw new IllegalStateException(e);
-          }
-        }
-
-        @Override
-        public byte[] getGameOptions() {
-          if (data == null
-              || data.getProperties() == null
-              || data.getProperties().getEditableProperties() == null
-              || data.getProperties().getEditableProperties().isEmpty()) {
-            return new byte[0];
-          }
-          final List<IEditableProperty<?>> currentEditableProperties =
-              data.getProperties().getEditableProperties();
-
-          try {
-            return GameProperties.writeEditableProperties(currentEditableProperties);
-          } catch (final IOException e) {
-            log.error("Failed to write game properties", e);
-          }
-          return new byte[0];
-        }
-
-        @Override
-        public Set<String> getAvailableGames() {
-          if (!HeadlessGameServer.headless()) {
-            return Set.of();
-          }
-          // Copy available games collection into a serializable collection
-          // so it can be sent over network.
-          return new HashSet<>(HeadlessGameServer.getInstance().getAvailableGames());
-        }
-
-        @Override
-        public void changeServerGameTo(final String gameName) {
-          if (!HeadlessGameServer.headless()) {
-            return;
-          }
-          HeadlessGameServer.getInstance().setGameMapTo(gameName);
-        }
-
-        @Override
-        public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
-          final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
-          if (headlessGameServer != null && Files.exists(autoSaveType.getFile())) {
-            headlessGameServer.loadGameSave(autoSaveType.getFile());
-          }
-        }
-
-        @Override
-        public void changeToGameSave(final byte[] bytes, final String fileName) {
-          // TODO: change to a string message return, so we can tell the user/requestor if it was
-          // successful or not, and why
-          // if not.
-          final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-          if (headless == null || bytes == null) {
-            return;
-          }
-          try {
-            IoUtils.consumeFromMemory(
-                bytes,
-                is -> {
-                  try (InputStream inputStream = new BufferedInputStream(is)) {
-                    headless.loadGameSave(inputStream);
-                  }
-                });
-          } catch (final Exception e) {
-            log.error("Failed to load save game: " + fileName, e);
-          }
-        }
-
-        @Override
-        public void changeToGameOptions(final byte[] bytes) {
-          // TODO: change to a string message return, so we can tell the user/requestor if it was
-          // successful or not, and why
-          // if not.
-          final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-          if (headless == null || bytes == null) {
-            return;
-          }
-          try {
-            headless.loadGameOptions(bytes);
-          } catch (final Exception e) {
-            log.error("Failed to load game options", e);
-          }
-        }
-      };
 
   public ServerModel(
       final GameSelectorModel gameSelectorModel,
@@ -384,7 +225,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       serverMessenger.addConnectionChangeListener(this);
 
       messengers = new Messengers(serverMessenger);
-      messengers.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
+      messengers.registerRemote(
+          launchAction.getStartupRemote(new DefaultServerModelView()), SERVER_REMOTE_NAME);
 
       @Nullable final GameHostingResponse gameHostingResponse;
 
@@ -698,5 +540,82 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
   public void setServerLauncher(final ServerLauncher launcher) {
     serverLauncher = launcher;
+  }
+
+  class DefaultServerModelView implements IServerStartupRemote.ServerModelView {
+    @Override
+    public PlayerListing getPlayerListing() {
+      return getPlayerListingInternal();
+    }
+
+    @Override
+    public void takePlayer(final INode who, final String playerName) {
+      takePlayerInternal(who, true, playerName);
+    }
+
+    @Override
+    public void releasePlayer(final INode who, final String playerName) {
+      takePlayerInternal(who, false, playerName);
+    }
+
+    @Override
+    public void disablePlayer(final String playerName) {
+      // we don't want the client's changing stuff for anyone but a bot
+      setPlayerEnabled(playerName, false);
+    }
+
+    @Override
+    public void enablePlayer(final String playerName) {
+      // we don't want the client's changing stuff for anyone but a bot
+      setPlayerEnabled(playerName, true);
+    }
+
+    @Override
+    public boolean isGameStarted(final INode newNode) {
+      if (serverLauncher != null) {
+        final RemoteName remoteName = getObserverWaitingToStartName(newNode);
+        final IObserverWaitingToJoin observerWaitingToJoinBlocking =
+            (IObserverWaitingToJoin) messengers.getRemote(remoteName);
+        final IObserverWaitingToJoin observerWaitingToJoinNonBlocking =
+            (IObserverWaitingToJoin) messengers.getRemote(remoteName, true);
+        serverLauncher.addObserver(
+            observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
+        return true;
+      }
+      return false;
+    }
+
+    /**
+     * This should not be called from within game, only from the game setup screen, while everyone
+     * is waiting for game to start.
+     */
+    @Override
+    public byte[] getSaveGame() {
+      try {
+        return IoUtils.writeToMemory(
+            os -> GameDataManager.saveGame(os, data, Injections.getInstance().getEngineVersion()));
+      } catch (final IOException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+
+    @Override
+    public byte[] getGameOptions() {
+      if (data == null
+          || data.getProperties() == null
+          || data.getProperties().getEditableProperties() == null
+          || data.getProperties().getEditableProperties().isEmpty()) {
+        return new byte[0];
+      }
+      final List<IEditableProperty<?>> currentEditableProperties =
+          data.getProperties().getEditableProperties();
+
+      try {
+        return GameProperties.writeEditableProperties(currentEditableProperties);
+      } catch (final IOException e) {
+        log.error("Failed to write game properties", e);
+      }
+      return new byte[0];
+    }
   }
 }
