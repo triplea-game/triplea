@@ -130,7 +130,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
       effect = new BigDecimal(iter.next());
     } catch (final NumberFormatException e) {
       throw new IllegalArgumentException(
-          "Attachments: " + value + " is not a valid decimal value", e);
+          "Attachments: " + s[0] + " is not a valid decimal value", e);
     }
     while (iter.hasNext()) {
       if (movementCostModifier == null) {
