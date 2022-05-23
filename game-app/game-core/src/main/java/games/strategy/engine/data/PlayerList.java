@@ -2,7 +2,6 @@ package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,7 +12,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
