@@ -37,10 +37,8 @@ public class ClientGame extends AbstractGame {
         new IGameModifiedChannel() {
           @Override
           public void gameDataChanged(final Change change) {
-            try (GameData.Unlocker unused = gameData.acquireWriteLock()) {
-              gameData.performChange(change);
-              gameData.getHistory().getHistoryWriter().addChange(change);
-            }
+            gameData.performChange(change);
+            gameData.getHistory().getHistoryWriter().addChange(change);
           }
 
           @Override
