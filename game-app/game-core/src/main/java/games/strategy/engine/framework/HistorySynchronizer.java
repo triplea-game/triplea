@@ -100,7 +100,7 @@ public class HistorySynchronizer {
     }
     gameData = data;
     gameData.forceChangesOnlyInSwingEventThread();
-    try (GameData.Unlocker unused = data.acquireReadLock()) {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       currentRound = data.getSequence().getRound();
     }
     this.game = game;
