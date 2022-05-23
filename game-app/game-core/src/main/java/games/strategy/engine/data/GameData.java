@@ -526,7 +526,7 @@ public class GameData implements Serializable, GameState {
     try (Unlocker ignored = acquireWriteLock()) {
       change.perform(this);
     }
-    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
+    dataChangeListeners.forEach(listener -> listener.gameDataChanged(change));
     GameDataEvent.lookupEvent(change).ifPresent(this::fireGameDataEvent);
   }
 

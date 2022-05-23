@@ -182,7 +182,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
   private final Runnable clientLeftGame;
-  private ObjectivePanel objectivePanel;
+  private @Nullable ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetails;
   private final JPanel historyComponent = new JPanel();
   private HistoryPanel historyPanel;
@@ -1759,8 +1759,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     inGame.set(false);
     setWidgetActivation();
     final GameData clonedGameData;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       // we want to use a clone of the data, so we can make changes to it as we walk up and down the
       // history
       final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
@@ -1774,8 +1773,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       }
       historySyncher = new HistorySynchronizer(clonedGameData, game);
       clonedGameData.addDataChangeListener(dataChangeListener);
-    } finally {
-      data.releaseReadLock();
     }
     statsPanel.setGameData(clonedGameData);
     economyPanel.setGameData(clonedGameData);

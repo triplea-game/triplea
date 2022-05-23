@@ -6,9 +6,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -76,16 +76,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return Integer.parseInt(value);
     } catch (final NumberFormatException e) {
       throw new IllegalArgumentException("Attachments: " + value + " is not a valid int value", e);
-    }
-  }
-
-  /** Throws an error if format is invalid. */
-  protected static BigDecimal getBigDecimal(final String value) {
-    try {
-      return new BigDecimal(value);
-    } catch (final NumberFormatException e) {
-      throw new IllegalArgumentException(
-          "Attachments: " + value + " is not a valid decimal value", e);
     }
   }
 
@@ -215,5 +205,19 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return IntegerMap.of();
     }
     return IntegerMap.unmodifiableViewOf(value);
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public static Object copyPropertyValue(Object value) {
+    if (value instanceof List) {
+      return new ArrayList((List) value);
+    } else if (value instanceof IntegerMap) {
+      return new IntegerMap((IntegerMap) value);
+    } else if (value instanceof Set) {
+      return new HashSet((Set) value);
+    } else if (value instanceof Map) {
+      return new HashMap((Map) value);
+    }
+    return value;
   }
 }
