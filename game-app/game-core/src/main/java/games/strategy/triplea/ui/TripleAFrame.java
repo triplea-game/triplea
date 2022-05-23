@@ -1881,7 +1881,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                                     Injections.getInstance().getEngineVersion())
                                 .orElse(null);
                         if (datacopy != null) {
-                          datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
                           datacopy
                               .getHistory()
                               .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
@@ -1901,14 +1900,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                               datacopy.getSequence().getStep(0).getDisplayName();
                           GamePlayer currentPlayer =
                               datacopy.getSequence().getStep(0).getPlayerId();
+                          int roundOffset = datacopy.getSequence().getRoundOffset();
                           while (enumeration.hasMoreElements()) {
                             final HistoryNode node = (HistoryNode) enumeration.nextElement();
                             if (node instanceof Round) {
-                              round =
-                                  Math.max(
-                                      0,
-                                      ((Round) node).getRoundNo()
-                                          - datacopy.getSequence().getRoundOffset());
+                              round = Math.max(0, ((Round) node).getRoundNo() - roundOffset);
                               currentPlayer = null;
                               stepDisplayName = node.getTitle();
                             } else if (node instanceof Step) {

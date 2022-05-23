@@ -8,8 +8,8 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -133,22 +133,25 @@ public class History extends DefaultTreeModel {
    */
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
     assertCorrectThread();
-    gotoNode(removeAfterNode);
+    if (!seekingEnabled) {
+      nextChangeIndex = changes.size();
+      seekingEnabled = true;
+    }
+    gotoNode(getNearestLeafAtOrBefore(removeAfterNode).orElse((HistoryNode) getRoot()));
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
-      final int lastChange = getLastChange(removeAfterNode) + 1;
-      if (changes.size() > lastChange) {
-        changes.subList(lastChange, changes.size()).clear();
+      if (changes.size() > nextChangeIndex) {
+        changes.subList(nextChangeIndex, changes.size()).clear();
       }
       final Enumeration<?> enumeration =
           ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
       enumeration.nextElement();
       boolean startRemoving = false;
-      final LinkedList<HistoryNode> nodesToRemove = new LinkedList<>();
+      final List<HistoryNode> nodesToRemove = new ArrayList<>();
       while (enumeration.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) enumeration.nextElement();
         if (node instanceof IndexedHistoryNode) {
           final int index = ((IndexedHistoryNode) node).getChangeStartIndex();
-          if (index >= lastChange) {
+          if (index >= nextChangeIndex) {
             startRemoving = true;
           }
           if (startRemoving) {
@@ -156,10 +159,17 @@ public class History extends DefaultTreeModel {
           }
         }
       }
-      while (!nodesToRemove.isEmpty()) {
-        removeNodeFromParent(nodesToRemove.removeFirst());
+      for (HistoryNode node : nodesToRemove) {
+        removeNodeFromParent(node);
       }
     }
+  }
+
+  public Optional<HistoryNode> getNearestLeafAtOrBefore(HistoryNode node) {
+    if (node.isLeaf()) {
+      return Optional.of(node);
+    }
+    return Optional.ofNullable((HistoryNode) node.getPreviousLeaf());
   }
 
   synchronized void changeAdded(final Change change) {
