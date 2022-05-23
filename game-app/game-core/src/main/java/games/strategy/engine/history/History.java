@@ -4,13 +4,11 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -59,13 +57,6 @@ public class History extends DefaultTreeModel {
     if (panel != null) {
       panel.goToEnd();
     }
-  }
-
-  public Optional<GamePlayer> getActivePlayer() {
-    if (currentNode instanceof Step) {
-      return GamePlayer.asOptional(((Step) currentNode).getPlayerId());
-    }
-    return Optional.empty();
   }
 
   public HistoryNode getLastNode() {
