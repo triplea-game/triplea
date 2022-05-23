@@ -2,15 +2,8 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.function.ThrowingConsumer;
 import org.triplea.java.function.ThrowingFunction;
 
