@@ -115,8 +115,6 @@ public class History extends DefaultTreeModel {
   /** Changes the game state to reflect the historical state at {@code node}. */
   public synchronized void gotoNode(final HistoryNode node) {
     assertCorrectThread();
-    // Setting node to null causes problems, because we'll restore the state to the start, but then
-    // the next gotoNode() call will reset currentNode to getLastNode() causing an invalid delta.
     Preconditions.checkNotNull(node);
     Preconditions.checkState(seekingEnabled);
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
