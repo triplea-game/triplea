@@ -55,9 +55,9 @@ public class History extends DefaultTreeModel {
     Preconditions.checkNotNull(panel);
     Preconditions.checkState(!seekingEnabled);
     this.panel = panel;
-    HistoryNode lastNode = getLastNode();
-    nextChangeIndex = getLastChange(lastNode);
+    nextChangeIndex = changes.size();
     seekingEnabled = true;
+    HistoryNode lastNode = getLastNode();
     gotoNode(lastNode);
     return lastNode;
   }
