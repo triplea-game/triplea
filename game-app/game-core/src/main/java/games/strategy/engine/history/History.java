@@ -8,6 +8,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -131,18 +132,18 @@ public class History extends DefaultTreeModel {
    * removes all changes that occurred after this node.
    */
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
-    gotoNode(removeAfterNode);
     assertCorrectThread();
+    gotoNode(removeAfterNode);
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
       final int lastChange = getLastChange(removeAfterNode) + 1;
-      while (changes.size() > lastChange) {
-        changes.remove(lastChange);
+      if (changes.size() > lastChange) {
+        changes.subList(lastChange, changes.size()).clear();
       }
       final Enumeration<?> enumeration =
           ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
       enumeration.nextElement();
       boolean startRemoving = false;
-      final List<HistoryNode> nodesToRemove = new ArrayList<>();
+      final LinkedList<HistoryNode> nodesToRemove = new LinkedList<>();
       while (enumeration.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) enumeration.nextElement();
         if (node instanceof IndexedHistoryNode) {
@@ -156,7 +157,7 @@ public class History extends DefaultTreeModel {
         }
       }
       while (!nodesToRemove.isEmpty()) {
-        removeNodeFromParent(nodesToRemove.remove(0));
+        removeNodeFromParent(nodesToRemove.removeFirst());
       }
     }
   }
