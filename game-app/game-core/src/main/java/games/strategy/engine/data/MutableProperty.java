@@ -110,21 +110,6 @@ public final class MutableProperty<T> {
     return getter.get();
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public T getValueCopy() {
-    T value = getter.get();
-    if (value instanceof List) {
-      return (T) new ArrayList((List) value);
-    } else if (value instanceof IntegerMap) {
-      return (T) new IntegerMap((IntegerMap) value);
-    } else if (value instanceof Set) {
-      return (T) new HashSet((Set) value);
-    } else if (value instanceof Map) {
-      return (T) new HashMap((Map) value);
-    }
-    return value;
-  }
-
   public void resetValue() {
     resetter.run();
   }
