@@ -61,13 +61,6 @@ public class History extends DefaultTreeModel {
     }
   }
 
-  public Optional<GamePlayer> getActivePlayer() {
-    if (currentNode instanceof Step) {
-      return GamePlayer.asOptional(((Step) currentNode).getPlayerId());
-    }
-    return Optional.empty();
-  }
-
   public HistoryNode getLastNode() {
     assertCorrectThread();
     return getLastChildInternal((HistoryNode) getRoot());
