@@ -125,7 +125,13 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
           "movementCostModifier must have a count and at least one unitType" + thisErrorMsg());
     }
     final Iterator<String> iter = List.of(s).iterator();
-    final BigDecimal effect = getBigDecimal(iter.next());
+    final BigDecimal effect;
+    try {
+      effect = new BigDecimal(iter.next());
+    } catch (final NumberFormatException e) {
+      throw new IllegalArgumentException(
+          "Attachments: " + value + " is not a valid decimal value", e);
+    }
     while (iter.hasNext()) {
       if (movementCostModifier == null) {
         movementCostModifier = new HashMap<>();
