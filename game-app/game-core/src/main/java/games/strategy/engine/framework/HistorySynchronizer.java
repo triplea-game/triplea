@@ -25,8 +25,8 @@ public class HistorySynchronizer {
         public void gameDataChanged(final Change change) {
           SwingUtilities.invokeLater(
               () -> {
-                  final Change localizedChange = (Change) translateIntoMyData(change);
-                  gameData.getHistory().getHistoryWriter().addChange(localizedChange);
+                final Change localizedChange = (Change) translateIntoMyData(change);
+                gameData.getHistory().getHistoryWriter().addChange(localizedChange);
               });
         }
 
