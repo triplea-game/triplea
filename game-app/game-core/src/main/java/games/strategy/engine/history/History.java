@@ -9,6 +9,7 @@ import games.strategy.ui.Util;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -131,12 +132,15 @@ public class History extends DefaultTreeModel {
    * removes all changes that occurred after this node.
    */
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
-    gotoNode(removeAfterNode);
     assertCorrectThread();
+    if (!seekingEnabled) {
+      nextChangeIndex = changes.size();
+      seekingEnabled = true;
+    }
+    gotoNode(getNearestLeafAtOrBefore(removeAfterNode).orElse((HistoryNode) getRoot()));
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
-      final int lastChange = getLastChange(removeAfterNode) + 1;
-      while (changes.size() > lastChange) {
-        changes.remove(lastChange);
+      if (changes.size() > nextChangeIndex) {
+        changes.subList(nextChangeIndex, changes.size()).clear();
       }
       final Enumeration<?> enumeration =
           ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
@@ -147,7 +151,7 @@ public class History extends DefaultTreeModel {
         final HistoryNode node = (HistoryNode) enumeration.nextElement();
         if (node instanceof IndexedHistoryNode) {
           final int index = ((IndexedHistoryNode) node).getChangeStartIndex();
-          if (index >= lastChange) {
+          if (index >= nextChangeIndex) {
             startRemoving = true;
           }
           if (startRemoving) {
@@ -155,10 +159,17 @@ public class History extends DefaultTreeModel {
           }
         }
       }
-      while (!nodesToRemove.isEmpty()) {
-        removeNodeFromParent(nodesToRemove.remove(0));
+      for (HistoryNode node : nodesToRemove) {
+        removeNodeFromParent(node);
       }
     }
+  }
+
+  public Optional<HistoryNode> getNearestLeafAtOrBefore(HistoryNode node) {
+    if (node.isLeaf()) {
+      return Optional.of(node);
+    }
+    return Optional.ofNullable((HistoryNode) node.getPreviousLeaf());
   }
 
   synchronized void changeAdded(final Change change) {
