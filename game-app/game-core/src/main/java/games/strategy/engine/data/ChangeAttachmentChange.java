@@ -25,7 +25,7 @@ public class ChangeAttachmentChange extends Change {
         attachment.getAttachedTo(),
         attachment.getName(),
         newValue,
-        attachment.getPropertyOrThrow(property).getValueCopy(),
+        DefaultAttachment.copyPropertyValue(attachment.getPropertyOrThrow(property).getValue()),
         property,
         false);
   }
@@ -43,7 +43,7 @@ public class ChangeAttachmentChange extends Change {
         attachment.getAttachedTo(),
         attachment.getName(),
         newValue,
-        attachment.getPropertyOrThrow(property).getValueCopy(),
+        DefaultAttachment.copyPropertyValue(attachment.getPropertyOrThrow(property).getValue()),
         property,
         clearFirst);
   }

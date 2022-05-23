@@ -9,6 +9,7 @@ import games.strategy.triplea.Constants;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -215,5 +216,19 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return IntegerMap.of();
     }
     return IntegerMap.unmodifiableViewOf(value);
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public static Object copyPropertyValue(Object value) {
+    if (value instanceof List) {
+      return new ArrayList((List) value);
+    } else if (value instanceof IntegerMap) {
+      return new IntegerMap((IntegerMap) value);
+    } else if (value instanceof Set) {
+      return new HashSet((Set) value);
+    } else if (value instanceof Map) {
+      return new HashMap((Map) value);
+    }
+    return value;
   }
 }
