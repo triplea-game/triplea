@@ -25,10 +25,8 @@ public class HistorySynchronizer {
         public void gameDataChanged(final Change change) {
           SwingUtilities.invokeLater(
               () -> {
-                try (GameData.Unlocker unused = gameData.acquireWriteLock()) {
                   final Change localizedChange = (Change) translateIntoMyData(change);
                   gameData.getHistory().getHistoryWriter().addChange(localizedChange);
-                }
               });
         }
 
