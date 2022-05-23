@@ -31,8 +31,10 @@ public class History extends DefaultTreeModel {
   private final HistoryWriter writer = new HistoryWriter(this);
   private final List<Change> changes = new ArrayList<>();
   private final GameData gameData;
-  private HistoryNode currentNode;
-  private HistoryPanel panel = null;
+  private HistoryPanel panel;
+  // Index at which point we are in history. Only valid if seekingEnabled is true.
+  private int nextChangeIndex;
+  private boolean seekingEnabled = false;
 
   public History(final GameData data) {
     super(new RootHistoryNode("Game History"));
@@ -49,8 +51,15 @@ public class History extends DefaultTreeModel {
     return writer;
   }
 
-  public void setTreePanel(final HistoryPanel panel) {
+  public HistoryNode enableSeeking(final HistoryPanel panel) {
+    Preconditions.checkNotNull(panel);
+    Preconditions.checkState(!seekingEnabled);
     this.panel = panel;
+    nextChangeIndex = changes.size();
+    seekingEnabled = true;
+    HistoryNode lastNode = getLastNode();
+    gotoNode(lastNode);
+    return lastNode;
   }
 
   public void goToEnd() {
@@ -95,37 +104,25 @@ public class History extends DefaultTreeModel {
     return lastChangeIndex;
   }
 
-  public Change getDelta(final HistoryNode start, final HistoryNode end) {
-    assertCorrectThread();
-    final int firstChange = getLastChange(start);
-    final int lastChange = getLastChange(end);
-    if (firstChange == lastChange) {
-      return null;
-    }
+  private Change getDeltaTo(int changeIndex) {
     final List<Change> deltaChanges =
-        changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
+        changes.subList(
+            Math.min(nextChangeIndex, changeIndex), Math.max(nextChangeIndex, changeIndex));
     final Change compositeChange = new CompositeChange(deltaChanges);
-    return (lastChange >= firstChange) ? compositeChange : compositeChange.invert();
+    return (changeIndex >= nextChangeIndex) ? compositeChange : compositeChange.invert();
   }
 
   /** Changes the game state to reflect the historical state at {@code node}. */
   public synchronized void gotoNode(final HistoryNode node) {
-    // Setting node to null causes problems, because we'll restore the state to the start, but then
-    // next gotoNode() call will reset currentNode to getLastNode() causing an invalid delta.
-    Preconditions.checkNotNull(node);
     assertCorrectThread();
-    gameData.acquireWriteLock();
-    try {
-      if (currentNode == null) {
-        currentNode = getLastNode();
+    Preconditions.checkNotNull(node);
+    Preconditions.checkState(seekingEnabled);
+    try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
+      final int nodeChangeIndex = getLastChange(node);
+      if (nodeChangeIndex != nextChangeIndex) {
+        gameData.performChange(getDeltaTo(nodeChangeIndex));
+        nextChangeIndex = nodeChangeIndex;
       }
-      final Change dataChange = getDelta(currentNode, node);
-      currentNode = node;
-      if (dataChange != null) {
-        gameData.performChange(dataChange);
-      }
-    } finally {
-      gameData.releaseWriteLock();
     }
   }
 
@@ -136,8 +133,7 @@ public class History extends DefaultTreeModel {
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
     gotoNode(removeAfterNode);
     assertCorrectThread();
-    gameData.acquireWriteLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
       final int lastChange = getLastChange(removeAfterNode) + 1;
       while (changes.size() > lastChange) {
         changes.remove(lastChange);
@@ -160,20 +156,16 @@ public class History extends DefaultTreeModel {
         }
       }
       while (!nodesToRemove.isEmpty()) {
-        this.removeNodeFromParent(nodesToRemove.remove(0));
+        removeNodeFromParent(nodesToRemove.remove(0));
       }
-    } finally {
-      gameData.releaseWriteLock();
     }
   }
 
   synchronized void changeAdded(final Change change) {
     changes.add(change);
-    if (currentNode == null) {
-      return;
-    }
-    if (currentNode == getLastNode()) {
+    if (seekingEnabled && nextChangeIndex == changes.size()) {
       gameData.performChange(change);
+      nextChangeIndex = changes.size();
     }
   }
 

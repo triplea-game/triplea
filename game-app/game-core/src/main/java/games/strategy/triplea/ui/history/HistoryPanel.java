@@ -80,7 +80,6 @@ public class HistoryPanel extends JPanel {
     tree = new JTree(this.data.getHistory());
     // Register the tree with the tooltip manager to make the tooltips we set work.
     ToolTipManager.sharedInstance().registerComponent(tree);
-    this.data.getHistory().setTreePanel(this);
     tree.expandRow(0);
     this.popup = popup;
     tree.add(this.popup);
@@ -112,12 +111,10 @@ public class HistoryPanel extends JPanel {
     scroll.setBorder(null);
     scroll.setViewportBorder(null);
     add(scroll, BorderLayout.CENTER);
+    HistoryNode node = data.getHistory().enableSeeking(this);
     tree.setEditable(false);
-    final HistoryNode node = this.data.getHistory().getLastNode();
-    this.data.getHistory().gotoNode(node);
     tree.expandPath(new TreePath(node.getPath()));
     tree.setSelectionPath(new TreePath(node.getPath()));
-    currentPopupNode = null;
     final JButton previousButton = new JButton("<-Back");
     previousButton.addMouseListener(mouseFocusListener);
     previousButton.addActionListener(e -> previous());
