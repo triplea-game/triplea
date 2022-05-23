@@ -4,13 +4,11 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
