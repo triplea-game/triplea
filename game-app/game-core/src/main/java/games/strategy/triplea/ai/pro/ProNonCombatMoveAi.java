@@ -1,5 +1,8 @@
 package games.strategy.triplea.ai.pro;
 
+import static java.util.function.Predicate.not;
+
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
@@ -237,20 +240,23 @@ class ProNonCombatMoveAi {
     final List<ProTransport> transportMapList =
         territoryManager.getDefendOptions().getTransportList();
 
-    // Add all units that can't move (allied units, 0 move units, etc)
+    // Add all units that can't move (to be consumed, allied units, 0 move units, etc)
     for (final Territory t : moveMap.keySet()) {
       final ProTerritory proTerritory = moveMap.get(t);
+      Preconditions.checkState(proTerritory.getCantMoveUnits().isEmpty());
+
+      // Mark any any units that will be consumed as "can't move".
+      final Collection<Unit> toBeConsumedHere =
+          CollectionUtils.intersection(t.getUnits(), proData.getUnitsToBeConsumed());
+      proTerritory.addCantMoveUnits(toBeConsumedHere);
+
       final Collection<Unit> alliedDefenders =
           t.getUnitCollection()
               .getMatches(
                   ProMatches.unitCantBeMovedAndIsAlliedDefender(
-                      player, data.getRelationshipTracker(), t));
-      proTerritory.getCantMoveUnits().addAll(alliedDefenders);
-
-      // Also mark any any units that will be consumed as "can't move".
-      final Collection<Unit> toBeConsumedHere =
-          CollectionUtils.intersection(t.getUnits(), proData.getUnitsToBeConsumed());
-      proTerritory.getCantMoveUnits().addAll(toBeConsumedHere);
+                          player, data.getRelationshipTracker(), t)
+                      .and(not(toBeConsumedHere::contains)));
+      proTerritory.addCantMoveUnits(alliedDefenders);
     }
 
     // Add all units that only have 1 move option and can't be transported
@@ -273,7 +279,7 @@ class ProNonCombatMoveAi {
             }
           }
           if (!canBeTransported) {
-            moveMap.get(onlyTerritory).getCantMoveUnits().add(u);
+            moveMap.get(onlyTerritory).addCantMoveUnit(u);
             it.remove();
           }
         }
@@ -287,7 +293,7 @@ class ProNonCombatMoveAi {
         for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories()) {
           final Territory t = placeTerritory.getTerritory();
           if (moveMap.get(t) != null) {
-            moveMap.get(t).getCantMoveUnits().addAll(placeTerritory.getPlaceUnits());
+            moveMap.get(t).addCantMoveUnits(placeTerritory.getPlaceUnits());
           }
         }
       }
@@ -298,8 +304,7 @@ class ProNonCombatMoveAi {
             .test(t)) {
           moveMap
               .get(t)
-              .getCantMoveUnits()
-              .addAll(
+              .addCantMoveUnits(
                   ProPurchaseUtils.findMaxPurchaseDefenders(
                       proData, player, t, landPurchaseOptions));
         }
@@ -1547,7 +1552,7 @@ class ProNonCombatMoveAi {
           while (true) {
             final Predicate<Territory> match =
                 ProMatches.territoryCanMoveSeaUnitsThrough(data, player, false)
-                    .and(Predicate.not(cantHoldTerritories::contains));
+                    .and(not(cantHoldTerritories::contains));
             final Route route =
                 data.getMap()
                     .getRouteForUnits(
