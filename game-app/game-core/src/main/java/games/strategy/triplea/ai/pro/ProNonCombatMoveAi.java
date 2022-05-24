@@ -244,19 +244,13 @@ class ProNonCombatMoveAi {
     for (final Territory t : moveMap.keySet()) {
       final ProTerritory proTerritory = moveMap.get(t);
       Preconditions.checkState(proTerritory.getCantMoveUnits().isEmpty());
-
-      // Mark any any units that will be consumed as "can't move".
-      final Collection<Unit> toBeConsumedHere =
-          CollectionUtils.intersection(t.getUnits(), proData.getUnitsToBeConsumed());
-      proTerritory.addCantMoveUnits(toBeConsumedHere);
-
-      final Collection<Unit> alliedDefenders =
+      final Collection<Unit> cantMoveUnits =
           t.getUnitCollection()
               .getMatches(
                   ProMatches.unitCantBeMovedAndIsAlliedDefender(
                           player, data.getRelationshipTracker(), t)
-                      .and(not(toBeConsumedHere::contains)));
-      proTerritory.addCantMoveUnits(alliedDefenders);
+                      .or(proData.getUnitsToBeConsumed()::contains));
+      proTerritory.addCantMoveUnits(cantMoveUnits);
     }
 
     // Add all units that only have 1 move option and can't be transported
