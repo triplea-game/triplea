@@ -4,14 +4,15 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -59,10 +60,7 @@ final class FileUtilsTest {
   @Test
   @DisplayName("Verify we can read file contents with ISO-8859-1 encoded characters")
   void readContents() {
-    final File testFile =
-        new File(
-            FileUtilsTest.class.getClassLoader().getResource("ISO-8859-1-test-file.txt").getFile());
-    final Path testFilePath = Path.of(testFile.toURI());
+    final Path testFilePath = getPathOfResource("ISO-8859-1-test-file.txt");
 
     final Optional<String> contentRead = FileUtils.readContents(testFilePath);
 
@@ -87,9 +85,7 @@ final class FileUtilsTest {
       //   |- child1/
       //      |- child2/
       //         |- touch-file
-      final File testFolderFile =
-          new File(FileUtilsTest.class.getClassLoader().getResource("test-folder-path").getFile());
-      final Path testFolderPath = Path.of(testFolderFile.toURI());
+      final Path testFolderPath = getPathOfResource("test-folder-path");
       final Path child1 = testFolderPath.resolve("child1");
       final Path child2 = child1.resolve("child2");
 
@@ -115,6 +111,45 @@ final class FileUtilsTest {
       assertThat(
           FileUtils.findFileInParentFolders(testFolderPath, "touch-parent"),
           isPresentAndIs(testFolderPath.resolve("touch-parent")));
+    }
+  }
+
+  @Nested
+  class Find {
+    // Folder structure:
+    // |- test-folder-path/
+    //   |- test-file
+    //   |- child1/
+    //      |- child2/
+    //         |- test-file
+    final Path testFolderPath = getPathOfResource("test-folder-path");
+    final Path child1 = testFolderPath.resolve("child1");
+    final Path child2 = child1.resolve("child2");
+
+    @Test
+    void findClosestToRootDepth1() {
+      assertThat(
+          FileUtils.findClosestToRoot(child2, 1, "test-file"),
+          isPresentAndIs(child2.resolve("test-file")));
+    }
+
+    @Test
+    void findClosestToRootDepth3() {
+      assertThat(
+          FileUtils.findClosestToRoot(testFolderPath, 3, "test-file"),
+          isPresentAndIs(testFolderPath.resolve("test-file")));
+    }
+
+    @Test
+    void findDepth1() {
+      assertThat(FileUtils.find(child2, 1, "test-file"), contains(child2.resolve("test-file")));
+    }
+
+    @Test
+    void findDepth3() {
+      assertThat(
+          FileUtils.find(testFolderPath, 3, "test-file"),
+          contains(testFolderPath.resolve("test-file"), child2.resolve("test-file")));
     }
   }
 
@@ -250,5 +285,13 @@ final class FileUtilsTest {
 
     assertThat(FileUtils.getLastModified(tempFile), isPresent());
     assertThat(FileUtils.getLastModified(tempFile).get().isBefore(Instant.now()), is(true));
+  }
+
+  private Path getPathOfResource(String name) {
+    try {
+      return Path.of(FileUtilsTest.class.getClassLoader().getResource(name).toURI());
+    } catch (URISyntaxException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }
