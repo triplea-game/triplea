@@ -129,16 +129,15 @@ public class BottomBar extends JPanel {
     // Display territory effects, territory name, resources and units.
     final StringBuilder territoryEffectText = new StringBuilder();
     final List<TerritoryEffect> territoryEffects = ta != null ? ta.getTerritoryEffect() : List.of();
-    for (final TerritoryEffect territoryEffect : territoryEffects) {
+    for (final TerritoryEffect effect : territoryEffects) {
       try {
         final JLabel label = new JLabel();
-        label.setToolTipText(territoryEffect.getName());
-        label.setIcon(
-            uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
+        label.setToolTipText(effect.getName());
+        label.setIcon(uiContext.getTerritoryEffectImageFactory().getIcon(effect.getName()));
         territoryInfo.add(label);
         territoryInfo.add(Box.createHorizontalStrut(6));
       } catch (final IllegalStateException e) {
-        territoryEffectText.append(territoryEffect.getName()).append(", ");
+        territoryEffectText.append(effect.getName()).append(", ");
       }
     }
 
