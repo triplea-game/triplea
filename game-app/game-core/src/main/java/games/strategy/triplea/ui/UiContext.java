@@ -74,6 +74,7 @@ public class UiContext {
   private final DiceImageFactory diceImageFactory;
   private final PuImageFactory puImageFactory = new PuImageFactory();
   private boolean drawUnits = true;
+  @Getter @Setter private boolean showUnitsInStatusBar = true;
   private boolean drawTerritoryEffects;
 
   @Getter private Cursor cursor;

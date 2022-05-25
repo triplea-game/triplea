@@ -199,7 +199,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Getter private final ButtonModel editModeButtonModel;
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
-  private final BottomBar bottomBar;
+  @Getter private final BottomBar bottomBar;
   private GamePlayer lastStepPlayer;
   private GamePlayer currentStepPlayer;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();

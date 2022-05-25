@@ -131,12 +131,12 @@ public class BottomBar extends JPanel {
     final List<TerritoryEffect> territoryEffects = ta != null ? ta.getTerritoryEffect() : List.of();
     for (final TerritoryEffect territoryEffect : territoryEffects) {
       try {
-        final JLabel territoryEffectLabel = new JLabel();
-        territoryEffectLabel.setToolTipText(territoryEffect.getName());
-        territoryEffectLabel.setIcon(
+        final JLabel label = new JLabel();
+        label.setToolTipText(territoryEffect.getName());
+        label.setIcon(
             uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect.getName()));
-        territoryInfo.add(territoryEffectLabel);
-        territoryInfo.add(Box.createHorizontalStrut(10));
+        territoryInfo.add(label);
+        territoryInfo.add(Box.createHorizontalStrut(6));
       } catch (final IllegalStateException e) {
         territoryEffectText.append(territoryEffect.getName()).append(", ");
       }
@@ -146,19 +146,21 @@ public class BottomBar extends JPanel {
 
     if (territoryEffectText.length() > 0) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
-      final JLabel territoryEffectTextLabel = new JLabel("(" + territoryEffectText + ")");
+      final JLabel territoryEffectTextLabel = new JLabel(" (" + territoryEffectText + ")");
       territoryInfo.add(territoryEffectTextLabel);
     }
 
     Optional.ofNullable(ta).ifPresent(this::addTerritoryResourceDetails);
 
-    final Collection<UnitCategory> units = UnitSeparator.categorize(territory.getUnits());
-    if (!units.isEmpty()) {
-      JSeparator separator = new JSeparator(JSeparator.VERTICAL);
-      separator.setMaximumSize(new Dimension(40, getHeight()));
-      separator.setPreferredSize(separator.getMaximumSize());
-      territoryInfo.add(separator);
-      territoryInfo.add(createUnitBar(units));
+    if (uiContext.isShowUnitsInStatusBar()) {
+      final Collection<UnitCategory> units = UnitSeparator.categorize(territory.getUnits());
+      if (!units.isEmpty()) {
+        JSeparator separator = new JSeparator(JSeparator.VERTICAL);
+        separator.setMaximumSize(new Dimension(40, getHeight()));
+        separator.setPreferredSize(separator.getMaximumSize());
+        territoryInfo.add(separator);
+        territoryInfo.add(createUnitBar(units));
+      }
     }
 
     territoryInfo.add(Box.createHorizontalGlue());
@@ -190,7 +192,7 @@ public class BottomBar extends JPanel {
     }
     Optional.ofNullable(ta.getResources()).ifPresent(r -> resources.add(r.getResourcesCopy()));
     for (final Resource resource : resources.keySet()) {
-      territoryInfo.add(Box.createHorizontalStrut(10));
+      territoryInfo.add(Box.createHorizontalStrut(6));
       territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
     }
   }
