@@ -45,7 +45,7 @@ public class InstalledMap {
       // a polygons file, the location of the polygons file is the map content root.
       final Path mapYamlParentFolder = mapDescriptionYaml.getYamlFileLocation().getParent();
       contentRoot =
-          FileUtils.findAny(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
+          FileUtils.findClosestToRoot(mapYamlParentFolder, 3, MapData.POLYGON_FILE)
               .map(Path::getParent)
               .orElse(null);
     }

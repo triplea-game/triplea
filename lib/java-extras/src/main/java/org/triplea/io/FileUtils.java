@@ -75,7 +75,8 @@ public final class FileUtils {
 
   /**
    * Searches a file system starting from a given directory looking for a file or directory with a
-   * matching name.
+   * matching name. If multiple matching paths are found, returns the one closest to the root (via
+   * minimum length of the absolute path).
    *
    * @param searchRoot The directory whose contents we will search (and sub-directories)
    * @param maxDepth The maximum number of subdirectories to search. Zero means only search the
@@ -83,11 +84,22 @@ public final class FileUtils {
    * @param fileName The name of the file to be search for.
    * @return A file matching the given name or empty if not found.
    */
-  public Optional<Path> findAny(final Path searchRoot, final int maxDepth, final String fileName) {
+  public Optional<Path> findClosestToRoot(
+      final Path searchRoot, final int maxDepth, final String fileName) {
     return find(searchRoot, maxDepth, fileName).stream().findAny();
   }
 
-  public Collection<Path> find(final Path searchRoot, final int maxDepth, final String fileName) {
+  /**
+   * Searches a file system starting from a given directory looking for files or directories with
+   * matching names. The resulting list will be in ascending order by absolute path length.
+   *
+   * @param searchRoot The directory whose contents we will search (and sub-directories)
+   * @param maxDepth The maximum number of subdirectories to search. Zero means only search the
+   *     'searchRoot' directory.
+   * @param fileName The name of the file to be search for.
+   * @return A list of files matching the given name or an empty list if not.
+   */
+  public List<Path> find(final Path searchRoot, final int maxDepth, final String fileName) {
     Preconditions.checkArgument(Files.isDirectory(searchRoot), searchRoot.toAbsolutePath());
     Preconditions.checkArgument(Files.exists(searchRoot), searchRoot.toAbsolutePath());
     Preconditions.checkArgument(maxDepth > -1);
