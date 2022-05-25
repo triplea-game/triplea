@@ -289,7 +289,7 @@ final class FileUtilsTest {
 
   private Path getPathOfResource(String name) {
     try {
-      return Path.of(FileUtilsTest.class.getClassLoader().getResource("test-folder-path").toURI());
+      return Path.of(FileUtilsTest.class.getClassLoader().getResource(name).toURI());
     } catch (URISyntaxException e) {
       throw new IllegalStateException(e);
     }
