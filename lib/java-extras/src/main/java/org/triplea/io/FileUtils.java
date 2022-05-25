@@ -95,8 +95,8 @@ public final class FileUtils {
     try (Stream<Path> files = Files.walk(searchRoot, maxDepth)) {
       return files
           .filter(f -> f.getFileName().toString().equals(fileName))
-          // Sort by path name, so that the ordering is deterministic and paths closer to the root
-          // are earlier in the list.
+          // Sort by path length (shortest to longest), so that the ordering is deterministic and
+          // paths closer to the root are earlier in the list.
           .sorted(Comparator.comparingInt(f -> f.toAbsolutePath().toString().length()))
           .collect(Collectors.toList());
     } catch (final IOException e) {
