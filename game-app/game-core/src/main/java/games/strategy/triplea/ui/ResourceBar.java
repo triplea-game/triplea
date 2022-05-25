@@ -69,7 +69,7 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
               updateScheduled = false;
               final GamePlayer player;
               final IntegerMap<Resource> resourceIncomes;
-              try (GameData.Unlocker ignored = gameData.acquireReadLock()){
+              try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
                 player = gameData.getSequence().getStep().getPlayerId();
                 if (player == null) {
                   return;
