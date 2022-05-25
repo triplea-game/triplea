@@ -69,15 +69,12 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
               updateScheduled = false;
               final GamePlayer player;
               final IntegerMap<Resource> resourceIncomes;
-              try {
-                gameData.acquireReadLock();
+              try (GameData.Unlocker ignored = gameData.acquireReadLock()){
                 player = gameData.getSequence().getStep().getPlayerId();
                 if (player == null) {
                   return;
                 }
                 resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
-              } finally {
-                gameData.releaseReadLock();
               }
               SwingUtilities.invokeLater(
                   () -> {
@@ -95,7 +92,7 @@ public class ResourceBar extends JPanel implements GameDataChangeListener {
                       text.append(" (").append(income >= 0 ? "+" : "").append(income).append(")");
                       final JLabel label =
                           uiContext.getResourceImageFactory().getLabel(resource, text.toString());
-                      label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+                      label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
                       add(label, new GridBagConstraintsBuilder(count++, 0).weightY(1).build());
                     }
                   });
