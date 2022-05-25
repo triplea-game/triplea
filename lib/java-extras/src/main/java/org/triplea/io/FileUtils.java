@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -94,6 +95,9 @@ public final class FileUtils {
     try (Stream<Path> files = Files.walk(searchRoot, maxDepth)) {
       return files
           .filter(f -> f.getFileName().toString().equals(fileName))
+          // Sort by path name, so that the ordering is deterministic and paths closer to the root
+          // are earlier in the list.
+          .sorted(Comparator.comparingInt(f -> f.toAbsolutePath().toString().length()))
           .collect(Collectors.toList());
     } catch (final IOException e) {
       log.error(
