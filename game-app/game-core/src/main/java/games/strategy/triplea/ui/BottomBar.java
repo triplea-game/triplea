@@ -72,6 +72,7 @@ public class BottomBar extends JPanel {
         territoryInfo,
         gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.CENTER).build());
 
+    statusMessage.setVisible(false);
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
@@ -99,6 +100,7 @@ public class BottomBar extends JPanel {
   }
 
   public void setStatus(final String msg, final Optional<Image> image) {
+    statusMessage.setVisible(!msg.isEmpty());
     statusMessage.setText(msg);
 
     if (!msg.isEmpty() && image.isPresent()) {
