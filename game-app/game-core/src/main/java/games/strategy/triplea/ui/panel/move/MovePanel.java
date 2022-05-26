@@ -314,6 +314,7 @@ public class MovePanel extends AbstractMovePanel {
                   false,
                   getMap().getUiContext(),
                   transportsToLoadMatch);
+          chooser.setAllButtonVisible(false);
           chooser.setTitle("Select air transports to load");
           if (!confirmUnitChooserDialog(chooser, "What transports do you want to load")) {
             return List.of();
@@ -861,6 +862,7 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             transportsToUnloadMatch);
+    chooser.setAllButtonVisible(false);
     if (!confirmUnitChooserDialog(chooser, "Select transports to unload")) {
       return List.of();
     }
@@ -1273,6 +1275,7 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             transportsToLoadMatch);
+    chooser.setAllButtonVisible(false);
     if (!confirmUnitChooserDialog(chooser, "Select transports to load")) {
       return List.of();
     }
@@ -1345,6 +1348,7 @@ public class MovePanel extends AbstractMovePanel {
               false,
               getMap().getUiContext(),
               matchCriteria);
+      chooser.setAllButtonVisible(false);
       final String text = "Select units to move from " + getFirstSelectedTerritory() + ".";
       if (!confirmUnitChooserDialog(chooser, text)) {
         units.clear();
@@ -1398,7 +1402,6 @@ public class MovePanel extends AbstractMovePanel {
       final Set<Unit> defaultSelections,
       final Predicate<Collection<Unit>> unitsToLoadMatch,
       final List<Unit> unitsToLoad) {
-
     // Allow player to select which to load.
     final UnitChooser chooser =
         new UnitChooser(
@@ -1409,6 +1412,7 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             unitsToLoadMatch);
+    chooser.setAllButtonVisible(false);
     chooser.setTitle("Load air transports");
     if (!confirmUnitChooserDialog(chooser, "What units do you want to load")) {
       return List.of();
