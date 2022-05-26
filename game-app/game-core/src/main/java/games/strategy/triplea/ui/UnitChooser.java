@@ -80,22 +80,13 @@ public final class UnitChooser extends JPanel {
 
   UnitChooser(
       final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependent,
-      final boolean allowTwoHit,
-      final UiContext uiContext) {
-    this(units, List.of(), dependent, allowTwoHit, uiContext);
-  }
-
-  private UnitChooser(
-      final Collection<Unit> units,
-      final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final boolean allowTwoHit,
       final UiContext uiContext) {
     this(
         units,
-        defaultSelections,
-        dependent,
+        List.of(),
+        dependents,
         UnitSeparator.SeparatorCategories.builder().build(),
         allowTwoHit,
         uiContext);
@@ -343,8 +334,6 @@ public final class UnitChooser extends JPanel {
             0,
             0));
     if (match != null) {
-      autoSelectButton.setVisible(false);
-      selectNoneButton.setVisible(false);
       checkMatches();
     }
   }
