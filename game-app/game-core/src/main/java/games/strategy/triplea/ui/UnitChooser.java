@@ -373,12 +373,6 @@ public final class UnitChooser extends JPanel {
     return selectedUnits;
   }
 
-  private void selectNone() {
-    for (final ChooserEntry entry : entries) {
-      entry.selectNone();
-    }
-  }
-
   // does not take into account multiple hit points
   private void autoSelect() {
     if (total == -1) {
