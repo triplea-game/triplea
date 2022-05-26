@@ -445,13 +445,12 @@ public final class UnitChooser extends JPanel {
           allowMultipleHits
               && category.getHitPoints() > 1
               && category.getDamaged() < category.getHitPoints() - 1;
-      hitTexts = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
-      defaultHits = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
+      final int maxHitPoints = Math.max(1, category.getHitPoints() - category.getDamaged());
+      hitTexts = new ArrayList<>(maxHitPoints);
+      defaultHits = new ArrayList<>(maxHitPoints);
       final int numUnits = category.getUnits().size();
       int hitsUsedSoFar = 0;
-      for (int i = 0, m = Math.max(1, category.getHitPoints() - category.getDamaged());
-          i < m;
-          i++) {
+      for (int i = 0; i < maxHitPoints; i++) {
         // TODO: check if default value includes damaged points or not
         final int hitsToUse = Math.min(numUnits, (defaultValue - hitsUsedSoFar));
         hitsUsedSoFar += hitsToUse;
