@@ -261,6 +261,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         colMap.put(colList[i], i + 1);
       }
       boolean useTech = false;
+      // copy so that the object doesn't change underneath us
       final GameData gameData = StatPanel.this.gameData;
       try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         final int numTechs = TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size();
@@ -308,7 +309,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
 
     void update() {
       clearAdvances();
-      // copy so acquire/release read lock are on the same object!
+      // copy so that the object doesn't change underneath us
       final GameData gameData = StatPanel.this.gameData;
       try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         for (final GamePlayer pid : gameData.getPlayerList().getPlayers()) {
@@ -318,15 +319,14 @@ class StatPanel extends JPanel implements GameDataChangeListener {
           }
           final int col = colMap.get(pid.getName());
           int row = 0;
-          if (StatPanel.this.gameData.getResourceList().getResource(Constants.TECH_TOKENS)
-              != null) {
+          if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
             final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
           final List<TechAdvance> advancesAll =
-              TechAdvance.getTechAdvances(StatPanel.this.gameData.getTechnologyFrontier());
+              TechAdvance.getTechAdvances(gameData.getTechnologyFrontier());
           final List<TechAdvance> has =
-              TechAdvance.getTechAdvances(StatPanel.this.gameData.getTechnologyFrontier(), pid);
+              TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), pid);
           for (final TechAdvance advance : advancesAll) {
             if (!has.contains(advance)) {
               row = rowMap.get(advance.getName());
@@ -334,8 +334,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
             }
           }
           for (final TechAdvance advance :
-              TechTracker.getCurrentTechAdvances(
-                  pid, StatPanel.this.gameData.getTechnologyFrontier())) {
+              TechTracker.getCurrentTechAdvances(pid, gameData.getTechnologyFrontier())) {
             row = rowMap.get(advance.getName());
             data[row][col] = "X";
           }
