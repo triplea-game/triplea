@@ -62,7 +62,6 @@ public final class UnitChooser extends JPanel {
   private final JLabel leftToSelect = new JLabel();
   private final boolean allowMultipleHits;
   private JButton autoSelectButton;
-  private JButton selectNoneButton;
   private final Predicate<Collection<Unit>> match;
   private final ScrollableTextFieldListener textFieldListener =
       new ScrollableTextFieldListener() {
@@ -158,13 +157,16 @@ public final class UnitChooser extends JPanel {
     total = max;
     textFieldListener.changedValue(null);
     autoSelectButton.setVisible(false);
-    selectNoneButton.setVisible(false);
   }
 
   void setMaxAndShowMaxButton(final int max) {
     total = max;
     textFieldListener.changedValue(null);
     autoSelectButton.setText("Max");
+  }
+
+  public void setAllButtonVisible(boolean visible) {
+    autoSelectButton.setVisible(visible);
   }
 
   public void setTitle(final String title) {
@@ -279,8 +281,6 @@ public final class UnitChooser extends JPanel {
     title.setVisible(false);
     final Insets emptyInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    selectNoneButton = new JButton("None");
-    selectNoneButton.setPreferredSize(buttonSize);
     autoSelectButton = new JButton("All");
     autoSelectButton.setPreferredSize(buttonSize);
     add(
@@ -297,7 +297,6 @@ public final class UnitChooser extends JPanel {
             emptyInsets,
             0,
             0));
-    selectNoneButton.addActionListener(e -> selectNone());
     autoSelectButton.addActionListener(e -> autoSelect());
     int rowIndex = 1;
     for (final ChooserEntry entry : entries) {
