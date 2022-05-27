@@ -182,18 +182,16 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         for (final GamePlayer player : players) {
           collectedData[row][0] = player.getName();
           for (int i = 0; i < stats.length; i++) {
-            collectedData[row][i + 1] =
-                IStat.DECIMAL_FORMAT.format(
-                    stats[i].getValue(player, gameData, uiContext.getMapData()));
+            double value = stats[i].getValue(player, gameData, uiContext.getMapData());
+            collectedData[row][i + 1] = IStat.DECIMAL_FORMAT.format(value);
           }
           row++;
         }
         for (final String alliance : alliances.stream().sorted().collect(Collectors.toList())) {
-          collectedData[row][0] = alliance;
+          collectedData[row][0] = "<html><b>" + alliance;
           for (int i = 0; i < stats.length; i++) {
-            collectedData[row][i + 1] =
-                IStat.DECIMAL_FORMAT.format(
-                    stats[i].getValue(alliance, gameData, uiContext.getMapData()));
+            double value = stats[i].getValue(alliance, gameData, uiContext.getMapData());
+            collectedData[row][i + 1] = IStat.DECIMAL_FORMAT.format(value);
           }
           row++;
         }
