@@ -13,25 +13,16 @@ import lombok.Getter;
 /** The result of an AI movement analysis for its own possible moves. */
 @Getter
 public class ProMyMoveOptions {
+  private final Map<Territory, ProTerritory> territoryMap = new HashMap<>();
+  private final Map<Unit, Set<Territory>> unitMoveMap = new HashMap<>();
+  private final Map<Unit, Set<Territory>> transportMoveMap = new HashMap<>();
+  private final Map<Unit, Set<Territory>> bombardMap = new HashMap<>();
+  private final List<ProTransport> transportList = new ArrayList<>();
+  private final Map<Unit, Set<Territory>> bomberMoveMap = new HashMap<>();
 
-  private final Map<Territory, ProTerritory> territoryMap;
-  private final Map<Unit, Set<Territory>> unitMoveMap;
-  private final Map<Unit, Set<Territory>> transportMoveMap;
-  private final Map<Unit, Set<Territory>> bombardMap;
-  private final List<ProTransport> transportList;
-  private final Map<Unit, Set<Territory>> bomberMoveMap;
-
-  ProMyMoveOptions() {
-    territoryMap = new HashMap<>();
-    unitMoveMap = new HashMap<>();
-    transportMoveMap = new HashMap<>();
-    bombardMap = new HashMap<>();
-    transportList = new ArrayList<>();
-    bomberMoveMap = new HashMap<>();
-  }
+  ProMyMoveOptions() {}
 
   ProMyMoveOptions(final ProMyMoveOptions myMoveOptions, final ProData proData) {
-    this();
     for (final Territory t : myMoveOptions.territoryMap.keySet()) {
       territoryMap.put(t, new ProTerritory(myMoveOptions.territoryMap.get(t), proData));
     }
