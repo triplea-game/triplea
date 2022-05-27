@@ -38,6 +38,19 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
     // Old save games may not have nullPlayer set.
     if (nullPlayer == null) {
       nullPlayer = createNullPlayer(getData());
+      // Old save games may have territories and units owned by a different null player object that
+      // has a null data. Update them to the new null player, so that code can rely on getData()
+      // not being null.
+      for (Territory t : getData().getMap().getTerritories()) {
+        if (t.getOwner().isNull()) {
+          t.setOwner(nullPlayer);
+        }
+      }
+      for (Unit u : getData().getUnits()) {
+        if (u.getOwner().isNull()) {
+          u.setOwner(nullPlayer);
+        }
+      }
     }
   }
 
