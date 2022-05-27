@@ -139,9 +139,7 @@ public class BattleTracker implements Serializable {
   public boolean didAllThesePlayersJustGoToWarThisTurn(
       final GamePlayer p1, final Collection<Unit> enemyUnits, final GameState data) {
     final Set<GamePlayer> enemies = new HashSet<>();
-    for (final Unit u :
-        CollectionUtils.getMatches(
-            enemyUnits, Matches.unitIsEnemyOf(data.getRelationshipTracker(), p1))) {
+    for (final Unit u : CollectionUtils.getMatches(enemyUnits, Matches.unitIsEnemyOf(p1))) {
       enemies.add(u.getOwner());
     }
     for (final GamePlayer e : enemies) {
@@ -829,9 +827,7 @@ public class BattleTracker implements Serializable {
     // TODO: see if necessary
     if (territory
         .getUnitCollection()
-        .anyMatch(
-            Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
-                .and(Matches.unitCanBeDamaged()))) {
+        .anyMatch(Matches.unitIsEnemyOf(gamePlayer).and(Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);

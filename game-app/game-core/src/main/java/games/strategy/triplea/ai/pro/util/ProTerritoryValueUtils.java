@@ -164,7 +164,7 @@ public final class ProTerritoryValueUtils {
             nearbyEnemySeaUnitValue +=
                 nearbyEnemySeaTerritory
                         .getUnitCollection()
-                        .countMatches(Matches.unitIsEnemyOf(data.getRelationshipTracker(), player))
+                        .countMatches(Matches.unitIsEnemyOf(player))
                     / Math.pow(2, distance);
           }
         }

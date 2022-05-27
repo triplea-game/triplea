@@ -652,7 +652,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               .map(Unit::getOwner)
               .map(
                   p ->
-                      Matches.unitIsEnemyOf(data.getRelationshipTracker(), p)
+                      Matches.unitIsEnemyOf(p)
                           .and(Matches.unitIsNotAir())
                           .and(Matches.unitIsNotInfrastructure()))
               .map(territory.getUnitCollection()::getMatches)
@@ -1222,9 +1222,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // this player who will
     // do attacks
     final Collection<GamePlayer> enemies =
-        CollectionUtils.getMatches(
-            data.getPlayerList().getPlayers(),
-            Matches.isAtWar(player, data.getRelationshipTracker()));
+        CollectionUtils.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(player));
     if (enemies.isEmpty()) {
       return;
     }
@@ -1513,10 +1511,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 currentTerr,
                 new BigDecimal(maxDistance),
                 Matches.airCanFlyOver(
-                    alliedPlayer,
-                    data.getProperties(),
-                    data.getRelationshipTracker(),
-                    areNeutralsPassableByAir));
+                    alliedPlayer, data.getProperties(), areNeutralsPassableByAir));
     final Iterator<Territory> possibleIter = possibleTerrs.iterator();
     while (possibleIter.hasNext()) {
       final Route route =
@@ -1525,10 +1520,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   currentTerr,
                   possibleIter.next(),
                   Matches.airCanFlyOver(
-                      alliedPlayer,
-                      data.getProperties(),
-                      data.getRelationshipTracker(),
-                      areNeutralsPassableByAir),
+                      alliedPlayer, data.getProperties(), areNeutralsPassableByAir),
                   strandedAir,
                   alliedPlayer);
       if ((route == null)

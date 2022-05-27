@@ -230,8 +230,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       return true;
     }
     // politics from ally? accept
-    if (Matches.isAllied(this.getGamePlayer(), getGameData().getRelationshipTracker())
-        .test(playerSendingProposal)) {
+    if (Matches.isAllied(this.getGamePlayer()).test(playerSendingProposal)) {
       return true;
     }
     // would we normally be allies?

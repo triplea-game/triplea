@@ -629,13 +629,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     for (final GamePlayer p1 : players) {
       final Set<GamePlayer> p1NewWar = new HashSet<>();
       final Collection<GamePlayer> p1WarWith =
-          CollectionUtils.getMatches(players, Matches.isAtWar(p1, data.getRelationshipTracker()));
+          CollectionUtils.getMatches(players, Matches.isAtWar(p1));
       final Collection<GamePlayer> p1AlliedWith =
           CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
       for (final GamePlayer p2 : p1AlliedWith) {
-        p1NewWar.addAll(
-            CollectionUtils.getMatches(
-                players, Matches.isAtWar(p2, data.getRelationshipTracker())));
+        p1NewWar.addAll(CollectionUtils.getMatches(players, Matches.isAtWar(p2)));
       }
       p1NewWar.removeAll(p1WarWith);
       p1NewWar.remove(p1);

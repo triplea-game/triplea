@@ -396,7 +396,7 @@ public class MoveValidator {
     // We are in a contested territory owned by the enemy, and we want to move to another enemy
     // owned territory. do not allow unless each unit can blitz the current territory.
     if (!route.getStart().isWater()
-        && Matches.isAtWar(route.getStart().getOwner(), data.getRelationshipTracker()).test(player)
+        && Matches.isAtWar(route.getStart().getOwner()).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player))
             && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))) {
       if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
@@ -414,7 +414,7 @@ public class MoveValidator {
     // We are in a contested territory owned by us, and we want to move to an enemy owned territory.
     // Do not allow unless the territory is blitzable.
     if (!route.getStart().isWater()
-        && !Matches.isAtWar(route.getStart().getOwner(), data.getRelationshipTracker()).test(player)
+        && !Matches.isAtWar(route.getStart().getOwner()).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player))
             && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))
         && !Matches.territoryIsBlitzable(player, data).test(route.getStart())
@@ -800,8 +800,7 @@ public class MoveValidator {
     for (final Territory t : route.getSteps()) {
       final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
-          || t.getUnitCollection()
-              .anyMatch(Matches.unitIsEnemyOf(data.getRelationshipTracker(), player))) {
+          || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(player))) {
         for (final Unit unit : unitsWithStackingLimits) {
           final UnitType ut = unit.getType();
           int maxAllowed =
@@ -1191,8 +1190,7 @@ public class MoveValidator {
       final boolean subsPreventUnescortedAmphibAssaults =
           Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data.getProperties());
       final Predicate<Unit> enemySubMatch =
-          Matches.unitIsEnemyOf(data.getRelationshipTracker(), player)
-              .and(Matches.unitCanBeMovedThroughByEnemies());
+          Matches.unitIsEnemyOf(player).and(Matches.unitCanBeMovedThroughByEnemies());
       final Predicate<Unit> ownedSeaNonTransportMatch =
           Matches.unitIsOwnedBy(player)
               .and(Matches.unitIsSea())
@@ -1713,14 +1711,8 @@ public class MoveValidator {
         PredicateBuilder.of(
                 Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))
             .and(Matches.territoryEffectsAllowUnits(units))
-            .andIf(
-                hasAir,
-                Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(
-                    player, data.getRelationshipTracker()))
-            .andIf(
-                hasLand,
-                Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(
-                    player, data.getRelationshipTracker()))
+            .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player))
+            .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player))
             .andIf(isNeutralsImpassable, noNeutral)
             .build();
 
@@ -1963,10 +1955,7 @@ public class MoveValidator {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
     if (steps.isEmpty()
-        || !steps.stream()
-            .allMatch(
-                Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(
-                    player, data.getRelationshipTracker()))) {
+        || !steps.stream().allMatch(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
     final boolean someLand = airborne.stream().anyMatch(Matches.unitIsLand());
@@ -2001,9 +1990,8 @@ public class MoveValidator {
         }
       }
     } else if (onlyEnemyTerritories
-        && !(Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
-                .test(end)
-            || Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()).test(end))) {
+        && !(Matches.isTerritoryEnemyAndNotUnownedWater(player).test(end)
+            || Matches.territoryHasEnemyUnits(player).test(end))) {
       return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
     }
     return result;

@@ -231,9 +231,8 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getDefense(unit.getOwner()) >= defendValue;
   }
 
-  public static Predicate<Unit> unitIsEnemyOf(
-      final RelationshipTracker relationshipTracker, final GamePlayer player) {
-    return unit -> relationshipTracker.isAtWar(unit.getOwner(), player);
+  public static Predicate<Unit> unitIsEnemyOf(final GamePlayer player) {
+    return unit -> player.isAtWar(unit.getOwner());
   }
 
   public static Predicate<Unit> unitIsNotSea() {
@@ -996,7 +995,6 @@ public final class Matches {
   public static Predicate<Territory> airCanFlyOver(
       final GamePlayer player,
       final GameProperties properties,
-      final RelationshipTracker relationshipTracker,
       final boolean areNeutralsPassableByAir) {
     return t -> {
       if (!areNeutralsPassableByAir && territoryIsNeutralButNotWater().test(t)) {
@@ -1004,7 +1002,10 @@ public final class Matches {
       }
       return territoryIsPassableAndNotRestricted(player, properties).test(t)
           && !(territoryIsLand().test(t)
-              && !relationshipTracker.canMoveAirUnitsOverOwnedLand(player, t.getOwner()));
+              && !player
+                  .getData()
+                  .getRelationshipTracker()
+                  .canMoveAirUnitsOverOwnedLand(player, t.getOwner()));
     };
   }
 
@@ -1871,14 +1872,13 @@ public final class Matches {
 
   /** If the territory is not land, returns true. Else, tests relationship of the owners. */
   public static Predicate<Territory> territoryAllowsCanMoveLandUnitsOverOwnedLand(
-      final GamePlayer ownerOfUnitsMoving, final RelationshipTracker relationshipTracker) {
+      final GamePlayer ownerOfUnitsMoving) {
     return t -> {
       if (t.isWater()) {
         return true;
       }
-      final GamePlayer territoryOwner = t.getOwner();
-      return territoryOwner == null
-          || relationshipTracker.canMoveLandUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
+      final var relationshipTracker = ownerOfUnitsMoving.getData().getRelationshipTracker();
+      return relationshipTracker.canMoveLandUnitsOverOwnedLand(t.getOwner(), ownerOfUnitsMoving);
     };
   }
 
@@ -1889,14 +1889,13 @@ public final class Matches {
 
   /** If the territory is not land, returns true. Else, tests relationship of the owners. */
   public static Predicate<Territory> territoryAllowsCanMoveAirUnitsOverOwnedLand(
-      final GamePlayer ownerOfUnitsMoving, final RelationshipTracker relationshipTracker) {
+      final GamePlayer ownerOfUnitsMoving) {
     return t -> {
       if (t.isWater()) {
         return true;
       }
-      final GamePlayer territoryOwner = t.getOwner();
-      return territoryOwner == null
-          || relationshipTracker.canMoveAirUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
+      final var relationshipTracker = t.getOwner().getData().getRelationshipTracker();
+      return relationshipTracker.canMoveAirUnitsOverOwnedLand(t.getOwner(), ownerOfUnitsMoving);
     };
   }
 
@@ -1932,10 +1931,8 @@ public final class Matches {
     return relationshipName -> relationshipTypeList.getRelationshipType(relationshipName) != null;
   }
 
-  public static Predicate<GamePlayer> isAtWar(
-      final GamePlayer player, final RelationshipTracker relationshipTracker) {
-    return player2 ->
-        relationshipTypeIsAtWar().test(relationshipTracker.getRelationshipType(player, player2));
+  public static Predicate<GamePlayer> isAtWar(final GamePlayer player) {
+    return player::isAtWar;
   }
 
   public static Predicate<GamePlayer> isAtWarWithAnyOfThesePlayers(
@@ -1943,10 +1940,8 @@ public final class Matches {
     return player2 -> player2.isAtWarWithAnyOfThesePlayers(players);
   }
 
-  public static Predicate<GamePlayer> isAllied(
-      final GamePlayer player, final RelationshipTracker relationshipTracker) {
-    return player2 ->
-        relationshipTypeIsAllied().test(relationshipTracker.getRelationshipType(player, player2));
+  public static Predicate<GamePlayer> isAllied(final GamePlayer player) {
+    return player::isAllied;
   }
 
   public static Predicate<GamePlayer> isAlliedWithAnyOfThesePlayers(
