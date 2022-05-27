@@ -84,7 +84,6 @@ public final class ProUtils {
 
   /** Given a player, finds all non-allied (enemy) players. */
   public static List<GamePlayer> getPotentialEnemyPlayers(final GamePlayer player) {
-    final var tracker = player.getData().getRelationshipTracker();
     // Remove allied and passive neutrals.
     final Predicate<GamePlayer> potentialEnemy =
         not(Matches.isAllied(player)).and(not(ProUtils::isPassiveNeutralPlayer));
