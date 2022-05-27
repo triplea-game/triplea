@@ -36,6 +36,8 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -64,14 +66,32 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         !TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), null).isEmpty();
     // do no include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
+    add(new JScrollPane(createPlayersTable()));
+    // if no technologies, do not show the tech table
+    if (hasTech) {
+      add(new JScrollPane(createTechTable()));
+    }
+  }
+
+  private JTable createPlayersTable() {
     final JTable statsTable = new JTable(dataModel);
     statsTable.getTableHeader().setReorderingAllowed(false);
-    statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
-    add(new JScrollPane(statsTable));
-    // if no technologies, do not show the tech table
-    if (!hasTech) {
-      return;
-    }
+    // By default, right-align columns and their headers.
+    ((DefaultTableCellRenderer) statsTable.getTableHeader().getDefaultRenderer())
+        .setHorizontalAlignment(JLabel.RIGHT);
+    ((DefaultTableCellRenderer) statsTable.getDefaultRenderer(String.class))
+        .setHorizontalAlignment(JLabel.RIGHT);
+    final TableColumn leftColumn = statsTable.getColumnModel().getColumn(0);
+    leftColumn.setPreferredWidth(175);
+    // The left column should be left-aligned. Override the renderers for it to defaults.
+    leftColumn.setCellRenderer(new DefaultTableCellRenderer());
+    // There is no way to directly construct the default table header renderer (which differs from
+    // the default table cell renderer on some L&Fs), so grab one from a temp JTableHeader.
+    leftColumn.setHeaderRenderer(new JTableHeader().getDefaultRenderer());
+    return statsTable;
+  }
+
+  private JTable createTechTable() {
     final JTable techTable = new JTable(techModel);
     techTable.getTableHeader().setReorderingAllowed(false);
     techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
@@ -85,7 +105,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       value.setToolTipText(player);
       column.setHeaderValue(value);
     }
-    add(new JScrollPane(techTable));
+    return techTable;
   }
 
   public void setGameData(final GameData data) {
@@ -182,18 +202,16 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         for (final GamePlayer player : players) {
           collectedData[row][0] = player.getName();
           for (int i = 0; i < stats.length; i++) {
-            collectedData[row][i + 1] =
-                IStat.DECIMAL_FORMAT.format(
-                    stats[i].getValue(player, gameData, uiContext.getMapData()));
+            double value = stats[i].getValue(player, gameData, uiContext.getMapData());
+            collectedData[row][i + 1] = IStat.DECIMAL_FORMAT.format(value);
           }
           row++;
         }
         for (final String alliance : alliances.stream().sorted().collect(Collectors.toList())) {
-          collectedData[row][0] = alliance;
+          collectedData[row][0] = "<html><b>" + alliance;
           for (int i = 0; i < stats.length; i++) {
-            collectedData[row][i + 1] =
-                IStat.DECIMAL_FORMAT.format(
-                    stats[i].getValue(alliance, gameData, uiContext.getMapData()));
+            double value = stats[i].getValue(alliance, gameData, uiContext.getMapData());
+            collectedData[row][i + 1] = IStat.DECIMAL_FORMAT.format(value);
           }
           row++;
         }
