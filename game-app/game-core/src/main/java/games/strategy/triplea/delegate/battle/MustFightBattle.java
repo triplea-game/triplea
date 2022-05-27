@@ -249,7 +249,7 @@ public class MustFightBattle extends DependentBattle
     }
     // TODO: This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
     // If attacker stops in an occupied territory, movement stops (battle is optional)
-    if (new MoveValidator(gameData).onlyIgnoredUnitsOnPath(route, attacker, false)) {
+    if (new MoveValidator(gameData, false).onlyIgnoredUnitsOnPath(route, attacker, false)) {
       return change;
     }
     change.add(ChangeFactory.markNoMovementChange(nonAir));

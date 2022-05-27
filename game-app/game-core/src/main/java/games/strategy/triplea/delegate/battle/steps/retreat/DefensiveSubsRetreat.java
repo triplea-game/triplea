@@ -132,7 +132,7 @@ public class DefensiveSubsRetreat implements BattleStep {
     final Predicate<Territory> canalMatch =
         t -> {
           final Route r = new Route(battleState.getBattleSite(), t);
-          return new MoveValidator(battleState.getGameData())
+          return new MoveValidator(battleState.getGameData(), false)
                   .validateCanal(r, unitsToRetreat, battleState.getPlayer(DEFENSE))
               == null;
         };

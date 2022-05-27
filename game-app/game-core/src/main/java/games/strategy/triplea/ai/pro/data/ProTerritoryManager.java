@@ -1117,6 +1117,7 @@ public class ProTerritoryManager {
         int movesLeft =
             getUnitRange(data, myTransport, myUnitTerritory, player, isCheckingEnemyAttacks)
                 .intValue();
+        MoveValidator moveValidator = new MoveValidator(data, !isCombatMove);
         while (movesLeft >= 0) {
           final Set<Territory> nextTerritories = new HashSet<>();
           for (final Territory currentTerritory : currentTerritories) {
@@ -1126,8 +1127,7 @@ public class ProTerritoryManager {
                 gameMap.getNeighbors(currentTerritory, canMoveSeaUnitsThrough);
             for (final Territory possibleNeighborTerritory : possibleNeighborTerritories) {
               final Route route = new Route(currentTerritory, possibleNeighborTerritory);
-              if (new MoveValidator(data).validateCanal(route, List.of(myTransport), player)
-                  == null) {
+              if (moveValidator.validateCanal(route, List.of(myTransport), player) == null) {
                 nextTerritories.add(possibleNeighborTerritory);
               }
             }

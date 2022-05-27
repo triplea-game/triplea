@@ -235,12 +235,12 @@ public final class ProMoveUtils {
                     ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove));
             Territory territoryToMoveTo = null;
             int minUnitDistance = Integer.MAX_VALUE;
-            int maxDistanceFromEnd =
-                Integer.MIN_VALUE; // Used to move to farthest away loading territory first
+            // Used to move to farthest away loading territory first
+            int maxDistanceFromEnd = Integer.MIN_VALUE;
+            MoveValidator moveValidator = new MoveValidator(data, !isCombatMove);
             for (final Territory neighbor : neighbors) {
               final Route route = new Route(transportTerritory, neighbor);
-              if (new MoveValidator(data).validateCanal(route, List.of(transport), player)
-                  != null) {
+              if (moveValidator.validateCanal(route, List.of(transport), player) != null) {
                 continue;
               }
               int distanceFromUnloadTerritory = 0;

@@ -1488,8 +1488,8 @@ class WW2V3Year41Test {
         france.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     assertFalse(paratroopers.isEmpty());
     final MoveValidationResult results =
-        new MoveValidator(gameData)
-            .validateMove(new MoveDescription(paratroopers, r), germans, false, null);
+        new MoveValidator(gameData, false)
+            .validateMove(new MoveDescription(paratroopers, r), germans);
     assertFalse(results.isMoveValid());
   }
 
@@ -1510,8 +1510,7 @@ class WW2V3Year41Test {
     toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results =
-        new MoveValidator(gameData)
-            .validateMove(new MoveDescription(toMove, r), germans, false, null);
+        new MoveValidator(gameData, false).validateMove(new MoveDescription(toMove, r), germans);
     assertFalse(results.isMoveValid());
   }
 
@@ -1532,8 +1531,7 @@ class WW2V3Year41Test {
     toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results =
-        new MoveValidator(gameData)
-            .validateMove(new MoveDescription(toMove, r), germans, false, null);
+        new MoveValidator(gameData, false).validateMove(new MoveDescription(toMove, r), germans);
     assertFalse(results.isMoveValid());
   }
 
