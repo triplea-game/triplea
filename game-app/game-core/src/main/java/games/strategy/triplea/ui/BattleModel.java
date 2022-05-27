@@ -18,7 +18,6 @@ import games.strategy.triplea.util.UnitSeparator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
@@ -101,8 +100,7 @@ final class BattleModel extends DefaultTableModel {
     final List<Unit> units = new ArrayList<>(this.units);
     final TotalPowerAndTotalRolls unitPowerAndRollsMap;
     final boolean isAirPreBattleOrPreRaid = battleType.isAirBattle();
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       final CombatValue combatValue;
       if (isAirPreBattleOrPreRaid) {
         combatValue =
@@ -125,8 +123,6 @@ final class BattleModel extends DefaultTableModel {
                 .build();
       }
       unitPowerAndRollsMap = PowerStrengthAndRolls.build(units, combatValue);
-    } finally {
-      gameData.releaseReadLock();
     }
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
     for (final UnitCategory category : unitCategories) {
@@ -173,7 +169,7 @@ final class BattleModel extends DefaultTableModel {
     private GamePlayer player;
     private UnitType unitType;
     private int count;
-    private Optional<ImageIcon> icon;
+    private ImageIcon icon;
 
     private TableData() {}
 
@@ -182,7 +178,7 @@ final class BattleModel extends DefaultTableModel {
       this.player = imageKey.getPlayer();
       this.count = count;
       this.unitType = imageKey.getType();
-      icon = uiContext.getUnitImageFactory().getIcon(imageKey);
+      this.icon = uiContext.getUnitImageFactory().getIcon(imageKey);
     }
 
     void updateStamp(final JLabel stamp) {
@@ -192,7 +188,7 @@ final class BattleModel extends DefaultTableModel {
         stamp.setToolTipText(null);
       } else {
         stamp.setText("x" + count);
-        icon.ifPresent(stamp::setIcon);
+        stamp.setIcon(icon);
         MapUnitTooltipManager.setUnitTooltip(stamp, unitType, player, count);
       }
     }

@@ -406,12 +406,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             return;
           }
           if (pane.getComponentAt(sel).equals(editPanel)) {
-            data.acquireReadLock();
             final GamePlayer player1;
-            try {
+            try (GameData.Unlocker ignored = data.acquireReadLock()) {
               player1 = data.getSequence().getStep().getPlayerId();
-            } finally {
-              data.releaseReadLock();
             }
             actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
             editPanel.display(player1);
@@ -995,9 +992,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         final int index,
         final boolean isSelected,
         final boolean cellHasFocus) {
-
       setText(unit.toString() + ", damage=" + unit.getUnitDamage());
-      uiContext.getUnitImageFactory().getIcon(ImageKey.of(unit)).ifPresent(this::setIcon);
+      setIcon(uiContext.getUnitImageFactory().getIcon(ImageKey.of(unit)));
       setBorder(new EmptyBorder(0, 0, 0, 10));
 
       // Set selected option to highlighted color
@@ -1605,8 +1601,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final int round;
     final String stepDisplayName;
     final GamePlayer player;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       round = data.getSequence().getRound();
       final GameStep step = data.getSequence().getStep();
       if (step == null) {
@@ -1614,8 +1609,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       }
       stepDisplayName = step.getDisplayName();
       player = step.getPlayerId();
-    } finally {
-      data.releaseReadLock();
     }
 
     final boolean isPlaying = localPlayers.playing(player);
@@ -1670,13 +1663,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   // center on capital of player, if it is a new player
                   if (!player.equals(lastStepPlayer)) {
                     lastStepPlayer = player;
-                    data.acquireReadLock();
-                    try {
+                    try (GameData.Unlocker ignored = data.acquireReadLock()) {
                       mapPanel.centerOn(
                           TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
                               player, data.getMap()));
-                    } finally {
-                      data.releaseReadLock();
                     }
                   }
                 }));
@@ -1868,8 +1858,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                           + "save at a point in history such as a move or battle phase.",
                       "Save Game from History",
                       JOptionPane.INFORMATION_MESSAGE);
-                  data.acquireReadLock();
-                  try {
+                  try (GameData.Unlocker ignored = data.acquireReadLock()) {
                     final Optional<Path> f =
                         GameFileSelector.getSaveGameLocation(TripleAFrame.this, data);
                     if (f.isPresent()) {
@@ -1929,8 +1918,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                         log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                       }
                     }
-                  } finally {
-                    data.releaseReadLock();
                   }
                   historyPanel.clearCurrentPopupNode();
                 }

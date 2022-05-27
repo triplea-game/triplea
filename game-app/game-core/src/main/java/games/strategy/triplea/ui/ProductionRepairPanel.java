@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -301,18 +302,14 @@ class ProductionRepairPanel extends JPanel {
             "Rule unit type "
                 + type.getName()
                 + " does not match "
-                + repairUnit.toString()
+                + repairUnit
                 + ".  Please make sure your maps are up to date!");
       }
       repairResults = rule.getResults().getInt(type);
       final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
 
-      final JLabel label =
-          uiContext
-              .getUnitImageFactory()
-              .getIcon(ImageKey.of(repairUnit))
-              .map(imageIcon -> new JLabel(text, imageIcon, SwingConstants.LEFT))
-              .orElseGet(() -> new JLabel(text, SwingConstants.LEFT));
+      final ImageIcon icon = uiContext.getUnitImageFactory().getIcon(ImageKey.of(repairUnit));
+      final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
       final JLabel info = new JLabel(territoryUnitIsIn.getName());
       maxRepairAmount = repairUnit.getHowMuchCanThisUnitBeRepaired(territoryUnitIsIn);
       final JLabel remaining = new JLabel("Damage left to repair: " + maxRepairAmount);
