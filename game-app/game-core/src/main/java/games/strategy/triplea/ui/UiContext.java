@@ -60,19 +60,22 @@ public class UiContext {
   private static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
   private static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
 
-  protected MapData mapData;
+  @Getter protected MapData mapData;
   @Getter @Setter protected LocalPlayers localPlayers;
 
   @Getter protected double scale;
-  private final TileImageFactory tileImageFactory = new TileImageFactory();
-  private UnitImageFactory unitImageFactory;
-  private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
+  @Getter private final TileImageFactory tileImageFactory = new TileImageFactory();
+  @Getter private UnitImageFactory unitImageFactory;
+  @Getter private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
+
+  @Getter
   private final TerritoryEffectImageFactory territoryEffectImageFactory =
       new TerritoryEffectImageFactory();
-  private final MapImage mapImage;
-  private final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
-  private final DiceImageFactory diceImageFactory;
-  private final PuImageFactory puImageFactory = new PuImageFactory();
+
+  @Getter private final MapImage mapImage;
+  @Getter private final FlagIconImageFactory flagImageFactory = new FlagIconImageFactory();
+  @Getter private final DiceImageFactory diceImageFactory;
+  @Getter private final PuImageFactory puImageFactory = new PuImageFactory();
   private boolean drawUnits = true;
   @Getter @Setter private boolean showUnitsInStatusBar = true;
   private boolean drawTerritoryEffects;
@@ -133,7 +136,7 @@ public class UiContext {
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
-    flagIconImageFactory.setResourceLoader(resourceLoader);
+    flagImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setResourceLoader(resourceLoader);
     mapImage = new MapImage(resourceLoader);
@@ -160,52 +163,14 @@ public class UiContext {
     }
   }
 
-  public MapData getMapData() {
-    return mapData;
-  }
-
-  public TileImageFactory getTileImageFactory() {
-    return tileImageFactory;
-  }
-
-  public UnitImageFactory getUnitImageFactory() {
-    return unitImageFactory;
-  }
-
   public JLabel newUnitImageLabel(final ImageKey imageKey) {
-    final JLabel label =
-        getUnitImageFactory().getIcon(imageKey).map(JLabel::new).orElseGet(JLabel::new);
-
+    final JLabel label = new JLabel(getUnitImageFactory().getIcon(imageKey));
     MapUnitTooltipManager.setUnitTooltip(label, imageKey.getType(), imageKey.getPlayer(), 1);
     return label;
   }
 
   JLabel newUnitImageLabel(final UnitType type, final GamePlayer player) {
     return newUnitImageLabel(ImageKey.builder().type(type).player(player).build());
-  }
-
-  public ResourceImageFactory getResourceImageFactory() {
-    return resourceImageFactory;
-  }
-
-  public TerritoryEffectImageFactory getTerritoryEffectImageFactory() {
-    return territoryEffectImageFactory;
-  }
-
-  public MapImage getMapImage() {
-    return mapImage;
-  }
-
-  public FlagIconImageFactory getFlagImageFactory() {
-    return flagIconImageFactory;
-  }
-
-  public PuImageFactory getPuImageFactory() {
-    return puImageFactory;
-  }
-
-  public DiceImageFactory getDiceImageFactory() {
-    return diceImageFactory;
   }
 
   public void shutDown() {

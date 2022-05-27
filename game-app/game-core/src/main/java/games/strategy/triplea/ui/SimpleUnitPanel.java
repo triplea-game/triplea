@@ -16,7 +16,6 @@ import games.strategy.triplea.util.UnitCategory;
 import java.awt.Image;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.Box;
@@ -25,12 +24,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.WrapLayout;
 
-/** A Simple panel that displays a list of units. */
-@Slf4j
+/** A simple panel that displays a list of units. */
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
   private final UiContext uiContext;
@@ -152,13 +149,8 @@ public class SimpleUnitPanel extends JPanel {
               .damaged(damaged)
               .disabled(disabled)
               .build();
-      Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(imageKey);
-      if (icon.isPresent()) {
-        label.setIcon(scaleIcon(icon.get(), scaleFactor));
-      } else if (!uiContext.isShutDown()) {
-        final String imageName = imageKey.getFullName();
-        log.error("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
-      }
+      ImageIcon icon = uiContext.getUnitImageFactory().getIcon(imageKey);
+      label.setIcon(scaleIcon(icon, scaleFactor));
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);
     } else if (unit instanceof Resource) {
       ImageIcon icon =

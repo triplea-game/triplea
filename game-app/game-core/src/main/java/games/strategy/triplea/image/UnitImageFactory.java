@@ -356,20 +356,10 @@ public class UnitImageFactory {
     return highlightedImage;
   }
 
-  /** Return a icon image for a unit. */
-  public Optional<ImageIcon> getIcon(final ImageKey imageKey) {
+  /** Return an icon image for a unit. */
+  public ImageIcon getIcon(final ImageKey imageKey) {
     final String fullName = imageKey.getFullName();
-    if (icons.containsKey(fullName)) {
-      return Optional.of(icons.get(fullName));
-    }
-    final Optional<Image> image = getTransformedImage(imageKey);
-    if (image.isEmpty()) {
-      return Optional.empty();
-    }
-
-    final ImageIcon icon = new ImageIcon(image.get());
-    icons.put(fullName, icon);
-    return Optional.of(icon);
+    return icons.computeIfAbsent(fullName, key -> new ImageIcon(getImage(imageKey)));
   }
 
   public Dimension getImageDimensions(final ImageKey imageKey) {

@@ -113,8 +113,7 @@ class ProductionPanel extends JPanel {
 
   protected void initRules(
       final GamePlayer player, final IntegerMap<ProductionRule> initialPurchase) {
-    this.data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = this.data.acquireReadLock()) {
       gamePlayer = player;
       for (final ProductionRule productionRule : player.getProductionFrontier()) {
         final Rule rule = new Rule(productionRule, player);
@@ -122,8 +121,6 @@ class ProductionPanel extends JPanel {
         rule.setQuantity(initialQuantity);
         rules.add(rule);
       }
-    } finally {
-      this.data.releaseReadLock();
     }
   }
 
@@ -277,16 +274,13 @@ class ProductionPanel extends JPanel {
       Preconditions.checkState(gamePlayer != null, "bid was true while id is null");
       // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple
       // resources can be given?
-      final String propertyName = gamePlayer.getName() + " bid";
-      final int bid = data.getProperties().get(propertyName, 0);
-      final ResourceCollection bidCollection = new ResourceCollection(data);
-      data.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
+        final String propertyName = gamePlayer.getName() + " bid";
+        final int bid = data.getProperties().get(propertyName, 0);
+        final ResourceCollection bidCollection = new ResourceCollection(data);
         bidCollection.addResource(data.getResourceList().getResource(Constants.PUS), bid);
-      } finally {
-        data.releaseReadLock();
+        return bidCollection;
       }
-      return bidCollection;
     }
 
     return (gamePlayer == null || gamePlayer.isNull())
@@ -331,7 +325,7 @@ class ProductionPanel extends JPanel {
           name.getFont().deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
       final JLabel info = new JLabel("  ");
       final Color defaultForegroundLabelColor = name.getForeground();
-      Optional<ImageIcon> icon = Optional.empty();
+      ImageIcon icon = null;
       final StringBuilder tooltip = new StringBuilder();
       final Set<NamedAttachable> results = new HashSet<>(rule.getResults().keySet());
       final Iterator<NamedAttachable> iter = results.iterator();
@@ -363,7 +357,7 @@ class ProductionPanel extends JPanel {
           }
         } else if (resourceOrUnit instanceof Resource) {
           final Resource resource = (Resource) resourceOrUnit;
-          icon = Optional.of(uiContext.getResourceImageFactory().getLargeIcon(resource.getName()));
+          icon = uiContext.getResourceImageFactory().getLargeIcon(resource.getName());
           info.setText("resource");
           tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());
@@ -416,7 +410,7 @@ class ProductionPanel extends JPanel {
                 0));
       }
       final JPanel label = new JPanel();
-      icon.ifPresent(imageIcon -> label.add(new JLabel(imageIcon)));
+      Optional.ofNullable(icon).ifPresent(imageIcon -> label.add(new JLabel(imageIcon)));
       label.add(costPanel);
 
       final ScrollableTextField textField = new ScrollableTextField(0, Integer.MAX_VALUE);

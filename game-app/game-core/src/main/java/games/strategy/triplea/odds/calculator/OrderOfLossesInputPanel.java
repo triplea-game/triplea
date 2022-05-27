@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -278,20 +277,15 @@ class OrderOfLossesInputPanel extends JPanel {
                 + TooltipProperties.getInstance()
                     .getTooltip(category.getType(), category.getOwner())
                 + "</html>";
-        final Optional<ImageIcon> img =
-            uiContext.getUnitImageFactory().getIcon(ImageKey.of(category));
-        if (img.isPresent()) {
-          final JButton button = new JButton(img.get());
-          button.setToolTipText(toolTipText);
-          button.addActionListener(
-              e ->
-                  textField.setText(
-                      (textField.getText().length() > 0
-                              ? (textField.getText() + OOL_SEPARATOR)
-                              : "")
-                          + unitName));
-          panel.add(button);
-        }
+        final ImageIcon img = uiContext.getUnitImageFactory().getIcon(ImageKey.of(category));
+        final JButton button = new JButton(img);
+        button.setToolTipText(toolTipText);
+        button.addActionListener(
+            e ->
+                textField.setText(
+                    (textField.getText().length() > 0 ? (textField.getText() + OOL_SEPARATOR) : "")
+                        + unitName));
+        panel.add(button);
         typesUsed.add(category.getType());
       }
     }
