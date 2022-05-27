@@ -235,19 +235,19 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     return (TechAttachment) getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
 
-  public boolean isAllied(GamePlayer other) {
+  public final boolean isAllied(GamePlayer other) {
     return getData().getRelationshipTracker().isAllied(this, other);
   }
 
-  public boolean isAtWar(GamePlayer other) {
+  public final boolean isAtWar(GamePlayer other) {
     return getData().getRelationshipTracker().isAtWar(this, other);
   }
 
-  public boolean isAtWarWithAnyOfThesePlayers(Collection<GamePlayer> others) {
+  public final boolean isAtWarWithAnyOfThesePlayers(Collection<GamePlayer> others) {
     return getData().getRelationshipTracker().isAtWarWithAnyOfThesePlayers(this, others);
   }
 
-  public boolean isAlliedWithAnyOfThesePlayers(Collection<GamePlayer> others) {
+  public final boolean isAlliedWithAnyOfThesePlayers(Collection<GamePlayer> others) {
     return getData().getRelationshipTracker().isAlliedWithAnyOfThesePlayers(this, others);
   }
 
