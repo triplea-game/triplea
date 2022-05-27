@@ -421,6 +421,7 @@ final class ProTechAi {
     Territory current;
     distance.put(start, 0);
     visited.put(start, null);
+    MoveValidator moveValidator = new MoveValidator(data, false);
     while (!q.isEmpty()) {
       current = q.remove();
       if (distance.getInt(current) == maxDistance) {
@@ -431,11 +432,9 @@ final class ProTechAi {
           if (!neighbor.anyUnitsMatch(unitCondition) && !routeCondition.test(neighbor)) {
             continue;
           }
-          if (sea) {
-            final Route r = new Route(neighbor, current);
-            if (new MoveValidator(data, false).validateCanal(r, null, player) != null) {
-              continue;
-            }
+          if (sea
+              && moveValidator.validateCanal(new Route(neighbor, current), null, player) != null) {
+            continue;
           }
           distance.put(neighbor, distance.getInt(current) + 1);
           visited.put(neighbor, current);
@@ -444,11 +443,7 @@ final class ProTechAi {
           if (ignoreDistance.contains(dist)) {
             continue;
           }
-          for (final Unit u : neighbor.getUnitCollection()) {
-            if (unitCondition.test(u)) {
-              units.add(u);
-            }
-          }
+          units.addAll(neighbor.getUnitCollection().getMatches(unitCondition));
         }
       }
     }

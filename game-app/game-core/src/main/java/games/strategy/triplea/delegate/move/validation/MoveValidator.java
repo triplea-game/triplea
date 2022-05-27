@@ -172,7 +172,7 @@ public class MoveValidator {
     return result;
   }
 
-  public MoveValidationResult validateFirst(
+  private MoveValidationResult validateFirst(
       final Collection<Unit> units,
       final Route route,
       final GamePlayer player,
@@ -248,7 +248,7 @@ public class MoveValidator {
     return result;
   }
 
-  public MoveValidationResult validateFuel(
+  private MoveValidationResult validateFuel(
       final Collection<Unit> units,
       final Route route,
       final GamePlayer player,
