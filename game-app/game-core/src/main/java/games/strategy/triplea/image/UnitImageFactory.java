@@ -356,7 +356,7 @@ public class UnitImageFactory {
     return highlightedImage;
   }
 
-  /** Return a icon image for a unit. */
+  /** Return an icon image for a unit. */
   public ImageIcon getIcon(final ImageKey imageKey) {
     final String fullName = imageKey.getFullName();
     return icons.computeIfAbsent(fullName, key -> new ImageIcon(getImage(imageKey)));
