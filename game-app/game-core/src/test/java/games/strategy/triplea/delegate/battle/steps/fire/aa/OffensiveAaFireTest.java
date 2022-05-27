@@ -47,8 +47,6 @@ class OffensiveAaFireTest {
       final Unit aaUnit = givenUnitIsCombatAa(Set.of(targetUnit.getType()), attacker, OFFENSE);
       when(aaUnit.getOwner()).thenReturn(attacker);
       GameData data = givenGameData().withWarRelationship(defender, attacker, true).build();
-      when(attacker.getData()).thenReturn(data);
-      when(defender.getData()).thenReturn(data);
       final BattleState battleState =
           givenBattleStateBuilder()
               .gameData(data)
