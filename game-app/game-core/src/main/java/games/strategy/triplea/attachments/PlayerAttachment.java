@@ -164,7 +164,7 @@ public class PlayerAttachment extends DefaultAttachment {
         types.add(getUnitTypeOrThrow(s[i]));
       }
     }
-    return Triple.of(max, s[1], types);
+    return Triple.of(max, s[1].intern(), types);
   }
 
   /**

@@ -30,6 +30,8 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -1052,11 +1054,13 @@ class BattleCalculatorPanel extends JPanel {
     }
     setupAttackerAndDefender();
 
+    final Instant t = Instant.now();
     calculator =
         new ConcurrentBattleCalculator(
             () ->
                 SwingUtilities.invokeLater(
                     () -> {
+                      log.debug("Battle Calculator ready in " + Duration.between(t, Instant.now()));
                       calculateButton.setText("Calculate Odds");
                       calculateButton.setEnabled(true);
                       calculateButton.requestFocusInWindow();

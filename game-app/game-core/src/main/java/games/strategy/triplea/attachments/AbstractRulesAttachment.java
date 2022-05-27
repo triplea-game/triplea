@@ -161,7 +161,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   private void setGameProperty(final String value) {
-    gameProperty = value;
+    gameProperty = value.intern();
   }
 
   private @Nullable String getGameProperty() {
@@ -341,6 +341,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     if (terrList != null && terrList.length > 0) {
       getListedTerritories(terrList, true, true);
       // removed checks for length & group commands because it breaks the setTerritoryCount feature.
+      for (int i = 0; i < terrList.length; i++) {
+        terrList[i] = terrList[i].intern();
+      }
     }
   }
 

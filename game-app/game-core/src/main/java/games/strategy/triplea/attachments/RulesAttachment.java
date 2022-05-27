@@ -164,7 +164,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       throw new GameParseException(
           "destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
     }
-    destroyedTuv = value;
+    destroyedTuv = value.intern();
   }
 
   private @Nullable String getDestroyedTuv() {
@@ -216,7 +216,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (battle == null) {
       battle = new ArrayList<>();
     }
-    battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
+    battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]).intern(), terrs));
   }
 
   private void setBattle(final List<Tuple<String, List<Territory>>> value) {
@@ -280,7 +280,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (relationship == null) {
       relationship = new ArrayList<>();
     }
-    relationship.add((s.length == 3) ? (value + ":-1") : value);
+    String str = (s.length == 3) ? (value + ":-1") : value;
+    relationship.add(str.intern());
   }
 
   private void setRelationship(final List<String> value) {
@@ -474,7 +475,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (unitPresence == null) {
       unitPresence = new IntegerMap<>();
     }
-    unitPresence.put(value.replaceFirst(s[0] + ":", ""), n);
+    unitPresence.put(value.replaceFirst(s[0] + ":", "").intern(), n);
   }
 
   private void setUnitPresence(final IntegerMap<String> value) {
@@ -498,10 +499,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setAtWarPlayers(final String players) throws GameParseException {
-    if (players == null) {
-      atWarPlayers = null;
-      return;
-    }
     final String[] s = splitOnColon(players);
     if (s.length < 1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
@@ -535,10 +532,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setTechs(final String newTechs) throws GameParseException {
-    if (newTechs == null) {
-      techs = null;
-      return;
-    }
     final String[] s = splitOnColon(newTechs);
     if (s.length < 1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());

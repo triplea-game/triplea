@@ -961,7 +961,7 @@ public final class GameParser {
                 xmlUri, attachment, e.getMessage()),
             e);
       }
-      results.add(Tuple.of(name, finalValue));
+      results.add(Tuple.of(name.intern(), finalValue.intern()));
     }
     return results;
   }

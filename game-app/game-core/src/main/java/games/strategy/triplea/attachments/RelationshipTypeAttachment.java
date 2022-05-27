@@ -74,7 +74,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       case ARCHETYPE_WAR:
       case ARCHETYPE_ALLIED:
       case ARCHETYPE_NEUTRAL:
-        this.archeType = lowerArcheType;
+        this.archeType = lowerArcheType.intern();
         break;
       default:
         throw new GameParseException(
@@ -109,7 +109,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * @param canFlyOver should be "true", "false" or "default"
    */
   private void setCanMoveAirUnitsOverOwnedLand(final String canFlyOver) {
-    canMoveAirUnitsOverOwnedLand = canFlyOver;
+    canMoveAirUnitsOverOwnedLand = canFlyOver.intern();
   }
 
   private String getCanMoveAirUnitsOverOwnedLand() {
@@ -135,7 +135,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setCanMoveLandUnitsOverOwnedLand(final String canFlyOver) {
-    canMoveLandUnitsOverOwnedLand = canFlyOver;
+    canMoveLandUnitsOverOwnedLand = canFlyOver.intern();
   }
 
   private String getCanMoveLandUnitsOverOwnedLand() {
@@ -154,7 +154,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setCanLandAirUnitsOnOwnedLand(final String canLandAir) {
-    canLandAirUnitsOnOwnedLand = canLandAir;
+    canLandAirUnitsOnOwnedLand = canLandAir.intern();
   }
 
   private String getCanLandAirUnitsOnOwnedLand() {
@@ -174,7 +174,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setCanTakeOverOwnedTerritory(final String canTakeOver) {
-    canTakeOverOwnedTerritory = canTakeOver;
+    canTakeOverOwnedTerritory = canTakeOver.intern();
   }
 
   private String getCanTakeOverOwnedTerritory() {
@@ -222,7 +222,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
                     + thisErrorMsg());
         }
       }
-      upkeepCost = integerCost;
+      upkeepCost = integerCost.intern();
     }
   }
 
@@ -250,7 +250,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
               + PROPERTY_TRUE
               + thisErrorMsg());
     }
-    alliancesCanChainTogether = value;
+    alliancesCanChainTogether = value.intern();
   }
 
   private String getAlliancesCanChainTogether() {
@@ -281,7 +281,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
               + PROPERTY_TRUE
               + thisErrorMsg());
     }
-    isDefaultWarPosition = value;
+    isDefaultWarPosition = value.intern();
   }
 
   private String getIsDefaultWarPosition() {
@@ -312,7 +312,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
               + PROPERTY_TRUE
               + thisErrorMsg());
     }
-    givesBackOriginalTerritories = value;
+    givesBackOriginalTerritories = value.intern();
   }
 
   private String getGivesBackOriginalTerritories() {
@@ -341,7 +341,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
               + PROPERTY_TRUE
               + thisErrorMsg());
     }
-    canMoveIntoDuringCombatMove = value;
+    canMoveIntoDuringCombatMove = value.intern();
   }
 
   private String getCanMoveIntoDuringCombatMove() {
@@ -371,7 +371,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
               + PROPERTY_TRUE
               + thisErrorMsg());
     }
-    canMoveThroughCanals = value;
+    canMoveThroughCanals = value.intern();
   }
 
   private String getCanMoveThroughCanals() {
@@ -403,7 +403,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
               + PROPERTY_TRUE
               + thisErrorMsg());
     }
-    rocketsCanFlyOver = value;
+    rocketsCanFlyOver = value.intern();
   }
 
   private String getRocketsCanFlyOver() {
