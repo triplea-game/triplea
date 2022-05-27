@@ -146,8 +146,7 @@ public final class ProTerritoryValueUtils {
         double nearbyEnemySeaUnitValue = 0;
         final List<Territory> nearbyEnemySeaUnitTerritories =
             CollectionUtils.getMatches(
-                nearbySeaTerritories,
-                Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()));
+                nearbySeaTerritories, Matches.territoryHasEnemyUnits(player));
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaUnitTerritories) {
           final Route route =
               data.getMap()
@@ -165,7 +164,7 @@ public final class ProTerritoryValueUtils {
             nearbyEnemySeaUnitValue +=
                 nearbyEnemySeaTerritory
                         .getUnitCollection()
-                        .countMatches(Matches.unitIsEnemyOf(data.getRelationshipTracker(), player))
+                        .countMatches(Matches.unitIsEnemyOf(player))
                     / Math.pow(2, distance);
           }
         }

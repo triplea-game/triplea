@@ -81,8 +81,7 @@ final class MatchesTest {
     private Territory territory;
 
     private Predicate<Territory> newMatch() {
-      return Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(
-          player, gameData.getRelationshipTracker());
+      return Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player);
     }
 
     private Unit newAirUnitFor(final GamePlayer player) {

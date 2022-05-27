@@ -199,8 +199,7 @@ public class PlayerAttachment extends DefaultAttachment {
       return true;
     }
     final Predicate<Unit> notOwned = Matches.unitIsOwnedBy(owner).negate();
-    final Predicate<Unit> notAllied =
-        Matches.alliedUnit(owner, data.getRelationshipTracker()).negate();
+    final Predicate<Unit> notAllied = Matches.alliedUnit(owner).negate();
     for (final Triple<Integer, String, Set<UnitType>> currentLimit : stackingLimits) {
       // first make a copy of unitsMoving
       final Collection<Unit> copyUnitsMoving = new ArrayList<>(unitsMoving);

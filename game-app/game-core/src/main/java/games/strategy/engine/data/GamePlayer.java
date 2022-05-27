@@ -8,6 +8,7 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,6 +233,22 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
 
   public TechAttachment getTechAttachment() {
     return (TechAttachment) getAttachment(Constants.TECH_ATTACHMENT_NAME);
+  }
+
+  public final boolean isAllied(GamePlayer other) {
+    return getData().getRelationshipTracker().isAllied(this, other);
+  }
+
+  public final boolean isAtWar(GamePlayer other) {
+    return getData().getRelationshipTracker().isAtWar(this, other);
+  }
+
+  public final boolean isAtWarWithAnyOfThesePlayers(Collection<GamePlayer> others) {
+    return getData().getRelationshipTracker().isAtWarWithAnyOfThesePlayers(this, others);
+  }
+
+  public final boolean isAlliedWithAnyOfThesePlayers(Collection<GamePlayer> others) {
+    return getData().getRelationshipTracker().isAlliedWithAnyOfThesePlayers(this, others);
   }
 
   /** A player type (e.g. human, AI). */

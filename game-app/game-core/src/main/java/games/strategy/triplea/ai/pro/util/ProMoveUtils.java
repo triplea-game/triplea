@@ -83,8 +83,7 @@ public final class ProMoveUtils {
         // If carrier has dependent allied fighters then move them too
         if (Matches.unitIsCarrier().test(u)) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-              MoveValidator.carrierMustMoveWith(
-                  startTerritory.getUnits(), startTerritory, data.getRelationshipTracker(), player);
+              MoveValidator.carrierMustMoveWith(startTerritory.getUnits(), startTerritory, player);
           if (carrierMustMoveWith.containsKey(u)) {
             unitList.addAll(carrierMustMoveWith.get(u));
           }
@@ -200,9 +199,7 @@ public final class ProMoveUtils {
         while (movesLeft >= 0) {
 
           // Load adjacent units if no enemies present in transport territory
-          if (Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker())
-              .negate()
-              .test(transportTerritory)) {
+          if (Matches.territoryHasEnemyUnits(player).negate().test(transportTerritory)) {
             final var unitsToRemove = new ArrayList<Unit>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
               final Territory unitTerritory = proData.getUnitTerritory(amphibUnit);

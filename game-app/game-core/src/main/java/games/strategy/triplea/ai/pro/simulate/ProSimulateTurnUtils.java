@@ -238,9 +238,7 @@ public final class ProSimulateTurnUtils {
       final Collection<Territory> originallyOwned =
           OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
-          CollectionUtils.getMatches(
-              originallyOwned,
-              Matches.isTerritoryAllied(terrOrigOwner, data.getRelationshipTracker()));
+          CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner));
       friendlyTerritories.add(t);
       for (final Territory item : friendlyTerritories) {
         if (item.isOwnedBy(terrOrigOwner)) {

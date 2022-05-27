@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate.battle;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
@@ -73,6 +74,12 @@ public class FakeBattleState implements BattleState {
 
   @Getter(onMethod = @__({@Override}))
   final @Nonnull Collection<Unit> bombardingUnits;
+
+  public FakeBattleState init() {
+    lenient().when(attacker.getData()).thenReturn(gameData);
+    lenient().when(defender.getData()).thenReturn(gameData);
+    return this;
+  }
 
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {

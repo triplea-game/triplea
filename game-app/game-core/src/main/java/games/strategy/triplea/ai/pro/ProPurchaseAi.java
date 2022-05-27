@@ -519,9 +519,7 @@ class ProPurchaseAi {
     for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
       for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories()) {
         final Territory t = placeTerritory.getTerritory();
-        final List<Unit> units =
-            t.getUnitCollection()
-                .getMatches(Matches.isUnitAllied(player, data.getRelationshipTracker()));
+        final List<Unit> units = t.getUnitCollection().getMatches(Matches.isUnitAllied(player));
         placeTerritory.setDefendingUnits(units);
         ProLogger.debug(t + " has numDefenders=" + units.size());
       }
@@ -1223,9 +1221,7 @@ class ProPurchaseAi {
       } else {
 
         // Find current battle result
-        final List<Unit> defenders =
-            t.getUnitCollection()
-                .getMatches(Matches.isUnitAllied(player, data.getRelationshipTracker()));
+        final List<Unit> defenders = t.getUnitCollection().getMatches(Matches.isUnitAllied(player));
         final Set<Unit> enemyAttackingUnits =
             new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
@@ -1298,9 +1294,7 @@ class ProPurchaseAi {
           data.getMap()
               .getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(data, player, false));
       final int numNearbyEnemyTerritories =
-          CollectionUtils.countMatches(
-              nearbyLandTerritories,
-              Matches.isTerritoryEnemy(player, data.getRelationshipTracker()));
+          CollectionUtils.countMatches(nearbyLandTerritories, Matches.isTerritoryEnemy(player));
       ProLogger.trace(
           t
               + ", strategic value="

@@ -677,7 +677,7 @@ public class ProTerritoryManager {
         moveMap,
         unitMoveMap,
         landRoutesMap,
-        Matches.isTerritoryAllied(player, data.getRelationshipTracker()),
+        Matches.isTerritoryAllied(player),
         new ArrayList<>(),
         clearedTerritories,
         false,
@@ -703,7 +703,7 @@ public class ProTerritoryManager {
         moveMap,
         transportMapList,
         landRoutesMap,
-        Matches.isTerritoryAllied(player, data.getRelationshipTracker()),
+        Matches.isTerritoryAllied(player),
         false,
         isCheckingEnemyAttacks,
         false);
@@ -718,8 +718,7 @@ public class ProTerritoryManager {
     final List<Map<Territory, ProTerritory>> enemyMoveMaps = new ArrayList<>();
     final List<Territory> clearedTerritories =
         CollectionUtils.getMatches(
-            data.getMap().getTerritories(),
-            Matches.isTerritoryAllied(player, data.getRelationshipTracker()));
+            data.getMap().getTerritories(), Matches.isTerritoryAllied(player));
 
     // Loop through each enemy to determine the maximum number of enemy units that can defend each
     // territory
@@ -776,10 +775,7 @@ public class ProTerritoryManager {
         if (isCombatMove && !isCheckingEnemyAttacks) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
               MoveValidator.carrierMustMoveWith(
-                  myUnitTerritory.getUnits(),
-                  myUnitTerritory,
-                  data.getRelationshipTracker(),
-                  player);
+                  myUnitTerritory.getUnits(), myUnitTerritory, player);
           if (carrierMustMoveWith.containsKey(mySeaUnit)
               && !carrierMustMoveWith.get(mySeaUnit).isEmpty()) {
             continue;
@@ -909,8 +905,7 @@ public class ProTerritoryManager {
             continue;
           }
           if (myRoute.hasMoreThenOneStep()
-              && myRoute.getMiddleSteps().stream()
-                  .anyMatch(Matches.isTerritoryEnemy(player, data.getRelationshipTracker()))
+              && myRoute.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
               && Matches.unitIsOfTypes(
                       TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
                   .test(myLandUnit)) {
@@ -979,7 +974,7 @@ public class ProTerritoryManager {
         }
       }
       for (final Territory t : gameMap.getTerritories()) {
-        if (t.anyUnitsMatch(Matches.unitIsAlliedCarrier(player, data.getRelationshipTracker()))) {
+        if (t.anyUnitsMatch(Matches.unitIsAlliedCarrier(player))) {
           possibleCarrierTerritories.add(t);
         }
       }
@@ -1138,9 +1133,7 @@ public class ProTerritoryManager {
             final Set<Territory> myUnitsToLoadTerritories = new HashSet<>();
             if (TransportTracker.isTransporting(myTransport)) {
               units.addAll(myTransport.getTransporting());
-            } else if (Matches.territoryHasEnemySeaUnits(player, data.getRelationshipTracker())
-                .negate()
-                .test(currentTerritory)) {
+            } else if (Matches.territoryHasEnemySeaUnits(player).negate().test(currentTerritory)) {
               final Set<Territory> possibleLoadTerritories = gameMap.getNeighbors(currentTerritory);
               for (final Territory possibleLoadTerritory : possibleLoadTerritories) {
                 final List<Unit> possibleUnits =
@@ -1343,7 +1336,7 @@ public class ProTerritoryManager {
       final BigDecimal range =
           new BigDecimal(UnitAttachment.get(unit.getType()).getMovement(player));
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-              unitTerritory, player, data.getRelationshipTracker(), data.getMap())
+              unitTerritory, player, data.getMap())
           .test(unit)) {
         return range.add(BigDecimal.ONE); // assumes bonus of +1 for now
       }

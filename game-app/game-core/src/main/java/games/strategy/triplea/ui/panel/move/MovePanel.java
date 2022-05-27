@@ -584,7 +584,7 @@ public class MovePanel extends AbstractMovePanel {
           final GamePlayer player = getCurrentPlayer();
           return Matches.territoryHasUnitsOwnedBy(player)
               .negate()
-              .and(Matches.territoryHasEnemyUnits(player, getData().getRelationshipTracker()))
+              .and(Matches.territoryHasEnemyUnits(player))
               .test(territory);
         }
 
@@ -1139,8 +1139,7 @@ public class MovePanel extends AbstractMovePanel {
           Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
     }
     final Predicate<Unit> candidateTransportsMatch =
-        Matches.unitIsTransport()
-            .and(Matches.alliedUnit(unitOwner, getGameData().getRelationshipTracker()));
+        Matches.unitIsTransport().and(Matches.alliedUnit(unitOwner));
     final List<Unit> candidateTransports =
         CollectionUtils.getMatches(route.getEnd().getUnits(), candidateTransportsMatch);
 

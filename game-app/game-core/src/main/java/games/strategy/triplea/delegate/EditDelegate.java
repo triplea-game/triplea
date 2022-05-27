@@ -82,14 +82,11 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea()))
         && units.stream().anyMatch(Matches.unitIsLand())) {
       // this should be exact same as the one in the EditValidator
-      if (units.isEmpty()
-          || !units.stream().allMatch(Matches.alliedUnit(player, data.getRelationshipTracker()))) {
+      if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player))) {
         return "Can't add mixed nationality units to water";
       }
       final Predicate<Unit> friendlySeaTransports =
-          Matches.unitIsTransport()
-              .and(Matches.unitIsSea())
-              .and(Matches.alliedUnit(player, data.getRelationshipTracker()));
+          Matches.unitIsTransport().and(Matches.unitIsSea()).and(Matches.alliedUnit(player));
       final Collection<Unit> seaTransports =
           CollectionUtils.getMatches(units, friendlySeaTransports);
       final Collection<Unit> landUnitsToAdd =
@@ -156,8 +153,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       bridge.addChange(ChangeFactory.changeOwner(units, player, territory));
     } else {
       final Predicate<Unit> enemyNonCom =
-          Matches.unitIsInfrastructure()
-              .and(Matches.enemyUnit(player, data.getRelationshipTracker()));
+          Matches.unitIsInfrastructure().and(Matches.enemyUnit(player));
       final Collection<Unit> units = territory.getUnitCollection().getMatches(enemyNonCom);
       // mark no movement for enemy units
       bridge.addChange(ChangeFactory.markNoMovementChange(units));
