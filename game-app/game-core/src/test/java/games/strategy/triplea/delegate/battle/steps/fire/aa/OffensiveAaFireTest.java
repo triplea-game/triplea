@@ -15,7 +15,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -46,10 +45,9 @@ class OffensiveAaFireTest {
       final Unit targetUnit = givenAnyUnit();
       final Unit aaUnit = givenUnitIsCombatAa(Set.of(targetUnit.getType()), attacker, OFFENSE);
       when(aaUnit.getOwner()).thenReturn(attacker);
-      GameData data = givenGameData().withWarRelationship(defender, attacker, true).build();
       final BattleState battleState =
           givenBattleStateBuilder()
-              .gameData(data)
+              .gameData(givenGameData().withWarRelationship(defender, attacker, true).build())
               .attacker(attacker)
               .defender(defender)
               .attackingUnits(List.of(aaUnit))
