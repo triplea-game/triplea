@@ -229,10 +229,6 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return !territoriesWeCanLaunchFrom.isEmpty();
   }
 
-  private static boolean getEditMode(final GameState data) {
-    return BaseEditDelegate.getEditMode(data.getProperties());
-  }
-
   @Override
   public int pusAlreadyLost(final Territory t) {
     return 0;
