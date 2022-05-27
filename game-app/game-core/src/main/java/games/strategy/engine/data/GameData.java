@@ -363,6 +363,19 @@ public class GameData implements Serializable, GameState {
     territoryListeners = new CopyOnWriteArrayList<>();
     dataChangeListeners = new CopyOnWriteArrayList<>();
     delegates = new HashMap<>();
+    // Old save games may have territories and units owned by a different null player object that
+    // has a null data. Update them to the new null player, so that code can rely on getData()
+    // not being null.
+    for (Territory t : getMap().getTerritories()) {
+      if (t.getOwner().isNull()) {
+        t.setOwner(playerList.getNullPlayer());
+      }
+    }
+    for (Unit u : getUnits()) {
+      if (u.getOwner().isNull()) {
+        u.setOwner(playerList.getNullPlayer());
+      }
+    }
   }
 
   public interface Unlocker extends Closeable {
