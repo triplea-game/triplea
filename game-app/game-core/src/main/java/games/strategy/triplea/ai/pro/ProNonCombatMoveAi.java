@@ -1612,65 +1612,65 @@ class ProNonCombatMoveAi {
             minTerritory = t;
           }
         }
-        if (minTerritory != null) {
-          // If transporting units then unload to safe territory
-          // TODO: consider which is 'safest'
-          if (TransportTracker.isTransporting(transport)) {
-            final List<Unit> amphibUnits = transport.getTransporting();
-            final Set<Territory> possibleUnloadTerritories =
-                data.getMap()
-                    .getNeighbors(
-                        minTerritory,
-                        ProMatches.territoryCanMoveLandUnitsAndIsAllied(data, player));
-            final ProTerritory proDestination;
-            if (!possibleUnloadTerritories.isEmpty()) {
-              // Find best unload territory
-              Territory unloadToTerritory =
-                  possibleUnloadTerritories.stream()
-                      .filter(t -> moveMap.get(t).isCanHold())
-                      .findAny()
-                      .orElse(CollectionUtils.getAny(possibleUnloadTerritories));
-              proDestination = moveMap.get(unloadToTerritory);
-              ProLogger.trace(
-                  transport
-                      + " moved to safest territory at "
-                      + minTerritory
-                      + " and unloading to "
-                      + unloadToTerritory
-                      + " with "
-                      + amphibUnits
-                      + ", strengthDifference="
-                      + minStrengthDifference);
-            } else {
-              proDestination = moveMap.get(minTerritory);
-              // Move transport with units since no unload options
-              ProLogger.trace(
-                  transport
-                      + " moved to safest territory at "
-                      + minTerritory
-                      + " with "
-                      + amphibUnits
-                      + ", strengthDifference="
-                      + minStrengthDifference);
-            }
-            proDestination.addTempUnits(amphibUnits);
-            proDestination.putTempAmphibAttackMap(transport, amphibUnits);
-            proDestination.getTransportTerritoryMap().put(transport, minTerritory);
-            for (final Unit unit : amphibUnits) {
-              currentUnitMoveMap.remove(unit);
-            }
-          } else {
-            // If not transporting units
+        if (minTerritory == null) {
+          continue;
+        }
+        // If transporting units then unload to safe territory
+        // TODO: consider which is 'safest'
+        if (TransportTracker.isTransporting(transport)) {
+          final List<Unit> amphibUnits = transport.getTransporting();
+          final Set<Territory> possibleUnloadTerritories =
+              data.getMap()
+                  .getNeighbors(
+                      minTerritory, ProMatches.territoryCanMoveLandUnitsAndIsAllied(data, player));
+          final ProTerritory proDestination;
+          if (!possibleUnloadTerritories.isEmpty()) {
+            // Find best unload territory
+            Territory unloadToTerritory =
+                possibleUnloadTerritories.stream()
+                    .filter(t -> moveMap.get(t).isCanHold())
+                    .findAny()
+                    .orElse(CollectionUtils.getAny(possibleUnloadTerritories));
+            proDestination = moveMap.get(unloadToTerritory);
             ProLogger.trace(
                 transport
                     + " moved to safest territory at "
                     + minTerritory
+                    + " and unloading to "
+                    + unloadToTerritory
+                    + " with "
+                    + amphibUnits
                     + ", strengthDifference="
                     + minStrengthDifference);
-            moveMap.get(minTerritory).addTempUnit(transport);
+          } else {
+            proDestination = moveMap.get(minTerritory);
+            // Move transport with units since no unload options
+            ProLogger.trace(
+                transport
+                    + " moved to safest territory at "
+                    + minTerritory
+                    + " with "
+                    + amphibUnits
+                    + ", strengthDifference="
+                    + minStrengthDifference);
           }
-          it.remove();
+          proDestination.addTempUnits(amphibUnits);
+          proDestination.putTempAmphibAttackMap(transport, amphibUnits);
+          proDestination.getTransportTerritoryMap().put(transport, minTerritory);
+          for (final Unit unit : amphibUnits) {
+            currentUnitMoveMap.remove(unit);
+          }
+        } else {
+          // If not transporting units
+          ProLogger.trace(
+              transport
+                  + " moved to safest territory at "
+                  + minTerritory
+                  + ", strengthDifference="
+                  + minStrengthDifference);
+          moveMap.get(minTerritory).addTempUnit(transport);
         }
+        it.remove();
       }
 
       // Get all transport final territories
