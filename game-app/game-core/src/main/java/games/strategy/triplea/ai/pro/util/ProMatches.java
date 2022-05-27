@@ -31,7 +31,7 @@ public final class ProMatches {
       final GamePlayer player, final GameData gameData) {
     return (startTerritory, endTerritory) -> {
       final Route r = new Route(startTerritory, endTerritory);
-      return new MoveValidator(gameData).validateCanal(r, null, player) == null;
+      return new MoveValidator(gameData, false).validateCanal(r, null, player) == null;
     };
   }
 

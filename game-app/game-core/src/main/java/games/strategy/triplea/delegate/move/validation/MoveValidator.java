@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.move.validation;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.ResourceCollection;
@@ -16,6 +17,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
@@ -23,10 +25,13 @@ import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.UnitComparator;
+import games.strategy.triplea.delegate.battle.BattleTracker;
+import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -83,14 +88,12 @@ public class MoveValidator {
   private final boolean isNonCombat;
 
   public MoveValidationResult validateMove(final MoveDescription move, final GamePlayer player) {
-    return validateMove(move, player, null);
+    return validateMove(move, player, List.of());
   }
 
   /** Validates the specified move. */
   public MoveValidationResult validateMove(
-      final MoveDescription move,
-      final GamePlayer player,
-      final @Nullable List<UndoableMove> undoableMoves) {
+      final MoveDescription move, final GamePlayer player, final List<UndoableMove> undoableMoves) {
     final Collection<Unit> units = move.getUnits();
     final Route route = move.getRoute();
     final Map<Unit, Unit> unitsToTransports = move.getUnitsToTransports();
@@ -282,11 +285,12 @@ public class MoveValidator {
    *
    * @param units (Can be null. If null we will assume all units would be stopped by the canal.)
    */
-  public String validateCanal(
+  public @Nullable String validateCanal(
       final Route route, @Nullable final Collection<Unit> units, final GamePlayer player) {
     return validateCanal(route, units, new HashMap<>(), player);
   }
 
+  @Nullable
   String validateCanal(
       final Route route,
       @Nullable final Collection<Unit> units,
@@ -1883,5 +1887,171 @@ public class MoveValidator {
   private static int getNeutralCharge(
       final GameProperties properties, final int numberOfTerritories) {
     return numberOfTerritories * Properties.getNeutralCharge(properties);
+  }
+
+  public MoveValidationResult validateSpecialMove(
+      final MoveDescription move, final GamePlayer player) {
+    final Collection<Unit> units = move.getUnits();
+    final Route route = move.getRoute();
+    final MoveValidationResult result = new MoveValidationResult();
+    if (validateFirst(units, route, player, result).getError() != null) {
+      return result;
+    }
+    if (validateFuel(move.getUnits(), move.getRoute(), player, result).getError() != null) {
+      return result;
+    }
+    final boolean isEditMode = getEditMode(data.getProperties());
+    if (!isEditMode) {
+      // make sure all units are at least friendly
+      for (final Unit unit :
+          CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player).negate())) {
+        result.addDisallowedUnit("Can only move owned units", unit);
+      }
+    }
+    if (validateAirborneMovements(units, route, player, result).getError() != null) {
+      return result;
+    }
+    return result;
+  }
+
+  private static MoveValidationResult validateAirborneMovements(
+      final Collection<Unit> units,
+      final Route route,
+      final GamePlayer player,
+      final MoveValidationResult result) {
+    final GameData data = player.getData();
+    if (!TechAbilityAttachment.getAllowAirborneForces(
+        TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()))) {
+      return result.setErrorReturnResult("Do Not Have Airborne Tech");
+    }
+    final int airborneDistance =
+        TechAbilityAttachment.getAirborneDistance(
+            TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()));
+    final Set<UnitType> airborneBases =
+        TechAbilityAttachment.getAirborneBases(
+            TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()));
+    final Set<UnitType> airborneTypes =
+        TechAbilityAttachment.getAirborneTypes(
+            TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()));
+    if (airborneDistance <= 0 || airborneBases.isEmpty() || airborneTypes.isEmpty()) {
+      return result.setErrorReturnResult("Require Airborne Forces And Launch Capacity Tech");
+    }
+    if (route.numberOfSteps() > airborneDistance) {
+      return result.setErrorReturnResult("Destination Is Out Of Range");
+    }
+    final Collection<GamePlayer> alliesForBases =
+        data.getRelationshipTracker().getAllies(player, true);
+    final Predicate<Unit> airborneBaseMatch = getAirborneMatch(airborneBases, alliesForBases);
+    final Territory start = route.getStart();
+    final Territory end = route.getEnd();
+    final Collection<Unit> basesAtStart = start.getUnitCollection().getMatches(airborneBaseMatch);
+    if (basesAtStart.isEmpty()) {
+      return result.setErrorReturnResult("Require Airborne Base At Originating Territory");
+    }
+
+    final int airborneCapacity =
+        TechAbilityAttachment.getAirborneCapacity(
+            basesAtStart, TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()));
+    if (airborneCapacity <= 0) {
+      return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
+    } else if (airborneCapacity < units.size()) {
+      final Collection<Unit> overMax = new ArrayList<>(units);
+      overMax.removeAll(CollectionUtils.getNMatches(units, airborneCapacity, it -> true));
+      for (final Unit u : overMax) {
+        result.addDisallowedUnit("Airborne Base Capacity Has Been Reached", u);
+      }
+    }
+    final Collection<Unit> airborne = new ArrayList<>();
+    for (final Unit u : units) {
+      if (!Matches.unitIsOwnedBy(player).test(u)) {
+        result.addDisallowedUnit("Must Own All Airborne Forces", u);
+      } else if (!Matches.unitIsOfTypes(airborneTypes).test(u)) {
+        result.addDisallowedUnit("Can Only Launch Airborne Forces", u);
+      } else if (Matches.unitIsDisabled().test(u)) {
+        result.addDisallowedUnit("Must Not Be Disabled", u);
+      } else if (!Matches.unitHasNotMoved().test(u)) {
+        result.addDisallowedUnit("Must Not Have Previously Moved Airborne Forces", u);
+      } else if (Matches.unitIsAirborne().test(u)) {
+        result.addDisallowedUnit("Cannot Move Units Already Airborne", u);
+      } else {
+        airborne.add(u);
+      }
+    }
+    if (airborne.isEmpty()) {
+      return result;
+    }
+    final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
+    final boolean onlyWhereUnderAttackAlready =
+        Properties.getAirborneAttacksOnlyInExistingBattles(data.getProperties());
+    final boolean onlyEnemyTerritories =
+        Properties.getAirborneAttacksOnlyInEnemyTerritories(data.getProperties());
+    final List<Territory> steps = route.getSteps();
+    if (steps.isEmpty()
+        || !steps.stream()
+            .allMatch(Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))) {
+      return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
+    }
+    if (steps.isEmpty()
+        || !steps.stream()
+            .allMatch(
+                Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(
+                    player, data.getRelationshipTracker()))) {
+      return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
+    }
+    final boolean someLand = airborne.stream().anyMatch(Matches.unitIsLand());
+    final boolean someSea = airborne.stream().anyMatch(Matches.unitIsSea());
+    final boolean land = Matches.territoryIsLand().test(end);
+    final boolean sea = Matches.territoryIsWater().test(end);
+    if (someLand && someSea) {
+      return result.setErrorReturnResult("Cannot Mix Land and Sea Units");
+    } else if (someLand) {
+      if (!land) {
+        return result.setErrorReturnResult("Cannot Move Land Units To Sea");
+      }
+    } else if (someSea && !sea) {
+      return result.setErrorReturnResult("Cannot Move Sea Units To Land");
+    }
+    if (onlyWhereUnderAttackAlready) {
+      if (!battleTracker.getConquered().contains(end)) {
+        final IBattle battle = battleTracker.getPendingBattle(end, IBattle.BattleType.NORMAL);
+        if (battle == null) {
+          return result.setErrorReturnResult(
+              "Airborne May Only Attack Territories Already Under Assault");
+        } else if (land
+            && someLand
+            && battle.getAttackingUnits().stream().noneMatch(Matches.unitIsLand())) {
+          return result.setErrorReturnResult(
+              "Battle Must Have Some Land Units Participating Already");
+        } else if (sea
+            && someSea
+            && battle.getAttackingUnits().stream().noneMatch(Matches.unitIsSea())) {
+          return result.setErrorReturnResult(
+              "Battle Must Have Some Sea Units Participating Already");
+        }
+      }
+    } else if (onlyEnemyTerritories
+        && !(Matches.isTerritoryEnemyAndNotUnownedWater(player, data.getRelationshipTracker())
+                .test(end)
+            || Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()).test(end))) {
+      return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
+    }
+    return result;
+  }
+
+  public static Predicate<Unit> getAirborneBaseMatch(
+      final GamePlayer player, final GameState data) {
+    return getAirborneMatch(
+        TechAbilityAttachment.getAirborneBases(
+            TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier())),
+        data.getRelationshipTracker().getAllies(player, true));
+  }
+
+  public static Predicate<Unit> getAirborneMatch(
+      final Set<UnitType> types, final Collection<GamePlayer> unitOwners) {
+    return Matches.unitIsOwnedByAnyOf(unitOwners)
+        .and(Matches.unitIsOfTypes(types))
+        .and(Matches.unitIsNotDisabled())
+        .and(Matches.unitHasNotMoved())
+        .and(Matches.unitIsAirborne().negate());
   }
 }

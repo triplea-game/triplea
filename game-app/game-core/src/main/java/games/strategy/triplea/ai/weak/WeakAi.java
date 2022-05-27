@@ -26,6 +26,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -319,7 +320,7 @@ public class WeakAi extends AbstractBuiltInAi {
     final Predicate<Territory> routeCond =
         Matches.territoryIsWater()
             .and(Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker()).negate())
-            .and(Matches.territoryHasNonAllowedCanal(player, data).negate());
+            .and(territoryHasNonAllowedCanal(player, data).negate());
     Route r = data.getMap().getRoute(start, destination, routeCond);
     if (r == null || r.hasNoSteps() || !routeCond.test(destination)) {
       return null;
@@ -328,6 +329,11 @@ public class WeakAi extends AbstractBuiltInAi {
       r = new Route(start, r.getAllTerritories().get(1), r.getAllTerritories().get(2));
     }
     return r;
+  }
+
+  private static Predicate<Territory> territoryHasNonAllowedCanal(
+      final GamePlayer player, final GameData gameData) {
+    return t -> new MoveValidator(gameData, false).validateCanal(new Route(t), null, player) != null;
   }
 
   private static List<MoveDescription> calculateCombatMoveSea(
@@ -385,21 +391,21 @@ public class WeakAi extends AbstractBuiltInAi {
     // should select all territories with loaded transports
     final Predicate<Territory> transportOnSea =
         Matches.territoryIsWater().and(Matches.territoryHasLandUnitsOwnedBy(player));
+    final Predicate<Unit> ownedTransports =
+        Matches.unitCanTransport()
+            .and(Matches.unitIsOwnedBy(player))
+            .and(Matches.unitHasNotMoved());
+    final Predicate<Territory> enemyTerritory =
+        Matches.isTerritoryEnemy(player, data.getRelationshipTracker())
+            .and(Matches.territoryIsLand())
+            .and(Matches.territoryIsNeutralButNotWater().negate())
+            .and(Matches.territoryIsEmpty());
     Route altRoute = null;
     final int length = Integer.MAX_VALUE;
     for (final Territory t : data.getMap()) {
       if (!transportOnSea.test(t)) {
         continue;
       }
-      final Predicate<Unit> ownedTransports =
-          Matches.unitCanTransport()
-              .and(Matches.unitIsOwnedBy(player))
-              .and(Matches.unitHasNotMoved());
-      final Predicate<Territory> enemyTerritory =
-          Matches.isTerritoryEnemy(player, data.getRelationshipTracker())
-              .and(Matches.territoryIsLand())
-              .and(Matches.territoryIsNeutralButNotWater().negate())
-              .and(Matches.territoryIsEmpty());
       final int trans = t.getUnitCollection().countMatches(ownedTransports);
       if (trans > 0) {
         final Route newRoute = Utils.findNearest(t, enemyTerritory, routeCondition, data);
@@ -414,6 +420,19 @@ public class WeakAi extends AbstractBuiltInAi {
   private List<MoveDescription> calculateNonCombat(final GameData data, final GamePlayer player) {
     final Collection<Territory> territories = data.getMap().getTerritories();
     final List<MoveDescription> moves = movePlanesHomeNonCombat(player, data);
+    // these are the units we can move
+    final Predicate<Unit> moveOfType =
+        Matches.unitIsOwnedBy(player)
+            .and(Matches.unitIsNotAa())
+            // we can never move factories
+            .and(Matches.unitCanMove())
+            .and(Matches.unitIsNotInfrastructure())
+            .and(Matches.unitIsLand());
+    final Predicate<Territory> moveThrough =
+        Matches.territoryIsImpassable()
+            .negate()
+            .and(Matches.territoryIsNeutralButNotWater().negate())
+            .and(Matches.territoryIsLand());
     // move our units toward the nearest enemy capitol
     for (final Territory t : territories) {
       if (t.isWater()) {
@@ -428,19 +447,6 @@ public class WeakAi extends AbstractBuiltInAi {
           continue;
         }
       }
-      // these are the units we can move
-      final Predicate<Unit> moveOfType =
-          Matches.unitIsOwnedBy(player)
-              .and(Matches.unitIsNotAa())
-              // we can never move factories
-              .and(Matches.unitCanMove())
-              .and(Matches.unitIsNotInfrastructure())
-              .and(Matches.unitIsLand());
-      final Predicate<Territory> moveThrough =
-          Matches.territoryIsImpassable()
-              .negate()
-              .and(Matches.territoryIsNeutralButNotWater().negate())
-              .and(Matches.territoryIsLand());
       final List<Unit> units = t.getUnitCollection().getMatches(moveOfType);
       if (units.isEmpty()) {
         continue;
@@ -449,17 +455,17 @@ public class WeakAi extends AbstractBuiltInAi {
       Territory to = null;
       // find the nearest enemy owned capital
       for (final GamePlayer otherPlayer : data.getPlayerList().getPlayers()) {
-        final Territory capitol =
+        final Territory capital =
             TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
                 otherPlayer, data.getMap());
-        if (capitol != null
-            && !data.getRelationshipTracker().isAllied(player, capitol.getOwner())) {
-          final Route route = data.getMap().getRoute(t, capitol, moveThrough);
-          if (route != null && moveThrough.test(capitol)) {
+        if (capital != null
+            && !data.getRelationshipTracker().isAllied(player, capital.getOwner())) {
+          final Route route = data.getMap().getRoute(t, capital, moveThrough);
+          if (route != null && moveThrough.test(capital)) {
             final int distance = route.numberOfSteps();
             if (distance != 0 && distance < minDistance) {
               minDistance = distance;
-              to = capitol;
+              to = capital;
             }
           }
         }

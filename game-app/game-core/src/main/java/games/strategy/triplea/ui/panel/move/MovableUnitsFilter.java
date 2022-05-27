@@ -8,7 +8,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.UndoableMove;
@@ -230,8 +229,12 @@ final class MovableUnitsFilter {
               : TransportUtils.mapTransports(route, units, transportsToLoad);
       final MoveDescription move =
           new MoveDescription(unitsWithDependents, route, unitsToTransports, dependentUnits);
-      result =
-          AbstractMoveDelegate.validateMove(data, moveType, move, player, nonCombat, undoableMoves);
+      final MoveValidator moveValidator = new MoveValidator(data, nonCombat);
+      if (moveType == MoveType.SPECIAL) {
+        result = moveValidator.validateSpecialMove(move, player);
+      } else {
+        result = moveValidator.validateMove(move, player, undoableMoves);
+      }
     } finally {
       data.releaseReadLock();
     }

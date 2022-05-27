@@ -1530,11 +1530,6 @@ public final class Matches {
     return u -> TechTracker.hasImprovedArtillerySupport(u.getOwner());
   }
 
-  public static Predicate<Territory> territoryHasNonAllowedCanal(
-      final GamePlayer player, final GameData gameData) {
-    return t -> new MoveValidator(gameData).validateCanal(new Route(t), null, player) != null;
-  }
-
   public static Predicate<Territory> territoryIsBlockedSea(
       final GamePlayer player,
       final GameProperties properties,
