@@ -67,7 +67,8 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
     final JTable statsTable = new JTable(dataModel);
     statsTable.getTableHeader().setReorderingAllowed(false);
-    ((DefaultTableCellRenderer) statsTable.getDefaultRenderer(String.class)).setHorizontalAlignment(JLabel.RIGHT);
+    ((DefaultTableCellRenderer) statsTable.getDefaultRenderer(String.class))
+        .setHorizontalAlignment(JLabel.RIGHT);
     statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
     statsTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer());
     add(new JScrollPane(statsTable));
