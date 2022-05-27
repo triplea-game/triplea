@@ -333,7 +333,8 @@ public class WeakAi extends AbstractBuiltInAi {
 
   private static Predicate<Territory> territoryHasNonAllowedCanal(
       final GamePlayer player, final GameData gameData) {
-    return t -> new MoveValidator(gameData, false).validateCanal(new Route(t), null, player) != null;
+    return t ->
+        new MoveValidator(gameData, false).validateCanal(new Route(t), null, player) != null;
   }
 
   private static List<MoveDescription> calculateCombatMoveSea(
