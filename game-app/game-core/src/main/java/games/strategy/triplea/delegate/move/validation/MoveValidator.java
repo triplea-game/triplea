@@ -50,7 +50,7 @@ import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
-/** Provides some static methods for validating movement. */
+/** Responsible for validating unit movement. */
 @AllArgsConstructor
 public class MoveValidator {
 
