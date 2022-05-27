@@ -120,18 +120,19 @@ public class ZippedMapsExtractor {
   private static Optional<Path> unzipMapThrowing(final Path mapZip) throws IOException {
     // extraction target is important, it is the folder path we seek to create with
     // extracted map contents.
+    final Path mapsFolder = ClientFileSystemHelper.getUserMapsFolder();
     final Path extractionTarget =
-        ClientFileSystemHelper.getUserMapsFolder()
-            .resolve(computeExtractionFolderName(mapZip.getFileName().toString()));
+        mapsFolder.resolve(computeExtractionFolderName(mapZip.getFileName().toString()));
 
     log.info(
         "Extracting map zip: {} -> {}", mapZip.toAbsolutePath(), extractionTarget.toAbsolutePath());
 
     // extract into a temp folder first
-    final Path tempFolder = Files.createTempDirectory("triplea-unzip");
+    // put the temp folder in the maps folder, so they're on the same partition (to move later)
+    final Path tempFolder = Files.createTempDirectory(mapsFolder, "triplea-unzip");
     ZipExtractor.unzipFile(mapZip, tempFolder);
 
-    // Typically the next step is to move and rename the temp folder to the maps folder.
+    // Typically, the next step is to move and rename the temp folder to the maps folder.
     // But, if we just extracted exactly one folder, then we need to move and rename *that* folder.
     final Collection<Path> files = FileUtils.listFiles(tempFolder);
     final Path tempFolderWithExtractedMap =
