@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.util;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -18,6 +19,7 @@ import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
@@ -327,5 +329,27 @@ public final class ProPurchaseUtils {
       }
     }
     return placeUnits;
+  }
+
+  public static Collection<Unit> getUnitsToConsume(
+      GamePlayer player, Collection<Unit> existingUnits, Collection<Unit> unitsToPlace) {
+    Collection<Unit> unitsThatConsume =
+        CollectionUtils.getMatches(unitsToPlace, Matches.unitConsumesUnitsOnCreation());
+    Set<Unit> unitsToConsume = new HashSet<>();
+    for (Unit unitToBuild : unitsThatConsume) {
+      IntegerMap<UnitType> needed = UnitAttachment.get(unitToBuild.getType()).getConsumesUnits();
+      for (UnitType neededType : needed.keySet()) {
+        final Predicate<Unit> matcher =
+            Matches.eligibleUnitToConsume(player, neededType).and(u -> !unitsToConsume.contains(u));
+        int neededCount = needed.getInt(neededType);
+        Collection<Unit> found = CollectionUtils.getNMatches(existingUnits, neededCount, matcher);
+        // The caller should have already validated that the required units are present.
+        Preconditions.checkState(
+            found.size() == neededCount,
+            "Not found: " + neededCount + " of " + neededType + " for " + unitsToPlace);
+        unitsToConsume.addAll(found);
+      }
+    }
+    return unitsToConsume;
   }
 }

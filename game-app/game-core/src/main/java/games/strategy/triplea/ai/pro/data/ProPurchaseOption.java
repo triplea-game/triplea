@@ -9,6 +9,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
+import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -16,6 +17,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.SupportCalculator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +61,7 @@ public class ProPurchaseOption {
   private final Set<UnitSupportAttachment> unitSupportAttachments;
   @Getter private boolean isAttackSupport;
   @Getter private boolean isDefenseSupport;
+  @Getter private final boolean consumesUnits;
 
   ProPurchaseOption(
       final ProductionRule productionRule,
@@ -132,6 +135,7 @@ public class ProPurchaseOption {
         isDefenseSupport = true;
       }
     }
+    consumesUnits = !unitAttachment.getConsumesUnits().isEmpty();
   }
 
   @Override
@@ -274,14 +278,17 @@ public class ProPurchaseOption {
       final List<Unit> unitsToPlace,
       final GameData data,
       final boolean defense) {
-
     if ((!isAttackSupport && !defense) || (!isDefenseSupport && defense)) {
       return 0;
     }
 
-    final List<Unit> units = new ArrayList<>(ownedLocalUnits);
+    final List<Unit> units = new ArrayList<>();
     units.addAll(unitsToPlace);
     units.addAll(unitType.createTemp(1, player));
+    // Omit units that will be consumed by placing units here.
+    Collection<Unit> toConsume = ProPurchaseUtils.getUnitsToConsume(player, ownedLocalUnits, units);
+    units.addAll(CollectionUtils.difference(ownedLocalUnits, toConsume));
+
     final SupportCalculator availableSupports =
         new SupportCalculator(
             units,
@@ -391,5 +398,9 @@ public class ProPurchaseOption {
                 / cost,
             30)
         / quantity;
+  }
+
+  public List<Unit> createTempUnits() {
+    return getUnitType().createTemp(getQuantity(), player);
   }
 }

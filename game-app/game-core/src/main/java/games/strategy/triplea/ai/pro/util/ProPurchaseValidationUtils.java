@@ -16,14 +16,18 @@ import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProResourceTracker;
 import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * Pro AI utility methods for finding purchase options and validating which ones a territory can
@@ -76,10 +80,10 @@ public final class ProPurchaseValidationUtils {
       final Territory factoryTerritory,
       final boolean isBid) {
     final GameData data = player.getData();
-    AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegate("place");
-    if (isBid) {
-      placeDelegate = (AbstractPlaceDelegate) data.getDelegate("placeBid");
-    } else if (!t.equals(factoryTerritory)
+    final var placeDelegate =
+        (AbstractPlaceDelegate) data.getDelegate(isBid ? "placeBid" : "place");
+    if (!isBid
+        && !t.equals(factoryTerritory)
         && !units.stream()
             .allMatch(
                 Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(
@@ -88,11 +92,40 @@ public final class ProPurchaseValidationUtils {
     }
     final IDelegateBridge bridge = new ProDummyDelegateBridge(proData.getProAi(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
-    return isPlacingFightersOnNewCarriers(t, units)
-        ? placeDelegate.canUnitsBePlaced(
-                t, CollectionUtils.getMatches(units, Matches.unitIsNotAir()), player)
-            == null
-        : placeDelegate.canUnitsBePlaced(t, units, player) == null;
+    final String error;
+    if (isPlacingFightersOnNewCarriers(t, units)) {
+      Collection<Unit> nonAirUnits = CollectionUtils.getMatches(units, Matches.unitIsNotAir());
+      error = placeDelegate.canUnitsBePlaced(t, nonAirUnits, player);
+    } else {
+      error = placeDelegate.canUnitsBePlaced(t, units, player);
+    }
+    if (error != null) {
+      return false;
+    }
+    return unitsToConsumeAreAllPresent(proData, player, t, units);
+  }
+
+  private boolean unitsToConsumeAreAllPresent(
+      ProData proData, GamePlayer player, Territory t, Collection<Unit> unitsToBuild) {
+    // Check if units that must be consumed are all present, taking into account units that we
+    // are already planning to consume.
+    IntegerMap<UnitType> requiredUnits = new IntegerMap<>();
+    for (Unit unitToBuild : unitsToBuild) {
+      requiredUnits.add(UnitAttachment.get(unitToBuild.getType()).getConsumesUnits());
+    }
+    if (requiredUnits.isEmpty()) {
+      return true;
+    }
+    IntegerMap<UnitType> eligibleTerritoryUnits = new IntegerMap<>();
+    // TODO: This will need to change if consumed units may come from other territories.
+    for (Unit u : t.getUnits()) {
+      // Don't consider units that we've already marked for use.
+      if (!proData.getUnitsToBeConsumed().contains(u)
+          && Matches.eligibleUnitToConsume(player, u.getType()).test(u)) {
+        eligibleTerritoryUnits.add(u.getType(), 1);
+      }
+    }
+    return eligibleTerritoryUnits.greaterThanOrEqualTo(requiredUnits);
   }
 
   private static boolean isPlacingFightersOnNewCarriers(final Territory t, final List<Unit> units) {
@@ -102,28 +135,9 @@ public final class ProPurchaseValidationUtils {
         && units.stream().anyMatch(Matches.unitIsCarrier());
   }
 
-  public static void removeInvalidPurchaseOptions(
-      final GamePlayer player,
-      final GameState data,
-      final List<ProPurchaseOption> purchaseOptions,
-      final ProResourceTracker resourceTracker,
-      final int remainingUnitProduction,
-      final List<Unit> unitsToPlace,
-      final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
-    ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
-        player,
-        data,
-        purchaseOptions,
-        resourceTracker,
-        remainingUnitProduction,
-        unitsToPlace,
-        purchaseTerritories,
-        0,
-        null);
-  }
-
   /** Removes any invalid purchase options from {@code purchaseOptions}. */
   public static void removeInvalidPurchaseOptions(
+      final ProData proData,
       final GamePlayer player,
       final GameState data,
       final List<ProPurchaseOption> purchaseOptions,
@@ -133,7 +147,6 @@ public final class ProPurchaseValidationUtils {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final int remainingConstructions,
       final Territory territory) {
-
     purchaseOptions.removeIf(
         purchaseOption ->
             !hasEnoughResourcesAndProduction(
@@ -144,7 +157,16 @@ public final class ProPurchaseValidationUtils {
                 || hasReachedMaxUnitBuiltPerPlayer(
                     purchaseOption, player, data, unitsToPlace, purchaseTerritories)
                 || hasReachedConstructionLimits(
-                    purchaseOption, data, unitsToPlace, purchaseTerritories, territory));
+                    purchaseOption, data, unitsToPlace, purchaseTerritories, territory)
+                || !unitsToConsumeAreAllPresent(
+                    proData,
+                    player,
+                    territory,
+                    combineLists(unitsToPlace, purchaseOption.createTempUnits())));
+  }
+
+  private List<Unit> combineLists(List<Unit> l1, List<Unit> l2) {
+    return Stream.concat(l1.stream(), l2.stream()).collect(Collectors.toList());
   }
 
   private static boolean hasEnoughResourcesAndProduction(
@@ -163,14 +185,12 @@ public final class ProPurchaseValidationUtils {
       final GameState data,
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
-
     // Check max unit limits (-1 is unlimited)
     final int maxBuilt = purchaseOption.getMaxBuiltPerPlayer();
     final UnitType type = purchaseOption.getUnitType();
     if (maxBuilt == 0) {
       return true;
     } else if (maxBuilt > 0) {
-
       // Find number of unit type that are already built and about to be placed
       final Predicate<Unit> unitTypeOwnedBy =
           Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
@@ -197,9 +217,7 @@ public final class ProPurchaseValidationUtils {
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Territory territory) {
-
     if (purchaseOption.isConstruction() && territory != null) {
-
       final int numConstructionTypeToPlace =
           ProPurchaseValidationUtils.findNumberOfConstructionTypeToPlace(
               purchaseOption, unitsToPlace, purchaseTerritories, territory);
@@ -223,7 +241,6 @@ public final class ProPurchaseValidationUtils {
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Territory territory) {
-
     int numConstructionTypeToPlace =
         CollectionUtils.countMatches(
             unitsToPlace, Matches.unitIsOfType(purchaseOption.getUnitType()));
@@ -242,7 +259,6 @@ public final class ProPurchaseValidationUtils {
 
   private static int findMaxConstructionTypeAllowed(
       final ProPurchaseOption purchaseOption, final GameState data, final Territory territory) {
-
     int maxConstructionType = purchaseOption.getMaxConstructionType();
     final String constructionType = purchaseOption.getConstructionType();
     if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)

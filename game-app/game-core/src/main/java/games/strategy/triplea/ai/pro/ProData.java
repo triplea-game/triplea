@@ -15,8 +15,10 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
@@ -34,6 +36,10 @@ public final class ProData {
   private Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
   private IntegerMap<UnitType> unitValueMap = new IntegerMap<>();
   private @Nullable ProPurchaseOptionMap purchaseOptions = null;
+  // If we purchased units this turn that consume other units, these are the units selected to be
+  // consumed. These are already located at the factory locations, so should not be moved. In the
+  // future, we could add logic about moving such units to factory territories from elsewhere.
+  private Set<Unit> unitsToBeConsumed = new HashSet<>();
   private double minCostPerHitPoint = Double.MAX_VALUE;
 
   private AbstractProAi proAi;
