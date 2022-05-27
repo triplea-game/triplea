@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 
 /** An abstraction of MoveDelegate in order to allow other delegates to extend this. */
@@ -126,11 +127,11 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
       final MoveDescription move,
       final GamePlayer player,
       final boolean isNonCombat,
-      final List<UndoableMove> undoableMoves) {
+      final @Nullable List<UndoableMove> undoableMoves) {
     if (moveType == MoveType.SPECIAL) {
       return SpecialMoveDelegate.validateMove(gameData, move.getUnits(), move.getRoute(), player);
     }
-    return new MoveValidator(gameData).validateMove(move, player, isNonCombat, undoableMoves);
+    return new MoveValidator(gameData, isNonCombat).validateMove(move, player, undoableMoves);
   }
 
   @Override

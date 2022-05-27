@@ -45,11 +45,13 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** Provides some static methods for validating movement. */
+@AllArgsConstructor
 public class MoveValidator {
 
   public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE =
@@ -78,17 +80,17 @@ public class MoveValidator {
   public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
 
   private final GameData data;
+  private final boolean isNonCombat;
 
-  public MoveValidator(final GameData data) {
-    this.data = data;
+  public MoveValidationResult validateMove(final MoveDescription move, final GamePlayer player) {
+    return validateMove(move, player, null);
   }
 
   /** Validates the specified move. */
   public MoveValidationResult validateMove(
       final MoveDescription move,
       final GamePlayer player,
-      final boolean isNonCombat,
-      final List<UndoableMove> undoableMoves) {
+      final @Nullable List<UndoableMove> undoableMoves) {
     final Collection<Unit> units = move.getUnits();
     final Route route = move.getRoute();
     final Map<Unit, Unit> unitsToTransports = move.getUnitsToTransports();
@@ -897,8 +899,8 @@ public class MoveValidator {
       final Collection<Unit> possibleLandTransports,
       final Set<Unit> unitsToLandTransport) {
     final Set<Unit> disallowedUnits = new HashSet<>();
-    data.acquireReadLock();
-    try {
+
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       int numLandTransportsWithoutCapacity =
           getNumLandTransportsWithoutCapacity(possibleLandTransports, player);
       final IntegerMap<Unit> landTransportsWithCapacity =
@@ -924,8 +926,6 @@ public class MoveValidator {
           disallowedUnits.add(unit);
         }
       }
-    } finally {
-      data.releaseReadLock();
     }
     return disallowedUnits;
   }
