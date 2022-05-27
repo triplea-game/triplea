@@ -36,6 +36,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -66,7 +67,9 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
     final JTable statsTable = new JTable(dataModel);
     statsTable.getTableHeader().setReorderingAllowed(false);
+    ((DefaultTableCellRenderer) statsTable.getDefaultRenderer(String.class)).setHorizontalAlignment(JLabel.RIGHT);
     statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
+    statsTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer());
     add(new JScrollPane(statsTable));
     // if no technologies, do not show the tech table
     if (!hasTech) {
