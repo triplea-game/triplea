@@ -84,6 +84,7 @@ public class ServerGame extends AbstractGame {
   /** Has the delegate signaled that delegate execution should stop. */
   private volatile boolean delegateExecutionStopped = false;
 
+  // If true, setting delegateExecutionStopped to true will stop the game (return from startGame()).
   @Setter private boolean stopGameOnDelegateExecutionStop = false;
 
   public ServerGame(
@@ -424,7 +425,8 @@ public class ServerGame extends AbstractGame {
       return;
     }
     // save after the step has advanced otherwise, the delegate will execute again.
-    if (shouldAutoSaveAfterEnd(currentDelegate) && currentStep.getName().endsWith("Move")) {
+    boolean isMoveStep = GameStep.isMoveStep(currentStep.getName());
+    if (isMoveStep && shouldAutoSaveAfterEnd(currentDelegate)) {
       final String stepName = currentStep.getName();
       // If we are headless we don't want to include the nation in the save game because that would
       // make it too difficult to load later.
@@ -441,7 +443,7 @@ public class ServerGame extends AbstractGame {
               ? launchAction.getAutoSaveFileUtils().getEvenRoundAutoSaveFile()
               : launchAction.getAutoSaveFileUtils().getOddRoundAutoSaveFile());
     }
-    if (shouldAutoSaveAfterEnd(currentDelegate) && !currentStep.getName().endsWith("Move")) {
+    if (!isMoveStep && shouldAutoSaveAfterEnd(currentDelegate)) {
       autoSaveAfter(currentDelegate);
     }
   }
