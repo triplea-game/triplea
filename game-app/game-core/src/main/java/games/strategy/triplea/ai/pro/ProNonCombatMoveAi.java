@@ -2078,33 +2078,34 @@ class ProNonCombatMoveAi {
     final Predicate<Territory> canMoveLandUnits =
         ProMatches.territoryCanMoveLandUnits(data, player, true);
     for (final Unit u : unitMoveMap.keySet()) {
-      if (Matches.unitIsLand().test(u) && !addedUnits.contains(u)) {
-        int minDistance = Integer.MAX_VALUE;
-        Territory minTerritory = null;
-        for (final Territory t : unitMoveMap.get(u)) {
-          if (!moveMap.get(t).isCanHold()) {
-            continue;
+      if (!Matches.unitIsLand().test(u) || addedUnits.contains(u)) {
+        continue;
+      }
+      int minDistance = Integer.MAX_VALUE;
+      Territory minTerritory = null;
+      for (final Territory t : unitMoveMap.get(u)) {
+        if (!moveMap.get(t).isCanHold()) {
+          continue;
+        }
+        for (final Territory factory : myFactoriesAdjacentToSea) {
+          int distance = data.getMap().getDistance(t, factory, canMoveLandUnits);
+          if (distance < 0) {
+            distance = 10 * data.getMap().getDistance(t, factory);
           }
-          for (final Territory factory : myFactoriesAdjacentToSea) {
-            int distance = data.getMap().getDistance(t, factory, canMoveLandUnits);
-            if (distance < 0) {
-              distance = 10 * data.getMap().getDistance(t, factory);
-            }
-            if (distance >= 0 && distance < minDistance) {
-              minDistance = distance;
-              minTerritory = t;
-            }
+          if (distance >= 0 && distance < minDistance) {
+            minDistance = distance;
+            minTerritory = t;
           }
         }
-        if (minTerritory != null) {
-          ProLogger.trace(
-              u.getType().getName()
-                  + " moved towards closest factory adjacent to sea at "
-                  + minTerritory.getName());
-          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(proData, u, moveMap);
-          moveMap.get(minTerritory).addUnits(unitsToAdd);
-          addedUnits.addAll(unitsToAdd);
-        }
+      }
+      if (minTerritory != null) {
+        ProLogger.trace(
+            u.getType().getName()
+                + " moved towards closest factory adjacent to sea at "
+                + minTerritory.getName());
+        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(proData, u, moveMap);
+        moveMap.get(minTerritory).addUnits(unitsToAdd);
+        addedUnits.addAll(unitsToAdd);
       }
     }
     unitMoveMap.keySet().removeAll(addedUnits);
