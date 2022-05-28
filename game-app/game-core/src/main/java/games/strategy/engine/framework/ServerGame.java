@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
@@ -69,7 +70,7 @@ public class ServerGame extends AbstractGame {
   private IRandomSource randomSource = new PlainRandomSource();
   private IRandomSource delegateRandomSource;
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
-  private InGameLobbyWatcherWrapper inGameLobbyWatcher;
+  @Getter @Setter private InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
   private final LaunchAction launchAction;
   private final ClientNetworkBridge clientNetworkBridge;
@@ -675,14 +676,6 @@ public class ServerGame extends AbstractGame {
   public void setRandomSource(final IRandomSource randomSource) {
     this.randomSource = randomSource;
     delegateRandomSource = null;
-  }
-
-  public InGameLobbyWatcherWrapper getInGameLobbyWatcher() {
-    return inGameLobbyWatcher;
-  }
-
-  public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper inGameLobbyWatcher) {
-    this.inGameLobbyWatcher = inGameLobbyWatcher;
   }
 
   public void stopGameSequence() {
