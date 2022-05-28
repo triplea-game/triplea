@@ -50,6 +50,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -68,10 +70,11 @@ public class ServerGame extends AbstractGame {
   private IRandomSource randomSource = new PlainRandomSource();
   private IRandomSource delegateRandomSource;
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
-  private InGameLobbyWatcherWrapper inGameLobbyWatcher;
+  @Getter @Setter private InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
   private final LaunchAction launchAction;
   private final ClientNetworkBridge clientNetworkBridge;
+  @Setter private boolean delegateAutosavesEnabled = true;
 
   /**
    * When the delegate execution is stopped, we countdown on this latch to prevent the
@@ -80,6 +83,9 @@ public class ServerGame extends AbstractGame {
   private final CountDownLatch delegateExecutionStoppedLatch = new CountDownLatch(1);
   /** Has the delegate signaled that delegate execution should stop. */
   private volatile boolean delegateExecutionStopped = false;
+
+  // If true, setting delegateExecutionStopped to true will stop the game (return from startGame()).
+  @Setter private boolean stopGameOnDelegateExecutionStop = false;
 
   public ServerGame(
       final GameData data,
@@ -295,9 +301,13 @@ public class ServerGame extends AbstractGame {
       }
       while (!isGameOver) {
         if (delegateExecutionStopped) {
-          // the delegate has told us to stop stepping through game steps
-          // don't let this method return, as this method returning signals that the game is over.
-          Interruptibles.await(delegateExecutionStoppedLatch);
+          if (stopGameOnDelegateExecutionStop) {
+            stopGame();
+          } else {
+            // the delegate has told us to stop stepping through game steps
+            // don't let this method return, as this method returning signals that the game is over.
+            Interruptibles.await(delegateExecutionStoppedLatch);
+          }
         } else {
           runStep(false);
         }
@@ -400,15 +410,11 @@ public class ServerGame extends AbstractGame {
     }
     final GameStep currentStep = gameData.getSequence().getStep();
     final IDelegate currentDelegate = currentStep.getDelegate();
-    if (!stepIsRestoredFromSavedGame
-        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
-        && currentDelegate.getClass().getAnnotation(AutoSave.class).beforeStepStart()) {
+    if (!stepIsRestoredFromSavedGame && shouldAutoSaveBeforeStart(currentDelegate)) {
       autoSaveBefore(currentDelegate);
     }
     startStep(stepIsRestoredFromSavedGame);
-    if (!stepIsRestoredFromSavedGame
-        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
-        && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepStart()) {
+    if (!stepIsRestoredFromSavedGame && shouldAutoSaveAfterStart(currentDelegate)) {
       autoSaveBefore(currentDelegate);
     }
     if (isGameOver) {
@@ -418,17 +424,10 @@ public class ServerGame extends AbstractGame {
     if (isGameOver) {
       return;
     }
-    // save after the step has advanced
-    // otherwise, the delegate will execute again.
-    final boolean autoSaveThisDelegate =
-        currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
-            && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
-    if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
-      final String stepName = currentStep.getName();
-      // If we are headless we don't want to include the nation in the save game because that would
-      // make it too
-      // difficult to load later.
-      autoSaveAfter(stepName);
+    // save after the step has advanced otherwise, the delegate will execute again.
+    boolean isMoveStep = GameStep.isMoveStep(currentStep.getName());
+    if (isMoveStep && shouldAutoSaveAfterEnd(currentDelegate)) {
+      autoSaveAfter(currentStep.getName());
     }
     endStep();
     if (isGameOver) {
@@ -441,9 +440,27 @@ public class ServerGame extends AbstractGame {
               ? launchAction.getAutoSaveFileUtils().getEvenRoundAutoSaveFile()
               : launchAction.getAutoSaveFileUtils().getOddRoundAutoSaveFile());
     }
-    if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
+    if (!isMoveStep && shouldAutoSaveAfterEnd(currentDelegate)) {
       autoSaveAfter(currentDelegate);
     }
+  }
+
+  private boolean shouldAutoSaveBeforeStart(IDelegate delegate) {
+    return delegateAutosavesEnabled
+        && delegate.getClass().isAnnotationPresent(AutoSave.class)
+        && delegate.getClass().getAnnotation(AutoSave.class).beforeStepStart();
+  }
+
+  private boolean shouldAutoSaveAfterStart(IDelegate delegate) {
+    return delegateAutosavesEnabled
+        && delegate.getClass().isAnnotationPresent(AutoSave.class)
+        && delegate.getClass().getAnnotation(AutoSave.class).afterStepStart();
+  }
+
+  private boolean shouldAutoSaveAfterEnd(IDelegate delegate) {
+    return delegateAutosavesEnabled
+        && delegate.getClass().isAnnotationPresent(AutoSave.class)
+        && delegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
   }
 
   private void autoSaveAfter(final String stepName) {
@@ -658,14 +675,6 @@ public class ServerGame extends AbstractGame {
   public void setRandomSource(final IRandomSource randomSource) {
     this.randomSource = randomSource;
     delegateRandomSource = null;
-  }
-
-  public InGameLobbyWatcherWrapper getInGameLobbyWatcher() {
-    return inGameLobbyWatcher;
-  }
-
-  public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper inGameLobbyWatcher) {
-    this.inGameLobbyWatcher = inGameLobbyWatcher;
   }
 
   public void stopGameSequence() {

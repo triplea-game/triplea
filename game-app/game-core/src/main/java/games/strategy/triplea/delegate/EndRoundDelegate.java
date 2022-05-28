@@ -316,8 +316,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {
         // a terrible dirty hack, but I can't think of a better way to do it right now. If we are
-        // headless, end the
-        // game.
+        // headless, end the game.
         stopGame = true;
       } else {
         // now tell the HOST, and see if they want to continue the game.
@@ -331,8 +330,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
         }
         // this is currently the ONLY instance of JOptionPane that is allowed outside of the UI
-        // classes. maybe there is
-        // a better way?
+        // classes. maybe there is a better way?
         stopGame =
             !EventThreadJOptionPane.showConfirmDialog(
                 null,
