@@ -2084,16 +2084,17 @@ class ProNonCombatMoveAi {
         int minDistance = Integer.MAX_VALUE;
         Territory minTerritory = null;
         for (final Territory t : unitMoveMap.get(u)) {
-          if (moveMap.get(t).isCanHold()) {
-            for (final Territory factory : myFactoriesAdjacentToSea) {
-              int distance = data.getMap().getDistance(t, factory, canMoveLandUnits);
-              if (distance < 0) {
-                distance = 10 * data.getMap().getDistance(t, factory);
-              }
-              if (distance >= 0 && distance < minDistance) {
-                minDistance = distance;
-                minTerritory = t;
-              }
+          if (!moveMap.get(t).isCanHold()) {
+            continue;
+          }
+          for (final Territory factory : myFactoriesAdjacentToSea) {
+            int distance = data.getMap().getDistance(t, factory, canMoveLandUnits);
+            if (distance < 0) {
+              distance = 10 * data.getMap().getDistance(t, factory);
+            }
+            if (distance >= 0 && distance < minDistance) {
+              minDistance = distance;
+              minTerritory = t;
             }
           }
         }
