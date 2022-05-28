@@ -32,11 +32,13 @@ import org.triplea.io.FileUtils;
 public class GameTestUtils {
   public static void setUp() throws IOException {
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
-    Injections.init(
-        Injections.builder()
-            .engineVersion(new ProductVersionReader().getVersion())
-            .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
-            .build());
+    if (Injections.getInstance() == null) {
+      Injections.init(
+          Injections.builder()
+              .engineVersion(new ProductVersionReader().getVersion())
+              .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
+              .build());
+    }
     ClientSetting.initialize();
     final Path tempFolder = FileUtils.newTempFolder();
     FileUtils.writeToFile(tempFolder.resolve(".triplea-root"), "");
