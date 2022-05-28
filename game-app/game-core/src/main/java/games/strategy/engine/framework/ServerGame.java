@@ -408,17 +408,11 @@ public class ServerGame extends AbstractGame {
     }
     final GameStep currentStep = gameData.getSequence().getStep();
     final IDelegate currentDelegate = currentStep.getDelegate();
-    if (delegateAutosavesEnabled
-        && !stepIsRestoredFromSavedGame
-        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
-        && currentDelegate.getClass().getAnnotation(AutoSave.class).beforeStepStart()) {
+    if (!stepIsRestoredFromSavedGame && shouldAutoSaveBeforeStart(currentDelegate)) {
       autoSaveBefore(currentDelegate);
     }
     startStep(stepIsRestoredFromSavedGame);
-    if (delegateAutosavesEnabled
-        && !stepIsRestoredFromSavedGame
-        && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
-        && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepStart()) {
+    if (!stepIsRestoredFromSavedGame && shouldAutoSaveAfterStart(currentDelegate)) {
       autoSaveBefore(currentDelegate);
     }
     if (isGameOver) {
@@ -428,13 +422,8 @@ public class ServerGame extends AbstractGame {
     if (isGameOver) {
       return;
     }
-    // save after the step has advanced
-    // otherwise, the delegate will execute again.
-    final boolean autoSaveThisDelegate =
-        delegateAutosavesEnabled
-            && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
-            && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
-    if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
+    // save after the step has advanced otherwise, the delegate will execute again.
+    if (shouldAutoSaveAfterEnd(currentDelegate) && currentStep.getName().endsWith("Move")) {
       final String stepName = currentStep.getName();
       // If we are headless we don't want to include the nation in the save game because that would
       // make it too difficult to load later.
@@ -451,9 +440,27 @@ public class ServerGame extends AbstractGame {
               ? launchAction.getAutoSaveFileUtils().getEvenRoundAutoSaveFile()
               : launchAction.getAutoSaveFileUtils().getOddRoundAutoSaveFile());
     }
-    if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
+    if (shouldAutoSaveAfterEnd(currentDelegate) && !currentStep.getName().endsWith("Move")) {
       autoSaveAfter(currentDelegate);
     }
+  }
+
+  private boolean shouldAutoSaveBeforeStart(IDelegate delegate) {
+    return delegateAutosavesEnabled
+        && delegate.getClass().isAnnotationPresent(AutoSave.class)
+        && delegate.getClass().getAnnotation(AutoSave.class).beforeStepStart();
+  }
+
+  private boolean shouldAutoSaveAfterStart(IDelegate delegate) {
+    return delegateAutosavesEnabled
+        && delegate.getClass().isAnnotationPresent(AutoSave.class)
+        && delegate.getClass().getAnnotation(AutoSave.class).afterStepStart();
+  }
+
+  private boolean shouldAutoSaveAfterEnd(IDelegate delegate) {
+    return delegateAutosavesEnabled
+        && delegate.getClass().isAnnotationPresent(AutoSave.class)
+        && delegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
   }
 
   private void autoSaveAfter(final String stepName) {
