@@ -101,6 +101,7 @@ class GameSaveTest {
             messengers,
             ClientNetworkBridge.NO_OP_SENDER,
             launchAction);
+    // Note: This doesn't actually start the AI players' turns. For that, call game.startGame().
     gameData.getGameLoader().startGame(game, gamePlayers, launchAction, null);
     return game;
   }
