@@ -358,7 +358,6 @@ class ProNonCombatMoveAi {
         territoriesToDefendWithOneUnit.add(t);
       }
     }
-    final List<Territory> result = new ArrayList<>(territoriesToDefendWithOneUnit);
 
     // Sort units by number of defend options and cost
     final Map<Unit, Set<Territory>> sortedUnitMoveOptions =
@@ -369,11 +368,7 @@ class ProNonCombatMoveAi {
       if (Matches.unitIsLand().test(unit)) {
         for (final Territory t : sortedUnitMoveOptions.get(unit)) {
           final int unitValue = proData.getUnitValue(unit.getType());
-          int production = 0;
-          final TerritoryAttachment ta = TerritoryAttachment.get(t);
-          if (ta != null) {
-            production = ta.getProduction();
-          }
+          final int production = TerritoryAttachment.getProduction(t);
 
           // Only defend territories that either already have units (avoid abandoning territories)
           // or where unit value is less than production + 3 (avoid sacrificing expensive units to
@@ -395,13 +390,10 @@ class ProNonCombatMoveAi {
     }
 
     // Only return territories that received a defender
-    result.removeAll(territoriesToDefendWithOneUnit);
-
-    return result;
+    return territoriesToDefendWithOneUnit;
   }
 
   private void determineIfMoveTerritoriesCanBeHeld() {
-
     ProLogger.info("Find max enemy attackers and if territories can be held");
 
     final Map<Territory, ProTerritory> moveMap =
@@ -534,12 +526,8 @@ class ProNonCombatMoveAi {
 
     // Calculate value of defending territory
     for (final Territory t : moveMap.keySet()) {
-
       // Determine if it is my capital or adjacent to my capital
-      int isMyCapital = 0;
-      if (t.equals(proData.getMyCapital())) {
-        isMyCapital = 1;
-      }
+      final int isMyCapital = t.equals(proData.getMyCapital()) ? 1 : 0;
 
       // Determine if it has a factory
       int isFactory = 0;
@@ -678,10 +666,11 @@ class ProNonCombatMoveAi {
         CollectionUtils.getMatches(
             seaFactories,
             ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data.getMap()));
+    final Predicate<Territory> canMoveSeaUnits =
+        ProMatches.territoryCanMoveSeaUnits(data, player, true);
     final Set<Territory> territoriesToCheck = new HashSet<>(seaFactories);
     for (final Territory t : seaFactories) {
-      territoriesToCheck.addAll(
-          data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(data, player, true)));
+      territoriesToCheck.addAll(data.getMap().getNeighbors(t, canMoveSeaUnits));
     }
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(
@@ -694,8 +683,7 @@ class ProNonCombatMoveAi {
       if (territoryValueMap.get(t) >= 1) {
         continue;
       }
-      final Set<Territory> neighbors =
-          data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(data, player, true));
+      final Set<Territory> neighbors = data.getMap().getNeighbors(t, canMoveSeaUnits);
       double maxValue = 0;
       Territory maxTerritory = null;
       for (final Territory neighbor : neighbors) {
@@ -1622,73 +1610,65 @@ class ProNonCombatMoveAi {
             minTerritory = t;
           }
         }
-        if (minTerritory != null) {
-          // If transporting units then unload to safe territory
-          // TODO: consider which is 'safest'
-          if (TransportTracker.isTransporting(transport)) {
-            final List<Unit> amphibUnits = transport.getTransporting();
-            final Set<Territory> possibleUnloadTerritories =
-                data.getMap()
-                    .getNeighbors(
-                        minTerritory,
-                        ProMatches.territoryCanMoveLandUnitsAndIsAllied(data, player));
-            if (!possibleUnloadTerritories.isEmpty()) {
-              // Find best unload territory
-              Territory unloadToTerritory = CollectionUtils.getAny(possibleUnloadTerritories);
-              for (final Territory t : possibleUnloadTerritories) {
-                if (moveMap.get(t) != null && moveMap.get(t).isCanHold()) {
-                  unloadToTerritory = t;
-                }
-              }
-              final ProTerritory proDestination = moveMap.get(unloadToTerritory);
-              ProLogger.trace(
-                  transport
-                      + " moved to safest territory at "
-                      + minTerritory
-                      + " and unloading to "
-                      + unloadToTerritory
-                      + " with "
-                      + amphibUnits
-                      + ", strengthDifference="
-                      + minStrengthDifference);
-              proDestination.addTempUnits(amphibUnits);
-              proDestination.putTempAmphibAttackMap(transport, amphibUnits);
-              proDestination.getTransportTerritoryMap().put(transport, minTerritory);
-              for (final Unit unit : amphibUnits) {
-                currentUnitMoveMap.remove(unit);
-              }
-              it.remove();
-            } else {
-              final ProTerritory proDestination = moveMap.get(minTerritory);
-              // Move transport with units since no unload options
-              ProLogger.trace(
-                  transport
-                      + " moved to safest territory at "
-                      + minTerritory
-                      + " with "
-                      + amphibUnits
-                      + ", strengthDifference="
-                      + minStrengthDifference);
-              proDestination.addTempUnits(amphibUnits);
-              proDestination.putTempAmphibAttackMap(transport, amphibUnits);
-              proDestination.getTransportTerritoryMap().put(transport, minTerritory);
-              for (final Unit unit : amphibUnits) {
-                currentUnitMoveMap.remove(unit);
-              }
-              it.remove();
-            }
-          } else {
-            // If not transporting units
+        if (minTerritory == null) {
+          continue;
+        }
+        // If transporting units then unload to safe territory
+        // TODO: consider which is 'safest'
+        if (TransportTracker.isTransporting(transport)) {
+          final List<Unit> amphibUnits = transport.getTransporting();
+          final Set<Territory> possibleUnloadTerritories =
+              data.getMap()
+                  .getNeighbors(
+                      minTerritory, ProMatches.territoryCanMoveLandUnitsAndIsAllied(data, player));
+          final ProTerritory proDestination;
+          if (!possibleUnloadTerritories.isEmpty()) {
+            // Find best unload territory
+            Territory unloadToTerritory =
+                possibleUnloadTerritories.stream()
+                    .filter(t -> moveMap.get(t).isCanHold())
+                    .findAny()
+                    .orElse(CollectionUtils.getAny(possibleUnloadTerritories));
+            proDestination = moveMap.get(unloadToTerritory);
             ProLogger.trace(
                 transport
                     + " moved to safest territory at "
                     + minTerritory
+                    + " and unloading to "
+                    + unloadToTerritory
+                    + " with "
+                    + amphibUnits
                     + ", strengthDifference="
                     + minStrengthDifference);
-            moveMap.get(minTerritory).addTempUnit(transport);
-            it.remove();
+          } else {
+            proDestination = moveMap.get(minTerritory);
+            // Move transport with units since no unload options
+            ProLogger.trace(
+                transport
+                    + " moved to safest territory at "
+                    + minTerritory
+                    + " with "
+                    + amphibUnits
+                    + ", strengthDifference="
+                    + minStrengthDifference);
           }
+          proDestination.addTempUnits(amphibUnits);
+          proDestination.putTempAmphibAttackMap(transport, amphibUnits);
+          proDestination.getTransportTerritoryMap().put(transport, minTerritory);
+          for (final Unit unit : amphibUnits) {
+            currentUnitMoveMap.remove(unit);
+          }
+        } else {
+          // If not transporting units
+          ProLogger.trace(
+              transport
+                  + " moved to safest territory at "
+                  + minTerritory
+                  + ", strengthDifference="
+                  + minStrengthDifference);
+          moveMap.get(minTerritory).addTempUnit(transport);
         }
+        it.remove();
       }
 
       // Get all transport final territories
@@ -1995,6 +1975,8 @@ class ProNonCombatMoveAi {
 
     // Move land units to territory with highest value and highest transport capacity
     // TODO: consider if territory ends up being safe
+    final Predicate<Territory> canMoveSeaUnits =
+        ProMatches.territoryCanMoveSeaUnits(data, player, true);
     final List<Unit> addedUnits = new ArrayList<>();
     for (final Unit u : unitMoveMap.keySet()) {
       if (Matches.unitIsLand().test(u) && !addedUnits.contains(u)) {
@@ -2006,9 +1988,7 @@ class ProNonCombatMoveAi {
           if (proTerritory.isCanHold() && proTerritory.getValue() >= maxValue) {
             // Find transport capacity of neighboring (distance 1) transports
             final List<Unit> transports1 = new ArrayList<>();
-            final Set<Territory> seaNeighbors =
-                data.getMap()
-                    .getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(data, player, true));
+            final Set<Territory> seaNeighbors = data.getMap().getNeighbors(t, canMoveSeaUnits);
             for (final Territory neighborTerritory : seaNeighbors) {
               if (moveMap.containsKey(neighborTerritory)) {
                 transports1.addAll(
@@ -2025,8 +2005,7 @@ class ProNonCombatMoveAi {
             // Find transport capacity of nearby (distance 2) transports
             final List<Unit> transports2 = new ArrayList<>();
             final Set<Territory> nearbySeaTerritories =
-                data.getMap()
-                    .getNeighbors(t, 2, ProMatches.territoryCanMoveSeaUnits(data, player, true));
+                data.getMap().getNeighbors(t, 2, canMoveSeaUnits);
             nearbySeaTerritories.removeAll(seaNeighbors);
             for (final Territory neighborTerritory : nearbySeaTerritories) {
               if (moveMap.containsKey(neighborTerritory)) {
@@ -2065,11 +2044,7 @@ class ProNonCombatMoveAi {
             final int needAmphibUnitValue =
                 1000 * neededNeighborTransportValue
                     + 100 * neededNearbyTransportValue
-                    + (1 + 10 * hasFactory)
-                        * data.getMap()
-                            .getNeighbors(
-                                t, ProMatches.territoryCanMoveSeaUnits(data, player, true))
-                            .size();
+                    + (1 + 10 * hasFactory) * data.getMap().getNeighbors(t, canMoveSeaUnits).size();
             if (proTerritory.getValue() > maxValue
                 || needAmphibUnitValue > maxNeedAmphibUnitValue) {
               maxValue = proTerritory.getValue();
@@ -2096,42 +2071,41 @@ class ProNonCombatMoveAi {
     unitMoveMap.keySet().removeAll(addedUnits);
 
     // Move land units towards nearest factory that is adjacent to the sea
-    final Set<Territory> myFactoriesAdjacentToSea =
-        new HashSet<>(
-            CollectionUtils.getMatches(
-                data.getMap().getTerritories(),
-                ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(
-                    player, data.getMap())));
+    final Collection<Territory> myFactoriesAdjacentToSea =
+        CollectionUtils.getMatches(
+            data.getMap().getTerritories(),
+            ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data.getMap()));
+    final Predicate<Territory> canMoveLandUnits =
+        ProMatches.territoryCanMoveLandUnits(data, player, true);
     for (final Unit u : unitMoveMap.keySet()) {
-      if (Matches.unitIsLand().test(u) && !addedUnits.contains(u)) {
-        int minDistance = Integer.MAX_VALUE;
-        Territory minTerritory = null;
-        for (final Territory t : unitMoveMap.get(u)) {
-          if (moveMap.get(t).isCanHold()) {
-            for (final Territory factory : myFactoriesAdjacentToSea) {
-              int distance =
-                  data.getMap()
-                      .getDistance(
-                          t, factory, ProMatches.territoryCanMoveLandUnits(data, player, true));
-              if (distance < 0) {
-                distance = 10 * data.getMap().getDistance(t, factory);
-              }
-              if (distance >= 0 && distance < minDistance) {
-                minDistance = distance;
-                minTerritory = t;
-              }
-            }
+      if (!Matches.unitIsLand().test(u) || addedUnits.contains(u)) {
+        continue;
+      }
+      int minDistance = Integer.MAX_VALUE;
+      Territory minTerritory = null;
+      for (final Territory t : unitMoveMap.get(u)) {
+        if (!moveMap.get(t).isCanHold()) {
+          continue;
+        }
+        for (final Territory factory : myFactoriesAdjacentToSea) {
+          int distance = data.getMap().getDistance(t, factory, canMoveLandUnits);
+          if (distance < 0) {
+            distance = 10 * data.getMap().getDistance(t, factory);
+          }
+          if (distance >= 0 && distance < minDistance) {
+            minDistance = distance;
+            minTerritory = t;
           }
         }
-        if (minTerritory != null) {
-          ProLogger.trace(
-              u.getType().getName()
-                  + " moved towards closest factory adjacent to sea at "
-                  + minTerritory.getName());
-          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(proData, u, moveMap);
-          moveMap.get(minTerritory).addUnits(unitsToAdd);
-          addedUnits.addAll(unitsToAdd);
-        }
+      }
+      if (minTerritory != null) {
+        ProLogger.trace(
+            u.getType().getName()
+                + " moved towards closest factory adjacent to sea at "
+                + minTerritory.getName());
+        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(proData, u, moveMap);
+        moveMap.get(minTerritory).addUnits(unitsToAdd);
+        addedUnits.addAll(unitsToAdd);
       }
     }
     unitMoveMap.keySet().removeAll(addedUnits);
@@ -2445,6 +2419,7 @@ class ProNonCombatMoveAi {
     }
     ProLogger.debug("Move infra AA units");
 
+    final MoveValidator moveValidator = new MoveValidator(data, true);
     // Move AA units
     for (final Iterator<Unit> it = infraUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
       final Unit u = it.next();
@@ -2456,6 +2431,9 @@ class ProNonCombatMoveAi {
           && !ProMatches.territoryHasInfraFactoryAndIsLand().test(currentTerritory)) {
         Territory maxValueTerritory = null;
         double maxValue = 0;
+        final Predicate<Territory> canMoveThrough =
+            ProMatches.territoryCanMoveLandUnitsThrough(
+                data, player, u, currentTerritory, false, List.of());
         for (final Territory t : infraUnitMoveMap.get(u)) {
           final ProTerritory proTerritory = moveMap.get(t);
           if (!proTerritory.isCanHold()) {
@@ -2464,18 +2442,10 @@ class ProNonCombatMoveAi {
 
           // Consider max stack of 1 AA in classic
           final Route r =
-              data.getMap()
-                  .getRouteForUnit(
-                      currentTerritory,
-                      t,
-                      ProMatches.territoryCanMoveLandUnitsThrough(
-                          data, player, u, currentTerritory, false, List.of()),
-                      u,
-                      player);
-          final MoveValidationResult mvr =
-              new MoveValidator(data, true)
-                  .validateMove(new MoveDescription(List.of(u), r), player);
-          if (!mvr.isMoveValid()) {
+              data.getMap().getRouteForUnit(currentTerritory, t, canMoveThrough, u, player);
+          final MoveValidationResult result =
+              moveValidator.validateMove(new MoveDescription(List.of(u), r), player);
+          if (!result.isMoveValid()) {
             continue;
           }
 
