@@ -427,10 +427,7 @@ public class ServerGame extends AbstractGame {
     // save after the step has advanced otherwise, the delegate will execute again.
     boolean isMoveStep = GameStep.isMoveStep(currentStep.getName());
     if (isMoveStep && shouldAutoSaveAfterEnd(currentDelegate)) {
-      final String stepName = currentStep.getName();
-      // If we are headless we don't want to include the nation in the save game because that would
-      // make it too difficult to load later.
-      autoSaveAfter(stepName);
+      autoSaveAfter(currentStep.getName());
     }
     endStep();
     if (isGameOver) {
