@@ -390,9 +390,7 @@ class ProNonCombatMoveAi {
     }
 
     // Only return territories that received a defender
-    final List<Territory> result = new ArrayList<>(territoriesToDefendWithOneUnit);
-    result.removeAll(territoriesToDefendWithOneUnit);
-    return result;
+    return territoriesToDefendWithOneUnit;
   }
 
   private void determineIfMoveTerritoriesCanBeHeld() {
