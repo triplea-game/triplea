@@ -13,7 +13,6 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -67,9 +66,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   protected List<GamePlayer> getPlayers() {
-    return players == null
-        ? List.of((GamePlayer) getAttachedTo())
-        : Collections.unmodifiableList(players);
+    List<GamePlayer> result = getListProperty(players);
+    return result.isEmpty() ? List.of((GamePlayer) getAttachedTo()) : result;
   }
 
   private void resetPlayers() {
