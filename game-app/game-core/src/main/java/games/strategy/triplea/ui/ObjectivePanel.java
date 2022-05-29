@@ -94,12 +94,14 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
     column1.setCellEditor(new EditorPaneCellEditor());
     column1.setCellRenderer(new EditorPaneTableCellRenderer());
     final JScrollPane scroll = new JScrollPane(table);
-    final JButton refresh = new JButton(SwingAction.of(
-        "Refresh Objectives",
-        e -> {
-          objectiveModel.loadData();
-          SwingUtilities.invokeLater(table::repaint);
-        }));
+    final JButton refresh =
+        new JButton(
+            SwingAction.of(
+                "Refresh Objectives",
+                e -> {
+                  objectiveModel.loadData();
+                  SwingUtilities.invokeLater(table::repaint);
+                }));
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     add(Box.createVerticalStrut(6));
     add(refresh);

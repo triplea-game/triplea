@@ -13,7 +13,6 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import org.triplea.java.RenameOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.map.data.elements.Game;
 
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment. Note:
