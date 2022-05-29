@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import org.triplea.java.RenameOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.map.data.elements.Game;
 
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment. Note:
@@ -67,9 +68,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   protected List<GamePlayer> getPlayers() {
-    return players == null
-        ? List.of((GamePlayer) getAttachedTo())
-        : Collections.unmodifiableList(players);
+    List<GamePlayer> result = getListProperty(players);
+    return result.isEmpty() ? List.of((GamePlayer) getAttachedTo()) : result;
   }
 
   private void resetPlayers() {

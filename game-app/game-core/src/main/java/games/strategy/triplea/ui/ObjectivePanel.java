@@ -94,15 +94,13 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
     column1.setCellEditor(new EditorPaneCellEditor());
     column1.setCellRenderer(new EditorPaneTableCellRenderer());
     final JScrollPane scroll = new JScrollPane(table);
-    final JButton refresh = new JButton("Refresh Objectives");
+    final JButton refresh = new JButton(SwingAction.of(
+        "Refresh Objectives",
+        e -> {
+          objectiveModel.loadData();
+          SwingUtilities.invokeLater(table::repaint);
+        }));
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
-    refresh.addActionListener(
-        SwingAction.of(
-            "Refresh Objectives",
-            e -> {
-              objectiveModel.loadData();
-              SwingUtilities.invokeLater(table::repaint);
-            }));
     add(Box.createVerticalStrut(6));
     add(refresh);
     add(Box.createVerticalStrut(6));
@@ -249,10 +247,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
     }
 
     private synchronized void loadData() {
-      // copy so acquire/release read lock are on the same object!
-      final GameData gameData = ObjectivePanel.this.gameData;
-      gameData.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         final Map<ICondition, String> conditions = getConditionComment(getTestedConditions());
         collectedData = new String[getRowTotal()][COLUMNS_TOTAL];
         int row = 0;
@@ -270,8 +265,6 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
           collectedData[row][1] = "--------------------";
           row++;
         }
-      } finally {
-        gameData.releaseReadLock();
       }
     }
 
@@ -285,13 +278,13 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
           final int each = AbstractTriggerAttachment.getEachMultiple(ta);
           final int uses = ta.getUses();
           if (uses < 0) {
-            final String comment = satisfied ? (each > 1 ? "T" + each : "T") : "F";
+            final String comment = formatStatus(satisfied, each);
             conditionsComments.put(entry.getKey(), comment);
           } else if (uses == 0) {
             final String comment = satisfied ? "Used" : "used";
             conditionsComments.put(entry.getKey(), comment);
           } else {
-            final String comment = uses + "" + (satisfied ? (each > 1 ? "T" + each : "T") : "F");
+            final String comment = uses + "" + formatStatus(satisfied, each);
             conditionsComments.put(entry.getKey(), comment);
           }
         } else if (entry.getKey() instanceof RulesAttachment) {
@@ -305,7 +298,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
             final String comment = satisfied ? "Used" : "used";
             conditionsComments.put(entry.getKey(), comment);
           } else {
-            final String comment = uses + "" + (satisfied ? (each > 1 ? "T" + each : "T") : "F");
+            final String comment = uses + "" + formatStatus(satisfied, each);
             conditionsComments.put(entry.getKey(), comment);
           }
         } else {
@@ -313,6 +306,10 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
         }
       }
       return conditionsComments;
+    }
+
+    private String formatStatus(boolean satisfied, int each) {
+      return satisfied ? (each > 1 ? "T" + each : "T") : "F";
     }
 
     public Map<ICondition, Boolean> getTestedConditions() {
@@ -342,11 +339,8 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
         return collectedData.length;
       }
 
-      gameData.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         return getRowTotal();
-      } finally {
-        gameData.releaseReadLock();
       }
     }
 
@@ -507,12 +501,12 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
       if (rows == null) {
         return 0;
       }
-      final Map<Integer, Integer> rowheights = rows.get(row);
-      if (rowheights == null) {
+      final Map<Integer, Integer> rowHeights = rows.get(row);
+      if (rowHeights == null) {
         return 0;
       }
       int maximumHeight = 0;
-      for (final Entry<Integer, Integer> entry : rowheights.entrySet()) {
+      for (final Entry<Integer, Integer> entry : rowHeights.entrySet()) {
         final int cellHeight = entry.getValue();
         maximumHeight = Math.max(maximumHeight, cellHeight);
       }
