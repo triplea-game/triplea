@@ -39,7 +39,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -842,9 +841,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private List<GamePlayer> getPlayers() {
-    return players == null
-        ? List.of((GamePlayer) getAttachedTo())
-        : Collections.unmodifiableList(players);
+    List<GamePlayer> result = getListProperty(players);
+    return result.isEmpty() ? List.of((GamePlayer) getAttachedTo()) : result;
   }
 
   private void resetPlayers() {
