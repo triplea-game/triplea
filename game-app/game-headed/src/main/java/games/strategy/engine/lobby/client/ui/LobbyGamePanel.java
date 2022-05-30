@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameProcess;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.action.FetchChatHistory;
@@ -190,7 +190,7 @@ class LobbyGamePanel extends JPanel {
     // we sort the table, so get the correct index
     final GameDescription description =
         gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
-    GameRunner.joinGame(description, lobbyClient.getUserName());
+    GameProcess.joinGame(description, lobbyClient.getUserName());
   }
 
   private void hostGame(final URI lobbyUri) {
@@ -203,7 +203,7 @@ class LobbyGamePanel extends JPanel {
     if (!options.getOkPressed()) {
       return;
     }
-    GameRunner.hostGame(
+    GameProcess.hostGame(
         options.getPort(),
         options.getName(),
         options.getComments(),
