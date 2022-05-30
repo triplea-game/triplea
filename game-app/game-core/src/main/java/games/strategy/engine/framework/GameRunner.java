@@ -27,6 +27,10 @@ public final class GameRunner {
   public static final int PORT = 3300;
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
 
+  public static boolean headless() {
+    return Boolean.parseBoolean(System.getProperty(TRIPLEA_HEADLESS, "false"));
+  }
+
   /** Spawns a new process to host a network game. */
   public static void hostGame(
       final int port,

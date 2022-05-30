@@ -15,6 +15,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
@@ -53,7 +54,6 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.chat.ChatModel;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
@@ -181,7 +181,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
     for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       final String name = player.getName();
-      if (HeadlessGameServer.headless()) {
+      if (GameRunner.headless()) {
         if (player.getIsDisabled()) {
           playersToNodeListing.put(name, messengers.getLocalNode().getName());
           localPlayerTypes.put(name, PlayerTypes.WEAK_AI);
@@ -339,7 +339,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         return;
       }
       playersEnabledListing.put(playerName, enabled);
-      if (HeadlessGameServer.headless()) {
+      if (GameRunner.headless()) {
         // we do not want the host bot to actually play, so set to null if enabled, and set to weak
         // ai if disabled
         if (enabled) {

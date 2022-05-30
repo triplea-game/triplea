@@ -267,7 +267,7 @@ public class ClipPlayer {
   }
 
   private boolean isSoundEnabled() {
-    return !Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"))
+    return !GameRunner.headless()
         && !"true".equals(System.getenv("java.awt.headless"))
         && ClientSetting.soundEnabled.getSetting()
         && hasAudio();

@@ -38,7 +38,8 @@ public class HeadlessGameServer {
   private HeadlessGameServer() {}
 
   public static void initializeHeadlessGameServerInstance() {
-    Preconditions.checkState(headless(), "TripleA must be headless to invoke this method!");
+    Preconditions.checkState(
+        GameRunner.headless(), "TripleA must be headless to invoke this method!");
     if (instance != null) {
       throw new IllegalStateException("Instance already exists");
     }
@@ -71,10 +72,6 @@ public class HeadlessGameServer {
   @Deprecated
   public static synchronized HeadlessGameServer getInstance() {
     return instance;
-  }
-
-  public static synchronized boolean headless() {
-    return Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"));
   }
 
   public Collection<String> getAvailableGames() {
