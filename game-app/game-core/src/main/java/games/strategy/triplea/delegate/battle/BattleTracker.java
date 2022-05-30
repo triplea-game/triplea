@@ -945,7 +945,6 @@ public class BattleTracker implements Serializable {
     // take over non combatants
     final Predicate<Unit> enemyNonCom =
         Matches.enemyUnit(gamePlayer).and(Matches.unitIsInfrastructure());
-    // System.err.println("enemyNonCom:" + enemyNonCom);
     final Predicate<Unit> willBeCaptured =
         enemyNonCom.or(
             Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
