@@ -138,7 +138,7 @@ public class TuvUtils {
     // Add any units that have XML TUV even if they aren't purchasable
     for (final UnitType unitType : data.getUnitTypeList()) {
       final UnitAttachment ua = UnitAttachment.get(unitType);
-      if (ua != null && ua.getTuv() > 0) {
+      if (ua.getTuv() > 0) {
         costs.put(unitType, ua.getTuv());
       }
     }
@@ -149,11 +149,11 @@ public class TuvUtils {
   private static int getTotalTuv(
       final UnitType unitType, final IntegerMap<UnitType> costs, final Set<UnitType> alreadyAdded) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
-    if (ua != null && ua.getTuv() > 0) {
+    if (ua.getTuv() > 0) {
       return ua.getTuv();
     }
     int tuv = costs.getInt(unitType);
-    if (ua == null || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
+    if (ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
       return tuv;
     }
     alreadyAdded.add(unitType);
