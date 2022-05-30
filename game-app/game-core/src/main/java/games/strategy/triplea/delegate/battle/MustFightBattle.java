@@ -1365,8 +1365,7 @@ public class MustFightBattle extends DependentBattle
     whoWon = WhoWon.DEFENDER;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, defender.getName() + " win");
     if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(gameData.getProperties())) {
-      if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).size()
-          == 0) {
+      if (CollectionUtils.countMatches(defendingUnits, Matches.unitIsNotInfrastructure()) == 0) {
         final List<Unit> allyOfAttackerUnits =
             battleSite.getUnitCollection().getMatches(Matches.unitIsNotInfrastructure());
         if (!allyOfAttackerUnits.isEmpty()) {

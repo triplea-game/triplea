@@ -54,6 +54,7 @@ import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 import org.triplea.util.Tuple;
 
@@ -522,7 +523,7 @@ public class BattleTracker implements Serializable {
       final GamePlayer gamePlayer,
       final IDelegateBridge bridge,
       final @Nullable UndoableMove changeTracker,
-      final Collection<Unit> arrivingUnits) {
+      final @Nullable Collection<Unit> arrivingUnits) {
     // This could be NULL if unowned water
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta == null) {
@@ -530,6 +531,7 @@ public class BattleTracker implements Serializable {
       return;
     }
     final GameData data = bridge.getData();
+    IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
     final Collection<Unit> arrivedUnits =
         (arrivingUnits == null ? null : new ArrayList<>(arrivingUnits));
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
@@ -579,32 +581,27 @@ public class BattleTracker implements Serializable {
                       cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
                   .size()
               <= 0) {
-            bridge
-                .getHistoryWriter()
-                .addChildToEvent(
-                    convoyOwner.getName()
-                        + " gains "
-                        + cta.getProduction()
-                        + " production in "
-                        + convoy.getName()
-                        + " for the liberation the convoy route in "
-                        + territory.getName());
+            historyWriter.addChildToEvent(
+                convoyOwner.getName()
+                    + " gains "
+                    + cta.getProduction()
+                    + " production in "
+                    + convoy.getName()
+                    + " for the liberation the convoy route in "
+                    + territory.getName());
           }
         } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
-            && CollectionUtils.getMatches(
-                        cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
-                    .size()
+            && CollectionUtils.countMatches(
+                    cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
                 == 1) {
-          bridge
-              .getHistoryWriter()
-              .addChildToEvent(
-                  convoyOwner.getName()
-                      + " loses "
-                      + cta.getProduction()
-                      + " production in "
-                      + convoy.getName()
-                      + " due to the capture of the convoy route in "
-                      + territory.getName());
+          historyWriter.addChildToEvent(
+              convoyOwner.getName()
+                  + " loses "
+                  + cta.getProduction()
+                  + " production in "
+                  + convoy.getName()
+                  + " due to the capture of the convoy route in "
+                  + territory.getName());
         }
       }
     }
@@ -619,17 +616,15 @@ public class BattleTracker implements Serializable {
       final Change neutralFee = ChangeFactory.changeResourcesChange(gamePlayer, pus, puChargeReal);
       addChange(bridge, changeTracker, neutralFee);
       if (puChargeIdeal == puChargeReal) {
-        bridge
-            .getHistoryWriter()
-            .addChildToEvent(
-                gamePlayer.getName()
-                    + " loses "
-                    + -puChargeReal
-                    + " "
-                    + MyFormatter.pluralize("PU", -puChargeReal)
-                    + " for violating "
-                    + territory.getName()
-                    + "s neutrality.");
+        historyWriter.addChildToEvent(
+            gamePlayer.getName()
+                + " loses "
+                + -puChargeReal
+                + " "
+                + MyFormatter.pluralize("PU", -puChargeReal)
+                + " for violating "
+                + territory.getName()
+                + "s neutrality.");
       } else {
         log.error(
             "Player, "
@@ -637,19 +632,17 @@ public class BattleTracker implements Serializable {
                 + " attacks a Neutral territory, and should have had to pay "
                 + puChargeIdeal
                 + ", but did not have enough PUs to pay! This is a bug.");
-        bridge
-            .getHistoryWriter()
-            .addChildToEvent(
-                gamePlayer.getName()
-                    + " loses "
-                    + -puChargeReal
-                    + " "
-                    + MyFormatter.pluralize("PU", -puChargeReal)
-                    + " for violating "
-                    + territory.getName()
-                    + "s neutrality.  Correct amount to charge is: "
-                    + puChargeIdeal
-                    + ".  Player should not have been able to make this attack!");
+        historyWriter.addChildToEvent(
+            gamePlayer.getName()
+                + " loses "
+                + -puChargeReal
+                + " "
+                + MyFormatter.pluralize("PU", -puChargeReal)
+                + " for violating "
+                + territory.getName()
+                + "s neutrality.  Correct amount to charge is: "
+                + puChargeIdeal
+                + ".  Player should not have been able to make this attack!");
       }
     }
     // if its a capital we take the money
@@ -666,10 +659,8 @@ public class BattleTracker implements Serializable {
       // we are losing one right now, so it is < not <=
       if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) {
         // do nothing, we keep our money since we still control enough capitals
-        bridge
-            .getHistoryWriter()
-            .addChildToEvent(
-                gamePlayer.getName() + " captures one of " + whoseCapital.getName() + " capitals");
+        historyWriter.addChildToEvent(
+            gamePlayer.getName() + " captures one of " + whoseCapital.getName() + " capitals");
       } else if (whoseCapital.equals(territory.getOwner())) {
         final Resource pus = data.getResourceList().getResource(Constants.PUS);
         final int capturedPuCount = whoseCapital.getResources().getQuantity(pus);
@@ -684,27 +675,23 @@ public class BattleTracker implements Serializable {
         bridge.addChange(remove);
         addChange(bridge, changeTracker, remove);
         if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
-          bridge
-              .getHistoryWriter()
-              .addChildToEvent(
-                  gamePlayer.getName()
-                      + " destroys "
-                      + capturedPuCount
-                      + MyFormatter.pluralize("PU", capturedPuCount)
-                      + " while taking "
-                      + whoseCapital.getName()
-                      + " capital");
+          historyWriter.addChildToEvent(
+              gamePlayer.getName()
+                  + " destroys "
+                  + capturedPuCount
+                  + MyFormatter.pluralize("PU", capturedPuCount)
+                  + " while taking "
+                  + whoseCapital.getName()
+                  + " capital");
         } else {
-          bridge
-              .getHistoryWriter()
-              .addChildToEvent(
-                  gamePlayer.getName()
-                      + " captures "
-                      + capturedPuCount
-                      + MyFormatter.pluralize("PU", capturedPuCount)
-                      + " while taking "
-                      + whoseCapital.getName()
-                      + " capital");
+          historyWriter.addChildToEvent(
+              gamePlayer.getName()
+                  + " captures "
+                  + capturedPuCount
+                  + MyFormatter.pluralize("PU", capturedPuCount)
+                  + " while taking "
+                  + whoseCapital.getName()
+                  + " capital");
           final Change add = ChangeFactory.changeResourcesChange(gamePlayer, pus, capturedPuCount);
           addChange(bridge, changeTracker, add);
         }
@@ -768,25 +755,18 @@ public class BattleTracker implements Serializable {
         changeTracker.addToConquered(territory);
       }
       // play a sound
+      ISound broadcaster = bridge.getSoundChannelBroadcaster();
       if (territory.isWater()) {
         // should probably see if there is something actually happening for water
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, gamePlayer);
+        broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, gamePlayer);
       } else if (ta.getCapital() != null) {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, gamePlayer);
+        broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, gamePlayer);
       } else if (blitzed.contains(territory)
           && arrivedUnits != null
           && arrivedUnits.stream().anyMatch(Matches.unitCanBlitz())) {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, gamePlayer);
+        broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, gamePlayer);
       } else {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, gamePlayer);
+        broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, gamePlayer);
       }
     }
     // Remove any bombing raids against captured territory
