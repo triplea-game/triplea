@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.client.HeadedGameRunner;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.java.Interruptibles;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.DefaultSoundChannel;
