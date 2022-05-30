@@ -8,7 +8,6 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.IGameLoader;
-import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
@@ -35,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Predicate;
 import lombok.Getter;
 import org.triplea.injection.Injections;
 import org.triplea.io.FileUtils;
@@ -500,14 +500,12 @@ public class GameData implements Serializable, GameState {
 
   /**
    * Call this before starting the game and before the game data has been sent to the clients in
-   * order to make any final modifications to the game data. For example, this method will remove
-   * player delegates for players who have been disabled.
+   * order to remove player delegates for players who have been disabled.
    */
-  public void doPreGameStartDataModifications(final PlayerListing playerListing) {
+  public void preGameDisablePlayers(final Predicate<GamePlayer> shouldDisablePlayer) {
     final Set<GamePlayer> playersWhoShouldBeRemoved = new HashSet<>();
-    final Map<String, Boolean> playersEnabledListing = playerListing.getPlayersEnabledListing();
     playerList.getPlayers().stream()
-        .filter(p -> (p.getCanBeDisabled() && !playersEnabledListing.get(p.getName())))
+        .filter(p -> (p.getCanBeDisabled() && shouldDisablePlayer.test(p)))
         .forEach(
             p -> {
               p.setIsDisabled(true);
