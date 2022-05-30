@@ -57,7 +57,7 @@ public class HeadlessGameServer {
         () -> {
           log.info("Headless Start");
           instance.setupPanelModel.showSelectType();
-          instance.waitForUsersHeadless();
+          instance.waitForUsers();
         });
   }
 
@@ -167,7 +167,7 @@ public class HeadlessGameServer {
     }
   }
 
-  public void waitForUsersHeadless() {
+  public void waitForUsers() {
     log.info("Waiting for users to connect.");
     setServerGame(null);
 
@@ -218,6 +218,8 @@ public class HeadlessGameServer {
       }
     } catch (final Exception e) {
       log.error("Failed to start headless game", e);
+      // if we do not do this, we can get into an infinite loop of launching a game, then crashing
+      // out, then launching, etc.
       Optional.ofNullable(setupPanelModel.getPanel())
           .map(HeadlessServerSetup::getModel)
           .ifPresent(ServerModel::setAllPlayersToNullNodes);
