@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameDataEvent;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.SystemPropertyReader;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
@@ -68,7 +68,7 @@ public class InGameLobbyWatcher {
       @Nullable final IGame oldGame) {
     this.serverMessenger = serverMessenger;
     this.gameToLobbyConnection = gameToLobbyConnection;
-    humanPlayer = !HeadlessGameServer.headless();
+    humanPlayer = !GameRunner.headless();
 
     final boolean passworded = SystemPropertyReader.serverIsPassworded();
 

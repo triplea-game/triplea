@@ -1,28 +1,16 @@
 package org.triplea.game.server;
 
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
-import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
-import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
-
 import com.google.common.base.Preconditions;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
-import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
-import games.strategy.triplea.settings.ClientSetting;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,55 +20,56 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
-import org.triplea.util.ExitStatus;
 
 /** A way of hosting a game, but headless. */
 @Slf4j
 public class HeadlessGameServer {
-  public static final String BOT_GAME_HOST_COMMENT = "automated_host";
-  public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
   private static HeadlessGameServer instance = null;
 
   private final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private final HeadlessServerSetupModel setupPanelModel =
-      new HeadlessServerSetupModel(gameSelectorModel);
+      new HeadlessServerSetupModel(gameSelectorModel, this);
   private ServerGame game = null;
   private boolean shutDown = false;
 
-  private HeadlessGameServer() {
+  private HeadlessGameServer() {}
+
+  public static void initializeHeadlessGameServerInstance() {
+    Preconditions.checkState(
+        GameRunner.headless(), "TripleA must be headless to invoke this method!");
     if (instance != null) {
       throw new IllegalStateException("Instance already exists");
     }
-    instance = this;
-
+    instance = new HeadlessGameServer();
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
                 () -> {
                   log.info("Running ShutdownHook.");
-                  shutDown = true;
-                  Optional.ofNullable(game).ifPresent(ServerGame::stopGame);
-                  Optional.ofNullable(setupPanelModel.getPanel())
+                  instance.shutDown = true;
+                  Optional.ofNullable(instance.game).ifPresent(ServerGame::stopGame);
+                  Optional.ofNullable(instance.setupPanelModel.getPanel())
                       .ifPresent(HeadlessServerSetup::cancel);
                 }));
 
     ThreadRunner.runInNewThread(
         () -> {
           log.info("Headless Start");
-          setupPanelModel.showSelectType();
-          log.info("Waiting for users to connect.");
-          waitForUsersHeadless();
+          instance.setupPanelModel.showSelectType();
+          instance.waitForUsers();
         });
   }
 
+  /**
+   * Returns the singleton instance of the HeadlessGameServer object.
+   *
+   * @deprecated Do not use this method, pass the instance along call trees to avoid static
+   *     coupling.
+   */
+  @Deprecated
   public static synchronized HeadlessGameServer getInstance() {
     return instance;
-  }
-
-  public static synchronized boolean headless() {
-    return instance != null
-        || Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"));
   }
 
   public Collection<String> getAvailableGames() {
@@ -165,22 +154,21 @@ public class HeadlessGameServer {
   }
 
   /** Updates current 'HeadlessGameServer.game' instance to be set to the given parameter. */
-  public static synchronized void setServerGame(final ServerGame serverGame) {
-    if (instance != null) {
-      instance.game = serverGame;
-      if (serverGame != null) {
-        log.info(
-            "Game starting up: "
-                + instance.game.isGameSequenceRunning()
-                + ", GameOver: "
-                + instance.game.isGameOver()
-                + ", Players: "
-                + instance.game.getPlayerManager().toString());
-      }
+  public synchronized void setServerGame(final ServerGame serverGame) {
+    game = serverGame;
+    if (serverGame != null) {
+      log.info(
+          "Game starting up: "
+              + game.isGameSequenceRunning()
+              + ", GameOver: "
+              + game.isGameOver()
+              + ", Players: "
+              + game.getPlayerManager().toString());
     }
   }
 
-  private void waitForUsersHeadless() {
+  public void waitForUsers() {
+    log.info("Waiting for users to connect.");
     setServerGame(null);
 
     new Thread(
@@ -192,7 +180,7 @@ public class HeadlessGameServer {
                 }
                 if (setupPanelModel.getPanel() != null
                     && setupPanelModel.getPanel().canGameStart()) {
-                  final boolean started = startHeadlessGame(setupPanelModel, gameSelectorModel);
+                  final boolean started = startHeadlessGame();
                   if (!started) {
                     log.warn("Error in launcher, going back to waiting.");
                   } else {
@@ -206,12 +194,9 @@ public class HeadlessGameServer {
         .start();
   }
 
-  private static synchronized boolean startHeadlessGame(
-      final HeadlessServerSetupModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
+  private synchronized boolean startHeadlessGame() {
     try {
-      if (setupPanelModel != null
-          && setupPanelModel.getPanel() != null
-          && setupPanelModel.getPanel().canGameStart()) {
+      if (setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
         log.info(
             "Starting Game: "
                 + gameSelectorModel.getGameData().getGameName()
@@ -233,128 +218,18 @@ public class HeadlessGameServer {
       }
     } catch (final Exception e) {
       log.error("Failed to start headless game", e);
-      final ServerModel model = getServerModel(setupPanelModel);
-      if (model != null) {
-        // if we do not do this, we can get into an infinite loop of launching a game, then crashing
-        // out,
-        // then launching, etc.
-        model.setAllPlayersToNullNodes();
-      }
+      // if we do not do this, we can get into an infinite loop of launching a game, then crashing
+      // out, then launching, etc.
+      Optional.ofNullable(setupPanelModel.getPanel())
+          .map(HeadlessServerSetup::getModel)
+          .ifPresent(ServerModel::setAllPlayersToNullNodes);
     }
     return false;
-  }
-
-  public static void waitForUsersHeadlessInstance() {
-    log.info("Waiting for users to connect.");
-    instance.waitForUsersHeadless();
-  }
-
-  private static ServerModel getServerModel(final HeadlessServerSetupModel setupPanelModel) {
-    return Optional.ofNullable(setupPanelModel)
-        .map(HeadlessServerSetupModel::getPanel)
-        .map(HeadlessServerSetup::getModel)
-        .orElse(null);
   }
 
   /** todo, replace with something better Get the chat for the game, or null if there is no chat. */
   public Chat getChat() {
     final SetupModel model = setupPanelModel.getPanel();
     return model != null ? model.getChatModel().getChat() : null;
-  }
-
-  /**
-   * Starts a new headless game server. This method will return before the headless game server
-   * exits. The headless game server runs until the process is killed or the headless game server is
-   * shut down via administrative command.
-   *
-   * <p>Most properties are passed via command line-like arguments.
-   */
-  public static void start(final String[] args) {
-    ClientSetting.initialize();
-    System.setProperty(LOBBY_GAME_COMMENTS, BOT_GAME_HOST_COMMENT);
-    System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
-    System.setProperty(TRIPLEA_SERVER, "true");
-
-    ArgParser.handleCommandLineArgs(args);
-    handleHeadlessGameServerArgs();
-    ZippedMapsExtractor.builder()
-        .downloadedMapsFolder(ClientSetting.mapFolderOverride.getValueOrThrow())
-        .progressIndicator(
-            unzipTask -> {
-              log.info("Unzipping map files");
-              unzipTask.run();
-            })
-        .build()
-        .unzipMapFiles();
-
-    try {
-      new HeadlessGameServer();
-    } catch (final Exception e) {
-      log.error("Failed to start game server", e);
-    }
-  }
-
-  private static void usage() {
-    // TODO replace this method with the generated usage of commons-cli
-    log.info(
-        "\nUsage and Valid Arguments:\n"
-            + "   "
-            + TRIPLEA_GAME
-            + "=<FILE_NAME>\n"
-            + "   "
-            + TRIPLEA_PORT
-            + "=<PORT>\n"
-            + "   "
-            + TRIPLEA_NAME
-            + "=<PLAYER_NAME>\n"
-            + "   "
-            + LOBBY_URI
-            + "=<LOBBY_URI>\n"
-            + "   "
-            + MAP_FOLDER
-            + "=<MAP_FOLDER>"
-            + "\n");
-  }
-
-  private static void handleHeadlessGameServerArgs() {
-    boolean printUsage = false;
-
-    if (!ClientSetting.mapFolderOverride.isSet()) {
-      ClientSetting.mapFolderOverride.setValue(ClientFileSystemHelper.getUserMapsFolder());
-    }
-
-    final String playerName = System.getProperty(TRIPLEA_NAME, "");
-    if ((playerName.length() < 7) || !playerName.startsWith(BOT_GAME_HOST_NAME_PREFIX)) {
-      log.warn(
-          "Invalid or missing argument: "
-              + TRIPLEA_NAME
-              + " must at least 7 characters long "
-              + "and start with "
-              + BOT_GAME_HOST_NAME_PREFIX);
-      printUsage = true;
-    }
-
-    if (isInvalidPortNumber(System.getProperty(TRIPLEA_PORT, "0"))) {
-      log.warn("Invalid or missing argument: " + TRIPLEA_PORT + " must be greater than zero");
-      printUsage = true;
-    }
-
-    if (System.getProperty(LOBBY_URI, "").isEmpty()) {
-      log.warn("Invalid or missing argument: " + LOBBY_URI + " must be set");
-      printUsage = true;
-    }
-
-    if (printUsage) {
-      usage();
-      ExitStatus.FAILURE.exit();
-    }
-  }
-
-  private static boolean isInvalidPortNumber(final String testValue) {
-    try {
-      return Integer.parseInt(testValue) <= 0;
-    } catch (final NumberFormatException e) {
-      return true;
-    }
   }
 }

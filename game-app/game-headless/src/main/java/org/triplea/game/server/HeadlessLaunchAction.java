@@ -10,6 +10,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
+import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
@@ -29,6 +30,13 @@ import org.triplea.sound.ISound;
 
 @Slf4j
 public class HeadlessLaunchAction implements LaunchAction {
+
+  private final HeadlessGameServer headlessGameServer;
+
+  public HeadlessLaunchAction(final HeadlessGameServer headlessGameServer) {
+    this.headlessGameServer = headlessGameServer;
+  }
+
   @Override
   public void handleGameInterruption(
       final GameSelectorModel gameSelectorModel, final ServerModel serverModel) {
@@ -45,7 +53,7 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public void onGameInterrupt() {
     // tell headless server to wait for new connections:
-    HeadlessGameServer.waitForUsersHeadlessInstance();
+    headlessGameServer.waitForUsers();
   }
 
   @Override
@@ -76,7 +84,7 @@ public class HeadlessLaunchAction implements LaunchAction {
 
   @Override
   public void onLaunch(final ServerGame serverGame) {
-    HeadlessGameServer.setServerGame(serverGame);
+    headlessGameServer.setServerGame(serverGame);
   }
 
   @Override
@@ -107,5 +115,11 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public void handleError(String error) {
     log.error(error);
+  }
+
+  @Override
+  public IServerStartupRemote getStartupRemote(
+      IServerStartupRemote.ServerModelView serverModelView) {
+    return new HeadlessServerStartupRemote(serverModelView, headlessGameServer);
   }
 }

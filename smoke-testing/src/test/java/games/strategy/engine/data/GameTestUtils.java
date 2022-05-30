@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static org.mockito.Mockito.mock;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
@@ -22,6 +24,7 @@ import java.util.Set;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
+import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessLaunchAction;
 import org.triplea.injection.Injections;
 import org.triplea.io.ContentDownloader;
@@ -73,7 +76,7 @@ public class GameTestUtils {
       playerTypes.put(player.getName(), PlayerTypes.PRO_AI);
     }
     Set<Player> gamePlayers = gameData.getGameLoader().newPlayers(playerTypes);
-    HeadlessLaunchAction launchAction = new HeadlessLaunchAction();
+    HeadlessLaunchAction launchAction = new HeadlessLaunchAction(mock(HeadlessGameServer.class));
     Messengers messengers = new Messengers(new LocalNoOpMessenger());
     ServerGame game =
         new ServerGame(

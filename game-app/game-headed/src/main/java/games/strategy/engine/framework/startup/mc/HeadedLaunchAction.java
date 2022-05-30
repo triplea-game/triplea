@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.client.HeadedGameRunner;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.java.Interruptibles;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.DefaultSoundChannel;
@@ -156,9 +155,6 @@ public class HeadedLaunchAction implements LaunchAction {
                       ClientSetting.flush();
                       final int port = options.getPort();
                       if (port >= 65536 || port == 0) {
-                        if (HeadlessGameServer.headless()) {
-                          throw new IllegalStateException("Invalid Port: " + port);
-                        }
                         JOptionPane.showMessageDialog(
                             ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
                         return null;
@@ -183,5 +179,11 @@ public class HeadedLaunchAction implements LaunchAction {
   @Override
   public void handleError(String error) {
     SwingComponents.showError(null, "Connection problem", error);
+  }
+
+  @Override
+  public IServerStartupRemote getStartupRemote(
+      IServerStartupRemote.ServerModelView serverModelView) {
+    return new HeadedServerStartupRemote(serverModelView);
   }
 }

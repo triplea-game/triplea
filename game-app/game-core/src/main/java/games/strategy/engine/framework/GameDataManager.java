@@ -23,7 +23,6 @@ import java.util.zip.GZIPOutputStream;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.injection.Injections;
 import org.triplea.util.Version;
 
@@ -128,8 +127,7 @@ public final class GameDataManager {
               UrlConstants.DOWNLOAD_WEBSITE,
               UrlConstants.DOWNLOAD_WEBSITE));
       return false;
-    } else if (!HeadlessGameServer.headless()
-        && ((Version) version).getMinor() > ourVersion.getMinor()) {
+    } else if (!GameRunner.headless() && ((Version) version).getMinor() > ourVersion.getMinor()) {
       // Prompt the user to upgrade
       log.warn(
           "This save was made by a newer version of TripleA.<br>"

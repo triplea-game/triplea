@@ -7,6 +7,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
+import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
@@ -49,4 +50,6 @@ public interface LaunchAction {
   Optional<ServerConnectionProps> getFallbackConnection(Runnable cancelAction);
 
   void handleError(String error);
+
+  IServerStartupRemote getStartupRemote(IServerStartupRemote.ServerModelView serverModelView);
 }

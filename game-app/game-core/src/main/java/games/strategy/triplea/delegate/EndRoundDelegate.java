@@ -6,6 +6,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -25,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.EventThreadJOptionPane;
@@ -314,7 +314,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           .getDisplayChannelBroadcaster()
           .reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
-      if (HeadlessGameServer.headless()) {
+      if (GameRunner.headless()) {
         // a terrible dirty hack, but I can't think of a better way to do it right now. If we are
         // headless, end the game.
         stopGame = true;
