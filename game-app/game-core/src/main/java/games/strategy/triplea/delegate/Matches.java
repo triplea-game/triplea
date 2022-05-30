@@ -1760,7 +1760,7 @@ public final class Matches {
   public static Predicate<Unit> unitHasRequiredUnitsToMove(final Territory t) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null || ua.getRequiresUnitsToMove().isEmpty()) {
+      if (ua.getRequiresUnitsToMove().isEmpty()) {
         return true;
       }
 
