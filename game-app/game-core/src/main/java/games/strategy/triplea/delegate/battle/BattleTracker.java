@@ -276,7 +276,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> units,
       final GamePlayer gamePlayer,
       final IDelegateBridge bridge,
-      final UndoableMove changeTracker,
+      final @Nullable UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     this.addBattle(
         route,
@@ -296,7 +296,7 @@ public class BattleTracker implements Serializable {
       final boolean bombing,
       final GamePlayer gamePlayer,
       final IDelegateBridge bridge,
-      final UndoableMove changeTracker,
+      final @Nullable UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute,
       final Map<Unit, Set<Unit>> targets,
       final boolean airBattleCompleted) {
