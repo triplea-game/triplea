@@ -17,6 +17,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
@@ -901,7 +902,8 @@ public class BattleTracker implements Serializable {
       final GamePlayer gamePlayer,
       final GamePlayer newOwner,
       final IDelegateBridge bridge,
-      final UndoableMove changeTracker) {
+      final @Nullable UndoableMove changeTracker) {
+    IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
     final GameState data = bridge.getData();
     // destroy any units that should be destroyed on capture
     if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data.getProperties())) {
@@ -910,14 +912,8 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> destroyed =
           territory.getUnitCollection().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
-        final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
-        bridge
-            .getHistoryWriter()
-            .addChildToEvent("Some non-combat units are destroyed: ", destroyed);
-        bridge.addChange(destroyUnits);
-        if (changeTracker != null) {
-          changeTracker.addChange(destroyUnits);
-        }
+        historyWriter.addChildToEvent("Some non-combat units are destroyed: ", destroyed);
+        addChange(bridge, changeTracker, ChangeFactory.removeUnits(territory, destroyed));
       }
     }
     // destroy any capture on entering units, IF the property to destroy them instead of capture is
@@ -930,15 +926,9 @@ public class BattleTracker implements Serializable {
                   Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
                       gamePlayer, territory, data.getProperties()));
       if (!destroyed.isEmpty()) {
-        final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
-        bridge
-            .getHistoryWriter()
-            .addChildToEvent(
-                gamePlayer.getName() + " destroys some units instead of capturing them", destroyed);
-        bridge.addChange(destroyUnits);
-        if (changeTracker != null) {
-          changeTracker.addChange(destroyUnits);
-        }
+        historyWriter.addChildToEvent(
+            gamePlayer.getName() + " destroys some units instead of capturing them", destroyed);
+        addChange(bridge, changeTracker, ChangeFactory.removeUnits(territory, destroyed));
       }
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
@@ -948,19 +938,14 @@ public class BattleTracker implements Serializable {
             .and(Matches.unitIsInfrastructure().negate());
     final Collection<Unit> destroyed = territory.getUnitCollection().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
-      final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
-      bridge
-          .getHistoryWriter()
-          .addChildToEvent(
-              gamePlayer.getName() + " destroys some disabled combat units", destroyed);
-      bridge.addChange(destroyUnits);
-      if (changeTracker != null) {
-        changeTracker.addChange(destroyUnits);
-      }
+      historyWriter.addChildToEvent(
+          gamePlayer.getName() + " destroys some disabled combat units", destroyed);
+      addChange(bridge, changeTracker, ChangeFactory.removeUnits(territory, destroyed));
     }
     // take over non combatants
     final Predicate<Unit> enemyNonCom =
         Matches.enemyUnit(gamePlayer).and(Matches.unitIsInfrastructure());
+    // System.err.println("enemyNonCom:" + enemyNonCom);
     final Predicate<Unit> willBeCaptured =
         enemyNonCom.or(
             Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
@@ -1003,18 +988,10 @@ public class BattleTracker implements Serializable {
             changes.add(ChangeFactory.removeUnits(territory, Set.of(u)));
             changes.add(ChangeFactory.addUnits(territory, toAdd));
             changes.add(ChangeFactory.markNoMovementChange(toAdd));
-            bridge
-                .getHistoryWriter()
-                .addChildToEvent(
-                    gamePlayer.getName()
-                        + " converts "
-                        + u.toStringNoOwner()
-                        + " into different units",
-                    toAdd);
-            bridge.addChange(changes);
-            if (changeTracker != null) {
-              changeTracker.addChange(changes);
-            }
+            historyWriter.addChildToEvent(
+                gamePlayer.getName() + " converts " + u.toStringNoOwner() + " into different units",
+                toAdd);
+            addChange(bridge, changeTracker, changes);
             // don't forget to remove this unit from the list
             nonCom.remove(u);
             break;
@@ -1026,16 +1003,8 @@ public class BattleTracker implements Serializable {
       // FYI: a dummy delegate will not do anything with this change,
       // meaning that the battle calculator will think this unit lived, even though it died or was
       // captured, etc!
-      final Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
-      bridge.addChange(capture);
-      if (changeTracker != null) {
-        changeTracker.addChange(capture);
-      }
-      final Change noMovementChange = ChangeFactory.markNoMovementChange(nonCom);
-      bridge.addChange(noMovementChange);
-      if (changeTracker != null) {
-        changeTracker.addChange(noMovementChange);
-      }
+      addChange(bridge, changeTracker, ChangeFactory.changeOwner(nonCom, newOwner, territory));
+      addChange(bridge, changeTracker, ChangeFactory.markNoMovementChange(nonCom));
       final IntegerMap<Unit> damageMap = new IntegerMap<>();
       for (final Unit unit :
           CollectionUtils.getMatches(nonCom, Matches.unitWhenCapturedSustainsDamage())) {
@@ -1048,27 +1017,25 @@ public class BattleTracker implements Serializable {
       }
       if (!damageMap.isEmpty()) {
         final Change damageChange = ChangeFactory.bombingUnitDamage(damageMap, List.of(territory));
-        bridge.addChange(damageChange);
-        if (changeTracker != null) {
-          changeTracker.addChange(damageChange);
-        }
+        addChange(bridge, changeTracker, damageChange);
         // Kill any units that can die if they have reached max damage
-        if (damageMap.keySet().stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
-          final List<Unit> unitsCanDie =
-              CollectionUtils.getMatches(
-                  damageMap.keySet(), Matches.unitCanDieFromReachingMaxDamage());
-          unitsCanDie.retainAll(
-              CollectionUtils.getMatches(
-                  unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(territory)));
-          if (!unitsCanDie.isEmpty()) {
-            final Change removeDead = ChangeFactory.removeUnits(territory, unitsCanDie);
-            bridge.addChange(removeDead);
-            if (changeTracker != null) {
-              changeTracker.addChange(removeDead);
-            }
-          }
+        final List<Unit> unitsCanDie =
+            CollectionUtils.getMatches(
+                damageMap.keySet(),
+                Matches.unitCanDieFromReachingMaxDamage()
+                    .and(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(territory)));
+        if (!unitsCanDie.isEmpty()) {
+          addChange(bridge, changeTracker, ChangeFactory.removeUnits(territory, unitsCanDie));
         }
       }
+    }
+  }
+
+  private static void addChange(
+      IDelegateBridge bridge, @Nullable UndoableMove changeTracker, Change change) {
+    bridge.addChange(change);
+    if (changeTracker != null) {
+      changeTracker.addChange(change);
     }
   }
 
