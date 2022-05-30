@@ -32,7 +32,7 @@ public final class HeadlessGameRunner {
   public static void main(final String[] args) {
     Injections.init(constructInjections());
     ClientSetting.initialize();
-    System.setProperty(LOBBY_GAME_COMMENTS, HeadlessGameServer.BOT_GAME_HOST_COMMENT);
+    System.setProperty(LOBBY_GAME_COMMENTS, GameRunner.BOT_GAME_HOST_COMMENT);
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     System.setProperty(TRIPLEA_SERVER, "true");
 
@@ -63,14 +63,13 @@ public final class HeadlessGameRunner {
     }
 
     final String playerName = System.getProperty(TRIPLEA_NAME, "");
-    if ((playerName.length() < 7)
-        || !playerName.startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)) {
+    if ((playerName.length() < 7) || !playerName.startsWith(GameRunner.BOT_GAME_HOST_NAME_PREFIX)) {
       log.warn(
           "Invalid or missing argument: "
               + TRIPLEA_NAME
               + " must at least 7 characters long "
               + "and start with "
-              + HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX);
+              + GameRunner.BOT_GAME_HOST_NAME_PREFIX);
       printUsage = true;
     }
 

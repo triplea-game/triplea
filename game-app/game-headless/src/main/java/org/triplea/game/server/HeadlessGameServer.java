@@ -24,8 +24,6 @@ import org.triplea.java.ThreadRunner;
 /** A way of hosting a game, but headless. */
 @Slf4j
 public class HeadlessGameServer {
-  public static final String BOT_GAME_HOST_COMMENT = "automated_host";
-  public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
   private static HeadlessGameServer instance = null;
 
   private final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();

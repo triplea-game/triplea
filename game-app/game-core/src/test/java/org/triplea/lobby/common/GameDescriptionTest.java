@@ -3,13 +3,13 @@ package org.triplea.lobby.common;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.Node;
 import java.net.InetAddress;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.test.TestData;
 
 final class GameDescriptionTest {
@@ -22,9 +22,8 @@ final class GameDescriptionTest {
       final GameDescription gameDescription =
           GameDescription.builder()
               .hostedBy(
-                  new Node(
-                      HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX, InetAddress.getLocalHost(), 10))
-              .comment(HeadlessGameServer.BOT_GAME_HOST_COMMENT)
+                  new Node(GameRunner.BOT_GAME_HOST_NAME_PREFIX, InetAddress.getLocalHost(), 10))
+              .comment(GameRunner.BOT_GAME_HOST_COMMENT)
               .build();
 
       assertThat(gameDescription.isBot(), is(true));
@@ -35,21 +34,19 @@ final class GameDescriptionTest {
       List.of(
               // host name must have correct prefix
               GameDescription.builder()
-                  .comment(HeadlessGameServer.BOT_GAME_HOST_COMMENT)
+                  .comment(GameRunner.BOT_GAME_HOST_COMMENT)
                   .hostedBy(
                       new Node(
-                          "mangling-the-prefix-" + HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX,
+                          "mangling-the-prefix-" + GameRunner.BOT_GAME_HOST_NAME_PREFIX,
                           InetAddress.getLocalHost(),
                           10))
                   .build(),
               // must have the right comment
               GameDescription.builder()
-                  .comment(
-                      HeadlessGameServer.BOT_GAME_HOST_COMMENT
-                          + HeadlessGameServer.BOT_GAME_HOST_COMMENT)
+                  .comment(GameRunner.BOT_GAME_HOST_COMMENT + GameRunner.BOT_GAME_HOST_COMMENT)
                   .hostedBy(
                       new Node(
-                          "mangling-the-prefix-" + HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX,
+                          "mangling-the-prefix-" + GameRunner.BOT_GAME_HOST_NAME_PREFIX,
                           InetAddress.getLocalHost(),
                           10))
                   .build())
