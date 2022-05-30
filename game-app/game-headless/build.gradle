@@ -23,6 +23,7 @@ jar {
 }
 
 task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('.triplea-root')
     from file('scripts/run_bot')
     from(file('scripts/run_bot.bat')) {
         filter ReplaceTokens, tokens: [version: project.version]
