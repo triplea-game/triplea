@@ -500,8 +500,7 @@ public class GameData implements Serializable, GameState {
 
   /**
    * Call this before starting the game and before the game data has been sent to the clients in
-   * order to make any final modifications to the game data. For example, this method will remove
-   * player delegates for players who have been disabled.
+   * order to remove player delegates for players who have been disabled.
    */
   public void preGameDisablePlayers(final Predicate<GamePlayer> shouldDisablePlayer) {
     final Set<GamePlayer> playersWhoShouldBeRemoved = new HashSet<>();

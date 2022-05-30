@@ -56,8 +56,8 @@ public class AiGameTest {
             "imperialism_1974_board_game", "map/games/imperialism_1974_board_game.xml");
     ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
     game.getData().preGameDisablePlayers(p -> !p.getName().equals("Blue"));
-    game.setStopGameOnDelegateExecutionStop(true);
     game.setUpGameForRunningSteps();
+
     GamePlayer blue = game.getData().getPlayerList().getPlayerId("Blue");
     assertThat(blue.isNull(), is(false));
     // Check that after wealth place, we have 1 wealth and 10 armies.
