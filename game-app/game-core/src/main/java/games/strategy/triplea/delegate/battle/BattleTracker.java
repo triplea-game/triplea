@@ -328,12 +328,8 @@ public class BattleTracker implements Serializable {
             BattleType.AIR_BATTLE);
       }
       final Change change = addMustFightBattleChange(route, units, gamePlayer, data);
-      bridge.addChange(change);
-      if (changeTracker != null) {
-        changeTracker.addChange(change);
-      }
-      if (units.stream().anyMatch(Matches.unitIsLand())
-          || units.stream().anyMatch(Matches.unitIsSea())) {
+      addChange(bridge, changeTracker, change);
+      if (units.stream().anyMatch(Matches.unitIsLand().or(Matches.unitIsSea()))) {
         addEmptyBattle(
             route, units, gamePlayer, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute);
       }
@@ -343,7 +339,7 @@ public class BattleTracker implements Serializable {
   private static void markWasInCombat(
       final Collection<Unit> units,
       final IDelegateBridge bridge,
-      final UndoableMove changeTracker) {
+      final @Nullable UndoableMove changeTracker) {
     if (units == null) {
       return;
     }
@@ -351,10 +347,7 @@ public class BattleTracker implements Serializable {
     for (final Unit unit : units) {
       change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.WAS_IN_COMBAT));
     }
-    bridge.addChange(change);
-    if (changeTracker != null) {
-      changeTracker.addChange(change);
-    }
+    addChange(bridge, changeTracker, change);
   }
 
   private void addAirBattle(
@@ -406,7 +399,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> units,
       final GamePlayer gamePlayer,
       final IDelegateBridge bridge,
-      final UndoableMove changeTracker,
+      final @Nullable UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     final GameData data = bridge.getData();
     final Collection<Unit> canConquer =
@@ -463,12 +456,8 @@ public class BattleTracker implements Serializable {
             .addBattle(gamePlayer, nonFight.getBattleId(), current, nonFight.getBattleType());
       }
       final Change change = nonFight.addAttackChange(route, units, null);
-      bridge.addChange(change);
-      if (changeTracker != null) {
-        changeTracker.addChange(change);
-      }
+      addChange(bridge, changeTracker, change);
       takeOver(current, gamePlayer, bridge, changeTracker, units);
-      // }
     }
     // check the last territory
     if (conquerable.test(route.getEnd())) {
@@ -489,10 +478,7 @@ public class BattleTracker implements Serializable {
                   gamePlayer, nonFight.getBattleId(), route.getEnd(), nonFight.getBattleType());
         }
         final Change change = nonFight.addAttackChange(route, units, null);
-        bridge.addChange(change);
-        if (changeTracker != null) {
-          changeTracker.addChange(change);
-        }
+        addChange(bridge, changeTracker, change);
         if (precede != null) {
           addDependency(nonFight, precede);
         }
@@ -520,10 +506,7 @@ public class BattleTracker implements Serializable {
                   gamePlayer, nonFight.getBattleId(), route.getEnd(), nonFight.getBattleType());
         }
         final Change change = nonFight.addAttackChange(route, units, null);
-        bridge.addChange(change);
-        if (changeTracker != null) {
-          changeTracker.addChange(change);
-        }
+        addChange(bridge, changeTracker, change);
         takeOver(route.getEnd(), gamePlayer, bridge, changeTracker, units);
       }
     }
@@ -538,7 +521,7 @@ public class BattleTracker implements Serializable {
       final Territory territory,
       final GamePlayer gamePlayer,
       final IDelegateBridge bridge,
-      final UndoableMove changeTracker,
+      final @Nullable UndoableMove changeTracker,
       final Collection<Unit> arrivingUnits) {
     // This could be NULL if unowned water
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
@@ -634,10 +617,7 @@ public class BattleTracker implements Serializable {
       final int puChargeReal =
           Math.min(0, Math.max(puChargeIdeal, -gamePlayer.getResources().getQuantity(pus)));
       final Change neutralFee = ChangeFactory.changeResourcesChange(gamePlayer, pus, puChargeReal);
-      bridge.addChange(neutralFee);
-      if (changeTracker != null) {
-        changeTracker.addChange(neutralFee);
-      }
+      addChange(bridge, changeTracker, neutralFee);
       if (puChargeIdeal == puChargeReal) {
         bridge
             .getHistoryWriter()
@@ -697,14 +677,12 @@ public class BattleTracker implements Serializable {
           final Change changeVp =
               ChangeFactory.attachmentPropertyChange(
                   pa, (capturedPuCount + pa.getCaptureVps()), "captureVps");
-          bridge.addChange(changeVp);
-          if (changeTracker != null) {
-            changeTracker.addChange(changeVp);
-          }
+          addChange(bridge, changeTracker, changeVp);
         }
         final Change remove =
             ChangeFactory.changeResourcesChange(whoseCapital, pus, -capturedPuCount);
         bridge.addChange(remove);
+        addChange(bridge, changeTracker, remove);
         if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
           bridge
               .getHistoryWriter()
@@ -716,9 +694,6 @@ public class BattleTracker implements Serializable {
                       + " while taking "
                       + whoseCapital.getName()
                       + " capital");
-          if (changeTracker != null) {
-            changeTracker.addChange(remove);
-          }
         } else {
           bridge
               .getHistoryWriter()
@@ -730,14 +705,8 @@ public class BattleTracker implements Serializable {
                       + " while taking "
                       + whoseCapital.getName()
                       + " capital");
-          if (changeTracker != null) {
-            changeTracker.addChange(remove);
-          }
           final Change add = ChangeFactory.changeResourcesChange(gamePlayer, pus, capturedPuCount);
-          bridge.addChange(add);
-          if (changeTracker != null) {
-            changeTracker.addChange(add);
-          }
+          addChange(bridge, changeTracker, add);
         }
         // remove all the tokens of the captured player
         final Resource tokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
@@ -745,10 +714,7 @@ public class BattleTracker implements Serializable {
           final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
           final Change removeTokens =
               ChangeFactory.changeResourcesChange(whoseCapital, tokens, -currTokens);
-          bridge.addChange(removeTokens);
-          if (changeTracker != null) {
-            changeTracker.addChange(removeTokens);
-          }
+          addChange(bridge, changeTracker, removeTokens);
         }
       }
     }
@@ -797,9 +763,8 @@ public class BattleTracker implements Serializable {
     if (isTerritoryOwnerAnEnemy) {
       final Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
       bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
-      bridge.addChange(takeOver);
+      addChange(bridge, changeTracker, takeOver);
       if (changeTracker != null) {
-        changeTracker.addChange(takeOver);
         changeTracker.addToConquered(territory);
       }
       // play a sound
@@ -867,20 +832,14 @@ public class BattleTracker implements Serializable {
           continue;
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
-        bridge.addChange(takeOverFriendlyTerritories);
+        addChange(bridge, changeTracker, takeOverFriendlyTerritories);
         bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
-        if (changeTracker != null) {
-          changeTracker.addChange(takeOverFriendlyTerritories);
-        }
         final Collection<Unit> units =
             CollectionUtils.getMatches(item.getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits =
               ChangeFactory.changeOwner(units, terrOrigOwner, territory);
-          bridge.addChange(takeOverNonComUnits);
-          if (changeTracker != null) {
-            changeTracker.addChange(takeOverNonComUnits);
-          }
+          addChange(bridge, changeTracker, takeOverNonComUnits);
         }
       }
     }
