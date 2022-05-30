@@ -288,34 +288,42 @@ public class ServerGame extends AbstractGame {
   /** Starts the game in a new thread. */
   public void startGame() {
     try {
-      // we don't want to notify that the step has been saved when reloading a saved game, since
-      // in fact the step hasn't changed, we are just resuming where we left off
-      final boolean gameHasBeenSaved =
-          gameData.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
-      if (!gameHasBeenSaved) {
-        gameData.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
-      }
-      startPersistentDelegates();
-      if (gameHasBeenSaved) {
-        runStep(true);
-      }
+      setUpGameForRunningSteps();
       while (!isGameOver) {
-        if (delegateExecutionStopped) {
-          if (stopGameOnDelegateExecutionStop) {
-            stopGame();
-          } else {
-            // the delegate has told us to stop stepping through game steps
-            // don't let this method return, as this method returning signals that the game is over.
-            Interruptibles.await(delegateExecutionStoppedLatch);
-          }
-        } else {
-          runStep(false);
-        }
+        runNextStep();
       }
     } catch (final GameOverException e) {
       if (!isGameOver) {
         log.error("GameOverException raised, but game is not over", e);
       }
+    }
+  }
+
+  public void setUpGameForRunningSteps() {
+    // we don't want to notify that the step has been saved when reloading a saved game, since
+    // in fact the step hasn't changed, we are just resuming where we left off
+    final boolean gameHasBeenSaved =
+        gameData.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
+    if (!gameHasBeenSaved) {
+      gameData.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
+    }
+    startPersistentDelegates();
+    if (gameHasBeenSaved) {
+      runStep(true);
+    }
+  }
+
+  public void runNextStep() {
+    if (delegateExecutionStopped) {
+      if (stopGameOnDelegateExecutionStop) {
+        stopGame();
+      } else {
+        // the delegate has told us to stop stepping through game steps
+        // don't let this method return, as this method returning signals that the game is over.
+        Interruptibles.await(delegateExecutionStoppedLatch);
+      }
+    } else {
+      runStep(false);
     }
   }
 

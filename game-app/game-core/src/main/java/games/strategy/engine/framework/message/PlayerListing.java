@@ -2,6 +2,7 @@ package games.strategy.engine.framework.message;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.NetworkData;
 import java.io.Serializable;
@@ -109,5 +110,9 @@ public class PlayerListing implements Serializable {
   public Map<String, PlayerTypes.Type> getLocalPlayerTypeMap(final PlayerTypes playerTypes) {
     return localPlayerTypes.entrySet().stream()
         .collect(Collectors.toMap(Entry::getKey, e -> playerTypes.fromLabel(e.getValue())));
+  }
+
+  public void doPreGameStartDataModifications(final GameData gameData) {
+    gameData.preGameDisablePlayers(p -> !playersEnabledListing.get(p.getName()));
   }
 }

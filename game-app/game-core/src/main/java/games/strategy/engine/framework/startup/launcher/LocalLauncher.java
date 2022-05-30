@@ -63,7 +63,7 @@ public class LocalLauncher implements ILauncher {
 
   private Optional<ServerGame> loadGame() {
     try {
-      gameData.doPreGameStartDataModifications(playerListing);
+      playerListing.doPreGameStartDataModifications(gameData);
       final Messengers messengers = new Messengers(new LocalNoOpMessenger());
       final Set<Player> gamePlayers =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap(playerTypes));
