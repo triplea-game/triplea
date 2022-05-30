@@ -2294,10 +2294,11 @@
 - mapName: ww2v4_variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v4_variants/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/ww2v4_variants/master/preview.png
   description: |
-    <br>Maintenance-WW2v4: Adds maintenance costs to World World 2 v4
+    <br>WW2v4-Upkeep: Adds 10% upkeep costs to World World 2 v4
+    <br>WW2v4-Buildcaps: Limits production of all unit types
 - mapName: Command and Conquer
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/commandandconquer/archive/master.zip
