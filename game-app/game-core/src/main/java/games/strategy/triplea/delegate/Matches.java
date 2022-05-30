@@ -190,7 +190,7 @@ public final class Matches {
   public static Predicate<UnitType> unitTypeIsStrategicBomber() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj);
-      return ua != null && ua.getIsStrategicBomber();
+      return ua.getIsStrategicBomber();
     };
   }
 
@@ -1648,28 +1648,28 @@ public final class Matches {
   static Predicate<Unit> unitCreatesUnits() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && !ua.getCreatesUnitsList().isEmpty();
+      return !ua.getCreatesUnitsList().isEmpty();
     };
   }
 
   static Predicate<Unit> unitCreatesResources() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && !ua.getCreatesResourcesList().isEmpty();
+      return !ua.getCreatesResourcesList().isEmpty();
     };
   }
 
   public static Predicate<UnitType> unitTypeConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit);
-      return ua != null && !ua.getConsumesUnits().isEmpty();
+      return !ua.getConsumesUnits().isEmpty();
     };
   }
 
   public static Predicate<Unit> unitConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && !ua.getConsumesUnits().isEmpty();
+      return !ua.getConsumesUnits().isEmpty();
     };
   }
 
@@ -1711,7 +1711,7 @@ public final class Matches {
   public static Predicate<Unit> unitRequiresUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && !ua.getRequiresUnits().isEmpty();
+      return !ua.getRequiresUnits().isEmpty();
     };
   }
 
@@ -1799,7 +1799,7 @@ public final class Matches {
   public static Predicate<UnitType> unitTypeIsConstruction() {
     return type -> {
       final UnitAttachment ua = UnitAttachment.get(type);
-      return ua != null && ua.getIsConstruction();
+      return ua.getIsConstruction();
     };
   }
 
