@@ -1,5 +1,6 @@
 package org.triplea.game.server;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
@@ -9,7 +10,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.IoUtils;
 
@@ -17,9 +17,11 @@ import org.triplea.io.IoUtils;
 public class HeadlessServerStartupRemote implements IServerStartupRemote {
 
   private final ServerModelView serverModelView;
+  private final HeadlessGameServer headlessGameServer;
 
-  public HeadlessServerStartupRemote(ServerModelView serverModelView) {
+  public HeadlessServerStartupRemote(ServerModelView serverModelView, HeadlessGameServer headlessGameServer) {
     this.serverModelView = serverModelView;
+    this.headlessGameServer = Preconditions.checkNotNull(headlessGameServer);
   }
 
   @Override
@@ -75,29 +77,26 @@ public class HeadlessServerStartupRemote implements IServerStartupRemote {
   public Set<String> getAvailableGames() {
     // Copy available games collection into a serializable collection
     // so it can be sent over network.
-    return new HashSet<>(HeadlessGameServer.getInstance().getAvailableGames());
+    return new HashSet<>(headlessGameServer.getAvailableGames());
   }
 
   @Override
   public void changeServerGameTo(final String gameName) {
-    HeadlessGameServer.getInstance().setGameMapTo(gameName);
+    headlessGameServer.setGameMapTo(gameName);
   }
 
   @Override
   public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
-    final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
-    if (headlessGameServer != null && Files.exists(autoSaveType.getFile())) {
+    if (Files.exists(autoSaveType.getFile())) {
       headlessGameServer.loadGameSave(autoSaveType.getFile());
     }
   }
 
   @Override
   public void changeToGameSave(final byte[] bytes, final String fileName) {
-    // TODO: change to a string message return, so we can tell the user/requestor if it was
-    // successful or not, and why
-    // if not.
-    final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-    if (headless == null || bytes == null) {
+    // TODO: change to a string message return, so we can tell the user/requester if it was
+    // successful or not, and why if not.
+    if (bytes == null) {
       return;
     }
     try {
@@ -105,7 +104,7 @@ public class HeadlessServerStartupRemote implements IServerStartupRemote {
           bytes,
           is -> {
             try (InputStream inputStream = new BufferedInputStream(is)) {
-              headless.loadGameSave(inputStream);
+              headlessGameServer.loadGameSave(inputStream);
             }
           });
     } catch (final Exception e) {
@@ -115,15 +114,13 @@ public class HeadlessServerStartupRemote implements IServerStartupRemote {
 
   @Override
   public void changeToGameOptions(final byte[] bytes) {
-    // TODO: change to a string message return, so we can tell the user/requestor if it was
-    // successful or not, and why
-    // if not.
-    final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-    if (headless == null || bytes == null) {
+    // TODO: change to a string message return, so we can tell the user/requester if it was
+    // successful or not, and why if not.
+    if (bytes == null) {
       return;
     }
     try {
-      headless.loadGameOptions(bytes);
+      headlessGameServer.loadGameOptions(bytes);
     } catch (final Exception e) {
       log.error("Failed to load game options", e);
     }

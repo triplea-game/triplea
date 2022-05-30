@@ -30,6 +30,13 @@ import org.triplea.sound.ISound;
 
 @Slf4j
 public class HeadlessLaunchAction implements LaunchAction {
+
+  private final HeadlessGameServer headlessGameServer;
+
+  public HeadlessLaunchAction(final HeadlessGameServer headlessGameServer) {
+    this.headlessGameServer = headlessGameServer;
+  }
+
   @Override
   public void handleGameInterruption(
       final GameSelectorModel gameSelectorModel, final ServerModel serverModel) {
@@ -113,6 +120,6 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public IServerStartupRemote getStartupRemote(
       IServerStartupRemote.ServerModelView serverModelView) {
-    return new HeadlessServerStartupRemote(serverModelView);
+    return new HeadlessServerStartupRemote(serverModelView, headlessGameServer);
   }
 }

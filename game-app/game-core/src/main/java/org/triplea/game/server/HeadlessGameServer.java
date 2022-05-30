@@ -31,7 +31,7 @@ public class HeadlessGameServer {
   private final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private final HeadlessServerSetupModel setupPanelModel =
-      new HeadlessServerSetupModel(gameSelectorModel);
+      new HeadlessServerSetupModel(gameSelectorModel, this);
   private ServerGame game = null;
   private boolean shutDown = false;
 

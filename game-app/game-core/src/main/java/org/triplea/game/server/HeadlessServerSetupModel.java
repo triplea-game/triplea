@@ -19,11 +19,12 @@ import org.triplea.injection.Injections;
 public class HeadlessServerSetupModel implements ServerSetupModel {
 
   private final GameSelectorModel gameSelectorModel;
+  private final HeadlessGameServer headlessGameServer;
   private HeadlessServerSetup headlessServerSetup;
 
   @Override
   public void showSelectType() {
-    new ServerModel(gameSelectorModel, this, new HeadlessLaunchAction());
+    new ServerModel(gameSelectorModel, this, new HeadlessLaunchAction(headlessGameServer));
   }
 
   @Override
