@@ -53,7 +53,7 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public void onGameInterrupt() {
     // tell headless server to wait for new connections:
-    HeadlessGameServer.waitForUsersHeadlessInstance();
+    headlessGameServer.waitForUsersHeadless();
   }
 
   @Override
@@ -84,7 +84,7 @@ public class HeadlessLaunchAction implements LaunchAction {
 
   @Override
   public void onLaunch(final ServerGame serverGame) {
-    HeadlessGameServer.setServerGame(serverGame);
+    headlessGameServer.setServerGame(serverGame);
   }
 
   @Override

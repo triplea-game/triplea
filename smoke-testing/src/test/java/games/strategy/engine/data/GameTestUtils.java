@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
@@ -73,7 +75,7 @@ public class GameTestUtils {
       playerTypes.put(player.getName(), PlayerTypes.PRO_AI);
     }
     Set<Player> gamePlayers = gameData.getGameLoader().newPlayers(playerTypes);
-    HeadlessLaunchAction launchAction = new HeadlessLaunchAction();
+    HeadlessLaunchAction launchAction = new HeadlessLaunchAction(any());
     Messengers messengers = new Messengers(new LocalNoOpMessenger());
     ServerGame game =
         new ServerGame(

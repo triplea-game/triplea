@@ -51,7 +51,6 @@ public class HeadlessGameServer {
         () -> {
           log.info("Headless Start");
           setupPanelModel.showSelectType();
-          log.info("Waiting for users to connect.");
           waitForUsersHeadless();
         });
   }
@@ -154,22 +153,21 @@ public class HeadlessGameServer {
   }
 
   /** Updates current 'HeadlessGameServer.game' instance to be set to the given parameter. */
-  public static synchronized void setServerGame(final ServerGame serverGame) {
-    if (instance != null) {
-      instance.game = serverGame;
-      if (serverGame != null) {
-        log.info(
-            "Game starting up: "
-                + instance.game.isGameSequenceRunning()
-                + ", GameOver: "
-                + instance.game.isGameOver()
-                + ", Players: "
-                + instance.game.getPlayerManager().toString());
-      }
+  public synchronized void setServerGame(final ServerGame serverGame) {
+    game = serverGame;
+    if (serverGame != null) {
+      log.info(
+          "Game starting up: "
+              + game.isGameSequenceRunning()
+              + ", GameOver: "
+              + game.isGameOver()
+              + ", Players: "
+              + game.getPlayerManager().toString());
     }
   }
 
-  private void waitForUsersHeadless() {
+  public void waitForUsersHeadless() {
+    log.info("Waiting for users to connect.");
     setServerGame(null);
 
     new Thread(
@@ -181,7 +179,7 @@ public class HeadlessGameServer {
                 }
                 if (setupPanelModel.getPanel() != null
                     && setupPanelModel.getPanel().canGameStart()) {
-                  final boolean started = startHeadlessGame(setupPanelModel, gameSelectorModel);
+                  final boolean started = startHeadlessGame();
                   if (!started) {
                     log.warn("Error in launcher, going back to waiting.");
                   } else {
@@ -195,12 +193,9 @@ public class HeadlessGameServer {
         .start();
   }
 
-  private static synchronized boolean startHeadlessGame(
-      final HeadlessServerSetupModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
+  private synchronized boolean startHeadlessGame() {
     try {
-      if (setupPanelModel != null
-          && setupPanelModel.getPanel() != null
-          && setupPanelModel.getPanel().canGameStart()) {
+      if (setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
         log.info(
             "Starting Game: "
                 + gameSelectorModel.getGameData().getGameName()
@@ -222,27 +217,11 @@ public class HeadlessGameServer {
       }
     } catch (final Exception e) {
       log.error("Failed to start headless game", e);
-      final ServerModel model = getServerModel(setupPanelModel);
-      if (model != null) {
-        // if we do not do this, we can get into an infinite loop of launching a game, then crashing
-        // out,
-        // then launching, etc.
-        model.setAllPlayersToNullNodes();
-      }
+      Optional.ofNullable(setupPanelModel.getPanel())
+          .map(HeadlessServerSetup::getModel)
+          .ifPresent(ServerModel::setAllPlayersToNullNodes);
     }
     return false;
-  }
-
-  public static void waitForUsersHeadlessInstance() {
-    log.info("Waiting for users to connect.");
-    instance.waitForUsersHeadless();
-  }
-
-  private static ServerModel getServerModel(final HeadlessServerSetupModel setupPanelModel) {
-    return Optional.ofNullable(setupPanelModel)
-        .map(HeadlessServerSetupModel::getPanel)
-        .map(HeadlessServerSetup::getModel)
-        .orElse(null);
   }
 
   /** todo, replace with something better Get the chat for the game, or null if there is no chat. */

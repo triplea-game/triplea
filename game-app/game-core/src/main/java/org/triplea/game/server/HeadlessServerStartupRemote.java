@@ -19,7 +19,8 @@ public class HeadlessServerStartupRemote implements IServerStartupRemote {
   private final ServerModelView serverModelView;
   private final HeadlessGameServer headlessGameServer;
 
-  public HeadlessServerStartupRemote(ServerModelView serverModelView, HeadlessGameServer headlessGameServer) {
+  public HeadlessServerStartupRemote(
+      ServerModelView serverModelView, HeadlessGameServer headlessGameServer) {
     this.serverModelView = serverModelView;
     this.headlessGameServer = Preconditions.checkNotNull(headlessGameServer);
   }
