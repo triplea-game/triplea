@@ -35,40 +35,46 @@ public class HeadlessGameServer {
   private ServerGame game = null;
   private boolean shutDown = false;
 
-  private HeadlessGameServer() {
+  private HeadlessGameServer() {}
+
+  public static void initializeHeadlessGameServerInstance() {
+    Preconditions.checkState(headless(), "TripleA must be headless to invoke this method!");
+    if (instance != null) {
+      throw new IllegalStateException("Instance already exists");
+    }
+    instance = new HeadlessGameServer();
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
                 () -> {
                   log.info("Running ShutdownHook.");
-                  shutDown = true;
-                  Optional.ofNullable(game).ifPresent(ServerGame::stopGame);
-                  Optional.ofNullable(setupPanelModel.getPanel())
+                  instance.shutDown = true;
+                  Optional.ofNullable(instance.game).ifPresent(ServerGame::stopGame);
+                  Optional.ofNullable(instance.setupPanelModel.getPanel())
                       .ifPresent(HeadlessServerSetup::cancel);
                 }));
 
     ThreadRunner.runInNewThread(
         () -> {
           log.info("Headless Start");
-          setupPanelModel.showSelectType();
-          waitForUsersHeadless();
+          instance.setupPanelModel.showSelectType();
+          instance.waitForUsersHeadless();
         });
   }
 
-  public static void initializeHeadlessGameServerInstance() {
-    if (instance != null) {
-      throw new IllegalStateException("Instance already exists");
-    }
-    instance = new HeadlessGameServer();
-  }
-
+  /**
+   * Returns the singleton instance of the HeadlessGameServer object.
+   *
+   * @deprecated Do not use this method, pass the instance along call trees to avoid static
+   *     coupling.
+   */
+  @Deprecated
   public static synchronized HeadlessGameServer getInstance() {
     return instance;
   }
 
   public static synchronized boolean headless() {
-    return instance != null
-        || Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"));
+    return Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"));
   }
 
   public Collection<String> getAvailableGames() {
