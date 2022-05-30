@@ -283,16 +283,10 @@ public final class Matches {
       if (ta == null) {
         return false;
       }
-      if (ta.getCaptureUnitOnEnteringBy() == null) {
-        return false;
-      }
       final boolean territoryCanHaveUnitsThatCanBeCapturedByPlayer =
           ta.getCaptureUnitOnEnteringBy().contains(player);
       final PlayerAttachment pa = PlayerAttachment.get(unitOwner);
       if (pa == null) {
-        return false;
-      }
-      if (pa.getCaptureUnitOnEnteringBy() == null) {
         return false;
       }
       final boolean unitOwnerCanLetUnitsBeCapturedByPlayer =
@@ -1512,7 +1506,7 @@ public final class Matches {
         return false;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getRepairsUnits() != null && !ua.getRepairsUnits().isEmpty();
+      return !ua.getRepairsUnits().isEmpty();
     };
   }
 
@@ -1548,8 +1542,7 @@ public final class Matches {
         }
       }
       final UnitAttachment ua = UnitAttachment.get(unitCanRepair.getType());
-      return ua.getRepairsUnits() != null
-          && ua.getRepairsUnits().keySet().contains(damagedUnit.getType());
+      return ua.getRepairsUnits().keySet().contains(damagedUnit.getType());
     };
   }
 
@@ -1655,16 +1648,14 @@ public final class Matches {
   static Predicate<Unit> unitCreatesUnits() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getCreatesUnitsList() != null && !ua.getCreatesUnitsList().isEmpty();
+      return ua != null && !ua.getCreatesUnitsList().isEmpty();
     };
   }
 
   static Predicate<Unit> unitCreatesResources() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null
-          && ua.getCreatesResourcesList() != null
-          && !ua.getCreatesResourcesList().isEmpty();
+      return ua != null && !ua.getCreatesResourcesList().isEmpty();
     };
   }
 
@@ -1720,7 +1711,7 @@ public final class Matches {
   public static Predicate<Unit> unitRequiresUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getRequiresUnits() != null && !ua.getRequiresUnits().isEmpty();
+      return ua != null && !ua.getRequiresUnits().isEmpty();
     };
   }
 
@@ -1769,9 +1760,7 @@ public final class Matches {
   public static Predicate<Unit> unitHasRequiredUnitsToMove(final Territory t) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null
-          || ua.getRequiresUnitsToMove() == null
-          || ua.getRequiresUnitsToMove().isEmpty()) {
+      if (ua == null || ua.getRequiresUnitsToMove().isEmpty()) {
         return true;
       }
 
@@ -1998,7 +1987,7 @@ public final class Matches {
   public static Predicate<Territory> territoryHasCaptureOwnershipChanges() {
     return t -> {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return (ta != null) && !ta.getCaptureOwnershipChanges().isEmpty();
+      return ta != null && !ta.getCaptureOwnershipChanges().isEmpty();
     };
   }
 
@@ -2129,7 +2118,7 @@ public final class Matches {
         return false;
       }
       final GamePlayer owner = t.getOwner();
-      if (owner == null || owner.isNull()) {
+      if (owner.isNull()) {
         return false;
       }
       final RelationshipTracker rt = data.getRelationshipTracker();

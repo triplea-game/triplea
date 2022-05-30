@@ -14,6 +14,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitHolder;
 import games.strategy.engine.data.changefactory.units.BombingUnitDamageChange;
 import games.strategy.engine.data.changefactory.units.UnitDamageReceivedChange;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -71,20 +72,12 @@ public class ChangeFactory {
     return new PlayerOwnerChange(units, owner, location);
   }
 
-  public static Change addUnits(final Territory territory, final Collection<Unit> units) {
-    return new AddUnits(territory.getUnitCollection(), units);
+  public static Change addUnits(final UnitHolder holder, final Collection<Unit> units) {
+    return new AddUnits(holder.getUnitCollection(), units);
   }
 
-  public static Change addUnits(final GamePlayer player, final Collection<Unit> units) {
-    return new AddUnits(player.getUnitCollection(), units);
-  }
-
-  public static Change removeUnits(final Territory territory, final Collection<Unit> units) {
-    return new RemoveUnits(territory.getUnitCollection(), units);
-  }
-
-  public static Change removeUnits(final GamePlayer player, final Collection<Unit> units) {
-    return new RemoveUnits(player.getUnitCollection(), units);
+  public static Change removeUnits(final UnitHolder holder, final Collection<Unit> units) {
+    return new RemoveUnits(holder.getUnitCollection(), units);
   }
 
   public static Change moveUnits(
