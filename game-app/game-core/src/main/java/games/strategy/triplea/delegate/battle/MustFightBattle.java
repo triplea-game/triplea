@@ -1292,9 +1292,7 @@ public class MustFightBattle extends DependentBattle
     // remove capturableOnEntering units (veqryn)
     unitList.removeAll(
         CollectionUtils.getMatches(
-            unitList,
-            Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
-                attacker, battleSite, gameData.getProperties())));
+            unitList, Matches.unitCanBeCapturedOnEnteringThisTerritory(attacker, battleSite)));
     // remove any allied air units that are stuck on damaged carriers (veqryn)
     unitList.removeAll(
         CollectionUtils.getMatches(

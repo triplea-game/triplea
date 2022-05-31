@@ -435,7 +435,7 @@ public class BattleTracker implements Serializable {
     // we handle the end of the route later
     conquered.remove(route.getEnd());
     final Collection<Territory> blitzed =
-        CollectionUtils.getMatches(conquered, Matches.territoryIsBlitzable(gamePlayer, data));
+        CollectionUtils.getMatches(conquered, Matches.territoryIsBlitzable(gamePlayer));
     this.blitzed.addAll(CollectionUtils.getMatches(blitzed, Matches.isTerritoryEnemy(gamePlayer)));
     this.conquered.addAll(
         CollectionUtils.getMatches(conquered, Matches.isTerritoryEnemy(gamePlayer)));
@@ -485,7 +485,7 @@ public class BattleTracker implements Serializable {
         }
       } else {
         if (Matches.isTerritoryEnemy(gamePlayer).test(route.getEnd())) {
-          if (Matches.territoryIsBlitzable(gamePlayer, data).test(route.getEnd())) {
+          if (Matches.territoryIsBlitzable(gamePlayer).test(route.getEnd())) {
             this.blitzed.add(route.getEnd());
           }
           this.conquered.add(route.getEnd());
@@ -861,9 +861,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> destroyed =
           territory
               .getUnitCollection()
-              .getMatches(
-                  Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
-                      gamePlayer, territory, data.getProperties()));
+              .getMatches(Matches.unitCanBeCapturedOnEnteringThisTerritory(gamePlayer, territory));
       if (!destroyed.isEmpty()) {
         historyWriter.addChildToEvent(
             gamePlayer.getName() + " destroys some units instead of capturing them", destroyed);
@@ -885,9 +883,7 @@ public class BattleTracker implements Serializable {
     final Predicate<Unit> enemyNonCom =
         Matches.enemyUnit(gamePlayer).and(Matches.unitIsInfrastructure());
     final Predicate<Unit> willBeCaptured =
-        enemyNonCom.or(
-            Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
-                gamePlayer, territory, data.getProperties()));
+        enemyNonCom.or(Matches.unitCanBeCapturedOnEnteringThisTerritory(gamePlayer, territory));
     final Collection<Unit> nonCom = territory.getUnitCollection().getMatches(willBeCaptured);
     // change any units that change unit types on capture
     if (Properties.getUnitsCanBeChangedOnCapture(data.getProperties())) {

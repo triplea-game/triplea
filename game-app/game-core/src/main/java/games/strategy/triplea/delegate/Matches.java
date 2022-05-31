@@ -270,16 +270,16 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getCanBeGivenByTerritoryTo().contains(player);
   }
 
-  public static Predicate<Unit> unitCanBeCapturedOnEnteringToInThisTerritory(
-      final GamePlayer player, final Territory terr, final GameProperties properties) {
+  public static Predicate<Unit> unitCanBeCapturedOnEnteringThisTerritory(
+      final GamePlayer player, final Territory t) {
     return unit -> {
-      if (!Properties.getCaptureUnitsOnEnteringTerritory(properties)) {
+      if (!Properties.getCaptureUnitsOnEnteringTerritory(player.getData().getProperties())) {
         return false;
       }
       final GamePlayer unitOwner = unit.getOwner();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final boolean unitCanBeCapturedByPlayer = ua.getCanBeCapturedOnEnteringBy().contains(player);
-      final TerritoryAttachment ta = TerritoryAttachment.get(terr);
+      final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (ta == null) {
         return false;
       }
@@ -488,10 +488,10 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsNotInfrastructureAndNotCapturedOnEntering(
-      final GamePlayer player, final Territory terr, final GameProperties properties) {
+      final GamePlayer player, final Territory territory) {
     return unit ->
         !UnitAttachment.get(unit.getType()).getIsInfrastructure()
-            && !unitCanBeCapturedOnEnteringToInThisTerritory(player, terr, properties).test(unit);
+            && !unitCanBeCapturedOnEnteringThisTerritory(player, territory).test(unit);
   }
 
   public static Predicate<UnitType> unitTypeIsSuicideOnAttack() {
@@ -855,10 +855,9 @@ public final class Matches {
    * doesn't test ownership). If the game option for contested territories not producing is on, then
    * will also remove any contested territories.
    */
-  public static Predicate<Territory> territoryCanCollectIncomeFrom(
-      final GamePlayer player, final GameProperties properties) {
+  public static Predicate<Territory> territoryCanCollectIncomeFrom(final GamePlayer player) {
     final boolean contestedDoNotProduce =
-        Properties.getContestedTerritoriesProduceNoIncome(properties);
+        Properties.getContestedTerritoriesProduceNoIncome(player.getData().getProperties());
     return t -> {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (ta == null) {
@@ -895,11 +894,12 @@ public final class Matches {
 
   public static Predicate<Territory>
       territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
-          final GameData data, final GamePlayer player) {
+          final GamePlayer player) {
     return t ->
-        !data.getMap()
-            .getNeighbors(
-                t, territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(data, player))
+        !player
+            .getData()
+            .getMap()
+            .getNeighbors(t, territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(player))
             .isEmpty();
   }
 
@@ -918,8 +918,9 @@ public final class Matches {
   }
 
   private static Predicate<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(
-      final GameData data, final GamePlayer player) {
+      final GamePlayer player) {
     return t -> {
+      final GameData data = player.getData();
       if (!GameStepPropertiesHelper.getCombinedTurns(data, player).contains(t.getOwner())) {
         return false;
       }
@@ -970,31 +971,27 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryEffectsAllowUnits(final Collection<Unit> units) {
-    return t ->
-        units.stream()
-            .noneMatch(
-                Matches.unitIsOfTypes(
-                    TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t)));
+    return t -> {
+      Set<UnitType> types = TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t);
+      return units.stream().noneMatch(Matches.unitIsOfTypes(types));
+    };
   }
 
   public static Predicate<Territory> territoryIsNotImpassable() {
     return territoryIsImpassable().negate();
   }
 
-  public static Predicate<Territory> seaCanMoveOver(
-      final GamePlayer player, final GameProperties properties) {
-    return t -> t.isWater() && territoryIsPassableAndNotRestricted(player, properties).test(t);
+  public static Predicate<Territory> seaCanMoveOver(final GamePlayer player) {
+    return t -> t.isWater() && territoryIsPassableAndNotRestricted(player).test(t);
   }
 
   public static Predicate<Territory> airCanFlyOver(
-      final GamePlayer player,
-      final GameProperties properties,
-      final boolean areNeutralsPassableByAir) {
+      final GamePlayer player, final boolean areNeutralsPassableByAir) {
     return t -> {
       if (!areNeutralsPassableByAir && territoryIsNeutralButNotWater().test(t)) {
         return false;
       }
-      return territoryIsPassableAndNotRestricted(player, properties).test(t)
+      return territoryIsPassableAndNotRestricted(player).test(t)
           && !(territoryIsLand().test(t)
               && !player
                   .getData()
@@ -1003,13 +1000,12 @@ public final class Matches {
     };
   }
 
-  public static Predicate<Territory> territoryIsPassableAndNotRestricted(
-      final GamePlayer player, final GameProperties properties) {
+  public static Predicate<Territory> territoryIsPassableAndNotRestricted(final GamePlayer player) {
     return t -> {
       if (territoryIsImpassable().test(t)) {
         return false;
       }
-      if (!Properties.getMovementByTerritoryRestricted(properties)) {
+      if (!Properties.getMovementByTerritoryRestricted(player.getData().getProperties())) {
         return true;
       }
       final RulesAttachment ra =
@@ -1024,15 +1020,12 @@ public final class Matches {
     };
   }
 
-  private static Predicate<Territory> territoryIsImpassableToLandUnits(
-      final GamePlayer player, final GameProperties properties) {
-    return t ->
-        t.isWater() || territoryIsPassableAndNotRestricted(player, properties).negate().test(t);
+  private static Predicate<Territory> territoryIsImpassableToLandUnits(final GamePlayer player) {
+    return t -> t.isWater() || territoryIsPassableAndNotRestricted(player).negate().test(t);
   }
 
-  public static Predicate<Territory> territoryIsNotImpassableToLandUnits(
-      final GamePlayer player, final GameProperties properties) {
-    return t -> territoryIsImpassableToLandUnits(player, properties).negate().test(t);
+  public static Predicate<Territory> territoryIsNotImpassableToLandUnits(final GamePlayer player) {
+    return t -> territoryIsImpassableToLandUnits(player).negate().test(t);
   }
 
   /**
@@ -1046,13 +1039,14 @@ public final class Matches {
    */
   public static Predicate<Territory> territoryIsPassableAndNotRestrictedAndOkByRelationships(
       final GamePlayer playerWhoOwnsAllTheUnitsMoving,
-      final GameProperties properties,
-      final RelationshipTracker relationshipTracker,
       final boolean isCombatMovePhase,
       final boolean hasLandUnitsNotBeingTransportedOrBeingLoaded,
       final boolean hasSeaUnitsNotBeingTransported,
       final boolean hasAirUnitsNotBeingTransported,
       final boolean isLandingZoneOnLandForAirUnits) {
+    final GameProperties properties = playerWhoOwnsAllTheUnitsMoving.getData().getProperties();
+    final RelationshipTracker rt =
+        playerWhoOwnsAllTheUnitsMoving.getData().getRelationshipTracker();
     final boolean neutralsPassable = !Properties.getNeutralsImpassable(properties);
     final boolean areNeutralsPassableByAir =
         neutralsPassable && Properties.getNeutralFlyoverAllowed(properties);
@@ -1085,22 +1079,18 @@ public final class Matches {
       }
       if (!t.isWater()) {
         if (hasLandUnitsNotBeingTransportedOrBeingLoaded
-            && !relationshipTracker.canMoveLandUnitsOverOwnedLand(
-                playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
+            && !rt.canMoveLandUnitsOverOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
           return false;
         }
         if (hasAirUnitsNotBeingTransported
-            && !relationshipTracker.canMoveAirUnitsOverOwnedLand(
-                playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
+            && !rt.canMoveAirUnitsOverOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner())) {
           return false;
         }
       }
       return (!isLandingZoneOnLandForAirUnits
-              || relationshipTracker.canLandAirUnitsOnOwnedLand(
-                  playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
+              || rt.canLandAirUnitsOnOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
           && !(isCombatMovePhase
-              && !relationshipTracker.canMoveIntoDuringCombatMove(
-                  playerWhoOwnsAllTheUnitsMoving, t.getOwner()));
+              && !rt.canMoveIntoDuringCombatMove(playerWhoOwnsAllTheUnitsMoving, t.getOwner()));
     };
   }
 
@@ -1265,17 +1255,17 @@ public final class Matches {
       final GamePlayer player) {
     return not(isTerritoryOwnedBy(player))
         .and(not(territoryIsUnownedWater()))
-        .and(territoryIsPassableAndNotRestricted(player, player.getData().getProperties()));
+        .and(territoryIsPassableAndNotRestricted(player));
   }
 
-  public static Predicate<Territory> territoryIsBlitzable(
-      final GamePlayer player, final GameData data) {
+  public static Predicate<Territory> territoryIsBlitzable(final GamePlayer player) {
     return t -> {
       // cant blitz water
       if (t.isWater()) {
         return false;
       }
       // cant blitz on neutrals
+      GameData data = player.getData();
       if (t.getOwner().isNull() && !Properties.getNeutralsBlitzable(data.getProperties())) {
         return false;
       }
@@ -1487,15 +1477,16 @@ public final class Matches {
     return u -> TechTracker.hasImprovedArtillerySupport(u.getOwner());
   }
 
-  public static Predicate<Territory> territoryIsBlockedSea(
-      final GamePlayer player, final GameProperties properties) {
+  public static Predicate<Territory> territoryIsBlockedSea(final GamePlayer player) {
     final Predicate<Unit> transport =
         unitIsTransportButNotCombatTransport().negate().and(unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(unitIsInfrastructure().negate())
             .and(alliedUnit(player).negate())
             .and(unitCanBeMovedThroughByEnemies().negate())
-            .andIf(Properties.getIgnoreTransportInMovement(properties), transport)
+            .andIf(
+                Properties.getIgnoreTransportInMovement(player.getData().getProperties()),
+                transport)
             .build();
     return territoryHasUnitsThatMatch(unitCond).negate().and(territoryIsWater());
   }
@@ -2108,12 +2099,12 @@ public final class Matches {
   }
 
   public static Predicate<Territory> airCanLandOnThisAlliedNonConqueredLandTerritory(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player) {
     return t -> {
       if (!territoryIsLand().test(t)) {
         return false;
       }
-      final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
+      final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(player.getData());
       if (bt.wasConquered(t)) {
         return false;
       }
@@ -2121,7 +2112,7 @@ public final class Matches {
       if (owner.isNull()) {
         return false;
       }
-      final RelationshipTracker rt = data.getRelationshipTracker();
+      final RelationshipTracker rt = player.getData().getRelationshipTracker();
       return !(!rt.canMoveAirUnitsOverOwnedLand(player, owner)
           || !rt.canLandAirUnitsOnOwnedLand(player, owner));
     };

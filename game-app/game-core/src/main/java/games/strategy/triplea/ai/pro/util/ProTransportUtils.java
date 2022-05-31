@@ -285,12 +285,9 @@ public final class ProTransportUtils {
    */
   public static List<Unit> getAirThatCantLandOnCarrier(
       final GamePlayer player, final Territory t, final List<Unit> units) {
-    final GameState data = player.getData();
-
     int capacity = AirMovementValidator.carrierCapacity(units, t);
     final Collection<Unit> airUnits =
-        CollectionUtils.getMatches(
-            units, ProMatches.unitIsAlliedAir(player, data.getRelationshipTracker()));
+        CollectionUtils.getMatches(units, ProMatches.unitIsAlliedAir(player));
     final List<Unit> airThatCantLand = new ArrayList<>();
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
@@ -315,12 +312,9 @@ public final class ProTransportUtils {
       final Territory t,
       final Collection<Unit> existingUnits,
       final Unit newUnit) {
-    final GameState data = player.getData();
-
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
     final Collection<Unit> airUnits =
-        CollectionUtils.getMatches(
-            existingUnits, ProMatches.unitIsAlliedAir(player, data.getRelationshipTracker()));
+        CollectionUtils.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player));
     airUnits.add(newUnit);
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());

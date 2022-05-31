@@ -54,8 +54,7 @@ public final class AirMovementValidator {
         || units.stream().noneMatch(Matches.unitIsAir()) // No air units, nothing to check
         || route.hasNoSteps() // if there are no steps, we didn't move, so it is always OK!
         // we can land at the end, nothing left to check
-        || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
-            .test(route.getEnd())
+        || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player).test(route.getEnd())
         // if kamikaze - we do not do any validation at all, cus they can all die and we don't care
         || Properties.getKamikazeAirplanes(data.getProperties())) {
       return result;
@@ -139,22 +138,19 @@ public final class AirMovementValidator {
                 routeEnd,
                 maxMovementLeftForTheseAirUnitsBeingValidated,
                 // where can we fly to?
-                Matches.airCanFlyOver(
-                    player, data.getProperties(), areNeutralsPassableByAir(data))));
+                Matches.airCanFlyOver(player, areNeutralsPassableByAir(data))));
     // we only want to consider
     landingSpots.removeAll(
-        CollectionUtils.getMatches(
-            landingSpots, Matches.seaCanMoveOver(player, data.getProperties()).negate()));
+        CollectionUtils.getMatches(landingSpots, Matches.seaCanMoveOver(player).negate()));
     // places we can move carriers to
-    landingSpots.sort(
-        getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data.getProperties())));
+    landingSpots.sort(getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player)));
     final Collection<Territory> potentialCarrierOrigins = new LinkedHashSet<>(landingSpots);
     potentialCarrierOrigins.addAll(
         data.getMap()
             .getNeighbors(
                 new HashSet<>(landingSpots),
                 maxMovementLeftForAllOwnedCarriers,
-                Matches.seaCanMoveOver(player, data.getProperties())));
+                Matches.seaCanMoveOver(player)));
     potentialCarrierOrigins.remove(routeEnd);
     potentialCarrierOrigins.removeAll(
         CollectionUtils.getMatches(
@@ -224,8 +220,7 @@ public final class AirMovementValidator {
       if (landAirOnNewCarriers
           && !carriersInProductionQueue.isEmpty()
           && Matches.territoryIsWater().test(t)
-          && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
-                  data, player)
+          && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(player)
               .test(t)) {
         // TODO: Here we are assuming that this factory can produce all of the carriers. Actually
         // it might not be able to produce any carriers (because of complex requires units coding)
@@ -438,7 +433,7 @@ public final class AirMovementValidator {
                 .getRouteForUnits(
                     carrierSpot,
                     landingSpot,
-                    Matches.seaCanMoveOver(player, data.getProperties()),
+                    Matches.seaCanMoveOver(player),
                     ownedCarriersInCarrierSpot,
                     player);
         if (toLandingSpot == null) {
@@ -653,7 +648,7 @@ public final class AirMovementValidator {
             .getRouteForUnit(
                 currentSpot,
                 landingSpot,
-                Matches.airCanFlyOver(player, data.getProperties(), areNeutralsPassableByAir),
+                Matches.airCanFlyOver(player, areNeutralsPassableByAir),
                 unit,
                 player);
     return (route != null)
@@ -697,10 +692,8 @@ public final class AirMovementValidator {
         CollectionUtils.getMatches(
             data.getMap()
                 .getNeighborsByMovementCost(
-                    current,
-                    movementLeft,
-                    Matches.airCanFlyOver(player, data.getProperties(), areNeutralsPassableByAir)),
-            Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
+                    current, movementLeft, Matches.airCanFlyOver(player, areNeutralsPassableByAir)),
+            Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player));
     for (final Territory landingSpot : possibleSpots) {
       if (canAirReachThisSpot(
           unit, data, player, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {

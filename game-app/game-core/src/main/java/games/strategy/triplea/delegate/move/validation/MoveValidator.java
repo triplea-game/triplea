@@ -399,7 +399,7 @@ public class MoveValidator {
         && Matches.isAtWar(route.getStart().getOwner()).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player))
             && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))) {
-      if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
+      if (!Matches.territoryIsBlitzable(player).test(route.getStart())
           && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
         return result.setErrorReturnResult(
             "Cannot blitz out of a battle further into enemy territory");
@@ -417,7 +417,7 @@ public class MoveValidator {
         && !Matches.isAtWar(route.getStart().getOwner()).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player))
             && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))
-        && !Matches.territoryIsBlitzable(player, data).test(route.getStart())
+        && !Matches.territoryIsBlitzable(player).test(route.getStart())
         && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
       return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
     }
@@ -450,7 +450,7 @@ public class MoveValidator {
         if (data.getRelationshipTracker().isAtWar(current.getOwner(), player)
             || AbstractMoveDelegate.getBattleTracker(data).wasConquered(current)) {
           enemyCount++;
-          allEnemyBlitzable &= Matches.territoryIsBlitzable(player, data).test(current);
+          allEnemyBlitzable &= Matches.territoryIsBlitzable(player).test(current);
         }
       }
       if (enemyCount > 0 && !allEnemyBlitzable) {
@@ -555,8 +555,7 @@ public class MoveValidator {
     if (route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
-    if (!route.anyMatch(
-        Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))) {
+    if (!route.anyMatch(Matches.territoryIsPassableAndNotRestricted(player))) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
     }
     final Predicate<Territory> neutralOrEnemy =
@@ -1708,8 +1707,7 @@ public class MoveValidator {
             || (hasAir && !Properties.getNeutralFlyoverAllowed(data.getProperties()));
     final Predicate<Territory> noNeutral = Matches.territoryIsNeutralButNotWater().negate();
     final Predicate<Territory> noImpassableOrRestrictedOrNeutral =
-        PredicateBuilder.of(
-                Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))
+        PredicateBuilder.of(Matches.territoryIsPassableAndNotRestricted(player))
             .and(Matches.territoryEffectsAllowUnits(units))
             .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player))
             .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player))
@@ -1950,8 +1948,7 @@ public class MoveValidator {
         Properties.getAirborneAttacksOnlyInEnemyTerritories(data.getProperties());
     final List<Territory> steps = route.getSteps();
     if (steps.isEmpty()
-        || !steps.stream()
-            .allMatch(Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))) {
+        || !steps.stream().allMatch(Matches.territoryIsPassableAndNotRestricted(player))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
     if (steps.isEmpty()

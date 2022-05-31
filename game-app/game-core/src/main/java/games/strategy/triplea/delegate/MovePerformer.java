@@ -276,7 +276,7 @@ public class MovePerformer implements Serializable {
                 for (final Territory t :
                     route.getMatches(
                         Matches.isTerritoryNotUnownedWaterAndCanBeTakenOverBy(gamePlayer)
-                            .and(Matches.territoryIsBlitzable(gamePlayer, data)))) {
+                            .and(Matches.territoryIsBlitzable(gamePlayer)))) {
                   if (Matches.isTerritoryEnemy(gamePlayer).test(t)
                       || Matches.territoryHasEnemyUnits(gamePlayer).test(t)) {
                     continue;

@@ -184,7 +184,7 @@ final class ProTechAi {
                 enemyPlayer,
                 data,
                 enemyShip,
-                Matches.territoryIsBlockedSea(enemyPlayer, data.getProperties()),
+                Matches.territoryIsBlockedSea(enemyPlayer),
                 r,
                 true);
         secondStrength = strength(ships, true, true, transportsFirst);
@@ -386,7 +386,7 @@ final class ProTechAi {
         Matches.unitIsOwnedBy(enemyPlayer).and(Matches.unitCanBlitz()).and(Matches.unitCanMove());
     final Predicate<Territory> validBlitzRoute =
         Matches.territoryHasNoEnemyUnits(enemyPlayer)
-            .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data.getProperties()));
+            .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
         findAttackers(
@@ -586,7 +586,7 @@ final class ProTechAi {
     final List<Territory> checkList = getExactNeighbors(check, data);
     for (final Territory t : checkList) {
       if (Matches.isTerritoryAllied(player).test(t)
-          && Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties()).test(t)) {
+          && Matches.territoryIsNotImpassableToLandUnits(player).test(t)) {
         territories.add(t);
       }
     }
