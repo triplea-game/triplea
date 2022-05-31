@@ -49,9 +49,9 @@ public final class HeadlessGameRunner {
         .unzipMapFiles();
 
     try {
-      HeadlessGameServer.initializeHeadlessGameServerInstance();
+      HeadlessGameServer.runHeadlessGameServer();
     } catch (final Exception e) {
-      log.error("Failed to start game server", e);
+      log.error("Failed to run game server", e);
     }
   }
 

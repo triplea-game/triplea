@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.chat.ChatModel;
+import org.triplea.java.ThreadRunner;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
 
@@ -52,8 +53,11 @@ public class HeadlessLaunchAction implements LaunchAction {
 
   @Override
   public void onGameInterrupt() {
-    // tell headless server to wait for new connections:
-    headlessGameServer.waitForUsers();
+    // tell headless server to wait for new connections
+    // technically no new thread is strictly required here, but this
+    // ensures consistent behaviour with the headed counterpart
+    // of this class that queues an event for the EDT.
+    ThreadRunner.runInNewThread(headlessGameServer::waitForUsers);
   }
 
   @Override
