@@ -372,12 +372,12 @@ public class GameData implements Serializable, GameState {
     // has a null data. Update them to the new null player, so that code can rely on getData()
     // not being null.
     for (Territory t : getMap().getTerritories()) {
-      if (t.getOwner().getData() == null) {
+      if (t.getOwner().isNull()) {
         t.setOwner(playerList.getNullPlayer());
       }
     }
     for (Unit u : getUnits()) {
-      if (u.getOwner().getData() == null) {
+      if (u.getOwner().isNull()) {
         u.setOwner(playerList.getNullPlayer());
       }
     }

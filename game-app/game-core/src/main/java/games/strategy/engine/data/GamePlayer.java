@@ -13,10 +13,10 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** A game player (nation, power, etc.). */
@@ -71,7 +71,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     technologyFrontiers = new TechnologyFrontierList(data);
   }
 
-  @NonNull
+  @Nonnull
   @Override
   public GameData getData() {
     // To silence warnings from @Nullable on superclass.
