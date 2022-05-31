@@ -35,7 +35,7 @@ public class HeadlessGameServer {
 
   private HeadlessGameServer() {}
 
-  public static void initializeHeadlessGameServerInstance() {
+  public static void runHeadlessGameServer() {
     Preconditions.checkState(
         GameRunner.headless(), "TripleA must be headless to invoke this method!");
     if (instance != null) {
@@ -53,12 +53,9 @@ public class HeadlessGameServer {
                       .ifPresent(HeadlessServerSetup::cancel);
                 }));
 
-    ThreadRunner.runInNewThread(
-        () -> {
-          log.info("Headless Start");
-          instance.setupPanelModel.showSelectType();
-          instance.waitForUsers();
-        });
+    log.info("Headless Start");
+    instance.setupPanelModel.showSelectType();
+    instance.waitForUsers();
   }
 
   /**
@@ -171,27 +168,21 @@ public class HeadlessGameServer {
     log.info("Waiting for users to connect.");
     setServerGame(null);
 
-    new Thread(
-            () -> {
-              while (!shutDown) {
-                if (!Interruptibles.sleep(8000)) {
-                  shutDown = true;
-                  break;
-                }
-                if (setupPanelModel.getPanel() != null
-                    && setupPanelModel.getPanel().canGameStart()) {
-                  final boolean started = startHeadlessGame();
-                  if (!started) {
-                    log.warn("Error in launcher, going back to waiting.");
-                  } else {
-                    // TODO: need a latch instead?
-                    break;
-                  }
-                }
-              }
-            },
-            "Headless Server Waiting For Users To Connect And Start")
-        .start();
+    while (!shutDown) {
+      if (!Interruptibles.sleep(8000)) {
+        shutDown = true;
+        break;
+      }
+      if (setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
+        final boolean started = startHeadlessGame();
+        if (!started) {
+          log.warn("Error in launcher, going back to waiting.");
+        } else {
+          // TODO: need a latch instead?
+          break;
+        }
+      }
+    }
   }
 
   private synchronized boolean startHeadlessGame() {
