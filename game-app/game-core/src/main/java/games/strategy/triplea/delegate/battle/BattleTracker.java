@@ -577,10 +577,7 @@ public class BattleTracker implements Serializable {
         }
         final GamePlayer convoyOwner = convoy.getOwner();
         if (relationshipTracker.isAllied(gamePlayer, convoyOwner)) {
-          if (CollectionUtils.getMatches(
-                      cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
-                  .size()
-              <= 0) {
+          if (cta.getConvoyAttached().stream().noneMatch(Matches.isTerritoryAllied(convoyOwner))) {
             historyWriter.addChildToEvent(
                 convoyOwner.getName()
                     + " gains "
@@ -672,7 +669,6 @@ public class BattleTracker implements Serializable {
         }
         final Change remove =
             ChangeFactory.changeResourcesChange(whoseCapital, pus, -capturedPuCount);
-        bridge.addChange(remove);
         addChange(bridge, changeTracker, remove);
         if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
           historyWriter.addChildToEvent(
