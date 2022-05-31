@@ -295,11 +295,9 @@ class ProNonCombatMoveAi {
       for (final Territory t : moveMap.keySet()) {
         if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player, data)
             .test(t)) {
-          moveMap
-              .get(t)
-              .addCantMoveUnits(
-                  ProPurchaseUtils.findMaxPurchaseDefenders(
-                      proData, player, t, landPurchaseOptions));
+          List<Unit> defendersToPurchase =
+              ProPurchaseUtils.findMaxPurchaseDefenders(proData, player, t, landPurchaseOptions);
+          moveMap.get(t).addCantMoveUnits(defendersToPurchase);
         }
       }
     }

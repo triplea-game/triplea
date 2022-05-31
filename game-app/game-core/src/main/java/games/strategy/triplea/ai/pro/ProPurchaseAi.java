@@ -18,6 +18,7 @@ import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOptionMap;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProResourceTracker;
+import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
@@ -1505,10 +1506,10 @@ class ProPurchaseAi {
 
       // If any enemy attackers then purchase sea defenders until it can be held
       boolean needDestroyer = false;
-      if (enemyAttackOptions.getMax(t) != null) {
-
+      ProTerritory maxEnemyAttackTerritory = enemyAttackOptions.getMax(t);
+      if (maxEnemyAttackTerritory != null) {
         // Determine if need destroyer
-        if (enemyAttackOptions.getMax(t).getMaxUnits().stream()
+        if (maxEnemyAttackTerritory.getMaxUnits().stream()
                 .anyMatch(Matches.unitHasSubBattleAbilities())
             && t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player)).stream()
                 .noneMatch(Matches.unitIsDestroyer())) {
@@ -1519,7 +1520,7 @@ class ProPurchaseAi {
                 + ", needDestroyer="
                 + needDestroyer
                 + ", checking defense since has enemy attackers: "
-                + enemyAttackOptions.getMax(t).getMaxUnits());
+                + maxEnemyAttackTerritory.getMaxUnits());
         final List<Unit> initialDefendingUnits =
             new ArrayList<>(placeTerritory.getDefendingUnits());
         initialDefendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
@@ -1527,18 +1528,17 @@ class ProPurchaseAi {
             calc.calculateBattleResults(
                 proData,
                 t,
-                enemyAttackOptions.getMax(t).getMaxUnits(),
+                maxEnemyAttackTerritory.getMaxUnits(),
                 initialDefendingUnits,
-                enemyAttackOptions.getMax(t).getMaxBombardUnits());
+                maxEnemyAttackTerritory.getMaxBombardUnits());
         boolean hasOnlyRetreatingSubs =
             Properties.getSubRetreatBeforeBattle(data.getProperties())
                 && !initialDefendingUnits.isEmpty()
                 && initialDefendingUnits.stream().allMatch(Matches.unitCanEvade())
-                && enemyAttackOptions.getMax(t).getMaxUnits().stream()
+                && maxEnemyAttackTerritory.getMaxUnits().stream()
                     .noneMatch(Matches.unitIsDestroyer());
         final List<Unit> unitsToPlace = new ArrayList<>();
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
-
           // Check remaining production
           int remainingUnitProduction = purchaseTerritory.getRemainingUnitProduction();
           ProLogger.trace(
@@ -1564,7 +1564,6 @@ class ProPurchaseAi {
 
           // Purchase enough sea defenders to hold territory
           while (true) {
-
             // If it can be held then break
             if (!hasOnlyRetreatingSubs
                 && (result.getTuvSwing() < -1
@@ -1637,14 +1636,14 @@ class ProPurchaseAi {
                 calc.estimateDefendBattleResults(
                     proData,
                     t,
-                    enemyAttackOptions.getMax(t).getMaxUnits(),
+                    maxEnemyAttackTerritory.getMaxUnits(),
                     defendingUnits,
-                    enemyAttackOptions.getMax(t).getMaxBombardUnits());
+                    maxEnemyAttackTerritory.getMaxBombardUnits());
             hasOnlyRetreatingSubs =
                 Properties.getSubRetreatBeforeBattle(data.getProperties())
                     && !defendingUnits.isEmpty()
                     && defendingUnits.stream().allMatch(Matches.unitCanEvade())
-                    && enemyAttackOptions.getMax(t).getMaxUnits().stream()
+                    && maxEnemyAttackTerritory.getMaxUnits().stream()
                         .noneMatch(Matches.unitIsDestroyer());
           }
         }

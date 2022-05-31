@@ -1271,13 +1271,14 @@ public class ProCombatMoveAi {
       }
       final TreeMap<Double, Territory> estimatesMap = new TreeMap<>();
       for (final Territory t : sortedUnitAttackOptions.get(unit)) {
-        if (t.isWater() && !attackMap.get(t).isCanHold()) {
+        final ProTerritory proTerritory = attackMap.get(t);
+        if (t.isWater() && !proTerritory.isCanHold()) {
           continue; // ignore sea territories that can't be held
         }
-        final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
+        final List<Unit> defendingUnits = proTerritory.getMaxEnemyDefenders(player, data);
         double estimate =
             ProBattleUtils.estimateStrengthDifference(
-                proData, t, attackMap.get(t).getUnits(), defendingUnits);
+                proData, t, proTerritory.getUnits(), defendingUnits);
         final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
         if (hasAa) {
           estimate -= 10;

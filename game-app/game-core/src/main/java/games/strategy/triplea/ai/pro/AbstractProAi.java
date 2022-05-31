@@ -42,11 +42,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import org.triplea.injection.Injections;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
+import org.triplea.util.Version;
 
 /** Pro AI. */
 public abstract class AbstractProAi extends AbstractBuiltInAi {
@@ -177,38 +179,20 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
       ProLogger.info("Starting simulation for purchase phase");
 
       // Setup data copy and delegates
-      final GameData dataCopy;
-      try {
-        data.acquireWriteLock();
-        dataCopy =
-            GameDataUtils.cloneGameData(
-                    data,
-                    GameDataManager.Options.builder().withDelegates(true).build(),
-                    Injections.getInstance().getEngineVersion())
-                .orElse(null);
-        if (dataCopy == null) {
-          return;
-        }
-      } finally {
-        data.releaseWriteLock();
+      final GameData dataCopy = copyData(data);
+      if (dataCopy == null) {
+        return;
       }
-      prepareData(dataCopy);
       final GamePlayer playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
       final IMoveDelegate moveDel = dataCopy.getMoveDelegate();
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);
 
-      // Determine turn sequence
-      final List<GameStep> gameSteps = new ArrayList<>();
-      for (final GameStep gameStep : dataCopy.getSequence()) {
-        gameSteps.add(gameStep);
-      }
-
       // Simulate the next phases until place/end of turn is reached then use simulated data for
       // purchase
       final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
-      for (int i = nextStepIndex; i < gameSteps.size(); i++) {
-        final GameStep step = gameSteps.get(i);
+      final List<GameStep> gameSteps = getGameStepsForPlayer(dataCopy, playerCopy, nextStepIndex);
+      for (final GameStep step : gameSteps) {
         if (!playerCopy.equals(step.getPlayerId())) {
           continue;
         }
@@ -256,6 +240,30 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
       }
     }
     ProLogger.info(player.getName() + " time for purchase=" + (System.currentTimeMillis() - start));
+  }
+
+  private GameData copyData(GameData data) {
+    Version engineVersion = Injections.getInstance().getEngineVersion();
+    GameDataManager.Options options = GameDataManager.Options.builder().withDelegates(true).build();
+    GameData dataCopy;
+    try (GameData.Unlocker ignored = data.acquireWriteLock()) {
+      dataCopy = GameDataUtils.cloneGameData(data, options, engineVersion).orElse(null);
+    }
+    Optional.ofNullable(dataCopy).ifPresent(this::prepareData);
+    return dataCopy;
+  }
+
+  private static List<GameStep> getGameStepsForPlayer(
+      GameData gameData, GamePlayer gamePlayer, int startStep) {
+    int stepIndex = 0;
+    final List<GameStep> gameSteps = new ArrayList<>();
+    for (final GameStep gameStep : gameData.getSequence()) {
+      if (stepIndex >= startStep && gamePlayer.equals(gameStep.getPlayerId())) {
+        gameSteps.add(gameStep);
+      }
+      stepIndex++;
+    }
+    return gameSteps;
   }
 
   @Override
