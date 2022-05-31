@@ -399,7 +399,7 @@ public class MoveValidator {
         && Matches.isAtWar(route.getStart().getOwner()).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player))
             && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))) {
-      if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
+      if (!Matches.territoryIsBlitzable(player).test(route.getStart())
           && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
         return result.setErrorReturnResult(
             "Cannot blitz out of a battle further into enemy territory");
@@ -417,7 +417,7 @@ public class MoveValidator {
         && !Matches.isAtWar(route.getStart().getOwner()).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player))
             && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))
-        && !Matches.territoryIsBlitzable(player, data).test(route.getStart())
+        && !Matches.territoryIsBlitzable(player).test(route.getStart())
         && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
       return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
     }
@@ -450,7 +450,7 @@ public class MoveValidator {
         if (data.getRelationshipTracker().isAtWar(current.getOwner(), player)
             || AbstractMoveDelegate.getBattleTracker(data).wasConquered(current)) {
           enemyCount++;
-          allEnemyBlitzable &= Matches.territoryIsBlitzable(player, data).test(current);
+          allEnemyBlitzable &= Matches.territoryIsBlitzable(player).test(current);
         }
       }
       if (enemyCount > 0 && !allEnemyBlitzable) {

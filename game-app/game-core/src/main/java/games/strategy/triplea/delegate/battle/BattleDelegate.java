@@ -1055,7 +1055,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // Get all land territories where we can land
       final Set<Territory> neighbors = data.getMap().getNeighbors(battleSite);
       final Predicate<Territory> alliedLandTerritories =
-          Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(defender, data);
+          Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(defender);
       // Get those that are neighbors
       final Collection<Territory> canLandHere =
           CollectionUtils.getMatches(neighbors, alliedLandTerritories);

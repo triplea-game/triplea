@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -12,11 +13,10 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** A game player (nation, power, etc.). */
@@ -69,6 +69,13 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     unitsHeld = new UnitCollection(this, data);
     resources = new ResourceCollection(data);
     technologyFrontiers = new TechnologyFrontierList(data);
+  }
+
+  @NonNull
+  @Override
+  public GameData getData() {
+    // To silence warnings from @Nullable on superclass.
+    return Preconditions.checkNotNull(super.getData());
   }
 
   public boolean getOptional() {
@@ -206,13 +213,6 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
       currentPlayers.put(player.getName(), player.getPlayerType().name);
     }
     return currentPlayers;
-  }
-
-  public static Optional<GamePlayer> asOptional(@Nullable final GamePlayer player) {
-    if (player == null || player.isNull()) {
-      return Optional.empty();
-    }
-    return Optional.of(player);
   }
 
   public boolean isDefaultTypeAi() {

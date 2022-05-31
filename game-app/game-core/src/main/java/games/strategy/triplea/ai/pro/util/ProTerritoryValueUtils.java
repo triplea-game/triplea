@@ -32,7 +32,6 @@ public final class ProTerritoryValueUtils {
    */
   public static double findTerritoryAttackValue(
       final ProData proData, final GamePlayer player, final Territory t) {
-    final GameState data = proData.getData();
     final int isEnemyFactory =
         ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player).test(t) ? 1 : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
@@ -113,8 +112,7 @@ public final class ProTerritoryValueUtils {
         // Determine sea value based on nearby convoy production
         double nearbySeaProductionValue = 0;
         final Set<Territory> nearbySeaTerritories =
-            data.getMap()
-                .getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(data, player, true));
+            data.getMap().getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(player, true));
         final List<Territory> nearbyEnemySeaTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories,
@@ -125,7 +123,7 @@ public final class ProTerritoryValueUtils {
                   .getRouteForUnits(
                       t,
                       nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(data, player, true),
+                      ProMatches.territoryCanMoveSeaUnits(player, true),
                       Set.of(),
                       player);
           if (route == null) {
@@ -149,7 +147,7 @@ public final class ProTerritoryValueUtils {
                   .getRouteForUnits(
                       t,
                       nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(data, player, true),
+                      ProMatches.territoryCanMoveSeaUnits(player, true),
                       Set.of(),
                       player);
           if (route == null) {
@@ -178,8 +176,7 @@ public final class ProTerritoryValueUtils {
 
   static int findMaxLandMassSize(final GamePlayer player) {
     final GameState data = player.getData();
-    final Predicate<Territory> cond =
-        ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
+    final Predicate<Territory> cond = ProMatches.territoryCanPotentiallyMoveLandUnits(player);
 
     final var visited = new HashSet<Territory>();
 
@@ -252,10 +249,7 @@ public final class ProTerritoryValueUtils {
       final int landMassSize =
           1
               + data.getMap()
-                  .getNeighbors(
-                      t,
-                      6,
-                      ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()))
+                  .getNeighbors(t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player))
                   .size();
       final double value =
           Math.sqrt(factoryProduction + Math.sqrt(playerProduction))
@@ -288,7 +282,7 @@ public final class ProTerritoryValueUtils {
         findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap.keySet());
     final BiPredicate<Territory, Territory> routeCond =
         (t1, t2) ->
-            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()).test(t2)
+            ProMatches.territoryCanPotentiallyMoveLandUnits(player).test(t2)
                 && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2);
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
       final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory, routeCond);
@@ -361,7 +355,7 @@ public final class ProTerritoryValueUtils {
               .getRouteForUnits(
                   t,
                   enemyCapitalOrFactory,
-                  ProMatches.territoryCanMoveSeaUnits(data, player, true),
+                  ProMatches.territoryCanMoveSeaUnits(player, true),
                   Set.of(),
                   player);
       if (route == null) {
@@ -383,11 +377,10 @@ public final class ProTerritoryValueUtils {
     double nearbyLandValue = 0;
     final Set<Territory> nearbyTerritories =
         data.getMap()
-            .getNeighborsIgnoreEnd(t, 3, ProMatches.territoryCanMoveSeaUnits(data, player, true));
+            .getNeighborsIgnoreEnd(t, 3, ProMatches.territoryCanMoveSeaUnits(player, true));
     final List<Territory> nearbyLandTerritories =
         CollectionUtils.getMatches(
-            nearbyTerritories,
-            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties()));
+            nearbyTerritories, ProMatches.territoryCanPotentiallyMoveLandUnits(player));
     nearbyLandTerritories.removeAll(territoriesToAttack);
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
       final Route route =
@@ -395,7 +388,7 @@ public final class ProTerritoryValueUtils {
               .getRouteForUnits(
                   t,
                   nearbyLandTerritory,
-                  ProMatches.territoryCanMoveSeaUnits(data, player, true),
+                  ProMatches.territoryCanMoveSeaUnits(player, true),
                   Set.of(),
                   player);
       if (route == null) {

@@ -894,11 +894,12 @@ public final class Matches {
 
   public static Predicate<Territory>
       territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
-          final GameData data, final GamePlayer player) {
+          final GamePlayer player) {
     return t ->
-        !data.getMap()
-            .getNeighbors(
-                t, territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(data, player))
+        !player
+            .getData()
+            .getMap()
+            .getNeighbors(t, territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(player))
             .isEmpty();
   }
 
@@ -917,8 +918,9 @@ public final class Matches {
   }
 
   private static Predicate<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(
-      final GameData data, final GamePlayer player) {
+      final GamePlayer player) {
     return t -> {
+      final GameData data = player.getData();
       if (!GameStepPropertiesHelper.getCombinedTurns(data, player).contains(t.getOwner())) {
         return false;
       }
@@ -1260,14 +1262,14 @@ public final class Matches {
         .and(territoryIsPassableAndNotRestricted(player));
   }
 
-  public static Predicate<Territory> territoryIsBlitzable(
-      final GamePlayer player, final GameData data) {
+  public static Predicate<Territory> territoryIsBlitzable(final GamePlayer player) {
     return t -> {
       // cant blitz water
       if (t.isWater()) {
         return false;
       }
       // cant blitz on neutrals
+      GameData data = player.getData();
       if (t.getOwner().isNull() && !Properties.getNeutralsBlitzable(data.getProperties())) {
         return false;
       }
@@ -2101,12 +2103,12 @@ public final class Matches {
   }
 
   public static Predicate<Territory> airCanLandOnThisAlliedNonConqueredLandTerritory(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player) {
     return t -> {
       if (!territoryIsLand().test(t)) {
         return false;
       }
-      final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
+      final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(player.getData());
       if (bt.wasConquered(t)) {
         return false;
       }
@@ -2114,7 +2116,7 @@ public final class Matches {
       if (owner.isNull()) {
         return false;
       }
-      final RelationshipTracker rt = data.getRelationshipTracker();
+      final RelationshipTracker rt = player.getData().getRelationshipTracker();
       return !(!rt.canMoveAirUnitsOverOwnedLand(player, owner)
           || !rt.canLandAirUnitsOnOwnedLand(player, owner));
     };

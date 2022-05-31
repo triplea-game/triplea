@@ -98,7 +98,7 @@ public final class ProMoveUtils {
               map.getRouteForUnit(
                   startTerritory,
                   t,
-                  ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove),
+                  ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove),
                   u,
                   player);
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsLand())) {
@@ -229,7 +229,7 @@ public final class ProMoveUtils {
             final Set<Territory> neighbors =
                 map.getNeighbors(
                     transportTerritory,
-                    ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove));
+                    ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove));
             Territory territoryToMoveTo = null;
             int minUnitDistance = Integer.MAX_VALUE;
             // Used to move to farthest away loading territory first
@@ -246,13 +246,13 @@ public final class ProMoveUtils {
                     map.getDistanceIgnoreEndForCondition(
                         neighbor,
                         unloadTerritory,
-                        ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove));
+                        ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove));
               }
               int neighborDistanceFromEnd =
                   map.getDistanceIgnoreEndForCondition(
                       neighbor,
                       t,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove));
+                      ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove));
               if (t.isWater()) {
                 neighborDistanceFromEnd++;
               }
@@ -354,7 +354,7 @@ public final class ProMoveUtils {
               map.getRouteForUnit(
                   startTerritory,
                   bombardFromTerritory,
-                  ProMatches.territoryCanMoveSeaUnitsThrough(data, player, true),
+                  ProMatches.territoryCanMoveSeaUnitsThrough(player, true),
                   u,
                   player);
         }

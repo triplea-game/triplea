@@ -154,7 +154,7 @@ public final class ProUtils {
   public static int getClosestEnemyLandTerritoryDistance(
       final GameState data, final GamePlayer player, final Territory t) {
     final Predicate<Territory> canMoveLandUnits =
-        ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
+        ProMatches.territoryCanPotentiallyMoveLandUnits(player);
     final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, canMoveLandUnits);
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
@@ -180,7 +180,7 @@ public final class ProUtils {
       final Territory t,
       final Map<Territory, Double> territoryValueMap) {
     final Predicate<Territory> canMoveLandUnits =
-        ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
+        ProMatches.territoryCanPotentiallyMoveLandUnits(player);
     final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, canMoveLandUnits);
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(

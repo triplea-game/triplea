@@ -435,7 +435,7 @@ public class BattleTracker implements Serializable {
     // we handle the end of the route later
     conquered.remove(route.getEnd());
     final Collection<Territory> blitzed =
-        CollectionUtils.getMatches(conquered, Matches.territoryIsBlitzable(gamePlayer, data));
+        CollectionUtils.getMatches(conquered, Matches.territoryIsBlitzable(gamePlayer));
     this.blitzed.addAll(CollectionUtils.getMatches(blitzed, Matches.isTerritoryEnemy(gamePlayer)));
     this.conquered.addAll(
         CollectionUtils.getMatches(conquered, Matches.isTerritoryEnemy(gamePlayer)));
@@ -485,7 +485,7 @@ public class BattleTracker implements Serializable {
         }
       } else {
         if (Matches.isTerritoryEnemy(gamePlayer).test(route.getEnd())) {
-          if (Matches.territoryIsBlitzable(gamePlayer, data).test(route.getEnd())) {
+          if (Matches.territoryIsBlitzable(gamePlayer).test(route.getEnd())) {
             this.blitzed.add(route.getEnd());
           }
           this.conquered.add(route.getEnd());

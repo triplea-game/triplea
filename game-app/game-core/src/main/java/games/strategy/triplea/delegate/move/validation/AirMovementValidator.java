@@ -54,8 +54,7 @@ public final class AirMovementValidator {
         || units.stream().noneMatch(Matches.unitIsAir()) // No air units, nothing to check
         || route.hasNoSteps() // if there are no steps, we didn't move, so it is always OK!
         // we can land at the end, nothing left to check
-        || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
-            .test(route.getEnd())
+        || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player).test(route.getEnd())
         // if kamikaze - we do not do any validation at all, cus they can all die and we don't care
         || Properties.getKamikazeAirplanes(data.getProperties())) {
       return result;
@@ -221,8 +220,7 @@ public final class AirMovementValidator {
       if (landAirOnNewCarriers
           && !carriersInProductionQueue.isEmpty()
           && Matches.territoryIsWater().test(t)
-          && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
-                  data, player)
+          && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(player)
               .test(t)) {
         // TODO: Here we are assuming that this factory can produce all of the carriers. Actually
         // it might not be able to produce any carriers (because of complex requires units coding)
@@ -695,7 +693,7 @@ public final class AirMovementValidator {
             data.getMap()
                 .getNeighborsByMovementCost(
                     current, movementLeft, Matches.airCanFlyOver(player, areNeutralsPassableByAir)),
-            Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
+            Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player));
     for (final Territory landingSpot : possibleSpots) {
       if (canAirReachThisSpot(
           unit, data, player, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {

@@ -1584,7 +1584,7 @@ public class ProCombatMoveAi {
                 minUnloadFromTerritory = null;
                 final Set<Territory> territoriesToMoveTransport =
                     data.getMap()
-                        .getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(data, player, false));
+                        .getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, false));
                 final Set<Territory> loadFromTerritories = new HashSet<>();
                 for (final Unit u : amphibUnitsToAdd) {
                   loadFromTerritories.add(proData.getUnitTerritory(u));
@@ -1853,8 +1853,7 @@ public class ProCombatMoveAi {
 
         // Move into random adjacent safe sea territory
         final Set<Territory> possibleMoveTerritories =
-            data.getMap()
-                .getNeighbors(t, ProMatches.territoryCanMoveSeaUnitsThrough(data, player, true));
+            data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnitsThrough(player, true));
         if (!possibleMoveTerritories.isEmpty()) {
           final Territory moveToTerritory = CollectionUtils.getAny(possibleMoveTerritories);
           final List<Unit> mySeaUnits =
