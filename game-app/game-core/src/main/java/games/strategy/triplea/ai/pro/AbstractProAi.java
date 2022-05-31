@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Territory;
@@ -190,16 +191,11 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
 
       // Simulate the next phases until place/end of turn is reached then use simulated data for
       // purchase
-      final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
+      final GameSequence sequence = dataCopy.getSequence();
+      final int nextStepIndex = sequence.getStepIndex() + 1;
       final List<GameStep> gameSteps = getGameStepsForPlayer(dataCopy, playerCopy, nextStepIndex);
       for (final GameStep step : gameSteps) {
-        if (!playerCopy.equals(step.getPlayerId())) {
-          continue;
-        }
-        dataCopy
-            .getSequence()
-            .setRoundAndStep(
-                dataCopy.getSequence().getRound(), step.getDisplayName(), step.getPlayerId());
+        sequence.setRoundAndStep(sequence.getRound(), step.getDisplayName(), step.getPlayerId());
         final String stepName = step.getName();
         ProLogger.info("Simulating phase: " + stepName);
         if (GameStep.isNonCombatMoveStep(stepName)) {
