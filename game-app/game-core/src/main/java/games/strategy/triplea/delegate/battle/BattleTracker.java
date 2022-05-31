@@ -861,9 +861,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> destroyed =
           territory
               .getUnitCollection()
-              .getMatches(
-                  Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
-                      gamePlayer, territory, data.getProperties()));
+              .getMatches(Matches.unitCanBeCapturedOnEnteringThisTerritory(gamePlayer, territory));
       if (!destroyed.isEmpty()) {
         historyWriter.addChildToEvent(
             gamePlayer.getName() + " destroys some units instead of capturing them", destroyed);
@@ -885,9 +883,7 @@ public class BattleTracker implements Serializable {
     final Predicate<Unit> enemyNonCom =
         Matches.enemyUnit(gamePlayer).and(Matches.unitIsInfrastructure());
     final Predicate<Unit> willBeCaptured =
-        enemyNonCom.or(
-            Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
-                gamePlayer, territory, data.getProperties()));
+        enemyNonCom.or(Matches.unitCanBeCapturedOnEnteringThisTerritory(gamePlayer, territory));
     final Collection<Unit> nonCom = territory.getUnitCollection().getMatches(willBeCaptured);
     // change any units that change unit types on capture
     if (Properties.getUnitsCanBeChangedOnCapture(data.getProperties())) {

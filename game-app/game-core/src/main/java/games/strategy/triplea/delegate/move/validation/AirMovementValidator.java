@@ -139,22 +139,19 @@ public final class AirMovementValidator {
                 routeEnd,
                 maxMovementLeftForTheseAirUnitsBeingValidated,
                 // where can we fly to?
-                Matches.airCanFlyOver(
-                    player, data.getProperties(), areNeutralsPassableByAir(data))));
+                Matches.airCanFlyOver(player, areNeutralsPassableByAir(data))));
     // we only want to consider
     landingSpots.removeAll(
-        CollectionUtils.getMatches(
-            landingSpots, Matches.seaCanMoveOver(player, data.getProperties()).negate()));
+        CollectionUtils.getMatches(landingSpots, Matches.seaCanMoveOver(player).negate()));
     // places we can move carriers to
-    landingSpots.sort(
-        getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data.getProperties())));
+    landingSpots.sort(getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player)));
     final Collection<Territory> potentialCarrierOrigins = new LinkedHashSet<>(landingSpots);
     potentialCarrierOrigins.addAll(
         data.getMap()
             .getNeighbors(
                 new HashSet<>(landingSpots),
                 maxMovementLeftForAllOwnedCarriers,
-                Matches.seaCanMoveOver(player, data.getProperties())));
+                Matches.seaCanMoveOver(player)));
     potentialCarrierOrigins.remove(routeEnd);
     potentialCarrierOrigins.removeAll(
         CollectionUtils.getMatches(
@@ -438,7 +435,7 @@ public final class AirMovementValidator {
                 .getRouteForUnits(
                     carrierSpot,
                     landingSpot,
-                    Matches.seaCanMoveOver(player, data.getProperties()),
+                    Matches.seaCanMoveOver(player),
                     ownedCarriersInCarrierSpot,
                     player);
         if (toLandingSpot == null) {
@@ -653,7 +650,7 @@ public final class AirMovementValidator {
             .getRouteForUnit(
                 currentSpot,
                 landingSpot,
-                Matches.airCanFlyOver(player, data.getProperties(), areNeutralsPassableByAir),
+                Matches.airCanFlyOver(player, areNeutralsPassableByAir),
                 unit,
                 player);
     return (route != null)
@@ -697,9 +694,7 @@ public final class AirMovementValidator {
         CollectionUtils.getMatches(
             data.getMap()
                 .getNeighborsByMovementCost(
-                    current,
-                    movementLeft,
-                    Matches.airCanFlyOver(player, data.getProperties(), areNeutralsPassableByAir)),
+                    current, movementLeft, Matches.airCanFlyOver(player, areNeutralsPassableByAir)),
             Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
     for (final Territory landingSpot : possibleSpots) {
       if (canAirReachThisSpot(

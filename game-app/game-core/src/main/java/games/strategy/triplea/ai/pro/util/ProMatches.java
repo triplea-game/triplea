@@ -45,14 +45,7 @@ public final class ProMatches {
         Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
             .and(
                 Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                    player,
-                    data.getProperties(),
-                    data.getRelationshipTracker(),
-                    isCombatMove,
-                    false,
-                    false,
-                    true,
-                    true))
+                    player, isCombatMove, false, false, true, true))
             .and(not(enemyTerritories::contains));
     if (!isCombatMove) {
       match =
@@ -69,20 +62,13 @@ public final class ProMatches {
     return Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
         .and(
             Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                player,
-                data.getProperties(),
-                data.getRelationshipTracker(),
-                isCombatMove,
-                false,
-                false,
-                true,
-                false));
+                player, isCombatMove, false, false, true, false));
   }
 
   public static Predicate<Territory> territoryCanPotentiallyMoveAirUnits(
       final GamePlayer player, final GameProperties properties) {
     return Matches.territoryDoesNotCostMoneyToEnter(properties)
-        .and(Matches.territoryIsPassableAndNotRestricted(player, properties));
+        .and(Matches.territoryIsPassableAndNotRestricted(player));
   }
 
   public static Predicate<Territory> territoryCanMoveAirUnitsAndNoAa(
@@ -98,14 +84,7 @@ public final class ProMatches {
           Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
               .and(
                   Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                      player,
-                      data.getProperties(),
-                      data.getRelationshipTracker(),
-                      isCombatMove,
-                      true,
-                      false,
-                      false,
-                      false));
+                      player, isCombatMove, true, false, false, false));
       final Predicate<Unit> unitMatch =
           Matches.unitIsOfTypes(
                   TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t))
@@ -119,7 +98,7 @@ public final class ProMatches {
     return t -> {
       final Predicate<Territory> territoryMatch =
           Matches.territoryDoesNotCostMoneyToEnter(properties)
-              .and(Matches.territoryIsPassableAndNotRestricted(player, properties));
+              .and(Matches.territoryIsPassableAndNotRestricted(player));
       final Predicate<Unit> unitMatch =
           Matches.unitIsOfTypes(
                   TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t))
@@ -133,21 +112,14 @@ public final class ProMatches {
     return Matches.territoryDoesNotCostMoneyToEnter(data.getProperties())
         .and(
             Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                player,
-                data.getProperties(),
-                data.getRelationshipTracker(),
-                isCombatMove,
-                true,
-                false,
-                false,
-                false));
+                player, isCombatMove, true, false, false, false));
   }
 
   public static Predicate<Territory> territoryCanPotentiallyMoveLandUnits(
       final GamePlayer player, final GameProperties properties) {
     return Matches.territoryIsLand()
         .and(Matches.territoryDoesNotCostMoneyToEnter(properties))
-        .and(Matches.territoryIsPassableAndNotRestricted(player, properties));
+        .and(Matches.territoryIsPassableAndNotRestricted(player));
   }
 
   public static Predicate<Territory> territoryCanMoveLandUnitsAndIsAllied(
@@ -230,14 +202,7 @@ public final class ProMatches {
           Matches.territoryDoesNotCostMoneyToEnter(properties)
               .and(
                   Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                      player,
-                      properties,
-                      relationshipTracker,
-                      isCombatMove,
-                      false,
-                      true,
-                      false,
-                      false));
+                      player, isCombatMove, false, true, false, false));
       return match.test(t);
     };
   }

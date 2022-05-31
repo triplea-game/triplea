@@ -555,8 +555,7 @@ public class MoveValidator {
     if (route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
-    if (!route.anyMatch(
-        Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))) {
+    if (!route.anyMatch(Matches.territoryIsPassableAndNotRestricted(player))) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
     }
     final Predicate<Territory> neutralOrEnemy =
@@ -1708,8 +1707,7 @@ public class MoveValidator {
             || (hasAir && !Properties.getNeutralFlyoverAllowed(data.getProperties()));
     final Predicate<Territory> noNeutral = Matches.territoryIsNeutralButNotWater().negate();
     final Predicate<Territory> noImpassableOrRestrictedOrNeutral =
-        PredicateBuilder.of(
-                Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))
+        PredicateBuilder.of(Matches.territoryIsPassableAndNotRestricted(player))
             .and(Matches.territoryEffectsAllowUnits(units))
             .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player))
             .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player))
@@ -1950,8 +1948,7 @@ public class MoveValidator {
         Properties.getAirborneAttacksOnlyInEnemyTerritories(data.getProperties());
     final List<Territory> steps = route.getSteps();
     if (steps.isEmpty()
-        || !steps.stream()
-            .allMatch(Matches.territoryIsPassableAndNotRestricted(player, data.getProperties()))) {
+        || !steps.stream().allMatch(Matches.territoryIsPassableAndNotRestricted(player))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
     if (steps.isEmpty()

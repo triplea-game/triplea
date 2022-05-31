@@ -1510,8 +1510,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .getNeighborsByMovementCost(
                 currentTerr,
                 new BigDecimal(maxDistance),
-                Matches.airCanFlyOver(
-                    alliedPlayer, data.getProperties(), areNeutralsPassableByAir));
+                Matches.airCanFlyOver(alliedPlayer, areNeutralsPassableByAir));
     final Iterator<Territory> possibleIter = possibleTerrs.iterator();
     while (possibleIter.hasNext()) {
       final Route route =
@@ -1519,8 +1518,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               .getRouteForUnit(
                   currentTerr,
                   possibleIter.next(),
-                  Matches.airCanFlyOver(
-                      alliedPlayer, data.getProperties(), areNeutralsPassableByAir),
+                  Matches.airCanFlyOver(alliedPlayer, areNeutralsPassableByAir),
                   strandedAir,
                   alliedPlayer);
       if ((route == null)

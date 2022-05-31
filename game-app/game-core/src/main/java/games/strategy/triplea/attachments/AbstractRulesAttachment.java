@@ -251,7 +251,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
               CollectionUtils.getMatches(
                   OriginalOwnerTracker.getOriginallyOwned(data, player),
                   // TODO: does this account for occupiedTerrOf???
-                  Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
+                  Matches.territoryIsNotImpassableToLandUnits(player)));
         }
         setTerritoryCount(originalTerritories.size());
         return originalTerritories;
@@ -269,7 +269,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           ownedTerrsNoWater.addAll(
               CollectionUtils.getMatches(
                   gameMap.getTerritoriesOwnedBy(player),
-                  Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
+                  Matches.territoryIsNotImpassableToLandUnits(player)));
         }
         setTerritoryCount(ownedTerrsNoWater.size());
         return ownedTerrsNoWater;

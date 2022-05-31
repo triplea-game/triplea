@@ -36,9 +36,7 @@ public class FiringGroupSplitterBombard
         CollectionUtils.getMatches(
             battleState.filterUnits(ALIVE, OFFENSE.getOpposite()),
             Matches.unitIsNotInfrastructureAndNotCapturedOnEntering(
-                battleState.getPlayer(OFFENSE),
-                battleState.getBattleSite(),
-                battleState.getGameData().getProperties()));
+                battleState.getPlayer(OFFENSE), battleState.getBattleSite()));
 
     return FiringGroup.groupBySuicideOnHit(
         NAVAL_BOMBARD, battleState.getBombardingUnits(), enemyUnits);
