@@ -66,15 +66,6 @@ public class AllianceTracker implements Serializable {
     return new HashSet<>(alliances.values());
   }
 
-  /** Returns·a·map·from·alliance·name·to·players. */
-  public Map<String, Set<GamePlayer>> getAllianceMap() {
-    final Map<String, Set<GamePlayer>> allianceMap = new LinkedHashMap<>();
-    for (Map.Entry<GamePlayer, String> entry : alliances.entries()) {
-      allianceMap.getOrDefault(entry.getValue(), new HashSet<>()).add(entry.getKey());
-    }
-    return allianceMap;
-  }
-
   /**
    * Returns the PlayerId's that are members of the alliance specified by the String allianceName.
    *
