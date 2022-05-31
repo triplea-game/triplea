@@ -1,7 +1,6 @@
 package org.triplea.game.server;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
@@ -17,15 +16,12 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.game.startup.SetupModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 
 /** A way of hosting a game, but headless. */
 @Slf4j
 public class HeadlessGameServer {
-  private static HeadlessGameServer instance = null;
-
   private final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private final HeadlessServerSetupModel setupPanelModel =
@@ -38,35 +34,21 @@ public class HeadlessGameServer {
   public static void runHeadlessGameServer() {
     Preconditions.checkState(
         GameRunner.headless(), "TripleA must be headless to invoke this method!");
-    if (instance != null) {
-      throw new IllegalStateException("Instance already exists");
-    }
-    instance = new HeadlessGameServer();
+    HeadlessGameServer headlessGameServer = new HeadlessGameServer();
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
                 () -> {
                   log.info("Running ShutdownHook.");
-                  instance.shutDown = true;
-                  Optional.ofNullable(instance.game).ifPresent(ServerGame::stopGame);
-                  Optional.ofNullable(instance.setupPanelModel.getPanel())
+                  headlessGameServer.shutDown = true;
+                  Optional.ofNullable(headlessGameServer.game).ifPresent(ServerGame::stopGame);
+                  Optional.ofNullable(headlessGameServer.setupPanelModel.getPanel())
                       .ifPresent(HeadlessServerSetup::cancel);
                 }));
 
     log.info("Headless Start");
-    instance.setupPanelModel.showSelectType();
-    instance.waitForUsers();
-  }
-
-  /**
-   * Returns the singleton instance of the HeadlessGameServer object.
-   *
-   * @deprecated Do not use this method, pass the instance along call trees to avoid static
-   *     coupling.
-   */
-  @Deprecated
-  public static synchronized HeadlessGameServer getInstance() {
-    return instance;
+    headlessGameServer.setupPanelModel.showSelectType();
+    headlessGameServer.waitForUsers();
   }
 
   public Collection<String> getAvailableGames() {
@@ -216,11 +198,5 @@ public class HeadlessGameServer {
           .ifPresent(ServerModel::setAllPlayersToNullNodes);
     }
     return false;
-  }
-
-  /** todo, replace with something better Get the chat for the game, or null if there is no chat. */
-  public Chat getChat() {
-    final SetupModel model = setupPanelModel.getPanel();
-    return model != null ? model.getChatModel().getChat() : null;
   }
 }

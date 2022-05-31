@@ -1,5 +1,9 @@
 package org.triplea.game.server;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.filter.ThresholdFilter;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.MessengersChatTransmitter;
@@ -24,7 +28,9 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.triplea.game.chat.ChatModel;
+import org.triplea.game.server.debug.ChatAppender;
 import org.triplea.java.ThreadRunner;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
@@ -96,9 +102,26 @@ public class HeadlessLaunchAction implements LaunchAction {
     return new HeadlessAutoSaveFileUtils();
   }
 
+  private void registerChatAppender(final Chat chat) {
+    Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    ChatAppender chatAppender = new ChatAppender(chat);
+    // prevent multiple chat appenders causing memory leak
+    // ideally this should happen in a shutdown operation somewhere though
+    logger.detachAppender(chatAppender.getName());
+
+    ThresholdFilter filter = new ThresholdFilter();
+    filter.setLevel(Level.WARN.toString());
+    chatAppender.addFilter(filter);
+    chatAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+    chatAppender.start();
+    logger.addAppender(chatAppender);
+  }
+
   @Override
   public ChatModel createChatModel(String chatName, Messengers messengers) {
-    return new HeadlessChat(new Chat(new MessengersChatTransmitter(chatName, messengers)));
+    Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers));
+    registerChatAppender(chat);
+    return new HeadlessChat(chat);
   }
 
   @Override
