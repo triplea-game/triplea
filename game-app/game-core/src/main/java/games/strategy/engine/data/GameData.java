@@ -371,14 +371,15 @@ public class GameData implements Serializable, GameState {
     // Old save games may have territories and units owned by a different null player object that
     // has a null data. Update them to the new null player, so that code can rely on getData()
     // not being null.
+    GamePlayer nullPlayer = playerList.getNullPlayer();
     for (Territory t : getMap().getTerritories()) {
-      if (t.getOwner().isNull()) {
-        t.setOwner(playerList.getNullPlayer());
+      if (!t.isOwnedBy(nullPlayer) && t.getOwner().isNull()) {
+        t.setOwner(nullPlayer);
       }
     }
     for (Unit u : getUnits()) {
-      if (u.getOwner().isNull()) {
-        u.setOwner(playerList.getNullPlayer());
+      if (!u.isOwnedBy(nullPlayer) && u.getOwner().isNull()) {
+        u.setOwner(nullPlayer);
       }
     }
   }
@@ -402,7 +403,7 @@ public class GameData implements Serializable, GameState {
    */
   public Unlocker acquireReadLock() {
     readWriteLock.readLock().lock();
-    return () -> releaseReadLock();
+    return this::releaseReadLock;
   }
 
   public void releaseReadLock() {
@@ -423,7 +424,7 @@ public class GameData implements Serializable, GameState {
    */
   public Unlocker acquireWriteLock() {
     readWriteLock.writeLock().lock();
-    return () -> releaseWriteLock();
+    return this::releaseWriteLock;
   }
 
   public void releaseWriteLock() {
