@@ -247,8 +247,7 @@ class ProNonCombatMoveAi {
       final Collection<Unit> cantMoveUnits =
           t.getUnitCollection()
               .getMatches(
-                  ProMatches.unitCantBeMovedAndIsAlliedDefender(
-                          player, data.getRelationshipTracker(), t)
+                  ProMatches.unitCantBeMovedAndIsAlliedDefender(player, t)
                       .or(proData.getUnitsToBeConsumed()::contains));
       proTerritory.addCantMoveUnits(cantMoveUnits);
     }
@@ -343,8 +342,7 @@ class ProNonCombatMoveAi {
 
     // Find land territories with no can't move units and adjacent to enemy land units
     final List<Territory> territoriesToDefendWithOneUnit = new ArrayList<>();
-    final Predicate<Unit> alliedAndNotInfra =
-        ProMatches.unitIsAlliedLandAndNotInfra(player, data.getRelationshipTracker());
+    final Predicate<Unit> alliedAndNotInfra = ProMatches.unitIsAlliedLandAndNotInfra(player);
     final Predicate<Territory> hasNeighborOwnedByEnemyWithLandUnit =
         ProMatches.territoryHasNeighborOwnedByAndHasLandUnit(
             data.getMap(), ProUtils.getPotentialEnemyPlayers(player));
@@ -1239,8 +1237,7 @@ class ProNonCombatMoveAi {
       return defendingUnits;
     }
     return CollectionUtils.getMatches(
-        defendingUnits,
-        ProMatches.unitIsAlliedNotOwnedAir(player, data.getRelationshipTracker()).negate());
+        defendingUnits, ProMatches.unitIsAlliedNotOwnedAir(player).negate());
   }
 
   private void moveUnitsToBestTerritories() {
@@ -2231,10 +2228,7 @@ class ProNonCombatMoveAi {
             CollectionUtils.countMatches(
                 possibleAttackTerritories,
                 ProMatches.territoryIsEnemyOrCantBeHeldAndIsAdjacentToMyLandUnits(
-                    player,
-                    data.getMap(),
-                    data.getRelationshipTracker(),
-                    territoriesThatCantBeHeld));
+                    player, data.getMap(), territoriesThatCantBeHeld));
         final int numSeaAttackTerritories =
             CollectionUtils.countMatches(
                 possibleAttackTerritories,

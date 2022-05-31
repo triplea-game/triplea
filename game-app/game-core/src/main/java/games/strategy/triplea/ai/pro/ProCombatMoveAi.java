@@ -188,8 +188,7 @@ public class ProCombatMoveAi {
       final int isAmphib = patd.isNeedAmphibUnits() ? 1 : 0;
       final List<Unit> defendingUnits =
           CollectionUtils.getMatches(
-              patd.getMaxEnemyDefenders(player, data),
-              ProMatches.unitIsEnemyAndNotInfa(player, data.getRelationshipTracker()));
+              patd.getMaxEnemyDefenders(player, data), ProMatches.unitIsEnemyAndNotInfa(player));
       final int isEmptyLand =
           (!t.isWater() && defendingUnits.isEmpty() && !patd.isNeedAmphibUnits()) ? 1 : 0;
       final boolean isAdjacentToMyCapital =
@@ -660,9 +659,7 @@ public class ProCombatMoveAi {
     final List<Unit> alreadyMovedUnits = new ArrayList<>();
     for (final Territory t : proData.getMyUnitTerritories()) {
       final boolean hasAlliedLandUnits =
-          t.anyUnitsMatch(
-              ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(
-                  player, data.getRelationshipTracker(), t));
+          t.anyUnitsMatch(ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(player, t));
       final Set<Territory> enemyNeighbors =
           data.getMap()
               .getNeighbors(
@@ -767,9 +764,7 @@ public class ProCombatMoveAi {
                 new HashSet<>(
                     unloadTerritory
                         .getUnitCollection()
-                        .getMatches(
-                            ProMatches.unitIsAlliedNotOwned(
-                                player, data.getRelationshipTracker())));
+                        .getMatches(ProMatches.unitIsAlliedNotOwned(player)));
             defenders.addAll(territoryTransportAndBombardMap.get(unloadTerritory));
             if (defendMap.get(unloadTerritory) != null) {
               defenders.addAll(defendMap.get(unloadTerritory).getMaxUnits());
@@ -943,9 +938,7 @@ public class ProCombatMoveAi {
           // Check if air unit should avoid this territory due to no guaranteed safe landing
           // location
           final boolean isEnemyFactory =
-              ProMatches.territoryHasInfraFactoryAndIsEnemyLand(
-                      player, data.getRelationshipTracker())
-                  .test(t);
+              ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player).test(t);
           if (!isEnemyFactory && !canAirSafelyLandAfterAttack(unit, t)) {
             continue;
           }
@@ -1384,9 +1377,7 @@ public class ProCombatMoveAi {
               || (!result.isHasLandUnitRemaining() && minWinTerritory == null)) {
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean hasNoDefenders =
-                defendingUnits.stream()
-                    .noneMatch(
-                        ProMatches.unitIsEnemyAndNotInfa(player, data.getRelationshipTracker()));
+                defendingUnits.stream().noneMatch(ProMatches.unitIsEnemyAndNotInfa(player));
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
@@ -1431,9 +1422,7 @@ public class ProCombatMoveAi {
           // location
           final boolean isAdjacentToAlliedFactory =
               Matches.territoryHasNeighborMatching(
-                      data.getMap(),
-                      ProMatches.territoryHasInfraFactoryAndIsAlliedLand(
-                          player, data.getRelationshipTracker()))
+                      data.getMap(), ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player))
                   .test(t);
           final int range = unit.getMovementLeft().intValue();
           final int distance =
@@ -1459,9 +1448,7 @@ public class ProCombatMoveAi {
               || (!result.isHasLandUnitRemaining() && minWinTerritory == null)) {
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean hasNoDefenders =
-                defendingUnits.stream()
-                    .noneMatch(
-                        ProMatches.unitIsEnemyAndNotInfa(player, data.getRelationshipTracker()));
+                defendingUnits.stream().noneMatch(ProMatches.unitIsEnemyAndNotInfa(player));
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
@@ -1988,9 +1975,7 @@ public class ProCombatMoveAi {
   private boolean canAirSafelyLandAfterAttack(final Unit unit, final Territory t) {
     final boolean isAdjacentToAlliedFactory =
         Matches.territoryHasNeighborMatching(
-                data.getMap(),
-                ProMatches.territoryHasInfraFactoryAndIsAlliedLand(
-                    player, data.getRelationshipTracker()))
+                data.getMap(), ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player))
             .test(t);
     final int range = unit.getMovementLeft().intValue();
     final int distance =

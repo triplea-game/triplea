@@ -431,8 +431,7 @@ public class ProTerritoryManager {
         moveMap,
         unitMoveMap,
         transportMoveMap,
-        ProMatches.territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(
-            player, data.getRelationshipTracker(), territoriesThatCantBeHeld),
+        ProMatches.territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(player, territoriesThatCantBeHeld),
         enemyTerritories,
         true,
         isCheckingEnemyAttacks);
@@ -443,8 +442,7 @@ public class ProTerritoryManager {
         moveMap,
         unitMoveMap,
         landRoutesMap,
-        ProMatches.territoryIsEnemyOrCantBeHeld(
-            player, data.getRelationshipTracker(), territoriesThatCantBeHeld),
+        ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld),
         enemyTerritories,
         alliedTerritories,
         true,
@@ -456,8 +454,7 @@ public class ProTerritoryManager {
         myUnitTerritories,
         moveMap,
         unitMoveMap,
-        ProMatches.territoryHasEnemyUnitsOrCantBeHeld(
-            player, data.getRelationshipTracker(), territoriesThatCantBeHeld),
+        ProMatches.territoryHasEnemyUnitsOrCantBeHeld(player, territoriesThatCantBeHeld),
         enemyTerritories,
         alliedTerritories,
         true,
@@ -470,8 +467,7 @@ public class ProTerritoryManager {
         moveMap,
         transportMapList,
         landRoutesMap,
-        ProMatches.territoryIsEnemyOrCantBeHeld(
-            player, data.getRelationshipTracker(), territoriesThatCantBeHeld),
+        ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld),
         true,
         isCheckingEnemyAttacks,
         isIgnoringRelationships);
@@ -599,8 +595,7 @@ public class ProTerritoryManager {
         moveMap,
         unitMoveMap,
         transportMoveMap,
-        ProMatches.territoryIsPotentialEnemyOrHasPotentialEnemyUnits(
-            player, data.getRelationshipTracker(), otherPlayers),
+        ProMatches.territoryIsPotentialEnemyOrHasPotentialEnemyUnits(player, otherPlayers),
         new ArrayList<>(),
         true,
         false);
@@ -611,7 +606,7 @@ public class ProTerritoryManager {
         moveMap,
         unitMoveMap,
         landRoutesMap,
-        ProMatches.territoryIsPotentialEnemy(player, data.getRelationshipTracker(), otherPlayers),
+        ProMatches.territoryIsPotentialEnemy(player, otherPlayers),
         new ArrayList<>(),
         new ArrayList<>(),
         true,
@@ -623,8 +618,7 @@ public class ProTerritoryManager {
         myUnitTerritories,
         moveMap,
         unitMoveMap,
-        ProMatches.territoryHasPotentialEnemyUnits(
-            player, data.getRelationshipTracker(), otherPlayers),
+        ProMatches.territoryHasPotentialEnemyUnits(player, otherPlayers),
         new ArrayList<>(),
         new ArrayList<>(),
         true,
@@ -637,7 +631,7 @@ public class ProTerritoryManager {
         moveMap,
         transportMapList,
         landRoutesMap,
-        ProMatches.territoryIsPotentialEnemy(player, data.getRelationshipTracker(), otherPlayers),
+        ProMatches.territoryIsPotentialEnemy(player, otherPlayers),
         true,
         false,
         true);
@@ -665,8 +659,7 @@ public class ProTerritoryManager {
         moveMap,
         unitMoveMap,
         transportMoveMap,
-        ProMatches.territoryHasNoEnemyUnitsOrCleared(
-            player, data.getRelationshipTracker(), clearedTerritories),
+        ProMatches.territoryHasNoEnemyUnitsOrCleared(player, clearedTerritories),
         clearedTerritories,
         false,
         isCheckingEnemyAttacks);

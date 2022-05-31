@@ -1707,16 +1707,14 @@ class ProPurchaseAi {
       final List<Unit> enemyUnitsInLandTerritories = new ArrayList<>();
       for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
         enemyUnitsInLandTerritories.addAll(
-            nearbyLandTerritory
-                .getUnitCollection()
-                .getMatches(ProMatches.unitIsEnemyAir(player, data.getRelationshipTracker())));
+            nearbyLandTerritory.getUnitCollection().getMatches(ProMatches.unitIsEnemyAir(player)));
       }
       final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
       for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories) {
         final List<Unit> enemySeaUnits =
             nearbySeaTerritory
                 .getUnitCollection()
-                .getMatches(ProMatches.unitIsEnemyNotLand(player, data.getRelationshipTracker()));
+                .getMatches(ProMatches.unitIsEnemyNotLand(player));
         if (enemySeaUnits.isEmpty()) {
           continue;
         }

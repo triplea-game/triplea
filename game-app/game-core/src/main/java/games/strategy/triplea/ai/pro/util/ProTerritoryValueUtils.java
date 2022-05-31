@@ -34,10 +34,7 @@ public final class ProTerritoryValueUtils {
       final ProData proData, final GamePlayer player, final Territory t) {
     final GameState data = proData.getData();
     final int isEnemyFactory =
-        ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data.getRelationshipTracker())
-                .test(t)
-            ? 1
-            : 0;
+        ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player).test(t) ? 1 : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (ProUtils.isNeutralLand(t)) {
       final double strength =
@@ -121,8 +118,7 @@ public final class ProTerritoryValueUtils {
         final List<Territory> nearbyEnemySeaTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories,
-                ProMatches.territoryIsEnemyOrCantBeHeld(
-                    player, data.getRelationshipTracker(), territoriesThatCantBeHeld));
+                ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld));
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaTerritories) {
           final Route route =
               data.getMap()
@@ -313,8 +309,7 @@ public final class ProTerritoryValueUtils {
     final List<Territory> nearbyEnemyTerritories =
         CollectionUtils.getMatches(
             nearbyTerritories,
-            ProMatches.territoryIsEnemyOrCantBeHeld(
-                player, data.getRelationshipTracker(), territoriesThatCantBeHeld));
+            ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld));
     nearbyEnemyTerritories.removeAll(territoriesToAttack);
     for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories) {
       final int distance = data.getMap().getDistance(t, nearbyEnemyTerritory, routeCond);
@@ -408,8 +403,7 @@ public final class ProTerritoryValueUtils {
       }
       final int distance = route.numberOfSteps();
       if (distance > 0 && distance <= 3) {
-        if (ProMatches.territoryIsEnemyOrCantBeHeld(
-                player, data.getRelationshipTracker(), territoriesThatCantBeHeld)
+        if (ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld)
             .test(nearbyLandTerritory)) {
           double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
           if (ProUtils.isNeutralLand(nearbyLandTerritory)) {

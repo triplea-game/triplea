@@ -289,8 +289,7 @@ public final class ProTransportUtils {
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
     final Collection<Unit> airUnits =
-        CollectionUtils.getMatches(
-            units, ProMatches.unitIsAlliedAir(player, data.getRelationshipTracker()));
+        CollectionUtils.getMatches(units, ProMatches.unitIsAlliedAir(player));
     final List<Unit> airThatCantLand = new ArrayList<>();
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
@@ -319,8 +318,7 @@ public final class ProTransportUtils {
 
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
     final Collection<Unit> airUnits =
-        CollectionUtils.getMatches(
-            existingUnits, ProMatches.unitIsAlliedAir(player, data.getRelationshipTracker()));
+        CollectionUtils.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player));
     airUnits.add(newUnit);
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
