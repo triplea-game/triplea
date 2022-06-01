@@ -45,7 +45,7 @@ public class AddUnits extends Change {
   public static Map<UUID, String> buildUnitOwnerMap(final Collection<Unit> units) {
     return units.stream()
         .collect(
-            Collectors.toUnmodifiableMap(
+            Collectors.toMap(
                 Unit::getId,
                 unit -> {
                   if (unit.getOwner() == null || unit.getOwner().getName() == null) {
