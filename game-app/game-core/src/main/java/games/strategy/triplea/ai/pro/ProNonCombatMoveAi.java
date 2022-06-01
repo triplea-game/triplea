@@ -292,8 +292,7 @@ class ProNonCombatMoveAi {
     } else {
       // Add max defenders that can be purchased to each territory
       for (final Territory t : moveMap.keySet()) {
-        if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player, data)
-            .test(t)) {
+        if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player).test(t)) {
           List<Unit> defendersToPurchase =
               ProPurchaseUtils.findMaxPurchaseDefenders(proData, player, t, landPurchaseOptions);
           moveMap.get(t).addCantMoveUnits(defendersToPurchase);
@@ -656,11 +655,10 @@ class ProNonCombatMoveAi {
     List<Territory> seaFactories =
         CollectionUtils.getMatches(
             data.getMap().getTerritories(),
-            ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
+            ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player));
     seaFactories =
         CollectionUtils.getMatches(
-            seaFactories,
-            ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data.getMap()));
+            seaFactories, ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player));
     final Predicate<Territory> canMoveSeaUnits = ProMatches.territoryCanMoveSeaUnits(player, true);
     final Set<Territory> territoriesToCheck = new HashSet<>(seaFactories);
     for (final Territory t : seaFactories) {
@@ -1386,7 +1384,7 @@ class ProNonCombatMoveAi {
             final int numSeaNeighbors =
                 data.getMap().getNeighbors(t, Matches.territoryIsWater()).size();
             final boolean isAdjacentToEnemy =
-                ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(data, player).test(t);
+                ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player).test(t);
             if (moveMap.get(t) != null
                 && (moveMap.get(t).isCanHold() || !isAdjacentToEnemy)
                 && numSeaNeighbors > maxNumSeaNeighbors) {
@@ -2019,9 +2017,7 @@ class ProNonCombatMoveAi {
 
             // Find territory that needs amphib units that most
             int hasFactory = 0;
-            if (ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(
-                    player, data.getMap())
-                .test(t)) {
+            if (ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player).test(t)) {
               hasFactory = 1;
             }
             final int neededNeighborTransportValue =
@@ -2061,7 +2057,7 @@ class ProNonCombatMoveAi {
     final Collection<Territory> myFactoriesAdjacentToSea =
         CollectionUtils.getMatches(
             data.getMap().getTerritories(),
-            ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data.getMap()));
+            ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player));
     final Predicate<Territory> canMoveLandUnits =
         ProMatches.territoryCanMoveLandUnits(player, true);
     for (final Unit u : unitMoveMap.keySet()) {
@@ -2218,7 +2214,7 @@ class ProNonCombatMoveAi {
             CollectionUtils.countMatches(
                 possibleAttackTerritories,
                 ProMatches.territoryIsEnemyOrCantBeHeldAndIsAdjacentToMyLandUnits(
-                    player, data.getMap(), territoriesThatCantBeHeld));
+                    player, territoriesThatCantBeHeld));
         final int numSeaAttackTerritories =
             CollectionUtils.countMatches(
                 possibleAttackTerritories,
@@ -2360,7 +2356,7 @@ class ProNonCombatMoveAi {
             // factory
             final int production = TerritoryAttachment.get(t).getProduction();
             double value = 0.1 * proTerritory.getValue();
-            if (ProMatches.territoryIsNotConqueredOwnedLand(player, data).test(t)) {
+            if (ProMatches.territoryIsNotConqueredOwnedLand(player).test(t)) {
               final Stream<Unit> units =
                   combinedStream(proTerritory.getCantMoveUnits(), proTerritory.getUnits());
               if (units.noneMatch(Matches.unitCanProduceUnitsAndIsInfrastructure())) {

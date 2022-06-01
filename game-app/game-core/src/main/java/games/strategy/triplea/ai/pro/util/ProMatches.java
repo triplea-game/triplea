@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.pro.util;
 
 import static java.util.function.Predicate.not;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -27,10 +26,10 @@ import lombok.experimental.UtilityClass;
 public final class ProMatches {
 
   public static BiPredicate<Territory, Territory> noCanalsBetweenTerritories(
-      final GamePlayer player, final GameData gameData) {
+      final GamePlayer player) {
     return (startTerritory, endTerritory) -> {
       final Route r = new Route(startTerritory, endTerritory);
-      return new MoveValidator(gameData, false).validateCanal(r, null, player) == null;
+      return new MoveValidator(player.getData(), false).validateCanal(r, null, player) == null;
     };
   }
 
@@ -271,9 +270,8 @@ public final class ProMatches {
   }
 
   public static Predicate<Territory> territoryHasFactoryAndIsNotConqueredOwnedLand(
-      final GamePlayer player, final GameData data) {
-    return territoryIsNotConqueredOwnedLand(player, data)
-        .and(territoryHasFactoryAndIsOwnedLand(player));
+      final GamePlayer player) {
+    return territoryIsNotConqueredOwnedLand(player).and(territoryHasFactoryAndIsOwnedLand(player));
   }
 
   private static Predicate<Territory> territoryHasFactoryAndIsOwnedLand(final GamePlayer player) {
@@ -285,9 +283,9 @@ public final class ProMatches {
   }
 
   public static Predicate<Territory> territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(
-      final GamePlayer player, final GameData data) {
+      final GamePlayer player) {
     return territoryHasNonMobileInfraFactory()
-        .and(territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
+        .and(territoryHasFactoryAndIsNotConqueredOwnedLand(player));
   }
 
   private static Predicate<Territory> territoryHasNonMobileInfraFactory() {
@@ -319,14 +317,16 @@ public final class ProMatches {
   }
 
   public static Predicate<Territory> territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(
-      final GamePlayer player, final GameMap gameMap) {
+      final GamePlayer player) {
     return territoryHasInfraFactoryAndIsOwnedLand(player)
-        .and(Matches.territoryHasNeighborMatching(gameMap, Matches.territoryIsWater()));
+        .and(
+            Matches.territoryHasNeighborMatching(
+                player.getData().getMap(), Matches.territoryIsWater()));
   }
 
   public static Predicate<Territory> territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(
-      final GamePlayer player, final GameData data) {
-    return territoryIsNotConqueredOwnedLand(player, data)
+      final GamePlayer player) {
+    return territoryIsNotConqueredOwnedLand(player)
         .and(territoryHasInfraFactoryAndIsOwnedLand(player).negate());
   }
 
@@ -338,12 +338,12 @@ public final class ProMatches {
     return Matches.territoryHasNeighborMatching(gameMap, territoryMatch);
   }
 
-  static Predicate<Territory> territoryIsAlliedLandAndHasNoEnemyNeighbors(
-      final GameState data, final GamePlayer player) {
+  static Predicate<Territory> territoryIsAlliedLandAndHasNoEnemyNeighbors(final GamePlayer player) {
     final Predicate<Territory> alliedLand =
         territoryCanMoveLandUnits(player, false).and(Matches.isTerritoryAllied(player));
     final Predicate<Territory> hasNoEnemyNeighbors =
-        Matches.territoryHasNeighborMatching(data.getMap(), territoryIsEnemyNotNeutralLand(player))
+        Matches.territoryHasNeighborMatching(
+                player.getData().getMap(), territoryIsEnemyNotNeutralLand(player))
             .negate();
     return alliedLand.and(hasNoEnemyNeighbors);
   }
@@ -359,14 +359,14 @@ public final class ProMatches {
   }
 
   public static Predicate<Territory> territoryIsOrAdjacentToEnemyNotNeutralLand(
-      final GameState data, final GamePlayer player) {
+      final GamePlayer player) {
     final Predicate<Territory> isMatch =
         territoryIsEnemyLand(player)
             .and(Matches.territoryIsNeutralButNotWater().negate())
             .and(t -> !ProUtils.isPassiveNeutralPlayer(t.getOwner()));
     final Predicate<Territory> adjacentMatch =
         territoryCanMoveLandUnits(player, false)
-            .and(Matches.territoryHasNeighborMatching(data.getMap(), isMatch));
+            .and(Matches.territoryHasNeighborMatching(player.getData().getMap(), isMatch));
     return isMatch.or(adjacentMatch);
   }
 
@@ -394,31 +394,28 @@ public final class ProMatches {
   }
 
   public static Predicate<Territory> territoryIsEnemyOrCantBeHeldAndIsAdjacentToMyLandUnits(
-      final GamePlayer player,
-      final GameMap gameMap,
-      final List<Territory> territoriesThatCantBeHeld) {
+      final GamePlayer player, final List<Territory> territoriesThatCantBeHeld) {
     final Predicate<Unit> myUnitIsLand = Matches.unitIsOwnedBy(player).and(Matches.unitIsLand());
     final Predicate<Territory> territoryIsLandAndAdjacentToMyLandUnits =
         Matches.territoryIsLand()
             .and(
                 Matches.territoryHasNeighborMatching(
-                    gameMap, Matches.territoryHasUnitsThatMatch(myUnitIsLand)));
+                    player.getData().getMap(), Matches.territoryHasUnitsThatMatch(myUnitIsLand)));
     return territoryIsLandAndAdjacentToMyLandUnits.and(
         territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld));
   }
 
-  public static Predicate<Territory> territoryIsNotConqueredOwnedLand(
-      final GamePlayer player, final GameData data) {
+  public static Predicate<Territory> territoryIsNotConqueredOwnedLand(final GamePlayer player) {
     return t ->
-        !AbstractMoveDelegate.getBattleTracker(data).wasConquered(t)
+        !AbstractMoveDelegate.getBattleTracker(player.getData()).wasConquered(t)
             && Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand()).test(t);
   }
 
   public static Predicate<Territory> territoryIsWaterAndAdjacentToOwnedFactory(
-      final GameState data, final GamePlayer player) {
+      final GamePlayer player) {
     final Predicate<Territory> hasOwnedFactoryNeighbor =
         Matches.territoryHasNeighborMatching(
-            data.getMap(), ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player));
+            player.getData().getMap(), ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player));
     return hasOwnedFactoryNeighbor.and(territoryCanMoveSeaUnits(player, true));
   }
 

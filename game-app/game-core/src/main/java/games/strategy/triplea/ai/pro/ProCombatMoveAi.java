@@ -1060,7 +1060,7 @@ public class ProCombatMoveAi {
         boolean canHold = true;
         double enemyCounterTuvSwing = 0;
         if (enemyAttackOptions.getMax(t) != null
-            && !ProMatches.territoryIsWaterAndAdjacentToOwnedFactory(data, player).test(t)) {
+            && !ProMatches.territoryIsWaterAndAdjacentToOwnedFactory(player).test(t)) {
           List<Unit> remainingUnitsToDefendWith =
               CollectionUtils.getMatches(
                   result.getAverageAttackersRemaining(), Matches.unitIsAir().negate());
@@ -1737,8 +1737,7 @@ public class ProCombatMoveAi {
     // factories since they may
     // move elsewhere)
     final List<Unit> placeUnits = new ArrayList<>();
-    if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player, data)
-        .test(myCapital)) {
+    if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player).test(myCapital)) {
       placeUnits.addAll(
           ProPurchaseUtils.findMaxPurchaseDefenders(
               proData, player, myCapital, landPurchaseOptions));

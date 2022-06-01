@@ -283,7 +283,7 @@ public final class ProTerritoryValueUtils {
     final BiPredicate<Territory, Territory> routeCond =
         (t1, t2) ->
             ProMatches.territoryCanPotentiallyMoveLandUnits(player).test(t2)
-                && ProMatches.noCanalsBetweenTerritories(player, data).test(t1, t2);
+                && ProMatches.noCanalsBetweenTerritories(player).test(t1, t2);
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
       final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory, routeCond);
       if (distance > 0) {
@@ -312,7 +312,7 @@ public final class ProTerritoryValueUtils {
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
           // find neutral value
           value = findTerritoryAttackValue(proData, player, nearbyEnemyTerritory) / 3;
-        } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(data, player)
+        } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player)
             .test(nearbyEnemyTerritory)) {
           value *= 0.1; // reduce value for can't hold amphib allied territories
         }

@@ -85,7 +85,7 @@ class ProPurchaseAi {
     final List<Territory> rfactories =
         CollectionUtils.getMatches(
             data.getMap().getTerritories(),
-            ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
+            ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player));
     if (player.getRepairFrontier() != null
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
       ProLogger.debug("Factories can be damaged");
@@ -1194,7 +1194,7 @@ class ProPurchaseAi {
     final List<Territory> possibleFactoryTerritories =
         CollectionUtils.getMatches(
             data.getMap().getTerritories(),
-            ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+            ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player));
     possibleFactoryTerritories.removeAll(factoryPurchaseTerritories.keySet());
     final Set<Territory> purchaseFactoryTerritories = new HashSet<>();
     final List<Territory> territoriesThatCantBeHeld = new ArrayList<>();
