@@ -67,9 +67,9 @@ public class CompositeChange extends Change {
 
   @Override
   protected void perform(final GameState data) {
-      for (final Change current : changes) {
-        current.perform(data);
-      }
+    for (final Change current : changes) {
+      current.perform(data);
+    }
   }
 
   /** Returns true if this change is empty, or composed of empty changes. */

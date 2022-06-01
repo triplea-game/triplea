@@ -7,11 +7,8 @@ import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.concurrent.Immutable;
 
 /** Change type that indicates units have been removed from the map. */
 public class RemoveUnits extends Change {
