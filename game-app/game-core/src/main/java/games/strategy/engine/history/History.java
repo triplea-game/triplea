@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +82,7 @@ public class History extends DefaultTreeModel {
     return getLastChildInternal((HistoryNode) node.getLastChild());
   }
 
-  private int getLastChange(final HistoryNode node) {
+  private int getNextChange(final HistoryNode node) {
     int lastChangeIndex;
     if (node == getRoot()) {
       lastChangeIndex = 0;
@@ -94,7 +95,7 @@ public class History extends DefaultTreeModel {
       // If this node is still current, or comes from an old save game where we didn't set it, get
       // the last change index from its last child node.
       if (lastChangeIndex == -1 && node.getChildCount() > 0) {
-        lastChangeIndex = getLastChange((HistoryNode) node.getLastChild());
+        lastChangeIndex = getNextChange((HistoryNode) node.getLastChild());
       }
     } else {
       lastChangeIndex = 0;
@@ -119,7 +120,7 @@ public class History extends DefaultTreeModel {
     Preconditions.checkNotNull(node);
     Preconditions.checkState(seekingEnabled);
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
-      final int nodeChangeIndex = getLastChange(node);
+      final int nodeChangeIndex = getNextChange(node);
       if (nodeChangeIndex != nextChangeIndex) {
         gameData.performChange(getDeltaTo(nodeChangeIndex));
         nextChangeIndex = nodeChangeIndex;
@@ -185,7 +186,7 @@ public class History extends DefaultTreeModel {
   }
 
   List<Change> getChanges() {
-    return changes;
+    return Collections.unmodifiableList(changes);
   }
 
   GameData getGameData() {

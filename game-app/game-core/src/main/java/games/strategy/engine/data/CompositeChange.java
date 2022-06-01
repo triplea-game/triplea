@@ -61,9 +61,10 @@ public class CompositeChange extends Change {
 
   @Override
   public Change invert() {
-    // Important: We can't invert all the sub-changes in reverse order, because some revert()
-    // implementations, like RemoveUnits.invert() which calls new AddUnits(), rely on the GameData
-    // state and will cause errors if revert() is called while at a different node.
+    // Important: We can't invert the sub-changes upfront, because some revert() implementations,
+    // like RemoveUnits.invert() which calls new AddUnits(), rely on the GameData state and will
+    // cause errors if revert() is called while at a different node.
+    // Instead, we construct a CompositeChange with inverted set to true.
     return new CompositeChange(changes, true);
   }
 
