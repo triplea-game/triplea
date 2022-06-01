@@ -6,8 +6,8 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,18 +26,18 @@ public class AddUnits extends Change {
    */
   private final Map<UUID, String> unitOwnerMap;
 
-  AddUnits(final UnitCollection collection, final Collection<Unit> units) {
+  AddUnits(UnitCollection collection, Collection<Unit> units) {
     this(collection.getHolder().getName(), collection.getHolder().getType(), units);
   }
 
-  AddUnits(final String name, final String type, final Collection<Unit> units) {
+  AddUnits(String name, String type, Collection<Unit> units) {
     this(name, type, units, AddUnits.buildUnitOwnerMap(units));
   }
 
   AddUnits(String name, String type, Collection<Unit> units, Map<UUID, String> unitOwnerMap) {
     this.name = name;
     this.type = type;
-    this.units = new ArrayList<>(units);
+    this.units = List.copyOf(units);
     this.unitOwnerMap = unitOwnerMap;
   }
 
