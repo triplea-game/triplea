@@ -48,7 +48,7 @@ public class CompositeChange extends Change {
                         ? ((CompositeChange) change).flatten().getChanges()
                         : List.of(change))
             .flatMap(Collection::stream)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList()), inverted);
   }
 
   public void add(final Change... changes) {
