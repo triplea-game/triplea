@@ -95,6 +95,6 @@ public class CompositeChange extends Change {
 
   @Override
   public String toString() {
-    return "CompositeChange <" + (changes == null ? "null" : changes.toString()) + ">";
+    return "CompositeChange <" + changes + ">";
   }
 }
