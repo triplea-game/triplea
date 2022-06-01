@@ -244,7 +244,7 @@ public final class GameParser {
     data.setDiceSides(diceSides == null ? 6 : diceSides.getValue());
   }
 
-  private boolean isEngineCompatibleWithMap(final Triplea tripleA) throws EngineVersionException {
+  private boolean isEngineCompatibleWithMap(final Triplea tripleA) {
 
     return tripleA == null
         || tripleA.getMinimumVersion().isBlank()

@@ -22,12 +22,11 @@ class InvocationInProgress {
   }
 
   /** Returns true if there are no more results to process. */
-  boolean process(final HubInvocationResults hubResults, final INode from) {
+  void process(final HubInvocationResults hubResults, final INode from) {
     results = hubResults.results;
     if (!from.equals(waitingOn)) {
       throw new IllegalStateException("Wrong node, expecting " + waitingOn + " got " + from);
     }
-    return true;
   }
 
   INode getCaller() {
