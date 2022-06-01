@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,20 +75,15 @@ public class CompositeChange extends Change {
   /** Returns true if this change is empty, or composed of empty changes. */
   @Override
   public boolean isEmpty() {
-    for (final Change c : changes) {
-      if (!c.isEmpty()) {
-        return false;
-      }
-    }
-    return true;
+    return changes.stream().allMatch(Change::isEmpty);
   }
 
   public List<Change> getChanges() {
-    return new ArrayList<>(changes);
+    return Collections.unmodifiableList(changes);
   }
 
   @Override
   public String toString() {
-    return "CompositeChange <" + (changes == null ? "null" : changes.toString()) + ">";
+    return "CompositeChange <" + changes + ">";
   }
 }
