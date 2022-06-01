@@ -101,15 +101,14 @@ public final class ProMoveUtils {
                   ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove),
                   u,
                   player);
-        } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsLand())) {
-
+        } else if (unitList.stream().allMatch(Matches.unitIsLand())) {
           // Land unit
           route =
               map.getRouteForUnit(
                   startTerritory,
                   t,
                   ProMatches.territoryCanMoveLandUnitsThrough(
-                      data, player, u, startTerritory, isCombatMove, List.of()),
+                      player, u, startTerritory, isCombatMove, List.of()),
                   u,
                   player);
           if (route == null && startTerritory.equals(lastLandTransport.getFirst())) {
@@ -118,7 +117,6 @@ public final class ProMoveUtils {
                     startTerritory,
                     t,
                     ProMatches.territoryCanMoveLandUnitsThrough(
-                        data,
                         player,
                         lastLandTransport.getSecond(),
                         startTerritory,
@@ -127,8 +125,7 @@ public final class ProMoveUtils {
                     u,
                     player);
           }
-        } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
-
+        } else if (unitList.stream().allMatch(Matches.unitIsAir())) {
           // Air unit
           route =
               map.getRouteForUnit(
@@ -346,9 +343,7 @@ public final class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (!unitList.isEmpty()
-            && unitList.stream().allMatch(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true))) {
-
+        if (unitList.stream().allMatch(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true))) {
           // Naval unit
           route =
               map.getRouteForUnit(
