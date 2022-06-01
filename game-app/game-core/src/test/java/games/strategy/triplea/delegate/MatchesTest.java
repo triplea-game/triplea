@@ -177,7 +177,7 @@ final class MatchesTest {
     }
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
       gameData = TestMapGameData.DELEGATE_TEST.getGameData();
 
       player = GameDataTestUtil.germans(gameData);

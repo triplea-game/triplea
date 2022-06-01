@@ -27,7 +27,7 @@ final class InterruptiblesTest {
     private final ThrowingRunnable<InterruptedException> runnable = () -> invoked = true;
 
     @Test
-    void shouldReturnTrueWhenCompleted() throws Exception {
+    void shouldReturnTrueWhenCompleted() {
       final boolean completed = Interruptibles.await(runnable);
 
       assertThat(invoked, is(true));
