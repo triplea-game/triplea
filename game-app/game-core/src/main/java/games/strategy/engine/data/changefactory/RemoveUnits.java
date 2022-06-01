@@ -7,6 +7,11 @@ import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import javax.annotation.concurrent.Immutable;
 
 /** Change type that indicates units have been removed from the map. */
 public class RemoveUnits extends Change {
@@ -15,20 +20,32 @@ public class RemoveUnits extends Change {
   private final String name;
   private final Collection<Unit> units;
   private final String type;
+  /**
+   * The unit's owner can be modified sometime after this Change is created but before it is
+   * performed. To ensure that the newly created units have the correct ownership, their original
+   * owners are stored in this separate map.
+   */
+  private final Map<UUID, String> unitOwnerMap;
 
   RemoveUnits(final UnitCollection collection, final Collection<Unit> units) {
     this(collection.getHolder().getName(), collection.getHolder().getType(), units);
   }
 
   RemoveUnits(final String name, final String type, final Collection<Unit> units) {
-    this.units = new ArrayList<>(units);
+    this(name, type, units, AddUnits.buildUnitOwnerMap(units));
+  }
+
+  RemoveUnits(String name, String type, Collection<Unit> units, Map<UUID, String> unitOwnerMap) {
     this.name = name;
     this.type = type;
+    this.units = new ArrayList<>(units);
+    this.unitOwnerMap = unitOwnerMap;
   }
 
   @Override
   public Change invert() {
-    return new AddUnits(name, type, units);
+    // Note: We pass in unitOwnerMap so that invert() doesn't rely on the current game state.
+    return new AddUnits(name, type, units, unitOwnerMap);
   }
 
   @Override

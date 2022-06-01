@@ -11,7 +11,6 @@ public class CompositeChange extends Change {
   private static final long serialVersionUID = 8152962976769419486L;
 
   private final List<Change> changes;
-  private boolean inverted = false;
 
   public CompositeChange(final Change... changes) {
     this();
@@ -24,11 +23,6 @@ public class CompositeChange extends Change {
 
   public CompositeChange(final List<Change> changes) {
     this.changes = new ArrayList<>(changes);
-  }
-
-  public CompositeChange(final List<Change> changes, final boolean inverted) {
-    this.changes = new ArrayList<>(changes);
-    this.inverted = inverted;
   }
 
   /**
@@ -48,8 +42,7 @@ public class CompositeChange extends Change {
                         ? ((CompositeChange) change).flatten().getChanges()
                         : List.of(change))
             .flatMap(Collection::stream)
-            .collect(Collectors.toList()),
-        inverted);
+            .collect(Collectors.toList()));
   }
 
   public void add(final Change... changes) {
@@ -62,26 +55,21 @@ public class CompositeChange extends Change {
 
   @Override
   public Change invert() {
-    // Important: We can't invert the sub-changes upfront, because some revert() implementations,
-    // like RemoveUnits.invert() which calls new AddUnits(), rely on the GameData state and will
-    // cause errors if revert() is called while at a different node.
-    // Instead, we construct a CompositeChange with inverted set to true.
-    return new CompositeChange(changes, true);
+    final List<Change> newChanges = new ArrayList<>();
+    // to invert a list of changes, process the opposite of each change in the reverse order of the
+    // original list
+    for (int i = changes.size() - 1; i >= 0; i--) {
+      final Change current = changes.get(i);
+      newChanges.add(current.invert());
+    }
+    return new CompositeChange(newChanges);
   }
 
   @Override
   protected void perform(final GameState data) {
-    if (inverted) {
-      // Perform inverted changes in reverse order.
-      for (int i = changes.size() - 1; i >= 0; i--) {
-        final Change current = changes.get(i).invert();
-        current.perform(data);
-      }
-    } else {
       for (final Change current : changes) {
         current.perform(data);
       }
-    }
   }
 
   /** Returns true if this change is empty, or composed of empty changes. */
