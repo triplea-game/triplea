@@ -166,7 +166,7 @@ public class ProTerritory {
     return defenders;
   }
 
-  public List<Unit> getMaxEnemyDefenders(final GamePlayer player, final GameState data) {
+  public List<Unit> getMaxEnemyDefenders(final GamePlayer player) {
     final List<Unit> defenders =
         territory.getUnitCollection().getMatches(Matches.enemyUnit(player));
     defenders.addAll(maxScrambleUnits);
@@ -287,7 +287,7 @@ public class ProTerritory {
             proData,
             territory,
             getUnits(),
-            getMaxEnemyDefenders(player, player.getData()),
+            getMaxEnemyDefenders(player),
             getBombardTerritoryMap().keySet()));
   }
 

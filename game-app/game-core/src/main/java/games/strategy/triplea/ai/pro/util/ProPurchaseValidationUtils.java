@@ -62,15 +62,6 @@ public final class ProPurchaseValidationUtils {
     return purchaseOptions.stream().filter(canUsePurchaseOption).collect(Collectors.toList());
   }
 
-  public static boolean canUnitBePlaced(
-      final ProData proData,
-      final Unit unit,
-      final GamePlayer player,
-      final Territory t,
-      final boolean isBid) {
-    return ProPurchaseValidationUtils.canUnitsBePlaced(proData, List.of(unit), player, t, t, isBid);
-  }
-
   /** Check if units can be placed in given territory by specified factory. */
   public static boolean canUnitsBePlaced(
       final ProData proData,

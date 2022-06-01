@@ -708,8 +708,7 @@ class ProPurchaseAi {
         // Check remaining production
         int remainingUnitProduction = purchaseTerritory.getRemainingUnitProduction();
         int remainingConstructions =
-            ProPurchaseUtils.getMaxConstructions(
-                purchaseTerritory.getTerritory(), data, player, zeroMoveDefensePurchaseOptions);
+            ProPurchaseUtils.getMaxConstructions(zeroMoveDefensePurchaseOptions);
         ProLogger.debug(
             purchaseTerritory.getTerritory()
                 + ", remainingUnitProduction="
@@ -871,9 +870,7 @@ class ProPurchaseAi {
         final Territory t = placeTerritory.getTerritory();
         if (!t.isWater() && placeTerritory.getStrategicValue() >= 1 && placeTerritory.isCanHold()) {
           final boolean hasEnemyNeighbors =
-              !data.getMap()
-                  .getNeighbors(t, ProMatches.territoryIsEnemyLand(data, player))
-                  .isEmpty();
+              !data.getMap().getNeighbors(t, ProMatches.territoryIsEnemyLand(player)).isEmpty();
           final Set<Territory> nearbyLandTerritories =
               data.getMap()
                   .getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player));
@@ -1054,8 +1051,7 @@ class ProPurchaseAi {
       final int fodderPercent = 80 - enemyDistance * 5;
       ProLogger.debug(t + ", enemyDistance=" + enemyDistance + ", fodderPercent=" + fodderPercent);
       final Set<Territory> neighbors =
-          data.getMap()
-              .getNeighbors(t, 2, ProMatches.territoryCanMoveLandUnits(data, player, false));
+          data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveLandUnits(player, false));
       neighbors.add(t);
       final List<Unit> ownedLocalUnits = new ArrayList<>();
       for (final Territory neighbor : neighbors) {
@@ -1288,8 +1284,7 @@ class ProPurchaseAi {
       final boolean isAdjacentToSea =
           Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater()).test(t);
       final Set<Territory> nearbyLandTerritories =
-          data.getMap()
-              .getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(data, player, false));
+          data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, false));
       final int numNearbyEnemyTerritories =
           CollectionUtils.countMatches(nearbyLandTerritories, Matches.isTerritoryEnemy(player));
       ProLogger.trace(
@@ -1421,7 +1416,7 @@ class ProPurchaseAi {
       if (enemyAttackOptions.getMax(t) != null) {
         final double strengthDifference =
             ProBattleUtils.estimateStrengthDifference(
-                proData, t, enemyAttackOptions.getMax(t).getMaxUnits(), units);
+                t, enemyAttackOptions.getMax(t).getMaxUnits(), units);
         if (strengthDifference > 50) {
           needDefenders = 1;
         }

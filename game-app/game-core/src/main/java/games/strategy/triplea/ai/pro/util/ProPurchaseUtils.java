@@ -186,7 +186,7 @@ public final class ProPurchaseUtils {
     ownedAndNotConqueredFactoryTerritories =
         CollectionUtils.getMatches(
             ownedAndNotConqueredFactoryTerritories,
-            ProMatches.territoryCanMoveLandUnits(data, player, false));
+            ProMatches.territoryCanMoveLandUnits(player, false));
 
     // Create purchase territory holder for each factory territory
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
@@ -235,9 +235,6 @@ public final class ProPurchaseUtils {
    * territory.
    */
   public static int getMaxConstructions(
-      final Territory territory,
-      final GameState data,
-      final GamePlayer player,
       final List<ProPurchaseOption> zeroMoveDefensePurchaseOptions) {
     final IntegerMap<String> constructionTypesPerTurn = new IntegerMap<>();
     for (final ProPurchaseOption ppo : zeroMoveDefensePurchaseOptions) {

@@ -86,11 +86,9 @@ public final class ProBattleUtils {
    *     indicates equal attacker and defender strength.
    */
   public static double estimateStrengthDifference(
-      final ProData proData,
       final Territory t,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits) {
-
     if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())
         || estimatePower(t, attackingUnits, defendingUnits, true) <= 0) {
       return 0;
@@ -181,8 +179,7 @@ public final class ProBattleUtils {
 
       // Find enemy strength
       final Set<Territory> nearbyTerritoriesForEnemy =
-          data.getMap()
-              .getNeighbors(t, i, ProMatches.territoryCanMoveLandUnits(data, player, false));
+          data.getMap().getNeighbors(t, i, ProMatches.territoryCanMoveLandUnits(player, false));
       nearbyTerritoriesForEnemy.add(t);
       final List<Unit> enemyUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
@@ -194,8 +191,7 @@ public final class ProBattleUtils {
 
       // Find allied strength
       final Set<Territory> nearbyTerritoriesForAllied =
-          data.getMap()
-              .getNeighbors(t, i - 1, ProMatches.territoryCanMoveLandUnits(data, player, false));
+          data.getMap().getNeighbors(t, i - 1, ProMatches.territoryCanMoveLandUnits(player, false));
       nearbyTerritoriesForAllied.add(t);
       final List<Unit> alliedUnits = new ArrayList<>();
       for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
@@ -211,8 +207,7 @@ public final class ProBattleUtils {
       }
 
       // Determine strength difference
-      final double strengthDifference =
-          estimateStrengthDifference(proData, t, enemyUnits, alliedUnits);
+      final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
       ProLogger.trace(
           t
               + ", current enemy land strengthDifference="
@@ -245,7 +240,7 @@ public final class ProBattleUtils {
     // Find enemy strength
     final Set<Territory> nearbyTerritoriesForEnemy =
         data.getMap()
-            .getNeighbors(t, distance, ProMatches.territoryCanMoveLandUnits(data, player, false));
+            .getNeighbors(t, distance, ProMatches.territoryCanMoveLandUnits(player, false));
     nearbyTerritoriesForEnemy.add(t);
     final List<Unit> enemyUnits = new ArrayList<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
@@ -256,8 +251,7 @@ public final class ProBattleUtils {
     // Find allied strength
     final Set<Territory> nearbyTerritoriesForAllied =
         data.getMap()
-            .getNeighbors(
-                t, distance - 1, ProMatches.territoryCanMoveLandUnits(data, player, false));
+            .getNeighbors(t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, false));
     nearbyTerritoriesForAllied.add(t);
     final Set<Unit> alliedUnits = new HashSet<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
@@ -274,7 +268,7 @@ public final class ProBattleUtils {
 
     // Determine strength difference
     final double strengthDifference =
-        estimateStrengthDifference(proData, t, enemyUnits, new ArrayList<>(alliedUnits));
+        estimateStrengthDifference(t, enemyUnits, new ArrayList<>(alliedUnits));
     ProLogger.trace(
         t
             + ", current enemy land strengthDifference="
@@ -372,8 +366,7 @@ public final class ProBattleUtils {
     myUnits.addAll(alliedUnitsInSeaTerritories);
     final List<Unit> enemyAttackers = new ArrayList<>(enemyUnitsInSeaTerritories);
     enemyAttackers.addAll(enemyUnitsInLandTerritories);
-    final double defenseStrengthDifference =
-        estimateStrengthDifference(proData, t, enemyAttackers, myUnits);
+    final double defenseStrengthDifference = estimateStrengthDifference(t, enemyAttackers, myUnits);
     ProLogger.trace(
         t
             + ", current enemy naval attack strengthDifference="
@@ -385,11 +378,11 @@ public final class ProBattleUtils {
 
     // Find current naval attack strength
     double attackStrengthDifference =
-        estimateStrengthDifference(proData, t, myUnits, enemyUnitsInSeaTerritories);
+        estimateStrengthDifference(t, myUnits, enemyUnitsInSeaTerritories);
     attackStrengthDifference +=
         0.5
             * estimateStrengthDifference(
-                proData, t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
+                t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
     ProLogger.trace(
         t
             + ", current allied naval attack strengthDifference="

@@ -308,7 +308,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
     final Collection<Unit> attackers = battle.getAttackingUnits();
     final Collection<Unit> defenders = battle.getDefendingUnits();
     final double strengthDifference =
-        ProBattleUtils.estimateStrengthDifference(proData, battleTerritory, attackers, defenders);
+        ProBattleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
     final boolean isStrafing = isAttacker && storedStrafingTerritories.contains(battleTerritory);
     ProLogger.info(
         player.getName()
@@ -393,7 +393,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
         final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
         defenders.removeAll(defaultCasualties.getKilled());
         final double strengthDifference =
-            ProBattleUtils.estimateStrengthDifference(proData, battleSite, attackers, defenders);
+            ProBattleUtils.estimateStrengthDifference(battleSite, attackers, defenders);
         int minStrengthDifference = 60;
         if (!Properties.getLowLuck(data.getProperties())) {
           minStrengthDifference = 55;

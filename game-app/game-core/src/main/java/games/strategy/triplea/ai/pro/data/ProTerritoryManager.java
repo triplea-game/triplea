@@ -164,9 +164,7 @@ public class ProTerritoryManager {
       // Check if I can win without amphib units
       final List<Unit> defenders =
           new ArrayList<>(
-              isIgnoringRelationships
-                  ? t.getUnitCollection()
-                  : patd.getMaxEnemyDefenders(player, data));
+              isIgnoringRelationships ? t.getUnitCollection() : patd.getMaxEnemyDefenders(player));
       patd.setMaxBattleResult(
           calc.estimateAttackBattleResults(
               proData, t, patd.getMaxUnits(), defenders, new HashSet<>()));
@@ -856,7 +854,7 @@ public class ProTerritoryManager {
                 isIgnoringRelationships
                     ? ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(player, myLandUnit)
                     : ProMatches.territoryCanMoveSpecificLandUnit(
-                        data, player, isCombatMove, myLandUnit));
+                        player, isCombatMove, myLandUnit));
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
             new HashSet<>(
@@ -873,7 +871,6 @@ public class ProTerritoryManager {
                   potentialTerritory,
                   isCheckingEnemyAttacks
                       ? ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
-                          data,
                           player,
                           myLandUnit,
                           startTerritory,
@@ -881,7 +878,7 @@ public class ProTerritoryManager {
                           enemyTerritories,
                           clearedTerritories)
                       : ProMatches.territoryCanMoveLandUnitsThrough(
-                          data, player, myLandUnit, startTerritory, isCombatMove, enemyTerritories),
+                          player, myLandUnit, startTerritory, isCombatMove, enemyTerritories),
                   myLandUnit,
                   player);
           if (myRoute == null) {
@@ -1069,7 +1066,7 @@ public class ProTerritoryManager {
               .getUnitCollection()
               .getMatches(ProMatches.unitCanBeMovedAndIsOwnedTransport(player, isCombatMove));
       Predicate<Territory> unloadAmphibTerritoryMatch =
-          ProMatches.territoryCanMoveLandUnits(data, player, isCombatMove)
+          ProMatches.territoryCanMoveLandUnits(player, isCombatMove)
               .and(moveAmphibToTerritoryMatch);
       if (isIgnoringRelationships) {
         unloadAmphibTerritoryMatch =
