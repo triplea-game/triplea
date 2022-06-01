@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.panels.map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.collect.Sets;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
@@ -594,7 +593,7 @@ public class MapPanel extends ImageScrollerLargeView {
       countriesToUpdate.addAll(countries);
     }
     if (!scheduleUpdate) {
-      return;  // An update is already scheduled.
+      return; // An update is already scheduled.
     }
     AsyncRunner.runAsync(
             () -> {
