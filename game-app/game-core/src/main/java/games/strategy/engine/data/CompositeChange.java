@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ public class CompositeChange extends Change {
   private static final long serialVersionUID = 8152962976769419486L;
 
   private final List<Change> changes;
+  private boolean inverted = false;
 
   public CompositeChange(final Change... changes) {
     this();
@@ -22,6 +24,11 @@ public class CompositeChange extends Change {
 
   public CompositeChange(final List<Change> changes) {
     this.changes = new ArrayList<>(changes);
+  }
+
+  public CompositeChange(final List<Change> changes, final boolean inverted) {
+    this.changes = new ArrayList<>(changes);
+    this.inverted = inverted;
   }
 
   /**
@@ -54,36 +61,35 @@ public class CompositeChange extends Change {
 
   @Override
   public Change invert() {
-    final List<Change> newChanges = new ArrayList<>();
-    // to invert a list of changes, process the opposite of each change in the reverse order of the
-    // original list
-    for (int i = changes.size() - 1; i >= 0; i--) {
-      final Change current = changes.get(i);
-      newChanges.add(current.invert());
-    }
-    return new CompositeChange(newChanges);
+    // Important: We can't invert all the sub-changes in reverse order, because some revert()
+    // implementations, like RemoveUnits.invert() which calls new AddUnits(), rely on the GameData
+    // state and will cause errors if revert() is called while at a different node.
+    return new CompositeChange(changes, true);
   }
 
   @Override
   protected void perform(final GameState data) {
-    for (final Change current : changes) {
-      current.perform(data);
+    if (inverted) {
+      // Perform inverted changes in reverse order.
+      for (int i = changes.size() - 1; i >= 0; i--) {
+        final Change current = changes.get(i).invert();
+        current.perform(data);
+      }
+    } else {
+      for (final Change current : changes) {
+        current.perform(data);
+      }
     }
   }
 
   /** Returns true if this change is empty, or composed of empty changes. */
   @Override
   public boolean isEmpty() {
-    for (final Change c : changes) {
-      if (!c.isEmpty()) {
-        return false;
-      }
-    }
-    return true;
+    return changes.stream().allMatch(Change::isEmpty);
   }
 
   public List<Change> getChanges() {
-    return new ArrayList<>(changes);
+    return Collections.unmodifiableList(changes);
   }
 
   @Override
