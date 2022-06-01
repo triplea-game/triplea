@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,12 +23,14 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class AsyncRunner {
-  /** Runs a task using a default threadpool. */
+  /** Runs a task using a default threadpool. Call exceptionally() on the result to execute. */
+  @CheckReturnValue
   public static ExceptionHandler runAsync(final Runnable runnable) {
     return new ExceptionHandler(runnable, null);
   }
 
-  /** Runs a task using the provided threadpool. */
+  /** Runs a task using the provided threadpool. Call exceptionally() on the result to execute. */
+  @CheckReturnValue
   public static ExceptionHandler runAsync(final Runnable runnable, final Executor executor) {
     return new ExceptionHandler(runnable, executor);
   }

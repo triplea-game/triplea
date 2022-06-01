@@ -171,8 +171,7 @@ public class TileManager {
 
   /** Re-renders all tiles. */
   public void resetTiles(final GameData data, final MapData mapData) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
         for (final Tile tile : tiles) {
           tile.clear();
@@ -199,39 +198,28 @@ public class TileManager {
           }
         }
       }
-    } finally {
-      data.releaseReadLock();
     }
   }
 
   /** Re-renders all tiles that intersect any of the specified territories. */
   public void updateTerritories(
       final Collection<Territory> territories, final GameData data, final MapData mapData) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
-        if (territories == null) {
-          return;
-        }
         for (final Territory territory : territories) {
           updateTerritory(territory, data, mapData);
         }
       }
-    } finally {
-      data.releaseReadLock();
     }
   }
 
   private void updateTerritory(
       final Territory territory, final GameData data, final MapData mapData) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
         clearTerritory(territory);
         drawTerritory(territory, data, mapData);
       }
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -502,8 +490,7 @@ public class TileManager {
     if (units.isEmpty()) {
       return null;
     }
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
         for (final UnitsDrawer drawer : allUnitDrawables) {
           final List<Unit> drawerUnits = drawer.getUnits(data);
@@ -513,8 +500,6 @@ public class TileManager {
         }
         return null;
       }
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -524,8 +509,7 @@ public class TileManager {
    */
   public @Nullable Tuple<Territory, List<Unit>> getUnitsAtPoint(
       final double x, final double y, final GameData gameData) {
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       synchronized (mutex) {
         for (final UnitsDrawer drawer : allUnitDrawables) {
           if (drawer.getPlacementRectangle().contains(x, y)) {
@@ -534,8 +518,6 @@ public class TileManager {
         }
         return null;
       }
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
