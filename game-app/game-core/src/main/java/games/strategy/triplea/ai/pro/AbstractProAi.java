@@ -212,7 +212,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
         ProLogger.info("Simulating phase: " + stepName);
         if (GameStep.isNonCombatMoveStep(stepName)) {
           proData.initializeSimulation(this, dataCopy, playerCopy);
-          Map<Territory, ProTerritory> factoryMoveMap =
+          final Map<Territory, ProTerritory> factoryMoveMap =
               nonCombatMoveAi.simulateNonCombatMove(moveDel);
           if (storedFactoryMoveMap == null) {
             storedFactoryMoveMap =
