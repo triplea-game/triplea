@@ -1314,8 +1314,7 @@ public class ProTerritoryManager {
     if (isCheckingEnemyAttacks) {
       final BigDecimal range =
           new BigDecimal(UnitAttachment.get(unit.getType()).getMovement(player));
-      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-              unitTerritory, player, data.getMap())
+      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(unitTerritory, player)
           .test(unit)) {
         return range.add(BigDecimal.ONE); // assumes bonus of +1 for now
       }

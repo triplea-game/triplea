@@ -1546,7 +1546,7 @@ public final class Matches {
    * @param player referring player
    */
   public static Predicate<Unit> unitCanBeRepairedByFacilitiesInItsTerritory(
-      final Territory territory, final GamePlayer player, final GameMap gameMap) {
+      final Territory territory, final GamePlayer player) {
     return damagedUnit -> {
       final Predicate<Unit> damaged =
           unitHasMoreThanOneHitPointTotal().and(unitHasTakenSomeDamage());
@@ -1561,7 +1561,8 @@ public final class Matches {
         return true;
       }
       if (unitIsSea().test(damagedUnit)) {
-        final Collection<Territory> neighbors = gameMap.getNeighbors(territory, territoryIsLand());
+        final Collection<Territory> neighbors =
+            player.getData().getMap().getNeighbors(territory, territoryIsLand());
         for (final Territory current : neighbors) {
           final Predicate<Unit> repairUnitLand =
               alliedUnit(player)
@@ -1573,7 +1574,8 @@ public final class Matches {
           }
         }
       } else if (unitIsLand().test(damagedUnit)) {
-        final Collection<Territory> neighbors = gameMap.getNeighbors(territory, territoryIsWater());
+        final Collection<Territory> neighbors =
+            player.getData().getMap().getNeighbors(territory, territoryIsWater());
         for (final Territory current : neighbors) {
           final Predicate<Unit> repairUnitSea =
               alliedUnit(player)
@@ -1620,7 +1622,7 @@ public final class Matches {
    * @param player referring player
    */
   public static Predicate<Unit> unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-      final Territory territory, final GamePlayer player, final GameMap gameMap) {
+      final Territory territory, final GamePlayer player) {
     return unitWhichWillGetBonus -> {
       final Predicate<Unit> givesBonusUnit =
           alliedUnit(player).and(unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
@@ -1629,7 +1631,8 @@ public final class Matches {
       }
       if (unitIsSea().test(unitWhichWillGetBonus)) {
         final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(unitIsLand());
-        final Collection<Territory> neighbors = gameMap.getNeighbors(territory, territoryIsLand());
+        final Collection<Territory> neighbors =
+            player.getData().getMap().getNeighbors(territory, territoryIsLand());
         return neighbors.stream().anyMatch(t -> t.anyUnitsMatch(givesBonusUnitLand));
       }
       return false;
@@ -2081,16 +2084,16 @@ public final class Matches {
   }
 
   public static Predicate<PoliticalActionAttachment> politicalActionAffectsAtLeastOneAlivePlayer(
-      final GamePlayer currentPlayer, final GameMap gameMap) {
+      final GamePlayer currentPlayer) {
     return paa -> {
       for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
           paa.getRelationshipChanges()) {
         final GamePlayer p1 = relationshipChange.player1;
         final GamePlayer p2 = relationshipChange.player2;
-        if (!currentPlayer.equals(p1) && p1.amNotDeadYet(gameMap)) {
+        if (!currentPlayer.equals(p1) && p1.amNotDeadYet()) {
           return true;
         }
-        if (!currentPlayer.equals(p2) && p2.amNotDeadYet(gameMap)) {
+        if (!currentPlayer.equals(p2) && p2.amNotDeadYet()) {
           return true;
         }
       }
