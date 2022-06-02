@@ -869,30 +869,9 @@ public class ProTerritoryManager {
                     player, u, startTerritory, isCombatMove, enemyTerritories);
         for (final Territory t : potentialTerritories) {
           // Find route over land checking whether unit can blitz
-          final Route myRoute = gameMap.getRouteForUnit(myUnitTerritory, t, canMove, u, player);
-          if (myRoute == null) {
+          if (!isLandMoveOption(
+              isCombatMove, player, u, myUnitTerritory, t, range, canMove)) {
             continue;
-          }
-          if (myRoute.hasMoreThenOneStep()
-              && myRoute.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
-              && Matches.unitIsOfTypes(
-                      TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
-                  .test(u)) {
-            continue; // If blitzing then make sure none of the territories cause blitz ability to
-            // be lost
-          }
-          final BigDecimal myRouteLength = myRoute.getMovementCost(u);
-          if (myRouteLength.compareTo(range) > 0) {
-            continue;
-          }
-
-          // Skip units that can't participate in combat during combat moves.
-          if (isCombatMove) {
-            Collection<Unit> enemyUnits =
-                CollectionUtils.getMatches(t.getUnits(), Matches.unitIsEnemyOf(u.getOwner()));
-            if (!Matches.unitCanParticipateInCombat(true, u.getOwner(), t, 1, enemyUnits).test(u)) {
-              continue;
-            }
           }
 
           // Add to route map
@@ -910,6 +889,41 @@ public class ProTerritoryManager {
         }
       }
     }
+  }
+
+  private static boolean isLandMoveOption(
+      final boolean isCombatMove,
+      final GamePlayer player,
+      final Unit u,
+      final Territory from,
+      final Territory to,
+      final BigDecimal range,
+      final Predicate<Territory> canMove) {
+    Route r = player.getData().getMap().getRouteForUnit(from, to, canMove, u, player);
+    if (r == null) {
+      return false;
+    }
+    if (r.hasMoreThenOneStep()
+        && r.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
+        && Matches.unitIsOfTypes(
+                TerritoryEffectHelper.getUnitTypesThatLostBlitz(r.getAllTerritories()))
+            .test(u)) {
+      // If blitzing then make sure none of the territories cause blitz ability to be lost
+      return false;
+    }
+    if (r.getMovementCost(u).compareTo(range) > 0) {
+      return false;
+    }
+
+    // Skip units that can't participate in combat during combat moves.
+    if (isCombatMove) {
+      Collection<Unit> enemyUnits =
+          CollectionUtils.getMatches(to.getUnits(), Matches.unitIsEnemyOf(player));
+      if (!Matches.unitCanParticipateInCombat(true, player, to, 1, enemyUnits).test(u)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static void findAirMoveOptions(
