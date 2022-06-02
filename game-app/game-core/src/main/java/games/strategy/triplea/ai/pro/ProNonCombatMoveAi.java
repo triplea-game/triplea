@@ -2507,7 +2507,6 @@ class ProNonCombatMoveAi {
       Territory to =
           findDestinationOrSafeTerritoryOnTheWay(
                   u,
-                  from,
                   infraUnitMoveMap.get(u),
                   validateMove,
                   canMoveThrough,
@@ -2528,11 +2527,11 @@ class ProNonCombatMoveAi {
 
   private Optional<Territory> findDestinationOrSafeTerritoryOnTheWay(
       Unit unit,
-      Territory from,
       Collection<Territory> possibleMoves,
       Predicate<Route> validateMove,
       Predicate<Territory> canMoveThrough,
       Predicate<Territory> finalDestinationTest) {
+    Territory from = unitTerritoryMap.get(unit);
     if (finalDestinationTest.test(from)) {
       // Already at a desired destination, no need to move.
       return Optional.of(from);
