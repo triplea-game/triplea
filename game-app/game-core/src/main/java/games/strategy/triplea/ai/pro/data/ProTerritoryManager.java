@@ -914,8 +914,8 @@ public class ProTerritoryManager {
       return false;
     }
 
-    // Skip units that can't participate in combat during combat moves.
-    if (isCombatMove) {
+    // Skip units that can't participate in combat during combat moves except for land transports.
+    if (isCombatMove && !Matches.unitIsLandTransport().test(u)) {
       Collection<Unit> enemyUnits =
           CollectionUtils.getMatches(to.getUnits(), Matches.unitIsEnemyOf(player));
       if (!Matches.unitCanParticipateInCombat(true, player, to, 1, enemyUnits).test(u)) {
