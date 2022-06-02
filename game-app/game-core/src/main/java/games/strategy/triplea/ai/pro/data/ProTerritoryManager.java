@@ -869,8 +869,7 @@ public class ProTerritoryManager {
                     player, u, startTerritory, isCombatMove, enemyTerritories);
         for (final Territory t : potentialTerritories) {
           // Find route over land checking whether unit can blitz
-          if (!isLandMoveOption(
-              isCombatMove, player, u, myUnitTerritory, t, range, canMove)) {
+          if (!isLandMoveOption(isCombatMove, player, u, myUnitTerritory, t, range, canMove)) {
             continue;
           }
 
