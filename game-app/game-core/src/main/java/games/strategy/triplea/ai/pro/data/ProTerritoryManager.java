@@ -768,7 +768,7 @@ public class ProTerritoryManager {
 
         // Find range
         final BigDecimal range =
-            getUnitRange(data, mySeaUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
+            getUnitRange(mySeaUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
 
         // Find list of potential territories to move to
         final Set<Territory> possibleMoveTerritories =
@@ -973,7 +973,7 @@ public class ProTerritoryManager {
 
         // Find range
         final BigDecimal range =
-            getUnitRange(data, myAirUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
+            getUnitRange(myAirUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
 
         // Find potential territories to move to
         final Set<Territory> possibleMoveTerritories =
@@ -1089,8 +1089,7 @@ public class ProTerritoryManager {
 
         // Get remaining moves
         int movesLeft =
-            getUnitRange(data, myTransport, myUnitTerritory, player, isCheckingEnemyAttacks)
-                .intValue();
+            getUnitRange(myTransport, myUnitTerritory, player, isCheckingEnemyAttacks).intValue();
         MoveValidator moveValidator = new MoveValidator(data, !isCombatMove);
         while (movesLeft >= 0) {
           final Set<Territory> nextTerritories = new HashSet<>();
@@ -1257,7 +1256,7 @@ public class ProTerritoryManager {
 
         // Find range
         final BigDecimal range =
-            getUnitRange(data, mySeaUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
+            getUnitRange(mySeaUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
 
         // Find list of potential territories to move to
         final Set<Territory> potentialTerritories =
@@ -1306,7 +1305,6 @@ public class ProTerritoryManager {
   }
 
   private static BigDecimal getUnitRange(
-      final GameState data,
       final Unit unit,
       final Territory unitTerritory,
       final GamePlayer player,
