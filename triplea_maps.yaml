@@ -2647,3 +2647,10 @@
    <br>All these scenarios use the WW2v3 map & rules
    <br>WW2v3-1941-Buildcap & WW2v3-1942-Buildcap limit the number of units of each that can be built
    <br>WW2v3-1941-Upkeep & WW2v3-1942-Upkeep multiplies costs & income by 10, and applies a 10%/turn upkeep cost
+- mapName: Medieval Europe
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Medieval_Europe/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Medieval_Europe/master/preview.png
+  description: |
+   <br>Medieval Europe, divided into 3 alliances
