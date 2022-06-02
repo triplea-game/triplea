@@ -2506,11 +2506,7 @@ class ProNonCombatMoveAi {
           ProMatches.territoryCanMoveLandUnitsThrough(player, u, from, isCombatMove, List.of());
       Territory to =
           findDestinationOrSafeTerritoryOnTheWay(
-                  u,
-                  infraUnitMoveMap.get(u),
-                  validateMove,
-                  canMoveThrough,
-                  desiredDestination)
+                  u, infraUnitMoveMap.get(u), validateMove, canMoveThrough, desiredDestination)
               .orElse(null);
       if (to != null) {
         if (!to.equals(from)) {
