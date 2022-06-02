@@ -119,10 +119,7 @@ public class UnitAbilityFactory {
     parameters.initialize();
 
     // create unique unit abilities for each player
-    playerList.forEach(
-        player -> {
-          generatePerPlayer(parameters, player);
-        });
+    playerList.forEach(player -> generatePerPlayer(parameters, player));
   }
 
   private static void clearExistingUnitAbilities(final BattlePhaseList battlePhaseList) {

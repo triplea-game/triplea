@@ -62,7 +62,7 @@ public class ClientGame extends AbstractGame {
                 .addChildToEvent(new EventChild(text, renderingData));
           }
 
-          protected void setRenderingData(final Object renderingData) {
+          private void setRenderingData(final Object renderingData) {
             gameData.getHistory().getHistoryWriter().setRenderingData(renderingData);
           }
 
