@@ -57,8 +57,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       throw new GameOverException("Game Over");
     }
     try {
-      game.getData().acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
         final IDelegate delegate = game.getData().getDelegate(currentDelegate);
         // TODO: before converting this Preconditions check to checkNotNull, make sure we do not
         // depend on the illegal state exception type in a catch block.
@@ -82,8 +81,6 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           throw new IllegalStateException(errorMessage, e);
         }
         return getRemoteThatChecksForGameOver(game.getMessengers().getRemote(remoteName));
-      } finally {
-        game.getData().releaseReadLock();
       }
     } catch (final RuntimeException e) {
       if (e.getCause() instanceof MessengerException) {
@@ -103,8 +100,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       throw new GameOverException("Game Over");
     }
     try {
-      game.getData().acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
         final IDelegate delegate = game.getData().getDelegate(name);
         if (delegate == null) {
           final String errorMessage =
@@ -118,8 +114,6 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         }
         return getRemoteThatChecksForGameOver(
             game.getMessengers().getRemote(ServerGame.getRemoteName(delegate)));
-      } finally {
-        game.getData().releaseReadLock();
       }
     } catch (final RuntimeException e) {
       if (e.getCause() instanceof MessengerException) {

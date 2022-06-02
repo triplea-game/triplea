@@ -227,8 +227,7 @@ public final class GameDataManager {
     // write to temporary file first in case of error
     try (ObjectOutputStream outStream = new ObjectOutputStream(sink)) {
       outStream.writeObject(engineVersion);
-      data.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
         final var history = data.getHistory();
         if (!options.withHistory) {
           data.resetHistory();
@@ -251,8 +250,6 @@ public final class GameDataManager {
         } else {
           outStream.writeObject(DELEGATE_LIST_END);
         }
-      } finally {
-        data.releaseReadLock();
       }
     }
   }

@@ -131,8 +131,7 @@ public class MovePanel extends AbstractMovePanel {
           final boolean isFirstSelectedTerritory = Objects.equals(firstSelectedTerritory, t);
           // select units
           final GameData data = getData();
-          data.acquireReadLock();
-          try {
+          try (GameData.Unlocker ignored = data.acquireReadLock()) {
             // de select units
             if (rightMouse && !noSelectedTerritory && !map.wasLastActionDraggingAndReset()) {
               deselectUnits(units, t, mouseDetails);
@@ -148,8 +147,6 @@ public class MovePanel extends AbstractMovePanel {
                 && !isMiddleMouseButton) {
               selectEndPoint(t);
             }
-          } finally {
-            data.releaseReadLock();
           }
           getMap().requestFocusInWindow();
         }
@@ -651,8 +648,7 @@ public class MovePanel extends AbstractMovePanel {
                 || !mouseCurrentTerritory.equals(territory)
                 || mouseCurrentPoint.equals(mouseLastUpdatePoint)) {
               route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
-              getData().acquireReadLock();
-              try {
+              try (GameData.Unlocker ignored = getData().acquireReadLock()) {
                 updateUnitsThatCanMoveOnRoute(selectedUnits, route);
                 // now, check if there is a better route for just the units that can get there (we
                 // check only air since that
@@ -667,8 +663,6 @@ public class MovePanel extends AbstractMovePanel {
                     updateUnitsThatCanMoveOnRoute(airUnits, route);
                   }
                 }
-              } finally {
-                getData().releaseReadLock();
               }
             } else {
               route = routeCached;
@@ -1003,13 +997,10 @@ public class MovePanel extends AbstractMovePanel {
 
   private Route getRoute(
       final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
-    getData().acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = getData().acquireReadLock()) {
       return (forced == null)
           ? getRouteNonForced(start, end, selectedUnits)
           : getRouteForced(start, end, selectedUnits);
-    } finally {
-      getData().releaseReadLock();
     }
   }
 
@@ -1515,11 +1506,8 @@ public class MovePanel extends AbstractMovePanel {
   /** Highlights movable units on the map for the current player. */
   private void highlightMovableUnits() {
     final List<Territory> allTerritories;
-    getData().acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = getData().acquireReadLock()) {
       allTerritories = new ArrayList<>(getData().getMap().getTerritories());
-    } finally {
-      getData().releaseReadLock();
     }
     final Predicate<Unit> movableUnitOwnedByMe =
         PredicateBuilder.of(Matches.unitIsOwnedBy(getData().getSequence().getStep().getPlayerId()))

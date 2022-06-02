@@ -72,8 +72,7 @@ public final class MockDelegateBridge {
 
   public static void advanceToStep(final IDelegateBridge delegateBridge, final String stepName) {
     final GameData gameData = delegateBridge.getData();
-    gameData.acquireWriteLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
       final int length = gameData.getSequence().size();
       int i = 0;
       while ((i < length) && !gameData.getSequence().getStep().getName().contains(stepName)) {
@@ -83,8 +82,6 @@ public final class MockDelegateBridge {
       if ((i > length) && !gameData.getSequence().getStep().getName().contains(stepName)) {
         throw new IllegalArgumentException("Step not found: " + stepName);
       }
-    } finally {
-      gameData.releaseWriteLock();
     }
   }
 }

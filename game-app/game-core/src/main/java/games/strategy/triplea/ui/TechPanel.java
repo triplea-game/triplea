@@ -90,13 +90,10 @@ class TechPanel extends ActionPanel {
             if (advance == null) {
               techRoll = new TechRoll(null, quantity);
             } else {
-              try {
-                getData().acquireReadLock();
+              try (GameData.Unlocker ignored = getData().acquireReadLock()) {
                 final TechnologyFrontier front = new TechnologyFrontier("", getData());
                 front.addAdvance(advance);
                 techRoll = new TechRoll(front, quantity);
-              } finally {
-                getData().releaseReadLock();
               }
             }
             release();

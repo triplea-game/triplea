@@ -109,8 +109,7 @@ class BattleCalculatorPanel extends JPanel {
     this.uiContext = uiContext;
     this.location = location;
     calculateButton.setEnabled(false);
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final Collection<GamePlayer> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
       if (doesPlayerHaveUnitsOnMap(data.getPlayerList().getNullPlayer(), data)) {
         playerList.add(data.getPlayerList().getNullPlayer());
@@ -143,8 +142,6 @@ class BattleCalculatorPanel extends JPanel {
           }
         }
       }
-    } finally {
-      data.releaseReadLock();
     }
     defenderCombo.setRenderer(new PlayerRenderer());
     attackerCombo.setRenderer(new PlayerRenderer());
@@ -1111,8 +1108,7 @@ class BattleCalculatorPanel extends JPanel {
     final Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
     if (territoryEffectsJList != null) {
       final List<String> selected = territoryEffectsJList.getSelectedValuesList();
-      data.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
         final Map<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
         for (final String selection : selected) {
           if (selection.equals(NO_EFFECTS)) {
@@ -1121,8 +1117,6 @@ class BattleCalculatorPanel extends JPanel {
           }
           territoryEffects.add(allTerritoryEffects.get(selection));
         }
-      } finally {
-        data.releaseReadLock();
       }
     }
     return territoryEffects;
@@ -1226,8 +1220,7 @@ class BattleCalculatorPanel extends JPanel {
               ? "N/A"
               : formatValue(avgAttIfAttWon) + " / " + attackersTotal);
       roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
-      try {
-        data.acquireReadLock();
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
         averageChangeInTuv.setText(
             ""
                 + formatValue(
@@ -1239,8 +1232,6 @@ class BattleCalculatorPanel extends JPanel {
                             getDefender(),
                             mainCombatDefenders,
                             data)));
-      } finally {
-        data.releaseReadLock();
       }
       count.setText(results.get().getRollCount() + "");
       time.setText(formatValue(results.get().getTime() / 1000.0) + " s");
@@ -1334,8 +1325,7 @@ class BattleCalculatorPanel extends JPanel {
     keepOneAttackingLandUnitCheckBox.setEnabled(landBattleCheckBox.isSelected());
     amphibiousCheckBox.setEnabled(landBattleCheckBox.isSelected());
     final boolean isLand = isLand();
-    try {
-      data.acquireReadLock();
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final List<Unit> attackers =
           CollectionUtils.getMatches(
               attackingUnitsPanel.getUnits(), Matches.unitCanBeInBattle(true, isLand, 1, true));
@@ -1404,8 +1394,6 @@ class BattleCalculatorPanel extends JPanel {
               .calculateTotalPower();
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -1433,13 +1421,10 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   static boolean hasMaxRounds(final boolean isLand, final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       return isLand
           ? Properties.getLandBattleRounds(data.getProperties()) > 0
           : Properties.getSeaBattleRounds(data.getProperties()) > 0;
-    } finally {
-      data.releaseReadLock();
     }
   }
 }

@@ -59,8 +59,7 @@ public class GameObjectStreamData implements Externalizable {
   Named getReference(final GameData data) {
     checkNotNull(data);
 
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       switch (type) {
         case PLAYERID:
           return data.getPlayerList().getPlayerId(name);
@@ -75,8 +74,6 @@ public class GameObjectStreamData implements Externalizable {
         default:
           throw new IllegalStateException("Unknown type: " + type);
       }
-    } finally {
-      data.releaseReadLock();
     }
   }
 

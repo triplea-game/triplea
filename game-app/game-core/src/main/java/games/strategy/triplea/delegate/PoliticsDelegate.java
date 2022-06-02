@@ -104,12 +104,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   @Override
   public Collection<PoliticalActionAttachment> getValidActions() {
     final GameData data = bridge.getData();
-    data.acquireReadLock();
     final Map<ICondition, Boolean> testedConditions;
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       testedConditions = getTestedConditions();
-    } finally {
-      data.releaseReadLock();
     }
     return PoliticalActionAttachment.getValidActions(player, testedConditions, data);
   }

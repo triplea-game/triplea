@@ -42,8 +42,7 @@ class EditProductionPanel extends ProductionPanel {
   @Override
   protected void initRules(
       final GamePlayer player, final IntegerMap<ProductionRule> initialPurchase) {
-    this.data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = this.data.acquireReadLock()) {
       gamePlayer = player;
       final Set<UnitType> unitsAllowed = new HashSet<>();
       if (player.getProductionFrontier() != null) {
@@ -106,8 +105,6 @@ class EditProductionPanel extends ProductionPanel {
           }
         }
       }
-    } finally {
-      this.data.releaseReadLock();
     }
   }
 }

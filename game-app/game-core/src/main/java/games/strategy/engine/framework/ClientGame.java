@@ -78,8 +78,7 @@ public class ClientGame extends AbstractGame {
             if (firstRun) {
               firstRun = false;
             } else {
-              gameData.acquireWriteLock();
-              try {
+              try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
                 gameData.getSequence().next();
                 final int ourOriginalCurrentRound = gameData.getSequence().getRound();
                 int currentRound = ourOriginalCurrentRound;
@@ -113,8 +112,6 @@ public class ClientGame extends AbstractGame {
                           + " and new Client Round:"
                           + currentRound);
                 }
-              } finally {
-                gameData.releaseWriteLock();
               }
             }
             if (!loadedFromSavedGame) {
@@ -145,13 +142,10 @@ public class ClientGame extends AbstractGame {
             int i = 0;
             boolean shownErrorMessage = false;
             while (true) {
-              gameData.acquireReadLock();
-              try {
+              try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
                 if (gameData.getSequence().getStep().getName().equals(stepName) || isGameOver) {
                   break;
                 }
-              } finally {
-                gameData.releaseReadLock();
               }
               if (!Interruptibles.sleep(100)) {
                 break;
@@ -205,11 +199,8 @@ public class ClientGame extends AbstractGame {
       vault.shutDown();
       for (final Player gp : gamePlayers.values()) {
         final GamePlayer player;
-        gameData.acquireReadLock();
-        try {
+        try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
           player = gameData.getPlayerList().getPlayerId(gp.getName());
-        } finally {
-          gameData.releaseReadLock();
         }
         gamePlayers.put(player, gp);
         messengers.unregisterRemote(ServerGame.getRemoteName(gp.getGamePlayer()));

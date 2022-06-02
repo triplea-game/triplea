@@ -128,8 +128,7 @@ class ProductionRepairPanel extends JPanel {
     if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
       return;
     }
-    this.data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = this.data.acquireReadLock()) {
       this.gamePlayer = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       Predicate<Unit> myDamagedUnits =
@@ -159,8 +158,6 @@ class ProductionRepairPanel extends JPanel {
           }
         }
       }
-    } finally {
-      this.data.releaseReadLock();
     }
   }
 
@@ -270,11 +267,8 @@ class ProductionRepairPanel extends JPanel {
       final String propertyName = gamePlayer.getName() + " bid";
       final int bid = data.getProperties().get(propertyName, 0);
       final ResourceCollection bidCollection = new ResourceCollection(data);
-      data.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
         bidCollection.addResource(data.getResourceList().getResource(Constants.PUS), bid);
-      } finally {
-        data.releaseReadLock();
       }
       return bidCollection;
     }

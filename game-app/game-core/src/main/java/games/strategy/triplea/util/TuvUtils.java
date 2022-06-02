@@ -42,12 +42,9 @@ public class TuvUtils {
    * @return a map of unit types to PU cost
    */
   public static IntegerMap<UnitType> getCostsForTuv(final GamePlayer player, final GameData data) {
-    data.acquireReadLock();
     final Resource pus;
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
     }
 
     final IntegerMap<UnitType> costs = new IntegerMap<>();
@@ -94,12 +91,9 @@ public class TuvUtils {
    */
   private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(
       final GameData data) {
-    data.acquireReadLock();
     final Resource pus;
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
     }
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final Map<UnitType, List<Integer>> differentCosts = new HashMap<>();
@@ -241,11 +235,8 @@ public class TuvUtils {
       getResourceCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
     final Map<UnitType, ResourceCollection> average = new HashMap<>();
     final Resource pus;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
     }
     final IntegerMap<Resource> defaultMap = new IntegerMap<>();
     defaultMap.put(pus, 1);

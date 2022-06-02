@@ -124,10 +124,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
           Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
       final Version engineVersion = Injections.getInstance().getEngineVersion();
       final byte[] serializedData;
-      try {
-        // Serialize the data, then release lock on it so game can continue (ie: we don't want to
-        // lock on it while we copy it 16 times).
-        data.acquireWriteLock();
+      try (GameData.Unlocker ignored = data.acquireWriteLock()) {
         serializedData =
             GameDataUtils.gameDataToBytes(
                     data, GameDataManager.Options.forBattleCalculator(), engineVersion)
@@ -135,8 +132,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         if (serializedData == null) {
           return;
         }
-      } finally {
-        data.releaseWriteLock();
       }
       if (cancelCurrentOperation.get() >= 0) {
         // Create the first battle calc on the current thread to measure the end-to-end copy time.
