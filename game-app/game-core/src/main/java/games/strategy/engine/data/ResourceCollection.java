@@ -171,6 +171,16 @@ public class ResourceCollection extends GameDataComponent {
     Resource pus = null;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
+    } catch (final NullPointerException e) {
+      // we are getting null pointers here occasionally on deserializing game saves, because
+      // data.getResourceList() is
+      // still null at this point
+      for (final Resource r : resources.keySet()) {
+        if (r.getName().equals(Constants.PUS)) {
+          pus = r;
+          break;
+        }
+      }
     }
     if (pus == null) {
       throw new IllegalStateException("Possible deserialization error: PUs is null");

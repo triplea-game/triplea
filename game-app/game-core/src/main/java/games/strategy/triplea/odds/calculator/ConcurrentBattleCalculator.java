@@ -125,6 +125,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Version engineVersion = Injections.getInstance().getEngineVersion();
       final byte[] serializedData;
       try (GameData.Unlocker ignored = data.acquireWriteLock()) {
+        // Serialize the data, then release lock on it so game can continue (ie: we don't want to
+        // lock on it while we copy it 16 times).
         serializedData =
             GameDataUtils.gameDataToBytes(
                     data, GameDataManager.Options.forBattleCalculator(), engineVersion)
