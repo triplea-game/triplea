@@ -1736,8 +1736,7 @@ public class ProCombatMoveAi {
     final Territory myCapital = proData.getMyCapital();
 
     // Add max purchase defenders to capital for non-mobile factories (don't consider mobile
-    // factories since they may
-    // move elsewhere)
+    // factories since they may move elsewhere)
     final List<Unit> placeUnits = new ArrayList<>();
     if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player).test(myCapital)) {
       placeUnits.addAll(
