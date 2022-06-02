@@ -2392,44 +2392,45 @@ class ProNonCombatMoveAi {
     final Map<Territory, ProTerritory> factoryMoveMap = new HashMap<>();
     for (final Iterator<Unit> it = infraUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
       final Unit u = it.next();
-
       // Only check factory units
-      if (Matches.unitCanProduceUnits().test(u)) {
-        Territory maxValueTerritory = null;
-        double maxValue = 0;
-        for (final Territory t : infraUnitMoveMap.get(u)) {
-          final ProTerritory proTerritory = moveMap.get(t);
-          if (!checkCanHold(proTerritory)) {
-            continue;
-          }
+      if (!Matches.unitCanProduceUnits().test(u)) {
+        continue;
+      }
 
-          // Find value by checking if territory is not conquered and doesn't already have a
-          // factory
-          final int production = TerritoryAttachment.get(t).getProduction();
-          double value = 0.1 * proTerritory.getValue();
-          if (ProMatches.territoryIsNotConqueredOwnedLand(player).test(t)
-              && combinedStream(proTerritory.getCantMoveUnits(), proTerritory.getUnits())
-                  .noneMatch(Matches.unitCanProduceUnitsAndIsInfrastructure())) {
-            value = proTerritory.getValue() * production + 0.01 * production;
-          }
-          ProLogger.trace(
-              String.format(
-                  "%s has value=%s, strategicValue=%s, production=%s",
-                  t.getName(), value, proTerritory.getValue(), production));
-          if (value > maxValue) {
-            maxValue = value;
-            maxValueTerritory = t;
-          }
+      Territory maxValueTerritory = null;
+      double maxValue = 0;
+      for (final Territory t : infraUnitMoveMap.get(u)) {
+        final ProTerritory proTerritory = moveMap.get(t);
+        if (!checkCanHold(proTerritory)) {
+          continue;
         }
-        if (maxValueTerritory != null) {
-          ProLogger.debug(
-              String.format(
-                  "%s moved to %s with value=%s",
-                  u.getType().getName(), maxValueTerritory.getName(), maxValue));
-          moveMap.get(maxValueTerritory).addUnit(u);
-          proData.getProTerritory(factoryMoveMap, maxValueTerritory).addUnit(u);
-          it.remove();
+
+        // Find value by checking if territory is not conquered and doesn't already have a
+        // factory
+        final int production = TerritoryAttachment.get(t).getProduction();
+        double value = 0.1 * proTerritory.getValue();
+        if (ProMatches.territoryIsNotConqueredOwnedLand(player).test(t)
+            && combinedStream(proTerritory.getCantMoveUnits(), proTerritory.getUnits())
+                .noneMatch(Matches.unitCanProduceUnitsAndIsInfrastructure())) {
+          value = proTerritory.getValue() * production + 0.01 * production;
         }
+        ProLogger.trace(
+            String.format(
+                "%s has value=%s, strategicValue=%s, production=%s",
+                t.getName(), value, proTerritory.getValue(), production));
+        if (value > maxValue) {
+          maxValue = value;
+          maxValueTerritory = t;
+        }
+      }
+      if (maxValueTerritory != null) {
+        ProLogger.debug(
+            String.format(
+                "%s moved to %s with value=%s",
+                u.getType().getName(), maxValueTerritory.getName(), maxValue));
+        moveMap.get(maxValueTerritory).addUnit(u);
+        proData.getProTerritory(factoryMoveMap, maxValueTerritory).addUnit(u);
+        it.remove();
       }
     }
     return factoryMoveMap;
