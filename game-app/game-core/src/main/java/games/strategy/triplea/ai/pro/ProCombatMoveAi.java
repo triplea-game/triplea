@@ -1116,6 +1116,13 @@ public class ProCombatMoveAi {
         final int isCanHold = canHold ? 1 : 0;
         final int isCantHoldAmphib = !canHold && !patd.getAmphibAttackMap().isEmpty() ? 1 : 0;
         final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
+        int capturableUnits = 0;
+        if (Matches.territoryIsLand().test(t)) {
+          capturableUnits =
+              CollectionUtils.countMatches(
+                  t.getUnitCollection(),
+                  Matches.unitCanBeCapturedOnEnteringThisTerritory(player, t));
+        }
         final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
         final int production = TerritoryAttachment.getProduction(t);
         double capitalValue = 0;
@@ -1128,7 +1135,7 @@ public class ProCombatMoveAi {
                         + isLand
                         - isCantHoldAmphib
                         + isFactory
-                        + isCanHold * (1 + 2.0 * isFfa + 2.0 * isFactory))
+                        + isCanHold * (1 + 2.0 * isFfa + 1.5 * isFactory + 0.5 * capturableUnits))
                     * production
                 + capitalValue;
         double tuvSwing = result.getTuvSwing();
