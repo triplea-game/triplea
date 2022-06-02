@@ -223,6 +223,41 @@ public final class Matches {
     };
   }
 
+  public static Predicate<Unit> unitCanParticipateInCombat(
+      boolean attack,
+      GamePlayer attacker,
+      Territory battleSite,
+      int battleRound,
+      Collection<Unit> enemyUnits) {
+    final Set<UnitType> enemyUnitTypes =
+        enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet());
+    return u -> {
+      final boolean landBattle = !battleSite.isWater();
+      if (!landBattle && Matches.unitIsLand().test(u)) {
+        return false;
+      }
+      // still allow infrastructure type units that can provide support have combat abilities
+      // remove infrastructure units that can't take part in combat (air/naval bases, etc...)
+      if (!Matches.unitCanBeInBattle(attack, landBattle, battleRound, false, enemyUnitTypes)
+          .test(u)) {
+        return false;
+      }
+      // remove capturableOnEntering units (veqryn)
+      if (Matches.unitCanBeCapturedOnEnteringThisTerritory(attacker, battleSite).test(u)) {
+        return false;
+      }
+      // remove any allied air units that are stuck on damaged carriers (veqryn)
+      if (Matches.unitIsBeingTransported()
+          .and(Matches.unitIsAir())
+          .and(Matches.unitCanLandOnCarrier())
+          .test(u)) {
+        return false;
+      }
+      // remove any units that were in air combat (veqryn)
+      return !Matches.unitWasInAirBattle().test(u);
+    };
+  }
+
   public static Predicate<Unit> unitHasAttackValueOfAtLeast(final int attackValue) {
     return unit -> UnitAttachment.get(unit.getType()).getAttack(unit.getOwner()) >= attackValue;
   }

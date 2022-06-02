@@ -843,18 +843,17 @@ public class ProTerritoryManager {
               .getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove));
 
       // Check each land unit individually since they can have different ranges
-      for (final Unit myLandUnit : myLandUnits) {
-        final Territory startTerritory = proData.getUnitTerritory(myLandUnit);
+      for (final Unit u : myLandUnits) {
+        final Territory startTerritory = proData.getUnitTerritory(u);
         // Should this use getUnitRange()?
-        final BigDecimal range = myLandUnit.getMovementLeft();
+        final BigDecimal range = u.getMovementLeft();
         final Set<Territory> possibleMoveTerritories =
             gameMap.getNeighborsByMovementCost(
                 myUnitTerritory,
                 range,
                 isIgnoringRelationships
-                    ? ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(player, myLandUnit)
-                    : ProMatches.territoryCanMoveSpecificLandUnit(
-                        player, isCombatMove, myLandUnit));
+                    ? ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(player, u)
+                    : ProMatches.territoryCanMoveSpecificLandUnit(player, isCombatMove, u));
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
             new HashSet<>(
@@ -862,59 +861,68 @@ public class ProTerritoryManager {
         if (!isCombatMove) {
           potentialTerritories.add(myUnitTerritory);
         }
-        for (final Territory potentialTerritory : potentialTerritories) {
-
+        Predicate<Territory> canMove =
+            isCheckingEnemyAttacks
+                ? ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
+                    player, u, startTerritory, isCombatMove, enemyTerritories, clearedTerritories)
+                : ProMatches.territoryCanMoveLandUnitsThrough(
+                    player, u, startTerritory, isCombatMove, enemyTerritories);
+        for (final Territory t : potentialTerritories) {
           // Find route over land checking whether unit can blitz
-          final Route myRoute =
-              gameMap.getRouteForUnit(
-                  myUnitTerritory,
-                  potentialTerritory,
-                  isCheckingEnemyAttacks
-                      ? ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
-                          player,
-                          myLandUnit,
-                          startTerritory,
-                          isCombatMove,
-                          enemyTerritories,
-                          clearedTerritories)
-                      : ProMatches.territoryCanMoveLandUnitsThrough(
-                          player, myLandUnit, startTerritory, isCombatMove, enemyTerritories),
-                  myLandUnit,
-                  player);
-          if (myRoute == null) {
-            continue;
-          }
-          if (myRoute.hasMoreThenOneStep()
-              && myRoute.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
-              && Matches.unitIsOfTypes(
-                      TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
-                  .test(myLandUnit)) {
-            continue; // If blitzing then make sure none of the territories cause blitz ability to
-            // be lost
-          }
-          final BigDecimal myRouteLength = myRoute.getMovementCost(myLandUnit);
-          if (myRouteLength.compareTo(range) > 0) {
+          if (!isLandMoveOption(isCombatMove, player, u, myUnitTerritory, t, range, canMove)) {
             continue;
           }
 
           // Add to route map
-          landRoutesMap
-              .computeIfAbsent(potentialTerritory, k -> new HashSet<>())
-              .add(myUnitTerritory);
+          landRoutesMap.computeIfAbsent(t, k -> new HashSet<>()).add(myUnitTerritory);
 
           // Populate territories with land units
-          final ProTerritory potentialTerritoryMove =
-              proData.getProTerritory(moveMap, potentialTerritory);
+          final ProTerritory potentialTerritoryMove = proData.getProTerritory(moveMap, t);
           final List<Unit> unitsToAdd =
               ProTransportUtils.findBestUnitsToLandTransport(
-                  myLandUnit, startTerritory, potentialTerritoryMove.getMaxUnits());
+                  u, startTerritory, potentialTerritoryMove.getMaxUnits());
           potentialTerritoryMove.addMaxUnits(unitsToAdd);
 
           // Populate unit move options map
-          unitMoveMap.computeIfAbsent(myLandUnit, k -> new HashSet<>()).add(potentialTerritory);
+          unitMoveMap.computeIfAbsent(u, k -> new HashSet<>()).add(t);
         }
       }
     }
+  }
+
+  private static boolean isLandMoveOption(
+      final boolean isCombatMove,
+      final GamePlayer player,
+      final Unit u,
+      final Territory from,
+      final Territory to,
+      final BigDecimal range,
+      final Predicate<Territory> canMove) {
+    Route r = player.getData().getMap().getRouteForUnit(from, to, canMove, u, player);
+    if (r == null) {
+      return false;
+    }
+    if (r.hasMoreThenOneStep()
+        && r.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
+        && Matches.unitIsOfTypes(
+                TerritoryEffectHelper.getUnitTypesThatLostBlitz(r.getAllTerritories()))
+            .test(u)) {
+      // If blitzing then make sure none of the territories cause blitz ability to be lost
+      return false;
+    }
+    if (r.getMovementCost(u).compareTo(range) > 0) {
+      return false;
+    }
+
+    // Skip units that can't participate in combat during combat moves except for land transports.
+    if (isCombatMove && !Matches.unitIsLandTransport().test(u)) {
+      Collection<Unit> enemyUnits =
+          CollectionUtils.getMatches(to.getUnits(), Matches.unitIsEnemyOf(player));
+      if (!Matches.unitCanParticipateInCombat(true, player, to, 1, enemyUnits).test(u)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static void findAirMoveOptions(
