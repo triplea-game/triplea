@@ -2209,7 +2209,8 @@ class ProNonCombatMoveAi {
                     t, range / 2, ProMatches.territoryCanMoveAirUnits(data, player, true));
         final int numEnemyAttackTerritories =
             CollectionUtils.countMatches(
-                possibleAttackTerritories, ProMatches.territoryIsEnemyNotNeutralLand(player));
+                possibleAttackTerritories,
+                ProMatches.territoryIsEnemyNotPassiveNeutralLand(player));
         final int numLandAttackTerritories =
             CollectionUtils.countMatches(
                 possibleAttackTerritories,
@@ -2227,7 +2228,7 @@ class ProNonCombatMoveAi {
                 .getNeighbors(t, range, ProMatches.territoryCanMoveAirUnits(data, player, true));
         final int numNearbyEnemyTerritories =
             CollectionUtils.countMatches(
-                possibleMoveTerritories, ProMatches.territoryIsEnemyNotNeutralLand(player));
+                possibleMoveTerritories, ProMatches.territoryIsEnemyNotPassiveNeutralLand(player));
 
         // Check if number of attack territories and value are max
         final int isntFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 0 : 1;

@@ -343,7 +343,7 @@ public final class ProMatches {
         territoryCanMoveLandUnits(player, false).and(Matches.isTerritoryAllied(player));
     final Predicate<Territory> hasNoEnemyNeighbors =
         Matches.territoryHasNeighborMatching(
-                player.getData().getMap(), territoryIsEnemyNotNeutralLand(player))
+                player.getData().getMap(), territoryIsEnemyNotPassiveNeutralLand(player))
             .negate();
     return alliedLand.and(hasNoEnemyNeighbors);
   }
@@ -352,10 +352,17 @@ public final class ProMatches {
     return territoryCanMoveLandUnits(player, false).and(Matches.isTerritoryEnemy(player));
   }
 
-  public static Predicate<Territory> territoryIsEnemyNotNeutralLand(final GamePlayer player) {
+  public static Predicate<Territory> territoryIsEnemyNotPassiveNeutralLand(
+      final GamePlayer player) {
     return territoryIsEnemyLand(player)
         .and(Matches.territoryIsNeutralButNotWater().negate())
         .and(t -> !ProUtils.isPassiveNeutralPlayer(t.getOwner()));
+  }
+
+  public static Predicate<Territory> territoryIsEnemyNotNeutralLand(final GamePlayer player) {
+    return territoryIsEnemyLand(player)
+        .and(Matches.territoryIsNeutralButNotWater().negate())
+        .and(t -> !ProUtils.isNeutralPlayer(t.getOwner()));
   }
 
   public static Predicate<Territory> territoryIsOrAdjacentToEnemyNotNeutralLand(
@@ -370,8 +377,9 @@ public final class ProMatches {
     return isMatch.or(adjacentMatch);
   }
 
-  public static Predicate<Territory> territoryIsEnemyNotNeutralOrAllied(final GamePlayer player) {
-    return territoryIsEnemyNotNeutralLand(player)
+  public static Predicate<Territory> territoryIsEnemyNotPassiveNeutralOrAllied(
+      final GamePlayer player) {
+    return territoryIsEnemyNotPassiveNeutralLand(player)
         .or(Matches.territoryIsLand().and(Matches.isTerritoryAllied(player)));
   }
 

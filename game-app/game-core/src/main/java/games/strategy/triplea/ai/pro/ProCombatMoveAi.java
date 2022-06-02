@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -194,7 +195,8 @@ public class ProCombatMoveAi {
       final boolean isAdjacentToMyCapital =
           !data.getMap().getNeighbors(t, Matches.territoryIs(proData.getMyCapital())).isEmpty();
       final int isNotNeutralAdjacentToMyCapital =
-          (isAdjacentToMyCapital && ProMatches.territoryIsEnemyNotNeutralLand(player).test(t))
+          (isAdjacentToMyCapital
+                  && ProMatches.territoryIsEnemyNotPassiveNeutralLand(player).test(t))
               ? 1
               : 0;
       final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
@@ -248,7 +250,7 @@ public class ProCombatMoveAi {
                     .getDistanceIgnoreEndForCondition(
                         nearbyAlliedTerritory,
                         nearbyEnemyTerritory,
-                        ProMatches.territoryIsEnemyNotNeutralOrAllied(player));
+                        ProMatches.territoryIsEnemyNotPassiveNeutralOrAllied(player));
             if (distance < 0 || distance > 2) {
               allAlliedNeighborsHaveRoute = false;
               break;
@@ -613,20 +615,20 @@ public class ProCombatMoveAi {
 
         // Determine if any of the attacking from territories has enemy neighbors that aren't being
         // attacked
-        boolean attackersHaveEnemyNeighbors = false;
-        Territory attackFromTerritoryWithEnemyNeighbors = null;
-        for (final Territory attackFromTerritory : attackFromTerritories) {
-          final Set<Territory> enemyNeighbors =
-              data.getMap()
-                  .getNeighbors(
-                      attackFromTerritory, ProMatches.territoryIsEnemyNotNeutralLand(player));
-          if (!prioritizedTerritoryList.containsAll(enemyNeighbors)) {
-            attackersHaveEnemyNeighbors = true;
-            attackFromTerritoryWithEnemyNeighbors = attackFromTerritory;
-            break;
-          }
-        }
-        if (attackersHaveEnemyNeighbors) {
+        // Note: Use territoryIsEnemyNotNeutralLand(), not territoryIsEnemyNotPassiveNeutralLand()
+        // so that the neutrality check is consistent with logic for isNeutral.
+        Predicate<Territory> enemyTerritory = ProMatches.territoryIsEnemyNotNeutralLand(player);
+        Territory attackFromTerritoryWithEnemyNeighbors =
+            attackFromTerritories.stream()
+                .filter(
+                    attackFromTerritory -> {
+                      final Set<Territory> enemyNeighbors =
+                          data.getMap().getNeighbors(attackFromTerritory, enemyTerritory);
+                      return !prioritizedTerritoryList.containsAll(enemyNeighbors);
+                    })
+                .findAny()
+                .orElse(null);
+        if (attackFromTerritoryWithEnemyNeighbors != null) {
           ProLogger.debug(
               "Removing neutral territory that has attackers that are adjacent to enemies: "
                   + t.getName()
