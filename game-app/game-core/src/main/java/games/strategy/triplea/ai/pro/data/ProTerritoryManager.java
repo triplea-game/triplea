@@ -843,18 +843,17 @@ public class ProTerritoryManager {
               .getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove));
 
       // Check each land unit individually since they can have different ranges
-      for (final Unit myLandUnit : myLandUnits) {
-        final Territory startTerritory = proData.getUnitTerritory(myLandUnit);
+      for (final Unit u : myLandUnits) {
+        final Territory startTerritory = proData.getUnitTerritory(u);
         // Should this use getUnitRange()?
-        final BigDecimal range = myLandUnit.getMovementLeft();
+        final BigDecimal range = u.getMovementLeft();
         final Set<Territory> possibleMoveTerritories =
             gameMap.getNeighborsByMovementCost(
                 myUnitTerritory,
                 range,
                 isIgnoringRelationships
-                    ? ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(player, myLandUnit)
-                    : ProMatches.territoryCanMoveSpecificLandUnit(
-                        player, isCombatMove, myLandUnit));
+                    ? ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(player, u)
+                    : ProMatches.territoryCanMoveSpecificLandUnit(player, isCombatMove, u));
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
             new HashSet<>(
@@ -862,25 +861,15 @@ public class ProTerritoryManager {
         if (!isCombatMove) {
           potentialTerritories.add(myUnitTerritory);
         }
-        for (final Territory potentialTerritory : potentialTerritories) {
-
+        Predicate<Territory> canMove =
+            isCheckingEnemyAttacks
+                ? ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
+                    player, u, startTerritory, isCombatMove, enemyTerritories, clearedTerritories)
+                : ProMatches.territoryCanMoveLandUnitsThrough(
+                    player, u, startTerritory, isCombatMove, enemyTerritories);
+        for (final Territory t : potentialTerritories) {
           // Find route over land checking whether unit can blitz
-          final Route myRoute =
-              gameMap.getRouteForUnit(
-                  myUnitTerritory,
-                  potentialTerritory,
-                  isCheckingEnemyAttacks
-                      ? ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
-                          player,
-                          myLandUnit,
-                          startTerritory,
-                          isCombatMove,
-                          enemyTerritories,
-                          clearedTerritories)
-                      : ProMatches.territoryCanMoveLandUnitsThrough(
-                          player, myLandUnit, startTerritory, isCombatMove, enemyTerritories),
-                  myLandUnit,
-                  player);
+          final Route myRoute = gameMap.getRouteForUnit(myUnitTerritory, t, canMove, u, player);
           if (myRoute == null) {
             continue;
           }
@@ -888,30 +877,36 @@ public class ProTerritoryManager {
               && myRoute.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
               && Matches.unitIsOfTypes(
                       TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
-                  .test(myLandUnit)) {
+                  .test(u)) {
             continue; // If blitzing then make sure none of the territories cause blitz ability to
             // be lost
           }
-          final BigDecimal myRouteLength = myRoute.getMovementCost(myLandUnit);
+          final BigDecimal myRouteLength = myRoute.getMovementCost(u);
           if (myRouteLength.compareTo(range) > 0) {
             continue;
           }
 
+          // Skip units that can't participate in combat during combat moves.
+          if (isCombatMove) {
+            Collection<Unit> enemyUnits =
+                CollectionUtils.getMatches(t.getUnits(), Matches.unitIsEnemyOf(u.getOwner()));
+            if (!Matches.unitCanParticipateInCombat(true, u.getOwner(), t, 1, enemyUnits).test(u)) {
+              continue;
+            }
+          }
+
           // Add to route map
-          landRoutesMap
-              .computeIfAbsent(potentialTerritory, k -> new HashSet<>())
-              .add(myUnitTerritory);
+          landRoutesMap.computeIfAbsent(t, k -> new HashSet<>()).add(myUnitTerritory);
 
           // Populate territories with land units
-          final ProTerritory potentialTerritoryMove =
-              proData.getProTerritory(moveMap, potentialTerritory);
+          final ProTerritory potentialTerritoryMove = proData.getProTerritory(moveMap, t);
           final List<Unit> unitsToAdd =
               ProTransportUtils.findBestUnitsToLandTransport(
-                  myLandUnit, startTerritory, potentialTerritoryMove.getMaxUnits());
+                  u, startTerritory, potentialTerritoryMove.getMaxUnits());
           potentialTerritoryMove.addMaxUnits(unitsToAdd);
 
           // Populate unit move options map
-          unitMoveMap.computeIfAbsent(myLandUnit, k -> new HashSet<>()).add(potentialTerritory);
+          unitMoveMap.computeIfAbsent(u, k -> new HashSet<>()).add(t);
         }
       }
     }

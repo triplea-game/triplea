@@ -1273,36 +1273,11 @@ public class MustFightBattle extends DependentBattle
       final Collection<Unit> enemyUnits,
       final boolean attacking,
       final boolean removeForNextRound) {
-    final List<Unit> unitList = new ArrayList<>(units);
-    if (battleSite.isWater()) {
-      unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitIsLand()));
-    }
-    // still allow infrastructure type units that can provide support have combat abilities
-    // remove infrastructure units that can't take part in combat (air/naval bases, etc...)
-    unitList.removeAll(
-        CollectionUtils.getMatches(
-            unitList,
-            Matches.unitCanBeInBattle(
-                    attacking,
-                    !battleSite.isWater(),
-                    (removeForNextRound ? round + 1 : round),
-                    false,
-                    enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet()))
-                .negate()));
-    // remove capturableOnEntering units (veqryn)
-    unitList.removeAll(
-        CollectionUtils.getMatches(
-            unitList, Matches.unitCanBeCapturedOnEnteringThisTerritory(attacker, battleSite)));
-    // remove any allied air units that are stuck on damaged carriers (veqryn)
-    unitList.removeAll(
-        CollectionUtils.getMatches(
-            unitList,
-            Matches.unitIsBeingTransported()
-                .and(Matches.unitIsAir())
-                .and(Matches.unitCanLandOnCarrier())));
-    // remove any units that were in air combat (veqryn)
-    unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitWasInAirBattle()));
-    return unitList;
+    int battleRound = (removeForNextRound ? round + 1 : round);
+    return CollectionUtils.getMatches(
+        units,
+        Matches.unitCanParticipateInCombat(
+            attacking, attacker, battleSite, battleRound, enemyUnits));
   }
 
   private void addRoundResetStep(final List<IExecutable> steps) {
