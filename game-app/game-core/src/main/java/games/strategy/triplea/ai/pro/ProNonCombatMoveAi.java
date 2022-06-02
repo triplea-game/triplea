@@ -2399,18 +2399,7 @@ class ProNonCombatMoveAi {
         double maxValue = 0;
         for (final Territory t : infraUnitMoveMap.get(u)) {
           final ProTerritory proTerritory = moveMap.get(t);
-          if (!proTerritory.isCanHold()) {
-            continue;
-          }
-
-          // Check if territory is safe after all current moves
-          if (proTerritory.getBattleResult() == null) {
-            proTerritory.setBattleResult(calc.calculateBattleResults(proData, proTerritory));
-          }
-          final ProBattleResult result = proTerritory.getBattleResult();
-          if (result.getWinPercentage() >= proData.getMinWinPercentage()
-              || result.getTuvSwing() > 0) {
-            proTerritory.setCanHold(false);
+          if (!checkCanHold(proTerritory)) {
             continue;
           }
 
@@ -2426,13 +2415,9 @@ class ProNonCombatMoveAi {
             }
           }
           ProLogger.trace(
-              t.getName()
-                  + " has value="
-                  + value
-                  + ", strategicValue="
-                  + proTerritory.getValue()
-                  + ", production="
-                  + production);
+              String.format(
+                  "%s has value=%s, strategicValue=%s, production=%s",
+                  t.getName(), value, proTerritory.getValue(), production));
           if (value > maxValue) {
             maxValue = value;
             maxValueTerritory = t;
@@ -2440,11 +2425,9 @@ class ProNonCombatMoveAi {
         }
         if (maxValueTerritory != null) {
           ProLogger.debug(
-              u.getType().getName()
-                  + " moved to "
-                  + maxValueTerritory.getName()
-                  + " with value="
-                  + maxValue);
+              String.format(
+                  "%s moved to %s with value=%s",
+                  u.getType().getName(), maxValueTerritory.getName(), maxValue));
           moveMap.get(maxValueTerritory).addUnit(u);
           proData.getProTerritory(factoryMoveMap, maxValueTerritory).addUnit(u);
           it.remove();
@@ -2452,6 +2435,23 @@ class ProNonCombatMoveAi {
       }
     }
     return factoryMoveMap;
+  }
+
+  private boolean checkCanHold(ProTerritory proTerritory) {
+    if (!proTerritory.isCanHold()) {
+      return false;
+    }
+
+    // Check if territory is safe after all current moves
+    if (proTerritory.getBattleResult() == null) {
+      proTerritory.setBattleResult(calc.calculateBattleResults(proData, proTerritory));
+    }
+    final ProBattleResult result = proTerritory.getBattleResult();
+    if (result.getWinPercentage() >= proData.getMinWinPercentage() || result.getTuvSwing() > 0) {
+      proTerritory.setCanHold(false);
+      return false;
+    }
+    return true;
   }
 
   private Stream<Unit> combinedStream(Collection<Unit> units1, Collection<Unit> units2) {
