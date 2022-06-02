@@ -422,7 +422,7 @@ public class GameData implements Serializable, GameState {
     return acquireLock(readWriteLock.writeLock());
   }
 
-  private Unlocker acquireLock(Lock lock) {
+  private static Unlocker acquireLock(Lock lock) {
     lock.lock();
     return lock::unlock;
   }
