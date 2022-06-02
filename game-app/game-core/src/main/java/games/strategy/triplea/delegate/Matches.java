@@ -236,6 +236,8 @@ public final class Matches {
       if (!landBattle && Matches.unitIsLand().test(u)) {
         return false;
       }
+      // still allow infrastructure type units that can provide support have combat abilities
+      // remove infrastructure units that can't take part in combat (air/naval bases, etc...)
       if (!Matches.unitCanBeInBattle(attack, landBattle, battleRound, false, enemyUnitTypes)
           .test(u)) {
         return false;
