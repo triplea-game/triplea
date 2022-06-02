@@ -40,6 +40,7 @@ import lombok.Getter;
 import org.triplea.injection.Injections;
 import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
+import org.triplea.java.ObjectUtils;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.map.description.file.MapDescriptionYaml;
 import org.triplea.map.game.notes.GameNotes;
@@ -374,12 +375,14 @@ public class GameData implements Serializable, GameState {
     // not being null.
     GamePlayer nullPlayer = playerList.getNullPlayer();
     for (Territory t : getMap().getTerritories()) {
-      if (!t.isOwnedBy(nullPlayer) && t.getOwner().isNull()) {
+      // Note: We use referenceEquals() because .equals() or .isOwnedBy() is not sufficient.
+      if (t.getOwner().isNull() && !ObjectUtils.referenceEquals(t.getOwner(), nullPlayer)) {
         t.setOwner(nullPlayer);
       }
     }
     for (Unit u : getUnits()) {
-      if (!u.isOwnedBy(nullPlayer) && u.getOwner().isNull()) {
+      // Note: We use referenceEquals() because .equals() or .isOwnedBy() is not sufficient.
+      if (u.getOwner().isNull() && !ObjectUtils.referenceEquals(u.getOwner(), nullPlayer)) {
         u.setOwner(nullPlayer);
       }
     }
