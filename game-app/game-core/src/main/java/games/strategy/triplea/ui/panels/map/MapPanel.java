@@ -72,6 +72,7 @@ import javax.swing.Timer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Range;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ObjectUtils;
@@ -81,6 +82,7 @@ import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.util.Tuple;
 
 /** Responsible for drawing the large map and keeping it updated. */
+@Slf4j
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
   private final List<MapSelectionListener> mapSelectionListeners = new ArrayList<>();
@@ -108,6 +110,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
   private Set<Territory> countriesToUpdate = new HashSet<>();
+  private final Object countriesToUpdateLock = new Object();
 
   private final TerritoryListener territoryListener =
       new TerritoryListener() {
@@ -588,7 +591,7 @@ public class MapPanel extends ImageScrollerLargeView {
     // back in history, no need to do this repeatedly. Instead, a single update is possible if the
     // async code runs after all the notifications have been received.
     final boolean scheduleUpdate;
-    synchronized (countriesToUpdate) {
+    synchronized (countriesToUpdateLock) {
       scheduleUpdate = countriesToUpdate.isEmpty();
       countriesToUpdate.addAll(countries);
     }
@@ -598,11 +601,11 @@ public class MapPanel extends ImageScrollerLargeView {
     AsyncRunner.runAsync(
             () -> {
               Collection<Territory> toUpdate;
-              synchronized (countriesToUpdate) {
+              synchronized (countriesToUpdateLock) {
                 // Note: Don't run updateTerritories() inside countriesToUpdate lock, as this causes
                 // a deadlock due to locking game data inside updateTerritories().
-                toUpdate = List.copyOf(countriesToUpdate);
-                countriesToUpdate.clear();
+                toUpdate = countriesToUpdate;
+                countriesToUpdate = new HashSet<>();
               }
               tileManager.updateTerritories(toUpdate, gameData, uiContext.getMapData());
               smallMapImageManager.update(uiContext.getMapData());
@@ -612,7 +615,7 @@ public class MapPanel extends ImageScrollerLargeView {
                     repaint();
                   });
             })
-        .exceptionally(Throwable::printStackTrace);
+        .exceptionally(e -> log.warn("Failed to update countries", e));
   }
 
   public void setGameData(final GameData data) {
