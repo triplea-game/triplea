@@ -222,7 +222,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       final String acceptanceQuestion,
       final boolean politics) {
     // we are dead, just accept
-    if (!this.getGamePlayer().amNotDeadYet(getGameData().getMap())) {
+    if (!this.getGamePlayer().amNotDeadYet()) {
       return true;
     }
     // not related to politics? just accept i guess

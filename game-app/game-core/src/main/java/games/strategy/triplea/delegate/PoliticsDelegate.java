@@ -88,7 +88,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (!player.amNotDeadYet(getData().getMap())) {
+    if (!player.amNotDeadYet()) {
       return false;
     }
     return Properties.getUsePolitics(getData().getProperties()) && !getValidActions().isEmpty();
