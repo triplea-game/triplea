@@ -2316,7 +2316,7 @@ class ProNonCombatMoveAi {
     Map<Territory, ProTerritory> factoryMoveMap = initialFactoryMoveMap;
     if (factoryMoveMap == null) {
       ProLogger.debug("Creating factory move map");
-      factoryMoveMap = buildFactoryMoveMap(infraUnitMoveMap);
+      factoryMoveMap = buildFactoryMoveMap(moveMap, infraUnitMoveMap);
     } else {
       ProLogger.debug("Using stored factory move map");
 
@@ -2387,9 +2387,8 @@ class ProNonCombatMoveAi {
   }
 
   private Map<Territory, ProTerritory> buildFactoryMoveMap(
+      final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> infraUnitMoveMap) {
-    final Map<Territory, ProTerritory> moveMap =
-        territoryManager.getDefendOptions().getTerritoryMap();
     final Map<Territory, ProTerritory> factoryMoveMap = new HashMap<>();
     for (final Iterator<Unit> it = infraUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
       final Unit u = it.next();
