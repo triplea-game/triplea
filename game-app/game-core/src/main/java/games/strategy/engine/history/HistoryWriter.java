@@ -1,6 +1,7 @@
 package games.strategy.engine.history;
 
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import java.io.Serializable;
 import javax.swing.SwingUtilities;
@@ -78,8 +79,7 @@ public class HistoryWriter implements Serializable {
   private void closeCurrent() {
     assertCorrectThread();
     final HistoryNode old = current;
-    history.getGameData().acquireWriteLock();
-    try {
+    try (GameData.Unlocker ignored = history.getGameData().acquireWriteLock()) {
       // remove steps where nothing happened
       if (isCurrentStep()) {
         final HistoryNode parent = (HistoryNode) current.getParent();
@@ -94,8 +94,6 @@ public class HistoryWriter implements Serializable {
       }
       current = (HistoryNode) current.getParent();
       ((IndexedHistoryNode) old).setChangeEndIndex(history.getChanges().size());
-    } finally {
-      history.getGameData().releaseWriteLock();
     }
   }
 
@@ -105,11 +103,8 @@ public class HistoryWriter implements Serializable {
   }
 
   private void addToCurrent(final HistoryNode newNode) {
-    history.getGameData().acquireWriteLock();
-    try {
+    try (GameData.Unlocker ignored = history.getGameData().acquireWriteLock()) {
       history.insertNodeInto(newNode, current, current.getChildCount());
-    } finally {
-      history.getGameData().releaseWriteLock();
     }
     history.goToEnd();
   }
@@ -182,11 +177,8 @@ public class HistoryWriter implements Serializable {
               + current);
       startEvent("Filler event for details: " + details);
     }
-    history.getGameData().acquireWriteLock();
-    try {
+    try (GameData.Unlocker ignored = history.getGameData().acquireWriteLock()) {
       ((Event) current).setRenderingData(details);
-    } finally {
-      history.getGameData().releaseWriteLock();
     }
     history.goToEnd();
   }

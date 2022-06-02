@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
@@ -402,12 +403,7 @@ public class GameData implements Serializable, GameState {
    * }</pre>
    */
   public Unlocker acquireReadLock() {
-    readWriteLock.readLock().lock();
-    return this::releaseReadLock;
-  }
-
-  public void releaseReadLock() {
-    readWriteLock.readLock().unlock();
+    return acquireLock(readWriteLock.readLock());
   }
 
   /**
@@ -423,12 +419,12 @@ public class GameData implements Serializable, GameState {
    * }</pre>
    */
   public Unlocker acquireWriteLock() {
-    readWriteLock.writeLock().lock();
-    return this::releaseWriteLock;
+    return acquireLock(readWriteLock.writeLock());
   }
 
-  public void releaseWriteLock() {
-    readWriteLock.writeLock().unlock();
+  private static Unlocker acquireLock(Lock lock) {
+    lock.lock();
+    return lock::unlock;
   }
 
   public void addToAttachmentOrderAndValues(

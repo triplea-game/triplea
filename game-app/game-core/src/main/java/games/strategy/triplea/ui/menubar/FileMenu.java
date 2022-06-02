@@ -71,8 +71,7 @@ final class FileMenu extends JMenu {
                 return;
               }
               final String title = "Manual Gamesave Post";
-              try {
-                gameData.acquireReadLock();
+              try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
                 final GameStep step = gameData.getSequence().getStep();
                 final GamePlayer currentPlayer =
                     (step == null
@@ -87,8 +86,6 @@ final class FileMenu extends JMenu {
                 final PbemMessagePoster poster =
                     new PbemMessagePoster(gameData, currentPlayer, round, title);
                 poster.postTurn(title, historyLog, true, null, frame, null);
-              } finally {
-                gameData.releaseReadLock();
               }
             })
         .build();

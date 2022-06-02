@@ -218,8 +218,7 @@ final class MovableUnitsFilter {
       final Collection<Unit> units, final Collection<Unit> transportsToLoad) {
     final Collection<Unit> unitsWithDependents = addMustMoveWith(units);
     final MoveValidationResult result;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final Map<Unit, Unit> unitsToTransports =
           transportsToLoad.isEmpty()
               ? Map.of()
@@ -232,8 +231,6 @@ final class MovableUnitsFilter {
       } else {
         result = moveValidator.validateMove(move, player, undoableMoves);
       }
-    } finally {
-      data.releaseReadLock();
     }
 
     return new MoveValidationResultWithDependents(

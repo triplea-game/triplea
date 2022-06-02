@@ -346,11 +346,8 @@ public class MapPanel extends ImageScrollerLargeView {
   public boolean getEditMode() {
     final boolean isEditMode;
     // use GameData from mapPanel since it will follow current history node
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
-    } finally {
-      gameData.releaseReadLock();
     }
     return isEditMode;
   }
@@ -648,8 +645,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final Graphics2D g2d = (Graphics2D) checkNotNull(g);
     // make sure we use the same data for the entire print
     final GameData gameData = this.gameData;
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       final Rectangle2D.Double bounds =
           new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
@@ -657,8 +653,6 @@ public class MapPanel extends ImageScrollerLargeView {
         tile.drawImage(gameData, uiContext.getMapData());
         g2d.drawImage(tile.getImage(), tile.getBounds().x, tile.getBounds().y, this);
       }
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
@@ -755,11 +749,8 @@ public class MapPanel extends ImageScrollerLargeView {
     for (final Tile tile : undrawnTiles) {
       executor.execute(
           () -> {
-            gameData.acquireReadLock();
-            try {
+            try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
               tile.drawImage(gameData, mapData);
-            } finally {
-              gameData.releaseReadLock();
             }
             SwingUtilities.invokeLater(MapPanel.this::repaint);
           });
@@ -827,20 +818,14 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   public Image getTerritoryImage(final Territory territory) {
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       return tileManager.newTerritoryImage(territory, gameData, uiContext.getMapData());
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
   public Image getTerritoryImage(final Territory territory, final Territory focusOn) {
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       return tileManager.newTerritoryImage(territory, focusOn, gameData, uiContext.getMapData());
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
@@ -882,16 +867,13 @@ public class MapPanel extends ImageScrollerLargeView {
         movementLeft.getMinimum()
             + (movementLeft.getMaximum().compareTo(movementLeft.getMinimum()) > 0 ? "+" : "");
     if (routeDescription != null) {
-      gameData.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         movementFuelCost =
             Route.getMovementFuelCostCharge(
                 units,
                 routeDescription.getRoute(),
                 CollectionUtils.getAny(units).getOwner(),
                 gameData);
-      } finally {
-        gameData.releaseReadLock();
       }
     }
 
@@ -909,8 +891,7 @@ public class MapPanel extends ImageScrollerLargeView {
     g.setRenderingHint(
         RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     final Rectangle bounds = new Rectangle(0, 0, 0, 0);
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       int i = 0;
       for (final UnitCategory category : categories) {
         final Point place = new Point(i * (iconWidth + horizontalSpace), 0);
@@ -929,8 +910,6 @@ public class MapPanel extends ImageScrollerLargeView {
         drawer.draw(bounds, gameData, g, uiContext.getMapData());
         i++;
       }
-    } finally {
-      gameData.releaseReadLock();
     }
     mouseShadowImage = img;
     SwingUtilities.invokeLater(this::repaint);

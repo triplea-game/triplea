@@ -40,8 +40,7 @@ public class GameObjectInputStream extends ObjectInputStream {
   }
 
   private Object resolveUnit(final Unit unit) {
-    dataSource.getData().acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = dataSource.getData().acquireReadLock()) {
       final Unit local = dataSource.getData().getUnits().get(unit.getId());
       if (local != null) {
         return local;
@@ -54,8 +53,6 @@ public class GameObjectInputStream extends ObjectInputStream {
       }
       dataSource.getData().getUnits().put(newLocal);
       return newLocal;
-    } finally {
-      dataSource.getData().releaseReadLock();
     }
   }
 }

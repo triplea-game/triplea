@@ -95,11 +95,8 @@ class OrderOfLossesInputPanel extends JPanel {
     }
     try {
       final UnitTypeList unitTypes;
-      try {
-        data.acquireReadLock();
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
         unitTypes = data.getUnitTypeList();
-      } finally {
-        data.releaseReadLock();
       }
       for (final String section : splitOrderOfLoss(orderOfLoss)) {
         if (section.length() == 0) {

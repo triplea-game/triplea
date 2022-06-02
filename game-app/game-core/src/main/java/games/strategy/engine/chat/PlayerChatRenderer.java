@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Preconditions;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
@@ -89,11 +90,8 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   }
 
   private static PlayerList getPlayerList(final IGame game) {
-    game.getData().acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
       return game.getData().getPlayerList();
-    } finally {
-      game.getData().releaseReadLock();
     }
   }
 
