@@ -72,14 +72,17 @@ import javax.swing.Timer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Range;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.util.Tuple;
 
 /** Responsible for drawing the large map and keeping it updated. */
+@Slf4j
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
   private final List<MapSelectionListener> mapSelectionListeners = new ArrayList<>();
@@ -106,26 +109,25 @@ public class MapPanel extends ImageScrollerLargeView {
   @Getter private Collection<Collection<Unit>> highlightedUnits = List.of();
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
+  private Set<Territory> countriesToUpdate = new HashSet<>();
+  private final Object countriesToUpdateLock = new Object();
 
   private final TerritoryListener territoryListener =
       new TerritoryListener() {
         @Override
         public void unitsChanged(final Territory territory) {
           updateCountries(Set.of(territory));
-          SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
 
         @Override
         public void ownerChanged(final Territory territory) {
           smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
           updateCountries(Set.of(territory));
-          SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
 
         @Override
         public void attachmentChanged(final Territory territory) {
           updateCountries(Set.of(territory));
-          SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
       };
 
@@ -584,14 +586,36 @@ public class MapPanel extends ImageScrollerLargeView {
                 newUnits.getSecond(), currentUnits.getSecond()));
   }
 
-  public void updateCountries(final Collection<Territory> countries) {
-    tileManager.updateTerritories(countries, gameData, uiContext.getMapData());
-    smallMapImageManager.update(uiContext.getMapData());
-    SwingUtilities.invokeLater(
-        () -> {
-          smallView.repaint();
-          repaint();
-        });
+  public void updateCountries(Collection<Territory> countries) {
+    // When there are multiple updateCountries() notifications in a row, for example from going far
+    // back in history, no need to do this repeatedly. Instead, a single update is possible if the
+    // async code runs after all the notifications have been received.
+    final boolean scheduleUpdate;
+    synchronized (countriesToUpdateLock) {
+      scheduleUpdate = countriesToUpdate.isEmpty();
+      countriesToUpdate.addAll(countries);
+    }
+    if (!scheduleUpdate) {
+      return; // An update is already scheduled.
+    }
+    AsyncRunner.runAsync(
+            () -> {
+              Collection<Territory> toUpdate;
+              synchronized (countriesToUpdateLock) {
+                // Note: Don't run updateTerritories() inside countriesToUpdate lock, as this causes
+                // a deadlock due to locking game data inside updateTerritories().
+                toUpdate = countriesToUpdate;
+                countriesToUpdate = new HashSet<>();
+              }
+              tileManager.updateTerritories(toUpdate, gameData, uiContext.getMapData());
+              smallMapImageManager.update(uiContext.getMapData());
+              SwingUtilities.invokeLater(
+                  () -> {
+                    smallView.repaint();
+                    repaint();
+                  });
+            })
+        .exceptionally(e -> log.warn("Failed to update countries", e));
   }
 
   public void setGameData(final GameData data) {
