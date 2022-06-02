@@ -427,7 +427,7 @@ public final class ProMatches {
     return hasOwnedFactoryNeighbor.and(territoryCanMoveSeaUnits(player, true));
   }
 
-  private static Predicate<Unit> unitCanBeMovedAndIsOwned(final GamePlayer player) {
+  public static Predicate<Unit> unitCanBeMovedAndIsOwned(final GamePlayer player) {
     return Matches.unitIsOwnedBy(player).and(Matches.unitHasMovementLeft());
   }
 
@@ -466,12 +466,6 @@ public final class ProMatches {
     return u ->
         !Matches.unitCanNotMoveDuringCombatMove().test(u)
             && unitCanBeMovedAndIsOwned(player).and(Matches.unitCanBombard(player)).test(u);
-  }
-
-  public static Predicate<Unit> unitCanBeMovedAndIsOwnedNonCombatInfra(final GamePlayer player) {
-    return unitCanBeMovedAndIsOwned(player)
-        .and(Matches.unitCanNotMoveDuringCombatMove())
-        .and(Matches.unitIsInfrastructure());
   }
 
   public static Predicate<Unit> unitCantBeMovedAndIsAlliedDefender(

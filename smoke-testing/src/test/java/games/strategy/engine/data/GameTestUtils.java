@@ -12,6 +12,7 @@ import games.strategy.engine.player.Player;
 import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.net.URI;
@@ -20,7 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
@@ -29,6 +32,7 @@ import org.triplea.game.server.HeadlessLaunchAction;
 import org.triplea.injection.Injections;
 import org.triplea.io.ContentDownloader;
 import org.triplea.io.FileUtils;
+import org.triplea.java.collections.CollectionUtils;
 
 @UtilityClass
 @Slf4j
@@ -90,5 +94,43 @@ public class GameTestUtils {
     // Note: This doesn't actually start the AI players' turns. For that, call game.startGame().
     gameData.getGameLoader().startGame(game, gamePlayers, launchAction, null);
     return game;
+  }
+
+  public static void runStepsUntil(ServerGame game, String stopAfterStepName) {
+    boolean done = false;
+    while (!done) {
+      done = game.getData().getSequence().getStep().getName().equals(stopAfterStepName);
+      game.runNextStep();
+    }
+  }
+
+  public static void addUnits(Territory t, GamePlayer player, String... unitTypes) {
+    for (String unitType : unitTypes) {
+      t.getUnitCollection().add(getUnitType(player.getData(), unitType).create(player));
+    }
+  }
+
+  public static int countUnitsOfType(GamePlayer player, String unitType) {
+    // Note: We don't use game.getUnits() because units are never removed from there.
+    // We also don't use player.getUnits() because those are just the units-to-place.
+    int count = 0;
+    for (Territory t : player.getData().getMap().getTerritories()) {
+      count += countUnitsOfType(t, player, unitType);
+    }
+    return count;
+  }
+
+  public static int countUnitsOfType(Territory t, GamePlayer p, String unitType) {
+    Predicate<Unit> matcher =
+        Matches.unitIsOwnedBy(p).and(Matches.unitIsOfType(getUnitType(p.getData(), unitType)));
+    return CollectionUtils.countMatches(t.getUnits(), matcher);
+  }
+
+  public static UnitType getUnitType(GameData data, String name) {
+    return Optional.ofNullable(data.getUnitTypeList().getUnitType(name)).orElseThrow();
+  }
+
+  public static Territory getTerritory(GameData data, String name) {
+    return Optional.ofNullable(data.getMap().getTerritory(name)).orElseThrow();
   }
 }

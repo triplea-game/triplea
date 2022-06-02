@@ -4,21 +4,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.triplea.delegate.EndRoundDelegate;
-import games.strategy.triplea.delegate.Matches;
 import java.io.IOException;
-import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.triplea.java.collections.CollectionUtils;
 
 /**
  * End-to-end test that starts all-AI games on a selected set of maps and verifies they conclude
@@ -51,48 +47,63 @@ public class AiGameTest {
 
   @Test
   void testAiGameWithConsumedUnits() throws Exception {
-    GameSelectorModel gameSelector =
-        GameTestUtils.loadGameFromURI(
-            "imperialism_1974_board_game", "map/games/imperialism_1974_board_game.xml");
-    ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
+    ServerGame game = loadImperialism1974();
     game.getData().preGameDisablePlayers(p -> !p.getName().equals("Blue"));
     game.setUpGameForRunningSteps();
 
     GamePlayer blue = game.getData().getPlayerList().getPlayerId("Blue");
     assertThat(blue.isNull(), is(false));
     // Check that after wealth place, we have 1 wealth and 10 armies.
-    runStepsUntil(game, "BlueWealthPlace");
-    assertThat(countUnitsOfType(game.getData(), blue, "wealth"), is(1));
-    assertThat(countUnitsOfType(game.getData(), blue, "new_army"), is(0));
-    assertThat(countUnitsOfType(game.getData(), blue, "army"), is(10));
+    GameTestUtils.runStepsUntil(game, "BlueWealthPlace");
+    assertThat(GameTestUtils.countUnitsOfType(blue, "wealth"), is(1));
+    assertThat(GameTestUtils.countUnitsOfType(blue, "new_army"), is(0));
+    assertThat(GameTestUtils.countUnitsOfType(blue, "army"), is(10));
     // Now, execute steps until Place, which includes Purchase.
-    runStepsUntil(game, "BluePlace");
+    GameTestUtils.runStepsUntil(game, "BluePlace");
     // Check that the AI has built a new army using a wealth unit.
-    assertThat(countUnitsOfType(game.getData(), blue, "wealth"), is(0));
-    assertThat(countUnitsOfType(game.getData(), blue, "new_army"), is(1));
-    assertThat(countUnitsOfType(game.getData(), blue, "army"), is(10));
+    assertThat(GameTestUtils.countUnitsOfType(blue, "wealth"), is(0));
+    assertThat(GameTestUtils.countUnitsOfType(blue, "new_army"), is(1));
+    assertThat(GameTestUtils.countUnitsOfType(blue, "army"), is(10));
   }
 
-  private void runStepsUntil(ServerGame game, String stopAfterStepName) {
-    while (true) {
-      boolean stop = game.getData().getSequence().getStep().getName().equals(stopAfterStepName);
-      game.runNextStep();
-      if (stop) {
-        return;
-      }
-    }
+  @Test
+  void testAiGameMovingConsumedUnitsToFactories() throws Exception {
+    ServerGame game = loadImperialism1974();
+    GameData gameData = game.getData();
+    gameData.preGameDisablePlayers(p -> !p.getName().equals("Blue"));
+    game.setUpGameForRunningSteps();
+
+    GamePlayer blue = gameData.getPlayerList().getPlayerId("Blue");
+    assertThat(blue.isNull(), is(false));
+    GameTestUtils.runStepsUntil(game, "BlueWealthPlace");
+
+    // Now, set up some units on another continent to verify how the AI will handle them.
+    Territory oaxaca = GameTestUtils.getTerritory(gameData, "Oaxaca");
+    oaxaca.setOwner(blue);
+    GameTestUtils.addUnits(oaxaca, blue, "army", "port");
+    Territory stLucia = GameTestUtils.getTerritory(gameData, "St Lucia");
+    stLucia.setOwner(blue);
+    GameTestUtils.addUnits(stLucia, blue, "army", "wealth");
+    Territory andres = GameTestUtils.getTerritory(gameData, "Andres");
+    andres.setOwner(blue);
+    GameTestUtils.addUnits(andres, blue, "army");
+    Territory culiacan = GameTestUtils.getTerritory(gameData, "Culiacan");
+    culiacan.setOwner(blue);
+    GameTestUtils.addUnits(culiacan, blue, "army", "wealth");
+
+    GameTestUtils.runStepsUntil(game, "BlueEndTurn");
+    // Verify that the St Lucia wealth was moved to Andres (on the way to Oaxaca that has a port).
+    assertThat(GameTestUtils.countUnitsOfType(andres, blue, "wealth"), is(1));
+    assertThat(GameTestUtils.countUnitsOfType(stLucia, blue, "wealth"), is(0));
+    // Verify that the Culiacan wealth was moved to Oaxaca (that has a port).
+    assertThat(GameTestUtils.countUnitsOfType(oaxaca, blue, "wealth"), is(1));
+    assertThat(GameTestUtils.countUnitsOfType(culiacan, blue, "wealth"), is(0));
   }
 
-  private int countUnitsOfType(GameData data, GamePlayer player, String unitTypeName) {
-    UnitType unitType = data.getUnitTypeList().getUnitType(unitTypeName);
-    assertThat(unitType, notNullValue());
-    Predicate<Unit> matcher = Matches.unitIsOwnedBy(player).and(Matches.unitIsOfType(unitType));
-    // Note: We don't use game.getUnits() because units are never removed from there.
-    // We also don't use player.getUnits() because those are just the units-to-place.
-    int count = 0;
-    for (Territory t : data.getMap().getTerritories()) {
-      count += CollectionUtils.countMatches(t.getUnits(), matcher);
-    }
-    return count;
+  private ServerGame loadImperialism1974() throws Exception {
+    GameSelectorModel gameSelector =
+        GameTestUtils.loadGameFromURI(
+            "imperialism_1974_board_game", "map/games/imperialism_1974_board_game.xml");
+    return GameTestUtils.setUpGameWithAis(gameSelector);
   }
 }
