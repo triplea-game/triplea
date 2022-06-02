@@ -2407,12 +2407,10 @@ class ProNonCombatMoveAi {
           // factory
           final int production = TerritoryAttachment.get(t).getProduction();
           double value = 0.1 * proTerritory.getValue();
-          if (ProMatches.territoryIsNotConqueredOwnedLand(player).test(t)) {
-            final Stream<Unit> units =
-                combinedStream(proTerritory.getCantMoveUnits(), proTerritory.getUnits());
-            if (units.noneMatch(Matches.unitCanProduceUnitsAndIsInfrastructure())) {
-              value = proTerritory.getValue() * production + 0.01 * production;
-            }
+          if (ProMatches.territoryIsNotConqueredOwnedLand(player).test(t)
+              && combinedStream(proTerritory.getCantMoveUnits(), proTerritory.getUnits())
+                  .noneMatch(Matches.unitCanProduceUnitsAndIsInfrastructure())) {
+            value = proTerritory.getValue() * production + 0.01 * production;
           }
           ProLogger.trace(
               String.format(
