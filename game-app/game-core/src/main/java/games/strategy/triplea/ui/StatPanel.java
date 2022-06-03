@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -22,7 +23,6 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,7 +196,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       final GameData gameData = StatPanel.this.gameData;
       try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
-        final Collection<String> alliances = gameData.getAllianceTracker().getAlliances();
+        final List<String> alliances = getAlliancesToShow(gameData.getAllianceTracker());
         collectedData = new String[players.size() + alliances.size()][stats.length + 1];
         int row = 0;
         for (final GamePlayer player : players) {
@@ -207,7 +207,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
           }
           row++;
         }
-        for (final String alliance : alliances.stream().sorted().collect(Collectors.toList())) {
+        for (final String alliance : alliances) {
           collectedData[row][0] = "<html><b>" + alliance;
           for (int i = 0; i < stats.length; i++) {
             double value = stats[i].getValue(alliance, gameData, uiContext.getMapData());
@@ -216,6 +216,13 @@ class StatPanel extends JPanel implements GameDataChangeListener {
           row++;
         }
       }
+    }
+
+    private List<String> getAlliancesToShow(AllianceTracker tracker) {
+      return tracker.getAlliances().stream()
+          .filter(a -> tracker.getPlayersInAlliance(a).size() > 1)
+          .sorted()
+          .collect(Collectors.toList());
     }
 
     /*
