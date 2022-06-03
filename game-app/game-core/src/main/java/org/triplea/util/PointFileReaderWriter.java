@@ -61,9 +61,7 @@ public final class PointFileReaderWriter {
                 + mapping.get(territoryName)
                 + "'");
       }
-      mapping.put(
-          territoryName,
-          new Point(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
+      mapping.put(territoryName, readPoint(matcher.group(2), matcher.group(3)));
     } else {
       throw new IllegalArgumentException(
           "Line '" + line + "' did not match required pattern. Example: Territory (1,2)");
@@ -232,9 +230,7 @@ public final class PointFileReaderWriter {
       final List<Point> points = new ArrayList<>();
       final Matcher pointMatcher = pointPattern.matcher(polyMatcher.group());
       while (pointMatcher.find()) {
-        points.add(
-            new Point(
-                Integer.parseInt(pointMatcher.group(1)), Integer.parseInt(pointMatcher.group(2))));
+        points.add(readPoint(pointMatcher.group(1), pointMatcher.group(2)));
       }
       polygons.add(newPolygonFromPoints(points));
     }
@@ -257,10 +253,14 @@ public final class PointFileReaderWriter {
     final Matcher matcher = pointPattern.matcher(line);
     final List<Point> points = new ArrayList<>();
     while (matcher.find()) {
-      points.add(new Point(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2))));
+      points.add(readPoint(matcher.group(1), matcher.group(2)));
     }
     mapping.put(name, points);
     return Tuple.of(name, points);
+  }
+
+  private static Point readPoint(String xStr, String yStr) {
+    return new Point(Integer.parseInt(xStr), Integer.parseInt(yStr));
   }
 
   @VisibleForTesting
