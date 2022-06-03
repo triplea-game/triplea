@@ -2654,3 +2654,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Medieval_Europe/master/preview.png
   description: |
    <br>Medieval Europe, divided into 3 alliances
+- mapName: Hot War-1956
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/hotwar/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/hotwar/master/preview.png
+  description: |
+   <br>A hypothetical World War Three breaking out in 1956. Uses the Big World map. Force levels and production values come from the Correlates of War database.
