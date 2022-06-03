@@ -87,8 +87,7 @@ class AaInMoveUtil implements Serializable {
                     movingPlayer,
                     Matches.unitIsAaForFlyOverOnly(),
                     1,
-                    true,
-                    getData().getRelationshipTracker()));
+                    true));
     // comes ordered alphabetically already
     final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
     // stacks are backwards
@@ -255,8 +254,7 @@ class AaInMoveUtil implements Serializable {
             movingPlayer,
             Matches.unitIsAaForFlyOverOnly(),
             1,
-            true,
-            data.getRelationshipTracker());
+            true);
     // AA guns in transports shouldn't be able to fire
     final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();
     for (final Territory current : route.getMiddleSteps()) {

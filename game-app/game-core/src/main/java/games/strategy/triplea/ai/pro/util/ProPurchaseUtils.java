@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.util;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -18,6 +19,7 @@ import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
@@ -146,14 +148,7 @@ public final class ProPurchaseUtils {
         CollectionUtils.getMatches(
             ownedOrHasUnitTerritories,
             Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(
-                player,
-                data.getProperties(),
-                data.getRelationshipTracker(),
-                false,
-                false,
-                false,
-                false,
-                false));
+                player, false, false, false, false, false));
 
     // Create purchase territory holder for each factory territory
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
@@ -186,12 +181,12 @@ public final class ProPurchaseUtils {
       ownedAndNotConqueredFactoryTerritories =
           CollectionUtils.getMatches(
               data.getMap().getTerritories(),
-              ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
+              ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player));
     }
     ownedAndNotConqueredFactoryTerritories =
         CollectionUtils.getMatches(
             ownedAndNotConqueredFactoryTerritories,
-            ProMatches.territoryCanMoveLandUnits(data, player, false));
+            ProMatches.territoryCanMoveLandUnits(player, false));
 
     // Create purchase territory holder for each factory territory
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
@@ -240,9 +235,6 @@ public final class ProPurchaseUtils {
    * territory.
    */
   public static int getMaxConstructions(
-      final Territory territory,
-      final GameState data,
-      final GamePlayer player,
       final List<ProPurchaseOption> zeroMoveDefensePurchaseOptions) {
     final IntegerMap<String> constructionTypesPerTurn = new IntegerMap<>();
     for (final ProPurchaseOption ppo : zeroMoveDefensePurchaseOptions) {
@@ -327,5 +319,27 @@ public final class ProPurchaseUtils {
       }
     }
     return placeUnits;
+  }
+
+  public static Collection<Unit> getUnitsToConsume(
+      GamePlayer player, Collection<Unit> existingUnits, Collection<Unit> unitsToPlace) {
+    Collection<Unit> unitsThatConsume =
+        CollectionUtils.getMatches(unitsToPlace, Matches.unitConsumesUnitsOnCreation());
+    Set<Unit> unitsToConsume = new HashSet<>();
+    for (Unit unitToBuild : unitsThatConsume) {
+      IntegerMap<UnitType> needed = UnitAttachment.get(unitToBuild.getType()).getConsumesUnits();
+      for (UnitType neededType : needed.keySet()) {
+        final Predicate<Unit> matcher =
+            Matches.eligibleUnitToConsume(player, neededType).and(u -> !unitsToConsume.contains(u));
+        int neededCount = needed.getInt(neededType);
+        Collection<Unit> found = CollectionUtils.getNMatches(existingUnits, neededCount, matcher);
+        // The caller should have already validated that the required units are present.
+        Preconditions.checkState(
+            found.size() == neededCount,
+            "Not found: " + neededCount + " of " + neededType + " for " + unitsToPlace);
+        unitsToConsume.addAll(found);
+      }
+    }
+    return unitsToConsume;
   }
 }

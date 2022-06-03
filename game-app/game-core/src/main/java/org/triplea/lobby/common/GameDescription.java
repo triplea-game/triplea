@@ -1,5 +1,6 @@
 package org.triplea.lobby.common;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import java.io.Serializable;
@@ -13,7 +14,6 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.With;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.game.server.HeadlessGameServer;
 
 /**
  * Immutable Data class being used to send information about the current game state to the lobby.
@@ -51,8 +51,8 @@ public class GameDescription implements Serializable {
   @With private final boolean passworded;
 
   public boolean isBot() {
-    return hostedBy.getName().startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
-        && HeadlessGameServer.BOT_GAME_HOST_COMMENT.equals(comment);
+    return hostedBy.getName().startsWith(GameRunner.BOT_GAME_HOST_NAME_PREFIX)
+        && GameRunner.BOT_GAME_HOST_COMMENT.equals(comment);
   }
 
   /**

@@ -293,7 +293,7 @@ public class TransportTracker {
       final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
     final Collection<Unit> alliedAir = new ArrayList<>();
-    MoveValidator.carrierMustMoveWith(units, units, relationshipTracker, player)
+    MoveValidator.carrierMustMoveWith(units, units, player)
         .forEach(
             (carrier, dependencies) -> {
               final UnitAttachment ua = UnitAttachment.get(carrier.getType());
@@ -332,7 +332,7 @@ public class TransportTracker {
         CollectionUtils.getMatches(attackingUnits, Matches.unitIsCarrier());
     if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data.getProperties())) {
       final Predicate<Unit> alliedFighters =
-          Matches.isUnitAllied(attacker, data.getRelationshipTracker())
+          Matches.isUnitAllied(attacker)
               .and(Matches.unitIsOwnedBy(attacker).negate())
               .and(Matches.unitIsAir())
               .and(Matches.unitCanLandOnCarrier());

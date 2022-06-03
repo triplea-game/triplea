@@ -108,12 +108,10 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   private void results(final HubInvocationResults results, final INode from) {
     final UUID methodId = results.methodCallId;
     final InvocationInProgress invocationInProgress = invocations.get(methodId);
-    final boolean done = invocationInProgress.process(results, from);
-    if (done) {
-      invocations.remove(methodId);
-      if (invocationInProgress.shouldSendResults()) {
-        sendResultsToCaller(methodId, invocationInProgress);
-      }
+    invocationInProgress.process(results, from);
+    invocations.remove(methodId);
+    if (invocationInProgress.shouldSendResults()) {
+      sendResultsToCaller(methodId, invocationInProgress);
     }
   }
 

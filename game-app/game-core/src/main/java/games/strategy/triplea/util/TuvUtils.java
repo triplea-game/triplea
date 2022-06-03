@@ -42,12 +42,9 @@ public class TuvUtils {
    * @return a map of unit types to PU cost
    */
   public static IntegerMap<UnitType> getCostsForTuv(final GamePlayer player, final GameData data) {
-    data.acquireReadLock();
     final Resource pus;
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
     }
 
     final IntegerMap<UnitType> costs = new IntegerMap<>();
@@ -94,12 +91,9 @@ public class TuvUtils {
    */
   private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(
       final GameData data) {
-    data.acquireReadLock();
     final Resource pus;
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
     }
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final Map<UnitType, List<Integer>> differentCosts = new HashMap<>();
@@ -138,7 +132,7 @@ public class TuvUtils {
     // Add any units that have XML TUV even if they aren't purchasable
     for (final UnitType unitType : data.getUnitTypeList()) {
       final UnitAttachment ua = UnitAttachment.get(unitType);
-      if (ua != null && ua.getTuv() > 0) {
+      if (ua.getTuv() > 0) {
         costs.put(unitType, ua.getTuv());
       }
     }
@@ -149,11 +143,11 @@ public class TuvUtils {
   private static int getTotalTuv(
       final UnitType unitType, final IntegerMap<UnitType> costs, final Set<UnitType> alreadyAdded) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
-    if (ua != null && ua.getTuv() > 0) {
+    if (ua.getTuv() > 0) {
       return ua.getTuv();
     }
     int tuv = costs.getInt(unitType);
-    if (ua == null || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
+    if (ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
       return tuv;
     }
     alreadyAdded.add(unitType);
@@ -241,11 +235,8 @@ public class TuvUtils {
       getResourceCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
     final Map<UnitType, ResourceCollection> average = new HashMap<>();
     final Resource pus;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
     }
     final IntegerMap<Resource> defaultMap = new IntegerMap<>();
     defaultMap.put(pus, 1);
@@ -349,8 +340,7 @@ public class TuvUtils {
       final IntegerMap<UnitType> costs,
       final GameState data) {
     final Collection<Unit> playerUnits =
-        CollectionUtils.getMatches(
-            units, Matches.alliedUnit(player, data.getRelationshipTracker()));
+        CollectionUtils.getMatches(units, Matches.alliedUnit(player));
     return getTuv(playerUnits, costs);
   }
 }

@@ -4,7 +4,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
@@ -148,8 +147,7 @@ public class MovePerformer implements Serializable {
             // if any non enemy territories on route or if any enemy units on route the battles
             // on (note water could have enemy but its not owned)
             final GameData data = bridge.getData();
-            final Predicate<Territory> mustFightThrough =
-                getMustFightThroughMatch(gamePlayer, data);
+            final Predicate<Territory> mustFightThrough = getMustFightThroughMatch(gamePlayer);
             final Collection<Unit> arrived =
                 Collections.unmodifiableList(CollectionUtils.intersection(units, arrivingUnits));
             // Reset Optional
@@ -176,10 +174,7 @@ public class MovePerformer implements Serializable {
               boolean ignoreBattle = false;
               // could it be a bombing raid
               final Collection<Unit> enemyUnits =
-                  route
-                      .getEnd()
-                      .getUnitCollection()
-                      .getMatches(Matches.enemyUnit(gamePlayer, data.getRelationshipTracker()));
+                  route.getEnd().getUnitCollection().getMatches(Matches.enemyUnit(gamePlayer));
               final Collection<Unit> enemyTargetsTotal =
                   CollectionUtils.getMatches(
                       enemyUnits,
@@ -281,10 +276,9 @@ public class MovePerformer implements Serializable {
                 for (final Territory t :
                     route.getMatches(
                         Matches.isTerritoryNotUnownedWaterAndCanBeTakenOverBy(gamePlayer)
-                            .and(Matches.territoryIsBlitzable(gamePlayer, data)))) {
-                  if (Matches.isTerritoryEnemy(gamePlayer, data.getRelationshipTracker()).test(t)
-                      || Matches.territoryHasEnemyUnits(gamePlayer, data.getRelationshipTracker())
-                          .test(t)) {
+                            .and(Matches.territoryIsBlitzable(gamePlayer)))) {
+                  if (Matches.isTerritoryEnemy(gamePlayer).test(t)
+                      || Matches.territoryHasEnemyUnits(gamePlayer).test(t)) {
                     continue;
                   }
                   if ((t.equals(route.getEnd())
@@ -325,10 +319,9 @@ public class MovePerformer implements Serializable {
     executionStack.execute(bridge);
   }
 
-  private static Predicate<Territory> getMustFightThroughMatch(
-      final GamePlayer gamePlayer, final GameState data) {
+  private static Predicate<Territory> getMustFightThroughMatch(final GamePlayer gamePlayer) {
     return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer)
-        .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer, data.getRelationshipTracker()))
+        .or(Matches.territoryHasNonSubmergedEnemyUnits(gamePlayer))
         .or(Matches.isTerritoryNotUnownedWaterAndCanBeTakenOverBy(gamePlayer));
   }
 
@@ -370,8 +363,7 @@ public class MovePerformer implements Serializable {
         && Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
         && GameStepPropertiesHelper.isNonCombatMove(data, false)
         && routeEnd.anyUnitsMatch(
-            Matches.unitIsEnemyOf(data.getRelationshipTracker(), gamePlayer)
-                .and(Matches.unitIsDestroyer()))) {
+            Matches.unitIsEnemyOf(gamePlayer).and(Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we
       // want to make sure we
       // can't keep moving them if there is an enemy destroyer there
@@ -465,8 +457,7 @@ public class MovePerformer implements Serializable {
             && transportedBy != null
             && Matches.unitIsAirTransport().test(transportedBy)
             && GameStepPropertiesHelper.isCombatMove(data)
-            && Matches.territoryHasNonSubmergedEnemyUnits(player, data.getRelationshipTracker())
-                .test(route.getEnd())) {
+            && Matches.territoryHasNonSubmergedEnemyUnits(player).test(route.getEnd())) {
           continue;
         }
         // unload the transports

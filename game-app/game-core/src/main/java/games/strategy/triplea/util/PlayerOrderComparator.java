@@ -23,23 +23,17 @@ public class PlayerOrderComparator implements Comparator<GamePlayer>, Serializab
     if (p1.equals(p2)) {
       return 0;
     }
-    gameData.acquireReadLock();
     final GameSequence sequence;
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       sequence = gameData.getSequence();
-    } finally {
-      gameData.releaseReadLock();
     }
     for (final GameStep s : sequence) {
       if (s.getPlayerId() == null) {
         continue;
       }
-      gameData.acquireReadLock();
       final IDelegate delegate;
-      try {
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         delegate = s.getDelegate();
-      } finally {
-        gameData.releaseReadLock();
       }
       if (delegate != null && delegate.getClass() != null) {
         final String delegateClassName = delegate.getClass().getName();

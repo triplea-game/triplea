@@ -59,8 +59,7 @@ public class UnitSeparator {
         Comparator.comparing(
                 UnitCategory::getOwner,
                 Comparator.comparing((final GamePlayer p) -> !p.equals(t.getOwner()))
-                    .thenComparing(
-                        p -> Matches.isAtWar(p, data.getRelationshipTracker()).test(t.getOwner()))
+                    .thenComparing(p -> Matches.isAtWar(p).test(t.getOwner()))
                     .thenComparing(data.getPlayerList().getPlayers()::indexOf))
             .thenComparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType()))
             .thenComparing(

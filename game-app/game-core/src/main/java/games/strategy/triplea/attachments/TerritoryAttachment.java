@@ -430,7 +430,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (whenCapturedByGoesTo == null) {
       whenCapturedByGoesTo = new ArrayList<>();
     }
-    whenCapturedByGoesTo.add(value);
+    whenCapturedByGoesTo.add(value.intern());
   }
 
   private void setWhenCapturedByGoesTo(final List<String> value) {

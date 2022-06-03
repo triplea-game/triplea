@@ -119,11 +119,8 @@ public class PlayerUnitsPanel extends JPanel {
       predicate = Matches.unitTypeIsSeaOrAir();
     }
     final IntegerMap<UnitType> costs;
-    try {
-      data.acquireReadLock();
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       costs = TuvUtils.getCostsForTuv(gamePlayer, data);
-    } finally {
-      data.releaseReadLock();
     }
 
     GamePlayer previousPlayer = null;

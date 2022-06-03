@@ -164,7 +164,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       throw new GameParseException(
           "destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
     }
-    destroyedTuv = value;
+    destroyedTuv = value.intern();
   }
 
   private @Nullable String getDestroyedTuv() {
@@ -216,7 +216,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (battle == null) {
       battle = new ArrayList<>();
     }
-    battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
+    battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]).intern(), terrs));
   }
 
   private void setBattle(final List<Tuple<String, List<Territory>>> value) {
@@ -280,7 +280,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (relationship == null) {
       relationship = new ArrayList<>();
     }
-    relationship.add((s.length == 3) ? (value + ":-1") : value);
+    String str = (s.length == 3) ? (value + ":-1") : value;
+    relationship.add(str.intern());
   }
 
   private void setRelationship(final List<String> value) {
@@ -474,7 +475,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (unitPresence == null) {
       unitPresence = new IntegerMap<>();
     }
-    unitPresence.put(value.replaceFirst(s[0] + ":", ""), n);
+    unitPresence.put(value.replaceFirst(s[0] + ":", "").intern(), n);
   }
 
   private void setUnitPresence(final IntegerMap<String> value) {
@@ -498,10 +499,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setAtWarPlayers(final String players) throws GameParseException {
-    if (players == null) {
-      atWarPlayers = null;
-      return;
-    }
     final String[] s = splitOnColon(players);
     if (s.length < 1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
@@ -535,10 +532,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setTechs(final String newTechs) throws GameParseException {
-    if (newTechs == null) {
-      techs = null;
-      return;
-    }
     final String[] s = splitOnColon(newTechs);
     if (s.length < 1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
@@ -631,13 +624,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && getAlliedPresenceTerritories() != null) {
       objectiveMet =
           checkUnitPresence(
-              getAlliedPresenceTerritories(), alliedOwnership(data, players), players, data);
+              getAlliedPresenceTerritories(), alliedOwnership(players), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getEnemyPresenceTerritories() != null) {
       objectiveMet =
-          checkUnitPresence(
-              getEnemyPresenceTerritories(), enemyOwnership(data, players), players, data);
+          checkUnitPresence(getEnemyPresenceTerritories(), enemyOwnership(players), players, data);
     }
     // Check for direct unit exclusions (veqryn)
     if (objectiveMet && getDirectExclusionTerritories() != null) {
@@ -650,7 +642,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       objectiveMet =
           checkUnitExclusions(
               getAlliedExclusionTerritories(),
-              directOwnership(players).negate().and(alliedOwnership(data, players)),
+              directOwnership(players).negate().and(alliedOwnership(players)),
               players,
               data);
     }
@@ -658,16 +650,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && getEnemyExclusionTerritories() != null) {
       objectiveMet =
           checkUnitExclusions(
-              getEnemyExclusionTerritories(), enemyOwnership(data, players), players, data);
+              getEnemyExclusionTerritories(), enemyOwnership(players), players, data);
     }
     // Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
     if (objectiveMet && getEnemySurfaceExclusionTerritories() != null) {
       objectiveMet =
           checkUnitExclusions(
-              getEnemySurfaceExclusionTerritories(),
-              enemySurfaceOwnership(data, players),
-              players,
-              data);
+              getEnemySurfaceExclusionTerritories(), enemySurfaceOwnership(players), players, data);
     }
     // Check for Territory Ownership rules
     if (objectiveMet && getAlliedOwnershipTerritories() != null) {
@@ -680,14 +669,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             final Collection<GamePlayer> allies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
+                    Matches.isAlliedWithAnyOfThesePlayers(players));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
             final Collection<GamePlayer> enemies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
+                    Matches.isAtWarWithAnyOfThesePlayers(players));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
           default:
@@ -700,14 +689,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             final Collection<GamePlayer> allies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
+                    Matches.isAlliedWithAnyOfThesePlayers(players));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
             final Collection<GamePlayer> enemies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
-                    Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
+                    Matches.isAtWarWithAnyOfThesePlayers(players));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
           default:
@@ -728,8 +717,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         if ("enemy".equals(terrs[0])) {
           final Collection<GamePlayer> enemies =
               CollectionUtils.getMatches(
-                  data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
+                  data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players));
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
@@ -738,8 +726,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         if ("enemy".equals(terrs[1])) {
           final Collection<GamePlayer> enemies =
               CollectionUtils.getMatches(
-                  data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
+                  data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players));
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
@@ -904,16 +891,16 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return Matches.unitIsOwnedByAnyOf(players);
   }
 
-  private Predicate<Unit> alliedOwnership(GameState data, Collection<GamePlayer> players) {
-    return Matches.alliedUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker());
+  private Predicate<Unit> alliedOwnership(Collection<GamePlayer> players) {
+    return Matches.alliedUnitOfAnyOfThesePlayers(players);
   }
 
-  private Predicate<Unit> enemyOwnership(GameState data, Collection<GamePlayer> players) {
-    return Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker());
+  private Predicate<Unit> enemyOwnership(Collection<GamePlayer> players) {
+    return Matches.enemyUnitOfAnyOfThesePlayers(players);
   }
 
-  private Predicate<Unit> enemySurfaceOwnership(GameState data, Collection<GamePlayer> players) {
-    return Matches.enemyUnitOfAnyOfThesePlayers(players, data.getRelationshipTracker())
+  private Predicate<Unit> enemySurfaceOwnership(Collection<GamePlayer> players) {
+    return Matches.enemyUnitOfAnyOfThesePlayers(players)
         .and(Matches.unitIsSea())
         .and(Matches.unitCanEvade().negate())
         .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
@@ -993,8 +980,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final GameState data) {
     final Collection<GamePlayer> allies =
         CollectionUtils.getMatches(
-            data.getPlayerList().getPlayers(),
-            Matches.isAlliedWithAnyOfThesePlayers(players, data.getRelationshipTracker()));
+            data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players));
     return matchTerritories(territories, Matches.isTerritoryOwnedByAnyOf(allies));
   }
 

@@ -13,7 +13,6 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -67,9 +66,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   protected List<GamePlayer> getPlayers() {
-    return players == null
-        ? List.of((GamePlayer) getAttachedTo())
-        : Collections.unmodifiableList(players);
+    List<GamePlayer> result = getListProperty(players);
+    return result.isEmpty() ? List.of((GamePlayer) getAttachedTo()) : result;
   }
 
   private void resetPlayers() {
@@ -161,7 +159,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   private void setGameProperty(final String value) {
-    gameProperty = value;
+    gameProperty = value.intern();
   }
 
   private @Nullable String getGameProperty() {
@@ -253,7 +251,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
               CollectionUtils.getMatches(
                   OriginalOwnerTracker.getOriginallyOwned(data, player),
                   // TODO: does this account for occupiedTerrOf???
-                  Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
+                  Matches.territoryIsNotImpassableToLandUnits(player)));
         }
         setTerritoryCount(originalTerritories.size());
         return originalTerritories;
@@ -271,7 +269,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           ownedTerrsNoWater.addAll(
               CollectionUtils.getMatches(
                   gameMap.getTerritoriesOwnedBy(player),
-                  Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
+                  Matches.territoryIsNotImpassableToLandUnits(player)));
         }
         setTerritoryCount(ownedTerrsNoWater.size());
         return ownedTerrsNoWater;
@@ -341,6 +339,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     if (terrList != null && terrList.length > 0) {
       getListedTerritories(terrList, true, true);
       // removed checks for length & group commands because it breaks the setTerritoryCount feature.
+      for (int i = 0; i < terrList.length; i++) {
+        terrList[i] = terrList[i].intern();
+      }
     }
   }
 

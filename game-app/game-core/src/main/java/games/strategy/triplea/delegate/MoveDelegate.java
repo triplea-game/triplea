@@ -345,7 +345,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final IDelegateBridge bridge, final GamePlayer player) {
     final GameState data = bridge.getData();
     final Predicate<Unit> crippledAlliedCarriersMatch =
-        Matches.isUnitAllied(player, data.getRelationshipTracker())
+        Matches.isUnitAllied(player)
             .and(Matches.unitIsOwnedBy(player).negate())
             .and(Matches.unitIsCarrier())
             .and(
@@ -392,16 +392,13 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final GamePlayer player, final GameState data, final Territory t) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits()) {
-      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-              t, player, data.getRelationshipTracker(), data.getMap())
-          .test(u)) {
-        if (!Matches.isUnitAllied(player, data.getRelationshipTracker()).test(u)) {
+      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player).test(u)) {
+        if (!Matches.isUnitAllied(player).test(u)) {
           continue;
         }
         int bonusMovement = Integer.MIN_VALUE;
         final Predicate<Unit> givesBonusUnit =
-            Matches.alliedUnit(player, data.getRelationshipTracker())
-                .and(Matches.unitCanGiveBonusMovementToThisUnit(u));
+            Matches.alliedUnit(player).and(Matches.unitCanGiveBonusMovementToThisUnit(u));
         final Collection<Unit> givesBonusUnits =
             new ArrayList<>(CollectionUtils.getMatches(t.getUnits(), givesBonusUnit));
         if (Matches.unitIsSea().test(u)) {
@@ -461,8 +458,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
                     .getUnitCollection()
                     .getMatches(
                         damagedUnitsOwned.and(
-                            Matches.unitCanBeRepairedByFacilitiesInItsTerritory(
-                                current, player, data.getRelationshipTracker(), data.getMap()))));
+                            Matches.unitCanBeRepairedByFacilitiesInItsTerritory(current, player))));
       }
       if (!damaged.isEmpty()) {
         damagedMap.put(current, damaged);
@@ -571,7 +567,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
     final GamePlayer owner = unitToBeRepaired.getOwner();
     final Predicate<Unit> repairUnit =
-        Matches.alliedUnit(owner, data.getRelationshipTracker())
+        Matches.alliedUnit(owner)
             .and(Matches.unitCanRepairOthers())
             .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
     final Set<Unit> repairUnitsForThisUnit =
@@ -581,7 +577,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
       for (final Territory current : neighbors) {
         final Predicate<Unit> repairUnitLand =
-            Matches.alliedUnit(owner, data.getRelationshipTracker())
+            Matches.alliedUnit(owner)
                 .and(Matches.unitCanRepairOthers())
                 .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, current))
                 .and(Matches.unitIsLand());
@@ -593,7 +589,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
               data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
       for (final Territory current : neighbors) {
         final Predicate<Unit> repairUnitSea =
-            Matches.alliedUnit(owner, data.getRelationshipTracker())
+            Matches.alliedUnit(owner)
                 .and(Matches.unitCanRepairOthers())
                 .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, current))
                 .and(Matches.unitIsSea());
@@ -619,9 +615,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // the current player
     final GamePlayer player = getUnitsOwner(move.getUnits());
     final MoveValidationResult result =
-        new MoveValidator(data)
-            .validateMove(
-                move, player, GameStepPropertiesHelper.isNonCombatMove(data, false), movesToUndo);
+        new MoveValidator(data, GameStepPropertiesHelper.isNonCombatMove(data, false))
+            .validateMove(move, player, movesToUndo);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =

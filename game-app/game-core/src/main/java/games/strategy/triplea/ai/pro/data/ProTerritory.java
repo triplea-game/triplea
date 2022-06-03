@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -165,11 +166,9 @@ public class ProTerritory {
     return defenders;
   }
 
-  public List<Unit> getMaxEnemyDefenders(final GamePlayer player, final GameState data) {
+  public List<Unit> getMaxEnemyDefenders(final GamePlayer player) {
     final List<Unit> defenders =
-        territory
-            .getUnitCollection()
-            .getMatches(Matches.enemyUnit(player, data.getRelationshipTracker()));
+        territory.getUnitCollection().getMatches(Matches.enemyUnit(player));
     defenders.addAll(maxScrambleUnits);
     return defenders;
   }
@@ -288,7 +287,7 @@ public class ProTerritory {
             proData,
             territory,
             getUnits(),
-            getMaxEnemyDefenders(player, player.getData()),
+            getMaxEnemyDefenders(player),
             getBombardTerritoryMap().keySet()));
   }
 
@@ -319,11 +318,15 @@ public class ProTerritory {
   }
 
   public List<Unit> getCantMoveUnits() {
-    return cantMoveUnits;
+    return Collections.unmodifiableList(cantMoveUnits);
   }
 
   public void addCantMoveUnit(final Unit unit) {
     this.cantMoveUnits.add(unit);
+  }
+
+  public void addCantMoveUnits(final Collection<Unit> units) {
+    this.cantMoveUnits.addAll(units);
   }
 
   public void setMaxEnemyUnits(final List<Unit> maxEnemyUnits) {

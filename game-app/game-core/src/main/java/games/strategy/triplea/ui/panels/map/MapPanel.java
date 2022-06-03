@@ -72,14 +72,17 @@ import javax.swing.Timer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Range;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.util.Tuple;
 
 /** Responsible for drawing the large map and keeping it updated. */
+@Slf4j
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
   private final List<MapSelectionListener> mapSelectionListeners = new ArrayList<>();
@@ -106,26 +109,25 @@ public class MapPanel extends ImageScrollerLargeView {
   @Getter private Collection<Collection<Unit>> highlightedUnits = List.of();
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
+  private Set<Territory> countriesToUpdate = new HashSet<>();
+  private final Object countriesToUpdateLock = new Object();
 
   private final TerritoryListener territoryListener =
       new TerritoryListener() {
         @Override
         public void unitsChanged(final Territory territory) {
           updateCountries(Set.of(territory));
-          SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
 
         @Override
         public void ownerChanged(final Territory territory) {
           smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
           updateCountries(Set.of(territory));
-          SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
 
         @Override
         public void attachmentChanged(final Territory territory) {
           updateCountries(Set.of(territory));
-          SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
       };
 
@@ -344,11 +346,8 @@ public class MapPanel extends ImageScrollerLargeView {
   public boolean getEditMode() {
     final boolean isEditMode;
     // use GameData from mapPanel since it will follow current history node
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
-    } finally {
-      gameData.releaseReadLock();
     }
     return isEditMode;
   }
@@ -584,14 +583,36 @@ public class MapPanel extends ImageScrollerLargeView {
                 newUnits.getSecond(), currentUnits.getSecond()));
   }
 
-  public void updateCountries(final Collection<Territory> countries) {
-    tileManager.updateTerritories(countries, gameData, uiContext.getMapData());
-    smallMapImageManager.update(uiContext.getMapData());
-    SwingUtilities.invokeLater(
-        () -> {
-          smallView.repaint();
-          repaint();
-        });
+  public void updateCountries(Collection<Territory> countries) {
+    // When there are multiple updateCountries() notifications in a row, for example from going far
+    // back in history, no need to do this repeatedly. Instead, a single update is possible if the
+    // async code runs after all the notifications have been received.
+    final boolean scheduleUpdate;
+    synchronized (countriesToUpdateLock) {
+      scheduleUpdate = countriesToUpdate.isEmpty();
+      countriesToUpdate.addAll(countries);
+    }
+    if (!scheduleUpdate) {
+      return; // An update is already scheduled.
+    }
+    AsyncRunner.runAsync(
+            () -> {
+              Collection<Territory> toUpdate;
+              synchronized (countriesToUpdateLock) {
+                // Note: Don't run updateTerritories() inside countriesToUpdate lock, as this causes
+                // a deadlock due to locking game data inside updateTerritories().
+                toUpdate = countriesToUpdate;
+                countriesToUpdate = new HashSet<>();
+              }
+              tileManager.updateTerritories(toUpdate, gameData, uiContext.getMapData());
+              smallMapImageManager.update(uiContext.getMapData());
+              SwingUtilities.invokeLater(
+                  () -> {
+                    smallView.repaint();
+                    repaint();
+                  });
+            })
+        .exceptionally(e -> log.warn("Failed to update countries", e));
   }
 
   public void setGameData(final GameData data) {
@@ -624,8 +645,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final Graphics2D g2d = (Graphics2D) checkNotNull(g);
     // make sure we use the same data for the entire print
     final GameData gameData = this.gameData;
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       final Rectangle2D.Double bounds =
           new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
@@ -633,8 +653,6 @@ public class MapPanel extends ImageScrollerLargeView {
         tile.drawImage(gameData, uiContext.getMapData());
         g2d.drawImage(tile.getImage(), tile.getBounds().x, tile.getBounds().y, this);
       }
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
@@ -731,11 +749,8 @@ public class MapPanel extends ImageScrollerLargeView {
     for (final Tile tile : undrawnTiles) {
       executor.execute(
           () -> {
-            gameData.acquireReadLock();
-            try {
+            try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
               tile.drawImage(gameData, mapData);
-            } finally {
-              gameData.releaseReadLock();
             }
             SwingUtilities.invokeLater(MapPanel.this::repaint);
           });
@@ -803,20 +818,14 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   public Image getTerritoryImage(final Territory territory) {
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       return tileManager.newTerritoryImage(territory, gameData, uiContext.getMapData());
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
   public Image getTerritoryImage(final Territory territory, final Territory focusOn) {
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       return tileManager.newTerritoryImage(territory, focusOn, gameData, uiContext.getMapData());
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
@@ -858,16 +867,13 @@ public class MapPanel extends ImageScrollerLargeView {
         movementLeft.getMinimum()
             + (movementLeft.getMaximum().compareTo(movementLeft.getMinimum()) > 0 ? "+" : "");
     if (routeDescription != null) {
-      gameData.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         movementFuelCost =
             Route.getMovementFuelCostCharge(
                 units,
                 routeDescription.getRoute(),
                 CollectionUtils.getAny(units).getOwner(),
                 gameData);
-      } finally {
-        gameData.releaseReadLock();
       }
     }
 
@@ -885,8 +891,7 @@ public class MapPanel extends ImageScrollerLargeView {
     g.setRenderingHint(
         RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     final Rectangle bounds = new Rectangle(0, 0, 0, 0);
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       int i = 0;
       for (final UnitCategory category : categories) {
         final Point place = new Point(i * (iconWidth + horizontalSpace), 0);
@@ -905,8 +910,6 @@ public class MapPanel extends ImageScrollerLargeView {
         drawer.draw(bounds, gameData, g, uiContext.getMapData());
         i++;
       }
-    } finally {
-      gameData.releaseReadLock();
     }
     mouseShadowImage = img;
     SwingUtilities.invokeLater(this::repaint);

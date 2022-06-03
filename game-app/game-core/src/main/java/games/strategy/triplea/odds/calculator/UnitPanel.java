@@ -44,12 +44,7 @@ public class UnitPanel extends JPanel {
     setCount(category.getUnits().size());
     setLayout(new GridBagLayout());
 
-    final JLabel label =
-        uiContext
-            .getUnitImageFactory()
-            .getIcon(ImageKey.of(category))
-            .map(JLabel::new)
-            .orElseGet(JLabel::new);
+    final JLabel label = new JLabel(uiContext.getUnitImageFactory().getIcon(ImageKey.of(category)));
     label.setToolTipText(toolTipText);
     add(
         label,

@@ -133,7 +133,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (this.when == null) {
       this.when = new ArrayList<>();
     }
-    this.when.add(Tuple.of(s[0], s[1]));
+    this.when.add(Tuple.of(s[0].intern(), s[1].intern()));
   }
 
   private void setWhen(final List<Tuple<String, String>> value) {
@@ -261,7 +261,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (sb.length() > 0 && sb.substring(0, 1).equals(":")) {
       sb.replace(0, 1, "");
     }
-    return sb.toString();
+    return sb.toString().intern();
   }
 
   public static int getEachMultiple(final AbstractTriggerAttachment t) {
@@ -276,7 +276,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @Override
-  public void validate(final GameState data) throws GameParseException {}
+  public void validate(final GameState data) {}
 
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {

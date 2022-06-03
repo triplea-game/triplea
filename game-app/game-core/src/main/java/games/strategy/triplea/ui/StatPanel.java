@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -22,10 +23,10 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -35,6 +36,8 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -63,14 +66,32 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         !TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), null).isEmpty();
     // do no include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
+    add(new JScrollPane(createPlayersTable()));
+    // if no technologies, do not show the tech table
+    if (hasTech) {
+      add(new JScrollPane(createTechTable()));
+    }
+  }
+
+  private JTable createPlayersTable() {
     final JTable statsTable = new JTable(dataModel);
     statsTable.getTableHeader().setReorderingAllowed(false);
-    statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
-    add(new JScrollPane(statsTable));
-    // if no technologies, do not show the tech table
-    if (!hasTech) {
-      return;
-    }
+    // By default, right-align columns and their headers.
+    ((DefaultTableCellRenderer) statsTable.getTableHeader().getDefaultRenderer())
+        .setHorizontalAlignment(JLabel.RIGHT);
+    ((DefaultTableCellRenderer) statsTable.getDefaultRenderer(String.class))
+        .setHorizontalAlignment(JLabel.RIGHT);
+    final TableColumn leftColumn = statsTable.getColumnModel().getColumn(0);
+    leftColumn.setPreferredWidth(175);
+    // The left column should be left-aligned. Override the renderers for it to defaults.
+    leftColumn.setCellRenderer(new DefaultTableCellRenderer());
+    // There is no way to directly construct the default table header renderer (which differs from
+    // the default table cell renderer on some L&Fs), so grab one from a temp JTableHeader.
+    leftColumn.setHeaderRenderer(new JTableHeader().getDefaultRenderer());
+    return statsTable;
+  }
+
+  private JTable createTechTable() {
     final JTable techTable = new JTable(techModel);
     techTable.getTableHeader().setReorderingAllowed(false);
     techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
@@ -84,7 +105,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       value.setToolTipText(player);
       column.setHeaderValue(value);
     }
-    add(new JScrollPane(techTable));
+    return techTable;
   }
 
   public void setGameData(final GameData data) {
@@ -171,35 +192,37 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     }
 
     private synchronized void loadData() {
-      // copy so acquire/release read lock are on the same object!
+      // copy so that the object doesn't change underneath us
       final GameData gameData = StatPanel.this.gameData;
-      gameData.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
-        final Collection<String> alliances = gameData.getAllianceTracker().getAlliances();
+        final List<String> alliances = getAlliancesToShow(gameData.getAllianceTracker());
         collectedData = new String[players.size() + alliances.size()][stats.length + 1];
         int row = 0;
         for (final GamePlayer player : players) {
           collectedData[row][0] = player.getName();
           for (int i = 0; i < stats.length; i++) {
-            collectedData[row][i + 1] =
-                IStat.DECIMAL_FORMAT.format(
-                    stats[i].getValue(player, gameData, uiContext.getMapData()));
+            double value = stats[i].getValue(player, gameData, uiContext.getMapData());
+            collectedData[row][i + 1] = IStat.DECIMAL_FORMAT.format(value);
           }
           row++;
         }
         for (final String alliance : alliances) {
-          collectedData[row][0] = alliance;
+          collectedData[row][0] = "<html><b>" + alliance;
           for (int i = 0; i < stats.length; i++) {
-            collectedData[row][i + 1] =
-                IStat.DECIMAL_FORMAT.format(
-                    stats[i].getValue(alliance, gameData, uiContext.getMapData()));
+            double value = stats[i].getValue(alliance, gameData, uiContext.getMapData());
+            collectedData[row][i + 1] = IStat.DECIMAL_FORMAT.format(value);
           }
           row++;
         }
-      } finally {
-        gameData.releaseReadLock();
       }
+    }
+
+    private List<String> getAlliancesToShow(AllianceTracker tracker) {
+      return tracker.getAlliances().stream()
+          .filter(a -> tracker.getPlayersInAlliance(a).size() > 1)
+          .sorted()
+          .collect(Collectors.toList());
     }
 
     /*
@@ -263,9 +286,9 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         colMap.put(colList[i], i + 1);
       }
       boolean useTech = false;
+      // copy so that the object doesn't change underneath us
       final GameData gameData = StatPanel.this.gameData;
-      try {
-        gameData.acquireReadLock();
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         final int numTechs = TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size();
         if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
           useTech = true;
@@ -273,8 +296,6 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         } else {
           data = new String[numTechs][colList.length + 1];
         }
-      } finally {
-        gameData.releaseReadLock();
       }
       /* Load the technology -> row mapping */
       int row = 0;
@@ -313,10 +334,9 @@ class StatPanel extends JPanel implements GameDataChangeListener {
 
     void update() {
       clearAdvances();
-      // copy so acquire/release read lock are on the same object!
+      // copy so that the object doesn't change underneath us
       final GameData gameData = StatPanel.this.gameData;
-      gameData.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         for (final GamePlayer pid : gameData.getPlayerList().getPlayers()) {
           if (colMap.get(pid.getName()) == null) {
             throw new IllegalStateException(
@@ -324,15 +344,14 @@ class StatPanel extends JPanel implements GameDataChangeListener {
           }
           final int col = colMap.get(pid.getName());
           int row = 0;
-          if (StatPanel.this.gameData.getResourceList().getResource(Constants.TECH_TOKENS)
-              != null) {
+          if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
             final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
           final List<TechAdvance> advancesAll =
-              TechAdvance.getTechAdvances(StatPanel.this.gameData.getTechnologyFrontier());
+              TechAdvance.getTechAdvances(gameData.getTechnologyFrontier());
           final List<TechAdvance> has =
-              TechAdvance.getTechAdvances(StatPanel.this.gameData.getTechnologyFrontier(), pid);
+              TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), pid);
           for (final TechAdvance advance : advancesAll) {
             if (!has.contains(advance)) {
               row = rowMap.get(advance.getName());
@@ -340,14 +359,11 @@ class StatPanel extends JPanel implements GameDataChangeListener {
             }
           }
           for (final TechAdvance advance :
-              TechTracker.getCurrentTechAdvances(
-                  pid, StatPanel.this.gameData.getTechnologyFrontier())) {
+              TechTracker.getCurrentTechAdvances(pid, gameData.getTechnologyFrontier())) {
             row = rowMap.get(advance.getName());
             data[row][col] = "X";
           }
         }
-      } finally {
-        gameData.releaseReadLock();
       }
     }
 
@@ -396,11 +412,8 @@ class StatPanel extends JPanel implements GameDataChangeListener {
 
   private static Resource getResourcePUs(final GameData data) {
     final Resource pus;
-    try {
-      data.acquireReadLock();
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
     }
     return pus;
   }

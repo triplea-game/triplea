@@ -703,7 +703,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (to.isWater()
         && (!Properties.getWW2V2(getData().getProperties())
             && !Properties.getUnitPlacementInEnemySeas(getData().getProperties()))
-        && to.anyUnitsMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
+        && to.anyUnitsMatch(Matches.enemyUnit(player))) {
       return "Cannot place sea units with enemy naval units";
     }
     // make sure there is a factory
@@ -929,7 +929,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final boolean water = to.isWater();
     if (water
         && (!Properties.getWW2V2(properties) && !Properties.getUnitPlacementInEnemySeas(properties))
-        && to.anyUnitsMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
+        && to.anyUnitsMatch(Matches.enemyUnit(player))) {
       return null;
     }
     final Collection<Unit> units = new ArrayList<>(allUnits);

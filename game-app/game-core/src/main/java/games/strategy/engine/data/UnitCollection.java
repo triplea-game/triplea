@@ -150,7 +150,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
 
   /** Returns a Set of all players who have units in this collection. */
   public Set<GamePlayer> getPlayersWithUnits() {
-    // note nulls are handled by PlayerId.NULL_PLAYERID
+    // note nulls are handled by PlayerList.getNullPlayer()
     return units.stream().map(Unit::getOwner).collect(Collectors.toSet());
   }
 

@@ -56,11 +56,8 @@ public class ResourceImageFactory extends AbstractImageFactory {
     final JPanel resourcePanel = new JPanel();
     final List<Resource> resourcesInOrder;
     final GameData data = resources.getData();
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       resourcesInOrder = data.getResourceList().getResources();
-    } finally {
-      data.releaseReadLock();
     }
     int count = 0;
     for (final Resource resource : resourcesInOrder) {

@@ -174,7 +174,7 @@ class ChattersTest {
     }
 
     @Test
-    void singleSessionDisconnected() throws Exception {
+    void singleSessionDisconnected() {
       when(session.getId()).thenReturn("100");
       chatters.connectPlayer(buildChatterSession(session));
 
@@ -187,7 +187,7 @@ class ChattersTest {
 
     @Test
     @DisplayName("Players can have multiple sessions, verify they are all closed")
-    void allSameNamePlayersAreDisconnected() throws Exception {
+    void allSameNamePlayersAreDisconnected() {
       when(session.getId()).thenReturn("1");
       when(session2.getId()).thenReturn("2");
 
@@ -213,7 +213,7 @@ class ChattersTest {
     }
 
     @Test
-    void singleSessionDisconnected() throws Exception {
+    void singleSessionDisconnected() {
       when(session.getId()).thenReturn("100");
       final ChatterSession chatterSession = buildChatterSession(session);
       chatters.connectPlayer(chatterSession);
@@ -226,7 +226,7 @@ class ChattersTest {
 
     @Test
     @DisplayName("Players can have multiple sessions, verify they are all closed")
-    void allSameIpsAreDisconnected() throws Exception {
+    void allSameIpsAreDisconnected() {
       when(session.getId()).thenReturn("1");
       when(session2.getId()).thenReturn("2");
 

@@ -83,8 +83,7 @@ public final class ProMoveUtils {
         // If carrier has dependent allied fighters then move them too
         if (Matches.unitIsCarrier().test(u)) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-              MoveValidator.carrierMustMoveWith(
-                  startTerritory.getUnits(), startTerritory, data.getRelationshipTracker(), player);
+              MoveValidator.carrierMustMoveWith(startTerritory.getUnits(), startTerritory, player);
           if (carrierMustMoveWith.containsKey(u)) {
             unitList.addAll(carrierMustMoveWith.get(u));
           }
@@ -99,18 +98,17 @@ public final class ProMoveUtils {
               map.getRouteForUnit(
                   startTerritory,
                   t,
-                  ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove),
+                  ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove),
                   u,
                   player);
-        } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsLand())) {
-
+        } else if (unitList.stream().allMatch(Matches.unitIsLand())) {
           // Land unit
           route =
               map.getRouteForUnit(
                   startTerritory,
                   t,
                   ProMatches.territoryCanMoveLandUnitsThrough(
-                      data, player, u, startTerritory, isCombatMove, List.of()),
+                      player, u, startTerritory, isCombatMove, List.of()),
                   u,
                   player);
           if (route == null && startTerritory.equals(lastLandTransport.getFirst())) {
@@ -119,7 +117,6 @@ public final class ProMoveUtils {
                     startTerritory,
                     t,
                     ProMatches.territoryCanMoveLandUnitsThrough(
-                        data,
                         player,
                         lastLandTransport.getSecond(),
                         startTerritory,
@@ -128,8 +125,7 @@ public final class ProMoveUtils {
                     u,
                     player);
           }
-        } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
-
+        } else if (unitList.stream().allMatch(Matches.unitIsAir())) {
           // Air unit
           route =
               map.getRouteForUnit(
@@ -200,9 +196,7 @@ public final class ProMoveUtils {
         while (movesLeft >= 0) {
 
           // Load adjacent units if no enemies present in transport territory
-          if (Matches.territoryHasEnemyUnits(player, data.getRelationshipTracker())
-              .negate()
-              .test(transportTerritory)) {
+          if (Matches.territoryHasEnemyUnits(player).negate().test(transportTerritory)) {
             final var unitsToRemove = new ArrayList<Unit>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
               final Territory unitTerritory = proData.getUnitTerritory(amphibUnit);
@@ -232,15 +226,15 @@ public final class ProMoveUtils {
             final Set<Territory> neighbors =
                 map.getNeighbors(
                     transportTerritory,
-                    ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove));
+                    ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove));
             Territory territoryToMoveTo = null;
             int minUnitDistance = Integer.MAX_VALUE;
-            int maxDistanceFromEnd =
-                Integer.MIN_VALUE; // Used to move to farthest away loading territory first
+            // Used to move to farthest away loading territory first
+            int maxDistanceFromEnd = Integer.MIN_VALUE;
+            MoveValidator moveValidator = new MoveValidator(data, !isCombatMove);
             for (final Territory neighbor : neighbors) {
               final Route route = new Route(transportTerritory, neighbor);
-              if (new MoveValidator(data).validateCanal(route, List.of(transport), player)
-                  != null) {
+              if (moveValidator.validateCanal(route, List.of(transport), player) != null) {
                 continue;
               }
               int distanceFromUnloadTerritory = 0;
@@ -249,13 +243,13 @@ public final class ProMoveUtils {
                     map.getDistanceIgnoreEndForCondition(
                         neighbor,
                         unloadTerritory,
-                        ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove));
+                        ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove));
               }
               int neighborDistanceFromEnd =
                   map.getDistanceIgnoreEndForCondition(
                       neighbor,
                       t,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(data, player, isCombatMove));
+                      ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove));
               if (t.isWater()) {
                 neighborDistanceFromEnd++;
               }
@@ -349,15 +343,13 @@ public final class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (!unitList.isEmpty()
-            && unitList.stream().allMatch(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true))) {
-
+        if (unitList.stream().allMatch(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true))) {
           // Naval unit
           route =
               map.getRouteForUnit(
                   startTerritory,
                   bombardFromTerritory,
-                  ProMatches.territoryCanMoveSeaUnitsThrough(data, player, true),
+                  ProMatches.territoryCanMoveSeaUnitsThrough(player, true),
                   u,
                   player);
         }

@@ -184,8 +184,7 @@ final class ProTechAi {
                 enemyPlayer,
                 data,
                 enemyShip,
-                Matches.territoryIsBlockedSea(
-                    enemyPlayer, data.getProperties(), data.getRelationshipTracker()),
+                Matches.territoryIsBlockedSea(enemyPlayer),
                 r,
                 true);
         secondStrength = strength(ships, true, true, transportsFirst);
@@ -237,9 +236,7 @@ final class ProTechAi {
               availOther += other;
             }
             final Set<Territory> transNeighbors =
-                data.getMap()
-                    .getNeighbors(
-                        t4, Matches.isTerritoryAllied(enemyPlayer, data.getRelationshipTracker()));
+                data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer));
             for (final Territory transNeighbor : transNeighbors) {
               final List<Unit> transUnits =
                   transNeighbor.getUnitCollection().getMatches(enemyTransportable);
@@ -388,8 +385,8 @@ final class ProTechAi {
     final Predicate<Unit> blitzUnit =
         Matches.unitIsOwnedBy(enemyPlayer).and(Matches.unitCanBlitz()).and(Matches.unitCanMove());
     final Predicate<Territory> validBlitzRoute =
-        Matches.territoryHasNoEnemyUnits(enemyPlayer, data.getRelationshipTracker())
-            .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data.getProperties()));
+        Matches.territoryHasNoEnemyUnits(enemyPlayer)
+            .and(Matches.territoryIsNotImpassableToLandUnits(enemyPlayer));
     final List<Route> routes = new ArrayList<>();
     final List<Unit> blitzUnits =
         findAttackers(
@@ -421,6 +418,7 @@ final class ProTechAi {
     Territory current;
     distance.put(start, 0);
     visited.put(start, null);
+    MoveValidator moveValidator = new MoveValidator(data, false);
     while (!q.isEmpty()) {
       current = q.remove();
       if (distance.getInt(current) == maxDistance) {
@@ -431,11 +429,9 @@ final class ProTechAi {
           if (!neighbor.anyUnitsMatch(unitCondition) && !routeCondition.test(neighbor)) {
             continue;
           }
-          if (sea) {
-            final Route r = new Route(neighbor, current);
-            if (new MoveValidator(data).validateCanal(r, null, player) != null) {
-              continue;
-            }
+          if (sea
+              && moveValidator.validateCanal(new Route(neighbor, current), null, player) != null) {
+            continue;
           }
           distance.put(neighbor, distance.getInt(current) + 1);
           visited.put(neighbor, current);
@@ -444,11 +440,7 @@ final class ProTechAi {
           if (ignoreDistance.contains(dist)) {
             continue;
           }
-          for (final Unit u : neighbor.getUnitCollection()) {
-            if (unitCondition.test(u)) {
-              units.add(u);
-            }
-          }
+          units.addAll(neighbor.getUnitCollection().getMatches(unitCondition));
         }
       }
     }
@@ -504,7 +496,7 @@ final class ProTechAi {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
           if (lz == null
-              && Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(neighbor)
+              && Matches.isTerritoryAllied(player).test(neighbor)
               && !neighbor.isWater()) {
             lz = neighbor;
           }
@@ -564,7 +556,7 @@ final class ProTechAi {
         Matches.unitIsTransport().negate().and(Matches.unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
-            .and(Matches.alliedUnit(player, data.getRelationshipTracker()).negate())
+            .and(Matches.alliedUnit(player).negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
             .andIf(Properties.getIgnoreTransportInMovement(data.getProperties()), transport)
             .build();
@@ -593,8 +585,8 @@ final class ProTechAi {
     final List<Territory> territories = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, data);
     for (final Territory t : checkList) {
-      if (Matches.isTerritoryAllied(player, data.getRelationshipTracker()).test(t)
-          && Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties()).test(t)) {
+      if (Matches.isTerritoryAllied(player).test(t)
+          && Matches.territoryIsNotImpassableToLandUnits(player).test(t)) {
         territories.add(t);
       }
     }

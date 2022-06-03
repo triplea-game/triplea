@@ -2294,10 +2294,11 @@
 - mapName: ww2v4_variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v4_variants/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/ww2v4_variants/master/preview.png
   description: |
-    <br>Maintenance-WW2v4: Adds maintenance costs to World World 2 v4
+    <br>WW2v4-Upkeep: Adds 10% upkeep costs to World World 2 v4
+    <br>WW2v4-Buildcaps: Limits production of all unit types
 - mapName: Command and Conquer
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/commandandconquer/archive/master.zip
@@ -2646,6 +2647,13 @@
    <br>All these scenarios use the WW2v3 map & rules
    <br>WW2v3-1941-Buildcap & WW2v3-1942-Buildcap limit the number of units of each that can be built
    <br>WW2v3-1941-Upkeep & WW2v3-1942-Upkeep multiplies costs & income by 10, and applies a 10%/turn upkeep cost
+- mapName: Medieval Europe
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Medieval_Europe/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Medieval_Europe/master/preview.png
+  description: |
+   <br>Medieval Europe, divided into 3 alliances
 - mapName: Hot War-1956
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/hotwar/archive/master.zip
@@ -2653,4 +2661,3 @@
   img: https://raw.githubusercontent.com/triplea-maps/hotwar/master/preview.png
   description: |
    <br>A hypothetical World War Three breaking out in 1956. Uses the Big World map. Force levels and production values come from the Correlates of War database.
-

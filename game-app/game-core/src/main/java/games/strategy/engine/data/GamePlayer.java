@@ -2,17 +2,18 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -68,6 +69,13 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     unitsHeld = new UnitCollection(this, data);
     resources = new ResourceCollection(data);
     technologyFrontiers = new TechnologyFrontierList(data);
+  }
+
+  @Nonnull
+  @Override
+  public GameData getData() {
+    // To silence warnings from @Nullable on superclass.
+    return Preconditions.checkNotNull(super.getData());
   }
 
   public boolean getOptional() {
@@ -179,8 +187,8 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
    * If I have no units with movement, And I own zero factories or have have no owned land, then I
    * am basically dead, and therefore should not participate in things like politics.
    */
-  public boolean amNotDeadYet(final GameMap gameMap) {
-    for (final Territory t : gameMap.getTerritories()) {
+  public boolean amNotDeadYet() {
+    for (final Territory t : getData().getMap().getTerritories()) {
       if (t.anyUnitsMatch(
           Matches.unitIsOwnedBy(this)
               .and(Matches.unitHasAttackValueOfAtLeast(1))
@@ -207,13 +215,6 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     return currentPlayers;
   }
 
-  public static Optional<GamePlayer> asOptional(@Nullable final GamePlayer player) {
-    if (player == null || player.isNull()) {
-      return Optional.empty();
-    }
-    return Optional.of(player);
-  }
-
   public boolean isDefaultTypeAi() {
     return DEFAULT_TYPE_AI.equals(defaultType);
   }
@@ -232,6 +233,22 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
 
   public TechAttachment getTechAttachment() {
     return (TechAttachment) getAttachment(Constants.TECH_ATTACHMENT_NAME);
+  }
+
+  public final boolean isAllied(GamePlayer other) {
+    return getData().getRelationshipTracker().isAllied(this, other);
+  }
+
+  public final boolean isAtWar(GamePlayer other) {
+    return getData().getRelationshipTracker().isAtWar(this, other);
+  }
+
+  public final boolean isAtWarWithAnyOfThesePlayers(Collection<GamePlayer> others) {
+    return getData().getRelationshipTracker().isAtWarWithAnyOfThesePlayers(this, others);
+  }
+
+  public final boolean isAlliedWithAnyOfThesePlayers(Collection<GamePlayer> others) {
+    return getData().getRelationshipTracker().isAlliedWithAnyOfThesePlayers(this, others);
   }
 
   /** A player type (e.g. human, AI). */

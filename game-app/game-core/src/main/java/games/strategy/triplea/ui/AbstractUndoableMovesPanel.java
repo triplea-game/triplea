@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -122,15 +121,13 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(move.getUnits());
     final Dimension buttonSize = new Dimension(80, 22);
     for (final UnitCategory category : unitCategories) {
-      final Optional<ImageIcon> icon =
+      final ImageIcon icon =
           movePanel.getMap().getUiContext().getUnitImageFactory().getIcon(ImageKey.of(category));
-      if (icon.isPresent()) {
-        final JLabel label =
-            new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
-        unitsBox.add(label);
-        MapUnitTooltipManager.setUnitTooltip(
-            label, category.getType(), category.getOwner(), category.getUnits().size());
-      }
+      final JLabel label =
+          new JLabel("x" + category.getUnits().size() + " ", icon, SwingConstants.LEFT);
+      unitsBox.add(label);
+      MapUnitTooltipManager.setUnitTooltip(
+          label, category.getType(), category.getOwner(), category.getUnits().size());
     }
     unitsBox.add(Box.createHorizontalGlue());
     final JLabel text = new JLabel(move.getMoveLabel());

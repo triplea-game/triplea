@@ -377,13 +377,10 @@ class EditPanel extends ActionPanel {
             currentAction = this;
             setWidgetActivation();
             final MustMoveWithDetails mustMoveWithDetails;
-            try {
-              getData().acquireReadLock();
+            try (GameData.Unlocker ignored = getData().acquireReadLock()) {
               mustMoveWithDetails =
                   MoveValidator.getMustMoveWith(
                       selectedTerritory, new HashMap<>(), getCurrentPlayer());
-            } finally {
-              getData().releaseReadLock();
             }
             final boolean mustChoose;
             final List<Unit> allUnits = new ArrayList<>(selectedTerritory.getUnits());
@@ -578,12 +575,9 @@ class EditPanel extends ActionPanel {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            getData().acquireReadLock();
             final Collection<TechAdvance> techs;
-            try {
+            try (GameData.Unlocker ignored = getData().acquireReadLock()) {
               techs = TechnologyDelegate.getAvailableTechs(player, data.getTechnologyFrontier());
-            } finally {
-              getData().releaseReadLock();
             }
             if (techs.isEmpty()) {
               cancelEditAction.actionPerformed(null);
@@ -640,9 +634,8 @@ class EditPanel extends ActionPanel {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            getData().acquireReadLock();
             final Collection<TechAdvance> techs;
-            try {
+            try (GameData.Unlocker ignored = getData().acquireReadLock()) {
               techs = TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier());
               // there is no way to "undo" these two techs, so do not allow them to be removed
               techs.removeIf(
@@ -650,8 +643,6 @@ class EditPanel extends ActionPanel {
                       ta.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS)
                           || ta.getProperty()
                               .equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY));
-            } finally {
-              getData().releaseReadLock();
             }
             if (techs.isEmpty()) {
               cancelEditAction.actionPerformed(null);
@@ -965,8 +956,7 @@ class EditPanel extends ActionPanel {
       add(new JButton(addTechAction));
       add(new JButton(removeTechAction));
     }
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
       if (allUnitTypes.stream().anyMatch(Matches.unitTypeHasMoreThanOneHitPointTotal())) {
         add(new JButton(changeUnitHitDamageAction));
@@ -975,8 +965,6 @@ class EditPanel extends ActionPanel {
           && allUnitTypes.stream().anyMatch(Matches.unitTypeCanBeDamaged())) {
         add(new JButton(changeUnitBombingDamageAction));
       }
-    } finally {
-      data.releaseReadLock();
     }
     add(new JButton(changePoliticalRelationships));
     add(Box.createVerticalStrut(15));

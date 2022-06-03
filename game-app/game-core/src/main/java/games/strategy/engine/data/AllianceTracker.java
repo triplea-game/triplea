@@ -6,7 +6,6 @@ import com.google.common.collect.Multimap;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -64,15 +63,6 @@ public class AllianceTracker implements Serializable {
    */
   public Set<String> getAlliances() {
     return new HashSet<>(alliances.values());
-  }
-
-  /** Returns·a·map·from·alliance·name·to·players. */
-  public Map<String, Set<GamePlayer>> getAllianceMap() {
-    final Map<String, Set<GamePlayer>> allianceMap = new LinkedHashMap<>();
-    for (Map.Entry<GamePlayer, String> entry : alliances.entries()) {
-      allianceMap.getOrDefault(entry.getValue(), new HashSet<>()).add(entry.getKey());
-    }
-    return allianceMap;
   }
 
   /**

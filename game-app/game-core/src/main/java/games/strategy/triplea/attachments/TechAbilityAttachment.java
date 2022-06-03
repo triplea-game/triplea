@@ -511,7 +511,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 + ABILITY_CAN_BOMBARD
                 + thisErrorMsg());
       }
-      abilities.add(ability);
+      abilities.add(ability.intern());
     }
   }
 
@@ -673,7 +673,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (airborneTargetedByAa == null) {
       airborneTargetedByAa = new HashMap<>();
     }
-    airborneTargetedByAa.put(s[0], unitTypes);
+    airborneTargetedByAa.put(s[0].intern(), unitTypes);
   }
 
   private void setAirborneTargettedByAa(final Map<String, Set<UnitType>> value) {

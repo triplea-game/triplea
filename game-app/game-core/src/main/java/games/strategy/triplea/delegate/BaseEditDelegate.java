@@ -83,9 +83,8 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   void logEvent(final String message, final Object renderingObject) {
     // find last event node
     final GameData gameData = getData();
-    gameData.acquireReadLock();
     boolean foundChild = false;
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       HistoryNode curNode = gameData.getHistory().getLastNode();
       while (!(curNode instanceof Step) && !(curNode instanceof Event)) {
         if (curNode instanceof EventChild) {
@@ -94,8 +93,6 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
         }
         curNode = (HistoryNode) curNode.getPreviousNode();
       }
-    } finally {
-      gameData.releaseReadLock();
     }
     if (foundChild) {
       bridge.getHistoryWriter().addChildToEvent(message, renderingObject);

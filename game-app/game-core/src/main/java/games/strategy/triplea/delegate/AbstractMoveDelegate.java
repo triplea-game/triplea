@@ -8,8 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.battle.BattleTracker;
-import games.strategy.triplea.delegate.data.MoveValidationResult;
-import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,9 +60,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   public void loadState(final Serializable state) {
     final AbstractMoveExtendedDelegateState s = (AbstractMoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we
-    // restore from an undo
-    // move
+    // if the undo state wasn't saved, then don't load it. prevents overwriting undo state when we
+    // restore from an undo move
     if (s.movesToUndo != null) {
       movesToUndo = s.movesToUndo;
     }
@@ -119,19 +116,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   @Override
   public abstract String performMove(MoveDescription move);
-
-  public static MoveValidationResult validateMove(
-      final GameData gameData,
-      final MoveType moveType,
-      final MoveDescription move,
-      final GamePlayer player,
-      final boolean isNonCombat,
-      final List<UndoableMove> undoableMoves) {
-    if (moveType == MoveType.SPECIAL) {
-      return SpecialMoveDelegate.validateMove(gameData, move.getUnits(), move.getRoute(), player);
-    }
-    return new MoveValidator(gameData).validateMove(move, player, isNonCombat, undoableMoves);
-  }
 
   @Override
   public Collection<Territory> getTerritoriesWhereAirCantLand(final GamePlayer player) {

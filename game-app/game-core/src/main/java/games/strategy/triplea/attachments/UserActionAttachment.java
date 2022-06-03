@@ -87,7 +87,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     if (activateTrigger == null) {
       activateTrigger = new ArrayList<>();
     }
-    activateTrigger.add(Tuple.of(s[0], options));
+    activateTrigger.add(Tuple.of(s[0].intern(), options.intern()));
   }
 
   private void setActivateTrigger(final List<Tuple<String, String>> value) {
@@ -160,7 +160,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   public Set<GamePlayer> getOtherPlayers() {
     final Set<GamePlayer> otherPlayers = new HashSet<>();
     otherPlayers.add((GamePlayer) this.getAttachedTo());
-    otherPlayers.addAll(actionAccept);
+    otherPlayers.addAll(getActionAccept());
     return otherPlayers;
   }
 

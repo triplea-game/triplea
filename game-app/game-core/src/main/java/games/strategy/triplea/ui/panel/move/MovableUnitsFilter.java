@@ -8,7 +8,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.UndoableMove;
@@ -174,9 +173,7 @@ final class MovableUnitsFilter {
   }
 
   private boolean isInvading() {
-    return !nonCombat
-        && route.isUnload()
-        && Matches.isTerritoryEnemy(player, data.getRelationshipTracker()).test(route.getEnd());
+    return !nonCombat && route.isUnload() && Matches.isTerritoryEnemy(player).test(route.getEnd());
   }
 
   // Whether the two units are equivalent for the purposes of movement.
@@ -190,8 +187,7 @@ final class MovableUnitsFilter {
     // TODO kev check for already loaded airTransports
     if (MoveValidator.isLoad(units, dependentUnits, route, player)) {
       final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
-      return unitsAtEnd.getMatches(
-          Matches.unitIsTransport().and(Matches.alliedUnit(player, data.getRelationshipTracker())));
+      return unitsAtEnd.getMatches(Matches.unitIsTransport().and(Matches.alliedUnit(player)));
     }
     return List.of();
   }
@@ -222,18 +218,19 @@ final class MovableUnitsFilter {
       final Collection<Unit> units, final Collection<Unit> transportsToLoad) {
     final Collection<Unit> unitsWithDependents = addMustMoveWith(units);
     final MoveValidationResult result;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final Map<Unit, Unit> unitsToTransports =
           transportsToLoad.isEmpty()
               ? Map.of()
               : TransportUtils.mapTransports(route, units, transportsToLoad);
       final MoveDescription move =
           new MoveDescription(unitsWithDependents, route, unitsToTransports, dependentUnits);
-      result =
-          AbstractMoveDelegate.validateMove(data, moveType, move, player, nonCombat, undoableMoves);
-    } finally {
-      data.releaseReadLock();
+      final MoveValidator moveValidator = new MoveValidator(data, nonCombat);
+      if (moveType == MoveType.SPECIAL) {
+        result = moveValidator.validateSpecialMove(move, player);
+      } else {
+        result = moveValidator.validateMove(move, player, undoableMoves);
+      }
     }
 
     return new MoveValidationResultWithDependents(
