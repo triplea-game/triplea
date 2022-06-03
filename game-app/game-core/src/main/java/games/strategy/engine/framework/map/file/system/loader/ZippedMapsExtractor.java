@@ -131,6 +131,7 @@ public class ZippedMapsExtractor {
     // put the temp folder in the maps folder, so they're on the same partition (to move later)
     final Path tempFolder = Files.createTempDirectory(mapsFolder, "triplea-unzip");
     ZipExtractor.unzipFile(mapZip, tempFolder);
+    tempFolder.toFile().deleteOnExit();
 
     // Typically, the next step is to move and rename the temp folder to the maps folder.
     // But, if we just extracted exactly one folder, then we need to move and rename *that* folder.
