@@ -1451,7 +1451,7 @@
 - mapName: Cold War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/cold_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/cold_war/master/preview.png
   description: |
     <br>October 1962: Cuban Missile Crisis
