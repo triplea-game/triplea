@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -11,7 +12,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +111,7 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
       final GameData gameData = EconomyPanel.this.gameData;
       try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
-        final Collection<String> alliances = gameData.getAllianceTracker().getAlliances();
+        final List<String> alliances = getAlliancesToShow(gameData.getAllianceTracker());
         collectedData = new String[players.size() + alliances.size()][resourceStats.size() + 1];
         int row = 0;
         final Map<GamePlayer, IntegerMap<Resource>> resourceIncomeMap = new HashMap<>();
@@ -128,7 +128,7 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
           }
           row++;
         }
-        for (final String alliance : alliances.stream().sorted().collect(Collectors.toList())) {
+        for (final String alliance : alliances) {
           collectedData[row][0] = "<html><b>" + alliance;
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
@@ -142,6 +142,13 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
           row++;
         }
       }
+    }
+
+    private List<String> getAlliancesToShow(AllianceTracker tracker) {
+      return tracker.getAlliances().stream()
+          .filter(a -> tracker.getPlayersInAlliance(a).size() > 1)
+          .sorted()
+          .collect(Collectors.toList());
     }
 
     private String getResourceAmountAndIncome(final double amount, final int income) {
