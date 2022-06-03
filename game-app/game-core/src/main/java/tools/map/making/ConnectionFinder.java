@@ -2,7 +2,6 @@ package tools.map.making;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import games.strategy.ui.Util;
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -35,6 +34,7 @@ import org.triplea.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.image.MapFolderLocationSystemProperty;
+import tools.util.ToolsUtil;
 
 /**
  * Utility to find connections between polygons Not pretty, meant only for one time use. Inputs - a
@@ -209,9 +209,9 @@ public final class ConnectionFinder {
           JOptionPane.showInputDialog(
               null,
               "Enter a string or regex that determines if the territory is Water? \r\n(e.g.: "
-                  + Util.TERRITORY_SEA_ZONE_INFIX
+                  + ToolsUtil.TERRITORY_SEA_ZONE_INFIX
                   + ")",
-              Util.TERRITORY_SEA_ZONE_INFIX);
+              ToolsUtil.TERRITORY_SEA_ZONE_INFIX);
       territoryDefinitions = doTerritoryDefinitions(allTerritories, waterString);
     }
     try {

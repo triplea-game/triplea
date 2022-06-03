@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.ui.Util;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -53,7 +52,6 @@ public class MapData {
   public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
   public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
   public static final String PROPERTY_SCREENSHOT_TITLE_FONT_SIZE = "screenshot.title.font.size";
-  public static final String PROPERTY_COLOR_PREFIX = "color.";
   public static final String PROPERTY_MAP_WIDTH = "map.width";
   public static final String PROPERTY_MAP_HEIGHT = "map.height";
   public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
@@ -611,23 +609,25 @@ public class MapData {
   }
 
   /** Get the territory at the x,y co-ordinates could be null. */
-  public String getTerritoryAt(final double x, final double y) {
-    String seaName = null;
+  public @Nullable String getTerritoryAt(final double x, final double y) {
     // try to find a land territory.
     // sea zones often surround a land territory
+    int smallestArea = Integer.MAX_VALUE;
+    @Nullable String closestMatch = null;
     for (final String name : polys.keySet()) {
       final Collection<Polygon> polygons = polys.get(name);
       for (final Polygon poly : polygons) {
         if (poly.contains(x, y)) {
-          if (Util.isTerritoryNameIndicatingWater(name)) {
-            seaName = name;
-          } else {
-            return name;
+          Dimension size = poly.getBounds().getSize();
+          int area = size.width * size.height;
+          if (area < smallestArea) {
+            closestMatch = name;
+            smallestArea = area;
           }
         }
       }
     }
-    return seaName;
+    return closestMatch;
   }
 
   public Dimension getMapDimensions() {
@@ -690,16 +690,13 @@ public class MapData {
     final boolean scrollWrapY = this.scrollWrapY();
     for (final Polygon item : polys) {
       // if our rectangle is on the right side (mapscrollx) then we push it to be on the negative
-      // left side, so that the
-      // bounds.x will be negative
+      // left side, so that the bounds.x will be negative
       // this solves the issue of maps that have a territory where polygons were on both sides of
-      // the map divide
-      // (so our bounds.x was 0, and our bounds.y would be the entire map width)
+      // the map divide (so our bounds.x was 0, and our bounds.y would be the entire map width)
       // (when in fact it should actually be bounds.x = -10 or something, and bounds.width = 20 or
       // something)
       // we use map dimensions.width * 0.9 because the polygon may not actually touch the side of
-      // the map (like if the
-      // territory borders are thick)
+      // the map (like if the territory borders are thick)
       final Rectangle itemRect = item.getBounds();
       if (scrollWrapX && itemRect.getMaxX() >= closeToMapWidth) {
         itemRect.translate(-mapWidth, 0);
