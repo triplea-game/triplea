@@ -21,6 +21,11 @@ shadowJar {
     archiveClassifier.set ''
 }
 
+test {
+    // AiGameTest is memory intensive due to ConcurrentBattleCalculator threads deserializing GameData concurrently.
+    maxHeapSize = "2G"
+}
+
 tasks.test.dependsOn("downloadXmls", "downloadSaveGames")
 
 task downloadXmls {
