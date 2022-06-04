@@ -169,15 +169,15 @@ public final class XmlGameElementMapper {
 
   /** Returns a new attachment of the type associated with the specified name. */
   public Optional<IAttachment> newAttachment(
-      final String typeName,
-      final String name,
-      final Attachable attachable,
-      final GameData gameData) {
+      String typeName, String name, Attachable attachable, GameData gameData) {
     checkNotNull(typeName);
 
-    final String normalizedTypeName = typeName.replaceAll("^.*\\.", "");
-    final @Nullable AttachmentFactory attachmentFactory =
-        attachmentFactoriesByTypeName.get(normalizedTypeName);
+    // Strip off the leading Java package names if present.
+    int dotIndex = typeName.lastIndexOf('.');
+    if (dotIndex != -1) {
+      typeName = typeName.substring(dotIndex + 1);
+    }
+    @Nullable AttachmentFactory attachmentFactory = attachmentFactoriesByTypeName.get(typeName);
     if (attachmentFactory != null) {
       return Optional.of(attachmentFactory.newAttachment(name, attachable, gameData));
     }
