@@ -77,12 +77,7 @@ public class CasualtyDetails extends CasualtyList {
         killedWithCorrectOrder.stream()
             .filter(unit -> !killed.contains(unit))
             .collect(Collectors.toList()));
-
-    killed.removeAll(
-        killed.stream()
-            .filter(matcher)
-            .filter(unit -> !killedWithCorrectOrder.contains(unit))
-            .collect(Collectors.toList()));
+    killed.removeIf(matcher.and(unit -> killedWithCorrectOrder.contains(unit)));
   }
 
   /**
@@ -143,12 +138,7 @@ public class CasualtyDetails extends CasualtyList {
         targetsHitWithCorrectOrder.stream()
             .filter(unit -> !damaged.contains(unit))
             .collect(Collectors.toList()));
-
-    damaged.removeAll(
-        damaged.stream()
-            .filter(matcher)
-            .filter(unit -> !targetsHitWithCorrectOrder.contains(unit))
-            .collect(Collectors.toList()));
+    damaged.removeIf(matcher.and(unit -> !targetsHitWithCorrectOrder.contains(unit));
   }
 
   /**
