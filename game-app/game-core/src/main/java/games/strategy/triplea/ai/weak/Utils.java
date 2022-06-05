@@ -56,6 +56,7 @@ final class Utils {
       if (endCondition.test(t)) {
         final Route r = data.getMap().getRoute(start, t, routeCondition);
         if (r != null
+            && r.hasSteps()
             && (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps())) {
           shortestRoute = r;
         }
