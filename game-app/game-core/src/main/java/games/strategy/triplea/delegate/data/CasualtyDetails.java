@@ -79,7 +79,7 @@ public class CasualtyDetails extends CasualtyList {
         killedWithCorrectOrder.stream()
             .filter(unit -> !killed.contains(unit))
             .collect(Collectors.toList()));
-    killed.removeIf(matcher.and(killedWithCorrectOrder::contains));
+    killed.removeIf(matcher.and(not(killedWithCorrectOrder::contains)));
   }
 
   /**
