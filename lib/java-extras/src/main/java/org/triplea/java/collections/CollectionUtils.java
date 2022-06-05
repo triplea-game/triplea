@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.function.Predicate.not;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.TreeMultiset;
@@ -105,9 +106,12 @@ public class CollectionUtils {
    * are the same size. Note that (a,a,b) (a,b,b) are equal.
    */
   public static <T> boolean haveEqualSizeAndEquivalentElements(
-      final Collection<T> c1, final Collection<T> c2) {
-    checkNotNull(c1);
-    checkNotNull(c2);
+      final Collection<T> collection1, final Collection<T> collection2) {
+    checkNotNull(collection1);
+    checkNotNull(collection2);
+    final Collection<T> c1 = ImmutableList.copyOf(collection1);
+    final Collection<T> c2 = ImmutableList.copyOf(collection2);
+
     return Iterables.elementsEqual(c1, c2)
         || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
   }
