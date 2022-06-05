@@ -2472,7 +2472,8 @@ class ProNonCombatMoveAi {
     // First, determine which unit types can be consumed during purchase phase.
     Set<UnitType> consumables = new HashSet<>();
     for (ProPurchaseOption option : proData.getPurchaseOptions().getAllOptions()) {
-      if (option.isConsumesUnits()) {
+      // Skip construction purchase options, since these can be placed without factory.
+      if (option.isConsumesUnits() && !option.isConstruction()) {
         consumables.addAll(UnitAttachment.get(option.getUnitType()).getConsumesUnits().keySet());
       }
     }
