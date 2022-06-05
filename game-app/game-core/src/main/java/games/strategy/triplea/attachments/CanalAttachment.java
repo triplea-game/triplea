@@ -6,7 +6,6 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
@@ -34,31 +33,6 @@ public class CanalAttachment extends DefaultAttachment {
 
   public CanalAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
-  }
-
-  /**
-   * Checks if the route contains both territories to pass through the given canal. If route is null
-   * returns true.
-   */
-  public static boolean isCanalOnRoute(final String canalName, final Route route) {
-    if (route == null) {
-      return true;
-    }
-    boolean previousTerritoryHasCanal = false;
-    for (final Territory t : route) {
-      boolean currentTerritoryHasCanal = false;
-      for (final CanalAttachment canalAttachment : get(t)) {
-        if (canalAttachment.getCanalName().equals(canalName)) {
-          currentTerritoryHasCanal = true;
-          break;
-        }
-      }
-      if (previousTerritoryHasCanal && currentTerritoryHasCanal) {
-        return true;
-      }
-      previousTerritoryHasCanal = currentTerritoryHasCanal;
-    }
-    return false;
   }
 
   public static Set<CanalAttachment> get(final Territory t) {

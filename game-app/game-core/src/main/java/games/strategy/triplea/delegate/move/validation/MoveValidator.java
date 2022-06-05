@@ -86,6 +86,8 @@ public class MoveValidator {
   private final GameData data;
   private final boolean isNonCombat;
 
+  private final Map<Territory, Set<CanalAttachment>> canals = new HashMap<>();
+
   public MoveValidationResult validateMove(final MoveDescription move, final GamePlayer player) {
     return validateMove(move, player, List.of());
   }
@@ -304,8 +306,8 @@ public class MoveValidator {
     for (final Unit unit : unitsWithoutDependents) {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();
-        for (final CanalAttachment canalAttachment : CanalAttachment.get(t)) {
-          if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
+        for (final CanalAttachment canalAttachment : getCanalAttachments(t)) {
+          if (!isCanalOnRoute(canalAttachment.getCanalName(), route)) {
             continue; // Only check canals that are on the route
           }
           failureMessage = canPassThroughCanal(canalAttachment, unit, player);
@@ -359,8 +361,8 @@ public class MoveValidator {
       final GamePlayer player) {
     boolean canPass = true;
     final Route route = new Route(start, end);
-    for (final CanalAttachment canalAttachment : CanalAttachment.get(start)) {
-      if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
+    for (final CanalAttachment canalAttachment : getCanalAttachments(start)) {
+      if (!isCanalOnRoute(canalAttachment.getCanalName(), route)) {
         continue; // Only check canals that are on the route
       }
       final Collection<Unit> unitsWithoutDependents =
@@ -374,6 +376,32 @@ public class MoveValidator {
       }
     }
     return canPass;
+  }
+
+  /**
+   * Checks if the route contains both territories to pass through the given canal. If route is null
+   * returns true.
+   */
+  private boolean isCanalOnRoute(final String canalName, final Route route) {
+    boolean previousTerritoryHasCanal = false;
+    for (final Territory t : route) {
+      boolean currentTerritoryHasCanal = false;
+      for (final CanalAttachment canalAttachment : getCanalAttachments(t)) {
+        if (canalAttachment.getCanalName().equals(canalName)) {
+          currentTerritoryHasCanal = true;
+          break;
+        }
+      }
+      if (previousTerritoryHasCanal && currentTerritoryHasCanal) {
+        return true;
+      }
+      previousTerritoryHasCanal = currentTerritoryHasCanal;
+    }
+    return false;
+  }
+
+  private Set<CanalAttachment> getCanalAttachments(Territory t) {
+    return canals.computeIfAbsent(t, key -> CanalAttachment.get(t));
   }
 
   private MoveValidationResult validateCombat(
@@ -872,7 +900,8 @@ public class MoveValidator {
       unitsWithoutDependents = getNonLand(units);
     }
     final Map<Unit, Collection<Unit>> dependentsMap =
-        getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
+        getDependents(
+            route.getStart(), CollectionUtils.getMatches(units, Matches.unitCanTransport()));
     final Set<Unit> dependents =
         dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     dependents.addAll(
@@ -945,11 +974,11 @@ public class MoveValidator {
     return map;
   }
 
-  public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units) {
+  public static Map<Unit, Collection<Unit>> getDependents(Territory t, Collection<Unit> units) {
     // just worry about transports
     final Map<Unit, Collection<Unit>> dependents = new HashMap<>();
     for (final Unit unit : units) {
-      dependents.put(unit, unit.getTransporting());
+      dependents.put(unit, unit.getTransporting(t));
     }
     return dependents;
   }

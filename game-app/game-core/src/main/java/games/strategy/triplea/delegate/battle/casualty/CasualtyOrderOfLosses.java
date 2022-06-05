@@ -44,6 +44,15 @@ class CasualtyOrderOfLosses {
     @Nonnull Territory battlesite;
     @Nonnull IntegerMap<UnitType> costs;
     @Nonnull GameState data;
+
+    public String getCacheKey() {
+      return player.getName()
+          + "|"
+          + battlesite.getName()
+          + "|"
+          + combatValue.getBattleSide()
+          + "|";
+    }
   }
 
   /**
@@ -64,7 +73,8 @@ class CasualtyOrderOfLosses {
       targetTypes.add(AmphibType.of(u));
     }
     // Calculate hashes and cache key
-    String key = computeOolCacheKey(parameters, targetTypes);
+    final String paramsCacheKey = parameters.getCacheKey();
+    String key = computeOolCacheKey(paramsCacheKey, targetTypes);
     // Check OOL cache
     final List<AmphibType> stored = oolCache.get(key);
     if (stored != null) {
@@ -235,7 +245,7 @@ class CasualtyOrderOfLosses {
       oolCache.put(key, new ArrayList<>(unitTypes));
       final AmphibType unitTypeToRemove = it.next();
       targetTypes.remove(unitTypeToRemove);
-      key = computeOolCacheKey(parameters, targetTypes);
+      key = computeOolCacheKey(paramsCacheKey, targetTypes);
       it.remove();
     }
     return sortedWellEnoughUnitsList;
@@ -259,14 +269,7 @@ class CasualtyOrderOfLosses {
     }
   }
 
-  static String computeOolCacheKey(
-      final Parameters parameters, final List<AmphibType> targetTypes) {
-    return parameters.player.getName()
-        + "|"
-        + parameters.battlesite.getName()
-        + "|"
-        + parameters.combatValue.getBattleSide()
-        + "|"
-        + Objects.hashCode(targetTypes);
+  static String computeOolCacheKey(String paramsCacheKey, List<AmphibType> targetTypes) {
+    return paramsCacheKey + Objects.hashCode(targetTypes);
   }
 }

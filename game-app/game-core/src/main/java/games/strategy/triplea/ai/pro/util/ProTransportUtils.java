@@ -7,6 +7,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -254,11 +256,12 @@ public final class ProTransportUtils {
   }
 
   private static Comparator<Unit> getDecreasingAttackComparator(final GamePlayer player) {
+    final Map<UnitType, Set<UnitSupportAttachment>> cache = new HashMap<>();
+    ;
     return (o1, o2) -> {
-
       // Very rough way to add support power
       final Set<UnitSupportAttachment> supportAttachments1 =
-          UnitSupportAttachment.get(o1.getType());
+          cache.computeIfAbsent(o1.getType(), UnitSupportAttachment::get);
       int maxSupport1 = 0;
       for (final UnitSupportAttachment usa : supportAttachments1) {
         if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1) {
@@ -267,7 +270,7 @@ public final class ProTransportUtils {
       }
       final int attack1 = o1.getUnitAttachment().getAttack(player) + maxSupport1;
       final Set<UnitSupportAttachment> supportAttachments2 =
-          UnitSupportAttachment.get(o2.getType());
+          cache.computeIfAbsent(o2.getType(), UnitSupportAttachment::get);
       int maxSupport2 = 0;
       for (final UnitSupportAttachment usa : supportAttachments2) {
         if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2) {
