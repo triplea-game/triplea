@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.data;
 
+import static java.util.function.Predicate.not;
+
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.util.UnitOwner;
 import java.util.ArrayList;
@@ -77,7 +79,7 @@ public class CasualtyDetails extends CasualtyList {
         killedWithCorrectOrder.stream()
             .filter(unit -> !killed.contains(unit))
             .collect(Collectors.toList()));
-    killed.removeIf(matcher.and(unit -> killedWithCorrectOrder.contains(unit)));
+    killed.removeIf(matcher.and(killedWithCorrectOrder::contains));
   }
 
   /**
@@ -138,12 +140,12 @@ public class CasualtyDetails extends CasualtyList {
         targetsHitWithCorrectOrder.stream()
             .filter(unit -> !damaged.contains(unit))
             .collect(Collectors.toList()));
-    damaged.removeIf(matcher.and(unit -> !targetsHitWithCorrectOrder.contains(unit));
+    damaged.removeIf(matcher.and(not(targetsHitWithCorrectOrder::contains)));
   }
 
   /**
    * redistributes the hits from <code>unitsWithHitsBeforeRedistribution</code> among <code>
-   * unitsThatCanTakeHits</code> accourding to which units <code>shouldTakeHitsFirst</code>
+   * unitsThatCanTakeHits</code> according to which units <code>shouldTakeHitsFirst</code>
    *
    * @param targetsWithHitsBeforeRedistribution contains a unit once for each hit it should take
    *     without considering which units should take hits first
