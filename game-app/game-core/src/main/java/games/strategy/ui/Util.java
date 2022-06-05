@@ -22,7 +22,6 @@ import lombok.experimental.UtilityClass;
 /** A collection of methods useful for rendering the UI. */
 @UtilityClass
 public final class Util {
-  public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
   private static final Component component =
       new Component() {
@@ -112,17 +111,6 @@ public final class Util {
     final float loginStringX = w * .05f;
     g2.drawString(text, loginStringX, loginStringY);
     return img;
-  }
-
-  /**
-   * Checks whether name indicates water or not (meaning name starts or ends with default text).
-   *
-   * @param territoryName - territory name
-   * @return true if yes, false otherwise
-   */
-  public static boolean isTerritoryNameIndicatingWater(final String territoryName) {
-    return territoryName.endsWith(TERRITORY_SEA_ZONE_INFIX)
-        || territoryName.startsWith(TERRITORY_SEA_ZONE_INFIX);
   }
 
   /**
