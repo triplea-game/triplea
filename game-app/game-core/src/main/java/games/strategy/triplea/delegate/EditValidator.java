@@ -9,7 +9,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
@@ -223,7 +222,7 @@ final class EditValidator {
     }
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
-      if (dmg < 0 || dmg >= UnitAttachment.get(u.getType()).getHitPoints()) {
+      if (dmg < 0 || dmg >= u.getUnitAttachment().getHitPoints()) {
         return "Damage cannot be less than zero or equal to or greater than unit "
             + "hitpoints (if you want to kill the unit, use remove unit)";
       }

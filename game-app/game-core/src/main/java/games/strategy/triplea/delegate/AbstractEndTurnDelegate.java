@@ -26,7 +26,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -521,7 +520,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       if (rollDiceForBlockadeDamage) {
         int numberOfDice = 0;
         for (final Unit u : enemies) {
-          numberOfDice += UnitAttachment.get(u.getType()).getBlockade();
+          numberOfDice += u.getUnitAttachment().getBlockade();
         }
         if (numberOfDice > 0) {
           // there is an issue with maps that have lots of rolls without any pause between them:
@@ -550,7 +549,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
         }
       } else {
         for (final Unit u : enemies) {
-          loss += UnitAttachment.get(u.getType()).getBlockade();
+          loss += u.getUnitAttachment().getBlockade();
         }
       }
       if (loss <= 0) {

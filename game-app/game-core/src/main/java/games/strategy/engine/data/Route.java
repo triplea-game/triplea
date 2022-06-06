@@ -452,7 +452,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (Matches.unitIsBeingTransported().test(unit)) {
       return Tuple.of(resources, false);
     }
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    final UnitAttachment ua = unit.getUnitAttachment();
     resources.add(ua.getFuelCost());
     resources.multiply(getMovementCost(unit).setScale(0, RoundingMode.CEILING).intValue());
     boolean chargedFlatFuelCost = false;

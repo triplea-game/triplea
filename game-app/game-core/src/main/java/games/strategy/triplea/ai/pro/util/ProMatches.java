@@ -11,7 +11,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -546,7 +545,7 @@ public final class ProMatches {
 
   public static Predicate<Unit> unitIsOwnedCarrier(final GamePlayer player) {
     return unit ->
-        UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
+        unit.getUnitAttachment().getCarrierCapacity() != -1
             && Matches.unitIsOwnedBy(player).test(unit);
   }
 
@@ -574,7 +573,7 @@ public final class ProMatches {
     return u ->
         (!isCombatMove
                 || (!Matches.unitCanNotMoveDuringCombatMove().test(u)
-                    && UnitAttachment.get(u.getType()).canInvadeFrom(transport)))
+                    && u.getUnitAttachment().canInvadeFrom(transport)))
             && unitIsOwnedTransportableUnit(player)
                 .and(Matches.unitHasNotMoved())
                 .and(Matches.unitHasMovementLeft())

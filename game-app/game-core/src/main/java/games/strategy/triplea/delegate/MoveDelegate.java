@@ -420,14 +420,13 @@ public class MoveDelegate extends AbstractMoveDelegate {
         }
         for (final Unit bonusGiver : givesBonusUnits) {
           final int tempBonus =
-              UnitAttachment.get(bonusGiver.getType()).getGivesMovement().getInt(u.getType());
+              bonusGiver.getUnitAttachment().getGivesMovement().getInt(u.getType());
           if (tempBonus > bonusMovement) {
             bonusMovement = tempBonus;
           }
         }
         if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
-          bonusMovement =
-              Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
+          bonusMovement = Math.max(bonusMovement, (u.getUnitAttachment().getMovement(player) * -1));
           change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, Unit.BONUS_MOVEMENT));
         }
       }
@@ -532,7 +531,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final List<Unit> unitsToAdd = new ArrayList<>();
     for (final Unit unit : changesIntoUnits) {
       final Map<Integer, Tuple<Boolean, UnitType>> map =
-          UnitAttachment.get(unit.getType()).getWhenHitPointsRepairedChangesInto();
+          unit.getUnitAttachment().getWhenHitPointsRepairedChangesInto();
       if (map.containsKey(unit.getHits())) {
         final boolean translateAttributes = map.get(unit.getHits()).getFirst();
         final UnitType unitType = map.get(unit.getHits()).getSecond();
@@ -598,8 +597,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
     int largest = 0;
     for (final Unit u : repairUnitsForThisUnit) {
-      final int repair =
-          UnitAttachment.get(u.getType()).getRepairsUnits().getInt(unitToBeRepaired.getType());
+      final int repair = u.getUnitAttachment().getRepairsUnits().getInt(unitToBeRepaired.getType());
       if (largest < repair) {
         largest = repair;
       }

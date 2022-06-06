@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
@@ -109,7 +108,8 @@ public class FireAa implements IExecutable {
       final List<Collection<Unit>> firingGroups = newFiringUnitGroups(aaTypeUnits);
       for (final Collection<Unit> firingGroup : firingGroups) {
         final Set<UnitType> validTargetTypes =
-            UnitAttachment.get(CollectionUtils.getAny(firingGroup).getType())
+            CollectionUtils.getAny(firingGroup)
+                .getUnitAttachment()
                 .getTargetsAa(bridge.getData().getUnitTypeList());
 
         final Set<UnitType> airborneTypesTargeted =

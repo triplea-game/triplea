@@ -169,7 +169,10 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    defendingAa
+                        .iterator()
+                        .next()
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -238,7 +241,10 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    defendingAa
+                        .iterator()
+                        .next()
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -311,7 +317,10 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    defendingAa
+                        .iterator()
+                        .next()
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -1331,7 +1340,7 @@ class WW2V3Year41Test {
     final Collection<Unit> dds =
         CollectionUtils.getMatches(sz15.getUnits(), Matches.unitIsDestroyer());
     for (final Unit unit : dds) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       ua.setBombard(3);
     }
     // start the battle phase, this will ask the user to bombard

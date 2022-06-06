@@ -584,7 +584,7 @@ public class AirBattle extends AbstractBattle {
     for (final Unit base :
         t.getUnitCollection()
             .getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
-      final int baseMax = UnitAttachment.get(base.getType()).getMaxInterceptCount();
+      final int baseMax = base.getUnitAttachment().getMaxInterceptCount();
       if (baseMax == -1) {
         return Integer.MAX_VALUE;
       }

@@ -182,7 +182,7 @@ public class WeakAi extends AbstractBuiltInAi {
         final Iterator<Unit> iter = unitsToLoad.iterator();
         while (iter.hasNext() && free > 0) {
           final Unit current = iter.next();
-          final UnitAttachment ua = UnitAttachment.get(current.getType());
+          final UnitAttachment ua = current.getUnitAttachment();
           if (ua.getIsAir()) {
             continue;
           }

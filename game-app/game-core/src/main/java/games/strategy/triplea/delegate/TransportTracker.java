@@ -38,7 +38,7 @@ public class TransportTracker {
   }
 
   private static void assertTransport(final Unit u) {
-    if (UnitAttachment.get(u.getType()).getTransportCapacity() == -1) {
+    if (u.getUnitAttachment().getTransportCapacity() == -1) {
       throw new IllegalStateException("Not a transport:" + u);
     }
   }
@@ -188,7 +188,7 @@ public class TransportTracker {
 
   /** Given a unit, computes the transport capacity value available for that unit. */
   public static int getAvailableCapacity(final Unit unit) {
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    final UnitAttachment ua = unit.getUnitAttachment();
     // Check if there are transports available, also check for destroyer capacity (Tokyo Express)
     if (ua.getTransportCapacity() == -1
         || (unit.getData().getProperties().get(Constants.PACIFIC_THEATER, false)
@@ -296,7 +296,7 @@ public class TransportTracker {
     MoveValidator.carrierMustMoveWith(units, units, player)
         .forEach(
             (carrier, dependencies) -> {
-              final UnitAttachment ua = UnitAttachment.get(carrier.getType());
+              final UnitAttachment ua = carrier.getUnitAttachment();
               if (ua.getCarrierCapacity() == -1) {
                 return;
               }

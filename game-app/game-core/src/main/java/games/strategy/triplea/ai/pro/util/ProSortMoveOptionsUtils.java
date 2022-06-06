@@ -228,7 +228,7 @@ public final class ProSortMoveOptionsUtils {
       }
     }
 
-    if (UnitAttachment.get(unit.getType()).getIsAir()) {
+    if (unit.getUnitAttachment().getIsAir()) {
       minPower *= 10;
     }
     return (double) minPower / proData.getUnitValue(unit.getType());

@@ -764,7 +764,7 @@ class ProNonCombatMoveAi {
 
       // Set enough units in territories to have at least a chance of winning
       for (final Unit unit : sortedUnitMoveOptions.keySet()) {
-        final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
+        final boolean isAirUnit = unit.getUnitAttachment().getIsAir();
         if (isAirUnit || Matches.unitIsCarrier().test(unit) || addedUnits.contains(unit)) {
           continue; // skip air and carrier units
         }
@@ -1982,7 +1982,7 @@ class ProNonCombatMoveAi {
             }
             int transportCapacity1 = 0;
             for (final Unit transport : transports1) {
-              transportCapacity1 += UnitAttachment.get(transport.getType()).getTransportCapacity();
+              transportCapacity1 += transport.getUnitAttachment().getTransportCapacity();
             }
 
             // Find transport capacity of nearby (distance 2) transports
@@ -2000,7 +2000,7 @@ class ProNonCombatMoveAi {
             }
             int transportCapacity2 = 0;
             for (final Unit transport : transports2) {
-              transportCapacity2 += UnitAttachment.get(transport.getType()).getTransportCapacity();
+              transportCapacity2 += transport.getUnitAttachment().getTransportCapacity();
             }
             final List<Unit> unitsToTransport =
                 CollectionUtils.getMatches(
@@ -2010,7 +2010,7 @@ class ProNonCombatMoveAi {
             // Find transport cost of potential amphib units
             int transportCost = 0;
             for (final Unit unit : unitsToTransport) {
-              transportCost += UnitAttachment.get(unit.getType()).getTransportCost();
+              transportCost += unit.getUnitAttachment().getTransportCost();
             }
 
             // Find territory that needs amphib units that most

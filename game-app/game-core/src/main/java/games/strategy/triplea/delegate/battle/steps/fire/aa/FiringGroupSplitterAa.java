@@ -79,7 +79,8 @@ public class FiringGroupSplitterAa
 
       // grab the unit types that this typeAa can fire at
       final Set<UnitType> validTargetTypes =
-          UnitAttachment.get(CollectionUtils.getAny(firingUnits).getType())
+          CollectionUtils.getAny(firingUnits)
+              .getUnitAttachment()
               .getTargetsAa(battleState.getGameData().getUnitTypeList());
 
       final Collection<Unit> targetUnits =

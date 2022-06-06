@@ -16,7 +16,6 @@ import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -1131,8 +1130,8 @@ public class ProTerritoryManager {
                                 : ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(
                                     player, myTransport, isCombatMove));
                 for (final Unit possibleUnit : possibleUnits) {
-                  if (UnitAttachment.get(possibleUnit.getType()).getTransportCost()
-                      <= UnitAttachment.get(myTransport.getType()).getTransportCapacity()) {
+                  if (possibleUnit.getUnitAttachment().getTransportCost()
+                      <= myTransport.getUnitAttachment().getTransportCapacity()) {
                     units.add(possibleUnit);
                     myUnitsToLoadTerritories.add(possibleLoadTerritory);
                   }
@@ -1318,8 +1317,7 @@ public class ProTerritoryManager {
       final GamePlayer player,
       final boolean isCheckingEnemyAttacks) {
     if (isCheckingEnemyAttacks) {
-      final BigDecimal range =
-          new BigDecimal(UnitAttachment.get(unit.getType()).getMovement(player));
+      final BigDecimal range = new BigDecimal(unit.getUnitAttachment().getMovement(player));
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(unitTerritory, player)
           .test(unit)) {
         return range.add(BigDecimal.ONE); // assumes bonus of +1 for now

@@ -29,7 +29,6 @@ import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
 import games.strategy.engine.history.change.units.TransformDamagedUnitsHistoryChange;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -1492,7 +1491,7 @@ public class MustFightBattle extends DependentBattle
         defendingAir.remove(currentUnit);
         continue;
       }
-      carrierCost += UnitAttachment.get(currentUnit.getType()).getCarrierCost();
+      carrierCost += currentUnit.getUnitAttachment().getCarrierCost();
       if (carrierCapacity >= carrierCost) {
         defendingAir.remove(currentUnit);
       }

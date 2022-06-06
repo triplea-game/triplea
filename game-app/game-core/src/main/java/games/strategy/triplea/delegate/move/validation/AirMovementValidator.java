@@ -797,7 +797,7 @@ public final class AirMovementValidator {
           for (final Unit airUnit : airCargo) {
             if (airUnit.getTransportedBy() != null && airUnit.getTransportedBy().equals(unit)) {
               // capacity = are cargo only
-              cargo += UnitAttachment.get(airUnit.getType()).getCarrierCost();
+              cargo += airUnit.getUnitAttachment().getCarrierCost();
             }
           }
           return cargo;
@@ -807,7 +807,7 @@ public final class AirMovementValidator {
         return 0;
       }
 
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       return ua.getCarrierCapacity();
     }
     return 0;
@@ -823,7 +823,7 @@ public final class AirMovementValidator {
 
   public static int carrierCost(final Unit unit) {
     if (Matches.unitCanLandOnCarrier().test(unit)) {
-      return UnitAttachment.get(unit.getType()).getCarrierCost();
+      return unit.getUnitAttachment().getCarrierCost();
     }
     return 0;
   }

@@ -317,7 +317,7 @@ final class ProTechAi {
       return strength;
     }
     for (final Unit u : units) {
-      final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
+      final UnitAttachment unitAttachment = u.getUnitAttachment();
       if (unitAttachment.getIsInfrastructure()) {
         if (unitAttachment.getIsSea() == sea) {
           final int unitAttack = unitAttachment.getAttack(u.getOwner());
@@ -533,7 +533,7 @@ final class ProTechAi {
   private static float allAirStrength(final Collection<Unit> units) {
     float airStrength = 0.0F;
     for (final Unit u : units) {
-      final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
+      final UnitAttachment unitAttachment = u.getUnitAttachment();
       airStrength += 1.00F;
       airStrength += unitAttachment.getAttack(u.getOwner());
     }

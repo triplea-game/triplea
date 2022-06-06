@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.math.BigDecimal;
@@ -134,7 +133,6 @@ public class UnitSeparator {
   }
 
   private static boolean isAirWithHitPointsRemaining(final Unit unit) {
-    return UnitAttachment.get(unit.getType()).getIsAir()
-        && UnitAttachment.get(unit.getType()).getHitPoints() > 1;
+    return unit.getUnitAttachment().getIsAir() && unit.getUnitAttachment().getHitPoints() > 1;
   }
 }

@@ -22,7 +22,6 @@ import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.AirBattle;
@@ -925,7 +924,7 @@ public class ProCombatMoveAi {
 
       // Set air units in any territory with no AA (don't move planes to empty territories)
       for (final Unit unit : sortedUnitAttackOptions.keySet()) {
-        final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
+        final boolean isAirUnit = unit.getUnitAttachment().getIsAir();
         if (!isAirUnit) {
           continue; // skip non-air units
         }
@@ -1013,7 +1012,7 @@ public class ProCombatMoveAi {
 
       // Add sea units to any territory that significantly increases TUV gain
       for (final Unit unit : sortedUnitAttackOptions.keySet()) {
-        final boolean isSeaUnit = UnitAttachment.get(unit.getType()).getIsSea();
+        final boolean isSeaUnit = unit.getUnitAttachment().getIsSea();
         if (!isSeaUnit) {
           continue; // skip non-sea units
         }
@@ -1248,7 +1247,7 @@ public class ProCombatMoveAi {
 
     // Try to set at least one destroyer in each sea territory with subs
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
-      final boolean isDestroyerUnit = UnitAttachment.get(unit.getType()).getIsDestroyer();
+      final boolean isDestroyerUnit = unit.getUnitAttachment().getIsDestroyer();
       if (!isDestroyerUnit) {
         continue; // skip non-destroyer units
       }
@@ -1268,7 +1267,7 @@ public class ProCombatMoveAi {
 
     // Set enough land and sea units in territories to have at least a chance of winning
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
-      final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
+      final boolean isAirUnit = unit.getUnitAttachment().getIsAir();
       final boolean isExpensiveLandUnit =
           Matches.unitIsLand().test(unit)
               && proData.getUnitValue(unit.getType()) > 2 * proData.getMinCostPerHitPoint();
@@ -1308,7 +1307,7 @@ public class ProCombatMoveAi {
 
     // Set non-air units in territories that can be held
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
-      final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
+      final boolean isAirUnit = unit.getUnitAttachment().getIsAir();
       if (isAirUnit || addedUnits.contains(unit)) {
         continue; // skip air units
       }
@@ -1345,7 +1344,7 @@ public class ProCombatMoveAi {
 
     // Set air units in territories that can't be held (don't move planes to empty territories)
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
-      final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
+      final boolean isAirUnit = unit.getUnitAttachment().getIsAir();
       if (!isAirUnit) {
         continue; // skip non-air units
       }
@@ -1417,7 +1416,7 @@ public class ProCombatMoveAi {
       if (addedUnits.contains(unit)) {
         continue;
       }
-      final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
+      final boolean isAirUnit = unit.getUnitAttachment().getIsAir();
       Territory minWinTerritory = null;
       double minWinPercentage = proData.getWinPercentage();
       for (final Territory t : sortedUnitAttackOptions.get(unit)) {

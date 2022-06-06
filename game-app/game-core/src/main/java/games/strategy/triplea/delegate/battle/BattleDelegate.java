@@ -1000,7 +1000,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> airbases = t.getUnitCollection().getMatches(Matches.unitIsAirBase());
       for (final Unit airbase : airbases) {
-        final UnitAttachment ua = UnitAttachment.get(airbase.getType());
+        final UnitAttachment ua = airbase.getUnitAttachment();
         final int currentMax = airbase.getMaxScrambleCount();
         final int allowedMax = ua.getMaxScrambleCount();
         if (currentMax != allowedMax) {
@@ -1447,7 +1447,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final String dice = " scoring " + hits + " hits.  Rolls: " + MyFormatter.asDice(rolls);
     bridge.getHistoryWriter().startEvent(title + dice, unitUnderFire);
     if (hits > 0) {
-      final UnitAttachment ua = UnitAttachment.get(unitUnderFire.getType());
+      final UnitAttachment ua = unitUnderFire.getUnitAttachment();
       final int currentHits = unitUnderFire.getHits();
       if (ua.getHitPoints() <= currentHits + hits) {
         HistoryChangeFactory.removeUnitsFromTerritory(location, List.of(unitUnderFire))
@@ -1493,7 +1493,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final int carrierCostForCurrentTerr) {
     Preconditions.checkNotNull(strandedAir);
 
-    final int maxDistance = UnitAttachment.get(strandedAir.getType()).getMaxScrambleDistance();
+    final int maxDistance = strandedAir.getUnitAttachment().getMaxScrambleDistance();
     if (maxDistance <= 0) {
       return List.of(currentTerr);
     }

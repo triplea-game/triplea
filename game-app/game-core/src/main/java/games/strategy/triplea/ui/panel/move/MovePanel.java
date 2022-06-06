@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
@@ -332,7 +331,7 @@ public class MovePanel extends AbstractMovePanel {
           int minTransportCost = Integer.MAX_VALUE;
           for (final Unit unit : capableUnitsToLoad) {
             minTransportCost =
-                Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
+                Math.min(minTransportCost, unit.getUnitAttachment().getTransportCost());
           }
           final Collection<Unit> airTransportsToLoad = new ArrayList<>();
           for (final Unit bomber : capableTransportsToLoad) {
@@ -1126,8 +1125,7 @@ public class MovePanel extends AbstractMovePanel {
         MoveValidator.getMustMoveWith(route.getEnd(), dependentUnits, unitOwner);
     int minTransportCost = defaultMinTransportCost;
     for (final Unit unit : unitsToLoad) {
-      minTransportCost =
-          Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
+      minTransportCost = Math.min(minTransportCost, unit.getUnitAttachment().getTransportCost());
     }
     final Predicate<Unit> candidateTransportsMatch =
         Matches.unitIsTransport().and(Matches.alliedUnit(unitOwner));
@@ -1187,7 +1185,7 @@ public class MovePanel extends AbstractMovePanel {
         TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, capableTransports);
     for (final Unit unit : unitsToCapableTransports.keySet()) {
       final Unit transport = unitsToCapableTransports.get(unit);
-      final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+      final int unitCost = unit.getUnitAttachment().getTransportCost();
       availableCapacityMap.add(transport, (-1 * unitCost));
       defaultSelections.add(transport);
     }
@@ -1198,7 +1196,7 @@ public class MovePanel extends AbstractMovePanel {
         TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, alliedTransports);
     for (final Unit unit : unitsToAlliedTransports.keySet()) {
       final Unit transport = unitsToAlliedTransports.get(unit);
-      final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+      final int unitCost = unit.getUnitAttachment().getTransportCost();
       availableCapacityMap.add(transport, (-1 * unitCost));
       defaultSelections.add(transport);
       useAlliedTransports = true;
@@ -1213,7 +1211,7 @@ public class MovePanel extends AbstractMovePanel {
           TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, incapableTransports);
       for (final Unit unit : unitsToIncapableTransports.keySet()) {
         final Unit transport = unitsToIncapableTransports.get(unit);
-        final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+        final int unitCost = unit.getUnitAttachment().getTransportCost();
         availableCapacityMap.add(transport, (-1 * unitCost));
         defaultSelections.add(transport);
       }

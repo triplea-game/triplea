@@ -23,7 +23,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -888,7 +887,7 @@ public class BattleTracker implements Serializable {
               nonCom, Matches.unitWhenCapturedChangesIntoDifferentUnitType());
       for (final Unit u : toReplace) {
         final Map<String, Tuple<String, IntegerMap<UnitType>>> map =
-            UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
+            u.getUnitAttachment().getWhenCapturedChangesInto();
         final GamePlayer currentOwner = u.getOwner();
         for (final String value : map.keySet()) {
           final String[] s = Iterables.toArray(Splitter.on(':').split(value), String.class);
@@ -939,8 +938,7 @@ public class BattleTracker implements Serializable {
       for (final Unit unit :
           CollectionUtils.getMatches(nonCom, Matches.unitWhenCapturedSustainsDamage())) {
         final int damageLimit = unit.getHowMuchMoreDamageCanThisUnitTake(territory);
-        final int sustainedDamage =
-            UnitAttachment.get(unit.getType()).getWhenCapturedSustainsDamage();
+        final int sustainedDamage = unit.getUnitAttachment().getWhenCapturedSustainsDamage();
         final int actualDamage = Math.max(0, Math.min(sustainedDamage, damageLimit));
         final int totalDamage = unit.getUnitDamage() + actualDamage;
         damageMap.put(unit, totalDamage);

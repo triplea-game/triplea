@@ -68,7 +68,7 @@ public class AirThatCantLandUtil {
           territory.getUnitCollection().getMatches(Matches.alliedUnit(player));
       int capacity = AirMovementValidator.carrierCapacity(carriers, territory);
       for (final Unit unit : airUnits) {
-        final UnitAttachment ua = UnitAttachment.get(unit.getType());
+        final UnitAttachment ua = unit.getUnitAttachment();
         final int cost = ua.getCarrierCost();
         if (cost == -1 || cost > capacity) {
           toRemove.add(unit);
