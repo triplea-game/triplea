@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import org.triplea.util.LocalizeHtml;
 
 /** Generates unit tooltips based on the content of the map's {@code tooltips.properties} file. */
@@ -26,7 +25,8 @@ public final class TooltipProperties extends PropertyFile {
       return LocalizeHtml.localizeImgLinksInHtml(customTip, UiContext.getMapLocation());
     }
     final String generated =
-        unitType.getUnitAttachment()
+        unitType
+            .getUnitAttachment()
             .toStringShortAndOnlyImportantDifferences(
                 (gamePlayer == null
                     ? unitType.getData().getPlayerList().getNullPlayer()

@@ -7,7 +7,6 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.HashSet;

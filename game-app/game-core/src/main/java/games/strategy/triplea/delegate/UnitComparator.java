@@ -138,7 +138,6 @@ public final class UnitComparator {
 
   public static Comparator<Unit> getDecreasingBombardComparator() {
     return Comparator.comparing(
-        Unit::getUnitAttachment,
-        Comparator.comparingInt(UnitAttachment::getBombard).reversed());
+        Unit::getUnitAttachment, Comparator.comparingInt(UnitAttachment::getBombard).reversed());
   }
 }

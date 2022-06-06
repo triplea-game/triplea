@@ -88,7 +88,8 @@ public class UnitAbilityFactory {
                   unitType -> unitType.getUnitAttachment().getCanNotBeTargetedBy().isEmpty()))
           .forEach(
               unitType ->
-                  unitType.getUnitAttachment()
+                  unitType
+                      .getUnitAttachment()
                       .getCanNotBeTargetedBy()
                       .forEach(
                           firingUnitType ->

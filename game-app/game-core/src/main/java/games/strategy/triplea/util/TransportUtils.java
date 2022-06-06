@@ -230,7 +230,7 @@ public final class TransportUtils {
     canBeTransported.sort(
         Comparator.comparing(
             Unit::getUnitAttachment,
-                Comparator.comparing(UnitAttachment::getTransportCost).reversed()));
+            Comparator.comparing(UnitAttachment::getTransportCost).reversed()));
     return canBeTransported;
   }
 

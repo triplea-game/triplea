@@ -8,7 +8,6 @@ import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;

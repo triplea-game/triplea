@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.battle.steps.fire.general;
 import com.google.common.collect.Sets;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
