@@ -257,7 +257,6 @@ public final class ProTransportUtils {
 
   private static Comparator<Unit> getDecreasingAttackComparator(final GamePlayer player) {
     final Map<UnitType, Set<UnitSupportAttachment>> cache = new HashMap<>();
-    ;
     return (o1, o2) -> {
       // Very rough way to add support power
       final Set<UnitSupportAttachment> supportAttachments1 =
