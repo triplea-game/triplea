@@ -169,9 +169,7 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
@@ -241,9 +239,7 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
@@ -317,9 +313,7 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
