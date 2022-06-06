@@ -91,7 +91,7 @@ public class TechTracker {
   public static Collection<TechAdvance> getCurrentTechAdvances(
       final GamePlayer gamePlayer, final TechnologyFrontier technologyFrontier) {
     final Collection<TechAdvance> techAdvances = new ArrayList<>();
-    final TechAttachment attachment = TechAttachment.get(gamePlayer);
+    final TechAttachment attachment = gamePlayer.getTechAttachment();
     // search all techs
     for (final TechAdvance ta : TechAdvance.getTechAdvances(technologyFrontier)) {
       if (ta.hasTech(attachment)) {
@@ -108,7 +108,7 @@ public class TechTracker {
   public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(
       final GamePlayer gamePlayer) {
     final Collection<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
-    final TechAttachment attachment = TechAttachment.get(gamePlayer);
+    final TechAttachment attachment = gamePlayer.getTechAttachment();
     for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(gamePlayer)) {
       boolean has = true;
       for (final TechAdvance t : tf.getTechs()) {
@@ -131,11 +131,11 @@ public class TechTracker {
     if (advance instanceof GenericTechAdvance
         && ((GenericTechAdvance) advance).getAdvance() == null) {
       attachmentChange =
-          ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
+          ChangeFactory.genericTechChange(player.getTechAttachment(), true, advance.getProperty());
     } else {
       attachmentChange =
           ChangeFactory.attachmentPropertyChange(
-              TechAttachment.get(player), "true", advance.getProperty());
+              player.getTechAttachment(), "true", advance.getProperty());
     }
     bridge.addChange(attachmentChange);
     advance.perform(player, bridge);
@@ -148,62 +148,62 @@ public class TechTracker {
       if (((GenericTechAdvance) advance).getAdvance() == null) {
         attachmentChange =
             ChangeFactory.genericTechChange(
-                TechAttachment.get(player), false, advance.getProperty());
+                player.getTechAttachment(), false, advance.getProperty());
       } else {
         attachmentChange =
             ChangeFactory.attachmentPropertyChange(
-                TechAttachment.get(player), "false", advance.getProperty());
+                player.getTechAttachment(), "false", advance.getProperty());
       }
     } else {
       attachmentChange =
           ChangeFactory.attachmentPropertyChange(
-              TechAttachment.get(player), "false", advance.getProperty());
+              player.getTechAttachment(), "false", advance.getProperty());
     }
     bridge.addChange(attachmentChange);
   }
 
   public static int getTechCost(final GamePlayer gamePlayer) {
-    final TechAttachment ta = TechAttachment.get(gamePlayer);
+    final TechAttachment ta = gamePlayer.getTechAttachment();
     return ta.getTechCost();
   }
 
   public static boolean hasLongRangeAir(final GamePlayer player) {
-    return TechAttachment.get(player).getLongRangeAir();
+    return player.getTechAttachment().getLongRangeAir();
   }
 
   public static boolean hasHeavyBomber(final GamePlayer player) {
-    return TechAttachment.get(player).getHeavyBomber();
+    return player.getTechAttachment().getHeavyBomber();
   }
 
   public static boolean hasSuperSubs(final GamePlayer player) {
-    return TechAttachment.get(player).getSuperSub();
+    return player.getTechAttachment().getSuperSub();
   }
 
   public static boolean hasJetFighter(final GamePlayer player) {
-    return TechAttachment.get(player).getJetPower();
+    return player.getTechAttachment().getJetPower();
   }
 
   public static boolean hasRocket(final GamePlayer player) {
-    return TechAttachment.get(player).getRocket();
+    return player.getTechAttachment().getRocket();
   }
 
   public static boolean hasIndustrialTechnology(final GamePlayer player) {
-    return TechAttachment.get(player).getIndustrialTechnology();
+    return player.getTechAttachment().getIndustrialTechnology();
   }
 
   public static boolean hasImprovedArtillerySupport(final GamePlayer player) {
-    return TechAttachment.get(player).getImprovedArtillerySupport();
+    return player.getTechAttachment().getImprovedArtillerySupport();
   }
 
   public static boolean hasParatroopers(final GamePlayer player) {
-    return TechAttachment.get(player).getParatroopers();
+    return player.getTechAttachment().getParatroopers();
   }
 
   public static boolean hasIncreasedFactoryProduction(final GamePlayer player) {
-    return TechAttachment.get(player).getIncreasedFactoryProduction();
+    return player.getTechAttachment().getIncreasedFactoryProduction();
   }
 
   public static boolean hasAaRadar(final GamePlayer player) {
-    return TechAttachment.get(player).getAaRadar();
+    return player.getTechAttachment().getAaRadar();
   }
 }

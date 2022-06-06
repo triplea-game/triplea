@@ -14,7 +14,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.HeavyBomberAdvance;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -353,7 +352,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
   private void addTech(final TechAdvance techAdvance) {
     final var change =
         ChangeFactory.attachmentPropertyChange(
-            TechAttachment.get(BRITISH), true, techAdvance.getProperty());
+            BRITISH.getTechAttachment(), true, techAdvance.getProperty());
     data.performChange(change);
   }
 

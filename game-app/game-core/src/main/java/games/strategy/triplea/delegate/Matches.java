@@ -824,7 +824,7 @@ public final class Matches {
 
   public static Predicate<Unit> unitIsAirTransportable() {
     return obj -> {
-      final TechAttachment ta = TechAttachment.get(obj.getOwner());
+      final TechAttachment ta = obj.getOwner().getTechAttachment();
       if (!ta.getParatroopers()) {
         return false;
       }
@@ -840,7 +840,7 @@ public final class Matches {
 
   public static Predicate<Unit> unitIsAirTransport() {
     return obj -> {
-      final TechAttachment ta = TechAttachment.get(obj.getOwner());
+      final TechAttachment ta = obj.getOwner().getTechAttachment();
       if (!ta.getParatroopers()) {
         return false;
       }

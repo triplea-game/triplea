@@ -1963,7 +1963,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final GamePlayer player : t.getPlayers()) {
         for (final TechAdvance ta : t.getTech()) {
-          if (ta.hasTech(TechAttachment.get(player))) {
+          if (ta.hasTech(player.getTechAttachment())) {
             continue;
           }
           bridge

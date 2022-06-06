@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.util.Collection;
 import java.util.Map;
@@ -83,7 +82,7 @@ public class TestDataBigWorld1942V3 {
   public void addTech(final TechAdvance techAdvance) {
     final var change =
         ChangeFactory.attachmentPropertyChange(
-            TechAttachment.get(british), true, techAdvance.getProperty());
+            british.getTechAttachment(), true, techAdvance.getProperty());
     gameData.performChange(change);
   }
 }
