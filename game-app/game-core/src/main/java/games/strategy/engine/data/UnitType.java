@@ -17,20 +17,11 @@ public class UnitType extends NamedAttachable {
     super(name, data);
   }
 
-  @Override
-  public void addAttachment(final String key, final IAttachment value) {
-    if (key.equals(Constants.UNIT_ATTACHMENT_NAME)) {
-      Preconditions.checkState(unitAttachment == null);
-      unitAttachment = (UnitAttachment) value;
-    }
-    super.addAttachment(key, value);
-  }
-
   public UnitAttachment getUnitAttachment() {
-    if (unitAttachment != null) {
-      return unitAttachment;
+    if (unitAttachment == null) {
+      unitAttachment = UnitAttachment.get(this, Constants.UNIT_ATTACHMENT_NAME);
     }
-    return UnitAttachment.get(this, Constants.UNIT_ATTACHMENT_NAME);
+    return unitAttachment;
   }
 
   public List<Unit> create(final int quantity, final GamePlayer owner) {
