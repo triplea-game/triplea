@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -36,7 +37,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   // movement of the units
   private final BigDecimal movement;
   // movement of the units
-  private final int transportCost;
+  @Getter private final int transportCost;
   private final boolean canRetreat;
   private final GamePlayer owner;
   // the units in the category, may be duplicates.
@@ -172,10 +173,6 @@ public class UnitCategory implements Comparable<UnitCategory> {
 
   public BigDecimal getMovement() {
     return movement;
-  }
-
-  public int getTransportCost() {
-    return transportCost;
   }
 
   public GamePlayer getOwner() {
