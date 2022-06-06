@@ -986,16 +986,16 @@ public class MoveValidator {
     final Predicate<Unit> transportOrSubOnly = transportOnly.or(subOnly);
     final boolean getIgnoreTransportInMovement =
         Properties.getIgnoreTransportInMovement(data.getProperties());
-    final List<Territory> steps;
+    List<Territory> steps;
     if (ignoreRouteEnd) {
       steps = route.getMiddleSteps();
     } else {
       steps = route.getSteps();
-    }
-    // if there are no steps, then we began in this sea zone, so see if there are ignored units in
-    // this sea zone (not sure if we need !ignoreRouteEnd here).
-    if (steps.isEmpty() && !ignoreRouteEnd) {
-      steps.add(route.getStart());
+      // if there are no steps, then we began in this sea zone, so see if there are ignored units in
+      // this sea zone (not sure if we need !ignoreRouteEnd here).
+      if (steps.isEmpty()) {
+        steps = List.of(route.getStart());
+      }
     }
     boolean validMove = false;
     for (final Territory current : steps) {
