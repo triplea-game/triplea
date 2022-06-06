@@ -256,10 +256,10 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public static UnitAttachment get(final UnitType type) {
-    return type.getUnitAttachment();
+    return get(type, Constants.UNIT_ATTACHMENT_NAME);
   }
 
-  public static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
+  static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
     return getAttachment(type, nameOfAttachment, UnitAttachment.class);
   }
 

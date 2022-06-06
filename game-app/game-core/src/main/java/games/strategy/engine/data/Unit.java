@@ -113,7 +113,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   public UnitAttachment getUnitAttachment() {
-    return type.getUnitAttachment();
+    return (UnitAttachment) type.getAttachment("unitAttachment");
   }
 
   public void setOwner(final @Nullable GamePlayer player) {
