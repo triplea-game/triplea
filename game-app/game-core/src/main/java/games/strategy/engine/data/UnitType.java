@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import com.google.common.base.Preconditions;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import java.util.List;
