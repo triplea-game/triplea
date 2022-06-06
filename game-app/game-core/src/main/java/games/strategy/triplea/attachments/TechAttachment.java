@@ -43,33 +43,9 @@ public class TechAttachment extends DefaultAttachment {
     setGenericTechs();
   }
 
-  /**
-   * Initializes a new instance of the TechAttachment class.
-   *
-   * @deprecated Since many maps do not include a tech attachment for each player (and no maps
-   *     include tech attachments for the Null Player), we must ensure a default tech attachment is
-   *     available for all these players. It is preferred to use the full constructor. Do not delete
-   *     this. TODO: create tech attachments all players that don't have one, as the map is
-   *     initialized.
-   */
-  @Deprecated
-  public TechAttachment() {
-    super(Constants.TECH_ATTACHMENT_NAME, null, null);
-    // TODO: not having game data, and not having generic techs, causes problems. Fix by creating
-    // real tech attachments
-    // for all players who are missing them, at the beginning of the game.
-  }
-
   // attaches to a PlayerId
   public static TechAttachment get(final GamePlayer gamePlayer) {
-    final TechAttachment attachment = gamePlayer.getTechAttachment();
-    // dont crash, as a map xml may not set the tech attachment for all players, so just create a
-    // new tech attachment
-    // for them
-    if (attachment == null) {
-      return new TechAttachment();
-    }
-    return attachment;
+    return gamePlayer.getTechAttachment();
   }
 
   static TechAttachment get(final GamePlayer gamePlayer, final String nameOfAttachment) {
@@ -77,14 +53,7 @@ public class TechAttachment extends DefaultAttachment {
       throw new IllegalStateException(
           "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
     }
-    final TechAttachment attachment = (TechAttachment) gamePlayer.getAttachment(nameOfAttachment);
-    // dont crash, as a map xml may not set the tech attachment for all players, so just create a
-    // new tech attachment
-    // for them
-    if (attachment == null) {
-      return new TechAttachment();
-    }
-    return attachment;
+    return get(gamePlayer);
   }
 
   // setters

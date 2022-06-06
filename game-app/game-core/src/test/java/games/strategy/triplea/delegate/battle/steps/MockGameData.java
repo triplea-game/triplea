@@ -45,6 +45,7 @@ public class MockGameData {
   private final TechTracker techTracker = mock(TechTracker.class);
   private final ResourceList resourceList = mock(ResourceList.class);
   private final PlayerList playerList = mock(PlayerList.class);
+  private final TechnologyFrontier technologyFrontier = mock(TechnologyFrontier.class);
 
   private MockGameData() {
     lenient().when(gameData.getProperties()).thenReturn(gameProperties);
@@ -55,6 +56,7 @@ public class MockGameData {
     lenient().when(gameData.getTechTracker()).thenReturn(techTracker);
     lenient().when(gameData.getResourceList()).thenReturn(resourceList);
     lenient().when(gameData.getPlayerList()).thenReturn(playerList);
+    lenient().when(gameData.getTechnologyFrontier()).thenReturn(technologyFrontier);
     lenient().when(playerList.getNullPlayer()).thenCallRealMethod();
   }
 
