@@ -1116,8 +1116,9 @@ public class ProTerritoryManager {
             // present
             final List<Unit> units = new ArrayList<>();
             final Set<Territory> myUnitsToLoadTerritories = new HashSet<>();
-            if (TransportTracker.isTransporting(myTransport)) {
-              units.addAll(myTransport.getTransporting());
+            final Collection<Unit> transporting = myTransport.getTransporting();
+            if (!transporting.isEmpty()) {
+              units.addAll(transporting);
             } else if (Matches.territoryHasEnemySeaUnits(player).negate().test(currentTerritory)) {
               final Set<Territory> possibleLoadTerritories = gameMap.getNeighbors(currentTerritory);
               for (final Territory possibleLoadTerritory : possibleLoadTerritories) {
