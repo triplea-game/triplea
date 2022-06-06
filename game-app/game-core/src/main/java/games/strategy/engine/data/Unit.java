@@ -112,7 +112,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     setOwner(owner);
   }
 
-  public final UnitAttachment getUnitAttachment() {
+  public UnitAttachment getUnitAttachment() {
     return (UnitAttachment) type.getAttachment("unitAttachment");
   }
 
