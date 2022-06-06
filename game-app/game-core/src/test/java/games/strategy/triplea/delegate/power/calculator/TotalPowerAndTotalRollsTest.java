@@ -4,6 +4,8 @@ import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -44,6 +46,7 @@ class TotalPowerAndTotalRollsTest {
   }
 
   private Unit givenUnit(final UnitType unitType) {
+    lenient().when(owner.getData()).thenReturn(unitType.getData());
     return unitType.createTemp(1, owner).get(0);
   }
 
@@ -58,6 +61,7 @@ class TotalPowerAndTotalRollsTest {
   UnitSupportAttachment givenUnitSupportAttachment(
       final GameData gameData, final UnitType unitType, final String name, final String diceType)
       throws GameParseException {
+    lenient().when(owner.getData()).thenReturn(unitType.getData());
     return new UnitSupportAttachment("rule" + name, unitType, gameData)
         .setBonus(1)
         .setBonusType("bonus" + name)

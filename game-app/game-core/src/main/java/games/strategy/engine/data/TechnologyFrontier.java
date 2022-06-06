@@ -71,7 +71,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   }
 
   @Override
-  public Iterator<TechAdvance> iterator() {
+  public final Iterator<TechAdvance> iterator() {
     return getTechs().iterator();
   }
 
