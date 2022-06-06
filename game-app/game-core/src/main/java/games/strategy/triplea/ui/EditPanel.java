@@ -14,7 +14,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -727,7 +726,7 @@ class EditPanel extends ActionPanel {
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
             for (final Unit u : units) {
               currentDamageMap.put(
-                  u, Triple.of(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
+                  u, Triple.of(u.getUnitAttachment().getHitPoints() - 1, 0, u.getHits()));
             }
             final IndividualUnitPanel unitPanel =
                 new IndividualUnitPanel(
@@ -989,7 +988,7 @@ class EditPanel extends ActionPanel {
 
   private static Comparator<Unit> getRemovableUnitsOrder() {
     return (u1, u2) -> {
-      if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
+      if (u1.getUnitAttachment().getTransportCapacity() != -1) {
         // Sort by decreasing transport capacity
         return Comparator.<Unit, Collection<Unit>>comparing(
                 Unit::getTransporting,

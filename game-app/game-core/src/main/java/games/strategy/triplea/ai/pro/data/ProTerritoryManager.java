@@ -16,10 +16,8 @@ import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.math.BigDecimal;
@@ -1117,8 +1115,9 @@ public class ProTerritoryManager {
             // present
             final List<Unit> units = new ArrayList<>();
             final Set<Territory> myUnitsToLoadTerritories = new HashSet<>();
-            if (TransportTracker.isTransporting(myTransport)) {
-              units.addAll(myTransport.getTransporting());
+            final Collection<Unit> transporting = myTransport.getTransporting();
+            if (!transporting.isEmpty()) {
+              units.addAll(transporting);
             } else if (Matches.territoryHasEnemySeaUnits(player).negate().test(currentTerritory)) {
               final Set<Territory> possibleLoadTerritories = gameMap.getNeighbors(currentTerritory);
               for (final Territory possibleLoadTerritory : possibleLoadTerritories) {
@@ -1131,8 +1130,8 @@ public class ProTerritoryManager {
                                 : ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(
                                     player, myTransport, isCombatMove));
                 for (final Unit possibleUnit : possibleUnits) {
-                  if (UnitAttachment.get(possibleUnit.getType()).getTransportCost()
-                      <= UnitAttachment.get(myTransport.getType()).getTransportCapacity()) {
+                  if (possibleUnit.getUnitAttachment().getTransportCost()
+                      <= myTransport.getUnitAttachment().getTransportCapacity()) {
                     units.add(possibleUnit);
                     myUnitsToLoadTerritories.add(possibleLoadTerritory);
                   }
@@ -1318,8 +1317,7 @@ public class ProTerritoryManager {
       final GamePlayer player,
       final boolean isCheckingEnemyAttacks) {
     if (isCheckingEnemyAttacks) {
-      final BigDecimal range =
-          new BigDecimal(UnitAttachment.get(unit.getType()).getMovement(player));
+      final BigDecimal range = new BigDecimal(unit.getUnitAttachment().getMovement(player));
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(unitTerritory, player)
           .test(unit)) {
         return range.add(BigDecimal.ONE); // assumes bonus of +1 for now

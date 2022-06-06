@@ -11,7 +11,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
@@ -308,7 +307,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
         final int num =
             Math.min(
                 attackTokens.getInt(resource),
-                (UnitAttachment.get(u.getType()).getHitPoints()
+                (u.getUnitAttachment().getHitPoints()
                     * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
         resourceMap.put(resource, num);
         kamikazeSuicideAttacks.computeIfAbsent(t, key -> new HashMap<>()).put(u, resourceMap);

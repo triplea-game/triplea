@@ -743,7 +743,7 @@ public class MoveValidator {
       for (final Unit unit :
           CollectionUtils.getMatches(
               unitsWithoutDependents, Matches.unitIsOwnedBy(player).negate())) {
-        if (!(UnitAttachment.get(unit.getType()).getCarrierCost() > 0
+        if (!(unit.getUnitAttachment().getCarrierCost() > 0
             && data.getRelationshipTracker().isAllied(player, unit.getOwner()))) {
           result.addDisallowedUnit("Can only move own troops", unit);
         }
@@ -905,7 +905,7 @@ public class MoveValidator {
             unitOk = true;
           } else {
             for (final Unit transport : landTransportsWithCapacity.keySet()) {
-              final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
+              final int cost = unit.getUnitAttachment().getTransportCost();
               if (cost <= landTransportsWithCapacity.getInt(transport)) {
                 landTransportsWithCapacity.add(transport, -cost);
                 unitOk = true;
@@ -939,7 +939,7 @@ public class MoveValidator {
       final Predicate<Unit> transportLand =
           Matches.unitIsLandTransportWithCapacity().and(Matches.unitIsOwnedBy(player));
       for (final Unit unit : CollectionUtils.getMatches(units, transportLand)) {
-        map.put(unit, UnitAttachment.get(unit.getType()).getTransportCapacity());
+        map.put(unit, unit.getUnitAttachment().getTransportCapacity());
       }
     }
     return map;
@@ -1087,7 +1087,7 @@ public class MoveValidator {
   private static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units) {
     final Collection<Unit> retUnits = new ArrayList<>();
     for (final Unit unit : units) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       if (!ua.getIsSea() && !ua.getIsAir() && ua.getTransportCost() == -1) {
         retUnits.add(unit);
       }
@@ -1287,7 +1287,7 @@ public class MoveValidator {
     if (route.getEnd().isWater() && route.getStart().isWater()) {
       // make sure units and transports stick together
       for (final Unit unit : units) {
-        final UnitAttachment ua = UnitAttachment.get(unit.getType());
+        final UnitAttachment ua = unit.getUnitAttachment();
         // make sure transports dont leave their units behind
         if (ua.getTransportCapacity() != -1) {
           final Collection<Unit> holding = unit.getTransporting();
@@ -1339,7 +1339,7 @@ public class MoveValidator {
             for (final Unit transportToLoad : unitsToTransports.values()) {
               if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(
                   transportToLoad, route.getEnd())) {
-                final UnitAttachment ua = UnitAttachment.get(baseUnit.getType());
+                final UnitAttachment ua = baseUnit.getUnitAttachment();
                 if (TransportTracker.getAvailableCapacity(transportToLoad)
                     >= ua.getTransportCost()) {
                   alreadyUnloadedTo = null;
@@ -1364,7 +1364,7 @@ public class MoveValidator {
             if (unitsToTransports.containsKey(unit)) {
               continue;
             }
-            final UnitAttachment ua = UnitAttachment.get(unit.getType());
+            final UnitAttachment ua = unit.getUnitAttachment();
             if (ua.getTransportCost() != -1) {
               result.addDisallowedUnit("Not enough transports", unit);
             }
@@ -1373,7 +1373,7 @@ public class MoveValidator {
           // set all units as unresolved if there is at least one transport and mixed unit
           // categories
           for (final Unit unit : land) {
-            final UnitAttachment ua = UnitAttachment.get(unit.getType());
+            final UnitAttachment ua = unit.getUnitAttachment();
             if (ua.getTransportCost() != -1) {
               result.addUnresolvedUnit("Not enough transports", unit);
             }
@@ -1667,11 +1667,11 @@ public class MoveValidator {
       final Unit carrier,
       final Collection<Unit> selectFrom,
       final GamePlayer playerWhoIsDoingTheMovement) {
-    final UnitAttachment ua = UnitAttachment.get(carrier.getType());
+    final UnitAttachment ua = carrier.getUnitAttachment();
     final Collection<Unit> canCarry = new ArrayList<>();
     int available = ua.getCarrierCapacity();
     for (final Unit plane : selectFrom) {
-      final UnitAttachment planeAttachment = UnitAttachment.get(plane.getType());
+      final UnitAttachment planeAttachment = plane.getUnitAttachment();
       final int cost = planeAttachment.getCarrierCost();
       if (available >= cost) {
         // this is to test if they started in the same sea zone or not, and its not a very good way

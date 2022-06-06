@@ -25,8 +25,8 @@ public class CasualtySortingUtil {
         return result;
       }
 
-      final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
-      final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+      final UnitAttachment ua1 = u1.getUnitAttachment();
+      final UnitAttachment ua2 = u2.getUnitAttachment();
       return Integer.compare(ua1.getIsMarine(), ua2.getIsMarine());
     };
   }

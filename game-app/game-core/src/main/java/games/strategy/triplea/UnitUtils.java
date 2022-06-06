@@ -118,7 +118,7 @@ public class UnitUtils {
     if (!Matches.unitCanProduceUnits().test(unit)) {
       return 0;
     }
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    final UnitAttachment ua = unit.getUnitAttachment();
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
     int territoryProduction = 0;
     int territoryUnitProduction = 0;

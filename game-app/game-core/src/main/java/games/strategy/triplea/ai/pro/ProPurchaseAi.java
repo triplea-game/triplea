@@ -30,7 +30,6 @@ import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -1958,7 +1957,7 @@ class ProPurchaseAi {
 
             // Get next empty transport and find its capacity
             final Unit transport = transportsThatNeedUnits.get(0);
-            int transportCapacity = UnitAttachment.get(transport.getType()).getTransportCapacity();
+            int transportCapacity = transport.getUnitAttachment().getTransportCapacity();
 
             // Find any existing units that can be transported
             final List<Unit> selectedUnits =

@@ -140,7 +140,7 @@ public class RocketsFireHelper implements Serializable {
           // Not sure if that comment is still current
           for (final Unit r : rocketTargets) {
             legalTargetsForTheseRockets.addAll(
-                UnitAttachment.get(r.getType()).getBombingTargets(data.getUnitTypeList()));
+                r.getUnitAttachment().getBombingTargets(data.getUnitTypeList()));
           }
           final Collection<Unit> enemyTargets =
               CollectionUtils.getMatches(
@@ -323,7 +323,7 @@ public class RocketsFireHelper implements Serializable {
         int highestBonus = 0;
         final int diceSides = data.getDiceSides();
         for (final Unit u : rockets) {
-          final UnitAttachment ua = UnitAttachment.get(u.getType());
+          final UnitAttachment ua = u.getUnitAttachment();
           int maxDice = ua.getBombingMaxDieSides();
           final int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default
@@ -393,7 +393,7 @@ public class RocketsFireHelper implements Serializable {
         int highestBonus = 0;
         final int diceSides = data.getDiceSides();
         for (final Unit rocket : rockets) {
-          final UnitAttachment ua = UnitAttachment.get(rocket.getType());
+          final UnitAttachment ua = rocket.getUnitAttachment();
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default

@@ -16,7 +16,6 @@ import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProResourceTracker;
 import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
@@ -102,7 +101,7 @@ public final class ProPurchaseValidationUtils {
     // are already planning to consume.
     IntegerMap<UnitType> requiredUnits = new IntegerMap<>();
     for (Unit unitToBuild : unitsToBuild) {
-      requiredUnits.add(UnitAttachment.get(unitToBuild.getType()).getConsumesUnits());
+      requiredUnits.add(unitToBuild.getUnitAttachment().getConsumesUnits());
     }
     if (requiredUnits.isEmpty()) {
       return true;

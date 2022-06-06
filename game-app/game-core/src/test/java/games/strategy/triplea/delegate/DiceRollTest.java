@@ -256,7 +256,7 @@ class DiceRollTest {
     final List<Unit> units = artillery.create(1, russians);
     // Set the supported unit count
     for (final Unit unit : units) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       ua.setUnitSupportCount("2");
     }
     // Now add the infantry
@@ -494,7 +494,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -512,7 +513,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -531,7 +533,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -565,7 +568,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -603,7 +607,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -621,7 +626,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -640,7 +646,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,

@@ -9,7 +9,6 @@ import static org.hamcrest.core.IsNot.not;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractDelegateTestCase;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -107,7 +106,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
     final List<Unit> enemyUnits = GameDataTestUtil.britishSubmarine(twwGameData).create(1, britain);
     enemyUnits.addAll(GameDataTestUtil.britishFighter(twwGameData).create(2, britain));
     final List<TargetGroup> result = TargetGroup.newTargetGroups(units, enemyUnits);
-    assertThat(UnitAttachment.get(units.get(0).getType()).getCanNotTarget(), is(not(empty())));
+    assertThat(units.get(0).getUnitAttachment().getCanNotTarget(), is(not(empty())));
     assertThat(result, hasSize(2));
   }
 }

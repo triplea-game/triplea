@@ -62,8 +62,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     }
     final boolean transporting1 = TransportTracker.isTransporting(u1);
     final boolean transporting2 = TransportTracker.isTransporting(u2);
-    final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
-    final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+    final UnitAttachment ua1 = u1.getUnitAttachment();
+    final UnitAttachment ua2 = u2.getUnitAttachment();
     if (ua1.equals(ua2)
         && u1.isOwnedBy(u2.getOwner())
         && u1.getWasAmphibious() == u2.getWasAmphibious()) {

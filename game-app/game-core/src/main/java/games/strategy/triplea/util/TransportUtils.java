@@ -187,8 +187,7 @@ public final class TransportUtils {
     for (final UnitCategory unitType : unitTypes) {
       final int transportCost = unitType.getTransportCost();
       for (final UnitCategory transportType : transportTypes) {
-        final int transportCapacity =
-            UnitAttachment.get(transportType.getType()).getTransportCapacity();
+        final int transportCapacity = transportType.getUnitAttachment().getTransportCapacity();
         if (transportCost > 0 && transportCapacity >= transportCost) {
           final int transportCount =
               CollectionUtils.countMatches(
@@ -243,7 +242,7 @@ public final class TransportUtils {
       final List<Unit> canTransport,
       final Map<Unit, Unit> mapping,
       final IntegerMap<Unit> addedLoad) {
-    final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
+    final int cost = unit.getUnitAttachment().getTransportCost();
     for (final Unit transport : canTransport) {
       final int capacity =
           TransportTracker.getAvailableCapacity(transport) - addedLoad.getInt(transport);
@@ -261,7 +260,7 @@ public final class TransportUtils {
     int capacity = TransportTracker.getAvailableCapacity(transport);
     for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext(); ) {
       final Unit unit = it.next();
-      final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
+      final int cost = unit.getUnitAttachment().getTransportCost();
       if (capacity >= cost) {
         capacity -= cost;
         mapping.put(unit, transport);

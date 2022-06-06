@@ -86,7 +86,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         final Collection<Unit> toAddSea = new ArrayList<>();
         final Collection<Unit> toAddLand = new ArrayList<>();
         for (final Unit u : myCreators) {
-          final UnitAttachment ua = UnitAttachment.get(u.getType());
+          final UnitAttachment ua = u.getUnitAttachment();
           final IntegerMap<UnitType> createsUnitsMap = ua.getCreatesUnitsList();
           final Collection<UnitType> willBeCreated = createsUnitsMap.keySet();
           for (final UnitType ut : willBeCreated) {
@@ -218,7 +218,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits(), myCreatorsMatch);
       for (final Unit unit : myCreators) {
         final IntegerMap<Resource> generatedResourcesMap =
-            UnitAttachment.get(unit.getType()).getCreatesResourcesList();
+            unit.getUnitAttachment().getCreatesResourcesList();
         resourceTotalsMap.add(generatedResourcesMap);
       }
     }

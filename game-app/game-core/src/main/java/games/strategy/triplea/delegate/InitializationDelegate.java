@@ -115,7 +115,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
           CollectionUtils.getMatches(units, Matches.unitIsTransport());
       final Collection<Unit> land = CollectionUtils.getMatches(units, Matches.unitIsLand());
       for (final Unit toLoad : land) {
-        final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
+        final UnitAttachment ua = toLoad.getUnitAttachment();
         final int cost = ua.getTransportCost();
         if (cost == -1) {
           throw new IllegalStateException("Non transportable unit in sea");

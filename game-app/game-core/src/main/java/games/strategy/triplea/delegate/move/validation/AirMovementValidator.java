@@ -781,36 +781,32 @@ public final class AirMovementValidator {
    * accounts for damaged carriers with special properties and restrictions.
    */
   public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn) {
-    if (Matches.unitIsCarrier().test(unit)) {
-      // here we check to see if the unit can no longer carry units
-      if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITS_MAY_NOT_LAND_ON_CARRIER)
-          .test(unit)) {
-        // and we must check to make sure we let any allied air that are cargo stay here
-        if (Matches.unitHasWhenCombatDamagedEffect(
-                UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER)
-            .test(unit)) {
-          int cargo = 0;
-          final Collection<Unit> airCargo =
-              territoryUnitsAreCurrentlyIn
-                  .getUnitCollection()
-                  .getMatches(Matches.unitIsAir().and(Matches.unitCanLandOnCarrier()));
-          for (final Unit airUnit : airCargo) {
-            if (airUnit.getTransportedBy() != null && airUnit.getTransportedBy().equals(unit)) {
-              // capacity = are cargo only
-              cargo += UnitAttachment.get(airUnit.getType()).getCarrierCost();
-            }
-          }
-          return cargo;
-        }
-
-        // capacity = zero 0
-        return 0;
-      }
-
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getCarrierCapacity();
+    if (!Matches.unitIsCarrier().test(unit)) {
+      return 0;
     }
-    return 0;
+    // here we check to see if the unit can no longer carry units
+    if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITS_MAY_NOT_LAND_ON_CARRIER)
+        .test(unit)) {
+      return unit.getUnitAttachment().getCarrierCapacity();
+    }
+    // and we must check to make sure we let any allied air that are cargo stay here
+    if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER)
+        .test(unit)) {
+      // capacity = zero 0
+      return 0;
+    }
+    int cargo = 0;
+    final Collection<Unit> airCargo =
+        territoryUnitsAreCurrentlyIn
+            .getUnitCollection()
+            .getMatches(Matches.unitIsAir().and(Matches.unitCanLandOnCarrier()));
+    for (final Unit airUnit : airCargo) {
+      if (airUnit.getTransportedBy() != null && airUnit.getTransportedBy().equals(unit)) {
+        // capacity = are cargo only
+        cargo += airUnit.getUnitAttachment().getCarrierCost();
+      }
+    }
+    return cargo;
   }
 
   public static int carrierCost(final Collection<Unit> units) {
@@ -823,7 +819,7 @@ public final class AirMovementValidator {
 
   public static int carrierCost(final Unit unit) {
     if (Matches.unitCanLandOnCarrier().test(unit)) {
-      return UnitAttachment.get(unit.getType()).getCarrierCost();
+      return unit.getUnitAttachment().getCarrierCost();
     }
     return 0;
   }

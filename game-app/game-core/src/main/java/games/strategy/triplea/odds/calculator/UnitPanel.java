@@ -4,7 +4,6 @@ import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
@@ -93,7 +92,7 @@ public class UnitPanel extends JPanel {
       if (category.getDisabled() && Matches.unitTypeCanBeDamaged().test(category.getType())) {
         // add 1 because it is the max operational damage and we want to disable it
         final int unitDamage =
-            Math.max(0, 1 + UnitAttachment.get(category.getType()).getMaxOperationalDamage());
+            Math.max(0, 1 + category.getUnitAttachment().getMaxOperationalDamage());
         for (final Unit unit : units) {
           unit.setUnitDamage(unitDamage);
         }

@@ -19,7 +19,6 @@ import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
@@ -327,7 +326,7 @@ public final class ProPurchaseUtils {
         CollectionUtils.getMatches(unitsToPlace, Matches.unitConsumesUnitsOnCreation());
     Set<Unit> unitsToConsume = new HashSet<>();
     for (Unit unitToBuild : unitsThatConsume) {
-      IntegerMap<UnitType> needed = UnitAttachment.get(unitToBuild.getType()).getConsumesUnits();
+      IntegerMap<UnitType> needed = unitToBuild.getUnitAttachment().getConsumesUnits();
       for (UnitType neededType : needed.keySet()) {
         final Predicate<Unit> matcher =
             Matches.eligibleUnitToConsume(player, neededType).and(u -> !unitsToConsume.contains(u));

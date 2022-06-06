@@ -455,7 +455,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
         final Set<UnitType> targetUnitTypesForThisTypeAa =
-            UnitAttachment.get(CollectionUtils.getAny(currentPossibleAa).getType())
+            CollectionUtils.getAny(currentPossibleAa)
+                .getUnitAttachment()
                 .getTargetsAa(gameData.getUnitTypeList());
 
         final Set<UnitType> airborneTypesTargetedToo =
@@ -733,7 +734,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               if (rolls < 1) {
                 continue;
               }
-              final UnitAttachment ua = UnitAttachment.get(u.getType());
+              final UnitAttachment ua = u.getUnitAttachment();
               int maxDice = ua.getBombingMaxDieSides();
               final int bonus = ua.getBombingBonus();
               // both could be -1, meaning they were not set. if they were not set, then we use
@@ -770,7 +771,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             if (rolls < 1) {
               continue;
             }
-            final UnitAttachment ua = UnitAttachment.get(u.getType());
+            final UnitAttachment ua = u.getUnitAttachment();
             int maxDice = ua.getBombingMaxDieSides();
             int bonus = ua.getBombingBonus();
             // both could be -1, meaning they were not set. if they were not set, then we use
@@ -842,7 +843,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final Map<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage
       for (final Unit attacker : attackingUnits) {
-        final UnitAttachment ua = UnitAttachment.get(attacker.getType());
+        final UnitAttachment ua = attacker.getUnitAttachment();
         final int rolls = getSbrRolls(attacker, StrategicBombingRaidBattle.this.attacker);
         int costThisUnit = 0;
         if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
@@ -1011,7 +1012,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   @VisibleForTesting
   public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
-    return UnitAttachment.get(unit.getType()).getAttackRolls(gamePlayer);
+    return unit.getUnitAttachment().getAttackRolls(gamePlayer);
   }
 
   @Override

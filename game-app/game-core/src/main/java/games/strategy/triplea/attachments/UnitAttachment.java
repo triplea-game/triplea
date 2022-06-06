@@ -2090,7 +2090,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     Collection<UnitType> allowedTargets = unitTypeList.getAllUnitTypes();
     for (final Unit u : bombersOrRockets) {
-      final UnitAttachment ua = UnitAttachment.get(u.getType());
+      final UnitAttachment ua = u.getUnitAttachment();
       final Set<UnitType> bombingTargets = ua.getBombingTargets(unitTypeList);
       allowedTargets = CollectionUtils.intersection(allowedTargets, bombingTargets);
     }
@@ -2361,7 +2361,7 @@ public class UnitAttachment extends DefaultAttachment {
   public static List<String> getAllOfTypeAas(final Collection<Unit> aaUnitsAlreadyVerified) {
     final Set<String> aaSet = new HashSet<>();
     for (final Unit u : aaUnitsAlreadyVerified) {
-      aaSet.add(UnitAttachment.get(u.getType()).getTypeAa());
+      aaSet.add(u.getUnitAttachment().getTypeAa());
     }
     final List<String> aaTypes = new ArrayList<>(aaSet);
     Collections.sort(aaTypes);
