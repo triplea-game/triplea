@@ -68,11 +68,13 @@ public class GameProperties extends GameDataComponent {
    * @param key referring key
    */
   public Object get(final String key) {
-    if (editableProperties.containsKey(key)) {
-      return editableProperties.get(key).getValue();
+    IEditableProperty found = editableProperties.get(key);
+    if (found != null) {
+      return found.getValue();
     }
-    if (playerProperties.containsKey(key)) {
-      return playerProperties.get(key).getValue();
+    found = playerProperties.get(key);
+    if (found != null) {
+      return found.getValue();
     }
     return constantProperties.get(key);
   }
