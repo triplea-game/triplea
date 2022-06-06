@@ -16,7 +16,7 @@ public class UnitType extends NamedAttachable {
     super(name, data);
   }
 
-  public UnitAttachment getUnitAttachment() {
+  public final UnitAttachment getUnitAttachment() {
     if (unitAttachment == null) {
       unitAttachment = UnitAttachment.get(this, Constants.UNIT_ATTACHMENT_NAME);
     }
