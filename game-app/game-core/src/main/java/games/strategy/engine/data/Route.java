@@ -120,7 +120,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   @Override
   public final int hashCode() {
-    return Objects.hash(start, getSteps());
+    return Objects.hash(start, steps);
   }
 
   /** Returns start territory for this route. */
@@ -217,7 +217,7 @@ public class Route implements Serializable, Iterable<Territory> {
   @Override
   public String toString() {
     final StringBuilder buf = new StringBuilder("Route:").append(start);
-    for (final Territory t : getSteps()) {
+    for (final Territory t : steps) {
       buf.append(" -> ");
       buf.append(t.getName());
     }
@@ -225,21 +225,20 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   public List<Territory> getAllTerritories() {
-    final List<Territory> list = new ArrayList<>(steps);
-    list.add(0, start);
+    final List<Territory> list = new ArrayList<>(steps.size() + 1);
+    list.add(start);
+    list.addAll(steps);
     return list;
   }
 
   /** Returns collection of all territories in this route, without the start. */
   public List<Territory> getSteps() {
-    return numberOfSteps() > 0 ? steps : new ArrayList<>();
+    return Collections.unmodifiableList(steps);
   }
 
   /** Returns collection of all territories in this route without the start or the end. */
   public List<Territory> getMiddleSteps() {
-    return numberOfSteps() > 1
-        ? new ArrayList<>(steps).subList(0, numberOfSteps() - 1)
-        : new ArrayList<>();
+    return numberOfSteps() > 1 ? getSteps().subList(0, numberOfSteps() - 1) : List.of();
   }
 
   /** Returns last territory in the route. */
@@ -252,7 +251,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   @Override
   public Iterator<Territory> iterator() {
-    return Collections.unmodifiableList(getAllTerritories()).iterator();
+    return getAllTerritories().iterator();
   }
 
   /** Indicates whether this route has any steps. */
@@ -326,14 +325,12 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /** Indicates whether there is some water in the route including start and end. */
   public boolean hasWater() {
-    return getStart().isWater() || getSteps().stream().anyMatch(Matches.territoryIsWater());
+    return getStart().isWater() || steps.stream().anyMatch(Matches.territoryIsWater());
   }
 
   /** Indicates whether there is some land in the route including start and end. */
   public boolean hasLand() {
-    return !getStart().isWater()
-        || getAllTerritories().isEmpty()
-        || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
+    return !getStart().isWater() || !steps.stream().allMatch(Matches.territoryIsWater());
   }
 
   /** Returns a change object that removes fuel after a given set of units crosses a given route. */
@@ -376,9 +373,10 @@ public class Route implements Serializable, Iterable<Territory> {
     for (final Unit unit : units) {
       final GamePlayer player = unit.getOwner();
       final ResourceCollection cost = new ResourceCollection(data);
-      cost.add(getMovementFuelCostCharge(Set.of(unit), toRoute, player, data));
+      final Collection<Unit> unitList = List.of(unit);
+      cost.add(getMovementFuelCostCharge(unitList, toRoute, player, data));
       cost.add(
-          getFuelCostsAndUnitsChargedFlatFuelCost(Set.of(unit), returnRoute, player, data, true)
+          getFuelCostsAndUnitsChargedFlatFuelCost(unitList, returnRoute, player, data, true)
               .getFirst());
       if (map.containsKey(player)) {
         map.get(player).add(cost);
