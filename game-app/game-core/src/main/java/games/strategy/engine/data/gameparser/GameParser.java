@@ -1020,7 +1020,7 @@ public final class GameParser {
       final UnitType type = getUnitType(current.getUnitType());
       final String ownerString = current.getOwner();
       final int hits = Optional.ofNullable(current.getHitsTaken()).orElse(0);
-      if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
+      if (hits < 0 || hits > type.getUnitAttachment().getHitPoints() - 1) {
         throw new GameParseException(
             "hitsTaken cannot be less than zero or greater than one less than total hitPoints");
       }

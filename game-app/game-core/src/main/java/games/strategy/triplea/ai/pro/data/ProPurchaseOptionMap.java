@@ -66,7 +66,7 @@ public class ProPurchaseOptionMap {
       final UnitType unitType = (UnitType) resourceOrUnit;
 
       // Add rule to appropriate purchase option list
-      if (UnitAttachment.get(unitType).getIsSuicideOnHit()
+      if (unitType.getUnitAttachment().getIsSuicideOnHit()
           || canUnitTypeSuicide(unitType, player)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
@@ -76,7 +76,7 @@ public class ProPurchaseOptionMap {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         factoryOptions.add(ppo);
         ProLogger.debug("Factory: " + ppo);
-      } else if (UnitAttachment.get(unitType).getMovement(player) <= 0
+      } else if (unitType.getUnitAttachment().getMovement(player) <= 0
           && Matches.unitTypeIsLand().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         landZeroMoveOptions.add(ppo);
@@ -143,9 +143,9 @@ public class ProPurchaseOptionMap {
   }
 
   private boolean canUnitTypeSuicide(final UnitType unitType, final GamePlayer player) {
-    return (UnitAttachment.get(unitType).getIsSuicideOnAttack()
-            && UnitAttachment.get(unitType).getMovement(player) > 0)
-        || UnitAttachment.get(unitType).getIsSuicideOnDefense();
+    return (unitType.getUnitAttachment().getIsSuicideOnAttack()
+            && unitType.getUnitAttachment().getMovement(player) > 0)
+        || unitType.getUnitAttachment().getIsSuicideOnDefense();
   }
 
   public List<ProPurchaseOption> getAllOptions() {

@@ -231,7 +231,7 @@ final class ExportMenu extends JMenu {
         writer.println("Unit Types: ,");
         writer.append("Name,Listed Abilities\n");
         for (final UnitType unitType : gameData.getUnitTypeList()) {
-          final UnitAttachment ua = UnitAttachment.get(unitType);
+          final UnitAttachment ua = unitType.getUnitAttachment();
           if (ua == null) {
             continue;
           }

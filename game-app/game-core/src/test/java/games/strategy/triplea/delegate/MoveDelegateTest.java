@@ -276,7 +276,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(egypt, libya);
     // Disable canBlitz attachment
     gameData.performChange(
-        ChangeFactory.attachmentPropertyChange(UnitAttachment.get(armour), "false", "canBlitz"));
+        ChangeFactory.attachmentPropertyChange(armour.getUnitAttachment(), "false", "canBlitz"));
     String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Validate move happened

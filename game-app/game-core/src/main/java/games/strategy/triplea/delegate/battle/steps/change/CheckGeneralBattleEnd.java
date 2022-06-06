@@ -117,8 +117,7 @@ public class CheckGeneralBattleEnd implements BattleStep {
     // First, collect all of the non-null 'can retreat on stalemate' option values.
     final Set<Boolean> canRetreatOptions =
         battleState.filterUnits(ALIVE, OFFENSE).stream()
-            .map(Unit::getType)
-            .map(UnitAttachment::get)
+            .map(Unit::getUnitAttachment)
             .map(UnitAttachment::getCanRetreatOnStalemate)
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());

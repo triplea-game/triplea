@@ -998,7 +998,7 @@ public class WeakAi extends AbstractBuiltInAi {
             || Matches.unitTypeIsStatic(player).test(results)) {
           continue;
         }
-        final int transportCapacity = UnitAttachment.get(results).getTransportCapacity();
+        final int transportCapacity = results.getUnitAttachment().getTransportCapacity();
         // buy transports if we can be amphibious
         if (Matches.unitTypeIsSea().test(results) && (!isAmphib || transportCapacity <= 0)) {
           continue;

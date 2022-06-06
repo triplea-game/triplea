@@ -154,7 +154,7 @@ class RevisedTest {
   @Test
   void testSubAdvance() {
     final UnitType sub = submarine(gameData);
-    final UnitAttachment attachment = UnitAttachment.get(sub);
+    final UnitAttachment attachment = sub.getUnitAttachment();
     final GamePlayer japanese = japanese(gameData);
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));

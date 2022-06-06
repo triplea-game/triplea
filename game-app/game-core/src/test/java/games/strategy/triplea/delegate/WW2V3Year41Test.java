@@ -1328,7 +1328,7 @@ class WW2V3Year41Test {
     // Set the tech for DDs bombard
     // ww2v3 doesn't have this tech, so this does nothing...
     // TechAttachment.get(italians).setDestroyerBombard("true");
-    UnitAttachment.get(destroyer(gameData)).setCanBombard("true");
+    destroyer(gameData).getUnitAttachment().setCanBombard("true");
     // Set the bombard strength for the DDs
     final Collection<Unit> dds =
         CollectionUtils.getMatches(sz15.getUnits(), Matches.unitIsDestroyer());

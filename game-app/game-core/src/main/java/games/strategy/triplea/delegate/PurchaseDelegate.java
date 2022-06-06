@@ -168,7 +168,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
       if (!(next instanceof Resource)) {
         final UnitType type = (UnitType) next;
         final int quantity = results.getInt(type);
-        final UnitAttachment ua = UnitAttachment.get(type);
+        final UnitAttachment ua = type.getUnitAttachment();
         final int maxBuilt = ua.getMaxBuiltPerPlayer();
         if (maxBuilt == 0) {
           return "May not build any of this unit right now: " + type.getName();

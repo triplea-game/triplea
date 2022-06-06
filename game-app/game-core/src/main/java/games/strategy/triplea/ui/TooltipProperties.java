@@ -26,7 +26,7 @@ public final class TooltipProperties extends PropertyFile {
       return LocalizeHtml.localizeImgLinksInHtml(customTip, UiContext.getMapLocation());
     }
     final String generated =
-        UnitAttachment.get(unitType)
+        unitType.getUnitAttachment()
             .toStringShortAndOnlyImportantDifferences(
                 (gamePlayer == null
                     ? unitType.getData().getPlayerList().getNullPlayer()

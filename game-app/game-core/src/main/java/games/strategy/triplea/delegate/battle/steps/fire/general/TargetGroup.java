@@ -68,12 +68,12 @@ class TargetGroup {
   private static Set<UnitType> findTargets(
       final UnitType unitType, final Set<UnitType> unitTypes, final Set<UnitType> enemyUnitTypes) {
     final Set<UnitType> targets = new HashSet<>(enemyUnitTypes);
-    targets.removeAll(UnitAttachment.get(unitType).getCanNotTarget());
+    targets.removeAll(unitType.getUnitAttachment().getCanNotTarget());
     return unitTypes.stream().anyMatch(Matches.unitTypeIsDestroyer())
         ? targets
         : targets.stream()
             .filter(
-                target -> !UnitAttachment.get(target).getCanNotBeTargetedBy().contains(unitType))
+                target -> !target.getUnitAttachment().getCanNotBeTargetedBy().contains(unitType))
             .collect(Collectors.toSet());
   }
 

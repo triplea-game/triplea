@@ -914,7 +914,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
               // we subtract the base rolls to get the bonus
               final int heavyBomberDiceRollsBonus =
                   heavyBomberDiceRollsTotal
-                      - UnitAttachment.get(bomber)
+                      - bomber.getUnitAttachment()
                           .getAttackRolls(data.getPlayerList().getNullPlayer());
               taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
               if (heavyBombersLhtr) {

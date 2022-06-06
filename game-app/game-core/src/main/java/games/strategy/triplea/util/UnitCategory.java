@@ -77,7 +77,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   }
 
   public UnitAttachment getUnitAttachment() {
-    return UnitAttachment.get(getType());
+    return getType().getUnitAttachment();
   }
 
   public int getDamaged() {
@@ -97,7 +97,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   }
 
   public int getHitPoints() {
-    return UnitAttachment.get(type).getHitPoints();
+    return type.getUnitAttachment().getHitPoints();
   }
 
   public boolean getCanRetreat() {

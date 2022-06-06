@@ -101,8 +101,8 @@ class SupportRuleSort implements Comparator<UnitSupportAttachment> {
     // selection method.
     final UnitType unitType1 = (UnitType) u1.getAttachedTo();
     final UnitType unitType2 = (UnitType) u2.getAttachedTo();
-    final UnitAttachment ua1 = UnitAttachment.get(unitType1);
-    final UnitAttachment ua2 = UnitAttachment.get(unitType2);
+    final UnitAttachment ua1 = unitType1.getUnitAttachment();
+    final UnitAttachment ua2 = unitType2.getUnitAttachment();
     final int unitPower1;
     final int unitPower2;
     final GamePlayer nullPlayer = u1.getData().getPlayerList().getNullPlayer();

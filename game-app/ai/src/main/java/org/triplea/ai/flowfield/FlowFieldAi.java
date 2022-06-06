@@ -170,7 +170,7 @@ public class FlowFieldAi extends AbstractAi {
             .map(Map.Entry::getKey)
             .filter(UnitType.class::isInstance)
             .map(UnitType.class::cast)
-            .filter(unitType -> UnitAttachment.get(unitType).getMovement(getGamePlayer()) > 0)
+            .filter(unitType -> unitType.getUnitAttachment().getMovement(getGamePlayer()) > 0)
             .map(
                 unitType ->
                     influenceMapBuilder.buildMaps(

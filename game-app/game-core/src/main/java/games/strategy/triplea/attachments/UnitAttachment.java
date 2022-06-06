@@ -255,10 +255,6 @@ public class UnitAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  public static UnitAttachment get(final UnitType type) {
-    return type.getUnitAttachment();
-  }
-
   public static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
     return getAttachment(type, nameOfAttachment, UnitAttachment.class);
   }
@@ -1161,7 +1157,7 @@ public class UnitAttachment extends DefaultAttachment {
         getUnitTypesFromUnitList(
             CollectionUtils.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
-      final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
+      final Collection<String> receives = ut.getUnitAttachment().getReceivesAbilityWhenWith();
       for (final String receive : receives) {
         final String[] s = splitOnColon(receive);
         if (filterForAbility != null && !filterForAbility.equals(s[0])) {
@@ -2387,7 +2383,7 @@ public class UnitAttachment extends DefaultAttachment {
       return Collections.unmodifiableSet(targetsAa);
     }
     return unitTypeList.stream()
-        .filter(ut -> UnitAttachment.get(ut).getIsAir())
+        .filter(ut -> ut.getUnitAttachment().getIsAir())
         .collect(Collectors.toSet());
   }
 
@@ -2558,7 +2554,7 @@ public class UnitAttachment extends DefaultAttachment {
       final GamePlayer owner,
       final RelationshipTracker relationshipTracker,
       final GameProperties properties) {
-    final UnitAttachment ua = UnitAttachment.get(ut);
+    final UnitAttachment ua = ut.getUnitAttachment();
     final Tuple<Integer, String> stackingLimit;
     switch (limitType) {
       case "movementLimit":

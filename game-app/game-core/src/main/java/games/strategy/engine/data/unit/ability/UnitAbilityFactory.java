@@ -74,7 +74,7 @@ public class UnitAbilityFactory {
 
     private void initializeTargetsAa() {
       unitTypeList.stream()
-          .map(UnitAttachment::get)
+          .map(UnitType::getUnitAttachment)
           .forEach(
               unitAttachment ->
                   aaTargets.putIfAbsent(
@@ -85,10 +85,10 @@ public class UnitAbilityFactory {
       unitTypeList.stream()
           .filter(
               Predicate.not(
-                  unitType -> UnitAttachment.get(unitType).getCanNotBeTargetedBy().isEmpty()))
+                  unitType -> unitType.getUnitAttachment().getCanNotBeTargetedBy().isEmpty()))
           .forEach(
               unitType ->
-                  UnitAttachment.get(unitType)
+                  unitType.getUnitAttachment()
                       .getCanNotBeTargetedBy()
                       .forEach(
                           firingUnitType ->
@@ -141,7 +141,7 @@ public class UnitAbilityFactory {
 
   private static void generatePerPlayerAndUnit(
       final Parameters parameters, final GamePlayer player, final UnitType unitType) {
-    final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
+    final UnitAttachment unitAttachment = unitType.getUnitAttachment();
     if (unitAttachment.getIsAaForCombatOnly()) {
       createAaUnitAbilities(parameters, player, unitType);
     }
@@ -150,7 +150,7 @@ public class UnitAbilityFactory {
 
   private static void createAaUnitAbilities(
       final Parameters parameters, final GamePlayer player, final UnitType unitType) {
-    final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
+    final UnitAttachment unitAttachment = unitType.getUnitAttachment();
     final Collection<BattleState.Side> sides = new ArrayList<>();
     if (unitAttachment.getOffensiveAttackAa(player) > 0 && unitAttachment.getMaxAaAttacks() != 0) {
       sides.add(BattleState.Side.OFFENSE);
@@ -211,7 +211,7 @@ public class UnitAbilityFactory {
 
   private static CombatUnitAbility.Suicide calculateSuicideType(
       final UnitType unitType, final BattleState.Side side) {
-    final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
+    final UnitAttachment unitAttachment = unitType.getUnitAttachment();
     if (side == BattleState.Side.OFFENSE
         ? unitAttachment.getIsSuicideOnAttack()
         : unitAttachment.getIsSuicideOnDefense()) {
@@ -242,7 +242,7 @@ public class UnitAbilityFactory {
 
   private static void createUnitAbilities(
       final Parameters parameters, final GamePlayer player, final UnitType unitType) {
-    final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
+    final UnitAttachment unitAttachment = unitType.getUnitAttachment();
     final Collection<BattleState.Side> sides = new ArrayList<>();
     if (unitAttachment.getAttack(player) > 0) {
       sides.add(BattleState.Side.OFFENSE);
@@ -350,7 +350,7 @@ public class UnitAbilityFactory {
         .filter(
             Predicate.not(
                 possibleTarget ->
-                    UnitAttachment.get(unitType).getCanNotTarget().contains(possibleTarget)))
+                    unitType.getUnitAttachment().getCanNotTarget().contains(possibleTarget)))
         .filter(isNotInfrastructure())
         .collect(Collectors.toList());
   }
@@ -370,7 +370,7 @@ public class UnitAbilityFactory {
 
   private static Predicate<UnitType> isNotInfrastructure() {
     return Predicate.not(
-        possibleTarget -> UnitAttachment.get(possibleTarget).getIsInfrastructure());
+        possibleTarget -> possibleTarget.getUnitAttachment().getIsInfrastructure());
   }
 
   private static void createAntiFirstStrikeAbility(
@@ -401,7 +401,7 @@ public class UnitAbilityFactory {
 
   private static Collection<UnitType> getIsDestroyerUnitTypes(final UnitTypeList unitTypeList) {
     return unitTypeList.stream()
-        .filter(unitType -> UnitAttachment.get(unitType).getIsDestroyer())
+        .filter(unitType -> unitType.getUnitAttachment().getIsDestroyer())
         .collect(Collectors.toList());
   }
 
@@ -433,7 +433,7 @@ public class UnitAbilityFactory {
   private static List<UnitType> getCanBombardUnitTypes(
       final UnitTypeList unitTypeList, final GamePlayer player) {
     return unitTypeList.stream()
-        .filter(unitType -> UnitAttachment.get(unitType).getCanBombard(player))
+        .filter(unitType -> unitType.getUnitAttachment().getCanBombard(player))
         .collect(Collectors.toList());
   }
 

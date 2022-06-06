@@ -80,8 +80,8 @@ public class PlayerUnitsPanel extends JPanel {
           }
           final UnitType ut1 = c1.getType();
           final UnitType ut2 = c2.getType();
-          final UnitAttachment u1 = UnitAttachment.get(ut1);
-          final UnitAttachment u2 = UnitAttachment.get(ut2);
+          final UnitAttachment u1 = ut1.getUnitAttachment();
+          final UnitAttachment u2 = ut2.getUnitAttachment();
           // For land battles, sort by land, air, can't combat move (AA), bombarding
           if (land) {
             if (u1.getIsSea() != u2.getIsSea()) {

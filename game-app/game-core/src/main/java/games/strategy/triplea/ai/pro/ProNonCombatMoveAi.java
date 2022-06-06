@@ -2474,7 +2474,7 @@ class ProNonCombatMoveAi {
     for (ProPurchaseOption option : proData.getPurchaseOptions().getAllOptions()) {
       // Skip construction purchase options, since these can be placed without factory.
       if (option.isConsumesUnits() && !option.isConstruction()) {
-        consumables.addAll(UnitAttachment.get(option.getUnitType()).getConsumesUnits().keySet());
+        consumables.addAll(option.getUnitType().getUnitAttachment().getConsumesUnits().keySet());
       }
     }
 

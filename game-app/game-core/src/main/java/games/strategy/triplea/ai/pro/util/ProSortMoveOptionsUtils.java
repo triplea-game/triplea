@@ -145,7 +145,7 @@ public final class ProSortMoveOptionsUtils {
           final UnitType unitType2 = unit2.getType();
 
           // If unit types are equal and are air, then sort by average distance.
-          if (unitType1.equals(unitType2) && UnitAttachment.get(unitType1).getIsAir()) {
+          if (unitType1.equals(unitType2) && unitType1.getUnitAttachment().getIsAir()) {
             final Predicate<Territory> predicate =
                 ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, true);
             final Territory territory1 = unitTerritoryMap.get(unit1);
