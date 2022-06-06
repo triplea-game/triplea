@@ -1,5 +1,8 @@
 package games.strategy.engine.data;
 
+import com.google.common.base.Preconditions;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.UnitAttachment;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -8,9 +11,26 @@ import java.util.stream.IntStream;
 /** A prototype for units. */
 public class UnitType extends NamedAttachable {
   private static final long serialVersionUID = 4885339076798905247L;
+  private UnitAttachment unitAttachment;
 
   public UnitType(final String name, final GameData data) {
     super(name, data);
+  }
+
+  @Override
+  public void addAttachment(final String key, final IAttachment value) {
+    if (key.equals(Constants.UNIT_ATTACHMENT_NAME)) {
+      Preconditions.checkState(unitAttachment == null);
+      unitAttachment = (UnitAttachment) value;
+    }
+    super.addAttachment(key, value);
+  }
+
+  public UnitAttachment getUnitAttachment() {
+    if (unitAttachment != null) {
+      return unitAttachment;
+    }
+    return UnitAttachment.get(this, Constants.UNIT_ATTACHMENT_NAME);
   }
 
   public List<Unit> create(final int quantity, final GamePlayer owner) {
