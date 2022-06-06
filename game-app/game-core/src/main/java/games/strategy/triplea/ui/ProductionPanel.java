@@ -337,7 +337,7 @@ class ProductionPanel extends JPanel {
               uiContext
                   .getUnitImageFactory()
                   .getIcon(ImageKey.builder().type(type).player(player).build());
-          final UnitAttachment attach = UnitAttachment.get(type);
+          final UnitAttachment attach = type.getUnitAttachment();
           final int attack = attach.getAttack(player);
           final int movement = attach.getMovement(player);
           final int defense = attach.getDefense(player);

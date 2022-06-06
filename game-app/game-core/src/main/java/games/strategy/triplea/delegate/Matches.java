@@ -75,7 +75,7 @@ public final class Matches {
   private Matches() {}
 
   public static Predicate<UnitType> unitTypeHasMoreThanOneHitPointTotal() {
-    return ut -> UnitAttachment.get(ut).getHitPoints() > 1;
+    return ut -> ut.getUnitAttachment().getHitPoints() > 1;
   }
 
   public static Predicate<Unit> unitHasMoreThanOneHitPointTotal() {
@@ -166,7 +166,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeIsDestroyer() {
-    return type -> UnitAttachment.get(type).getIsDestroyer();
+    return type -> type.getUnitAttachment().getIsDestroyer();
   }
 
   public static Predicate<Unit> unitIsTransport() {
@@ -189,7 +189,7 @@ public final class Matches {
 
   public static Predicate<UnitType> unitTypeIsStrategicBomber() {
     return obj -> {
-      final UnitAttachment ua = UnitAttachment.get(obj);
+      final UnitAttachment ua = obj.getUnitAttachment();
       return ua.getIsStrategicBomber();
     };
   }
@@ -275,16 +275,16 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeIsSea() {
-    return type -> UnitAttachment.get(type).getIsSea();
+    return type -> type.getUnitAttachment().getIsSea();
   }
 
   public static Predicate<UnitType> unitTypeIsNotSea() {
-    return type -> !UnitAttachment.get(type).getIsSea();
+    return type -> !type.getUnitAttachment().getIsSea();
   }
 
   public static Predicate<UnitType> unitTypeIsSeaOrAir() {
     return type -> {
-      final UnitAttachment ua = UnitAttachment.get(type);
+      final UnitAttachment ua = type.getUnitAttachment();
       return ua.getIsSea() || ua.getIsAir();
     };
   }
@@ -298,7 +298,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeCanBombard(final GamePlayer gamePlayer) {
-    return type -> UnitAttachment.get(type).getCanBombard(gamePlayer);
+    return type -> type.getUnitAttachment().getCanBombard(gamePlayer);
   }
 
   static Predicate<Unit> unitCanBeGivenByTerritoryTo(final GamePlayer player) {
@@ -371,7 +371,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeCanBeDamaged() {
-    return ut -> UnitAttachment.get(ut).getCanBeDamaged();
+    return ut -> ut.getUnitAttachment().getCanBeDamaged();
   }
 
   public static Predicate<Unit> unitCanBeDamaged() {
@@ -445,7 +445,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeIsInfrastructure() {
-    return ut -> UnitAttachment.get(ut).getIsInfrastructure();
+    return ut -> ut.getUnitAttachment().getIsInfrastructure();
   }
 
   public static Predicate<Unit> unitIsInfrastructure() {
@@ -473,7 +473,7 @@ public final class Matches {
       final boolean attack, final GamePlayer player) {
     return ut -> {
       // if unit has attack or defense, return true
-      final UnitAttachment ua = UnitAttachment.get(ut);
+      final UnitAttachment ua = ut.getUnitAttachment();
       if (attack && ua.getAttack(player) > 0) {
         return true;
       }
@@ -530,11 +530,11 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeIsSuicideOnAttack() {
-    return type -> UnitAttachment.get(type).getIsSuicideOnAttack();
+    return type -> type.getUnitAttachment().getIsSuicideOnAttack();
   }
 
   public static Predicate<UnitType> unitTypeIsSuicideOnDefense() {
-    return type -> UnitAttachment.get(type).getIsSuicideOnDefense();
+    return type -> type.getUnitAttachment().getIsSuicideOnDefense();
   }
 
   public static Predicate<Unit> unitIsSuicideOnAttack() {
@@ -554,11 +554,11 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeIsAir() {
-    return type -> UnitAttachment.get(type).getIsAir();
+    return type -> type.getUnitAttachment().getIsAir();
   }
 
   private static Predicate<UnitType> unitTypeIsNotAir() {
-    return type -> !UnitAttachment.get(type).getIsAir();
+    return type -> !type.getUnitAttachment().getIsAir();
   }
 
   public static Predicate<Unit> unitCanLandOnCarrier() {
@@ -611,7 +611,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeCanProduceUnits() {
-    return obj -> UnitAttachment.get(obj).getCanProduceUnits();
+    return obj -> obj.getUnitAttachment().getCanProduceUnits();
   }
 
   public static Predicate<Unit> unitCanProduceUnits() {
@@ -619,11 +619,11 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeHasMaxBuildRestrictions() {
-    return type -> UnitAttachment.get(type).getMaxBuiltPerPlayer() >= 0;
+    return type -> type.getUnitAttachment().getMaxBuiltPerPlayer() >= 0;
   }
 
   public static Predicate<UnitType> unitTypeIsRocket() {
-    return obj -> UnitAttachment.get(obj).getIsRocket();
+    return obj -> obj.getUnitAttachment().getIsRocket();
   }
 
   static Predicate<Unit> unitIsRocket() {
@@ -639,7 +639,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeCanNotMoveDuringCombatMove() {
-    return type -> UnitAttachment.get(type).getCanNotMoveDuringCombatMove();
+    return type -> type.getUnitAttachment().getCanNotMoveDuringCombatMove();
   }
 
   public static Predicate<Unit> unitCanNotMoveDuringCombatMove() {
@@ -685,7 +685,7 @@ public final class Matches {
         aaFiringUnits.stream()
             .anyMatch(
                 type -> {
-                  final UnitAttachment attachment = UnitAttachment.get(type);
+                  final UnitAttachment attachment = type.getUnitAttachment();
                   return attachment.getTargetsAa(unitTypeList).contains(unitType);
                 });
   }
@@ -713,7 +713,7 @@ public final class Matches {
 
   private static Predicate<UnitType> unitTypeIsAaThatCanFireOnRound(final int battleRoundNumber) {
     return obj -> {
-      final int maxRoundsAa = UnitAttachment.get(obj).getMaxRoundsAa();
+      final int maxRoundsAa = obj.getUnitAttachment().getMaxRoundsAa();
       return maxRoundsAa < 0 || maxRoundsAa >= battleRoundNumber;
     };
   }
@@ -743,7 +743,7 @@ public final class Matches {
   }
 
   private static Predicate<UnitType> unitTypeIsAaForCombatOnly() {
-    return obj -> UnitAttachment.get(obj).getIsAaForCombatOnly();
+    return obj -> obj.getUnitAttachment().getIsAaForCombatOnly();
   }
 
   public static Predicate<Unit> unitIsAaForCombatOnly() {
@@ -751,7 +751,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeIsAaForBombingThisUnitOnly() {
-    return obj -> UnitAttachment.get(obj).getIsAaForBombingThisUnitOnly();
+    return obj -> obj.getUnitAttachment().getIsAaForBombingThisUnitOnly();
   }
 
   public static Predicate<Unit> unitIsAaForBombingThisUnitOnly() {
@@ -759,7 +759,7 @@ public final class Matches {
   }
 
   private static Predicate<UnitType> unitTypeIsAaForFlyOverOnly() {
-    return obj -> UnitAttachment.get(obj).getIsAaForFlyOverOnly();
+    return obj -> obj.getUnitAttachment().getIsAaForFlyOverOnly();
   }
 
   static Predicate<Unit> unitIsAaForFlyOverOnly() {
@@ -768,7 +768,7 @@ public final class Matches {
 
   public static Predicate<UnitType> unitTypeIsAaForAnything() {
     return obj -> {
-      final UnitAttachment ua = UnitAttachment.get(obj);
+      final UnitAttachment ua = obj.getUnitAttachment();
       return ua.getIsAaForBombingThisUnitOnly()
           || ua.getIsAaForCombatOnly()
           || ua.getIsAaForFlyOverOnly();
@@ -784,7 +784,7 @@ public final class Matches {
   }
 
   private static Predicate<UnitType> unitTypeMaxAaAttacksIsInfinite() {
-    return obj -> UnitAttachment.get(obj).getMaxAaAttacks() == -1;
+    return obj -> obj.getUnitAttachment().getMaxAaAttacks() == -1;
   }
 
   public static Predicate<Unit> unitMaxAaAttacksIsInfinite() {
@@ -792,7 +792,7 @@ public final class Matches {
   }
 
   private static Predicate<UnitType> unitTypeMayOverStackAa() {
-    return obj -> UnitAttachment.get(obj).getMayOverStackAa();
+    return obj -> obj.getUnitAttachment().getMayOverStackAa();
   }
 
   public static Predicate<Unit> unitMayOverStackAa() {
@@ -828,7 +828,7 @@ public final class Matches {
         return false;
       }
       final UnitType type = obj.getType();
-      final UnitAttachment ua = UnitAttachment.get(type);
+      final UnitAttachment ua = type.getUnitAttachment();
       return ua.getIsAirTransportable();
     };
   }
@@ -844,7 +844,7 @@ public final class Matches {
         return false;
       }
       final UnitType type = obj.getType();
-      final UnitAttachment ua = UnitAttachment.get(type);
+      final UnitAttachment ua = type.getUnitAttachment();
       return ua.getIsAirTransport();
     };
   }
@@ -1198,7 +1198,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeCanMove(final GamePlayer player) {
-    return obj -> UnitAttachment.get(obj).getMovement(player) > 0;
+    return obj -> obj.getUnitAttachment().getMovement(player) > 0;
   }
 
   public static Predicate<UnitType> unitTypeIsStatic(final GamePlayer gamePlayer) {
@@ -1504,7 +1504,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeIsFirstStrike() {
-    return type -> UnitAttachment.get(type).getIsFirstStrike();
+    return type -> type.getUnitAttachment().getIsFirstStrike();
   }
 
   public static Predicate<Unit> unitOwnerHasImprovedArtillerySupportTech() {
@@ -1640,7 +1640,7 @@ public final class Matches {
         return false;
       }
       final UnitType type = unitWhichCanGiveBonusMovement.getType();
-      final UnitAttachment ua = UnitAttachment.get(type);
+      final UnitAttachment ua = type.getUnitAttachment();
       // TODO: make sure the unit is operational
       return unitCanGiveBonusMovement().test(unitWhichCanGiveBonusMovement)
           && ua.getGivesMovement().getInt(unitWhichWillGetBonus.getType()) != 0;
@@ -1689,7 +1689,7 @@ public final class Matches {
 
   public static Predicate<UnitType> unitTypeConsumesUnitsOnCreation() {
     return unit -> {
-      final UnitAttachment ua = UnitAttachment.get(unit);
+      final UnitAttachment ua = unit.getUnitAttachment();
       return !ua.getConsumesUnits().isEmpty();
     };
   }
@@ -1826,7 +1826,7 @@ public final class Matches {
 
   public static Predicate<UnitType> unitTypeIsConstruction() {
     return type -> {
-      final UnitAttachment ua = UnitAttachment.get(type);
+      final UnitAttachment ua = type.getUnitAttachment();
       return ua.getIsConstruction();
     };
   }

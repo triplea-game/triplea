@@ -21,7 +21,7 @@ public class NeighborGetter implements Function<Territory, Collection<Territory>
 
   @Override
   public Collection<Territory> apply(final Territory territory) {
-    final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
+    final UnitAttachment unitAttachment = unitType.getUnitAttachment();
     final PredicateBuilder<Territory> territoryPredicate = PredicateBuilder.trueBuilder();
     if (unitAttachment.getIsSea()) {
       territoryPredicate.and(Territory::isWater);

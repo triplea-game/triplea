@@ -33,7 +33,6 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.io.InputStream;
@@ -1020,7 +1019,7 @@ public final class GameParser {
       final UnitType type = getUnitType(current.getUnitType());
       final String ownerString = current.getOwner();
       final int hits = Optional.ofNullable(current.getHitsTaken()).orElse(0);
-      if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
+      if (hits < 0 || hits > type.getUnitAttachment().getHitPoints() - 1) {
         throw new GameParseException(
             "hitsTaken cannot be less than zero or greater than one less than total hitPoints");
       }

@@ -115,7 +115,7 @@ public class UnitImageFactory {
       StringBuilder name = new StringBuilder(32);
       name.append(type.getName());
       if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
-        final UnitAttachment ua = UnitAttachment.get(type);
+        final UnitAttachment ua = type.getUnitAttachment();
         if (type.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
           if (TechTracker.hasRocket(gamePlayer) && ua.getIsRocket()) {
             name = new StringBuilder("rockets");

@@ -31,7 +31,6 @@ import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
@@ -2474,7 +2473,7 @@ class ProNonCombatMoveAi {
     for (ProPurchaseOption option : proData.getPurchaseOptions().getAllOptions()) {
       // Skip construction purchase options, since these can be placed without factory.
       if (option.isConsumesUnits() && !option.isConstruction()) {
-        consumables.addAll(UnitAttachment.get(option.getUnitType()).getConsumesUnits().keySet());
+        consumables.addAll(option.getUnitType().getUnitAttachment().getConsumesUnits().keySet());
       }
     }
 

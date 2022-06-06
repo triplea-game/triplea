@@ -293,7 +293,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
           continue;
         }
         final UnitType unit = data.getUnitTypeList().getUnitType(named.getName());
-        final boolean isSea = UnitAttachment.get(unit).getIsSea();
+        final boolean isSea = unit.getUnitAttachment().getIsSea();
         if (!isSea) {
           final ProductionRule prodRule =
               data.getProductionRuleList().getProductionRule(rule.getName());
@@ -313,7 +313,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     if (battleShipUnit == null) {
       return;
     }
-    final UnitAttachment battleShipAttachment = UnitAttachment.get(battleShipUnit);
+    final UnitAttachment battleShipAttachment = battleShipUnit.getUnitAttachment();
     final boolean defaultEnabled = battleShipAttachment.getHitPoints() > 1;
     if (userEnabled != defaultEnabled) {
       bridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);

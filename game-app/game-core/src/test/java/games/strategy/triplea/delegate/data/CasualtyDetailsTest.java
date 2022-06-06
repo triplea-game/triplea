@@ -75,8 +75,8 @@ class CasualtyDetailsTest {
   @Test
   void killLowestMovementAirUnitsWhenOnlyOneTypeIsAvailable() {
     final UnitType fighter = givenUnitType("fighter");
-    UnitAttachment.get(fighter).setMovement(4);
-    UnitAttachment.get(fighter).setIsAir(true);
+    fighter.getUnitAttachment().setMovement(4);
+    fighter.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(fighter.createTemp(2, player1));
@@ -99,9 +99,9 @@ class CasualtyDetailsTest {
   @Test
   void damageHighestMovementAirUnitsWhenOnlyOneTypeIsAvailable() {
     final UnitType fighter = givenUnitType("fighter");
-    UnitAttachment.get(fighter).setHitPoints(2);
-    UnitAttachment.get(fighter).setMovement(4);
-    UnitAttachment.get(fighter).setIsAir(true);
+    fighter.getUnitAttachment().setHitPoints(2);
+    fighter.getUnitAttachment().setMovement(4);
+    fighter.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(fighter.createTemp(2, player1));
@@ -125,11 +125,11 @@ class CasualtyDetailsTest {
   @Test
   void killLowestMovementAirUnitsInTwoTypes() {
     final UnitType fighter = givenUnitType("fighter");
-    UnitAttachment.get(fighter).setMovement(4);
-    UnitAttachment.get(fighter).setIsAir(true);
+    fighter.getUnitAttachment().setMovement(4);
+    fighter.getUnitAttachment().setIsAir(true);
     final UnitType bomber = givenUnitType("bomber");
-    UnitAttachment.get(bomber).setMovement(6);
-    UnitAttachment.get(bomber).setIsAir(true);
+    bomber.getUnitAttachment().setMovement(6);
+    bomber.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(fighter.createTemp(2, player1));
@@ -158,13 +158,13 @@ class CasualtyDetailsTest {
   @Test
   void damageHighestMovementAirUnitsInTwoTypes() {
     final UnitType fighter = givenUnitType("fighter");
-    UnitAttachment.get(fighter).setHitPoints(2);
-    UnitAttachment.get(fighter).setMovement(4);
-    UnitAttachment.get(fighter).setIsAir(true);
+    fighter.getUnitAttachment().setHitPoints(2);
+    fighter.getUnitAttachment().setMovement(4);
+    fighter.getUnitAttachment().setIsAir(true);
     final UnitType bomber = givenUnitType("bomber");
-    UnitAttachment.get(bomber).setHitPoints(3);
-    UnitAttachment.get(bomber).setMovement(6);
-    UnitAttachment.get(bomber).setIsAir(true);
+    bomber.getUnitAttachment().setHitPoints(3);
+    bomber.getUnitAttachment().setMovement(6);
+    bomber.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(fighter.createTemp(2, player1));
@@ -193,9 +193,9 @@ class CasualtyDetailsTest {
   @Test
   void damageHighestMovementAirUnitsWithTwoOwners() {
     final UnitType fighter = givenUnitType("fighter");
-    UnitAttachment.get(fighter).setHitPoints(2);
-    UnitAttachment.get(fighter).setMovement(3);
-    UnitAttachment.get(fighter).setIsAir(true);
+    fighter.getUnitAttachment().setHitPoints(2);
+    fighter.getUnitAttachment().setMovement(3);
+    fighter.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(fighter.createTemp(2, player1));
@@ -222,9 +222,9 @@ class CasualtyDetailsTest {
   @Test
   void keepDamageAtUnitsAlreadyDamaged() {
     final UnitType fighter = givenUnitType("fighter");
-    UnitAttachment.get(fighter).setHitPoints(2);
-    UnitAttachment.get(fighter).setMovement(4);
-    UnitAttachment.get(fighter).setIsAir(true);
+    fighter.getUnitAttachment().setHitPoints(2);
+    fighter.getUnitAttachment().setMovement(4);
+    fighter.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(fighter.createTemp(2, player1));
@@ -251,7 +251,7 @@ class CasualtyDetailsTest {
   @Test
   void killPositiveMarineBonusLastIfAmphibious() {
     final UnitType infantry = givenUnitType("infantry");
-    UnitAttachment.get(infantry).setIsMarine(1);
+    infantry.getUnitAttachment().setIsMarine(1);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(infantry.createTemp(2, player1));
@@ -274,7 +274,7 @@ class CasualtyDetailsTest {
   @Test
   void killNegativeMarineBonusFirstIfAmphibious() {
     final UnitType infantry = givenUnitType("infantry");
-    UnitAttachment.get(infantry).setIsMarine(-1);
+    infantry.getUnitAttachment().setIsMarine(-1);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(infantry.createTemp(2, player1));

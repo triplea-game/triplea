@@ -79,7 +79,7 @@ public class ScrambleLogic {
   private static int computeMaxScrambleDistance(final GameState data) {
     int maxScrambleDistance = 0;
     for (final UnitType unitType : data.getUnitTypeList()) {
-      final UnitAttachment ua = UnitAttachment.get(unitType);
+      final UnitAttachment ua = unitType.getUnitAttachment();
       if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }

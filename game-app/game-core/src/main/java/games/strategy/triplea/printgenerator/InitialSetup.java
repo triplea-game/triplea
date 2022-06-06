@@ -19,7 +19,7 @@ class InitialSetup {
       printData.getData().getHistory().gotoNode(root);
     }
     for (final UnitType currentType : printData.getData().getUnitTypeList()) {
-      final UnitAttachment currentTypeUnitAttachment = UnitAttachment.get(currentType);
+      final UnitAttachment currentTypeUnitAttachment = currentType.getUnitAttachment();
       unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
     new UnitInformation().saveToFile(printData, unitInfoMap);

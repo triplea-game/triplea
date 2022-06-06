@@ -209,8 +209,7 @@ public final class TransportUtils {
       return 0;
     }
     return units.stream()
-        .map(Unit::getType)
-        .map(UnitAttachment::get)
+        .map(Unit::getUnitAttachment)
         .mapToInt(UnitAttachment::getTransportCost)
         .sum();
   }
@@ -230,10 +229,8 @@ public final class TransportUtils {
     final List<Unit> canBeTransported = new ArrayList<>(units);
     canBeTransported.sort(
         Comparator.comparing(
-            Unit::getType,
-            Comparator.comparing(
-                UnitAttachment::get,
-                Comparator.comparing(UnitAttachment::getTransportCost).reversed())));
+            Unit::getUnitAttachment,
+            Comparator.comparing(UnitAttachment::getTransportCost).reversed()));
     return canBeTransported;
   }
 
@@ -356,7 +353,7 @@ public final class TransportUtils {
    */
   public static Collection<Unit> chooseEquivalentUnitsToUnload(
       final Route route, final Collection<Unit> units) {
-    if (!route.isUnload() || !units.stream().anyMatch(Matches.unitIsLand())) {
+    if (!route.isUnload() || units.stream().noneMatch(Matches.unitIsLand())) {
       return new ArrayList<>(units);
     }
     final List<Unit> updatedUnits = new ArrayList<>(units);

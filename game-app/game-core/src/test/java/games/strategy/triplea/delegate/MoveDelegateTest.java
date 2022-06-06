@@ -21,7 +21,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleTracker;
@@ -276,7 +275,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(egypt, libya);
     // Disable canBlitz attachment
     gameData.performChange(
-        ChangeFactory.attachmentPropertyChange(UnitAttachment.get(armour), "false", "canBlitz"));
+        ChangeFactory.attachmentPropertyChange(armour.getUnitAttachment(), "false", "canBlitz"));
     String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Validate move happened
