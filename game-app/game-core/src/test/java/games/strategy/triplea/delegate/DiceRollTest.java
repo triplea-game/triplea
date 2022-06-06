@@ -627,9 +627,7 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    aaGunList
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(aaGunList)
                         .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
@@ -649,9 +647,7 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    aaGunList
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(aaGunList)
                         .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,

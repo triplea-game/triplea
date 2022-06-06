@@ -174,9 +174,7 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
@@ -240,9 +238,7 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
@@ -307,9 +303,7 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
@@ -374,9 +368,7 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
@@ -441,9 +433,7 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
@@ -514,9 +504,7 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
@@ -582,9 +570,7 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    defendingAa
-                        .iterator()
-                        .next()
+                    CollectionUtils.getAny(defendingAa)
                         .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
