@@ -24,7 +24,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.panel.move.MovableUnitsFilter.FilterOperationResult;
@@ -240,7 +239,7 @@ class MovableUnitsFilterTest {
       }
 
       // With mech infantry tech, 2 infantry and 2 tanks can move.
-      TechAttachment.get(russians).setMechanizedInfantry("true");
+      russians.getTechAttachment().setMechanizedInfantry("true");
       {
         final var result = filterUnits(data, russians, route, units, Map.of());
         assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
@@ -261,7 +260,7 @@ class MovableUnitsFilterTest {
       final Map<Unit, Collection<Unit>> dependentUnits = Map.of(bomber, List.of(infantry));
 
       // With paratroopers tech, the bomber can carry an infantry.
-      TechAttachment.get(russians).setParatroopers("true");
+      russians.getTechAttachment().setParatroopers("true");
       {
         final var result = filterUnits(data, russians, route, List.of(bomber), dependentUnits);
         assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
@@ -270,7 +269,7 @@ class MovableUnitsFilterTest {
       }
 
       // Without the tech, only the bomber can move.
-      TechAttachment.get(russians).setParatroopers("false");
+      russians.getTechAttachment().setParatroopers("false");
       {
         final var result = filterUnits(data, russians, route, List.of(bomber), dependentUnits);
         // TODO: This should probably be SOME_UNITS_CAN_MOVE, but the UI code never actually passes

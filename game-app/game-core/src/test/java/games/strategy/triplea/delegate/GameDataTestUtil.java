@@ -21,7 +21,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.Collection;
@@ -462,7 +461,7 @@ public final class GameDataTestUtil {
   }
 
   static void givePlayerRadar(final GamePlayer player) {
-    TechAttachment.get(player).setAaRadar(Boolean.TRUE.toString());
+    player.getTechAttachment().setAaRadar(Boolean.TRUE.toString());
   }
 
   /** Helper method to check if a String is null and otherwise print the String. */

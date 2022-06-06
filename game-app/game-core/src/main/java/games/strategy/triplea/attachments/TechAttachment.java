@@ -43,17 +43,12 @@ public class TechAttachment extends DefaultAttachment {
     setGenericTechs();
   }
 
-  // attaches to a PlayerId
-  public static TechAttachment get(final GamePlayer gamePlayer) {
-    return gamePlayer.getTechAttachment();
-  }
-
   static TechAttachment get(final GamePlayer gamePlayer, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
       throw new IllegalStateException(
           "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
     }
-    return get(gamePlayer);
+    return gamePlayer.getTechAttachment();
   }
 
   // setters

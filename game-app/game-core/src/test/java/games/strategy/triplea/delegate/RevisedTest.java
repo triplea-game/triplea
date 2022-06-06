@@ -1435,7 +1435,7 @@ class RevisedTest {
     final TechnologyDelegate techDelegate = techDelegate(gameData);
     techDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     techDelegate.start();
-    final TechAttachment ta = TechAttachment.get(germans);
+    final TechAttachment ta = germans.getTechAttachment();
     // PlayerAttachment pa = PlayerAttachment.get(germans);
     final TechnologyFrontier rockets = new TechnologyFrontier("", gameData);
     rockets.addAdvance(

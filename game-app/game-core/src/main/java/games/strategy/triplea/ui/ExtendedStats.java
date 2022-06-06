@@ -109,7 +109,7 @@ public class ExtendedStats extends StatPanel {
     @Override
     public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       int count = 0;
-      final TechAttachment ta = TechAttachment.get(player);
+      final TechAttachment ta = player.getTechAttachment();
       if (ta.getHeavyBomber()) {
         count++;
       }
@@ -193,7 +193,7 @@ public class ExtendedStats extends StatPanel {
 
     @Override
     public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
-      if (ta.hasTech(TechAttachment.get(player))) {
+      if (ta.hasTech(player.getTechAttachment())) {
         return 1;
       }
       return 0;
