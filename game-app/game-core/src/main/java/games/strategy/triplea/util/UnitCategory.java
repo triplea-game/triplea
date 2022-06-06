@@ -75,6 +75,10 @@ public class UnitCategory implements Comparable<UnitCategory> {
     createDependents(dependents);
   }
 
+  public UnitAttachment getUnitAttachment() {
+    return UnitAttachment.get(getType());
+  }
+
   public int getDamaged() {
     return damaged;
   }
