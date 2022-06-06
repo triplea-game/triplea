@@ -20,6 +20,7 @@ import org.triplea.io.IoUtils;
 final class ProLogSettings implements Serializable {
   private static final long serialVersionUID = 5532153908942939829L;
   private static final String PROGRAM_SETTINGS = "Program Settings";
+  private static ProLogSettings currentSettings;
 
   private boolean logHistoryLimited = true;
   private int logHistoryLimit = 5;
@@ -27,6 +28,13 @@ final class ProLogSettings implements Serializable {
   private Level logLevel = Level.FINEST;
 
   static ProLogSettings loadSettings() {
+    if (currentSettings == null) {
+      currentSettings = loadSettingsImpl();
+    }
+    return currentSettings;
+  }
+
+  static ProLogSettings loadSettingsImpl() {
     try {
       final byte[] pool =
           Preferences.userNodeForPackage(ProAi.class).getByteArray(PROGRAM_SETTINGS, null);
@@ -49,6 +57,7 @@ final class ProLogSettings implements Serializable {
   }
 
   static void saveSettings(final ProLogSettings settings) {
+    currentSettings = null;
     try {
       final byte[] bytes =
           IoUtils.writeToMemory(
