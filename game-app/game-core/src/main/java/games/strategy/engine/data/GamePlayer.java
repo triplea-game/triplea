@@ -49,6 +49,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   private RepairFrontier repairFrontier;
   private final TechnologyFrontierList technologyFrontiers;
   private String whoAmI = "null:no_one";
+  private TechAttachment techAttachment;
 
   public GamePlayer(final String name, final GameData data) {
     this(name, false, false, null, false, data);
@@ -232,7 +233,15 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   }
 
   public TechAttachment getTechAttachment() {
-    return (TechAttachment) getAttachment(Constants.TECH_ATTACHMENT_NAME);
+    if (techAttachment == null) {
+      techAttachment = (TechAttachment) getAttachment(Constants.TECH_ATTACHMENT_NAME);
+      if (techAttachment == null) {
+        // don't crash, as a map xml may not set the tech attachment for all players, so just create
+        // a new tech attachment for them
+        techAttachment = new TechAttachment(Constants.TECH_ATTACHMENT_NAME, this, getData());
+      }
+    }
+    return techAttachment;
   }
 
   public final boolean isAllied(GamePlayer other) {
