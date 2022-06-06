@@ -305,10 +305,12 @@ class SupportCalculatorTest {
   void improvedArtilleryTechnologyDoublesTheSupport() throws GameParseException {
     final GameData gameData = givenGameData().build();
 
-    final GamePlayer owner = mock(GamePlayer.class);
     final TechAttachment techAttachment = mock(TechAttachment.class);
-    when(owner.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getImprovedArtillerySupport()).thenReturn(true);
+
+    final GamePlayer owner = mock(GamePlayer.class);
+    when(owner.getData()).thenReturn(gameData);
+    when(owner.getTechAttachment()).thenReturn(techAttachment);
 
     final UnitType unitType = new UnitType("unit", gameData);
     final Unit unit = unitType.createTemp(1, owner).get(0);
