@@ -18,7 +18,6 @@ import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.math.BigDecimal;
