@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import com.google.common.primitives.Ints;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -9,7 +10,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -70,7 +70,7 @@ public class DiceRoll implements Externalizable {
   @ChangeOnNextMajorRelease("This constructor should be made package visible once it is moved")
   public DiceRoll(
       final List<Die> dice, final int hits, final double expectedHits, final String playerName) {
-    rolls = new ArrayList<>(dice);
+    rolls = List.copyOf(dice);
     this.hits = hits;
     this.expectedHits = expectedHits;
     this.playerName = playerName;
@@ -156,10 +156,7 @@ public class DiceRoll implements Externalizable {
     final int serializedVersion = readSerializeVersion(in);
 
     final int[] dice = (int[]) in.readObject();
-    rolls = new ArrayList<>(dice.length);
-    for (final int element : dice) {
-      rolls.add(Die.getFromWriteValue(element));
-    }
+    rolls = Ints.asList(dice).stream().map(Die::getFromWriteValue).collect(Collectors.toList());
     hits = in.readInt();
     expectedHits = in.readDouble();
     playerName = serializedVersion == 1 ? (String) in.readObject() : null;

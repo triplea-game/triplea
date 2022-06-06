@@ -1,13 +1,14 @@
 package games.strategy.triplea.delegate.dice.calculator;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Queues;
+import com.google.common.primitives.Ints;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.power.calculator.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.power.calculator.UnitPowerStrengthAndRolls;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
@@ -33,7 +34,7 @@ public class RolledDice {
 
     final int rollCount = totalPowerAndTotalRolls.calculateTotalRolls();
     if (rollCount == 0) {
-      return new DiceRoll(new ArrayList<>(), 0, 0, player.getName());
+      return new DiceRoll(List.of(), 0, 0, player.getName());
     }
 
     final int diceSides = totalPowerAndTotalRolls.getDiceSides();
@@ -57,9 +58,7 @@ public class RolledDice {
   @VisibleForTesting
   public static List<Die> getDiceHits(
       final int[] dice, final List<UnitPowerStrengthAndRolls> activeUnits) {
-    final Deque<Integer> diceQueue =
-        IntStream.of(dice).boxed().collect(Collectors.toCollection(ArrayDeque::new));
-
+    final Deque<Integer> diceQueue = Queues.newArrayDeque(Ints.asList(dice));
     return activeUnits.stream()
         .flatMap(
             unitPowerStrengthAndRolls -> {
