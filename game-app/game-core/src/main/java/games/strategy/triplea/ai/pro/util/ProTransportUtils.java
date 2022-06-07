@@ -61,14 +61,11 @@ public final class ProTransportUtils {
     if (!TransportTracker.isTransporting(transport)) {
 
       // Get all units that can be transported
+      Predicate<Unit> canBeLoaded =
+          ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true);
       final List<Unit> units = new ArrayList<>();
       for (final Territory loadFrom : territoriesToLoadFrom) {
-        units.addAll(
-            loadFrom
-                .getUnitCollection()
-                .getMatches(
-                    ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(
-                        player, transport, true)));
+        units.addAll(loadFrom.getUnitCollection().getMatches(canBeLoaded));
       }
       units.removeAll(unitsToIgnore);
 

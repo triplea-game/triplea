@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 
 /** The result of an AI territory analysis. */
@@ -437,5 +438,9 @@ public class ProTerritory {
 
   public List<Unit> getBombers() {
     return bombers;
+  }
+
+  public Set<Territory> getNeighbors(Predicate<Territory> predicate) {
+    return proData.getData().getMap().getNeighbors(territory, predicate);
   }
 }

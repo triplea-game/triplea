@@ -1063,61 +1063,55 @@ public class ProTerritoryManager {
       final boolean isIgnoringRelationships) {
     final GameData data = proData.getData();
     final GameMap gameMap = data.getMap();
+    final Predicate<Unit> isTransport =
+        ProMatches.unitCanBeMovedAndIsOwnedTransport(player, isCombatMove);
+    final Predicate<Territory> canMoveSeaUnitsThrough =
+        ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove);
+    final Predicate<Territory> canMoveSeaUnits =
+        ProMatches.territoryCanMoveSeaUnits(player, isCombatMove);
+    Predicate<Territory> unloadAmphibTerritoryMatch;
+    if (isIgnoringRelationships) {
+      unloadAmphibTerritoryMatch = ProMatches.territoryCanPotentiallyMoveLandUnits(player);
+    } else {
+      unloadAmphibTerritoryMatch = ProMatches.territoryCanMoveLandUnits(player, isCombatMove);
+    }
+    unloadAmphibTerritoryMatch = unloadAmphibTerritoryMatch.and(moveAmphibToTerritoryMatch);
 
-    for (final Territory myUnitTerritory : myUnitTerritories) {
-
+    for (final Territory transportTerritory : myUnitTerritories) {
       // Find my transports and amphibious units that have movement left
-      final List<Unit> myTransportUnits =
-          myUnitTerritory
-              .getUnitCollection()
-              .getMatches(ProMatches.unitCanBeMovedAndIsOwnedTransport(player, isCombatMove));
-      Predicate<Territory> unloadAmphibTerritoryMatch =
-          ProMatches.territoryCanMoveLandUnits(player, isCombatMove)
-              .and(moveAmphibToTerritoryMatch);
-      if (isIgnoringRelationships) {
-        unloadAmphibTerritoryMatch =
-            ProMatches.territoryCanPotentiallyMoveLandUnits(player).and(moveAmphibToTerritoryMatch);
-      }
+      final List<Unit> transports = transportTerritory.getUnitCollection().getMatches(isTransport);
 
       // Check each transport unit individually since they can have different ranges
-      for (final Unit myTransport : myTransportUnits) {
-
-        final Predicate<Territory> canMoveSeaUnitsThrough =
-            ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove);
-        final Predicate<Territory> canMoveSeaUnits =
-            ProMatches.territoryCanMoveSeaUnits(player, isCombatMove);
-
+      for (final Unit transport : transports) {
         // Find units to load and territories to unload
-        final ProTransport proTransportData = new ProTransport(myTransport);
+        final ProTransport proTransportData = new ProTransport(transport);
         transportMapList.add(proTransportData);
         final Set<Territory> currentTerritories = new HashSet<>();
-        currentTerritories.add(myUnitTerritory);
+        currentTerritories.add(transportTerritory);
 
         // Get remaining moves
         int movesLeft =
-            getUnitRange(myTransport, myUnitTerritory, player, isCheckingEnemyAttacks).intValue();
+            getUnitRange(transport, transportTerritory, player, isCheckingEnemyAttacks).intValue();
         MoveValidator moveValidator = new MoveValidator(data, !isCombatMove);
         while (movesLeft >= 0) {
           final Set<Territory> nextTerritories = new HashSet<>();
           for (final Territory currentTerritory : currentTerritories) {
-
             // Find neighbors I can move to
             final Set<Territory> possibleNeighborTerritories =
                 gameMap.getNeighbors(currentTerritory, canMoveSeaUnitsThrough);
             for (final Territory possibleNeighborTerritory : possibleNeighborTerritories) {
               final Route route = new Route(currentTerritory, possibleNeighborTerritory);
-              if (moveValidator.validateCanal(route, List.of(myTransport), player) == null) {
+              if (moveValidator.validateCanal(route, List.of(transport), player) == null) {
                 nextTerritories.add(possibleNeighborTerritory);
               }
             }
 
             // Get loaded units or get units that can be loaded into current territory if no enemies
             // present
-            final List<Unit> units = new ArrayList<>();
-            final Set<Territory> myUnitsToLoadTerritories = new HashSet<>();
-            final Collection<Unit> transporting = myTransport.getTransporting();
-            if (!transporting.isEmpty()) {
-              units.addAll(transporting);
+            boolean haveUnitsToTransport = false;
+            final Set<Territory> loadFromTerritories = new HashSet<>();
+            if (!transport.getTransporting().isEmpty()) {
+              haveUnitsToTransport = true;
             } else if (Matches.territoryHasEnemySeaUnits(player).negate().test(currentTerritory)) {
               final Set<Territory> possibleLoadTerritories = gameMap.getNeighbors(currentTerritory);
               for (final Territory possibleLoadTerritory : possibleLoadTerritories) {
@@ -1128,34 +1122,34 @@ public class ProTerritoryManager {
                             isCheckingEnemyAttacks
                                 ? ProMatches.unitIsOwnedCombatTransportableUnit(player)
                                 : ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(
-                                    player, myTransport, isCombatMove));
+                                    player, transport, isCombatMove));
+                ProLogger.debug("from  " + possibleLoadTerritory + " canload: " + possibleUnits);
+
                 for (final Unit possibleUnit : possibleUnits) {
                   if (possibleUnit.getUnitAttachment().getTransportCost()
-                      <= myTransport.getUnitAttachment().getTransportCapacity()) {
-                    units.add(possibleUnit);
-                    myUnitsToLoadTerritories.add(possibleLoadTerritory);
+                      <= transport.getUnitAttachment().getTransportCapacity()) {
+                    loadFromTerritories.add(possibleLoadTerritory);
+                    haveUnitsToTransport = true;
                   }
                 }
               }
             }
 
             // If there are any units to be transported
-            if (!units.isEmpty()) {
-
+            if (haveUnitsToTransport) {
               // Find all water territories I can move to
               final Set<Territory> seaMoveTerritories = new HashSet<>();
               seaMoveTerritories.add(currentTerritory);
               if (movesLeft > 0) {
+                Predicate<Territory> canMove =
+                    isCheckingEnemyAttacks ? canMoveSeaUnits : canMoveSeaUnitsThrough;
                 final Set<Territory> neighborTerritories =
-                    gameMap.getNeighbors(
-                        currentTerritory,
-                        movesLeft,
-                        isCheckingEnemyAttacks ? canMoveSeaUnits : canMoveSeaUnitsThrough);
+                    gameMap.getNeighbors(currentTerritory, movesLeft, canMove);
                 for (final Territory neighbor : neighborTerritories) {
-                  final Route myRoute =
+                  final Route route =
                       gameMap.getRouteForUnit(
-                          currentTerritory, neighbor, canMoveSeaUnitsThrough, myTransport, player);
-                  if (myRoute == null) {
+                          currentTerritory, neighbor, canMoveSeaUnitsThrough, transport, player);
+                  if (route == null) {
                     continue;
                   }
                   seaMoveTerritories.add(neighbor);
@@ -1164,14 +1158,13 @@ public class ProTerritoryManager {
 
               // Find possible unload territories
               final Set<Territory> amphibTerritories = new HashSet<>();
-              for (final Territory seaMoveTerritory : seaMoveTerritories) {
-                amphibTerritories.addAll(
-                    gameMap.getNeighbors(seaMoveTerritory, unloadAmphibTerritoryMatch));
+              for (final Territory t : seaMoveTerritories) {
+                amphibTerritories.addAll(gameMap.getNeighbors(t, unloadAmphibTerritoryMatch));
               }
 
               // Add to transport map
-              proTransportData.addTerritories(amphibTerritories, myUnitsToLoadTerritories);
-              proTransportData.addSeaTerritories(seaMoveTerritories, myUnitsToLoadTerritories);
+              proTransportData.addTerritories(amphibTerritories, loadFromTerritories);
+              proTransportData.addSeaTerritories(seaMoveTerritories, loadFromTerritories);
             }
           }
           currentTerritories.clear();
