@@ -1594,27 +1594,25 @@ public class ProCombatMoveAi {
                 for (final Unit u : amphibUnitsToAdd) {
                   loadFromTerritories.add(proData.getUnitTerritory(u));
                 }
-                for (final Territory territoryToMoveTransport : territoriesToMoveTransport) {
-                  if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport)
+                for (final Territory destination : territoriesToMoveTransport) {
+                  if (proTransportData.getSeaTransportMap().containsKey(destination)
                       && proTransportData
                           .getSeaTransportMap()
-                          .get(territoryToMoveTransport)
+                          .get(destination)
                           .containsAll(loadFromTerritories)) {
                     List<Unit> attackers = new ArrayList<>();
-                    if (enemyAttackOptions.getMax(territoryToMoveTransport) != null) {
-                      attackers = enemyAttackOptions.getMax(territoryToMoveTransport).getMaxUnits();
+                    if (enemyAttackOptions.getMax(destination) != null) {
+                      attackers = enemyAttackOptions.getMax(destination).getMaxUnits();
                     }
                     final List<Unit> defenders =
-                        territoryToMoveTransport
-                            .getUnitCollection()
-                            .getMatches(Matches.isUnitAllied(player));
+                        destination.getUnitCollection().getMatches(Matches.isUnitAllied(player));
                     defenders.add(transport);
                     final double strengthDifference =
                         ProBattleUtils.estimateStrengthDifference(
-                            territoryToMoveTransport, attackers, defenders);
+                            destination, attackers, defenders);
                     if (strengthDifference <= minStrengthDifference) {
                       minStrengthDifference = strengthDifference;
-                      minUnloadFromTerritory = territoryToMoveTransport;
+                      minUnloadFromTerritory = destination;
                     }
                   }
                 }
