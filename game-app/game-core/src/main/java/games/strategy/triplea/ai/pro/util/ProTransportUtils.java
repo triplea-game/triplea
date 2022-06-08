@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -56,10 +57,8 @@ public final class ProTransportUtils {
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
-
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<>(unitsToIgnore);
     if (!TransportTracker.isTransporting(transport)) {
-
       // Get all units that can be transported
       Predicate<Unit> canBeLoaded =
           ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true);
@@ -71,12 +70,10 @@ public final class ProTransportUtils {
 
       // Check to see which have higher land move value
       for (final Unit u : units) {
-        if (unitMoveMap.get(u) != null) {
-          for (final Territory t : unitMoveMap.get(u)) {
-            if (moveMap.get(t) != null && moveMap.get(t).getValue() > value) {
-              unitsToIgnoreOrHaveBetterLandMove.add(u);
-              break;
-            }
+        for (final Territory t : Optional.ofNullable(unitMoveMap.get(u)).orElse(Set.of())) {
+          if (moveMap.get(t) != null && moveMap.get(t).getValue() > value) {
+            unitsToIgnoreOrHaveBetterLandMove.add(u);
+            break;
           }
         }
       }

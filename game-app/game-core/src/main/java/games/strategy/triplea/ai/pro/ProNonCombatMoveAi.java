@@ -1655,174 +1655,39 @@ class ProNonCombatMoveAi {
       // Move sea units to defend transports
       for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
         final Unit u = it.next();
-        if (Matches.unitIsSea().test(u)) {
-          for (final Territory t : currentUnitMoveMap.get(u)) {
-            final ProTerritory proTerritory = moveMap.get(t);
-            if (proTerritory.isCanHold()
-                && !proTerritory.getAllDefenders().isEmpty()
-                && proTerritory.getAllDefenders().stream()
-                    .anyMatch(ProMatches.unitIsOwnedTransport(player))) {
-              final List<Unit> defendingUnits =
-                  CollectionUtils.getMatches(
-                      proTerritory.getAllDefenders(), Matches.unitIsNotLand());
-              if (proTerritory.getBattleResult() == null) {
-                proTerritory.setBattleResult(
-                    calc.estimateDefendBattleResults(proData, proTerritory, defendingUnits));
-              }
-              final ProBattleResult result = proTerritory.getBattleResult();
-              ProLogger.trace(
-                  t.getName()
-                      + " TUVSwing="
-                      + result.getTuvSwing()
-                      + ", Win%="
-                      + result.getWinPercentage()
-                      + ", enemyAttackers="
-                      + proTerritory.getMaxEnemyUnits().size()
-                      + ", defenders="
-                      + defendingUnits.size());
-              if (result.getWinPercentage() > (100 - proData.getWinPercentage())
-                  || result.getTuvSwing() > 0) {
-                ProLogger.trace(u + " added sea to defend transport at " + t);
-                proTerritory.addTempUnit(u);
-                proTerritory.setBattleResult(null);
-                territoriesToDefend.add(t);
-                it.remove();
-
-                // If carrier has dependent allied fighters then move them too
-                if (Matches.unitIsCarrier().test(u)) {
-                  final Territory unitTerritory = unitTerritoryMap.get(u);
-                  final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                      MoveValidator.carrierMustMoveWith(
-                          unitTerritory.getUnits(), unitTerritory, player);
-                  if (carrierMustMoveWith.containsKey(u)) {
-                    proTerritory.getTempUnits().addAll(carrierMustMoveWith.get(u));
-                  }
-                }
-                break;
-              }
-            }
-          }
+        if (!Matches.unitIsSea().test(u)) {
+          continue;
         }
-      }
 
-      // Move air units to defend transports
-      for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
-        final Unit u = it.next();
-        if (Matches.unitCanLandOnCarrier().test(u)) {
-          for (final Territory t : currentUnitMoveMap.get(u)) {
-            final ProTerritory proTerritory = moveMap.get(t);
-            if (t.isWater()
-                && proTerritory.isCanHold()
-                && !proTerritory.getAllDefenders().isEmpty()
-                && proTerritory.getAllDefenders().stream()
-                    .anyMatch(ProMatches.unitIsOwnedTransport(player))) {
-              if (!ProTransportUtils.validateCarrierCapacity(
-                  player, t, proTerritory.getAllDefendersForCarrierCalcs(data, player), u)) {
-                continue;
-              }
-              final List<Unit> defendingUnits =
-                  CollectionUtils.getMatches(
-                      proTerritory.getAllDefenders(), Matches.unitIsNotLand());
-              if (proTerritory.getBattleResult() == null) {
-                proTerritory.setBattleResult(
-                    calc.estimateDefendBattleResults(proData, proTerritory, defendingUnits));
-              }
-              final ProBattleResult result = proTerritory.getBattleResult();
-              ProLogger.trace(
-                  String.format(
-                      "%s TUVSwing=%s, Win%%=%s, enemyAttackers=%s, defenders=%s",
-                      t.getName(),
-                      result.getTuvSwing(),
-                      result.getWinPercentage(),
-                      proTerritory.getMaxEnemyUnits().size(),
-                      defendingUnits.size()));
-              if (result.getWinPercentage() > (100 - proData.getWinPercentage())
-                  || result.getTuvSwing() > 0) {
-                ProLogger.trace(u + " added air to defend transport at " + t);
-                proTerritory.addTempUnit(u);
-                proTerritory.setBattleResult(null);
-                territoriesToDefend.add(t);
-                it.remove();
-                break;
-              }
+        for (final Territory t : currentUnitMoveMap.get(u)) {
+          final ProTerritory proTerritory = moveMap.get(t);
+          if (proTerritory.isCanHold()
+              && !proTerritory.getAllDefenders().isEmpty()
+              && proTerritory.getAllDefenders().stream()
+                  .anyMatch(ProMatches.unitIsOwnedTransport(player))) {
+            final List<Unit> defendingUnits =
+                CollectionUtils.getMatches(proTerritory.getAllDefenders(), Matches.unitIsNotLand());
+            if (proTerritory.getBattleResult() == null) {
+              proTerritory.setBattleResult(
+                  calc.estimateDefendBattleResults(proData, proTerritory, defendingUnits));
             }
-          }
-        }
-      }
-
-      // Move sea units to best location or safest location
-      for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
-        final Unit u = it.next();
-        if (Matches.unitIsSea().test(u)) {
-          Territory maxValueTerritory = null;
-          double maxValue = 0;
-          for (final Territory t : currentUnitMoveMap.get(u)) {
-            final ProTerritory proTerritory = moveMap.get(t);
-            if (proTerritory.isCanHold()) {
-              final int transports =
-                  CollectionUtils.countMatches(
-                      proTerritory.getAllDefenders(), ProMatches.unitIsOwnedTransport(player));
-              final double value =
-                  (1 + transports) * proTerritory.getSeaValue()
-                      + (1 + transports * 100.0) * proTerritory.getValue() / 10000;
-              ProLogger.trace(
-                  String.format(
-                      "%s, value=%s, seaValue=%s, tValue=%s, transports=%s",
-                      t, value, proTerritory.getSeaValue(), proTerritory.getValue(), transports));
-              if (value > maxValue) {
-                maxValue = value;
-                maxValueTerritory = t;
-              }
-            }
-          }
-          if (maxValueTerritory != null) {
+            final ProBattleResult result = proTerritory.getBattleResult();
             ProLogger.trace(
-                u + " added to best territory " + maxValueTerritory + ", value=" + maxValue);
-            moveMap.get(maxValueTerritory).addTempUnit(u);
-            moveMap.get(maxValueTerritory).setBattleResult(null);
-            territoriesToDefend.add(maxValueTerritory);
-            it.remove();
-
-            // If carrier has dependent allied fighters then move them too
-            if (Matches.unitIsCarrier().test(u)) {
-              final Territory unitTerritory = unitTerritoryMap.get(u);
-              final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                  MoveValidator.carrierMustMoveWith(
-                      unitTerritory.getUnits(), unitTerritory, player);
-              if (carrierMustMoveWith.containsKey(u)) {
-                moveMap.get(maxValueTerritory).getTempUnits().addAll(carrierMustMoveWith.get(u));
-              }
-            }
-          } else {
-            // Get all units that have already moved
-            final List<Unit> alreadyMovedUnits = new ArrayList<>();
-            for (final ProTerritory t : moveMap.values()) {
-              alreadyMovedUnits.addAll(t.getUnits());
-            }
-
-            // Find safest territory
-            double minStrengthDifference = Double.POSITIVE_INFINITY;
-            Territory minTerritory = null;
-            for (final Territory t : currentUnitMoveMap.get(u)) {
-              final ProTerritory proTerritory = moveMap.get(t);
-              final List<Unit> attackers = proTerritory.getMaxEnemyUnits();
-              final List<Unit> defenders = proTerritory.getMaxDefenders();
-              defenders.removeAll(alreadyMovedUnits);
-              defenders.addAll(proTerritory.getUnits());
-              final double strengthDifference =
-                  ProBattleUtils.estimateStrengthDifference(t, attackers, defenders);
-              if (strengthDifference < minStrengthDifference) {
-                minStrengthDifference = strengthDifference;
-                minTerritory = t;
-              }
-            }
-            if (minTerritory != null) {
-              ProLogger.trace(
-                  String.format(
-                      "%s moved to safest territory at %s, strengthDifference=%s",
-                      u, minTerritory, minStrengthDifference));
-              moveMap.get(minTerritory).addTempUnit(u);
-              moveMap.get(minTerritory).setBattleResult(null);
+                t.getName()
+                    + " TUVSwing="
+                    + result.getTuvSwing()
+                    + ", Win%="
+                    + result.getWinPercentage()
+                    + ", enemyAttackers="
+                    + proTerritory.getMaxEnemyUnits().size()
+                    + ", defenders="
+                    + defendingUnits.size());
+            if (result.getWinPercentage() > (100 - proData.getWinPercentage())
+                || result.getTuvSwing() > 0) {
+              ProLogger.trace(u + " added sea to defend transport at " + t);
+              proTerritory.addTempUnit(u);
+              proTerritory.setBattleResult(null);
+              territoriesToDefend.add(t);
               it.remove();
 
               // If carrier has dependent allied fighters then move them too
@@ -1832,17 +1697,153 @@ class ProNonCombatMoveAi {
                     MoveValidator.carrierMustMoveWith(
                         unitTerritory.getUnits(), unitTerritory, player);
                 if (carrierMustMoveWith.containsKey(u)) {
-                  moveMap.get(minTerritory).getTempUnits().addAll(carrierMustMoveWith.get(u));
+                  proTerritory.getTempUnits().addAll(carrierMustMoveWith.get(u));
                 }
               }
-            } else {
-              final Territory currentTerritory = unitTerritoryMap.get(u);
-              ProLogger.trace(
-                  u + " added to current territory since no better options at " + currentTerritory);
-              moveMap.get(currentTerritory).addTempUnit(u);
-              moveMap.get(currentTerritory).setBattleResult(null);
-              it.remove();
+              break;
             }
+          }
+        }
+      }
+
+      // Move air units to defend transports
+      for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
+        final Unit u = it.next();
+        if (!Matches.unitCanLandOnCarrier().test(u)) {
+          continue;
+        }
+        for (final Territory t : currentUnitMoveMap.get(u)) {
+          final ProTerritory proTerritory = moveMap.get(t);
+          if (t.isWater()
+              && proTerritory.isCanHold()
+              && !proTerritory.getAllDefenders().isEmpty()
+              && proTerritory.getAllDefenders().stream()
+                  .anyMatch(ProMatches.unitIsOwnedTransport(player))) {
+            if (!ProTransportUtils.validateCarrierCapacity(
+                player, t, proTerritory.getAllDefendersForCarrierCalcs(data, player), u)) {
+              continue;
+            }
+            final List<Unit> defendingUnits =
+                CollectionUtils.getMatches(proTerritory.getAllDefenders(), Matches.unitIsNotLand());
+            if (proTerritory.getBattleResult() == null) {
+              proTerritory.setBattleResult(
+                  calc.estimateDefendBattleResults(proData, proTerritory, defendingUnits));
+            }
+            final ProBattleResult result = proTerritory.getBattleResult();
+            ProLogger.trace(
+                String.format(
+                    "%s TUVSwing=%s, Win%%=%s, enemyAttackers=%s, defenders=%s",
+                    t.getName(),
+                    result.getTuvSwing(),
+                    result.getWinPercentage(),
+                    proTerritory.getMaxEnemyUnits().size(),
+                    defendingUnits.size()));
+            if (result.getWinPercentage() > (100 - proData.getWinPercentage())
+                || result.getTuvSwing() > 0) {
+              ProLogger.trace(u + " added air to defend transport at " + t);
+              proTerritory.addTempUnit(u);
+              proTerritory.setBattleResult(null);
+              territoriesToDefend.add(t);
+              it.remove();
+              break;
+            }
+          }
+        }
+      }
+
+      // Move sea units to best location or safest location
+      for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
+        final Unit u = it.next();
+        if (!Matches.unitIsSea().test(u)) {
+          continue;
+        }
+        Territory maxValueTerritory = null;
+        double maxValue = 0;
+        for (final Territory t : currentUnitMoveMap.get(u)) {
+          final ProTerritory proTerritory = moveMap.get(t);
+          if (proTerritory.isCanHold()) {
+            final int transports =
+                CollectionUtils.countMatches(
+                    proTerritory.getAllDefenders(), ProMatches.unitIsOwnedTransport(player));
+            final double value =
+                (1 + transports) * proTerritory.getSeaValue()
+                    + (1 + transports * 100.0) * proTerritory.getValue() / 10000;
+            ProLogger.trace(
+                String.format(
+                    "%s, value=%s, seaValue=%s, tValue=%s, transports=%s",
+                    t, value, proTerritory.getSeaValue(), proTerritory.getValue(), transports));
+            if (value > maxValue) {
+              maxValue = value;
+              maxValueTerritory = t;
+            }
+          }
+        }
+        if (maxValueTerritory != null) {
+          ProLogger.trace(
+              u + " added to best territory " + maxValueTerritory + ", value=" + maxValue);
+          moveMap.get(maxValueTerritory).addTempUnit(u);
+          moveMap.get(maxValueTerritory).setBattleResult(null);
+          territoriesToDefend.add(maxValueTerritory);
+          it.remove();
+
+          // If carrier has dependent allied fighters then move them too
+          if (Matches.unitIsCarrier().test(u)) {
+            final Territory unitTerritory = unitTerritoryMap.get(u);
+            final Map<Unit, Collection<Unit>> carrierMustMoveWith =
+                MoveValidator.carrierMustMoveWith(unitTerritory.getUnits(), unitTerritory, player);
+            if (carrierMustMoveWith.containsKey(u)) {
+              moveMap.get(maxValueTerritory).getTempUnits().addAll(carrierMustMoveWith.get(u));
+            }
+          }
+        } else {
+          // Get all units that have already moved
+          final List<Unit> alreadyMovedUnits = new ArrayList<>();
+          for (final ProTerritory t : moveMap.values()) {
+            alreadyMovedUnits.addAll(t.getUnits());
+          }
+
+          // Find safest territory
+          double minStrengthDifference = Double.POSITIVE_INFINITY;
+          Territory minTerritory = null;
+          for (final Territory t : currentUnitMoveMap.get(u)) {
+            final ProTerritory proTerritory = moveMap.get(t);
+            final List<Unit> attackers = proTerritory.getMaxEnemyUnits();
+            final List<Unit> defenders = proTerritory.getMaxDefenders();
+            defenders.removeAll(alreadyMovedUnits);
+            defenders.addAll(proTerritory.getUnits());
+            final double strengthDifference =
+                ProBattleUtils.estimateStrengthDifference(t, attackers, defenders);
+            if (strengthDifference < minStrengthDifference) {
+              minStrengthDifference = strengthDifference;
+              minTerritory = t;
+            }
+          }
+          if (minTerritory != null) {
+            ProLogger.trace(
+                String.format(
+                    "%s moved to safest territory at %s, strengthDifference=%s",
+                    u, minTerritory, minStrengthDifference));
+            moveMap.get(minTerritory).addTempUnit(u);
+            moveMap.get(minTerritory).setBattleResult(null);
+            it.remove();
+
+            // If carrier has dependent allied fighters then move them too
+            if (Matches.unitIsCarrier().test(u)) {
+              final Territory unitTerritory = unitTerritoryMap.get(u);
+              final Map<Unit, Collection<Unit>> carrierMustMoveWith =
+                  MoveValidator.carrierMustMoveWith(
+                      unitTerritory.getUnits(), unitTerritory, player);
+              if (carrierMustMoveWith.containsKey(u)) {
+                moveMap.get(minTerritory).getTempUnits().addAll(carrierMustMoveWith.get(u));
+              }
+            }
+          } else {
+            final Territory currentTerritory = unitTerritoryMap.get(u);
+            ProLogger.trace(
+                u + " added to current territory since no better options at " + currentTerritory);
+            moveMap.get(currentTerritory).addTempUnit(u);
+            moveMap.get(currentTerritory).setBattleResult(null);
+            it.remove();
           }
         }
       }
@@ -1900,7 +1901,6 @@ class ProNonCombatMoveAi {
 
     // Add temp units to move lists
     for (final ProTerritory t : moveMap.values()) {
-
       // Handle allied units such as fighters on carriers
       final List<Unit> alliedUnits =
           CollectionUtils.getMatches(t.getTempUnits(), Matches.unitIsOwnedBy(player).negate());
@@ -1933,87 +1933,85 @@ class ProNonCombatMoveAi {
     final Predicate<Territory> canMoveSeaUnits = ProMatches.territoryCanMoveSeaUnits(player, true);
     final List<Unit> addedUnits = new ArrayList<>();
     for (final Unit u : unitMoveMap.keySet()) {
-      if (Matches.unitIsLand().test(u) && !addedUnits.contains(u)) {
-        Territory maxValueTerritory = null;
-        double maxValue = 0;
-        int maxNeedAmphibUnitValue = Integer.MIN_VALUE;
-        for (final Territory t : unitMoveMap.get(u)) {
-          final ProTerritory proTerritory = moveMap.get(t);
-          if (proTerritory.isCanHold() && proTerritory.getValue() >= maxValue) {
-            // Find transport capacity of neighboring (distance 1) transports
-            final List<Unit> transports1 = new ArrayList<>();
-            final Set<Territory> seaNeighbors = data.getMap().getNeighbors(t, canMoveSeaUnits);
-            for (final Territory neighborTerritory : seaNeighbors) {
-              if (moveMap.containsKey(neighborTerritory)) {
-                transports1.addAll(
-                    CollectionUtils.getMatches(
-                        moveMap.get(neighborTerritory).getAllDefenders(),
-                        ProMatches.unitIsOwnedTransport(player)));
-              }
-            }
-            int transportCapacity1 = 0;
-            for (final Unit transport : transports1) {
-              transportCapacity1 += transport.getUnitAttachment().getTransportCapacity();
-            }
-
-            // Find transport capacity of nearby (distance 2) transports
-            final List<Unit> transports2 = new ArrayList<>();
-            final Set<Territory> nearbySeaTerritories =
-                data.getMap().getNeighbors(t, 2, canMoveSeaUnits);
-            nearbySeaTerritories.removeAll(seaNeighbors);
-            for (final Territory neighborTerritory : nearbySeaTerritories) {
-              if (moveMap.containsKey(neighborTerritory)) {
-                transports2.addAll(
-                    CollectionUtils.getMatches(
-                        moveMap.get(neighborTerritory).getAllDefenders(),
-                        ProMatches.unitIsOwnedTransport(player)));
-              }
-            }
-            int transportCapacity2 = 0;
-            for (final Unit transport : transports2) {
-              transportCapacity2 += transport.getUnitAttachment().getTransportCapacity();
-            }
-            final List<Unit> unitsToTransport =
-                CollectionUtils.getMatches(
-                    proTerritory.getAllDefenders(),
-                    ProMatches.unitIsOwnedTransportableUnit(player));
-
-            // Find transport cost of potential amphib units
-            int transportCost = 0;
-            for (final Unit unit : unitsToTransport) {
-              transportCost += unit.getUnitAttachment().getTransportCost();
-            }
-
-            // Find territory that needs amphib units that most
-            int hasFactory = 0;
-            if (ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player).test(t)) {
-              hasFactory = 1;
-            }
-            final int neededNeighborTransportValue =
-                Math.max(0, transportCapacity1 - transportCost);
-            final int neededNearbyTransportValue =
-                Math.max(0, transportCapacity1 + transportCapacity2 - transportCost);
-            final int needAmphibUnitValue =
-                1000 * neededNeighborTransportValue
-                    + 100 * neededNearbyTransportValue
-                    + (1 + 10 * hasFactory) * data.getMap().getNeighbors(t, canMoveSeaUnits).size();
-            if (proTerritory.getValue() > maxValue
-                || needAmphibUnitValue > maxNeedAmphibUnitValue) {
-              maxValue = proTerritory.getValue();
-              maxNeedAmphibUnitValue = needAmphibUnitValue;
-              maxValueTerritory = t;
+      if (!Matches.unitIsLand().test(u) || addedUnits.contains(u)) {
+        continue;
+      }
+      Territory maxValueTerritory = null;
+      double maxValue = 0;
+      int maxNeedAmphibUnitValue = Integer.MIN_VALUE;
+      for (final Territory t : unitMoveMap.get(u)) {
+        final ProTerritory proTerritory = moveMap.get(t);
+        if (proTerritory.isCanHold() && proTerritory.getValue() >= maxValue) {
+          // Find transport capacity of neighboring (distance 1) transports
+          final List<Unit> transports1 = new ArrayList<>();
+          final Set<Territory> seaNeighbors = data.getMap().getNeighbors(t, canMoveSeaUnits);
+          for (final Territory neighborTerritory : seaNeighbors) {
+            if (moveMap.containsKey(neighborTerritory)) {
+              transports1.addAll(
+                  CollectionUtils.getMatches(
+                      moveMap.get(neighborTerritory).getAllDefenders(),
+                      ProMatches.unitIsOwnedTransport(player)));
             }
           }
+          int transportCapacity1 = 0;
+          for (final Unit transport : transports1) {
+            transportCapacity1 += transport.getUnitAttachment().getTransportCapacity();
+          }
+
+          // Find transport capacity of nearby (distance 2) transports
+          final List<Unit> transports2 = new ArrayList<>();
+          final Set<Territory> nearbySeaTerritories =
+              data.getMap().getNeighbors(t, 2, canMoveSeaUnits);
+          nearbySeaTerritories.removeAll(seaNeighbors);
+          for (final Territory neighborTerritory : nearbySeaTerritories) {
+            if (moveMap.containsKey(neighborTerritory)) {
+              transports2.addAll(
+                  CollectionUtils.getMatches(
+                      moveMap.get(neighborTerritory).getAllDefenders(),
+                      ProMatches.unitIsOwnedTransport(player)));
+            }
+          }
+          int transportCapacity2 = 0;
+          for (final Unit transport : transports2) {
+            transportCapacity2 += transport.getUnitAttachment().getTransportCapacity();
+          }
+          final List<Unit> unitsToTransport =
+              CollectionUtils.getMatches(
+                  proTerritory.getAllDefenders(), ProMatches.unitIsOwnedTransportableUnit(player));
+
+          // Find transport cost of potential amphib units
+          int transportCost = 0;
+          for (final Unit unit : unitsToTransport) {
+            transportCost += unit.getUnitAttachment().getTransportCost();
+          }
+
+          // Find territory that needs amphib units that most
+          int hasFactory = 0;
+          if (ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player).test(t)) {
+            hasFactory = 1;
+          }
+          final int neededNeighborTransportValue = Math.max(0, transportCapacity1 - transportCost);
+          final int neededNearbyTransportValue =
+              Math.max(0, transportCapacity1 + transportCapacity2 - transportCost);
+          final int needAmphibUnitValue =
+              1000 * neededNeighborTransportValue
+                  + 100 * neededNearbyTransportValue
+                  + (1 + 10 * hasFactory) * data.getMap().getNeighbors(t, canMoveSeaUnits).size();
+          if (proTerritory.getValue() > maxValue || needAmphibUnitValue > maxNeedAmphibUnitValue) {
+            maxValue = proTerritory.getValue();
+            maxNeedAmphibUnitValue = needAmphibUnitValue;
+            maxValueTerritory = t;
+          }
         }
-        if (maxValueTerritory != null) {
-          ProLogger.trace(
-              String.format(
-                  "%s moved to %s with value=%s, needAmphibUnitValue=%s",
-                  u, maxValueTerritory, maxValue, maxNeedAmphibUnitValue));
-          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(proData, u, moveMap);
-          moveMap.get(maxValueTerritory).addUnits(unitsToAdd);
-          addedUnits.addAll(unitsToAdd);
-        }
+      }
+      if (maxValueTerritory != null) {
+        ProLogger.trace(
+            String.format(
+                "%s moved to %s with value=%s, needAmphibUnitValue=%s",
+                u, maxValueTerritory, maxValue, maxNeedAmphibUnitValue));
+        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(proData, u, moveMap);
+        moveMap.get(maxValueTerritory).addUnits(unitsToAdd);
+        addedUnits.addAll(unitsToAdd);
       }
     }
     unitMoveMap.keySet().removeAll(addedUnits);
@@ -2062,42 +2060,43 @@ class ProNonCombatMoveAi {
 
     // Move any remaining land units to safest territory (this is rarely used)
     for (final Unit u : unitMoveMap.keySet()) {
-      if (Matches.unitIsLand().test(u) && !addedUnits.contains(u)) {
+      if (!Matches.unitIsLand().test(u) || addedUnits.contains(u)) {
+        continue;
+      }
 
-        // Get all units that have already moved
-        final List<Unit> alreadyMovedUnits =
-            moveMap.values().stream()
-                .map(ProTerritory::getUnits)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+      // Get all units that have already moved
+      final List<Unit> alreadyMovedUnits =
+          moveMap.values().stream()
+              .map(ProTerritory::getUnits)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
 
-        // Find safest territory
-        double minStrengthDifference = Double.POSITIVE_INFINITY;
-        Territory minTerritory = null;
-        for (final Territory t : unitMoveMap.get(u)) {
-          final ProTerritory proTerritory = moveMap.get(t);
-          final List<Unit> attackers = proTerritory.getMaxEnemyUnits();
-          final List<Unit> defenders = proTerritory.getMaxDefenders();
-          defenders.removeAll(alreadyMovedUnits);
-          defenders.addAll(proTerritory.getUnits());
-          final double strengthDifference =
-              ProBattleUtils.estimateStrengthDifference(t, attackers, defenders);
-          if (strengthDifference < minStrengthDifference) {
-            minStrengthDifference = strengthDifference;
-            minTerritory = t;
-          }
+      // Find safest territory
+      double minStrengthDifference = Double.POSITIVE_INFINITY;
+      Territory minTerritory = null;
+      for (final Territory t : unitMoveMap.get(u)) {
+        final ProTerritory proTerritory = moveMap.get(t);
+        final List<Unit> attackers = proTerritory.getMaxEnemyUnits();
+        final List<Unit> defenders = proTerritory.getMaxDefenders();
+        defenders.removeAll(alreadyMovedUnits);
+        defenders.addAll(proTerritory.getUnits());
+        final double strengthDifference =
+            ProBattleUtils.estimateStrengthDifference(t, attackers, defenders);
+        if (strengthDifference < minStrengthDifference) {
+          minStrengthDifference = strengthDifference;
+          minTerritory = t;
         }
-        if (minTerritory != null) {
-          ProLogger.debug(
-              u.getType().getName()
-                  + " moved to safest territory at "
-                  + minTerritory.getName()
-                  + " with strengthDifference="
-                  + minStrengthDifference);
-          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(proData, u, moveMap);
-          moveMap.get(minTerritory).addUnits(unitsToAdd);
-          addedUnits.addAll(unitsToAdd);
-        }
+      }
+      if (minTerritory != null) {
+        ProLogger.debug(
+            u.getType().getName()
+                + " moved to safest territory at "
+                + minTerritory.getName()
+                + " with strengthDifference="
+                + minStrengthDifference);
+        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(proData, u, moveMap);
+        moveMap.get(minTerritory).addUnits(unitsToAdd);
+        addedUnits.addAll(unitsToAdd);
       }
     }
     unitMoveMap.keySet().removeAll(addedUnits);
@@ -2140,15 +2139,13 @@ class ProNonCombatMoveAi {
         }
         final ProBattleResult result = proTerritory.getBattleResult();
         ProLogger.trace(
-            t
-                + ", TUVSwing="
-                + result.getTuvSwing()
-                + ", win%="
-                + result.getWinPercentage()
-                + ", defendingUnits="
-                + defendingUnits
-                + ", enemyAttackers="
-                + proTerritory.getMaxEnemyUnits());
+            String.format(
+                "%s, TUVSwing=%s, win%%=%s, defendingUnits=%s, enemyAttackers=%s",
+                t,
+                result.getTuvSwing(),
+                result.getWinPercentage(),
+                defendingUnits,
+                proTerritory.getMaxEnemyUnits()));
         if (result.getWinPercentage() >= proData.getMinWinPercentage()
             || result.getTuvSwing() > 0) {
           proTerritory.setCanHold(false);
@@ -2214,16 +2211,14 @@ class ProNonCombatMoveAi {
           maxTerritory = t;
         }
         ProLogger.trace(
-            "Safe territory: "
-                + t
-                + ", airValue="
-                + airValue
-                + ", numLandAttackOptions="
-                + numLandAttackTerritories
-                + ", numSeaAttackTerritories="
-                + numSeaAttackTerritories
-                + ", numEnemyAttackTerritories="
-                + numEnemyAttackTerritories);
+            String.format(
+                "Safe territory: %s, airValue=%s, numLandAttackOptions=%s, "
+                    + "numSeaAttackTerritories=%s, numEnemyAttackTerritories=%s",
+                t,
+                airValue,
+                numLandAttackTerritories,
+                numSeaAttackTerritories,
+                numEnemyAttackTerritories));
       }
       if (maxTerritory != null) {
         ProLogger.debug(
@@ -2268,11 +2263,9 @@ class ProNonCombatMoveAi {
       }
       if (minTerritory != null) {
         ProLogger.debug(
-            u.getType().getName()
-                + " added to safest territory at "
-                + minTerritory
-                + " with strengthDifference="
-                + minStrengthDifference);
+            String.format(
+                "%s added to safest territory at %s with strengthDifference=%s",
+                u.getType().getName(), minTerritory, minStrengthDifference));
         moveMap.get(minTerritory).addUnit(u);
         it.remove();
       }
