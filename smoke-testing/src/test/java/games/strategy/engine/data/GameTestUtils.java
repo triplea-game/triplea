@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.ClientFileSystemHelper;
@@ -38,7 +39,6 @@ import org.triplea.java.collections.CollectionUtils;
 @Slf4j
 public class GameTestUtils {
   public static void setUp() throws IOException {
-    System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     if (Injections.getInstance() == null) {
       Injections.init(
           Injections.builder()
@@ -46,11 +46,17 @@ public class GameTestUtils {
               .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
               .build());
     }
+    // Use a temp dir for downloaded maps to not interfere with the real downloadedMaps folder.
+    Path tempHome = FileUtils.newTempFolder();
+    System.setProperty("user.home", tempHome.toString());
     ClientSetting.initialize();
-    final Path tempFolder = FileUtils.newTempFolder();
-    FileUtils.writeToFile(tempFolder.resolve(".triplea-root"), "");
-    Files.createDirectory(tempFolder.resolve("assets"));
-    ClientFileSystemHelper.setCodeSourceFolder(tempFolder);
+    assertTrue(ClientFileSystemHelper.getUserMapsFolder().startsWith(tempHome.toAbsolutePath()));
+
+    Path tempRoot = FileUtils.newTempFolder();
+    FileUtils.writeToFile(tempRoot.resolve(".triplea-root"), "");
+    Files.createDirectory(tempRoot.resolve("assets"));
+    ClientFileSystemHelper.setCodeSourceFolder(tempRoot);
+    System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
   }
 
   public static GameSelectorModel loadGameFromURI(String mapName, String mapXmlPath)
