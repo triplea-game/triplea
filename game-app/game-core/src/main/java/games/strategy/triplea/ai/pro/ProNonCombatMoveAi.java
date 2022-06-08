@@ -1660,42 +1660,25 @@ class ProNonCombatMoveAi {
           if (proTerritory.isCanHold()
               && !proTerritory.getAllDefenders().isEmpty()
               && proTerritory.getAllDefenders().stream()
-                  .anyMatch(ProMatches.unitIsOwnedTransport(player))) {
-            final List<Unit> defendingUnits =
-                CollectionUtils.getMatches(proTerritory.getAllDefenders(), Matches.unitIsNotLand());
-            proTerritory.setBattleResultIfNull(
-                () -> calc.estimateDefendBattleResults(proData, proTerritory, defendingUnits));
-            final ProBattleResult result = proTerritory.getBattleResult();
-            ProLogger.trace(
-                t.getName()
-                    + " TUVSwing="
-                    + result.getTuvSwing()
-                    + ", Win%="
-                    + result.getWinPercentage()
-                    + ", enemyAttackers="
-                    + proTerritory.getMaxEnemyUnits().size()
-                    + ", defenders="
-                    + defendingUnits.size());
-            if (result.getWinPercentage() > (100 - proData.getWinPercentage())
-                || result.getTuvSwing() > 0) {
-              ProLogger.trace(u + " added sea to defend transport at " + t);
-              proTerritory.addTempUnit(u);
-              proTerritory.setBattleResult(null);
-              territoriesToDefend.add(t);
-              it.remove();
+                  .anyMatch(ProMatches.unitIsOwnedTransport(player))
+              && checkTransportDefense(proTerritory)) {
+            ProLogger.trace(u + " added sea to defend transport at " + t);
+            proTerritory.addTempUnit(u);
+            proTerritory.setBattleResult(null);
+            territoriesToDefend.add(t);
+            it.remove();
 
-              // If carrier has dependent allied fighters then move them too
-              if (Matches.unitIsCarrier().test(u)) {
-                final Territory unitTerritory = unitTerritoryMap.get(u);
-                final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                    MoveValidator.carrierMustMoveWith(
-                        unitTerritory.getUnits(), unitTerritory, player);
-                if (carrierMustMoveWith.containsKey(u)) {
-                  proTerritory.getTempUnits().addAll(carrierMustMoveWith.get(u));
-                }
+            // If carrier has dependent allied fighters then move them too
+            if (Matches.unitIsCarrier().test(u)) {
+              final Territory unitTerritory = unitTerritoryMap.get(u);
+              final Map<Unit, Collection<Unit>> carrierMustMoveWith =
+                  MoveValidator.carrierMustMoveWith(
+                      unitTerritory.getUnits(), unitTerritory, player);
+              if (carrierMustMoveWith.containsKey(u)) {
+                proTerritory.getTempUnits().addAll(carrierMustMoveWith.get(u));
               }
-              break;
             }
+            break;
           }
         }
       }
@@ -1712,33 +1695,16 @@ class ProNonCombatMoveAi {
               && proTerritory.isCanHold()
               && !proTerritory.getAllDefenders().isEmpty()
               && proTerritory.getAllDefenders().stream()
-                  .anyMatch(ProMatches.unitIsOwnedTransport(player))) {
-            if (!ProTransportUtils.validateCarrierCapacity(
-                player, t, proTerritory.getAllDefendersForCarrierCalcs(data, player), u)) {
-              continue;
-            }
-            final List<Unit> defendingUnits =
-                CollectionUtils.getMatches(proTerritory.getAllDefenders(), Matches.unitIsNotLand());
-            proTerritory.setBattleResultIfNull(
-                () -> calc.estimateDefendBattleResults(proData, proTerritory, defendingUnits));
-            final ProBattleResult result = proTerritory.getBattleResult();
-            ProLogger.trace(
-                String.format(
-                    "%s TUVSwing=%s, Win%%=%s, enemyAttackers=%s, defenders=%s",
-                    t.getName(),
-                    result.getTuvSwing(),
-                    result.getWinPercentage(),
-                    proTerritory.getMaxEnemyUnits().size(),
-                    defendingUnits.size()));
-            if (result.getWinPercentage() > (100 - proData.getWinPercentage())
-                || result.getTuvSwing() > 0) {
-              ProLogger.trace(u + " added air to defend transport at " + t);
-              proTerritory.addTempUnit(u);
-              proTerritory.setBattleResult(null);
-              territoriesToDefend.add(t);
-              it.remove();
-              break;
-            }
+                  .anyMatch(ProMatches.unitIsOwnedTransport(player))
+              && ProTransportUtils.validateCarrierCapacity(
+                  player, t, proTerritory.getAllDefendersForCarrierCalcs(data, player), u)
+              && checkTransportDefense(proTerritory)) {
+            ProLogger.trace(u + " added air to defend transport at " + t);
+            proTerritory.addTempUnit(u);
+            proTerritory.setBattleResult(null);
+            territoriesToDefend.add(t);
+            it.remove();
+            break;
           }
         }
       }
@@ -2255,6 +2221,25 @@ class ProNonCombatMoveAi {
       }
     }
     return transports;
+  }
+
+  private boolean checkTransportDefense(ProTerritory proTerritory) {
+    final List<Unit> defendingUnits =
+        CollectionUtils.getMatches(proTerritory.getAllDefenders(), Matches.unitIsNotLand());
+    proTerritory.setBattleResultIfNull(
+        () -> calc.estimateDefendBattleResults(proData, proTerritory, defendingUnits));
+    Territory t = proTerritory.getTerritory();
+    ProBattleResult result = proTerritory.getBattleResult();
+    ProLogger.trace(
+        String.format(
+            "%s TUVSwing=%s, Win%%=%s, enemyAttackers=%s, defenders=%s",
+            t.getName(),
+            result.getTuvSwing(),
+            result.getWinPercentage(),
+            proTerritory.getMaxEnemyUnits().size(),
+            defendingUnits.size()));
+    return result.getWinPercentage() > (100 - proData.getWinPercentage())
+        || result.getTuvSwing() > 0;
   }
 
   private Map<Territory, ProTerritory> moveInfraUnits(
