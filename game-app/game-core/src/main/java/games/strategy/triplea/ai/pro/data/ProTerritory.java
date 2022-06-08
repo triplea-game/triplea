@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import org.triplea.java.collections.CollectionUtils;
 
 /** The result of an AI territory analysis. */
@@ -143,6 +144,15 @@ public class ProTerritory {
     // tempUnits can already be in the units/cantMoveUnits collection
     defenders.addAll(tempUnits);
     return defenders;
+  }
+
+  public Collection<Unit> getEligibleDefenders(GamePlayer player) {
+    Collection<Unit> defendingUnits = getAllDefenders();
+    if (getTerritory().isWater()) {
+      return defendingUnits;
+    }
+    return CollectionUtils.getMatches(
+        defendingUnits, ProMatches.unitIsAlliedNotOwnedAir(player).negate());
   }
 
   public Collection<Unit> getAllDefendersForCarrierCalcs(
@@ -299,6 +309,12 @@ public class ProTerritory {
     } else if (battleResult.getWinPercentage() >= proData.getWinPercentage()
         && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
+    }
+  }
+
+  public void setBattleResultIfNull(final Supplier<ProBattleResult> supplier) {
+    if (battleResult == null) {
+      setBattleResult(supplier.get());
     }
   }
 

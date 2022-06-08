@@ -9,8 +9,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.ai.pro.ProData;
+import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
+import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
@@ -23,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -56,10 +59,8 @@ public final class ProTransportUtils {
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
-
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<>(unitsToIgnore);
     if (!TransportTracker.isTransporting(transport)) {
-
       // Get all units that can be transported
       Predicate<Unit> canBeLoaded =
           ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true);
@@ -71,12 +72,10 @@ public final class ProTransportUtils {
 
       // Check to see which have higher land move value
       for (final Unit u : units) {
-        if (unitMoveMap.get(u) != null) {
-          for (final Territory t : unitMoveMap.get(u)) {
-            if (moveMap.get(t) != null && moveMap.get(t).getValue() > value) {
-              unitsToIgnoreOrHaveBetterLandMove.add(u);
-              break;
-            }
+        for (final Territory t : Optional.ofNullable(unitMoveMap.get(u)).orElse(Set.of())) {
+          if (moveMap.get(t) != null && moveMap.get(t).getValue() > value) {
+            unitsToIgnoreOrHaveBetterLandMove.add(u);
+            break;
           }
         }
       }
@@ -517,5 +516,38 @@ public final class ProTransportUtils {
       }
     }
     return result;
+  }
+
+  public static List<Unit> getTransports(
+      GamePlayer player, Map<Territory, ProTerritory> moveMap, Collection<Territory> territories) {
+    Predicate<Unit> isTransport = ProMatches.unitIsOwnedTransport(player);
+    List<Unit> transports = new ArrayList<>();
+    for (Territory t : territories) {
+      ProTerritory proTerritory = moveMap.get(t);
+      if (proTerritory != null) {
+        transports.addAll(CollectionUtils.getMatches(proTerritory.getAllDefenders(), isTransport));
+      }
+    }
+    return transports;
+  }
+
+  public static boolean checkTransportDefense(
+      ProData proData, ProOddsCalculator calc, ProTerritory proTerritory) {
+    final List<Unit> defendingUnits =
+        CollectionUtils.getMatches(proTerritory.getAllDefenders(), Matches.unitIsNotLand());
+    proTerritory.setBattleResultIfNull(
+        () -> calc.estimateDefendBattleResults(proData, proTerritory, defendingUnits));
+    Territory t = proTerritory.getTerritory();
+    ProBattleResult result = proTerritory.getBattleResult();
+    ProLogger.trace(
+        String.format(
+            "%s TUVSwing=%s, Win%%=%s, enemyAttackers=%s, defenders=%s",
+            t.getName(),
+            result.getTuvSwing(),
+            result.getWinPercentage(),
+            proTerritory.getMaxEnemyUnits().size(),
+            defendingUnits.size()));
+    return result.getWinPercentage() > (100 - proData.getWinPercentage())
+        || result.getTuvSwing() > 0;
   }
 }
