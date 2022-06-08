@@ -36,7 +36,13 @@ public class AiGameTest {
     GameSelectorModel gameSelector = GameTestUtils.loadGameFromURI(mapName, mapXmlPath);
     ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
     game.setStopGameOnDelegateExecutionStop(true);
-    game.startGame();
+    while (!game.isGameOver()) {
+      game.runNextStep();
+      if (game.getData().getSequence().getRound() > 100) {
+        log.warn("No winner after 100 rounds");
+        break;
+      }
+    }
     assertThat(game.isGameOver(), is(true));
     assertThat(game.getData().getSequence().getRound(), greaterThan(2));
     EndRoundDelegate endDelegate = (EndRoundDelegate) game.getData().getDelegate("endRound");
