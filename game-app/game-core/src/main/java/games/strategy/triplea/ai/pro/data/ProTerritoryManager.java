@@ -1123,7 +1123,6 @@ public class ProTerritoryManager {
                                 ? ProMatches.unitIsOwnedCombatTransportableUnit(player)
                                 : ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(
                                     player, transport, isCombatMove));
-                ProLogger.debug("from  " + possibleLoadTerritory + " canload: " + possibleUnits);
 
                 for (final Unit possibleUnit : possibleUnits) {
                   if (possibleUnit.getUnitAttachment().getTransportCost()
