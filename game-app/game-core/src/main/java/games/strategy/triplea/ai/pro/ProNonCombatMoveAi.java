@@ -2246,13 +2246,12 @@ class ProNonCombatMoveAi {
 
   private List<Unit> getTransports(
       Map<Territory, ProTerritory> moveMap, Collection<Territory> territories) {
-    final List<Unit> transports = new ArrayList<>();
-    for (final Territory t : territories) {
+    Predicate<Unit> isTransport = ProMatches.unitIsOwnedTransport(player);
+    List<Unit> transports = new ArrayList<>();
+    for (Territory t : territories) {
       ProTerritory proTerritory = moveMap.get(t);
       if (proTerritory != null) {
-        transports.addAll(
-            CollectionUtils.getMatches(
-                proTerritory.getAllDefenders(), ProMatches.unitIsOwnedTransport(player)));
+        transports.addAll(CollectionUtils.getMatches(proTerritory.getAllDefenders(), isTransport));
       }
     }
     return transports;
