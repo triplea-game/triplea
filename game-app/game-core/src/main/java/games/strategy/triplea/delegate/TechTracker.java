@@ -26,6 +26,9 @@ import org.triplea.java.collections.IntegerMap;
 /** A collection of methods for tracking which players have which technology advances. */
 @AllArgsConstructor
 public class TechTracker {
+  // TODO: Enable caching when ready.
+  private static boolean ENABLE_CACHING = false;
+
   private final GameData data;
 
   @Value
@@ -156,7 +159,9 @@ public class TechTracker {
 
   private int getCached(
       GamePlayer player, UnitType type, String property, Supplier<Integer> getFunction) {
-    // 1.9 in Dom 1914 before to 1.4 (25%)
+    if (!ENABLE_CACHING) {
+      return getFunction.get();
+    }
     return cache.computeIfAbsent(new Key(player, type, property), key -> getFunction.get());
   }
 
@@ -194,22 +199,6 @@ public class TechTracker {
   }
 
   private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
-    // When can this change?
-    // 1. When Tech frontier changes. Seems it's modifiable, so should add a listener.
-    //     Q. How can it be modified?
-    //     there is createDefaultTechAdvances()...
-    //   also a trigger that say: availableTech
-    //      but availableTech doesn't really change things, right?
-    // 2. When TechAttachment.get(gamePlayer); changes. (an attachment is added?)
-    //    Q. Does this ever change outside of parsing?
-    // 3. When TechAdvance.getTechAdvances() changes.
-    //     this version is just technologyFrontier.getTechs()
-    //     Does that ever change?
-    // 4. When hasTech() changes. This seems to be through MutableProperty on TechAttachment.
-    // i.e. it calls through the TechAttachment, which is an attachment that can change.
-    // How do attachments change? Well, via triggers that change them? Yes, but
-    // "tech" option calls through to this.
-    // Perhaps, we should use a MutableProperty subclass that tells this class about it?
     return getCurrentTechAdvances(player, data.getTechnologyFrontier());
   }
 

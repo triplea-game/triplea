@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import games.strategy.triplea.attachments.TechAttachment;
 import java.util.Optional;
 
 /** A game data change that captures a change to an attachment property value. */
@@ -95,9 +94,6 @@ public class ChangeAttachmentChange extends Change {
               "failed to set value '%s' on property '%s' for attachment '%s' associated with '%s'",
               newValue, property, attachmentName, attachedTo),
           e);
-    }
-    if (attachment instanceof TechAttachment) {
-      ((TechAttachment) attachment).getData().getTechTracker().onTechnologyChanged();
     }
   }
 
