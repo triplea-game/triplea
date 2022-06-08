@@ -198,10 +198,6 @@ public class TechTracker {
         : 0;
   }
 
-  private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
-    return getCurrentTechAdvances(player, data.getTechnologyFrontier());
-  }
-
   @VisibleForTesting
   static int sumNumbers(
       final ToIntFunction<TechAbilityAttachment> mapper,
@@ -214,6 +210,10 @@ public class TechTracker {
         .mapToInt(mapper)
         .filter(i -> i > 0)
         .sum();
+  }
+
+  private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
+    return getCurrentTechAdvances(player, data.getTechnologyFrontier());
   }
 
   /**

@@ -30,7 +30,6 @@ public class TechTrackerTest {
       spy(new TechAbilityAttachment("", new NamedAttachable("test", data), data));
   private final UnitTypeList list = mock(UnitTypeList.class);
   private final UnitType dummyUnitType = mock(UnitType.class);
-  private final String name = "Test Name";
   private final String customToString = "CustomToString";
   private final String testUnitType = "someExistentKey";
   private Collection<TechAdvance> techAdvances;
