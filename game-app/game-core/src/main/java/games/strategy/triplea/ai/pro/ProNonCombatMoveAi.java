@@ -1636,7 +1636,6 @@ class ProNonCombatMoveAi {
         for (final Territory t : currentUnitMoveMap.get(u)) {
           final ProTerritory proTerritory = moveMap.get(t);
           if (proTerritory.isCanHold()
-              && !proTerritory.getAllDefenders().isEmpty()
               && proTerritory.getAllDefenders().stream()
                   .anyMatch(ProMatches.unitIsOwnedTransport(player))
               && ProTransportUtils.checkTransportDefense(proData, calc, proTerritory)) {
