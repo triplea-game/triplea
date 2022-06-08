@@ -146,6 +146,15 @@ public class ProTerritory {
     return defenders;
   }
 
+  public Collection<Unit> getEligibleDefenders(GamePlayer player) {
+    Collection<Unit> defendingUnits = getAllDefenders();
+    if (getTerritory().isWater()) {
+      return defendingUnits;
+    }
+    return CollectionUtils.getMatches(
+        defendingUnits, ProMatches.unitIsAlliedNotOwnedAir(player).negate());
+  }
+
   public Collection<Unit> getAllDefendersForCarrierCalcs(
       final GameState data, final GamePlayer player) {
     if (Properties.getProduceNewFightersOnOldCarriers(data.getProperties())) {

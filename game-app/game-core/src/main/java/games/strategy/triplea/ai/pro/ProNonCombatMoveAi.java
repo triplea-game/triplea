@@ -771,7 +771,7 @@ class ProNonCombatMoveAi {
           final ProTerritory proTerritory = moveMap.get(t);
           final double estimate =
               ProBattleUtils.estimateStrengthDifference(
-                  t, proTerritory.getMaxEnemyUnits(), getDefendersForTerritory(proTerritory));
+                  t, proTerritory.getMaxEnemyUnits(), proTerritory.getEligibleDefenders(player));
           estimatesMap.put(estimate, t);
         }
         if (!estimatesMap.isEmpty() && estimatesMap.lastKey() > 60) {
@@ -795,7 +795,7 @@ class ProNonCombatMoveAi {
           proTerritory.setBattleResultIfNull(
               () ->
                   calc.estimateDefendBattleResults(
-                      proData, proTerritory, getDefendersForTerritory(proTerritory)));
+                      proData, proTerritory, proTerritory.getEligibleDefenders(player)));
           final ProBattleResult result = proTerritory.getBattleResult();
           final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t);
           if (result.getWinPercentage() > maxWinPercentage
@@ -840,7 +840,7 @@ class ProNonCombatMoveAi {
           proTerritory.setBattleResultIfNull(
               () ->
                   calc.estimateDefendBattleResults(
-                      proData, proTerritory, getDefendersForTerritory(proTerritory)));
+                      proData, proTerritory, proTerritory.getEligibleDefenders(player)));
           final ProBattleResult result = proTerritory.getBattleResult();
           final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t);
           if (result.getWinPercentage() > maxWinPercentage
@@ -1205,15 +1205,6 @@ class ProNonCombatMoveAi {
       t.getTempAmphibAttackMap().clear();
     }
     ProLogger.debug("Final number of territories: " + (numToDefend - 1));
-  }
-
-  private Collection<Unit> getDefendersForTerritory(ProTerritory proTerritory) {
-    Collection<Unit> defendingUnits = proTerritory.getAllDefenders();
-    if (proTerritory.getTerritory().isWater()) {
-      return defendingUnits;
-    }
-    return CollectionUtils.getMatches(
-        defendingUnits, ProMatches.unitIsAlliedNotOwnedAir(player).negate());
   }
 
   private void moveUnitsToBestTerritories(final boolean isCombatMove) {
@@ -2172,7 +2163,7 @@ class ProNonCombatMoveAi {
   }
 
   // If carrier has dependent allied fighters then move them too
-  public void moveAlliedCarriedFighters(Unit u, ProTerritory to) {
+  private void moveAlliedCarriedFighters(Unit u, ProTerritory to) {
     if (Matches.unitIsCarrier().test(u)) {
       final Territory unitTerritory = unitTerritoryMap.get(u);
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
