@@ -882,20 +882,21 @@ class ProNonCombatMoveAi {
         for (final Unit transport : transportDefendOptions.keySet()) {
           // Find current naval defense that needs transport if it isn't transporting units
           for (final Territory t : transportDefendOptions.get(transport)) {
-            if (!TransportTracker.isTransporting(transport)) {
-              final ProTerritory proTerritory = moveMap.get(t);
-              proTerritory.setBattleResultIfNull(
-                  () ->
-                      calc.estimateDefendBattleResults(
-                          proData, proTerritory, proTerritory.getAllDefenders()));
-              final ProBattleResult result = proTerritory.getBattleResult();
-              if (result.getTuvSwing() > 0) {
-                proTerritory.addTempUnit(transport);
-                proTerritory.setBattleResult(null);
-                alreadyMovedTransports.add(transport);
-                ProLogger.trace("Adding defend transport to: " + t.getName());
-                break;
-              }
+            if (TransportTracker.isTransporting(transport)) {
+              continue;
+            }
+            final ProTerritory proTerritory = moveMap.get(t);
+            proTerritory.setBattleResultIfNull(
+                () ->
+                    calc.estimateDefendBattleResults(
+                        proData, proTerritory, proTerritory.getAllDefenders()));
+            final ProBattleResult result = proTerritory.getBattleResult();
+            if (result.getTuvSwing() > 0) {
+              proTerritory.addTempUnit(transport);
+              proTerritory.setBattleResult(null);
+              alreadyMovedTransports.add(transport);
+              ProLogger.trace("Adding defend transport to: " + t.getName());
+              break;
             }
           }
         }
