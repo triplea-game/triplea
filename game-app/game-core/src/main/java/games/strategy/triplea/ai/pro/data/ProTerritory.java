@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import org.triplea.java.collections.CollectionUtils;
 
 /** The result of an AI territory analysis. */
@@ -299,6 +300,12 @@ public class ProTerritory {
     } else if (battleResult.getWinPercentage() >= proData.getWinPercentage()
         && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
+    }
+  }
+
+  public void setBattleResultIfNull(final Supplier<ProBattleResult> supplier) {
+    if (battleResult == null) {
+      setBattleResult(supplier.get());
     }
   }
 
