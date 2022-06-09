@@ -105,7 +105,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         @Override
         public void mouseMoved(final @Nullable Territory territory, final MouseDetails md) {
           if (!isActive()) {
-            log.error("Should not be able to select a territory when inactive: " + territory);
+            // This could happen if the history panel is open.
             return;
           }
 

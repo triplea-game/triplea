@@ -108,7 +108,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -120,7 +119,6 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -148,7 +146,6 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.CollapsiblePanel;
@@ -1112,6 +1109,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         () ->
             SwingAction.invokeAndWait(
                 () -> {
+                  bottomBar.setCurrentPlayer(player, false);
                   if (inGame.compareAndSet(false, true)) {
                     showGame();
                   }
@@ -1613,13 +1611,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
     final boolean isPlaying = localPlayers.playing(player);
     if (player != null && !player.isNull()) {
-      final CompletableFuture<?> future =
-          CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
-              .thenApplyAsync(ImageIcon::new)
-              .thenAccept(
-                  icon -> SwingUtilities.invokeLater(() -> this.bottomBar.setRoundIcon(icon)));
-      CompletableFutureUtils.logExceptionWhenComplete(
-          future, throwable -> log.error("Failed to set round icon for " + player, throwable));
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }
