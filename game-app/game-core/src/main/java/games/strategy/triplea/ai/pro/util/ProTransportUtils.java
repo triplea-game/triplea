@@ -60,7 +60,7 @@ public final class ProTransportUtils {
       final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<>(unitsToIgnore);
-    if (!TransportTracker.isTransporting(transport)) {
+    if (!transport.isTransporting()) {
       // Get all units that can be transported
       Predicate<Unit> canBeLoaded =
           ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true);

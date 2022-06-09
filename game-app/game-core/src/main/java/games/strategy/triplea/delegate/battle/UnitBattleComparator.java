@@ -60,8 +60,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     if (u1.equals(u2)) {
       return 0;
     }
-    final boolean transporting1 = TransportTracker.isTransporting(u1);
-    final boolean transporting2 = TransportTracker.isTransporting(u2);
+    final boolean transporting1 = u1.isTransporting();
+    final boolean transporting2 = u2.isTransporting();
     final UnitAttachment ua1 = u1.getUnitAttachment();
     final UnitAttachment ua2 = u2.getUnitAttachment();
     if (ua1.equals(ua2)

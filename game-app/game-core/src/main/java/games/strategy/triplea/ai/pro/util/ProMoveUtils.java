@@ -186,7 +186,7 @@ public final class ProMoveUtils {
         final var loadedUnits = new ArrayList<Unit>();
         final var remainingUnitsToLoad = new ArrayList<Unit>();
 
-        if (TransportTracker.isTransporting(transport)) {
+        if (transport.isTransporting()) {
           loadedUnits.addAll(amphibAttackMap.get(transport));
         } else {
           remainingUnitsToLoad.addAll(amphibAttackMap.get(transport));

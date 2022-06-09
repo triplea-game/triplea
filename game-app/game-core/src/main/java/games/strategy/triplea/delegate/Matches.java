@@ -1428,7 +1428,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> transportIsNotTransporting() {
-    return transport -> !TransportTracker.isTransporting(transport);
+    return transport -> !transport.isTransporting();
   }
 
   /**

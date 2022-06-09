@@ -1510,7 +1510,7 @@ public class ProCombatMoveAi {
           final ProTerritory patd = attackMap.get(t);
           final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player);
           if (!patd.isCurrentlyWins()
-              && !TransportTracker.isTransporting(transport)
+              && !transport.isTransporting()
               && !defendingUnits.isEmpty()) {
             if (patd.getBattleResult() == null) {
               patd.estimateBattleResult(calc, player);
@@ -1673,7 +1673,7 @@ public class ProCombatMoveAi {
         if (bombardMap.get(u).contains(patd.getTerritory())
             && !patd.getTransportTerritoryMap().isEmpty()
             && hasDefenders
-            && !TransportTracker.isTransporting(u)) {
+            && !u.isTransporting()) {
           canBombardTerritories.add(patd.getTerritory());
         }
       }

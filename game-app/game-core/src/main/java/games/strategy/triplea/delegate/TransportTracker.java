@@ -24,19 +24,15 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.Value;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Tracks which transports are carrying which units. Also tracks the capacity that has been
  * unloaded. To reset the unloaded call clearUnloadedCapacity().
  */
+@UtilityClass
 public class TransportTracker {
-  private TransportTracker() {}
-
-  private static int getCost(final Collection<Unit> units) {
-    return TransportUtils.getTransportCost(units);
-  }
-
   private static void assertTransport(final Unit u) {
     if (u.getUnitAttachment().getTransportCapacity() == -1) {
       throw new IllegalStateException("Not a transport:" + u);
@@ -85,10 +81,6 @@ public class TransportTracker {
   public static Map<Unit, Collection<Unit>> transportingInTerritory(
       final Collection<Unit> units, final Territory territory) {
     return transporting(units, transport -> transport.getTransporting(territory));
-  }
-
-  public static boolean isTransporting(final Unit transport) {
-    return !transport.getTransporting().isEmpty();
   }
 
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
@@ -197,8 +189,8 @@ public class TransportTracker {
       return 0;
     }
     final int capacity = ua.getTransportCapacity();
-    final int used = getCost(unit.getTransporting());
-    final int unloaded = getCost(unit.getUnloaded());
+    final int used = TransportUtils.getTransportCost(unit.getTransporting());
+    final int unloaded = TransportUtils.getTransportCost(unit.getUnloaded());
     return capacity - used - unloaded;
   }
 
@@ -289,7 +281,6 @@ public class TransportTracker {
 
   public static AlliedAirTransportChange markTransportedByForAlliedAirOnCarrier(
       final Collection<Unit> units,
-      final RelationshipTracker relationshipTracker,
       final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
     final Collection<Unit> alliedAir = new ArrayList<>();

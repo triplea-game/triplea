@@ -269,7 +269,7 @@ public class ProTerritory {
 
   public void putAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits) {
     this.amphibAttackMap.put(transport, amphibUnits);
-    this.isTransportingMap.put(transport, TransportTracker.isTransporting(transport));
+    this.isTransportingMap.put(transport, transport.isTransporting());
   }
 
   public void setCanAttack(final boolean canAttack) {
