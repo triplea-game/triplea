@@ -6,7 +6,6 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
-import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -280,8 +279,7 @@ public class TransportTracker {
   }
 
   public static AlliedAirTransportChange markTransportedByForAlliedAirOnCarrier(
-      final Collection<Unit> units,
-      final GamePlayer player) {
+      final Collection<Unit> units, final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
     final Collection<Unit> alliedAir = new ArrayList<>();
     MoveValidator.carrierMustMoveWith(units, units, player)
