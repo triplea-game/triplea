@@ -235,8 +235,6 @@ public class BottomBar extends JPanel {
                 icon -> SwingUtilities.invokeLater(() -> roundLabel.setIcon(icon)));
     CompletableFutureUtils.logExceptionWhenComplete(
         future, throwable -> log.error("Failed to set round icon for " + player, throwable));
-    if (player != null) {
-      playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
-    }
+    playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
   }
 }
