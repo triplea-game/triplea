@@ -17,6 +17,7 @@ import java.awt.Image;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,14 +27,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
 
+@Slf4j
 public class BottomBar extends JPanel {
   private final UiContext uiContext;
   private final GameData data;
@@ -214,16 +219,22 @@ public class BottomBar extends JPanel {
     resourceBar.gameDataChanged(null);
   }
 
-  public void setRoundIcon(ImageIcon icon) {
-    roundLabel.setIcon(icon);
-  }
-
   public void setStepInfo(
-      int roundNumber, String stepName, GamePlayer player, boolean isRemotePlayer) {
+      int roundNumber, String stepName, @Nullable GamePlayer player, boolean isRemotePlayer) {
     roundLabel.setText("Round:" + roundNumber + " ");
     stepLabel.setText(stepName);
     if (player != null) {
-      this.playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
+      setCurrentPlayer(player, isRemotePlayer);
     }
+  }
+
+  public void setCurrentPlayer(GamePlayer player, boolean isRemotePlayer) {
+    final CompletableFuture<?> future =
+        CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
+            .thenApplyAsync(ImageIcon::new)
+            .thenAccept(icon -> SwingUtilities.invokeLater(() -> roundLabel.setIcon(icon)));
+    CompletableFutureUtils.logExceptionWhenComplete(
+        future, throwable -> log.error("Failed to set round icon for " + player, throwable));
+    playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
   }
 }
