@@ -29,6 +29,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
@@ -38,6 +39,8 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,7 +55,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
@@ -91,6 +93,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
@@ -693,17 +697,20 @@ class WW2V3Year41Test {
     // Get total number of units in territories to start
     final int preCountIntPoland = poland.getUnitCollection().size();
     final int preCountIntBelorussia = belorussia.getUnitCollection().size();
-    // Get units
+    // Try a move with 3 infantry and 2 land transports (1 infantry can't be land transported).
     final Collection<Unit> moveUnits = poland.getUnitCollection().getUnits(infantryType, 3);
+    assertThat(moveUnits, hasSize(3));
     moveUnits.addAll(poland.getUnitCollection().getMatches(Matches.unitCanBlitz()));
+    assertThat(moveUnits, hasSize(5));
     // add a INVALID blitz attack
     final String errorResults =
         moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
     assertError(errorResults);
-    // Fix the number of units
+    // Fix the number of units, so there's 2 land transports and 2 infantry.
     moveUnits.clear();
     moveUnits.addAll(poland.getUnitCollection().getUnits(infantryType, 2));
     moveUnits.addAll(poland.getUnitCollection().getMatches(Matches.unitCanBlitz()));
+    assertThat(moveUnits, hasSize(4));
     // add a VALID blitz attack
     final String validResults =
         moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
@@ -1480,230 +1487,201 @@ class WW2V3Year41Test {
     assertNotNull(error);
   }
 
-  @Test
-  void testParatroopsWalkOnWater() {
-    final GamePlayer germans = germans(gameData);
-    final Territory france = territory("France", gameData);
-    germans.getTechAttachment().setParatroopers("true");
-    final Route r = new Route(france, territory("7 Sea Zone", gameData));
-    final Collection<Unit> paratroopers =
-        france.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
-    assertFalse(paratroopers.isEmpty());
-    final MoveValidationResult results =
-        new MoveValidator(gameData, false)
-            .validateMove(new MoveDescription(paratroopers, r), germans);
-    assertFalse(results.isMoveValid());
-  }
-
-  @Test
-  void testBomberWithTankOverWaterParatroopers() {
-    final GamePlayer germans = germans(gameData);
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    germans.getTechAttachment().setParatroopers("true");
-    final Territory sz5 = territory("5 Sea Zone", gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory karelia = territory("Karelia S.S.R.", gameData);
-    addTo(germany, armour(gameData).create(1, germans));
-    final Route r = new Route(germany, sz5, karelia);
-    final Collection<Unit> toMove = germany.getUnitCollection().getMatches(Matches.unitCanBlitz());
-    toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
-    assertEquals(2, toMove.size());
-    final MoveValidationResult results =
-        new MoveValidator(gameData, false).validateMove(new MoveDescription(toMove, r), germans);
-    assertFalse(results.isMoveValid());
-  }
-
-  @Test
-  void testBomberTankOverWater() {
-    // can't transport a tank over water using a bomber
-    final GamePlayer germans = germans(gameData);
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    final Territory sz5 = territory("5 Sea Zone", gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory karelia = territory("Karelia S.S.R.", gameData);
-    addTo(germany, armour(gameData).create(1, germans));
-    final Route r = new Route(germany, sz5, karelia);
-    final Collection<Unit> toMove = germany.getUnitCollection().getMatches(Matches.unitCanBlitz());
-    toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
-    assertEquals(2, toMove.size());
-    final MoveValidationResult results =
-        new MoveValidator(gameData, false).validateMove(new MoveDescription(toMove, r), germans);
-    assertFalse(results.isMoveValid());
-  }
-
-  @Test
-  void testMoveParatroopersAsNonPartroops() {
-    // move a bomber and a paratrooper
-    // one step, but as a normal movement
+  @Nested
+  final class Paratroopers {
     final GamePlayer germans = germans(gameData);
     final Territory germany = territory("Germany", gameData);
-    final Territory nwe = territory("Northwestern Europe", gameData);
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    germans.getTechAttachment().setParatroopers("true");
-    List<Unit> paratrooper =
-        germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
-    paratrooper = paratrooper.subList(0, 1);
-    final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
-    bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
-    // move to nwe, this is a valid move, and it not a partroop move
-    move(bomberAndParatroop, new Route(germany, nwe));
-  }
-
-  @Test
-  void testCantMoveParatroopersThatMovedPreviously() {
-    // make sure infantry can't be moved as paratroopers after moving
-    final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory nwe = territory("Northwestern Europe", gameData);
     final Territory poland = territory("Poland", gameData);
     final Territory eastPoland = territory("East Poland", gameData);
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    germans.getTechAttachment().setParatroopers("true");
-    final List<Unit> paratrooper =
-        nwe.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
-    move(paratrooper, new Route(nwe, germany));
-    final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
-    bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
-    // move the units to east poland
-    final String error =
-        moveDelegate(gameData).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
-    assertError(error);
-  }
-
-  @Test
-  void testCantTransportParatroopersWithBombersThatMovedPreviously() {
-    // make sure bombers can't move then pick up paratroopers
-    final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory bulgaria = territory("Bulgaria Romania", gameData);
-    final Territory poland = territory("Poland", gameData);
+    final Territory beloRussia = territory("Belorussia", gameData);
     final Territory ukraine = territory("Ukraine", gameData);
+    final Territory bulgaria = territory("Bulgaria Romania", gameData);
+    final Territory nwe = territory("Northwestern Europe", gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    germans.getTechAttachment().setParatroopers("true");
-    // Move the bomber first
-    final List<Unit> bomber = germany.getUnitCollection().getMatches(Matches.unitIsAirTransport());
-    move(bomber, new Route(germany, poland));
-    // Pick up a paratrooper
-    final List<Unit> bomberAndParatroop = new ArrayList<>(bomber);
-    bomberAndParatroop.addAll(poland.getUnitCollection().getUnits(infantry(gameData), 1));
-    // move them
-    final String error =
-        moveDelegate(gameData).move(bomberAndParatroop, new Route(poland, bulgaria, ukraine));
-    assertError(error);
-  }
-
-  @Test
-  void testMoveOneParatrooperPerBomber() {
-    // make sure only 1 paratroop per bomber can be moved
-    final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    // Territory nwe = territory("Northwestern Europe", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    germans.getTechAttachment().setParatroopers("true");
-    final List<Unit> bomberAndParatroop = new ArrayList<>();
-    bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
-    // add 2 infantry
-    bomberAndParatroop.addAll(germany.getUnitCollection().getUnits(infantry(gameData), 2));
-    // move the units to east poland
-    final String error =
-        moveDelegate(gameData).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
-    assertError(error);
-  }
-
-  @Test
-  void testParatroopersMoveTwice() {
-    // After a battle move to put a bomber + infantry (paratroop) in a first enemy
-    // territory, you can make a new move (in the same battle move round) to put
-    // bomber+ infantry in a more internal enemy territory.
-    final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory beloRussia = territory("Belorussia", gameData);
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    germans.getTechAttachment().setParatroopers("true");
-    List<Unit> paratroopers =
-        germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
-    paratroopers = paratroopers.subList(0, 1);
-    final List<Unit> bomberAndParatroop = new ArrayList<>(paratroopers);
-    bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
-    final Route route = new Route(germany, poland, eastPoland);
-    final List<Unit> airTransports =
-        germany.getUnitCollection().getMatches(Matches.unitIsAirTransport());
-    for (final Unit airTransport : airTransports) {
-      for (final Unit unit : paratroopers) {
-        final Change change = TransportTracker.loadTransportChange(airTransport, unit);
-        bridge.addChange(change);
-      }
-    }
-    // move the units to east poland
-    // airTransports
-    String error = moveDelegate(gameData).move(bomberAndParatroop, route);
-    assertValid(error);
-    // try to move them further, this should fail
-    error = moveDelegate(gameData).move(bomberAndParatroop, new Route(eastPoland, beloRussia));
-    assertError(error);
-  }
-
-  @Test
-  void testParatroopersFlyOverBlitzedTerritory() {
-    // We should be able to blitz a territory, then fly over it with paratroops to battle.
-    final GamePlayer germans = germans(gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory beloRussia = territory("Belorussia", gameData);
-    // Clear East Poland
-    removeFrom(eastPoland, eastPoland.getUnits());
-    // Set up test
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    germans.getTechAttachment().setParatroopers("true");
-    List<Unit> paratrooper =
-        germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
-    paratrooper = paratrooper.subList(0, 1);
-    final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
-    bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
     final List<Unit> tanks = poland.getUnitCollection().getMatches(Matches.unitCanBlitz());
-    move(tanks, new Route(poland, eastPoland, beloRussia));
-    final List<Unit> airTransports =
-        CollectionUtils.getMatches(bomberAndParatroop, Matches.unitIsAirTransport());
-    for (final Unit airTransport : airTransports) {
-      for (final Unit unit : paratrooper) {
-        final Change change = TransportTracker.loadTransportChange(airTransport, unit);
-        bridge.addChange(change);
+
+    @BeforeEach
+    void setUp() {
+      removeFrom(eastPoland, eastPoland.getUnits());
+      advanceToStep(bridge, "CombatMove");
+      moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+      moveDelegate(gameData).start();
+      germans.getTechAttachment().setParatroopers("true");
+    }
+
+    @Test
+    void testParatroopsWalkOnWater() {
+      final Territory france = territory("France", gameData);
+      final Route r = new Route(france, territory("7 Sea Zone", gameData));
+      final Collection<Unit> paratroopers =
+          france.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
+      assertFalse(paratroopers.isEmpty());
+      final MoveValidationResult results =
+          new MoveValidator(gameData, false)
+              .validateMove(new MoveDescription(paratroopers, r), germans);
+      assertFalse(results.isMoveValid());
+    }
+
+    @Test
+    void testBomberTankOverWater() {
+      final Territory sz5 = territory("5 Sea Zone", gameData);
+      final Territory karelia = territory("Karelia S.S.R.", gameData);
+      final Route r = new Route(germany, sz5, karelia);
+      addTo(germany, armour(gameData).create(1, germans));
+      final List<Unit> toMove = germany.getUnitCollection().getMatches(Matches.unitCanBlitz());
+      toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
+      assertEquals(2, toMove.size());
+      // Not valid since the tank shouldn't be para-droppable.
+      MoveValidator validator = new MoveValidator(gameData, false);
+      assertFalse(validator.validateMove(new MoveDescription(toMove, r), germans).isMoveValid());
+      // Also not valid even if we explicitly provide a dependents map.
+      Map<Unit, Collection<Unit>> dependents = Map.of(toMove.get(1), List.of(toMove.get(0)));
+      assertFalse(
+          validator
+              .validateMove(new MoveDescription(toMove, r, Map.of(), dependents), germans)
+              .isMoveValid());
+      // It's also not valid if paratroopers are disabled.
+      germans.getTechAttachment().setParatroopers("false");
+      assertFalse(validator.validateMove(new MoveDescription(toMove, r), germans).isMoveValid());
+    }
+
+    @Test
+    void testMoveParatroopersAsNonPartroops() {
+      // move a bomber and a paratrooper
+      // one step, but as a normal movement
+      List<Unit> paratrooper =
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
+      paratrooper = paratrooper.subList(0, 1);
+      final List<Unit> bomberAndParatroop = new ArrayList<>(paratrooper);
+      bomberAndParatroop.addAll(
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
+      // move to nwe, this is a valid move, and it not a paratroop move
+      move(bomberAndParatroop, new Route(germany, nwe));
+    }
+
+    @Test
+    void testCantMoveParatroopersThatMovedPreviously() {
+      // make sure infantry can't be moved as paratroopers after moving
+      Unit paratrooper =
+          nwe.getUnitCollection().getMatches(Matches.unitIsAirTransportable()).get(0);
+      move(List.of(paratrooper), new Route(nwe, germany));
+      Unit airTransport =
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()).get(0);
+      final List<Unit> bomberAndParatroop = List.of(paratrooper, airTransport);
+      Route route = new Route(germany, poland, eastPoland);
+      // move the units to east poland
+      assertError(moveDelegate(gameData).move(bomberAndParatroop, route));
+      // Also not valid with e a dependents map.
+      Map<Unit, Collection<Unit>> dependents = Map.of(airTransport, List.of(paratrooper));
+      MoveDescription move = new MoveDescription(bomberAndParatroop, route, Map.of(), dependents);
+      assertError(moveDelegate(gameData).performMove(move));
+    }
+
+    @Test
+    void testCantTransportParatroopersWithBombersThatMovedPreviously() {
+      // make sure bombers can't move then pick up paratroopers
+      // Move the bomber first
+      final List<Unit> bomber =
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransport());
+      move(bomber, new Route(germany, poland));
+      // Pick up a paratrooper
+      final List<Unit> bomberAndParatroop = new ArrayList<>(bomber);
+      bomberAndParatroop.addAll(poland.getUnitCollection().getUnits(infantry(gameData), 1));
+      Unit paratrooper = bomberAndParatroop.get(bomberAndParatroop.size() - 1);
+      // move them
+      Route route = new Route(poland, bulgaria, ukraine);
+      Map<Unit, Collection<Unit>> dependents = Map.of(bomber.get(0), List.of(paratrooper));
+      MoveDescription move = new MoveDescription(bomberAndParatroop, route, Map.of(), dependents);
+      assertError(moveDelegate(gameData).performMove(move));
+    }
+
+    @Test
+    void testMoveOneParatrooperPerBomber() {
+      // make sure only 1 paratroop per bomber can be moved
+      final List<Unit> bomberAndParatroop = new ArrayList<>();
+      bomberAndParatroop.addAll(
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
+      // add 2 infantry
+      bomberAndParatroop.addAll(germany.getUnitCollection().getUnits(infantry(gameData), 2));
+      // move the units to east poland
+      final String error =
+          moveDelegate(gameData).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
+      assertError(error);
+    }
+
+    @Test
+    void testParatroopersMoveTwice() {
+      // After a battle move to put a bomber + infantry (paratroop) in a first enemy
+      // territory, you can't make a new move (in the same battle move round) to put
+      // bomber+ infantry in a more internal enemy territory.
+      final List<Unit> airTransports =
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransport());
+      final List<Unit> paratroopers =
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
+      final Unit paratrooper = paratroopers.get(0);
+      final Unit airTransport = airTransports.get(0);
+      final List<Unit> bomberAndParatroop = List.of(paratrooper, airTransport);
+      Route route = new Route(germany, poland, eastPoland);
+      // move the units to east poland
+      // Air transports require a dependents map set on the MoveDescription.
+      Map<Unit, Collection<Unit>> dependents = Map.of(airTransport, List.of(paratrooper));
+      MoveDescription move = new MoveDescription(bomberAndParatroop, route, Map.of(), dependents);
+      assertValid(moveDelegate(gameData).performMove(move));
+      // try to move them further, this should fail
+      route = new Route(eastPoland, beloRussia);
+      move = new MoveDescription(bomberAndParatroop, route, Map.of(), dependents);
+      assertError(moveDelegate(gameData).performMove(move));
+    }
+
+    @Test
+    void testParatroopersFlyOverBlitzedTerritory() {
+      // We should be able to blitz a territory, then fly over it with paratroops to battle.
+      final List<Unit> airTransports =
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransport());
+      final List<Unit> paratroopers =
+          germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
+      final Unit paratrooper = paratroopers.get(0);
+      final Unit airTransport = airTransports.get(0);
+      final List<Unit> bomberAndParatroop = List.of(paratrooper, airTransport);
+      move(tanks, new Route(poland, eastPoland, beloRussia));
+      Route route = new Route(germany, poland, eastPoland, beloRussia);
+      // Air transports require a dependents map set on the MoveDescription.
+      Map<Unit, Collection<Unit>> dependents = Map.of(airTransport, List.of(paratrooper));
+      MoveDescription move = new MoveDescription(bomberAndParatroop, route, Map.of(), dependents);
+      // Verify paratroops can overfly blitzed territory
+      assertValid(moveDelegate(gameData).performMove(move));
+    }
+
+    @Test
+    void testBlitzWithParatroopers() {
+      // Check that extra infantry can't come along on a blitz if they're not air transported.
+      Route route = new Route(poland, eastPoland, beloRussia);
+      Unit airTransport = bomber(gameData).create(germans);
+      addTo(poland, List.of(airTransport));
+      // Test both regular infantry as paratroopers and 2-mv paratroopers (for testing), which
+      // also aren't allowed to blitz if not being transported.
+      UnitType[] unitTypesToTest =
+          new UnitType[] {infantry(gameData), unitType("infantry_2mv", gameData)};
+      for (UnitType paratrooperUnitType : unitTypesToTest) {
+        List<Unit> paratroopers = paratrooperUnitType.create(2, germans);
+        addTo(poland, paratroopers);
+        List<Unit> units = new ArrayList<>(tanks);
+        units.add(airTransport);
+        units.addAll(paratroopers);
+        // Not allowed when only one of the paratroopers is air-transported (the other can't join).
+        Map<Unit, Collection<Unit>> dependents = Map.of(airTransport, paratroopers.subList(0, 1));
+        MoveDescription move = new MoveDescription(units, route, Map.of(), dependents);
+        assertError(moveDelegate(gameData).performMove(move));
+        // Also not OK if you try to air transport both (beyond capacity).
+        dependents = Map.of(airTransport, paratroopers);
+        move = new MoveDescription(units, route, Map.of(), dependents);
+        assertError(moveDelegate(gameData).performMove(move));
+        // Also not OK if you pass empty dependents.
+        dependents = Map.of();
+        move = new MoveDescription(units, route, Map.of(), dependents);
+        assertError(moveDelegate(gameData).performMove(move));
       }
     }
-    // Verify paratroops can overfly blitzed territory
-    final String error =
-        moveDelegate(gameData)
-            .move(bomberAndParatroop, new Route(germany, poland, eastPoland, beloRussia));
-    assertValid(error);
   }
 
   @Test

@@ -2,6 +2,9 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -13,12 +16,14 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
@@ -32,6 +37,7 @@ class VictoryTest {
   private GameData gameData;
   private GamePlayer italians;
   private GamePlayer germans;
+  private GamePlayer british;
   private IDelegateBridge testBridge;
 
   private IntegerMap<Resource> italianResources;
@@ -46,6 +52,7 @@ class VictoryTest {
   private Territory frenchWestAfrica;
   private Territory angloEgypt;
   private Territory libya;
+  private Territory transJordan;
   private Territory sz29;
   private Territory sz30;
   private MoveDelegate moveDelegate;
@@ -55,6 +62,7 @@ class VictoryTest {
     gameData = TestMapGameData.VICTORY_TEST.getGameData();
     italians = GameDataTestUtil.italians(gameData);
     germans = GameDataTestUtil.germans(gameData);
+    british = GameDataTestUtil.british(gameData);
     testBridge = newDelegateBridge(italians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -77,6 +85,7 @@ class VictoryTest {
     frenchWestAfrica = gameData.getMap().getTerritory("French West Africa");
     angloEgypt = gameData.getMap().getTerritory("Anglo Egypt");
     libya = gameData.getMap().getTerritory("Libya");
+    transJordan = gameData.getMap().getTerritory("Trans-Jordan");
     sz29 = gameData.getMap().getTerritory("29 Sea Zone");
     sz30 = gameData.getMap().getTerritory("30 Sea Zone");
   }
@@ -172,6 +181,31 @@ class VictoryTest {
     error =
         moveDelegate.move(belgianCongo.getUnits(), new Route(belgianCongo, frenchEquatorialAfrica));
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
+    moveDelegate.end();
+  }
+
+  @Test
+  void testAttackingFromContestedTerritory() {
+    assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
+    assertThat(transJordan.getOwner().isAtWar(italians), is(true));
+    gameData.performChange(ChangeFactory.addUnits(angloEgypt, armour.create(1, british)));
+    gameData.performChange(ChangeFactory.addUnits(transJordan, armour.create(1, british)));
+
+    Collection<Unit> infantryUnit = GameDataTestUtil.infantry(gameData).create(1, italians);
+    gameData.performChange(ChangeFactory.addUnits(angloEgypt, infantryUnit));
+
+    advanceToStep(testBridge, "CombatMove");
+    moveDelegate.setDelegateBridgeAndPlayer(testBridge);
+    moveDelegate.start();
+    Route route = gameData.getMap().getRoute(angloEgypt, transJordan, it -> true);
+    assertThat(
+        moveDelegate.move(infantryUnit, route),
+        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+
+    // The same move with CAN_ATTACK_FROM_CONTESTED_TERRITORIES set to true is valid.
+    gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+    assertThat(moveDelegate.move(infantryUnit, route), is(nullValue()));
+
     moveDelegate.end();
   }
 

@@ -187,6 +187,7 @@ public interface Constants {
   String TERRITORIES_ARE_ASSIGNED_RANDOMLY = "Territories Are Assigned Randomly";
   String RETREATING_UNITS_REMAIN_IN_PLACE = "Retreating Units Remain In Place";
   String CONTESTED_TERRITORIES_PRODUCE_NO_INCOME = "Contested Territories Produce No Income";
+  String CAN_ATTACK_FROM_CONTESTED_TERRITORIES = "Can Attack From Contested Territories";
   String SEA_BATTLES_MAY_BE_IGNORED = "Sea Battles May Be Ignored";
   String ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY =
       "Abandoned Territories May Be Taken Over Immediately";
