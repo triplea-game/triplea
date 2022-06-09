@@ -219,7 +219,8 @@ public class BottomBar extends JPanel {
     resourceBar.gameDataChanged(null);
   }
 
-  public void setStepInfo(int roundNumber, String stepName, @Nullable GamePlayer player, boolean isRemotePlayer) {
+  public void setStepInfo(
+      int roundNumber, String stepName, @Nullable GamePlayer player, boolean isRemotePlayer) {
     roundLabel.setText("Round:" + roundNumber + " ");
     stepLabel.setText(stepName);
     if (player != null) {
@@ -231,8 +232,7 @@ public class BottomBar extends JPanel {
     final CompletableFuture<?> future =
         CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
             .thenApplyAsync(ImageIcon::new)
-            .thenAccept(
-                icon -> SwingUtilities.invokeLater(() -> roundLabel.setIcon(icon)));
+            .thenAccept(icon -> SwingUtilities.invokeLater(() -> roundLabel.setIcon(icon)));
     CompletableFutureUtils.logExceptionWhenComplete(
         future, throwable -> log.error("Failed to set round icon for " + player, throwable));
     playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());

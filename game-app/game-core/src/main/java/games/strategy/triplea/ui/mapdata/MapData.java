@@ -746,10 +746,11 @@ public class MapData {
   }
 
   public List<Point> getTerritoryEffectPoints(final Territory territory) {
-    if (territoryEffects.get(territory.getName()) == null) {
+    List<Point> points = territoryEffects.get(territory.getName());
+    if (points == null) {
       return List.of(getCenter(territory));
     }
-    return territoryEffects.get(territory.getName());
+    return points;
   }
 
   public Optional<Image> getTerritoryEffectImage(final String effectName) {
