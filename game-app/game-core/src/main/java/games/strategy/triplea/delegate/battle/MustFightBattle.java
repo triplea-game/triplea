@@ -229,8 +229,7 @@ public class MustFightBattle extends DependentBattle
       // allied air can not participate in the battle so set transportedBy on each allied air unit
       // and remove them from the attacking units
       final TransportTracker.AlliedAirTransportChange alliedAirTransportChange =
-          TransportTracker.markTransportedByForAlliedAirOnCarrier(
-              units, gameData.getRelationshipTracker(), attacker);
+          TransportTracker.markTransportedByForAlliedAirOnCarrier(units, attacker);
       change.add(alliedAirTransportChange.getChange());
       this.attackingUnits.removeAll(alliedAirTransportChange.getAlliedAir());
     }

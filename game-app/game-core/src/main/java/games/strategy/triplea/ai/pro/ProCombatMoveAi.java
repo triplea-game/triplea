@@ -23,7 +23,6 @@ import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
@@ -1509,9 +1508,7 @@ public class ProCombatMoveAi {
         for (final Territory t : transportAttackOptions.get(transport)) {
           final ProTerritory patd = attackMap.get(t);
           final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player);
-          if (!patd.isCurrentlyWins()
-              && !TransportTracker.isTransporting(transport)
-              && !defendingUnits.isEmpty()) {
+          if (!patd.isCurrentlyWins() && !transport.isTransporting() && !defendingUnits.isEmpty()) {
             if (patd.getBattleResult() == null) {
               patd.estimateBattleResult(calc, player);
             }
@@ -1673,7 +1670,7 @@ public class ProCombatMoveAi {
         if (bombardMap.get(u).contains(patd.getTerritory())
             && !patd.getTransportTerritoryMap().isEmpty()
             && hasDefenders
-            && !TransportTracker.isTransporting(u)) {
+            && !u.isTransporting()) {
           canBombardTerritories.add(patd.getTerritory());
         }
       }

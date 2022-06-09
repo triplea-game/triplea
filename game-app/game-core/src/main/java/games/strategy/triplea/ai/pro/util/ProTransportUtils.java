@@ -17,7 +17,6 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,7 +59,7 @@ public final class ProTransportUtils {
       final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<>(unitsToIgnore);
-    if (!TransportTracker.isTransporting(transport)) {
+    if (!transport.isTransporting()) {
       // Get all units that can be transported
       Predicate<Unit> canBeLoaded =
           ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true);

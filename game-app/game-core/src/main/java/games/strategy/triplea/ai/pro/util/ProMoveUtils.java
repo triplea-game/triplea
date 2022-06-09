@@ -13,7 +13,6 @@ import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
@@ -186,7 +185,7 @@ public final class ProMoveUtils {
         final var loadedUnits = new ArrayList<Unit>();
         final var remainingUnitsToLoad = new ArrayList<Unit>();
 
-        if (TransportTracker.isTransporting(transport)) {
+        if (transport.isTransporting()) {
           loadedUnits.addAll(amphibAttackMap.get(transport));
         } else {
           remainingUnitsToLoad.addAll(amphibAttackMap.get(transport));

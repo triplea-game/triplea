@@ -25,11 +25,11 @@ class TransportTrackerTest {
   @Test
   void testIsTransporting() {
     addTo(sz18, List.of(transport));
-    assertThat(TransportTracker.isTransporting(transport), is(false));
+    assertThat(transport.isTransporting(), is(false));
 
     addTo(sz18, List.of(tank));
     final Change change = TransportTracker.loadTransportChange(transport, tank);
     gameData.performChange(change);
-    assertThat(TransportTracker.isTransporting(transport), is(true));
+    assertThat(transport.isTransporting(), is(true));
   }
 }
