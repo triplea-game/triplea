@@ -42,7 +42,7 @@ public class BattleDrawable extends TerritoryDrawable {
 
     if (!territory.isWater()) {
       for (final GamePlayer p : players) {
-        if (data.getRelationshipTracker().isAtWar(p, territory.getOwner())) {
+        if (p.isAtWar(territory.getOwner())) {
           attacker = p;
           draw = true;
           break;
@@ -54,7 +54,7 @@ public class BattleDrawable extends TerritoryDrawable {
       // O(n^2), but n is usually 2, and almost always < 10
       for (final GamePlayer p : players) {
         for (final GamePlayer p2 : players) {
-          if (data.getRelationshipTracker().isAtWar(p, p2)) {
+          if (p.isAtWar(p2)) {
             draw = true;
             break;
           }

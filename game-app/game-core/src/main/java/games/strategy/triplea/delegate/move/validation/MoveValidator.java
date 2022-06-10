@@ -160,7 +160,7 @@ public class MoveValidator {
         final boolean unload = route.isUnload();
         final GamePlayer endOwner = route.getEnd().getOwner();
         final boolean attack =
-            !data.getRelationshipTracker().isAllied(endOwner, player)
+            !endOwner.isAllied(player)
                 || AbstractMoveDelegate.getBattleTracker(data).wasConquered(route.getEnd());
         // unless they are unloading into another battle
         if (!(unload && attack)) {
@@ -447,7 +447,7 @@ public class MoveValidator {
         if (current.isWater()) {
           continue;
         }
-        if (data.getRelationshipTracker().isAtWar(current.getOwner(), player)
+        if (current.getOwner().isAtWar(player)
             || AbstractMoveDelegate.getBattleTracker(data).wasConquered(current)) {
           enemyCount++;
           allEnemyBlitzable &= Matches.territoryIsBlitzable(player).test(current);
@@ -743,8 +743,7 @@ public class MoveValidator {
       for (final Unit unit :
           CollectionUtils.getMatches(
               unitsWithoutDependents, Matches.unitIsOwnedBy(player).negate())) {
-        if (!(unit.getUnitAttachment().getCarrierCost() > 0
-            && data.getRelationshipTracker().isAllied(player, unit.getOwner()))) {
+        if (!(unit.getUnitAttachment().getCarrierCost() > 0 && player.isAllied(unit.getOwner()))) {
           result.addDisallowedUnit("Can only move own troops", unit);
         }
       }

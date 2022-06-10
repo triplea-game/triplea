@@ -456,8 +456,7 @@ public class WeakAi extends AbstractBuiltInAi {
         final Territory capital =
             TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
                 otherPlayer, data.getMap());
-        if (capital != null
-            && !data.getRelationshipTracker().isAllied(player, capital.getOwner())) {
+        if (capital != null && !player.isAllied(capital.getOwner())) {
           final Route route = data.getMap().getRoute(t, capital, moveThrough);
           if (route != null && moveThrough.test(capital)) {
             final int distance = route.numberOfSteps();

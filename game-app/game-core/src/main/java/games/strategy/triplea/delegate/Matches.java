@@ -1185,8 +1185,7 @@ public final class Matches {
   }
 
   private static boolean hasAlliedNavalBase(Territory t, GamePlayer player) {
-    return TerritoryAttachment.hasNavalBase(t)
-        && t.getData().getRelationshipTracker().isAllied(t.getOwner(), player);
+    return TerritoryAttachment.hasNavalBase(t) && t.getOwner().isAllied(player);
   }
 
   public static Predicate<Unit> unitHasMovementLeft() {

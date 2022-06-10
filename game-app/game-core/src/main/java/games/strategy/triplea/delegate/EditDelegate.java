@@ -146,7 +146,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
             + " to "
             + player.getName(),
         territory);
-    if (!data.getRelationshipTracker().isAtWar(territory.getOwner(), player)) {
+    if (!territory.getOwner().isAtWar(player)) {
       // change ownership of friendly factories
       final Collection<Unit> units =
           territory.getUnitCollection().getMatches(Matches.unitIsInfrastructure());

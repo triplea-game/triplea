@@ -92,7 +92,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
               || terrName.equals("India")
               || terrName.equals("Yunnan")
               || terrName.equals("Szechwan"))
-          && getData().getRelationshipTracker().isAllied(current.getOwner(), player)) {
+          && current.getOwner().isAllied(player)) {
         ++burmaRoadCount;
       }
     }

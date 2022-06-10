@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.pro.data;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.delegate.Matches;
@@ -27,11 +26,10 @@ public class ProOtherMoveOptions {
   }
 
   public ProOtherMoveOptions(
-      final ProData proData,
       final List<Map<Territory, ProTerritory>> moveMapList,
       final GamePlayer player,
       final boolean isAttacker) {
-    maxMoveMap = newMaxMoveMap(proData, moveMapList, player, isAttacker);
+    maxMoveMap = newMaxMoveMap(moveMapList, player, isAttacker);
     moveMaps = newMoveMaps(moveMapList);
   }
 
@@ -53,7 +51,6 @@ public class ProOtherMoveOptions {
   }
 
   private static Map<Territory, ProTerritory> newMaxMoveMap(
-      final ProData proData,
       final List<Map<Territory, ProTerritory>> moveMaps,
       final GamePlayer player,
       final boolean isAttacker) {
@@ -71,7 +68,7 @@ public class ProOtherMoveOptions {
         }
         final GamePlayer movePlayer = CollectionUtils.getAny(currentUnits).getOwner();
         // Skip if checking allied moves and their turn doesn't come before territory owner's
-        if (proData.getData().getRelationshipTracker().isAllied(player, movePlayer)
+        if (player.isAllied(movePlayer)
             && !ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
           continue;
         }

@@ -519,7 +519,7 @@ public class ProTerritoryManager {
           false,
           false);
     }
-    return new ProOtherMoveOptions(proData, alliedAttackMaps, player, true);
+    return new ProOtherMoveOptions(alliedAttackMaps, player, true);
   }
 
   private static ProOtherMoveOptions findEnemyAttackOptions(
@@ -566,7 +566,7 @@ public class ProTerritoryManager {
           CollectionUtils.getMatches(attackMap.keySet(), Matches.territoryIsLand()));
       enemyTerritories.removeAll(alliedTerritories);
     }
-    return new ProOtherMoveOptions(proData, enemyAttackMaps, player, true);
+    return new ProOtherMoveOptions(enemyAttackMaps, player, true);
   }
 
   private static void findPotentialAttackOptions(
@@ -725,7 +725,7 @@ public class ProTerritoryManager {
           true);
     }
 
-    return new ProOtherMoveOptions(proData, enemyMoveMaps, player, false);
+    return new ProOtherMoveOptions(enemyMoveMaps, player, false);
   }
 
   private static void findNavalMoveOptions(

@@ -89,9 +89,7 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(
-        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
-        is(true));
+    assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
@@ -158,9 +156,7 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(
-        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
-        is(true));
+    assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
@@ -309,9 +305,7 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(
-        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
-        is(true));
+    assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
     assertThat(defender.orElseThrow(), is(not(gameData.getPlayerList().getNullPlayer())));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
@@ -379,9 +373,7 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(
-        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
-        is(true));
+    assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
     assertThat(
         attAndDef.getAttackingUnits(),
         containsInAnyOrder(filterTerritoryUnitsByOwner(russia, russians)));

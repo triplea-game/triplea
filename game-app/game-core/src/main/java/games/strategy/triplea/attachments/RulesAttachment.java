@@ -739,7 +739,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     // get attached to player
     final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
     if (objectiveMet && !getAtWarPlayers().isEmpty()) {
-      objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);
+      objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount());
     }
     if (objectiveMet && !getTechs().isEmpty()) {
       objectiveMet = checkTechs(playerAttachedTo, data.getTechnologyFrontier());
@@ -1003,16 +1003,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private boolean checkAtWar(
-      final GamePlayer player,
-      final Set<GamePlayer> enemies,
-      final int count,
-      final GameState data) {
-    int found = 0;
-    for (final GamePlayer e : enemies) {
-      if (data.getRelationshipTracker().isAtWar(player, e)) {
-        found++;
-      }
-    }
+      final GamePlayer player, final Set<GamePlayer> enemies, final int count) {
+    int found = CollectionUtils.countMatches(enemies, player::isAtWar);
     if (count == 0) {
       return found == 0;
     }

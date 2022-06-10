@@ -362,7 +362,7 @@ final class ProTechAi {
   private static List<GamePlayer> getEnemyPlayers(final GameState data, final GamePlayer player) {
     final List<GamePlayer> enemyPlayers = new ArrayList<>();
     for (final GamePlayer players : data.getPlayerList().getPlayers()) {
-      if (!data.getRelationshipTracker().isAllied(player, players)) {
+      if (!player.isAllied(players)) {
         enemyPlayers.add(players);
       }
     }
