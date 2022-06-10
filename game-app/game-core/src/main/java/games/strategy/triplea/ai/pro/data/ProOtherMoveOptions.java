@@ -71,7 +71,7 @@ public class ProOtherMoveOptions {
         }
         final GamePlayer movePlayer = CollectionUtils.getAny(currentUnits).getOwner();
         // Skip if checking allied moves and their turn doesn't come before territory owner's
-        if (proData.getData().getRelationshipTracker().isAllied(player, movePlayer)
+        if (player.isAllied(movePlayer)
             && !ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
           continue;
         }

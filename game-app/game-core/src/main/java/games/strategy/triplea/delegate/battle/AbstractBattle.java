@@ -282,14 +282,12 @@ abstract class AbstractBattle implements IBattle {
       }
       return defender;
     }
-    if (defender == null
-        || battleSite.isWater()
-        || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
+    if (defender == null || battleSite.isWater() || !attacker.isAtWar(defender)) {
       // if water find the defender based on who has the most units in the territory
       final IntegerMap<GamePlayer> players = battleSite.getUnitCollection().getPlayerUnitCounts();
       int max = -1;
       for (final GamePlayer current : players.keySet()) {
-        if (current.equals(attacker) || !data.getRelationshipTracker().isAtWar(attacker, current)) {
+        if (current.equals(attacker) || !attacker.isAtWar(current)) {
           continue;
         }
         final int count = players.getInt(current);

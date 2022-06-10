@@ -82,7 +82,7 @@ public class PlayerManager {
       if (!entry.getValue().equals(localNode)) {
         any = player;
         final GamePlayer remoteGamePlayer = data.getPlayerList().getPlayerId(player);
-        if (!data.getRelationshipTracker().isAllied(local, remoteGamePlayer)) {
+        if (!local.isAllied(remoteGamePlayer)) {
           return remoteGamePlayer;
         }
       }

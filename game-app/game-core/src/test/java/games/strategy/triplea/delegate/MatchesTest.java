@@ -106,9 +106,9 @@ final class MatchesTest {
 
       player = GameDataTestUtil.germans(gameData);
       alliedPlayer = GameDataTestUtil.japanese(gameData);
-      assertThat(gameData.getRelationshipTracker().isAtWar(player, alliedPlayer), is(false));
+      assertThat(player.isAtWar(alliedPlayer), is(false));
       enemyPlayer = GameDataTestUtil.russians(gameData);
-      assertThat(gameData.getRelationshipTracker().isAtWar(player, enemyPlayer), is(true));
+      assertThat(player.isAtWar(enemyPlayer), is(true));
 
       territory = gameData.getMap().getTerritory("Germany");
       territory.setOwner(player);

@@ -1009,7 +1009,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final GameState data) {
     int found = 0;
     for (final GamePlayer e : enemies) {
-      if (data.getRelationshipTracker().isAtWar(player, e)) {
+      if (player.isAtWar(e)) {
         found++;
       }
     }
