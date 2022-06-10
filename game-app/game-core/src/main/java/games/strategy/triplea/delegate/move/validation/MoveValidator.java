@@ -1,7 +1,5 @@
 package games.strategy.triplea.delegate.move.validation;
 
-import static java.util.function.Predicate.not;
-
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -1596,7 +1594,8 @@ public class MoveValidator {
 
   private static Map<Unit, Collection<Unit>> airTransportsMustMoveWith(
       final Territory start,
-      final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents) {
+      final Collection<Unit> units,
+      final Map<Unit, Collection<Unit>> newDependents) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final Collection<Unit> airTransports =
         CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
