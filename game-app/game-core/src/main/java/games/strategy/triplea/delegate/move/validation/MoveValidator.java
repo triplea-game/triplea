@@ -1566,50 +1566,43 @@ public class MoveValidator {
       final GamePlayer player) {
     final List<Unit> sortedUnits = new ArrayList<>(units);
     sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
-    final Map<Unit, Collection<Unit>> mapping = new HashMap<>(transportsMustMoveWith(sortedUnits));
+    final Map<Unit, Collection<Unit>> mapping = transportsMustMoveWith(start, sortedUnits);
     // Check if there are combined transports (carriers that are transports) and load them.
     addToMapping(mapping, carrierMustMoveWith(sortedUnits, start, player));
-    addToMapping(mapping, airTransportsMustMoveWith(sortedUnits, newDependents));
+    addToMapping(mapping, airTransportsMustMoveWith(start, sortedUnits, newDependents));
     return mapping;
   }
 
   private static void addToMapping(
       final Map<Unit, Collection<Unit>> mapping, final Map<Unit, Collection<Unit>> newMapping) {
-    if (mapping.isEmpty()) {
-      mapping.putAll(newMapping);
-      return;
-    }
-    for (final Unit key : newMapping.keySet()) {
-      if (mapping.containsKey(key)) {
-        final Collection<Unit> heldUnits = new ArrayList<>(mapping.get(key));
-        heldUnits.addAll(newMapping.get(key));
-        mapping.put(key, heldUnits);
-      } else {
-        mapping.put(key, newMapping.get(key));
-      }
+    for (final Map.Entry<Unit, Collection<Unit>> entry : newMapping.entrySet()) {
+      mapping.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(entry.getValue());
     }
   }
 
-  private static Map<Unit, Collection<Unit>> transportsMustMoveWith(final Collection<Unit> units) {
+  private static Map<Unit, Collection<Unit>> transportsMustMoveWith(
+      final Territory start, final Collection<Unit> units) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final Collection<Unit> transports =
         CollectionUtils.getMatches(units, Matches.unitIsTransport());
     for (final Unit transport : transports) {
-      final Collection<Unit> transporting = transport.getTransporting();
-      mustMoveWith.put(transport, transporting);
+      final Collection<Unit> transporting = transport.getTransporting(start);
+      mustMoveWith.put(transport, new ArrayList<>(transporting));
     }
     return mustMoveWith;
   }
 
   private static Map<Unit, Collection<Unit>> airTransportsMustMoveWith(
-      final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents) {
+      final Territory start,
+      final Collection<Unit> units,
+      final Map<Unit, Collection<Unit>> newDependents) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final Collection<Unit> airTransports =
         CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
     // Then check those that have already had their transportedBy set
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
-        Collection<Unit> transporting = airTransport.getTransporting();
+        Collection<Unit> transporting = airTransport.getTransporting(start);
         if (transporting.isEmpty() && !newDependents.isEmpty()) {
           transporting = newDependents.get(airTransport);
         }
