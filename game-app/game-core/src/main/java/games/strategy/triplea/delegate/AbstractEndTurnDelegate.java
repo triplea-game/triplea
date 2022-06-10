@@ -162,7 +162,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       final Change change = ChangeFactory.changeResourcesChange(player, pus, toAdd);
       bridge.addChange(change);
 
-      if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null) {
+      if (Properties.getPacificTheater(data.getProperties()) && pa != null) {
         final Change changeVp =
             (ChangeFactory.attachmentPropertyChange(
                 pa, (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));

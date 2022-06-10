@@ -660,7 +660,7 @@ public class BattleTracker implements Serializable {
       } else if (whoseCapital.equals(territory.getOwner())) {
         final Resource pus = data.getResourceList().getResource(Constants.PUS);
         final int capturedPuCount = whoseCapital.getResources().getQuantity(pus);
-        if (pa != null && isPacificTheater(data)) {
+        if (pa != null && Properties.getPacificTheater(data.getProperties())) {
           final Change changeVp =
               ChangeFactory.attachmentPropertyChange(
                   pa, (capturedPuCount + pa.getCaptureVps()), "captureVps");
@@ -1152,10 +1152,6 @@ public class BattleTracker implements Serializable {
         // ignore as can't find battle delegate
       }
     }
-  }
-
-  private static boolean isPacificTheater(final GameState data) {
-    return data.getProperties().get(Constants.PACIFIC_THEATER, false);
   }
 
   public void clear() {

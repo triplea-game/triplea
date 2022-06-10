@@ -13,6 +13,7 @@ import games.strategy.engine.stats.TuvStat;
 import games.strategy.engine.stats.UnitsStat;
 import games.strategy.engine.stats.VictoryCityStat;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -184,7 +185,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         StatPanel.this.stats = stats.toArray(new IStat[0]);
       }
       // only add the vps in pacific
-      if (gameData.getProperties().get(Constants.PACIFIC_THEATER, false)) {
+      if (Properties.getPacificTheater(gameData.getProperties())) {
         final List<IStat> stats = new ArrayList<>(List.of(StatPanel.this.stats));
         stats.add(new VpStat());
         StatPanel.this.stats = stats.toArray(new IStat[0]);
