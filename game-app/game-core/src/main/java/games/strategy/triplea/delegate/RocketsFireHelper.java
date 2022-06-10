@@ -273,7 +273,7 @@ public class RocketsFireHelper implements Serializable {
     final int numberOfAttacks;
     // attackFrom could be null if WW2V1
     if (attackFrom == null) {
-      rockets = new ArrayList<>();
+      rockets = List.of();
       numberOfAttacks = 1;
     } else {
       rockets = CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player));

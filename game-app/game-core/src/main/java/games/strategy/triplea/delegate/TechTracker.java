@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
@@ -27,7 +28,7 @@ import org.triplea.java.collections.IntegerMap;
 @AllArgsConstructor
 public class TechTracker {
   // TODO: Enable caching when ready.
-  private static boolean ENABLE_CACHING = false;
+  private static final boolean ENABLE_CACHING = false;
 
   private final GameData data;
 
@@ -38,11 +39,7 @@ public class TechTracker {
     String property;
   }
 
-  private final Map<Key, Integer> cache = new ConcurrentHashMap<>();
-
-  public void onTechnologyChanged() {
-    cache.clear();
-  }
+  private final Map<Key, Object> cache = new ConcurrentHashMap<>();
 
   public int getAirDefenseBonus(GamePlayer player, UnitType type) {
     final Supplier<Integer> getter =
@@ -111,15 +108,15 @@ public class TechTracker {
   }
 
   public boolean canBlitz(GamePlayer player, UnitType type) {
-    final Supplier<Integer> getter =
+    final BooleanSupplier getter =
         () -> getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ, type, player);
-    return getCached(player, type, "canBlitz", getter) == 1;
+    return getCached(player, type, "canBlitz", getter);
   }
 
   public boolean canBombard(GamePlayer player, UnitType type) {
-    final Supplier<Integer> getter =
+    final BooleanSupplier getter =
         () -> getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD, type, player);
-    return getCached(player, type, "canBombard", getter) == 1;
+    return getCached(player, type, "canBombard", getter);
   }
 
   public int getMinimumTerritoryValueForProductionBonus(final GamePlayer player) {
@@ -158,11 +155,20 @@ public class TechTracker {
   }
 
   private int getCached(
-      GamePlayer player, UnitType type, String property, Supplier<Integer> getFunction) {
+      GamePlayer player, UnitType type, String property, Supplier<Integer> getter) {
     if (!ENABLE_CACHING) {
-      return getFunction.get();
+      return getter.get();
     }
-    return cache.computeIfAbsent(new Key(player, type, property), key -> getFunction.get());
+    return (Integer) cache.computeIfAbsent(new Key(player, type, property), key -> getter.get());
+  }
+
+  private boolean getCached(
+      GamePlayer player, UnitType type, String property, BooleanSupplier getter) {
+    if (!ENABLE_CACHING) {
+      return getter.getAsBoolean();
+    }
+    return (Boolean)
+        cache.computeIfAbsent(new Key(player, type, property), key -> getter.getAsBoolean());
   }
 
   private int getSumOfBonuses(
@@ -184,18 +190,16 @@ public class TechTracker {
         .sum();
   }
 
-  private int getUnitAbilitiesGained(
+  private boolean getUnitAbilitiesGained(
       String filterForAbility, UnitType unitType, GamePlayer player) {
     return getCurrentTechAdvances(player).stream()
-            .map(TechAbilityAttachment::get)
-            .filter(Objects::nonNull)
-            .map(TechAbilityAttachment::getUnitAbilitiesGained)
-            .map(m -> m.get(unitType))
-            .filter(Objects::nonNull)
-            .flatMap(Collection::stream)
-            .anyMatch(filterForAbility::equals)
-        ? 1
-        : 0;
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .map(TechAbilityAttachment::getUnitAbilitiesGained)
+        .map(m -> m.get(unitType))
+        .filter(Objects::nonNull)
+        .flatMap(Collection::stream)
+        .anyMatch(filterForAbility::equals);
   }
 
   @VisibleForTesting
