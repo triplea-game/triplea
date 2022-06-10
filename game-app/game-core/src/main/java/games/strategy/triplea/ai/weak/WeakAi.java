@@ -22,7 +22,6 @@ import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
@@ -837,7 +836,7 @@ public class WeakAi extends AbstractBuiltInAi {
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
-                data.getTechnologyFrontier(),
+                data.getTechTracker(),
                 data.getProperties(),
                 false);
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
@@ -848,7 +847,7 @@ public class WeakAi extends AbstractBuiltInAi {
               UnitUtils.getHowMuchCanUnitProduce(
                   possibleFactoryNeedingRepair,
                   fixTerr,
-                  TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()),
+                  data.getTechTracker(),
                   data.getProperties(),
                   true,
                   true);
@@ -859,7 +858,7 @@ public class WeakAi extends AbstractBuiltInAi {
             UnitUtils.getHowMuchCanUnitProduce(
                 possibleFactoryNeedingRepair,
                 fixTerr,
-                TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()),
+                data.getTechTracker(),
                 data.getProperties(),
                 true,
                 true);
@@ -891,7 +890,7 @@ public class WeakAi extends AbstractBuiltInAi {
               UnitUtils.getHowMuchCanUnitProduce(
                       capUnit,
                       capUnitTerritory,
-                      TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()),
+                      data.getTechTracker(),
                       data.getProperties(),
                       false,
                       true)
@@ -942,7 +941,7 @@ public class WeakAi extends AbstractBuiltInAi {
                 UnitUtils.getHowMuchCanUnitProduce(
                         fixUnit,
                         unitsThatCanProduceNeedingRepair.get(fixUnit),
-                        TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier()),
+                        data.getTechTracker(),
                         data.getProperties(),
                         false,
                         true)

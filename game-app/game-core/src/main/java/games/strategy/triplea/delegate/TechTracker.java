@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -11,61 +12,182 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 
 /** A collection of methods for tracking which players have which technology advances. */
 @AllArgsConstructor
 public class TechTracker {
+  // TODO: Enable caching when ready.
+  private static final boolean ENABLE_CACHING = false;
+
   private final GameData data;
 
+  @Value
+  static class Key {
+    GamePlayer player;
+    UnitType unitType;
+    String property;
+  }
+
+  private final Map<Key, Object> cache = new ConcurrentHashMap<>();
+
   public int getAirDefenseBonus(GamePlayer player, UnitType type) {
-    return getSumOfBonuses(TechAbilityAttachment::getAirDefenseBonus, type, player);
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getAirDefenseBonus, type, player);
+    return getCached(player, type, "getAirDefenseBonus", getter);
   }
 
   public int getAirAttackBonus(GamePlayer player, UnitType type) {
-    return getSumOfBonuses(TechAbilityAttachment::getAirAttackBonus, type, player);
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getAirAttackBonus, type, player);
+    return getCached(player, type, "getAirAttackBonus", getter);
   }
 
   public int getMovementBonus(GamePlayer player, UnitType type) {
-    return getSumOfBonuses(TechAbilityAttachment::getMovementBonus, type, player);
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getMovementBonus, type, player);
+    return getCached(player, type, "getMovementBonus", getter);
   }
 
   public int getAttackBonus(GamePlayer player, UnitType type) {
-    return getSumOfBonuses(TechAbilityAttachment::getAttackBonus, type, player);
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getAttackBonus, type, player);
+    return getCached(player, type, "getAttackBonus", getter);
   }
 
   public int getAttackRollsBonus(GamePlayer player, UnitType type) {
-    return getSumOfBonuses(TechAbilityAttachment::getAttackRollsBonus, type, player);
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getAttackRollsBonus, type, player);
+    return getCached(player, type, "getAttackRollsBonus", getter);
   }
 
   public int getDefenseBonus(GamePlayer player, UnitType type) {
-    return getSumOfBonuses(TechAbilityAttachment::getDefenseBonus, type, player);
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getDefenseBonus, type, player);
+    return getCached(player, type, "getDefenseBonus", getter);
   }
 
   public int getDefenseRollsBonus(GamePlayer player, UnitType type) {
-    return getSumOfBonuses(TechAbilityAttachment::getDefenseRollsBonus, type, player);
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getDefenseRollsBonus, type, player);
+    return getCached(player, type, "getDefenseRollsBonus", getter);
   }
 
   public int getRadarBonus(GamePlayer player, UnitType type) {
-    return getSumOfBonuses(TechAbilityAttachment::getRadarBonus, type, player);
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getRadarBonus, type, player);
+    return getCached(player, type, "getRadarBonus", getter);
+  }
+
+  public int getRocketDiceNumber(GamePlayer player, UnitType type) {
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getRocketDiceNumber, type, player);
+    return getCached(player, type, "getRocketDiceNumber", getter);
+  }
+
+  public int getBombingBonus(GamePlayer player, UnitType type) {
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getBombingBonus, type, player);
+    return getCached(player, type, "getBombingBonus", getter);
+  }
+
+  public int getProductionBonus(GamePlayer player, UnitType type) {
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getProductionBonus, type, player);
+    return getCached(player, type, "getProductionBonus", getter);
   }
 
   public boolean canBlitz(GamePlayer player, UnitType type) {
-    return getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ, type, player);
+    final BooleanSupplier getter =
+        () -> getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ, type, player);
+    return getCached(player, type, "canBlitz", getter);
   }
 
   public boolean canBombard(GamePlayer player, UnitType type) {
-    return getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD, type, player);
+    final BooleanSupplier getter =
+        () -> getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD, type, player);
+    return getCached(player, type, "canBombard", getter);
+  }
+
+  public int getMinimumTerritoryValueForProductionBonus(final GamePlayer player) {
+    final Supplier<Integer> getter =
+        () ->
+            Math.max(
+                0,
+                getCurrentTechAdvances(player).stream()
+                    .map(TechAbilityAttachment::get)
+                    .filter(Objects::nonNull)
+                    .mapToInt(TechAbilityAttachment::getMinimumTerritoryValueForProductionBonus)
+                    .filter(i -> i != -1)
+                    .min()
+                    .orElse(-1));
+    return getCached(player, null, "getMinimumTerritoryValueForProductionBonus", getter);
+  }
+
+  public int getRocketNumberPerTerritory(final GamePlayer player) {
+    final Supplier<Integer> getter =
+        () ->
+            sumNumbers(
+                TechAbilityAttachment::getRocketNumberPerTerritory,
+                TechAdvance.TECH_NAME_ROCKETS,
+                getCurrentTechAdvances(player));
+    return getCached(player, null, "getRocketNumberPerTerritory", getter);
+  }
+
+  public int getRocketDistance(final GamePlayer player) {
+    final Supplier<Integer> getter =
+        () ->
+            sumNumbers(
+                TechAbilityAttachment::getRocketDistance,
+                TechAdvance.TECH_NAME_ROCKETS,
+                getCurrentTechAdvances(player));
+    return getCached(player, null, "getRocketDistance", getter);
+  }
+
+  private int getCached(
+      GamePlayer player, UnitType type, String property, Supplier<Integer> getter) {
+    if (!ENABLE_CACHING) {
+      return getter.get();
+    }
+    return (Integer) cache.computeIfAbsent(new Key(player, type, property), key -> getter.get());
+  }
+
+  private boolean getCached(
+      GamePlayer player, UnitType type, String property, BooleanSupplier getter) {
+    if (!ENABLE_CACHING) {
+      return getter.getAsBoolean();
+    }
+    return (Boolean)
+        cache.computeIfAbsent(new Key(player, type, property), key -> getter.getAsBoolean());
   }
 
   private int getSumOfBonuses(
       Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
       UnitType type,
       GamePlayer player) {
-    return TechAbilityAttachment.sumIntegerMap(mapper, type, getCurrentTechAdvances(player));
+    return sumIntegerMap(mapper, type, getCurrentTechAdvances(player));
+  }
+
+  static int sumIntegerMap(
+      final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
+      final UnitType ut,
+      final Collection<TechAdvance> techAdvances) {
+    return techAdvances.stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .map(mapper)
+        .mapToInt(m -> m.getInt(ut))
+        .sum();
   }
 
   private boolean getUnitAbilitiesGained(
@@ -80,6 +202,20 @@ public class TechTracker {
         .anyMatch(filterForAbility::equals);
   }
 
+  @VisibleForTesting
+  static int sumNumbers(
+      final ToIntFunction<TechAbilityAttachment> mapper,
+      final String attachmentType,
+      final Collection<TechAdvance> techAdvances) {
+    return techAdvances.stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .filter(i -> i.getAttachedTo().toString().equals(attachmentType))
+        .mapToInt(mapper)
+        .filter(i -> i > 0)
+        .sum();
+  }
+
   private Collection<TechAdvance> getCurrentTechAdvances(GamePlayer player) {
     return getCurrentTechAdvances(player, data.getTechnologyFrontier());
   }
@@ -90,15 +226,11 @@ public class TechTracker {
    */
   public static Collection<TechAdvance> getCurrentTechAdvances(
       final GamePlayer gamePlayer, final TechnologyFrontier technologyFrontier) {
-    final Collection<TechAdvance> techAdvances = new ArrayList<>();
     final TechAttachment attachment = gamePlayer.getTechAttachment();
     // search all techs
-    for (final TechAdvance ta : TechAdvance.getTechAdvances(technologyFrontier)) {
-      if (ta.hasTech(attachment)) {
-        techAdvances.add(ta);
-      }
-    }
-    return techAdvances;
+    return TechAdvance.getTechAdvances(technologyFrontier).stream()
+        .filter(ta -> ta.hasTech(attachment))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -110,14 +242,7 @@ public class TechTracker {
     final Collection<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
     final TechAttachment attachment = gamePlayer.getTechAttachment();
     for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(gamePlayer)) {
-      boolean has = true;
-      for (final TechAdvance t : tf.getTechs()) {
-        has = t.hasTech(attachment);
-        if (!has) {
-          break;
-        }
-      }
-      if (has) {
+      if (tf.getTechs().stream().anyMatch(t -> !t.hasTech(attachment))) {
         technologyFrontiers.add(tf);
       }
     }
@@ -127,44 +252,28 @@ public class TechTracker {
   /** Grants or adds a tech advance to a given player. */
   public static void addAdvance(
       final GamePlayer player, final IDelegateBridge bridge, final TechAdvance advance) {
-    final Change attachmentChange;
-    if (advance instanceof GenericTechAdvance
-        && ((GenericTechAdvance) advance).getAdvance() == null) {
-      attachmentChange =
-          ChangeFactory.genericTechChange(player.getTechAttachment(), true, advance.getProperty());
-    } else {
-      attachmentChange =
-          ChangeFactory.attachmentPropertyChange(
-              player.getTechAttachment(), "true", advance.getProperty());
-    }
-    bridge.addChange(attachmentChange);
+    bridge.addChange(createTechChange(advance, player, true));
     advance.perform(player, bridge);
   }
 
   static void removeAdvance(
       final GamePlayer player, final IDelegateBridge bridge, final TechAdvance advance) {
-    final Change attachmentChange;
-    if (advance instanceof GenericTechAdvance) {
-      if (((GenericTechAdvance) advance).getAdvance() == null) {
-        attachmentChange =
-            ChangeFactory.genericTechChange(
-                player.getTechAttachment(), false, advance.getProperty());
-      } else {
-        attachmentChange =
-            ChangeFactory.attachmentPropertyChange(
-                player.getTechAttachment(), "false", advance.getProperty());
-      }
-    } else {
-      attachmentChange =
-          ChangeFactory.attachmentPropertyChange(
-              player.getTechAttachment(), "false", advance.getProperty());
-    }
-    bridge.addChange(attachmentChange);
+    bridge.addChange(createTechChange(advance, player, false));
   }
 
-  public static int getTechCost(final GamePlayer gamePlayer) {
-    final TechAttachment ta = gamePlayer.getTechAttachment();
-    return ta.getTechCost();
+  private static Change createTechChange(
+      final TechAdvance advance, final GamePlayer player, final boolean value) {
+    final TechAttachment attachment = player.getTechAttachment();
+    if (advance instanceof GenericTechAdvance
+        && ((GenericTechAdvance) advance).getAdvance() == null) {
+      return ChangeFactory.genericTechChange(attachment, false, advance.getProperty());
+    }
+    return ChangeFactory.attachmentPropertyChange(
+        attachment, String.valueOf(value), advance.getProperty());
+  }
+
+  public static int getTechCost(final GamePlayer player) {
+    return player.getTechAttachment().getTechCost();
   }
 
   public static boolean hasLongRangeAir(final GamePlayer player) {

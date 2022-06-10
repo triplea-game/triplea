@@ -147,13 +147,7 @@ public class PurchasePanel extends ActionPanel {
           final GameData data = getData();
           totalProd +=
               UnitUtils.getProductionPotentialOfTerritory(
-                  t.getUnits(),
-                  t,
-                  getCurrentPlayer(),
-                  data.getTechnologyFrontier(),
-                  data.getProperties(),
-                  true,
-                  true);
+                  t.getUnits(), t, getCurrentPlayer(), data.getProperties(), true, true);
         }
       }
       // sum production for all units except factories
