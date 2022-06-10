@@ -1006,12 +1006,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final GamePlayer player,
       final Set<GamePlayer> enemies,
       final int count) {
-    int found = 0;
-    for (final GamePlayer e : enemies) {
-      if (player.isAtWar(e)) {
-        found++;
-      }
-    }
+    int found = CollectionUtils.countMatches(enemies, player::isAtWar);
     if (count == 0) {
       return found == 0;
     }
