@@ -1003,9 +1003,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private boolean checkAtWar(
-      final GamePlayer player,
-      final Set<GamePlayer> enemies,
-      final int count) {
+      final GamePlayer player, final Set<GamePlayer> enemies, final int count) {
     int found = CollectionUtils.countMatches(enemies, player::isAtWar);
     if (count == 0) {
       return found == 0;
