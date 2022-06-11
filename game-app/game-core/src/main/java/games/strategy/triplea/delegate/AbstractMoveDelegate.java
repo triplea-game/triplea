@@ -82,7 +82,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
       return "Undo move index out of range";
     }
     final UndoableMove moveToUndo = movesToUndo.get(moveIndex);
-    if (!moveToUndo.getcanUndo()) {
+    if (!moveToUndo.getCanUndo()) {
       return moveToUndo.getReasonCantUndo();
     }
     moveToUndo.undo(bridge);

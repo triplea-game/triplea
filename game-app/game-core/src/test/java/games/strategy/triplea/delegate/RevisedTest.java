@@ -483,15 +483,15 @@ class RevisedTest {
     // the first unload
     // AbstractUndoableMove move2 = moveDelegate.getMovesMade().get(0);
     // the second unload must be done first
-    assertFalse(move1.getcanUndo());
+    assertFalse(move1.getCanUndo());
     error = moveDelegate.undoMove(2);
     assertNull(error);
     // the second unload must be done first
-    assertFalse(move1.getcanUndo());
+    assertFalse(move1.getCanUndo());
     error = moveDelegate.undoMove(1);
     assertNull(error);
     // we can now be undone
-    assertTrue(move1.getcanUndo());
+    assertTrue(move1.getCanUndo());
   }
 
   @Test
