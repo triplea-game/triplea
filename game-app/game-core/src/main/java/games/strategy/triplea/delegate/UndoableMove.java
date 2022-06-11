@@ -55,7 +55,7 @@ public class UndoableMove extends AbstractUndoableMove {
     return route;
   }
 
-  public boolean getcanUndo() {
+  public boolean getCanUndo() {
     return reasonCantUndo == null && dependents.isEmpty();
   }
 
