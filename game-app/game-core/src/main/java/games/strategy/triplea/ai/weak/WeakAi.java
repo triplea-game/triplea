@@ -171,7 +171,7 @@ public class WeakAi extends AbstractBuiltInAi {
         continue;
       }
       final List<Unit> units = new ArrayList<>();
-      final Map<Unit, Unit> transportMap = new HashMap<>();
+      final Map<Unit, Unit> unitsToSeaTransports = new HashMap<>();
       for (final Unit transport :
           neighbor.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player))) {
         int free = TransportTracker.getAvailableCapacity(transport);
@@ -189,13 +189,13 @@ public class WeakAi extends AbstractBuiltInAi {
             iter.remove();
             free -= ua.getTransportCost();
             units.add(current);
-            transportMap.put(current, transport);
+            unitsToSeaTransports.put(current, transport);
           }
         }
       }
       if (!units.isEmpty()) {
         final Route route = new Route(capitol, neighbor);
-        moves.add(new MoveDescription(units, route, transportMap, Map.of()));
+        moves.add(new MoveDescription(units, route, unitsToSeaTransports, Map.of()));
       }
     }
     return moves;

@@ -420,7 +420,7 @@ public final class ProMoveUtils {
     // Group non-amphib units of the same type moving on the same route
     // TODO: #5499 Use MoveBatcher here - or ideally at the time the moves are being generated.
     final boolean noTransportLoads =
-        moves.stream().allMatch(move -> move.getUnitsToTransports().isEmpty());
+        moves.stream().allMatch(move -> move.getUnitsToSeaTransports().isEmpty());
     if (noTransportLoads) {
       for (int i = 0; i < moves.size(); i++) {
         final Route r = moves.get(i).getRoute();

@@ -46,7 +46,7 @@ public class MovePerformer implements Serializable {
   private AaInMoveUtil aaInMoveUtil;
   private final ExecutionStack executionStack = new ExecutionStack();
   private UndoableMove currentMove;
-  private Map<Unit, Collection<Unit>> newDependents;
+  private Map<Unit, Collection<Unit>> airTransportDependents;
   private Collection<Unit> arrivingUnits;
 
   MovePerformer() {}
@@ -75,8 +75,8 @@ public class MovePerformer implements Serializable {
   void moveUnits(
       final MoveDescription move, final GamePlayer gamePlayer, final UndoableMove currentMove) {
     this.currentMove = currentMove;
-    this.newDependents = move.getDependentUnits();
-    populateStack(move.getUnits(), move.getRoute(), gamePlayer, move.getUnitsToTransports());
+    this.airTransportDependents = move.getAirTransportsDependents();
+    populateStack(move.getUnits(), move.getRoute(), gamePlayer, move.getUnitsToSeaTransports());
     executionStack.execute(bridge);
   }
 
@@ -129,7 +129,8 @@ public class MovePerformer implements Serializable {
                   aaCasualtiesWithDependents.addAll(dependents);
                 }
                 // we might have new dependents too (ie: paratroopers)
-                final Collection<Unit> newDependents = MovePerformer.this.newDependents.get(u);
+                final Collection<Unit> newDependents =
+                    MovePerformer.this.airTransportDependents.get(u);
                 if (newDependents != null) {
                   aaCasualtiesWithDependents.addAll(newDependents);
                 }
@@ -389,7 +390,7 @@ public class MovePerformer implements Serializable {
             MoveValidator.getDependents(
                 CollectionUtils.getMatches(arrived, Matches.unitCanTransport())));
     // add newly created dependents
-    for (final Entry<Unit, Collection<Unit>> entry : newDependents.entrySet()) {
+    for (final Entry<Unit, Collection<Unit>> entry : airTransportDependents.entrySet()) {
       Collection<Unit> dependents = dependentAirTransportableUnits.get(entry.getKey());
       if (dependents != null) {
         dependents = new ArrayList<>(dependents);

@@ -104,7 +104,7 @@ public class MoveBatcher {
   }
 
   private static boolean isTransportLoad(final MoveDescription move) {
-    return !move.getUnitsToTransports().isEmpty();
+    return !move.getUnitsToSeaTransports().isEmpty();
   }
 
   // Merges the two moves. Caller must ensure canMergeMoves() is true before calling.
@@ -115,8 +115,8 @@ public class MoveBatcher {
     }
     final var units = new ArrayList<>(move1.getUnits());
     units.addAll(move2.getUnits());
-    final var unitsToTransports = new HashMap<>(move1.getUnitsToTransports());
-    unitsToTransports.putAll(move2.getUnitsToTransports());
-    return new MoveDescription(units, move1.getRoute(), unitsToTransports);
+    final var unitsToSeaTransports = new HashMap<>(move1.getUnitsToSeaTransports());
+    unitsToSeaTransports.putAll(move2.getUnitsToSeaTransports());
+    return new MoveDescription(units, move1.getRoute(), unitsToSeaTransports);
   }
 }
