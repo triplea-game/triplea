@@ -3,7 +3,7 @@
 Vagrant allows you to launch virtual machines via CLI. This allows for
 automation of creating virtual machines where deployments can be tested.
 
-VAgrant typically interacts with VM software like VirtualBox which is
+Vagrant typically interacts with VM software like VirtualBox which is
 the software that is actually launching the virtual machine.
 
 ### Installation
