@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Set;
 
 /** Contains all the data to describe an abstract move (move or placement) and to undo it. */
 public abstract class AbstractUndoableMove implements Serializable {
