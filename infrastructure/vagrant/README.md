@@ -31,7 +31,8 @@ will have deployed a full lobby server to the machine, available at:
 `https://localhost:8000`
 
 To access the VM:
-```
+
+```bash
 cd .../triplea/infrastructure/vagrant
 vagrant ssh
 ```
@@ -50,23 +51,27 @@ sudo chown $USER:$USER -R ~/triplea/infrastructure/.vagrant/
 cd ~/triplea/infrastructure/vagrant
 
 ## check status of vagrant VMs:
-vagrant status
+localhost$ vagrant status
 
 ## vagrant ssh will connect you to the running virtualbox instance
-vagrant ssh
+localhost$ vagrant ssh
 
 ## check apps are running
-ps -ef | grep java
+vagrant$ ps -ef | grep java
 
 ## check lobby logs
-journalctl -f -u triplea-lobby
+vagrant$ journalctl -f -u triplea-lobby
 
 ## log in to database and verify DB and tables exist
-sudo -u postgres psql
+vagrant$ sudo -u postgres psql
 ```
 
-### Clean / Destroy Virtual Servers
-
 ```bash
+# Halt the Virtual Server
+cd ~/triplea/infrastructure/vagrant
+vagrant halt
+
+# Clean / Destroy Virtual Servers
+cd ~/triplea/infrastructure/vagrant
 vagrant destroy -f
 ```
