@@ -20,6 +20,7 @@ import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.TripleADisplay;
 import java.awt.Component;
 import java.awt.Frame;
@@ -39,8 +40,10 @@ import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.DefaultSoundChannel;
 import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
+import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.LocalizeHtml;
 
 /**
  * Headed and default implementation of {@link LaunchAction}. Ideally replaceable with any other
@@ -185,5 +188,23 @@ public class HeadedLaunchAction implements LaunchAction {
   public IServerStartupRemote getStartupRemote(
       IServerStartupRemote.ServerModelView serverModelView) {
     return new HeadedServerStartupRemote(serverModelView);
+  }
+
+  @Override
+  public boolean promptGameStop(String status, String title) {
+    // now tell the HOST, and see if they want to continue the game.
+    String displayMessage = LocalizeHtml.localizeImgLinksInHtml(status, UiContext.getMapLocation());
+    if (displayMessage.endsWith("</body>")) {
+      displayMessage =
+          displayMessage.substring(0, displayMessage.length() - "</body>".length())
+              + "</br><p>Do you want to continue?</p></body>";
+    } else {
+      displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
+    }
+    return !EventThreadJOptionPane.showConfirmDialog(
+        null,
+        "<html>" + displayMessage + "</html>",
+        "Continue Game?  (" + title + ")",
+        EventThreadJOptionPane.ConfirmDialogType.YES_NO);
   }
 }

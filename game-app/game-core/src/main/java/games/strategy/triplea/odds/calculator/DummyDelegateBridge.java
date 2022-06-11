@@ -155,7 +155,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void stopGameSequence() {}
+  public void stopGameSequence(String status, String title) {}
 
   public MustFightBattle getBattle() {
     return battle;

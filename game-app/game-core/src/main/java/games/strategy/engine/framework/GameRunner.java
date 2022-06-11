@@ -1,9 +1,6 @@
 package games.strategy.engine.framework;
 
-/**
- * GameRunner - The entrance class with the main method. In this class commonly used constants are
- * getting defined and the Game is being launched
- */
+/** In this class commonly used constants are getting defined. */
 public final class GameRunner {
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String BOT_GAME_HOST_COMMENT = "automated_host";

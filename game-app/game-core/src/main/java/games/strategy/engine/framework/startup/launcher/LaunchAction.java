@@ -52,4 +52,12 @@ public interface LaunchAction {
   void handleError(String error);
 
   IServerStartupRemote getStartupRemote(IServerStartupRemote.ServerModelView serverModelView);
+
+  /**
+   * Method to call if the game should try to stop the game. Implementations may choose to prompt
+   * the user with a dialog to prevent stopping the game.
+   *
+   * @return true if the game should stop execution, false otherwise.
+   */
+  boolean promptGameStop(String status, String title);
 }
