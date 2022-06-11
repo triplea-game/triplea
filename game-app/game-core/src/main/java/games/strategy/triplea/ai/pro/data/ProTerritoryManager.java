@@ -900,7 +900,7 @@ public class ProTerritoryManager {
     if (r == null) {
       return false;
     }
-    if (r.hasMoreThenOneStep()
+    if (r.hasMoreThanOneStep()
         && r.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
         && Matches.unitIsOfTypes(
                 TerritoryEffectHelper.getUnitTypesThatLostBlitz(r.getAllTerritories()))
