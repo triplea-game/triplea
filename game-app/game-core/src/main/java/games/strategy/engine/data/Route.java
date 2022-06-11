@@ -304,8 +304,8 @@ public class Route implements Serializable, Iterable<Territory> {
     return hasSteps() && !getStart().isWater() && getEnd().isWater();
   }
 
-  /** Indicates whether this route has more then one step. */
-  public boolean hasMoreThenOneStep() {
+  /** Indicates whether this route has more than one step. */
+  public boolean hasMoreThanOneStep() {
     return steps.size() > 1;
   }
 

@@ -176,7 +176,10 @@ public class MoveValidator {
       final Route route,
       final GamePlayer player,
       final MoveValidationResult result) {
-    if (!units.isEmpty() && !getEditMode(data.getProperties())) {
+    if (units.isEmpty()) {
+      return result.setErrorReturnResult("No units");
+    }
+    if (!getEditMode(data.getProperties())) {
       final Collection<Unit> matches =
           CollectionUtils.getMatches(
               units,
@@ -228,9 +231,6 @@ public class MoveValidator {
           return result;
         }
       }
-    }
-    if (units.isEmpty()) {
-      return result.setErrorReturnResult("No units");
     }
     for (final Unit unit : units) {
       if (unit.getSubmerged()) {
@@ -511,7 +511,7 @@ public class MoveValidator {
     // unless we are all air or we are in non combat OR the route is water (was a bug in convoy
     // zone movement)
     if (hasConqueredNonBlitzedNonWaterOnRoute(route, data)
-        && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
+        && !units.stream().allMatch(Matches.unitIsAir())) {
       // what if we are paratroopers?
       return result.setErrorReturnResult("Cannot move through newly captured territories");
     }
@@ -540,7 +540,7 @@ public class MoveValidator {
   private static boolean nonAirPassingThroughNeutralTerritory(
       final Route route, final Collection<Unit> units, final GameProperties properties) {
     return route.hasNeutralBeforeEnd()
-        && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))
+        && !units.stream().allMatch(Matches.unitIsAir())
         && !isNeutralsBlitzable(properties);
   }
 
@@ -575,8 +575,7 @@ public class MoveValidator {
       }
     }
     // Subs can't move under destroyers
-    if (!units.isEmpty()
-        && units.stream().allMatch(Matches.unitCanMoveThroughEnemies())
+    if (units.stream().allMatch(Matches.unitCanMoveThroughEnemies())
         && enemyDestroyerOnPath(route, player)) {
       return result.setErrorReturnResult("Cannot move submarines under destroyers");
     }
@@ -594,7 +593,7 @@ public class MoveValidator {
     // if there are enemy units on the path blocking us, that is validated elsewhere
     // (validateNonEnemyUnitsOnPath)
     // now check if we can move over neutral or enemies territories in noncombat
-    if ((!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir()))
+    if (units.stream().allMatch(Matches.unitIsAir())
         || (units.stream().noneMatch(Matches.unitIsSea())
             && !nonParatroopersPresent(player, units))) {
       // if there are non-paratroopers present, then we cannot fly over stuff
@@ -672,7 +671,7 @@ public class MoveValidator {
       return result;
     }
     // if we are all air, then its ok
-    if (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir())) {
+    if (units.stream().allMatch(Matches.unitIsAir())) {
       return result;
     }
     // subs may possibly carry units...
@@ -1158,7 +1157,7 @@ public class MoveValidator {
       final GamePlayer player,
       final Map<Unit, Unit> unitsToTransports,
       final MoveValidationResult result) {
-    if (!route.hasWater() || (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir()))) {
+    if (!route.hasWater() || units.stream().allMatch(Matches.unitIsAir())) {
       return result;
     }
     // If there are non-sea transports return
@@ -1174,7 +1173,7 @@ public class MoveValidator {
     // if unloading make sure length of route is only 1
     final boolean isEditMode = getEditMode(data.getProperties());
     if (!isEditMode && route.isUnload()) {
-      if (route.hasMoreThenOneStep()) {
+      if (route.hasMoreThanOneStep()) {
         return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
       }
       for (final Unit unit : TransportTracker.getUnitsLoadedOnAlliedTransportsThisTurn(units)) {
@@ -1420,7 +1419,7 @@ public class MoveValidator {
     if (!TechAttachment.isAirTransportable(player)) {
       return true;
     }
-    if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir().or(Matches.unitIsLand()))) {
+    if (!units.stream().allMatch(Matches.unitIsAir().or(Matches.unitIsLand()))) {
       return true;
     }
     for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsNotAirTransportable())) {
