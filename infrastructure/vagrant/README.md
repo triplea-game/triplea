@@ -1,9 +1,10 @@
 ## Local Development with Vagrant
 
-- Deployments can be tested using Vagrant. Vagrant allows you to launch
-virtual machines via CLI.
+Vagrant allows you to launch virtual machines via CLI. This allows for
+automation of creating virtual machines where deployments can be tested.
 
-- Use vagrant to test deployments and configuration updates.
+Vagrant typically interacts with VM software like VirtualBox which is
+the software that is actually launching the virtual machine.
 
 ### Installation
 
@@ -15,17 +16,15 @@ sudo apt install -y virtualbox ansible
 
 #### (1.B) Install Vagrant
 
-Install from the [vagrant download site](https://www.vagrantup.com/downloads.html)
+Install from [vagrant download site](https://www.vagrantup.com/downloads.html)
 
-The version in 'apt' is likely to be out of date and could have Ruby errors.
-
-Once downloaded, unzip somewhere, and add to your path so you have
-the command 'vagrant ' available.
+The version in the standard 'apt' repositories is likely to be out of date
+and could have Ruby errors.
 
 #### (2) Launch Vagrant virtual machine
 
 ```bash
-cd ~/triplea/infrastructure
+cd ~/triplea/infrastructure/vagrant
 vagrant up
 ```
 
@@ -39,6 +38,7 @@ sudo chown $USER:$USER -R ~/triplea/infrastructure/.vagrant/
 ### Run Ansible
 
 ```bash
+cd ~/triplea/infrastructure/
 ./run_ansible --environment vagrant
 ```
 
