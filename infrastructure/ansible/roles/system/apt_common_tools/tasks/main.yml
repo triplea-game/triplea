@@ -1,8 +1,16 @@
+- name: Update and upgrade apt packages
+  apt:
+    upgrade: yes
+    cache_valid_time: 86400 # One day, only updates if caches are older than this.
+
 - name: apt install standard utilities and packages
   apt:
     state: present
     name:
+      # acl installed to help with: "Failed to set permissions on the temporary files
+      # Ansible needs to create when becoming an unprivileged user"
+      # https://stackoverflow.com/questions/46352173/ansible-failed-to-set-permissions-on-the-temporary
+      - acl
       - htop
       - iftop
       - unzip
-
