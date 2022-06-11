@@ -149,4 +149,9 @@ public class HeadlessLaunchAction implements LaunchAction {
       IServerStartupRemote.ServerModelView serverModelView) {
     return new HeadlessServerStartupRemote(serverModelView, headlessGameServer);
   }
+
+  @Override
+  public boolean promptGameStop(String status, String title) {
+    return true;
+  }
 }

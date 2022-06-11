@@ -685,8 +685,8 @@ public class ServerGame extends AbstractGame {
     delegateRandomSource = null;
   }
 
-  public void stopGameSequence() {
-    delegateExecutionStopped = true;
+  public void stopGameSequence(String status, String title) {
+    delegateExecutionStopped = launchAction.promptGameStop(status, title);
   }
 
   public boolean isGameSequenceRunning() {

@@ -6,7 +6,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -17,7 +16,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.UiContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,9 +26,6 @@ import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundPath;
-import org.triplea.swing.EventThreadJOptionPane;
-import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
-import org.triplea.util.LocalizeHtml;
 
 /** A delegate used to check for end of game conditions. */
 public class EndRoundDelegate extends BaseTripleADelegate {
@@ -313,34 +308,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       bridge
           .getDisplayChannelBroadcaster()
           .reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
-      final boolean stopGame;
-      if (GameRunner.headless()) {
-        // a terrible dirty hack, but I can't think of a better way to do it right now. If we are
-        // headless, end the game.
-        stopGame = true;
-      } else {
-        // now tell the HOST, and see if they want to continue the game.
-        String displayMessage =
-            LocalizeHtml.localizeImgLinksInHtml(status, UiContext.getMapLocation());
-        if (displayMessage.endsWith("</body>")) {
-          displayMessage =
-              displayMessage.substring(0, displayMessage.length() - "</body>".length())
-                  + "</br><p>Do you want to continue?</p></body>";
-        } else {
-          displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
-        }
-        // this is currently the ONLY instance of JOptionPane that is allowed outside of the UI
-        // classes. maybe there is a better way?
-        stopGame =
-            !EventThreadJOptionPane.showConfirmDialog(
-                null,
-                "<html>" + displayMessage + "</html>",
-                "Continue Game?  (" + title + ")",
-                ConfirmDialogType.YES_NO);
-      }
-      if (stopGame) {
-        bridge.stopGameSequence();
-      }
+      bridge.stopGameSequence(status, title);
     }
   }
 

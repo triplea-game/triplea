@@ -127,7 +127,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   public void addChange(final Change change) {}
 
   @Override
-  public void stopGameSequence() {}
+  public void stopGameSequence(String status, String title) {}
 
   static class DummyGameModifiedChannel implements IGameModifiedChannel {
     @Override
