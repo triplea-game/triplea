@@ -129,10 +129,10 @@ public class MovePerformer implements Serializable {
                   aaCasualtiesWithDependents.addAll(dependents);
                 }
                 // we might have new dependents too (ie: paratroopers)
-                final Collection<Unit> newDependents =
+                final Collection<Unit> airTransportDependents =
                     MovePerformer.this.airTransportDependents.get(u);
-                if (newDependents != null) {
-                  aaCasualtiesWithDependents.addAll(newDependents);
+                if (airTransportDependents != null) {
+                  aaCasualtiesWithDependents.addAll(airTransportDependents);
                 }
               }
             }
