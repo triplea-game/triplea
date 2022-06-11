@@ -101,41 +101,39 @@ public class MoveValidator {
     if (route.hasNoSteps()) {
       return result;
     }
-    if (validateFirst(units, route, player, result).getError() != null) {
+    if (validateFirst(units, route, player, result).hasError()) {
       return result;
     }
     if (isNonCombat) {
-      if (validateNonCombat(units, route, player, result).getError() != null) {
+      if (validateNonCombat(units, route, player, result).hasError()) {
         return result;
       }
     } else {
-      if (validateCombat(units, route, player, result).getError() != null) {
+      if (validateCombat(units, route, player, result).hasError()) {
         return result;
       }
     }
-    if (validateNonEnemyUnitsOnPath(units, route, player, result).getError() != null) {
+    if (validateNonEnemyUnitsOnPath(units, route, player, result).hasError()) {
       return result;
     }
-    if (validateBasic(units, route, player, unitsToTransports, newDependents, result).getError()
-        != null) {
+    if (validateBasic(units, route, player, unitsToTransports, newDependents, result).hasError()) {
       return result;
     }
-    if (AirMovementValidator.validateAirCanLand(units, route, player, result).getError() != null) {
+    if (AirMovementValidator.validateAirCanLand(units, route, player, result).hasError()) {
       return result;
     }
     if (validateTransport(
-                isNonCombat, undoableMoves, units, route, player, unitsToTransports, result)
-            .getError()
-        != null) {
+            isNonCombat, undoableMoves, units, route, player, unitsToTransports, result)
+        .hasError()) {
       return result;
     }
-    if (validateParatroops(isNonCombat, units, route, player, result).getError() != null) {
+    if (validateParatroops(isNonCombat, units, route, player, result).hasError()) {
       return result;
     }
-    if (validateCanal(units, route, player, newDependents, result).getError() != null) {
+    if (validateCanal(units, route, player, newDependents, result).hasError()) {
       return result;
     }
-    if (validateFuel(units, route, player, result).getError() != null) {
+    if (validateFuel(units, route, player, result).hasError()) {
       return result;
     }
 
@@ -203,7 +201,7 @@ public class MoveValidator {
       result.setError("Invalid route:" + route);
       return result;
     }
-    if (validateMovementRestrictedByTerritory(route, player, result).getError() != null) {
+    if (validateMovementRestrictedByTerritory(route, player, result).hasError()) {
       return result;
     }
     // cannot enter territories owned by a player to which we are neutral towards
@@ -363,8 +361,7 @@ public class MoveValidator {
       if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
         continue; // Only check canals that are on the route
       }
-      final Collection<Unit> unitsWithoutDependents =
-          findNonDependentUnits(units, route, new HashMap<>());
+      final Collection<Unit> unitsWithoutDependents = findNonDependentUnits(units, route, Map.of());
       canPass = canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player).isEmpty();
       final boolean mustControlAllCanals =
           Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
@@ -850,7 +847,7 @@ public class MoveValidator {
     if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
-    if (canCrossNeutralTerritory(route, player, result).getError() != null) {
+    if (canCrossNeutralTerritory(route, player, result).hasError()) {
       return result;
     }
     if (Properties.getNeutralsImpassable(data.getProperties())
@@ -865,16 +862,14 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Route route,
       final Map<Unit, Collection<Unit>> newDependents) {
-    Collection<Unit> unitsWithoutDependents = new ArrayList<>(units);
-    if (route.getStart().isWater()) {
-      unitsWithoutDependents = getNonLand(units);
-    }
     final Map<Unit, Collection<Unit>> dependentsMap =
         getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
     final Set<Unit> dependents =
         dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     dependents.addAll(
         newDependents.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
+    final Collection<Unit> unitsWithoutDependents = new ArrayList<>();
+    unitsWithoutDependents.addAll(route.getStart().isWater() ? getNonLand(units) : units);
     unitsWithoutDependents.removeAll(dependents);
     return unitsWithoutDependents;
   }
@@ -1272,9 +1267,8 @@ public class MoveValidator {
             "Invalid move, only start or end can be land when route has water.");
       }
     }
-    // simply because I dont want to handle it yet checks are done at the start and end, dont want
-    // to worry about just
-    // using a transport as a bridge yet
+    // simply because I don't want to handle it yet checks are done at the start and end, don't want
+    // to worry about just using a transport as a bridge yet
     // TODO handle this
     if (!isEditMode
         && !route.getEnd().isWater()
@@ -1422,10 +1416,8 @@ public class MoveValidator {
     if (!units.stream().allMatch(Matches.unitIsAir().or(Matches.unitIsLand()))) {
       return true;
     }
-    for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsNotAirTransportable())) {
-      if (Matches.unitIsLand().test(unit)) {
-        return true;
-      }
+    if (units.stream().anyMatch(Matches.unitIsNotAirTransportable().and(Matches.unitIsLand()))) {
+      return true;
     }
     return !allLandUnitsAreBeingParatroopered(units);
   }
@@ -1846,10 +1838,10 @@ public class MoveValidator {
     final Collection<Unit> units = move.getUnits();
     final Route route = move.getRoute();
     final MoveValidationResult result = new MoveValidationResult();
-    if (validateFirst(units, route, player, result).getError() != null) {
+    if (validateFirst(units, route, player, result).hasError()) {
       return result;
     }
-    if (validateFuel(move.getUnits(), move.getRoute(), player, result).getError() != null) {
+    if (validateFuel(move.getUnits(), move.getRoute(), player, result).hasError()) {
       return result;
     }
     final boolean isEditMode = getEditMode(data.getProperties());
@@ -1860,7 +1852,7 @@ public class MoveValidator {
         result.addDisallowedUnit("Can only move owned units", unit);
       }
     }
-    if (validateAirborneMovements(units, route, player, result).getError() != null) {
+    if (validateAirborneMovements(units, route, player, result).hasError()) {
       return result;
     }
     return result;
