@@ -868,8 +868,8 @@ public class MoveValidator {
         dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     dependents.addAll(
         newDependents.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
-    final Collection<Unit> unitsWithoutDependents =
-        route.getStart().isWater() ? getNonLand(units) : new ArrayList<>(units);
+    final Collection<Unit> unitsWithoutDependents = new ArrayList<>();
+    unitsWithoutDependents.addAll(route.getStart().isWater() ? getNonLand(units) : units);
     unitsWithoutDependents.removeAll(dependents);
     return unitsWithoutDependents;
   }
