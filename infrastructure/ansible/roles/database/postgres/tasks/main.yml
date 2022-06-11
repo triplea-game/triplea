@@ -37,51 +37,27 @@
     name: postgresql
     state: reloaded
 
-
-- name: Set postgres user password
-  become_user: postgres
-  postgresql_user:
-    name: postgres
-    login_password: "{{ postgres_user_db_password }}"
-    password: "{{ postgres_user_db_password }}"
-    encrypted: yes
-
 - name: Create application database users
   become_user: postgres
   postgresql_user:
     name: "{{ database_user }}"
     password: "{{ database_password }}"
-    login_password: "{{ postgres_user_db_password }}"
     encrypted: yes
     state: "present"
+    role_attr_flags: NOSUPERUSER,NOCREATEDB
 
 - name: Create application databases
   become_user: postgres
   postgresql_db:
     name: "{{ database_name }}"
     owner: "{{ database_user }}"
-    login_password: "{{ postgres_user_db_password }}"
 
-- name: Ensure user has access to the database
+- name: Grant database user access to database
   become_user: postgres
-  postgresql_user:
-    db: "{{ database_name }}"
-    name: "{{ database_user }}"
-    password: "{{ database_password }}"
-    login_password: "{{ postgres_user_db_password }}"
-    encrypted: yes
-    priv: "ALL"
-    role_attr_flags: NOSUPERUSER,NOCREATEDB
-    state: "present"
-
-# This is a hack because the previous tasks were supposed to set
-# the DB level password for our DB user, but it typically does not.
-# To achieve this, we'll run the native SQL commands to set the
-# user DB password.
-- name: set DB user passwords via CLI
-  shell: >
-    echo "alter role {{ database_user }} with password '{{ database_password }}';"  | psql -U postgres
-  environment:
-    PGPASSWORD: "{{ postgres_user_db_password }}"
-  changed_when: false
-  no_log: true
+  postgresql_privs:
+    database: "{{ database_name }}"
+    state: present
+    privs: ALL
+    type: database
+    roles: "{{ database_user }}"
+    grant_option: no

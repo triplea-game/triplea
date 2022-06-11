@@ -1,11 +1,3 @@
-# Password for the 'postgres' user, the postgres user
-# is essentially the admin or root user on a postgres
-# database and has full privileges. Typically the
-# postgres account should not be used, instead
-# use an application database user.
-postgres_user_db_password: postgres
-
 database_name: "lobby_db"
 database_user: "{{ lobby_db_user }}"
 database_password: "{{ lobby_db_password }}"
-
