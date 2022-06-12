@@ -32,6 +32,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.swing.SwingComponents;
@@ -42,7 +43,6 @@ import org.triplea.swing.jpanel.GridBagConstraintsFill;
 @Slf4j
 public class BottomBar extends JPanel implements TerritoryListener {
   private final UiContext uiContext;
-  private final GameData data;
 
   private final ResourceBar resourceBar;
   private final JPanel territoryInfo = new JPanel();
@@ -56,9 +56,7 @@ public class BottomBar extends JPanel implements TerritoryListener {
 
   public BottomBar(final UiContext uiContext, final GameData data, final boolean usingDiceServer) {
     this.uiContext = uiContext;
-    this.data = data;
     this.resourceBar = new ResourceBar(data, uiContext);
-    data.addTerritoryListener(this);
 
     setLayout(new BorderLayout());
     add(createCenterPanel(), BorderLayout.CENTER);
@@ -119,9 +117,9 @@ public class BottomBar extends JPanel implements TerritoryListener {
   }
 
   public void setTerritory(final @Nullable Territory territory) {
+    listenForTerritoryUpdates(territory);
     territoryInfo.removeAll();
 
-    currentTerritory = territory;
     if (territory == null) {
       SwingComponents.redraw(territoryInfo);
       return;
@@ -160,7 +158,9 @@ public class BottomBar extends JPanel implements TerritoryListener {
       territoryInfo.add(territoryEffectTextLabel);
     }
 
-    Optional.ofNullable(ta).ifPresent(this::addTerritoryResourceDetails);
+    if (ta != null) {
+      addTerritoryResourceDetails(ta, territory.getData());
+    }
 
     if (uiContext.isShowUnitsInStatusBar()) {
       final Collection<UnitCategory> units = UnitSeparator.categorize(territory.getUnits());
@@ -194,7 +194,7 @@ public class BottomBar extends JPanel implements TerritoryListener {
     return BorderFactory.createEmptyBorder(topPad, 0, bottomPad, 0);
   }
 
-  private void addTerritoryResourceDetails(TerritoryAttachment ta) {
+  private void addTerritoryResourceDetails(TerritoryAttachment ta, GameData data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
     final int production = ta.getProduction();
     if (production > 0) {
@@ -242,16 +242,32 @@ public class BottomBar extends JPanel implements TerritoryListener {
     playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
   }
 
+  private void listenForTerritoryUpdates(@Nullable Territory territory) {
+    final GameData oldGameData = currentTerritory != null ? currentTerritory.getData() : null;
+    final GameData newGameData = territory != null ? territory.getData() : null;
+    // Re-subscribe listener on the right GameData, which could change when toggling between
+    // history and the current game.
+    if (!ObjectUtils.referenceEquals(oldGameData, newGameData)) {
+      if (oldGameData != null) {
+        oldGameData.removeTerritoryListener(this);
+      }
+      if (newGameData != null) {
+        newGameData.addTerritoryListener(this);
+      }
+    }
+    currentTerritory = territory;
+  }
+
   @Override
-  public void unitsChanged(final Territory territory) {
+  public void unitsChanged(Territory territory) {
     if (territory.equals(currentTerritory)) {
       setTerritory(territory);
     }
   }
 
   @Override
-  public void ownerChanged(final Territory territory) {}
+  public void ownerChanged(Territory territory) {}
 
   @Override
-  public void attachmentChanged(final Territory territory) {}
+  public void attachmentChanged(Territory territory) {}
 }

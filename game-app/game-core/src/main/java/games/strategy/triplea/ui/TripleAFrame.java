@@ -544,6 +544,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       historySyncher.deactivate();
       historySyncher = null;
     }
+    bottomBar.setTerritory(null);
     GameShutdownRegistry.runShutdownActions();
   }
 
