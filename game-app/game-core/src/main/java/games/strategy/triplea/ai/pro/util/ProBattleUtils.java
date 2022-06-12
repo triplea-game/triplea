@@ -120,7 +120,7 @@ public final class ProBattleUtils {
     if (Properties.getTransportCasualtiesRestricted(data.getProperties())) {
       unitsThatCanFight =
           CollectionUtils.getMatches(
-              unitsThatCanFight, Matches.unitIsSeaTransportButNotCombatTransport().negate());
+              unitsThatCanFight, Matches.unitIsSeaTransportButNotCombatSeaTransport().negate());
     }
     final int myHitPoints = CasualtyUtil.getTotalHitpointsLeft(unitsThatCanFight);
     final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);

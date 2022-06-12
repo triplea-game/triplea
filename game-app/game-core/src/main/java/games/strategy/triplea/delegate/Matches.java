@@ -147,7 +147,7 @@ public final class Matches {
     return unitIsCombatSeaTransport().negate();
   }
 
-  public static Predicate<Unit> unitIsSeaTransportButNotCombatTransport() {
+  public static Predicate<Unit> unitIsSeaTransportButNotCombatSeaTransport() {
     return unit -> {
       final UnitAttachment ua = unit.getUnitAttachment();
       return ua.getTransportCapacity() != -1 && ua.getIsSea() && !ua.getIsCombatTransport();
@@ -1512,7 +1512,7 @@ public final class Matches {
 
   public static Predicate<Territory> territoryIsBlockedSea(final GamePlayer player) {
     final Predicate<Unit> transport =
-        unitIsSeaTransportButNotCombatTransport().negate().and(unitIsLand().negate());
+        unitIsSeaTransportButNotCombatSeaTransport().negate().and(unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(unitIsInfrastructure().negate())
             .and(alliedUnit(player).negate())

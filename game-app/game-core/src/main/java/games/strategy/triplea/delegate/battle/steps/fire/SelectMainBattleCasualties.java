@@ -100,7 +100,7 @@ public class SelectMainBattleCasualties
                       .or(Matches.unitIsNotSea())),
               CollectionUtils.getMatches(
                   step.getFiringGroup().getTargetUnits(),
-                  Matches.unitIsSeaTransportButNotCombatTransport().and(Matches.unitIsSea())));
+                  Matches.unitIsSeaTransportButNotCombatSeaTransport().and(Matches.unitIsSea())));
     } else {
       targetUnits =
           TargetUnits.of(new ArrayList<>(step.getFiringGroup().getTargetUnits()), List.of());

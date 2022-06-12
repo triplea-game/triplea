@@ -31,6 +31,6 @@ public class RetreatChecks {
       final @Nonnull Collection<Unit> units, final @Nonnull GameState gameData) {
     return Properties.getTransportCasualtiesRestricted(gameData.getProperties())
         && !units.isEmpty()
-        && units.stream().allMatch(Matches.unitIsSeaTransportButNotCombatTransport());
+        && units.stream().allMatch(Matches.unitIsSeaTransportButNotCombatSeaTransport());
   }
 }

@@ -972,7 +972,7 @@ public class MoveValidator {
       final Route route, final GamePlayer player, final boolean ignoreRouteEnd) {
     final Predicate<Unit> transportOnly =
         Matches.unitIsInfrastructure()
-            .or(Matches.unitIsSeaTransportButNotCombatTransport())
+            .or(Matches.unitIsSeaTransportButNotCombatSeaTransport())
             .or(Matches.unitIsLand())
             .or(Matches.enemyUnit(player).negate());
     final Predicate<Unit> subOnly =

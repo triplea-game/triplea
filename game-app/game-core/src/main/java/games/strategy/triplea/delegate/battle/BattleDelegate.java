@@ -415,7 +415,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final GameData data = bridge.getData();
     final boolean ignoreTransports = Properties.getIgnoreTransportInMovement(data.getProperties());
     final Predicate<Unit> seaTransports =
-        Matches.unitIsSeaTransportButNotCombatTransport().and(Matches.unitIsSea());
+        Matches.unitIsSeaTransportButNotCombatSeaTransport().and(Matches.unitIsSea());
     final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitCanEvade());
     // we want to match all sea zones with our units and enemy units
     final Predicate<Territory> anyTerritoryWithOwnAndEnemy =
