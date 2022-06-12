@@ -496,18 +496,14 @@ public class MovePanel extends AbstractMovePanel {
           }
           setSelectedEndpointTerritory(territory);
           Collection<Unit> transports = null;
-          final Predicate<Unit> paratroopNBombers =
-              Matches.unitIsAirTransport().and(Matches.unitIsAirTransportable());
           final var units = new ArrayList<>(unitsThatCanMoveOnRoute);
-          final boolean paratroopsLanding = units.stream().anyMatch(paratroopNBombers);
           if (route.isLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
             transports = getTransportsToLoad(route, units);
             if (transports.isEmpty()) {
               cancelMove();
               return;
             }
-          } else if ((route.isUnload() && units.stream().anyMatch(Matches.unitIsLand()))
-              || paratroopsLanding) {
+          } else if (route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
             units.clear();
             // Have user select which transports and land units to unload
             units.addAll(
@@ -519,9 +515,6 @@ public class MovePanel extends AbstractMovePanel {
             if (units.isEmpty()) {
               cancelMove();
               return;
-            }
-            if (paratroopsLanding) {
-              transports = units;
             }
             selectedUnits.clear();
             selectedUnits.addAll(units);
