@@ -719,7 +719,7 @@ public class WeakAi extends AbstractBuiltInAi {
 
   private static int countTransports(final GameState data, final GamePlayer player) {
     final Predicate<Unit> ownedTransport =
-        Matches.unitIsTransport().and(Matches.unitIsOwnedBy(player));
+        Matches.unitIsSeaTransport().and(Matches.unitIsOwnedBy(player));
     return Streams.stream(data.getMap())
         .map(Territory::getUnitCollection)
         .mapToInt(c -> c.countMatches(ownedTransport))

@@ -60,7 +60,7 @@ final class EditValidator {
             return "Can't add mixed nationality units to water";
           }
           final Predicate<Unit> friendlySeaTransports =
-              Matches.unitIsTransport().and(Matches.unitIsSea()).and(Matches.alliedUnit(player));
+              Matches.unitIsSeaTransport().and(Matches.unitIsSea()).and(Matches.alliedUnit(player));
           final Collection<Unit> seaTransports =
               CollectionUtils.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd =

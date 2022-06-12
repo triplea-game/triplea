@@ -903,7 +903,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return Matches.enemyUnitOfAnyOfThesePlayers(players)
         .and(Matches.unitIsSea())
         .and(Matches.unitCanEvade().negate())
-        .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
+        .and(Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport());
   }
 
   /**

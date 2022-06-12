@@ -972,7 +972,7 @@ public class MoveValidator {
       final Route route, final GamePlayer player, final boolean ignoreRouteEnd) {
     final Predicate<Unit> transportOnly =
         Matches.unitIsInfrastructure()
-            .or(Matches.unitIsTransportButNotCombatTransport())
+            .or(Matches.unitIsSeaTransportButNotCombatTransport())
             .or(Matches.unitIsLand())
             .or(Matches.enemyUnit(player).negate());
     final Predicate<Unit> subOnly =
@@ -1052,7 +1052,7 @@ public class MoveValidator {
       // etc...)
       final List<Unit> transports =
           CollectionUtils.getMatches(
-              units, Matches.unitIsTransport().or(Matches.unitIsAirTransport()));
+              units, Matches.unitIsSeaTransport().or(Matches.unitIsAirTransport()));
       final List<Unit> transportable =
           CollectionUtils.getMatches(
               units, Matches.unitCanBeTransported().or(Matches.unitIsAirTransportable()));
@@ -1189,7 +1189,7 @@ public class MoveValidator {
       final Predicate<Unit> ownedSeaNonTransportMatch =
           Matches.unitIsOwnedBy(player)
               .and(Matches.unitIsSea())
-              .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
+              .and(Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport());
       for (final Unit transport : transports) {
         if (!isNonCombat) {
           if (Matches.territoryHasEnemyUnits(player).test(routeEnd)
@@ -1578,7 +1578,7 @@ public class MoveValidator {
       final Territory start, final Collection<Unit> units) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final Collection<Unit> transports =
-        CollectionUtils.getMatches(units, Matches.unitIsTransport());
+        CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
     for (final Unit transport : transports) {
       final Collection<Unit> transporting = transport.getTransporting(start);
       mustMoveWith.put(transport, new ArrayList<>(transporting));

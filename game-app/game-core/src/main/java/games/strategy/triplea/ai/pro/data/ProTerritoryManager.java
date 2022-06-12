@@ -361,7 +361,7 @@ public class ProTerritoryManager {
     for (final ProTerritory patd : attackOptions.getTerritoryMap().values()) {
       movedTransports.addAll(patd.getAmphibAttackMap().keySet());
       movedTransports.addAll(
-          CollectionUtils.getMatches(patd.getUnits(), Matches.unitIsTransport()));
+          CollectionUtils.getMatches(patd.getUnits(), Matches.unitIsSeaTransport()));
     }
     return movedTransports.size() >= attackOptions.getTransportList().size();
   }
@@ -804,7 +804,7 @@ public class ProTerritoryManager {
           proData.getProTerritory(moveMap, potentialTerritory).addMaxUnit(mySeaUnit);
 
           // Populate appropriate unit move options map
-          if (Matches.unitIsTransport().test(mySeaUnit)) {
+          if (Matches.unitIsSeaTransport().test(mySeaUnit)) {
             transportMoveMap
                 .computeIfAbsent(mySeaUnit, k -> new HashSet<>())
                 .add(potentialTerritory);

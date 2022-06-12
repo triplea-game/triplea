@@ -498,7 +498,7 @@ public class MovePanel extends AbstractMovePanel {
           Collection<Unit> transports = null;
           final var units = new ArrayList<>(unitsThatCanMoveOnRoute);
           if (route.isLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
-            transports = getTransportsToLoad(route, units);
+            transports = getSeaTransportsToLoad(route, units);
             if (transports.isEmpty()) {
               cancelMove();
               return;
@@ -782,7 +782,7 @@ public class MovePanel extends AbstractMovePanel {
     final Predicate<Collection<Unit>> transportsToUnloadMatch =
         units -> {
           final List<Unit> sortedTransports =
-              CollectionUtils.getMatches(units, Matches.unitIsTransport());
+              CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
           final Collection<Unit> availableUnits = new ArrayList<>(unitsToUnload);
 
           // track the changing capacities of the transports as we assign units
@@ -853,7 +853,7 @@ public class MovePanel extends AbstractMovePanel {
       return List.of();
     }
     final Collection<Unit> chosenTransports =
-        CollectionUtils.getMatches(chooser.getSelected(), Matches.unitIsTransport());
+        CollectionUtils.getMatches(chooser.getSelected(), Matches.unitIsSeaTransport());
     return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, chosenTransports);
   }
 
@@ -1105,7 +1105,7 @@ public class MovePanel extends AbstractMovePanel {
    * Allow the user to select what transports to load. If an empty collection is returned, the move
    * should be canceled.
    */
-  private Collection<Unit> getTransportsToLoad(
+  private Collection<Unit> getSeaTransportsToLoad(
       final Route route, final Collection<Unit> unitsToLoad) {
     if (!route.isLoad()) {
       return List.of();
@@ -1121,7 +1121,7 @@ public class MovePanel extends AbstractMovePanel {
       minTransportCost = Math.min(minTransportCost, unit.getUnitAttachment().getTransportCost());
     }
     final Predicate<Unit> candidateTransportsMatch =
-        Matches.unitIsTransport().and(Matches.alliedUnit(unitOwner));
+        Matches.unitIsSeaTransport().and(Matches.alliedUnit(unitOwner));
     final List<Unit> candidateTransports =
         CollectionUtils.getMatches(route.getEnd().getUnits(), candidateTransportsMatch);
 
@@ -1243,7 +1243,7 @@ public class MovePanel extends AbstractMovePanel {
     final Predicate<Collection<Unit>> transportsToLoadMatch =
         units -> {
           final Collection<Unit> transports =
-              CollectionUtils.getMatches(units, Matches.unitIsTransport());
+              CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
           // prevent too many transports from being selected
           return (transports.size() <= Math.min(unitsToLoad.size(), candidateTransports.size()));
         };
@@ -1312,7 +1312,7 @@ public class MovePanel extends AbstractMovePanel {
     if (mustQueryUser) {
       final List<Unit> defaultSelections = new ArrayList<>(units.size());
       if (route.isLoad()) {
-        final Collection<Unit> transportsToLoad = getTransportsToLoad(route, units);
+        final Collection<Unit> transportsToLoad = getSeaTransportsToLoad(route, units);
         defaultSelections.addAll(
             TransportUtils.mapTransports(route, units, transportsToLoad).keySet());
       } else {

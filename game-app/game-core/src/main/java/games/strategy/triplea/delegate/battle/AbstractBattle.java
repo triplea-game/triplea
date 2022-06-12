@@ -101,7 +101,7 @@ abstract class AbstractBattle implements IBattle {
   void clearTransportedBy(final IDelegateBridge bridge) {
     // Clear the transported_by for successfully off loaded units
     final Collection<Unit> transports =
-        CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport());
+        CollectionUtils.getMatches(attackingUnits, Matches.unitIsSeaTransport());
     if (!transports.isEmpty()) {
       final CompositeChange change = new CompositeChange();
       final Collection<Unit> dependents = getTransportDependents(transports);

@@ -458,7 +458,7 @@ public final class ProMatches {
       final GamePlayer player, final boolean isCombatMove) {
     return u ->
         (!isCombatMove || !Matches.unitCanNotMoveDuringCombatMove().test(u))
-            && unitCanBeMovedAndIsOwned(player).and(Matches.unitIsTransport()).test(u);
+            && unitCanBeMovedAndIsOwned(player).and(Matches.unitIsSeaTransport()).test(u);
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedBombard(final GamePlayer player) {
@@ -554,7 +554,7 @@ public final class ProMatches {
   }
 
   public static Predicate<Unit> unitIsOwnedTransport(final GamePlayer player) {
-    return Matches.unitIsOwnedBy(player).and(Matches.unitIsTransport());
+    return Matches.unitIsOwnedBy(player).and(Matches.unitIsSeaTransport());
   }
 
   public static Predicate<Unit> unitIsOwnedTransportableUnit(final GamePlayer player) {

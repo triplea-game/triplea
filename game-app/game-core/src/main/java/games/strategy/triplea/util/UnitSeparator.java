@@ -91,7 +91,7 @@ public class UnitSeparator {
     for (final Unit current : units) {
       BigDecimal unitMovement = new BigDecimal(-1);
       if (separatorCategories.movement
-          || (separatorCategories.transportMovement && Matches.unitIsTransport().test(current))
+          || (separatorCategories.transportMovement && Matches.unitIsSeaTransport().test(current))
           || (separatorCategories.movementForAirUnitsOnly
               && isAirWithHitPointsRemaining(current))) {
         unitMovement = current.getMovementLeft();

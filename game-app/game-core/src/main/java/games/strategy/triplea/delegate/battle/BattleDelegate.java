@@ -415,7 +415,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final GameData data = bridge.getData();
     final boolean ignoreTransports = Properties.getIgnoreTransportInMovement(data.getProperties());
     final Predicate<Unit> seaTransports =
-        Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea());
+        Matches.unitIsSeaTransportButNotCombatTransport().and(Matches.unitIsSea());
     final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitCanEvade());
     // we want to match all sea zones with our units and enemy units
     final Predicate<Territory> anyTerritoryWithOwnAndEnemy =
@@ -876,7 +876,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         battle = battleTracker.getPendingBattle(to, BattleType.NORMAL);
         if (battle instanceof MustFightBattle) {
           final MustFightBattle mfb = (MustFightBattle) battle;
-          if (attackingUnits.stream().anyMatch(Matches.unitIsTransport())) {
+          if (attackingUnits.stream().anyMatch(Matches.unitIsSeaTransport())) {
             // need to reload the transports since unload only happens after amphibious sea battles
             // are finished
             final CompositeChange reloadTransportChange = new CompositeChange();
@@ -1229,7 +1229,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Predicate<Unit> canBeAttackedDefault =
         Matches.unitIsOwnedBy(player)
             .and(Matches.unitIsSea())
-            .and(Matches.unitIsNotTransportButCouldBeCombatTransport())
+            .and(Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport())
             .and(Matches.unitCanEvade().negate());
     final boolean onlyWhereThereAreBattlesOrAmphibious =
         Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data.getProperties());

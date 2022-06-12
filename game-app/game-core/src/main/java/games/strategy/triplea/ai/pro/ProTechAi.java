@@ -113,7 +113,7 @@ final class ProTechAi {
       final Predicate<Unit> enemyTransport =
           Matches.unitIsOwnedBy(enemyPlayer)
               .and(Matches.unitIsSea())
-              .and(Matches.unitIsTransport())
+              .and(Matches.unitIsSeaTransport())
               .and(Matches.unitCanMove());
       final Predicate<Unit> enemyShip =
           Matches.unitIsOwnedBy(enemyPlayer).and(Matches.unitIsSea()).and(Matches.unitCanMove());
@@ -123,7 +123,7 @@ final class ProTechAi {
               .and(Matches.unitIsNotAa())
               .and(Matches.unitCanMove());
       final Predicate<Unit> transport =
-          Matches.unitIsSea().and(Matches.unitIsTransport()).and(Matches.unitCanMove());
+          Matches.unitIsSea().and(Matches.unitIsSeaTransport()).and(Matches.unitCanMove());
       final List<Territory> enemyFighterTerritories = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
       // should change this to read production frontier and tech
@@ -270,7 +270,7 @@ final class ProTechAi {
       if (onWater) {
         final Iterator<Unit> enemyWaterUnitsIter = enemyWaterUnits.iterator();
         while (enemyWaterUnitsIter.hasNext() && !nonTransportsInAttack) {
-          if (Matches.unitIsNotTransport().test(enemyWaterUnitsIter.next())) {
+          if (Matches.unitIsNotSeaTransport().test(enemyWaterUnitsIter.next())) {
             nonTransportsInAttack = true;
           }
         }
@@ -553,7 +553,7 @@ final class ProTechAi {
       return null;
     }
     final Predicate<Unit> transport =
-        Matches.unitIsTransport().negate().and(Matches.unitIsLand().negate());
+        Matches.unitIsSeaTransport().negate().and(Matches.unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
             .and(Matches.alliedUnit(player).negate())

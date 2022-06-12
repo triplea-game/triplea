@@ -213,7 +213,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     final Route r = new Route(northernGermany, sz27);
     northernGermany.getUnitCollection().clear();
     addTo(northernGermany, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
-    final List<Unit> transport = sz27.getUnitCollection().getMatches(Matches.unitIsTransport());
+    final List<Unit> transport = sz27.getUnitCollection().getMatches(Matches.unitIsSeaTransport());
     Map<Unit, Unit> unitsToTransports =
         TransportUtils.mapTransports(r, northernGermany.getUnitCollection(), transport);
 

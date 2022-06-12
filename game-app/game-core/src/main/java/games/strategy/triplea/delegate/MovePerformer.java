@@ -248,11 +248,11 @@ public class MovePerformer implements Serializable {
               // Ignore Trn on Trn forces.
               if (Properties.getIgnoreTransportInMovement(bridge.getData().getProperties())) {
                 final boolean allOwnedTransports =
-                    arrived.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
+                    arrived.stream().allMatch(Matches.unitIsSeaTransportButNotCombatTransport());
                 final boolean allEnemyTransports =
                     !enemyUnits.isEmpty()
                         && enemyUnits.stream()
-                            .allMatch(Matches.unitIsTransportButNotCombatTransport());
+                            .allMatch(Matches.unitIsSeaTransportButNotCombatTransport());
                 // If everybody is a transport, don't create a battle
                 if (allOwnedTransports && allEnemyTransports) {
                   ignoreBattle = true;

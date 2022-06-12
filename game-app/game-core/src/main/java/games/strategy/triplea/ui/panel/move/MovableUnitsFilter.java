@@ -186,7 +186,7 @@ final class MovableUnitsFilter {
     // TODO kev check for already loaded airTransports
     if (MoveValidator.isLoad(units, airTransportDependents, route, player)) {
       final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
-      return unitsAtEnd.getMatches(Matches.unitIsTransport().and(Matches.alliedUnit(player)));
+      return unitsAtEnd.getMatches(Matches.unitIsSeaTransport().and(Matches.alliedUnit(player)));
     }
     return List.of();
   }

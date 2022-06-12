@@ -36,9 +36,9 @@ public class RemoveUnprotectedUnits implements BattleStep {
   public List<String> getNames() {
     if (battleState.getBattleSite().isWater()
         && Properties.getTransportCasualtiesRestricted(battleState.getGameData().getProperties())
-        && (battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsTransport())
+        && (battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsSeaTransport())
             || battleState.filterUnits(ALIVE, DEFENSE).stream()
-                .anyMatch(Matches.unitIsTransport()))) {
+                .anyMatch(Matches.unitIsSeaTransport()))) {
       return List.of(REMOVE_UNESCORTED_TRANSPORTS);
     }
     return List.of();
@@ -103,8 +103,8 @@ public class RemoveUnprotectedUnits implements BattleStep {
 
   private List<Unit> getAlliedTransports(final GamePlayer player) {
     final Predicate<Unit> matchAllied =
-        Matches.unitIsTransport()
-            .and(Matches.unitIsNotCombatTransport())
+        Matches.unitIsSeaTransport()
+            .and(Matches.unitIsNotCombatSeaTransport())
             .and(Matches.isUnitAllied(player))
             .and(Matches.unitIsSea());
     return CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), matchAllied);
