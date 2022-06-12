@@ -112,7 +112,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
       }
       // map transports, try to fill
       final Collection<Unit> transports =
-          CollectionUtils.getMatches(units, Matches.unitIsTransport());
+          CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
       final Collection<Unit> land = CollectionUtils.getMatches(units, Matches.unitIsLand());
       for (final Unit toLoad : land) {
         final UnitAttachment ua = toLoad.getUnitAttachment();

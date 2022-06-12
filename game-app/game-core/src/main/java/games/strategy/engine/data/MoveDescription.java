@@ -16,27 +16,29 @@ import lombok.Getter;
 public class MoveDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = 2199608152808948043L;
   @Getter private final Route route;
-  @Getter private final Map<Unit, Unit> unitsToTransports;
-  @Getter private final Map<Unit, Collection<Unit>> dependentUnits;
+  // Maps units to the sea transports that are carrying them.
+  @Getter private final Map<Unit, Unit> unitsToSeaTransports;
+  // Maps air transports to units they're transporting on this move.
+  @Getter private final Map<Unit, Collection<Unit>> airTransportsDependents;
 
   public MoveDescription(
       final Collection<Unit> units,
       final Route route,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> dependentUnits) {
+      final Map<Unit, Unit> unitsToSeaTransports,
+      final Map<Unit, Collection<Unit>> airTransportsDependents) {
     super(Collections.unmodifiableCollection(units));
     this.route = Preconditions.checkNotNull(route);
     Preconditions.checkArgument(route.hasSteps());
-    this.unitsToTransports = Collections.unmodifiableMap(unitsToTransports);
-    this.dependentUnits =
+    this.unitsToSeaTransports = Collections.unmodifiableMap(unitsToSeaTransports);
+    this.airTransportsDependents =
         Collections.unmodifiableMap(
-            dependentUnits.entrySet().stream()
+            airTransportsDependents.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> Set.copyOf(e.getValue()))));
   }
 
   public MoveDescription(
-      final Collection<Unit> units, final Route route, final Map<Unit, Unit> unitsToTransports) {
-    this(units, route, unitsToTransports, Map.of());
+      final Collection<Unit> units, final Route route, final Map<Unit, Unit> unitsToSeaTransports) {
+    this(units, route, unitsToSeaTransports, Map.of());
   }
 
   public MoveDescription(final Collection<Unit> units, final Route route) {
@@ -54,15 +56,18 @@ public class MoveDescription extends AbstractMoveDescription {
     final MoveDescription other = (MoveDescription) obj;
     return getClass().equals(other.getClass())
         && route.equals(other.route)
-        && Maps.difference(unitsToTransports, other.unitsToTransports).areEqual()
-        && Maps.difference(dependentUnits, other.dependentUnits).areEqual()
+        && Maps.difference(unitsToSeaTransports, other.unitsToSeaTransports).areEqual()
+        && Maps.difference(airTransportsDependents, other.airTransportsDependents).areEqual()
         && collectionsAreEqual(getUnits(), other.getUnits());
   }
 
   @Override
   public final int hashCode() {
     return Objects.hash(
-        HashMultiset.create(getUnits()), route, new HashMap<>(unitsToTransports), dependentUnits);
+        HashMultiset.create(getUnits()),
+        route,
+        new HashMap<>(unitsToSeaTransports),
+        airTransportsDependents);
   }
 
   private static boolean collectionsAreEqual(final Collection<Unit> a, final Collection<Unit> b) {

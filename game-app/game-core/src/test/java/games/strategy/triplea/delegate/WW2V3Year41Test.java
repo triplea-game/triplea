@@ -462,7 +462,7 @@ class WW2V3Year41Test {
     final Territory sz13 = territory("13 Sea Zone", gameData);
     final Route sz9ToSz13 = new Route(sz9, territory("12 Sea Zone", gameData), sz13);
     // move the transport to attack, this is suicide but valid
-    move(sz9.getUnitCollection().getMatches(Matches.unitIsTransport()), sz9ToSz13);
+    move(sz9.getUnitCollection().getMatches(Matches.unitIsSeaTransport()), sz9ToSz13);
     // load the transport
     load(gibraltar.getUnits(), new Route(gibraltar, sz13));
     moveDelegate.end();
@@ -487,7 +487,7 @@ class WW2V3Year41Test {
     final Territory uk = territory("United Kingdom", gameData);
     final Route sz9ToSz7 = new Route(sz9, territory("8 Sea Zone", gameData), sz7);
     // move the transport to attack, this is suicide but valid
-    final List<Unit> transports = sz9.getUnitCollection().getMatches(Matches.unitIsTransport());
+    final List<Unit> transports = sz9.getUnitCollection().getMatches(Matches.unitIsSeaTransport());
     move(transports, sz9ToSz7);
     // load the transport
     load(uk.getUnitCollection().getMatches(Matches.unitIsLandTransportable()), new Route(uk, sz7));
@@ -1013,11 +1013,11 @@ class WW2V3Year41Test {
     // move the battleship
     move(sz14.getUnitCollection().getMatches(Matches.unitHasMoreThanOneHitPointTotal()), r);
     // move everything
-    move(sz14.getUnitCollection().getMatches(Matches.unitIsNotTransport()), r);
+    move(sz14.getUnitCollection().getMatches(Matches.unitIsNotSeaTransport()), r);
     // undo it
     move.undoMove(1);
     // move again
-    move(sz14.getUnitCollection().getMatches(Matches.unitIsNotTransport()), r);
+    move(sz14.getUnitCollection().getMatches(Matches.unitIsNotSeaTransport()), r);
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz12);
     // only 3 attacking units

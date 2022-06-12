@@ -96,10 +96,11 @@ public class SelectMainBattleCasualties
           TargetUnits.of(
               CollectionUtils.getMatches(
                   step.getFiringGroup().getTargetUnits(),
-                  Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea())),
+                  Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport()
+                      .or(Matches.unitIsNotSea())),
               CollectionUtils.getMatches(
                   step.getFiringGroup().getTargetUnits(),
-                  Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea())));
+                  Matches.unitIsSeaTransportButNotCombatSeaTransport().and(Matches.unitIsSea())));
     } else {
       targetUnits =
           TargetUnits.of(new ArrayList<>(step.getFiringGroup().getTargetUnits()), List.of());

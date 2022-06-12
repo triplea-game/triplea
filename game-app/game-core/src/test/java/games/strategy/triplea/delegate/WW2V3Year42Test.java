@@ -45,7 +45,7 @@ class WW2V3Year42Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Route sz13To12 = new Route(sz13, sz12);
-    final List<Unit> transports = sz13.getUnitCollection().getMatches(Matches.unitIsTransport());
+    final List<Unit> transports = sz13.getUnitCollection().getMatches(Matches.unitIsSeaTransport());
     assertEquals(1, transports.size());
     move(transports, sz13To12);
   }
@@ -143,7 +143,7 @@ class WW2V3Year42Test {
     // attack with a german sub
     move(sz7.getUnits(), new Route(sz7, sz6, sz5));
     // move the transport away
-    move(sz5.getUnitCollection().getMatches(Matches.unitIsTransport()), new Route(sz5, sz6));
+    move(sz5.getUnitCollection().getMatches(Matches.unitIsSeaTransport()), new Route(sz5, sz6));
     moveDelegate(gameData).end();
     // adding of lingering units was moved from end of combat-move phase, to start of battle phase
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);

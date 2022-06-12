@@ -1407,8 +1407,10 @@ class ProPurchaseAi {
       final List<Unit> units = new ArrayList<>(placeTerritory.getDefendingUnits());
       units.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
       final List<Unit> myUnits = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player));
-      final int numMyTransports = CollectionUtils.countMatches(myUnits, Matches.unitIsTransport());
-      final int numSeaDefenders = CollectionUtils.countMatches(units, Matches.unitIsNotTransport());
+      final int numMyTransports =
+          CollectionUtils.countMatches(myUnits, Matches.unitIsSeaTransport());
+      final int numSeaDefenders =
+          CollectionUtils.countMatches(units, Matches.unitIsNotSeaTransport());
 
       // Determine needed defense strength
       int needDefenders = 0;

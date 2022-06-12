@@ -556,7 +556,7 @@ class ProNonCombatMoveAi {
       if (proTerritory.getCantMoveUnits().stream().noneMatch(Matches.unitIsOwnedBy(player))) {
         if (t.isWater()
             && proTerritory.getCantMoveUnits().stream()
-                .noneMatch(Matches.unitIsTransportButNotCombatTransport())) {
+                .noneMatch(Matches.unitIsSeaTransportButNotCombatSeaTransport())) {
           unitOwnerMultiplier = 0;
         } else {
           unitOwnerMultiplier = 0.5;
@@ -1188,7 +1188,7 @@ class ProNonCombatMoveAi {
       t.addUnits(t.getTempUnits());
       t.putAllAmphibAttackMap(t.getTempAmphibAttackMap());
       for (final Unit u : t.getTempUnits()) {
-        if (Matches.unitIsTransport().test(u)) {
+        if (Matches.unitIsSeaTransport().test(u)) {
           transportMoveMap.remove(u);
           transportMapList.removeIf(proTransport -> proTransport.getTransport().equals(u));
         } else {
@@ -1817,7 +1817,7 @@ class ProNonCombatMoveAi {
       t.addUnits(t.getTempUnits());
       t.putAllAmphibAttackMap(t.getTempAmphibAttackMap());
       for (final Unit u : t.getTempUnits()) {
-        if (Matches.unitIsTransport().test(u)) {
+        if (Matches.unitIsSeaTransport().test(u)) {
           transportMoveMap.remove(u);
           transportMapList.removeIf(proTransport -> proTransport.getTransport().equals(u));
         } else {

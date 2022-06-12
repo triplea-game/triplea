@@ -136,25 +136,25 @@ public final class Matches {
     return unit -> !unit.getUnitAttachment().getCanNotBeTargetedBy().isEmpty();
   }
 
-  private static Predicate<Unit> unitIsCombatTransport() {
+  private static Predicate<Unit> unitIsCombatSeaTransport() {
     return unit -> {
       final UnitAttachment ua = unit.getUnitAttachment();
       return ua.getIsCombatTransport() && ua.getIsSea();
     };
   }
 
-  public static Predicate<Unit> unitIsNotCombatTransport() {
-    return unitIsCombatTransport().negate();
+  public static Predicate<Unit> unitIsNotCombatSeaTransport() {
+    return unitIsCombatSeaTransport().negate();
   }
 
-  public static Predicate<Unit> unitIsTransportButNotCombatTransport() {
+  public static Predicate<Unit> unitIsSeaTransportButNotCombatSeaTransport() {
     return unit -> {
       final UnitAttachment ua = unit.getUnitAttachment();
       return ua.getTransportCapacity() != -1 && ua.getIsSea() && !ua.getIsCombatTransport();
     };
   }
 
-  public static Predicate<Unit> unitIsNotTransportButCouldBeCombatTransport() {
+  public static Predicate<Unit> unitIsNotSeaTransportButCouldBeCombatSeaTransport() {
     return unit -> {
       final UnitAttachment ua = unit.getUnitAttachment();
       return ua.getTransportCapacity() == -1 || (ua.getIsCombatTransport() && ua.getIsSea());
@@ -169,18 +169,18 @@ public final class Matches {
     return type -> type.getUnitAttachment().getIsDestroyer();
   }
 
-  public static Predicate<Unit> unitIsTransport() {
+  public static Predicate<Unit> unitIsSeaTransport() {
     return unit -> {
       final UnitAttachment ua = unit.getUnitAttachment();
       return ua.getTransportCapacity() != -1 && ua.getIsSea();
     };
   }
 
-  public static Predicate<Unit> unitIsNotTransport() {
-    return unitIsTransport().negate();
+  public static Predicate<Unit> unitIsNotSeaTransport() {
+    return unitIsSeaTransport().negate();
   }
 
-  public static Predicate<Unit> unitIsTransportAndNotDestroyer() {
+  public static Predicate<Unit> unitIsSeaTransportAndNotDestroyer() {
     return unit -> {
       final UnitAttachment ua = unit.getUnitAttachment();
       return !unitIsDestroyer().test(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea();
@@ -1512,7 +1512,7 @@ public final class Matches {
 
   public static Predicate<Territory> territoryIsBlockedSea(final GamePlayer player) {
     final Predicate<Unit> transport =
-        unitIsTransportButNotCombatTransport().negate().and(unitIsLand().negate());
+        unitIsSeaTransportButNotCombatSeaTransport().negate().and(unitIsLand().negate());
     final Predicate<Unit> unitCond =
         PredicateBuilder.of(unitIsInfrastructure().negate())
             .and(alliedUnit(player).negate())

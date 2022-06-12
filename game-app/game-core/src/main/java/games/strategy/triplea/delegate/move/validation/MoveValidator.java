@@ -95,8 +95,8 @@ public class MoveValidator {
       final MoveDescription move, final GamePlayer player, final List<UndoableMove> undoableMoves) {
     final Collection<Unit> units = move.getUnits();
     final Route route = move.getRoute();
-    final Map<Unit, Unit> unitsToTransports = move.getUnitsToTransports();
-    final Map<Unit, Collection<Unit>> newDependents = move.getDependentUnits();
+    final Map<Unit, Unit> unitsToSeaTransports = move.getUnitsToSeaTransports();
+    final Map<Unit, Collection<Unit>> airTransportDependents = move.getAirTransportsDependents();
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
@@ -116,21 +116,22 @@ public class MoveValidator {
     if (validateNonEnemyUnitsOnPath(units, route, player, result).hasError()) {
       return result;
     }
-    if (validateBasic(units, route, player, unitsToTransports, newDependents, result).hasError()) {
+    if (validateBasic(units, route, player, unitsToSeaTransports, airTransportDependents, result)
+        .hasError()) {
       return result;
     }
     if (AirMovementValidator.validateAirCanLand(units, route, player, result).hasError()) {
       return result;
     }
     if (validateTransport(
-            isNonCombat, undoableMoves, units, route, player, unitsToTransports, result)
+            isNonCombat, undoableMoves, units, route, player, unitsToSeaTransports, result)
         .hasError()) {
       return result;
     }
     if (validateParatroops(isNonCombat, units, route, player, result).hasError()) {
       return result;
     }
-    if (validateCanal(units, route, player, newDependents, result).hasError()) {
+    if (validateCanal(units, route, player, airTransportDependents, result).hasError()) {
       return result;
     }
     if (validateFuel(units, route, player, result).hasError()) {
@@ -267,13 +268,13 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Route route,
       final GamePlayer player,
-      final Map<Unit, Collection<Unit>> newDependents,
+      final Map<Unit, Collection<Unit>> airTransportDependents,
       final MoveValidationResult result) {
     if (getEditMode(data.getProperties())) {
       return result;
     }
     // TODO: merge validateCanal here and provide granular unit warnings
-    return result.setErrorReturnResult(validateCanal(route, units, newDependents, player));
+    return result.setErrorReturnResult(validateCanal(route, units, airTransportDependents, player));
   }
 
   /**
@@ -290,7 +291,7 @@ public class MoveValidator {
   String validateCanal(
       final Route route,
       @Nullable final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> newDependents,
+      final Map<Unit, Collection<Unit>> airTransportDependents,
       final GamePlayer player) {
     // Check each unit 1 by 1 to see if they can move through necessary canals on route
     String result = null;
@@ -298,7 +299,7 @@ public class MoveValidator {
     final Set<Unit> setWithNull = new HashSet<>();
     setWithNull.add(null);
     final Collection<Unit> unitsWithoutDependents =
-        (units == null) ? setWithNull : findNonDependentUnits(units, route, newDependents);
+        (units == null) ? setWithNull : findNonDependentUnits(units, route, airTransportDependents);
     for (final Unit unit : unitsWithoutDependents) {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();
@@ -694,13 +695,13 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Route route,
       final GamePlayer player,
-      final Map<Unit, Unit> unitToTransport,
-      final Map<Unit, Collection<Unit>> newDependents,
+      final Map<Unit, Unit> unitsToSeaTransports,
+      final Map<Unit, Collection<Unit>> airTransportDependents,
       final MoveValidationResult result) {
     final boolean isEditMode = getEditMode(data.getProperties());
     // make sure transports in the destination
-    if (!route.getEnd().getUnitCollection().containsAll(unitToTransport.values())
-        && !units.containsAll(unitToTransport.values())) {
+    if (!route.getEnd().getUnitCollection().containsAll(unitsToSeaTransports.values())
+        && !units.containsAll(unitsToSeaTransports.values())) {
       return result.setErrorReturnResult("Transports not found in route end");
     }
     if (!isEditMode) {
@@ -711,9 +712,9 @@ public class MoveValidator {
       }
 
       // Ensure all air transports are included
-      for (final Unit airTransport : newDependents.keySet()) {
+      for (final Unit airTransport : airTransportDependents.keySet()) {
         if (!units.contains(airTransport)) {
-          for (final Unit unit : newDependents.get(airTransport)) {
+          for (final Unit unit : airTransportDependents.get(airTransport)) {
             if (units.contains(unit)) {
               result.addDisallowedUnit("Not all units have enough movement", unit);
             }
@@ -723,7 +724,7 @@ public class MoveValidator {
 
       // Check that units have enough movement considering land transports
       final Collection<Unit> unitsWithoutDependents =
-          findNonDependentUnits(units, route, newDependents);
+          findNonDependentUnits(units, route, airTransportDependents);
       final Set<Unit> unitsWithEnoughMovement =
           unitsWithoutDependents.stream()
               .filter(unit -> Matches.unitHasEnoughMovementForRoute(route).test(unit))
@@ -861,13 +862,15 @@ public class MoveValidator {
   private static Collection<Unit> findNonDependentUnits(
       final Collection<Unit> units,
       final Route route,
-      final Map<Unit, Collection<Unit>> newDependents) {
+      final Map<Unit, Collection<Unit>> airTransportDependents) {
     final Map<Unit, Collection<Unit>> dependentsMap =
         getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
     final Set<Unit> dependents =
         dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     dependents.addAll(
-        newDependents.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
+        airTransportDependents.values().stream()
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet()));
     final Collection<Unit> unitsWithoutDependents = new ArrayList<>();
     unitsWithoutDependents.addAll(route.getStart().isWater() ? getNonLand(units) : units);
     unitsWithoutDependents.removeAll(dependents);
@@ -969,7 +972,7 @@ public class MoveValidator {
       final Route route, final GamePlayer player, final boolean ignoreRouteEnd) {
     final Predicate<Unit> transportOnly =
         Matches.unitIsInfrastructure()
-            .or(Matches.unitIsTransportButNotCombatTransport())
+            .or(Matches.unitIsSeaTransportButNotCombatSeaTransport())
             .or(Matches.unitIsLand())
             .or(Matches.enemyUnit(player).negate());
     final Predicate<Unit> subOnly =
@@ -1034,11 +1037,11 @@ public class MoveValidator {
   // TODO KEV revise these to include paratroop load/unload
   public static boolean isLoad(
       final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> newDependents,
+      final Map<Unit, Collection<Unit>> airTransportDependents,
       final Route route,
       final GamePlayer player) {
     final Map<Unit, Collection<Unit>> alreadyLoaded =
-        mustMoveWith(route.getStart(), units, newDependents, player);
+        mustMoveWith(route.getStart(), units, airTransportDependents, player);
     if (route.hasNoSteps() && alreadyLoaded.isEmpty()) {
       return false;
     }
@@ -1049,7 +1052,7 @@ public class MoveValidator {
       // etc...)
       final List<Unit> transports =
           CollectionUtils.getMatches(
-              units, Matches.unitIsTransport().or(Matches.unitIsAirTransport()));
+              units, Matches.unitIsSeaTransport().or(Matches.unitIsAirTransport()));
       final List<Unit> transportable =
           CollectionUtils.getMatches(
               units, Matches.unitCanBeTransported().or(Matches.unitIsAirTransportable()));
@@ -1150,15 +1153,15 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Route route,
       final GamePlayer player,
-      final Map<Unit, Unit> unitsToTransports,
+      final Map<Unit, Unit> unitsToSeaTransports,
       final MoveValidationResult result) {
     if (!route.hasWater() || units.stream().allMatch(Matches.unitIsAir())) {
       return result;
     }
     // If there are non-sea transports return
     final boolean loadingNonSeaTransportsOnly =
-        !unitsToTransports.isEmpty()
-            && unitsToTransports.values().stream()
+        !unitsToSeaTransports.isEmpty()
+            && unitsToSeaTransports.values().stream()
                 .noneMatch(Matches.unitIsSea().and(Matches.unitCanTransport()));
     if (loadingNonSeaTransportsOnly) {
       return result;
@@ -1186,7 +1189,7 @@ public class MoveValidator {
       final Predicate<Unit> ownedSeaNonTransportMatch =
           Matches.unitIsOwnedBy(player)
               .and(Matches.unitIsSea())
-              .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
+              .and(Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport());
       for (final Unit transport : transports) {
         if (!isNonCombat) {
           if (Matches.territoryHasEnemyUnits(player).test(routeEnd)
@@ -1315,7 +1318,7 @@ public class MoveValidator {
           if (baseUnit.hasMoved()) {
             result.addDisallowedUnit("Units cannot move before loading onto transports", baseUnit);
           }
-          final Unit transport = unitsToTransports.get(baseUnit);
+          final Unit transport = unitsToSeaTransports.get(baseUnit);
           if (transport == null) {
             continue;
           }
@@ -1328,7 +1331,7 @@ public class MoveValidator {
               transport, route.getEnd())) {
             Territory alreadyUnloadedTo =
                 getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-            for (final Unit transportToLoad : unitsToTransports.values()) {
+            for (final Unit transportToLoad : unitsToSeaTransports.values()) {
               if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(
                   transportToLoad, route.getEnd())) {
                 final UnitAttachment ua = baseUnit.getUnitAttachment();
@@ -1346,14 +1349,14 @@ public class MoveValidator {
           }
         }
       }
-      if (!unitsToTransports.keySet().containsAll(land)) {
+      if (!unitsToSeaTransports.keySet().containsAll(land)) {
         // some units didn't get mapped to a transport
         final Collection<UnitCategory> unitsToLoadCategories = UnitSeparator.categorize(land);
-        if (unitsToTransports.isEmpty() || unitsToLoadCategories.size() == 1) {
+        if (unitsToSeaTransports.isEmpty() || unitsToLoadCategories.size() == 1) {
           // set all unmapped units as disallowed if there are no transports or only one unit
           // category
           for (final Unit unit : land) {
-            if (unitsToTransports.containsKey(unit)) {
+            if (unitsToSeaTransports.containsKey(unit)) {
               continue;
             }
             final UnitAttachment ua = unit.getUnitAttachment();
@@ -1544,22 +1547,23 @@ public class MoveValidator {
 
   public static MustMoveWithDetails getMustMoveWith(
       final Territory start,
-      final Map<Unit, Collection<Unit>> newDependents,
+      final Map<Unit, Collection<Unit>> airTransportDependents,
       final GamePlayer player) {
-    return new MustMoveWithDetails(mustMoveWith(start, start.getUnits(), newDependents, player));
+    return new MustMoveWithDetails(
+        mustMoveWith(start, start.getUnits(), airTransportDependents, player));
   }
 
   private static Map<Unit, Collection<Unit>> mustMoveWith(
       final Territory start,
       final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> newDependents,
+      final Map<Unit, Collection<Unit>> airTransportDependents,
       final GamePlayer player) {
     final List<Unit> sortedUnits = new ArrayList<>(units);
     sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
     final Map<Unit, Collection<Unit>> mapping = transportsMustMoveWith(start, sortedUnits);
     // Check if there are combined transports (carriers that are transports) and load them.
     addToMapping(mapping, carrierMustMoveWith(sortedUnits, start, player));
-    addToMapping(mapping, airTransportsMustMoveWith(start, sortedUnits, newDependents));
+    addToMapping(mapping, airTransportsMustMoveWith(start, sortedUnits, airTransportDependents));
     return mapping;
   }
 
@@ -1574,7 +1578,7 @@ public class MoveValidator {
       final Territory start, final Collection<Unit> units) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final Collection<Unit> transports =
-        CollectionUtils.getMatches(units, Matches.unitIsTransport());
+        CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
     for (final Unit transport : transports) {
       final Collection<Unit> transporting = transport.getTransporting(start);
       mustMoveWith.put(transport, new ArrayList<>(transporting));
@@ -1585,7 +1589,7 @@ public class MoveValidator {
   private static Map<Unit, Collection<Unit>> airTransportsMustMoveWith(
       final Territory start,
       final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> newDependents) {
+      final Map<Unit, Collection<Unit>> airTransportDependents) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final Collection<Unit> airTransports =
         CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
@@ -1593,8 +1597,8 @@ public class MoveValidator {
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
         Collection<Unit> transporting = airTransport.getTransporting(start);
-        if (transporting.isEmpty() && !newDependents.isEmpty()) {
-          transporting = newDependents.get(airTransport);
+        if (transporting.isEmpty() && !airTransportDependents.isEmpty()) {
+          transporting = airTransportDependents.get(airTransport);
         }
         mustMoveWith.put(airTransport, transporting);
       }

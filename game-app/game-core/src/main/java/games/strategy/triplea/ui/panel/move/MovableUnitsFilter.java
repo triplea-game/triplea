@@ -38,7 +38,7 @@ final class MovableUnitsFilter {
   private final boolean nonCombat;
   private final MoveType moveType;
   private final List<UndoableMove> undoableMoves;
-  private final Map<Unit, Collection<Unit>> dependentUnits;
+  private final Map<Unit, Collection<Unit>> airTransportDependents;
 
   /** The result of the filter operation. */
   @Getter
@@ -95,14 +95,14 @@ final class MovableUnitsFilter {
       final boolean nonCombat,
       final MoveType moveType,
       final List<UndoableMove> undoableMoves,
-      final Map<Unit, Collection<Unit>> dependentUnits) {
+      final Map<Unit, Collection<Unit>> airTransportDependents) {
     this.player = Preconditions.checkNotNull(player);
     this.data = data;
     this.route = Preconditions.checkNotNull(route);
     this.nonCombat = nonCombat;
     this.moveType = moveType;
     this.undoableMoves = Preconditions.checkNotNull(undoableMoves);
-    this.dependentUnits = Preconditions.checkNotNull(dependentUnits);
+    this.airTransportDependents = Preconditions.checkNotNull(airTransportDependents);
   }
 
   /**
@@ -114,12 +114,11 @@ final class MovableUnitsFilter {
   public FilterOperationResult filterUnitsThatCanMove(final Collection<Unit> units) {
     final List<Unit> best = getInitialUnitList(units);
 
-    final Collection<Unit> transportsToLoad = getPossibleTransportsToLoad(units);
-    MoveValidationResultWithDependents lastResult =
-        validateMoveWithDependents(best, transportsToLoad);
+    final Collection<Unit> seaTransportsToLoad = getPossibleSeaTransportsToLoad(units);
+    MoveValidationResultWithDependents lastResult = validateMove(best, seaTransportsToLoad);
     final MoveValidationResult allUnitsResult = lastResult.getResult();
     if (!allUnitsResult.isMoveValid()) {
-      lastResult = chooseSubsetOfUnitsThatCanMove(best, transportsToLoad, lastResult);
+      lastResult = chooseSubsetOfUnitsThatCanMove(best, seaTransportsToLoad, lastResult);
     }
 
     return new FilterOperationResult(allUnitsResult, lastResult);
@@ -127,13 +126,13 @@ final class MovableUnitsFilter {
 
   private MoveValidationResultWithDependents chooseSubsetOfUnitsThatCanMove(
       final List<Unit> units,
-      final Collection<Unit> transportsToLoad,
+      final Collection<Unit> seaTransportsToLoad,
       final MoveValidationResultWithDependents initialResult) {
-    if (!transportsToLoad.isEmpty()) {
+    if (!seaTransportsToLoad.isEmpty()) {
       final Collection<Unit> allUnits = addMustMoveWith(units);
       final Collection<Unit> loadedUnits =
-          TransportUtils.mapTransports(route, allUnits, transportsToLoad).keySet();
-      return validateMoveWithDependents(loadedUnits, transportsToLoad);
+          TransportUtils.mapTransports(route, allUnits, seaTransportsToLoad).keySet();
+      return validateMove(loadedUnits, seaTransportsToLoad);
     }
 
     MoveValidationResultWithDependents lastResult = initialResult;
@@ -141,14 +140,14 @@ final class MovableUnitsFilter {
     // if the player is invading only consider units that can invade
     if (isInvading()) {
       best = CollectionUtils.getMatches(best, Matches.unitCanInvade());
-      lastResult = validateMoveWithDependents(best, List.of());
+      lastResult = validateMove(best, List.of());
     }
 
     final boolean hasLandTransports = hasLandTransports(units);
     best.sort(getUnitComparator(best).reversed());
     while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
       best = nextSublist(best, hasLandTransports);
-      lastResult = validateMoveWithDependents(best, List.of());
+      lastResult = validateMove(best, List.of());
     }
     return lastResult;
   }
@@ -183,11 +182,11 @@ final class MovableUnitsFilter {
     return u1.isEquivalent(u2) && left1.equals(left2);
   }
 
-  private Collection<Unit> getPossibleTransportsToLoad(final Collection<Unit> units) {
+  private Collection<Unit> getPossibleSeaTransportsToLoad(final Collection<Unit> units) {
     // TODO kev check for already loaded airTransports
-    if (MoveValidator.isLoad(units, dependentUnits, route, player)) {
+    if (MoveValidator.isLoad(units, airTransportDependents, route, player)) {
       final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
-      return unitsAtEnd.getMatches(Matches.unitIsTransport().and(Matches.alliedUnit(player)));
+      return unitsAtEnd.getMatches(Matches.unitIsSeaTransport().and(Matches.alliedUnit(player)));
     }
     return List.of();
   }
@@ -214,17 +213,18 @@ final class MovableUnitsFilter {
     }
   }
 
-  private MoveValidationResultWithDependents validateMoveWithDependents(
-      final Collection<Unit> units, final Collection<Unit> transportsToLoad) {
+  private MoveValidationResultWithDependents validateMove(
+      final Collection<Unit> units, final Collection<Unit> seaTransportsToLoad) {
     final Collection<Unit> unitsWithDependents = addMustMoveWith(units);
     final MoveValidationResult result;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      final Map<Unit, Unit> unitsToTransports =
-          transportsToLoad.isEmpty()
+      final Map<Unit, Unit> unitsToSeaTransports =
+          seaTransportsToLoad.isEmpty()
               ? Map.of()
-              : TransportUtils.mapTransports(route, units, transportsToLoad);
+              : TransportUtils.mapTransports(route, units, seaTransportsToLoad);
       final MoveDescription move =
-          new MoveDescription(unitsWithDependents, route, unitsToTransports, dependentUnits);
+          new MoveDescription(
+              unitsWithDependents, route, unitsToSeaTransports, airTransportDependents);
       final MoveValidator moveValidator = new MoveValidator(data, nonCombat);
       if (moveType == MoveType.SPECIAL) {
         result = moveValidator.validateSpecialMove(move, player);
@@ -239,7 +239,7 @@ final class MovableUnitsFilter {
 
   private Collection<Unit> addMustMoveWith(final Collection<Unit> best) {
     final MustMoveWithDetails mustMoveWithDetails =
-        MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
+        MoveValidator.getMustMoveWith(route.getStart(), airTransportDependents, player);
     final var bestWithDependents = new HashSet<>(best);
     for (final Unit u : best) {
       bestWithDependents.addAll(mustMoveWithDetails.getMustMoveWithForUnit(u));

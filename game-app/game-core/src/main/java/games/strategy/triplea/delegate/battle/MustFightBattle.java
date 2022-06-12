@@ -832,7 +832,7 @@ public class MustFightBattle extends DependentBattle
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
             .andIf(
                 Properties.getIgnoreTransportInMovement(gameData.getProperties()),
-                Matches.unitIsNotTransportButCouldBeCombatTransport())
+                Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport())
             .build();
     Collection<Territory> possible =
         CollectionUtils.getMatches(

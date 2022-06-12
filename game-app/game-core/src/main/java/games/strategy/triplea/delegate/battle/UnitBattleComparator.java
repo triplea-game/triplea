@@ -77,11 +77,11 @@ public class UnitBattleComparator implements Comparator<Unit> {
     final boolean airOrCarrierOrTransport1 =
         Matches.unitIsAir().test(u1)
             || Matches.unitIsCarrier().test(u1)
-            || (!transporting1 && Matches.unitIsTransport().test(u1));
+            || (!transporting1 && Matches.unitIsSeaTransport().test(u1));
     final boolean airOrCarrierOrTransport2 =
         Matches.unitIsAir().test(u2)
             || Matches.unitIsCarrier().test(u2)
-            || (!transporting2 && Matches.unitIsTransport().test(u2));
+            || (!transporting2 && Matches.unitIsSeaTransport().test(u2));
     final boolean subDestroyer1 =
         Matches.unitHasSubBattleAbilities().test(u1) || Matches.unitIsDestroyer().test(u1);
     final boolean subDestroyer2 =
