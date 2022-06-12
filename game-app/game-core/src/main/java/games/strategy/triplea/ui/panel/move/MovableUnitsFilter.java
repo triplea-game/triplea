@@ -114,12 +114,11 @@ final class MovableUnitsFilter {
   public FilterOperationResult filterUnitsThatCanMove(final Collection<Unit> units) {
     final List<Unit> best = getInitialUnitList(units);
 
-    final Collection<Unit> transportsToLoad = getPossibleTransportsToLoad(units);
-    MoveValidationResultWithDependents lastResult =
-        validateMoveWithDependents(best, transportsToLoad);
+    final Collection<Unit> seaTransportsToLoad = getPossibleSeaTransportsToLoad(units);
+    MoveValidationResultWithDependents lastResult = validateMove(best, seaTransportsToLoad);
     final MoveValidationResult allUnitsResult = lastResult.getResult();
     if (!allUnitsResult.isMoveValid()) {
-      lastResult = chooseSubsetOfUnitsThatCanMove(best, transportsToLoad, lastResult);
+      lastResult = chooseSubsetOfUnitsThatCanMove(best, seaTransportsToLoad, lastResult);
     }
 
     return new FilterOperationResult(allUnitsResult, lastResult);
@@ -127,13 +126,13 @@ final class MovableUnitsFilter {
 
   private MoveValidationResultWithDependents chooseSubsetOfUnitsThatCanMove(
       final List<Unit> units,
-      final Collection<Unit> transportsToLoad,
+      final Collection<Unit> seaTransportsToLoad,
       final MoveValidationResultWithDependents initialResult) {
-    if (!transportsToLoad.isEmpty()) {
+    if (!seaTransportsToLoad.isEmpty()) {
       final Collection<Unit> allUnits = addMustMoveWith(units);
       final Collection<Unit> loadedUnits =
-          TransportUtils.mapTransports(route, allUnits, transportsToLoad).keySet();
-      return validateMoveWithDependents(loadedUnits, transportsToLoad);
+          TransportUtils.mapTransports(route, allUnits, seaTransportsToLoad).keySet();
+      return validateMove(loadedUnits, seaTransportsToLoad);
     }
 
     MoveValidationResultWithDependents lastResult = initialResult;
@@ -141,14 +140,14 @@ final class MovableUnitsFilter {
     // if the player is invading only consider units that can invade
     if (isInvading()) {
       best = CollectionUtils.getMatches(best, Matches.unitCanInvade());
-      lastResult = validateMoveWithDependents(best, List.of());
+      lastResult = validateMove(best, List.of());
     }
 
     final boolean hasLandTransports = hasLandTransports(units);
     best.sort(getUnitComparator(best).reversed());
     while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
       best = nextSublist(best, hasLandTransports);
-      lastResult = validateMoveWithDependents(best, List.of());
+      lastResult = validateMove(best, List.of());
     }
     return lastResult;
   }
@@ -183,7 +182,7 @@ final class MovableUnitsFilter {
     return u1.isEquivalent(u2) && left1.equals(left2);
   }
 
-  private Collection<Unit> getPossibleTransportsToLoad(final Collection<Unit> units) {
+  private Collection<Unit> getPossibleSeaTransportsToLoad(final Collection<Unit> units) {
     // TODO kev check for already loaded airTransports
     if (MoveValidator.isLoad(units, airTransportDependents, route, player)) {
       final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
@@ -214,15 +213,15 @@ final class MovableUnitsFilter {
     }
   }
 
-  private MoveValidationResultWithDependents validateMoveWithDependents(
-      final Collection<Unit> units, final Collection<Unit> transportsToLoad) {
+  private MoveValidationResultWithDependents validateMove(
+      final Collection<Unit> units, final Collection<Unit> seaTransportsToLoad) {
     final Collection<Unit> unitsWithDependents = addMustMoveWith(units);
     final MoveValidationResult result;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final Map<Unit, Unit> unitsToSeaTransports =
-          transportsToLoad.isEmpty()
+          seaTransportsToLoad.isEmpty()
               ? Map.of()
-              : TransportUtils.mapTransports(route, units, transportsToLoad);
+              : TransportUtils.mapTransports(route, units, seaTransportsToLoad);
       final MoveDescription move =
           new MoveDescription(
               unitsWithDependents, route, unitsToSeaTransports, airTransportDependents);
