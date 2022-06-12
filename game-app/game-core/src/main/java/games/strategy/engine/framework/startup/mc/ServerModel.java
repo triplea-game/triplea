@@ -257,7 +257,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               }
             });
 
-        lobbyWatcherThread.createLobbyWatcher(gameToLobbyConnection);
+        lobbyWatcherThread.createLobbyWatcher(gameToLobbyConnection, !launchAction.isAiFallback());
       } else {
         gameHostingResponse = null;
       }

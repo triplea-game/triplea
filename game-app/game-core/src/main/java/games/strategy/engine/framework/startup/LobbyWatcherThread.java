@@ -24,12 +24,14 @@ public class LobbyWatcherThread {
   }
 
   /** Creates, connects, the lobby thread to the lobby. */
-  public void createLobbyWatcher(final GameToLobbyConnection gameToLobbyConnection) {
+  public void createLobbyWatcher(
+      final GameToLobbyConnection gameToLobbyConnection, final boolean isHuman) {
     InGameLobbyWatcher.newInGameLobbyWatcher(
             serverMessenger,
             gameToLobbyConnection,
             watcherThreadMessaging,
-            lobbyWatcher.getInGameLobbyWatcher())
+            lobbyWatcher.getInGameLobbyWatcher(),
+            isHuman)
         .ifPresent(
             watcher -> {
               watcher.setGameSelectorModel(gameSelectorModel);
