@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -34,6 +35,7 @@ import javax.swing.border.EtchedBorder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
@@ -118,39 +120,74 @@ public class BottomBar extends JPanel implements TerritoryListener {
 
   public void setTerritory(final @Nullable Territory territory) {
     listenForTerritoryUpdates(territory);
-    territoryInfo.removeAll();
 
     if (territory == null) {
-      SwingComponents.redraw(territoryInfo);
+      SwingUtilities.invokeLater(
+          () -> {
+            territoryInfo.removeAll();
+            SwingComponents.redraw(territoryInfo);
+          });
       return;
     }
 
+    // Get all the needed data while holding a lock, then invoke UI updates on the EDT.
+    try (GameData.Unlocker ignored = territory.getData().acquireReadLock()) {
+      final String territoryName = territory.getName();
+      final Collection<UnitCategory> units =
+          uiContext.isShowUnitsInStatusBar()
+              ? UnitSeparator.categorize(territory.getUnits())
+              : List.of();
+      final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+      final IntegerMap<Resource> resources = new IntegerMap<>();
+      final List<String> territoryEffectNames;
+      if (ta == null) {
+        territoryEffectNames = List.of();
+      } else {
+        territoryEffectNames =
+            ta.getTerritoryEffect().stream()
+                .map(TerritoryEffect::getName)
+                .collect(Collectors.toList());
+        final int production = ta.getProduction();
+        if (production > 0) {
+          resources.add(new Resource(Constants.PUS, territory.getData()), production);
+        }
+        Optional.ofNullable(ta.getResources()).ifPresent(r -> resources.add(r.getResourcesCopy()));
+      }
+
+      SwingUtilities.invokeLater(
+          () -> updateTerritoryInfo(territoryName, territoryEffectNames, units, resources));
+    }
+  }
+
+  private void updateTerritoryInfo(
+      String territoryName,
+      List<String> territoryEffectNames,
+      Collection<UnitCategory> units,
+      IntegerMap<Resource> resources) {
     // Box layout with horizontal glue on both sides achieves the following desirable properties:
     //   1. If the content is narrower than the available space, it will be centered.
     //   2. If the content is wider than the available space, then the beginning will be shown,
     //      which is the more important information (territory name, income, etc).
     //   3. Elements are vertically centered.
+    territoryInfo.removeAll();
     territoryInfo.setLayout(new BoxLayout(territoryInfo, BoxLayout.LINE_AXIS));
     territoryInfo.add(Box.createHorizontalGlue());
 
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-
     // Display territory effects, territory name, resources and units.
     final StringBuilder territoryEffectText = new StringBuilder();
-    final List<TerritoryEffect> territoryEffects = ta != null ? ta.getTerritoryEffect() : List.of();
-    for (final TerritoryEffect effect : territoryEffects) {
+    for (final String effectName : territoryEffectNames) {
       try {
         final JLabel label = new JLabel();
-        label.setToolTipText(effect.getName());
-        label.setIcon(uiContext.getTerritoryEffectImageFactory().getIcon(effect.getName()));
+        label.setToolTipText(effectName);
+        label.setIcon(uiContext.getTerritoryEffectImageFactory().getIcon(effectName));
         territoryInfo.add(label);
         territoryInfo.add(Box.createHorizontalStrut(6));
       } catch (final IllegalStateException e) {
-        territoryEffectText.append(effect.getName()).append(", ");
+        territoryEffectText.append(effectName).append(", ");
       }
     }
 
-    territoryInfo.add(createTerritoryNameLabel(territory.getName()));
+    territoryInfo.add(createTerritoryNameLabel(territoryName));
 
     if (territoryEffectText.length() > 0) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
@@ -158,19 +195,17 @@ public class BottomBar extends JPanel implements TerritoryListener {
       territoryInfo.add(territoryEffectTextLabel);
     }
 
-    if (ta != null) {
-      addTerritoryResourceDetails(ta, territory.getData());
+    for (final Resource resource : resources.keySet()) {
+      territoryInfo.add(Box.createHorizontalStrut(6));
+      territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
     }
 
-    if (uiContext.isShowUnitsInStatusBar()) {
-      final Collection<UnitCategory> units = UnitSeparator.categorize(territory.getUnits());
-      if (!units.isEmpty()) {
-        JSeparator separator = new JSeparator(JSeparator.VERTICAL);
-        separator.setMaximumSize(new Dimension(40, getHeight()));
-        separator.setPreferredSize(separator.getMaximumSize());
-        territoryInfo.add(separator);
-        territoryInfo.add(createUnitBar(units));
-      }
+    if (!units.isEmpty()) {
+      JSeparator separator = new JSeparator(JSeparator.VERTICAL);
+      separator.setMaximumSize(new Dimension(40, getHeight()));
+      separator.setPreferredSize(separator.getMaximumSize());
+      territoryInfo.add(separator);
+      territoryInfo.add(createUnitBar(units));
     }
 
     territoryInfo.add(Box.createHorizontalGlue());
@@ -192,19 +227,6 @@ public class BottomBar extends JPanel implements TerritoryListener {
     int topPad = extraVerticalSpace / 2;
     int bottomPad = extraVerticalSpace - topPad; // Might != topPad if extraVerticalSpace is odd.
     return BorderFactory.createEmptyBorder(topPad, 0, bottomPad, 0);
-  }
-
-  private void addTerritoryResourceDetails(TerritoryAttachment ta, GameData data) {
-    final IntegerMap<Resource> resources = new IntegerMap<>();
-    final int production = ta.getProduction();
-    if (production > 0) {
-      resources.add(new Resource(Constants.PUS, data), production);
-    }
-    Optional.ofNullable(ta.getResources()).ifPresent(r -> resources.add(r.getResourcesCopy()));
-    for (final Resource resource : resources.keySet()) {
-      territoryInfo.add(Box.createHorizontalStrut(6));
-      territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
-    }
   }
 
   private SimpleUnitPanel createUnitBar(Collection<UnitCategory> units) {
@@ -243,25 +265,35 @@ public class BottomBar extends JPanel implements TerritoryListener {
   }
 
   private void listenForTerritoryUpdates(@Nullable Territory territory) {
-    final GameData oldGameData = currentTerritory != null ? currentTerritory.getData() : null;
-    final GameData newGameData = territory != null ? territory.getData() : null;
-    // Re-subscribe listener on the right GameData, which could change when toggling between
-    // history and the current game.
-    if (!ObjectUtils.referenceEquals(oldGameData, newGameData)) {
-      if (oldGameData != null) {
-        oldGameData.removeTerritoryListener(this);
-      }
-      if (newGameData != null) {
-        newGameData.addTerritoryListener(this);
-      }
-    }
-    currentTerritory = territory;
+    // Run async, as this is called while holding a GameData lock so we shouldn't grab a different
+    // data's lock in this case.
+    AsyncRunner.runAsync(
+            () -> {
+              GameData oldGameData = currentTerritory != null ? currentTerritory.getData() : null;
+              GameData newGameData = territory != null ? territory.getData() : null;
+              // Re-subscribe listener on the right GameData, which could change when toggling
+              // between history and the current game.
+              if (!ObjectUtils.referenceEquals(oldGameData, newGameData)) {
+                if (oldGameData != null) {
+                  try (GameData.Unlocker ignored = oldGameData.acquireWriteLock()) {
+                    oldGameData.removeTerritoryListener(this);
+                  }
+                }
+                if (newGameData != null) {
+                  try (GameData.Unlocker ignored = newGameData.acquireWriteLock()) {
+                    newGameData.addTerritoryListener(this);
+                  }
+                }
+              }
+              currentTerritory = territory;
+            })
+        .exceptionally(e -> log.error("Territory listener error:", e));
   }
 
   @Override
   public void unitsChanged(Territory territory) {
     if (territory.equals(currentTerritory)) {
-      SwingUtilities.invokeLater(() -> setTerritory(territory));
+      setTerritory(territory);
     }
   }
 
