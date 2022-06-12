@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
+import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.util.UnitCategory;
@@ -39,12 +40,13 @@ import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
 
 @Slf4j
-public class BottomBar extends JPanel {
+public class BottomBar extends JPanel implements TerritoryListener {
   private final UiContext uiContext;
   private final GameData data;
 
   private final ResourceBar resourceBar;
   private final JPanel territoryInfo = new JPanel();
+  private @Nullable Territory currentTerritory;
 
   private final JLabel statusMessage = new JLabel();
 
@@ -56,6 +58,7 @@ public class BottomBar extends JPanel {
     this.uiContext = uiContext;
     this.data = data;
     this.resourceBar = new ResourceBar(data, uiContext);
+    data.addTerritoryListener(this);
 
     setLayout(new BorderLayout());
     add(createCenterPanel(), BorderLayout.CENTER);
@@ -118,6 +121,7 @@ public class BottomBar extends JPanel {
   public void setTerritory(final @Nullable Territory territory) {
     territoryInfo.removeAll();
 
+    currentTerritory = territory;
     if (territory == null) {
       SwingComponents.redraw(territoryInfo);
       return;
@@ -237,4 +241,17 @@ public class BottomBar extends JPanel {
         future, throwable -> log.error("Failed to set round icon for " + player, throwable));
     playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
   }
+
+  @Override
+  public void unitsChanged(final Territory territory) {
+    if (territory.equals(currentTerritory)) {
+      setTerritory(territory);
+    }
+  }
+
+  @Override
+  public void ownerChanged(final Territory territory) {}
+
+  @Override
+  public void attachmentChanged(final Territory territory) {}
 }
