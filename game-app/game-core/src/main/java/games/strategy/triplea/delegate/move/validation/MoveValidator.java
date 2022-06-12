@@ -1442,33 +1442,32 @@ public class MoveValidator {
       if (result.hasError()) {
         return result;
       }
-      final Territory routeEnd = route.getEnd();
+      for (final Unit airTransport : airTransportDependents.keySet()) {
+        if (airTransport.hasMoved()) {
+          result.addDisallowedUnit("Cannot move then transport paratroops", airTransport);
+        }
+      }
+      final boolean friendlyEnd = Matches.isTerritoryFriendly(player).test(route.getEnd());
+      final boolean canMoveNonCombat =
+          Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties());
+      final boolean isWrongPhase = !nonCombat && friendlyEnd && canMoveNonCombat;
+      final boolean mustAdvanceToBattle = friendlyEnd && !canMoveNonCombat;
       for (final Unit paratroop : paratroopersToAirTransports.keySet()) {
         if (paratroop.hasMoved()) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
-        final Unit transport = paratroopersToAirTransports.get(paratroop);
-        if (transport.hasMoved()) {
-          result.addDisallowedUnit("Cannot move then transport paratroops", transport);
-        }
-        if (Matches.isTerritoryFriendly(player).test(routeEnd)
-            && !Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
+        if (mustAdvanceToBattle) {
           result.addDisallowedUnit("Paratroops must advance to battle", paratroop);
         }
-        if (!nonCombat
-            && Matches.isTerritoryFriendly(player).test(routeEnd)
-            && Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
+        if (isWrongPhase) {
           result.addDisallowedUnit(
               "Paratroops may only airlift during Non-Combat Movement Phase", paratroop);
         }
       }
-      if (!Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data.getProperties())) {
-        for (final Territory current :
-            CollectionUtils.getMatches(route.getMiddleSteps(), Matches.territoryIsLand())) {
-          if (Matches.isTerritoryEnemy(player).test(current)) {
-            return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
-          }
-        }
+      if (!Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data.getProperties())
+          && route.getMiddleSteps().stream()
+              .anyMatch(Matches.territoryIsLand().and(Matches.isTerritoryEnemy(player)))) {
+        return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
       }
     }
     return result;
