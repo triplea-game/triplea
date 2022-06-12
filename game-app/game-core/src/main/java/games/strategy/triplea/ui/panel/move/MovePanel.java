@@ -486,7 +486,6 @@ public class MovePanel extends AbstractMovePanel {
         }
 
         private void selectEndPoint(final Territory territory) {
-          System.err.println("selectEndPoint");
           final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
           if (unitsThatCanMoveOnRoute.isEmpty() || route == null) {
             cancelMove();

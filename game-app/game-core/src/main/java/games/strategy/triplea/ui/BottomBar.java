@@ -261,7 +261,7 @@ public class BottomBar extends JPanel implements TerritoryListener {
   @Override
   public void unitsChanged(Territory territory) {
     if (territory.equals(currentTerritory)) {
-      setTerritory(territory);
+      SwingUtilities.invokeLater(() -> setTerritory(territory));
     }
   }
 
