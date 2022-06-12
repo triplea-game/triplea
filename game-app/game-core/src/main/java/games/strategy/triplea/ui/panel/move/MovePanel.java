@@ -486,6 +486,7 @@ public class MovePanel extends AbstractMovePanel {
         }
 
         private void selectEndPoint(final Territory territory) {
+          System.err.println("selectEndPoint");
           final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
           if (unitsThatCanMoveOnRoute.isEmpty() || route == null) {
             cancelMove();
@@ -495,11 +496,11 @@ public class MovePanel extends AbstractMovePanel {
             return;
           }
           setSelectedEndpointTerritory(territory);
-          Collection<Unit> transports = null;
+          Collection<Unit> seaTransports = null;
           final var units = new ArrayList<>(unitsThatCanMoveOnRoute);
           if (route.isLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
-            transports = getSeaTransportsToLoad(route, units);
-            if (transports.isEmpty()) {
+            seaTransports = getSeaTransportsToLoad(route, units);
+            if (seaTransports.isEmpty()) {
               cancelMove();
               return;
             }
@@ -541,9 +542,9 @@ public class MovePanel extends AbstractMovePanel {
             }
           }
           final Map<Unit, Unit> unitsToSeaTransports =
-              transports == null
+              seaTransports == null
                   ? Map.of()
-                  : TransportUtils.mapTransports(route, units, transports);
+                  : TransportUtils.mapTransports(route, units, seaTransports);
           final MoveDescription message =
               new MoveDescription(units, route, unitsToSeaTransports, airTransportDependents);
           setMoveMessage(message);
@@ -1120,13 +1121,13 @@ public class MovePanel extends AbstractMovePanel {
     for (final Unit unit : unitsToLoad) {
       minTransportCost = Math.min(minTransportCost, unit.getUnitAttachment().getTransportCost());
     }
-    final Predicate<Unit> candidateTransportsMatch =
+    final Predicate<Unit> candidateSeaTransportsMatch =
         Matches.unitIsSeaTransport().and(Matches.alliedUnit(unitOwner));
-    final List<Unit> candidateTransports =
-        CollectionUtils.getMatches(route.getEnd().getUnits(), candidateTransportsMatch);
+    final List<Unit> candidateSeaTransports =
+        CollectionUtils.getMatches(route.getEnd().getUnits(), candidateSeaTransportsMatch);
 
     // remove transports that don't have enough capacity
-    final Iterator<Unit> transportIter = candidateTransports.iterator();
+    final Iterator<Unit> transportIter = candidateSeaTransports.iterator();
     while (transportIter.hasNext()) {
       final Unit transport = transportIter.next();
       final int capacity = TransportTracker.getAvailableCapacity(transport);
@@ -1136,15 +1137,15 @@ public class MovePanel extends AbstractMovePanel {
     }
 
     // nothing to choose
-    if (candidateTransports.isEmpty()) {
+    if (candidateSeaTransports.isEmpty()) {
       return List.of();
     }
 
     // sort transports in preferred load order
-    sortTransportsToLoad(candidateTransports, route);
+    sortTransportsToLoad(candidateSeaTransports, route);
     final List<Unit> availableUnits = new ArrayList<>(unitsToLoad);
     final IntegerMap<Unit> availableCapacityMap = new IntegerMap<>();
-    for (final Unit transport : candidateTransports) {
+    for (final Unit transport : candidateSeaTransports) {
       final int capacity = TransportTracker.getAvailableCapacity(transport);
       availableCapacityMap.put(transport, capacity);
     }
@@ -1159,23 +1160,23 @@ public class MovePanel extends AbstractMovePanel {
     // Note that if any allied transports qualify as defaults, we will always prompt with a
     // UnitChooser later on so that it is obvious to the player.
     boolean useAlliedTransports = false;
-    final Collection<Unit> capableTransports = new ArrayList<>(candidateTransports);
+    final Collection<Unit> capableSeaTransports = new ArrayList<>(candidateSeaTransports);
 
     // only allow incapable transports for updateUnitsThatCanMoveOnRoute
     // so that we can have a nice UI error shown if these transports are selected, since it may not
     // be obvious
     final Collection<Unit> incapableTransports =
         CollectionUtils.getMatches(
-            capableTransports, Matches.transportCannotUnload(route.getEnd()));
-    capableTransports.removeAll(incapableTransports);
+            capableSeaTransports, Matches.transportCannotUnload(route.getEnd()));
+    capableSeaTransports.removeAll(incapableTransports);
     final Predicate<Unit> alliedMatch = Matches.unitIsOwnedBy(unitOwner).negate();
     final Collection<Unit> alliedTransports =
-        CollectionUtils.getMatches(capableTransports, alliedMatch);
-    capableTransports.removeAll(alliedTransports);
+        CollectionUtils.getMatches(capableSeaTransports, alliedMatch);
+    capableSeaTransports.removeAll(alliedTransports);
 
     // First, load capable transports
     final Map<Unit, Unit> unitsToCapableTransports =
-        TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, capableTransports);
+        TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, capableSeaTransports);
     for (final Unit unit : unitsToCapableTransports.keySet()) {
       final Unit transport = unitsToCapableTransports.get(unit);
       final int unitCost = unit.getUnitAttachment().getTransportCost();
@@ -1210,17 +1211,17 @@ public class MovePanel extends AbstractMovePanel {
       }
       availableUnits.removeAll(unitsToIncapableTransports.keySet());
     } else {
-      candidateTransports.removeAll(incapableTransports);
+      candidateSeaTransports.removeAll(incapableTransports);
     }
 
     // force UnitChooser to pop up if we are choosing allied transports
     if (!useAlliedTransports) {
-      if (candidateTransports.size() == 1) {
-        return candidateTransports;
+      if (candidateSeaTransports.size() == 1) {
+        return candidateSeaTransports;
       }
       // all the same type, don't ask unless we have more than 1 unit type
       if (UnitSeparator.categorize(
-                      candidateTransports,
+                      candidateSeaTransports,
                       UnitSeparator.SeparatorCategories.builder()
                           .dependents(endMustMoveWith.getMustMoveWith())
                           .movement(true)
@@ -1228,34 +1229,34 @@ public class MovePanel extends AbstractMovePanel {
                   .size()
               == 1
           && unitsToLoad.size() == 1) {
-        return candidateTransports;
+        return candidateSeaTransports;
       }
       // If we've filled all transports, then no user intervention is required.
       // It is possible to make "wrong" decisions if there are mixed unit types and
       // mixed transport categories, but there is no UI to manage that anyway.
       // Players will need to load incrementally in such cases.
-      if (defaultSelections.containsAll(candidateTransports)) {
-        return candidateTransports;
+      if (defaultSelections.containsAll(candidateSeaTransports)) {
+        return candidateSeaTransports;
       }
     }
 
     // the match criteria to ensure that chosen transports will match selected units
-    final Predicate<Collection<Unit>> transportsToLoadMatch =
+    final Predicate<Collection<Unit>> seaTransportsToLoadMatch =
         units -> {
           final Collection<Unit> transports =
               CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
           // prevent too many transports from being selected
-          return (transports.size() <= Math.min(unitsToLoad.size(), candidateTransports.size()));
+          return transports.size() <= Math.min(unitsToLoad.size(), candidateSeaTransports.size());
         };
     final UnitChooser chooser =
         new UnitChooser(
-            candidateTransports,
+            candidateSeaTransports,
             defaultSelections,
             endMustMoveWith.getMustMoveWith(),
             UnitSeparator.SeparatorCategories.builder().movement(true).build(),
             false,
             getMap().getUiContext(),
-            transportsToLoadMatch);
+            seaTransportsToLoadMatch);
     chooser.setAllButtonVisible(false);
     if (!confirmUnitChooserDialog(chooser, "Select transports to load")) {
       return List.of();
