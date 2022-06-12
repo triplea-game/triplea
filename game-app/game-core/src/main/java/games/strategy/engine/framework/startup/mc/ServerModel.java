@@ -15,7 +15,6 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
@@ -181,7 +180,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
     for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       final String name = player.getName();
-      if (GameRunner.headless()) {
+      if (launchAction.isAiFallback()) {
         if (player.getIsDisabled()) {
           playersToNodeListing.put(name, messengers.getLocalNode().getName());
           localPlayerTypes.put(name, PlayerTypes.WEAK_AI);
@@ -337,9 +336,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         return;
       }
       playersEnabledListing.put(playerName, enabled);
-      if (GameRunner.headless()) {
-        // we do not want the host bot to actually play, so set to null if enabled, and set to weak
-        // ai if disabled
+      if (launchAction.isAiFallback()) {
+        // we do not want the host bot to actually play, so set to null if enabled,
+        // and set to weak ai if disabled
         if (enabled) {
           playersToNodeListing.put(playerName, null);
         } else {
@@ -478,7 +477,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
     final Map<String, PlayerTypes.Type> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerTypes.Type defaultLocalType = launchAction.getDefaultPlayerType();
+    final PlayerTypes.Type defaultLocalType =
+        launchAction.isAiFallback() ? PlayerTypes.WEAK_AI : PlayerTypes.HUMAN_PLAYER;
     for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
       final String player = entry.getKey();
       final String playedBy = entry.getValue();

@@ -10,7 +10,6 @@ import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.Messengers;
@@ -43,7 +42,11 @@ public interface LaunchAction {
 
   ChatModel createChatModel(String chatName, Messengers messengers);
 
-  PlayerTypes.Type getDefaultPlayerType();
+  /**
+   * Controls how sparsely the AI should be used when preparing a game. Headless systems may choose
+   * to avoid AI usage where possible to reduce the load on the system.
+   */
+  boolean isAiFallback();
 
   WatcherThreadMessaging createThreadMessaging();
 

@@ -17,7 +17,6 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.Messengers;
@@ -125,8 +124,8 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public PlayerTypes.Type getDefaultPlayerType() {
-    return PlayerTypes.WEAK_AI;
+  public boolean isAiFallback() {
+    return true;
   }
 
   @Override

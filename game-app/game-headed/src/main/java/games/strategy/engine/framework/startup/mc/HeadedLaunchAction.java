@@ -12,7 +12,6 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
@@ -127,8 +126,8 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public PlayerTypes.Type getDefaultPlayerType() {
-    return PlayerTypes.HUMAN_PLAYER;
+  public boolean isAiFallback() {
+    return false;
   }
 
   @Override
