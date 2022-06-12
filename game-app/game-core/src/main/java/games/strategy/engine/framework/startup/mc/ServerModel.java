@@ -191,9 +191,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           playersToNodeListing.put(name, null);
         }
       } else {
-        Optional.ofNullable(messengers)
-            .ifPresent(
-                messenger -> playersToNodeListing.put(name, messenger.getLocalNode().getName()));
+        playersToNodeListing.put(name, messengers.getLocalNode().getName());
       }
       playerNamesAndAlliancesInTurnOrder.put(
           name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
