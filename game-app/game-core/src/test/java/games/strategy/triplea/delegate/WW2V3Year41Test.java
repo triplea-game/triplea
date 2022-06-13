@@ -1278,8 +1278,7 @@ class WW2V3Year41Test {
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg);
     // only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD
-    // bombard, but only 2 ships
-    // may bombard total)
+    // bombard, but only 2 ships may bombard total)
     assertEquals(2, mfb.getBombardingUnits().size());
     givenRemotePlayerWillSelectCasualtiesPer(
         bridge,
@@ -1291,7 +1290,7 @@ class WW2V3Year41Test {
               new ArrayList<>(),
               false);
         });
-    // Show that     // Show that bombard casualties can return fire
+    // Show that bombard casualties can return fire
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
     // 2= Battleship hitting a 3, 2=Cruiser hitting a 3, 15=British infantry hitting once
     whenGetRandom(bridge).thenAnswer(withValues(2, 2)).thenAnswer(withValues(1, 5));
@@ -1464,12 +1463,12 @@ class WW2V3Year41Test {
 
     @Test
     void testMechInfSimple() {
-      final Route r = new Route(france, germany, poland);
       // 1 armour and 1 infantry
       final List<Unit> toMove =
           new ArrayList<>(france.getUnitCollection().getMatches(Matches.unitCanBlitz()));
+      assertThat(toMove, hasSize(1));
       toMove.add(france.getUnitCollection().getMatches(Matches.unitIsLandTransportable()).get(0));
-      move(toMove, r);
+      move(toMove, new Route(france, germany, poland));
     }
 
     @Test
@@ -1482,8 +1481,27 @@ class WW2V3Year41Test {
           new Route(germany, france));
       // try to move all the units in france, the infantry should not be able to move
       final Route r = new Route(france, germany);
-      final String error = moveDelegate(gameData).move(france.getUnits(), r);
-      assertNotNull(error);
+      assertError(moveDelegate(gameData).move(france.getUnits(), r));
+    }
+
+    @Test
+    void testMechInfBlitz() {
+      final Territory eastPoland = territory("East Poland", gameData);
+      final Territory beloRussia = territory("Belorussia", gameData);
+      final Route r = new Route(poland, eastPoland, beloRussia);
+      removeFrom(eastPoland, eastPoland.getUnits());
+      // Test with regular infantry and 2mv infantry to make sure they don't get blitz either.
+      UnitType[] unitTypesToTest =
+          new UnitType[] {infantry(gameData), unitType("infantry_2mv", gameData)};
+      for (UnitType paratrooperUnitType : unitTypesToTest) {
+        List<Unit> units = new ArrayList<>(armour(gameData).create(1, germans));
+        units.addAll(paratrooperUnitType.create(2, germans));
+        addTo(poland, units);
+        // Can only carry one of the infantry with one tank. The other can't blitz.
+        assertError(moveDelegate(gameData).performMove(new MoveDescription(units, r)));
+        units.remove(2);
+        assertValid(moveDelegate(gameData).performMove(new MoveDescription(units, r)));
+      }
     }
   }
 
