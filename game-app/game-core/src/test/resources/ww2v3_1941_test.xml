@@ -1106,7 +1106,8 @@
                          <option name="artillerySupportable" value="true"/>
                 </attachment>
 
-                <attachment name="unitAttachment" attachTo="infantry_2mv" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                <!-- This unit type is only for testing and doesn't exist in the actual ww2v3 rules. -->
+                <attachment name="unitAttachment" attachTo="infantry_2mv" javaClass="UnitAttachment">
                         <option name="movement" value="2"/>
                         <option name="transportCost" value="2"/>
                         <option name="isInfantry" value="true"/>
