@@ -3,7 +3,9 @@ package games.strategy.triplea.delegate;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,8 +26,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -193,6 +197,13 @@ class VictoryTest {
 
     Collection<Unit> infantryUnit = GameDataTestUtil.infantry(gameData).create(1, italians);
     gameData.performChange(ChangeFactory.addUnits(angloEgypt, infantryUnit));
+    Collection<Unit> tankUnit = GameDataTestUtil.armour(gameData).create(1, italians);
+    gameData.performChange(ChangeFactory.addUnits(angloEgypt, tankUnit));
+    Collection<Unit> tankAndInfantry =
+        List.of(CollectionUtils.getAny(tankUnit), CollectionUtils.getAny(infantryUnit));
+    Collection<Unit> enemyUnits =
+        CollectionUtils.getMatches(angloEgypt.getUnits(), Matches.unitIsEnemyOf(italians));
+    assertThat(enemyUnits, not(empty()));
 
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -201,10 +212,32 @@ class VictoryTest {
     assertThat(
         moveDelegate.move(infantryUnit, route),
         is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+    // This is not allowed with a blitzing unit either.
+    assertThat(Matches.unitCanBlitz().test(CollectionUtils.getAny(tankUnit)), is(true));
+    assertThat(
+        moveDelegate.move(tankUnit, route),
+        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+    // Or with both.
+    assertThat(
+        moveDelegate.move(tankAndInfantry, route),
+        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+
+    // The same is true if we remove all enemy units out of angloEgypt (it's still contested).
+    gameData.performChange(ChangeFactory.removeUnits(angloEgypt, enemyUnits));
+    assertThat(
+        moveDelegate.move(infantryUnit, route),
+        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+    assertThat(
+        moveDelegate.move(tankUnit, route),
+        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+    // Or with both.
+    assertThat(
+        moveDelegate.move(tankAndInfantry, route),
+        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
 
     // The same move with CAN_ATTACK_FROM_CONTESTED_TERRITORIES set to true is valid.
     gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-    assertThat(moveDelegate.move(infantryUnit, route), is(nullValue()));
+    assertThat(moveDelegate.move(tankAndInfantry, route), is(nullValue()));
 
     moveDelegate.end();
   }
