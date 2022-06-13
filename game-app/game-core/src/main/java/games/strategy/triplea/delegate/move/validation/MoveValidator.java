@@ -485,9 +485,7 @@ public class MoveValidator {
         }
       }
     }
-    if (result.hasDisallowedUnits()) {
 
-    }
     // check aircraft
     if (units.stream().anyMatch(Matches.unitIsAir())
         && route.hasSteps()
