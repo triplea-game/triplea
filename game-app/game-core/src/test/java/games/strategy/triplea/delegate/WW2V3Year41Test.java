@@ -1446,45 +1446,45 @@ class WW2V3Year41Test {
     assertError(error);
   }
 
-  @Test
-  void testMechInfSimple() {
+  @Nested
+  final class MechInfantry {
     final GamePlayer germans = germans(gameData);
     final Territory france = territory("France", gameData);
     final Territory germany = territory("Germany", gameData);
     final Territory poland = territory("Poland", gameData);
-    germans.getTechAttachment().setMechanizedInfantry("true");
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    final Route r = new Route(france, germany, poland);
-    // 1 armour and 1 infantry
-    final List<Unit> toMove =
-        new ArrayList<>(france.getUnitCollection().getMatches(Matches.unitCanBlitz()));
-    toMove.add(france.getUnitCollection().getMatches(Matches.unitIsLandTransportable()).get(0));
-    move(toMove, r);
-  }
 
-  @Test
-  void testMechInfUnitAlreadyMovedSimple() {
-    final GamePlayer germans = germans(gameData);
-    final Territory france = territory("France", gameData);
-    final Territory germany = territory("Germany", gameData);
-    germans.getTechAttachment().setMechanizedInfantry("true");
-    final IDelegateBridge bridge = newDelegateBridge(germans);
-    advanceToStep(bridge, "CombatMove");
-    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
-    moveDelegate(gameData).start();
-    // get rid of the infantry in france
-    removeFrom(france, france.getUnitCollection().getMatches(Matches.unitIsLandTransportable()));
-    // move an infantry from germany to france
-    move(
-        germany.getUnitCollection().getMatches(Matches.unitIsLandTransportable()).subList(0, 1),
-        new Route(germany, france));
-    // try to move all the units in france, the infantry should not be able to move
-    final Route r = new Route(france, germany);
-    final String error = moveDelegate(gameData).move(france.getUnits(), r);
-    assertNotNull(error);
+    @BeforeEach
+    void setUp() {
+      germans.getTechAttachment().setMechanizedInfantry("true");
+      final IDelegateBridge bridge = newDelegateBridge(germans);
+      advanceToStep(bridge, "CombatMove");
+      moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+      moveDelegate(gameData).start();
+    }
+
+    @Test
+    void testMechInfSimple() {
+      final Route r = new Route(france, germany, poland);
+      // 1 armour and 1 infantry
+      final List<Unit> toMove =
+          new ArrayList<>(france.getUnitCollection().getMatches(Matches.unitCanBlitz()));
+      toMove.add(france.getUnitCollection().getMatches(Matches.unitIsLandTransportable()).get(0));
+      move(toMove, r);
+    }
+
+    @Test
+    void testMechInfUnitAlreadyMovedSimple() {
+      // get rid of the infantry in france
+      removeFrom(france, france.getUnitCollection().getMatches(Matches.unitIsLandTransportable()));
+      // move an infantry from germany to france
+      move(
+          germany.getUnitCollection().getMatches(Matches.unitIsLandTransportable()).subList(0, 1),
+          new Route(germany, france));
+      // try to move all the units in france, the infantry should not be able to move
+      final Route r = new Route(france, germany);
+      final String error = moveDelegate(gameData).move(france.getUnits(), r);
+      assertNotNull(error);
+    }
   }
 
   @Nested
