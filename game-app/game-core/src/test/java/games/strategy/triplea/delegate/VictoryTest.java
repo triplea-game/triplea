@@ -28,6 +28,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -38,35 +39,34 @@ import org.triplea.java.collections.IntegerMap;
  * probably should never be played.
  */
 class VictoryTest {
-  private GameData gameData;
-  private GamePlayer italians;
-  private GamePlayer germans;
-  private GamePlayer british;
-  private IDelegateBridge testBridge;
+  private GameData gameData = TestMapGameData.VICTORY_TEST.getGameData();
+  private GamePlayer italians = GameDataTestUtil.italians(gameData);
+  private GamePlayer germans = GameDataTestUtil.germans(gameData);
 
+  private GamePlayer british = GameDataTestUtil.british(gameData);
+  private UnitType motorized =
+      gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MOTORIZED);
+  private UnitType armour = GameDataTestUtil.armour(gameData);
+  private UnitType fighter = GameDataTestUtil.fighter(gameData);
+  private UnitType carrier = GameDataTestUtil.carrier(gameData);
+  private Territory belgianCongo = gameData.getMap().getTerritory("Belgian Congo");
+  private Territory frenchEquatorialAfrica =
+      gameData.getMap().getTerritory("French Equatorial Africa");
+  private Territory frenchWestAfrica = gameData.getMap().getTerritory("French West Africa");
+  private Territory angloEgypt = gameData.getMap().getTerritory("Anglo Egypt");
+  private Territory kenya = gameData.getMap().getTerritory("Kenya");
+  private Territory libya = gameData.getMap().getTerritory("Libya");
+
+  private Territory transJordan = gameData.getMap().getTerritory("Trans-Jordan");
+  private Territory sz29 = gameData.getMap().getTerritory("29 Sea Zone");
+  private Territory sz30 = gameData.getMap().getTerritory("30 Sea Zone");
+  private IDelegateBridge testBridge;
   private IntegerMap<Resource> italianResources;
-  private PurchaseDelegate purchaseDelegate;
-  private Territory belgianCongo;
-  private Territory kenya;
-  private UnitType motorized;
-  private UnitType armour;
-  private UnitType fighter;
-  private UnitType carrier;
-  private Territory frenchEquatorialAfrica;
-  private Territory frenchWestAfrica;
-  private Territory angloEgypt;
-  private Territory libya;
-  private Territory transJordan;
-  private Territory sz29;
-  private Territory sz30;
   private MoveDelegate moveDelegate;
+  private PurchaseDelegate purchaseDelegate;
 
   @BeforeEach
   void setUp() {
-    gameData = TestMapGameData.VICTORY_TEST.getGameData();
-    italians = GameDataTestUtil.italians(gameData);
-    germans = GameDataTestUtil.germans(gameData);
-    british = GameDataTestUtil.british(gameData);
     testBridge = newDelegateBridge(italians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -78,20 +78,6 @@ class VictoryTest {
     italianResources = italians.getResources().getResourcesCopy();
     purchaseDelegate = (PurchaseDelegate) gameData.getDelegate("purchase");
     moveDelegate = (MoveDelegate) gameData.getDelegate("move");
-
-    belgianCongo = gameData.getMap().getTerritory("Belgian Congo");
-    kenya = gameData.getMap().getTerritory("Kenya");
-    motorized = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MOTORIZED);
-    armour = GameDataTestUtil.armour(gameData);
-    fighter = GameDataTestUtil.fighter(gameData);
-    carrier = GameDataTestUtil.carrier(gameData);
-    frenchEquatorialAfrica = gameData.getMap().getTerritory("French Equatorial Africa");
-    frenchWestAfrica = gameData.getMap().getTerritory("French West Africa");
-    angloEgypt = gameData.getMap().getTerritory("Anglo Egypt");
-    libya = gameData.getMap().getTerritory("Libya");
-    transJordan = gameData.getMap().getTerritory("Trans-Jordan");
-    sz29 = gameData.getMap().getTerritory("29 Sea Zone");
-    sz30 = gameData.getMap().getTerritory("30 Sea Zone");
   }
 
   @Test
@@ -188,58 +174,66 @@ class VictoryTest {
     moveDelegate.end();
   }
 
-  @Test
-  void testAttackingFromContestedTerritory() {
-    assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
-    assertThat(transJordan.getOwner().isAtWar(italians), is(true));
-    gameData.performChange(ChangeFactory.addUnits(angloEgypt, armour.create(1, british)));
-    gameData.performChange(ChangeFactory.addUnits(transJordan, armour.create(1, british)));
+  @Nested
+  final class AttackingFromContestedTerritory {
+    final List<Unit> infantryUnit = GameDataTestUtil.infantry(gameData).create(1, italians);
+    final List<Unit> tankUnit = armour.create(1, italians);
+    final Collection<Unit> tankAndInfantry = List.of(tankUnit.get(0), infantryUnit.get(0));
+    final Route route = gameData.getMap().getRoute(angloEgypt, transJordan, it -> true);
 
-    Collection<Unit> infantryUnit = GameDataTestUtil.infantry(gameData).create(1, italians);
-    gameData.performChange(ChangeFactory.addUnits(angloEgypt, infantryUnit));
-    Collection<Unit> tankUnit = GameDataTestUtil.armour(gameData).create(1, italians);
-    gameData.performChange(ChangeFactory.addUnits(angloEgypt, tankUnit));
-    Collection<Unit> tankAndInfantry =
-        List.of(CollectionUtils.getAny(tankUnit), CollectionUtils.getAny(infantryUnit));
-    Collection<Unit> enemyUnits =
-        CollectionUtils.getMatches(angloEgypt.getUnits(), Matches.unitIsEnemyOf(italians));
-    assertThat(enemyUnits, not(empty()));
+    @BeforeEach
+    void setUp() {
+      assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
+      assertThat(transJordan.getOwner().isAtWar(italians), is(true));
+      gameData.performChange(ChangeFactory.addUnits(angloEgypt, armour.create(1, british)));
+      gameData.performChange(ChangeFactory.addUnits(transJordan, armour.create(1, british)));
+      gameData.performChange(ChangeFactory.addUnits(angloEgypt, infantryUnit));
+      gameData.performChange(ChangeFactory.addUnits(angloEgypt, tankUnit));
 
-    advanceToStep(testBridge, "CombatMove");
-    moveDelegate.setDelegateBridgeAndPlayer(testBridge);
-    moveDelegate.start();
-    Route route = gameData.getMap().getRoute(angloEgypt, transJordan, it -> true);
-    assertThat(
-        moveDelegate.move(infantryUnit, route),
-        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
-    // This is not allowed with a blitzing unit either.
-    assertThat(Matches.unitCanBlitz().test(CollectionUtils.getAny(tankUnit)), is(true));
-    assertThat(
-        moveDelegate.move(tankUnit, route),
-        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
-    // Or with both.
-    assertThat(
-        moveDelegate.move(tankAndInfantry, route),
-        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+      advanceToStep(testBridge, "CombatMove");
+      moveDelegate.setDelegateBridgeAndPlayer(testBridge);
+      moveDelegate.start();
+    }
 
-    // The same is true if we remove all enemy units out of angloEgypt (it's still contested).
-    gameData.performChange(ChangeFactory.removeUnits(angloEgypt, enemyUnits));
-    assertThat(
-        moveDelegate.move(infantryUnit, route),
-        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
-    assertThat(
-        moveDelegate.move(tankUnit, route),
-        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
-    // Or with both.
-    assertThat(
-        moveDelegate.move(tankAndInfantry, route),
-        is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+    @Test
+    void testInvalidAttacks() {
+      Collection<Unit> enemyUnits =
+          CollectionUtils.getMatches(angloEgypt.getUnits(), Matches.unitIsEnemyOf(italians));
+      assertThat(enemyUnits, not(empty()));
 
-    // The same move with CAN_ATTACK_FROM_CONTESTED_TERRITORIES set to true is valid.
-    gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-    assertThat(moveDelegate.move(tankAndInfantry, route), is(nullValue()));
+      assertThat(
+          moveDelegate.move(infantryUnit, route),
+          is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+      // This is not allowed with a blitzing unit either.
+      assertThat(Matches.unitCanBlitz().test(CollectionUtils.getAny(tankUnit)), is(true));
+      assertThat(
+          moveDelegate.move(tankUnit, route),
+          is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+      // Or with both.
+      assertThat(
+          moveDelegate.move(tankAndInfantry, route),
+          is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
 
-    moveDelegate.end();
+      // The same is true if we remove all enemy units out of angloEgypt (it's still contested).
+      gameData.performChange(ChangeFactory.removeUnits(angloEgypt, enemyUnits));
+      assertThat(
+          moveDelegate.move(infantryUnit, route),
+          is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+      assertThat(
+          moveDelegate.move(tankUnit, route),
+          is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+      // Or with both.
+      assertThat(
+          moveDelegate.move(tankAndInfantry, route),
+          is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY));
+    }
+
+    @Test
+    void testAllowedAttacks() {
+      // The same move with CAN_ATTACK_FROM_CONTESTED_TERRITORIES set to true is valid.
+      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      assertThat(moveDelegate.move(tankAndInfantry, route), is(nullValue()));
+    }
   }
 
   @Test
