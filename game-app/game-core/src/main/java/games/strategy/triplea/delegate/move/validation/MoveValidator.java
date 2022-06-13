@@ -394,16 +394,14 @@ public class MoveValidator {
       }
     }
 
-    // Do not allow non-air attacks out of contested territories unless allowed by properties or if
-    // coming from a blitzable territory.
+    // Do not allow non-air attacks out of contested territories unless allowed by properties.
     final Predicate<Territory> isEnemyOrContestedLand =
         Matches.territoryIsLand()
             .and(Matches.isTerritoryEnemy(player).or(Matches.territoryHasEnemyUnits(player)));
     if (!Properties.canAttackFromContestedTerritories(data.getProperties())
         && isEnemyOrContestedLand.test(route.getEnd())
         && isEnemyOrContestedLand.test(route.getStart())
-        && !units.stream().allMatch(Matches.unitIsAir())
-        && !Matches.territoryIsBlitzable(player).test(route.getStart())) {
+        && !units.stream().allMatch(Matches.unitIsAir())) {
       return result.setErrorReturnResult(CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY);
     }
 
@@ -486,6 +484,9 @@ public class MoveValidator {
           }
         }
       }
+    }
+    if (result.hasDisallowedUnits()) {
+
     }
     // check aircraft
     if (units.stream().anyMatch(Matches.unitIsAir())
