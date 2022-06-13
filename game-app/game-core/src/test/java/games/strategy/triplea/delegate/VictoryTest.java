@@ -270,6 +270,20 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
+    @Test
+    void testAttackFromOwnContestedTerritory() {
+      // Make angloEgypt owned by italians, but with enemy units.
+      angloEgypt.setOwner(italians);
+      assertThat(Matches.territoryHasEnemyUnits(italians).test(angloEgypt), is(true));
+
+      assertThat(moveDelegate.move(tankAndInfantry, route), isNotAllowedWithContestedAttackError());
+      assertThat(moveDelegate.move(tankUnit, route), isNotAllowedWithContestedAttackError());
+      assertThat(moveDelegate.move(infantryUnit, route), isNotAllowedWithContestedAttackError());
+      // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
+      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+    }
+
     private void removeEnemyUnits(GamePlayer player, Territory t) {
       Predicate<Unit> isEnemy = Matches.unitIsEnemyOf(player);
       Collection<Unit> enemyUnits = CollectionUtils.getMatches(t.getUnits(), isEnemy);
