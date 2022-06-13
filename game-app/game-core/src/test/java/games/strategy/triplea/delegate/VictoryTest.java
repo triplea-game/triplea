@@ -25,6 +25,7 @@ import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -229,29 +230,51 @@ class VictoryTest {
     }
 
     @Test
-    void testAttackWithBothUnitsToEmptyEnemyTerritory() {
-      Collection<Unit> destinationEnemies =
-          CollectionUtils.getMatches(transJordan.getUnits(), Matches.unitIsEnemyOf(italians));
-      gameData.performChange(ChangeFactory.removeUnits(transJordan, destinationEnemies));
+    void testAttackToEmptyEnemyTerritory() {
+      removeEnemyUnits(italians, transJordan);
       assertThat(transJordan.getOwner().isAtWar(italians), is(true));
 
       assertThat(moveDelegate.move(tankAndInfantry, route), isNotAllowedWithContestedAttackError());
+      assertThat(moveDelegate.move(tankUnit, route), isNotAllowedWithContestedAttackError());
+      assertThat(moveDelegate.move(infantryUnit, route), isNotAllowedWithContestedAttackError());
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
       gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
     @Test
-    void testAttackWithBothUnitsFromContestedTerritoryWithNoEnemies() {
-      Collection<Unit> fromEnemies =
-          CollectionUtils.getMatches(angloEgypt.getUnits(), Matches.unitIsEnemyOf(italians));
-      gameData.performChange(ChangeFactory.removeUnits(angloEgypt, fromEnemies));
+    void testAttackFromContestedTerritoryWithNoEnemies() {
+      removeEnemyUnits(italians, angloEgypt);
       assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
 
       assertThat(moveDelegate.move(tankAndInfantry, route), isNotAllowedWithContestedAttackError());
+      assertThat(moveDelegate.move(tankUnit, route), isNotAllowedWithContestedAttackError());
+      assertThat(moveDelegate.move(infantryUnit, route), isNotAllowedWithContestedAttackError());
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
       gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+    }
+
+    @Test
+    void testAttackFromContestedTerritoryWithNoEnemiesToEmptyEnemyTerritory() {
+      removeEnemyUnits(italians, angloEgypt);
+      assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
+      removeEnemyUnits(italians, transJordan);
+      assertThat(transJordan.getOwner().isAtWar(italians), is(true));
+
+      assertThat(moveDelegate.move(tankAndInfantry, route), isNotAllowedWithContestedAttackError());
+      assertThat(moveDelegate.move(tankUnit, route), isNotAllowedWithContestedAttackError());
+      assertThat(moveDelegate.move(infantryUnit, route), isNotAllowedWithContestedAttackError());
+      // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
+      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+    }
+
+    private void removeEnemyUnits(GamePlayer player, Territory t) {
+      Predicate<Unit> isEnemy = Matches.unitIsEnemyOf(player);
+      Collection<Unit> enemyUnits = CollectionUtils.getMatches(t.getUnits(), isEnemy);
+      gameData.performChange(ChangeFactory.removeUnits(t, enemyUnits));
+      assertThat(CollectionUtils.countMatches(t.getUnits(), isEnemy), is(0));
     }
 
     Matcher<String> isNotAllowedWithContestedAttackError() {
