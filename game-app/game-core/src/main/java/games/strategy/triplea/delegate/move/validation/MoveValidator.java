@@ -126,13 +126,11 @@ public class MoveValidator {
     if (AirMovementValidator.validateAirCanLand(units, route, player, result).hasError()) {
       return result;
     }
-    if (validateTransport(
-            isNonCombat, undoableMoves, units, route, player, unitsToSeaTransports, result)
+    if (validateTransport(undoableMoves, units, route, player, unitsToSeaTransports, result)
         .hasError()) {
       return result;
     }
-    if (validateParatroops(isNonCombat, units, airTransportDependents, route, player, result)
-        .hasError()) {
+    if (validateParatroops(units, airTransportDependents, route, player, result).hasError()) {
       return result;
     }
     if (validateCanal(units, route, player, airTransportDependents, result).hasError()) {
@@ -1140,7 +1138,6 @@ public class MoveValidator {
   }
 
   private MoveValidationResult validateTransport(
-      final boolean isNonCombat,
       final List<UndoableMove> undoableMoves,
       final Collection<Unit> units,
       final Route route,
@@ -1418,7 +1415,6 @@ public class MoveValidator {
   }
 
   private MoveValidationResult validateParatroops(
-      final boolean nonCombat,
       final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> airTransportDependents,
       final Route route,
@@ -1431,7 +1427,7 @@ public class MoveValidator {
         || units.stream().noneMatch(Matches.unitIsAirTransport())) {
       return result;
     }
-    if (nonCombat && !Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
+    if (isNonCombat && !Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties())) {
       return result.setErrorReturnResult("Paratroops may not move during NonCombat");
     }
     if (!getEditMode(data.getProperties())) {
@@ -1450,7 +1446,7 @@ public class MoveValidator {
       final boolean friendlyEnd = Matches.isTerritoryFriendly(player).test(route.getEnd());
       final boolean canMoveNonCombat =
           Properties.getParatroopersCanMoveDuringNonCombat(data.getProperties());
-      final boolean isWrongPhase = !nonCombat && friendlyEnd && canMoveNonCombat;
+      final boolean isWrongPhase = !isNonCombat && friendlyEnd && canMoveNonCombat;
       final boolean mustAdvanceToBattle = friendlyEnd && !canMoveNonCombat;
       for (final Unit paratroop : paratroopersToAirTransports.keySet()) {
         if (paratroop.hasMoved()) {
