@@ -66,7 +66,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
   ObjectivePanel(final GameData data, final UiContext uiContext) {
     gameData = data;
     dummyDelegate = new ObjectiveDummyDelegateBridge(data);
-    resourceLoader = uiContext.getResourceLoaderNonStatic();
+    resourceLoader = uiContext.getResourceLoader();
     initLayout();
     gameData.addDataChangeListener(this);
   }

@@ -271,7 +271,7 @@ class OrderOfLossesInputPanel extends JPanel {
             "<html>"
                 + category.getType().getName()
                 + ":  "
-                + TooltipProperties.getInstance(uiContext.getResourceLoaderNonStatic())
+                + TooltipProperties.getInstance(uiContext.getResourceLoader())
                     .getTooltip(category.getType(), category.getOwner())
                 + "</html>";
         final ImageIcon img = uiContext.getUnitImageFactory().getIcon(ImageKey.of(category));

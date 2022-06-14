@@ -793,11 +793,7 @@ public class BattleDisplay extends JPanel {
         // won't get out of date
         // when units are killed.)
         MapUnitTooltipManager.setUnitTooltip(
-            unit,
-            category.getType(),
-            category.getOwner(),
-            1,
-            uiContext.getResourceLoaderNonStatic());
+            unit, category.getType(), category.getOwner(), 1, uiContext.getResourceLoader());
         for (final UnitOwner owner : category.getDependents()) {
           unit.add(uiContext.newUnitImageLabel(owner.getType(), owner.getOwner()));
         }

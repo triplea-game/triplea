@@ -255,7 +255,7 @@ public class PoliticsPanel extends ActionPanel {
               .getResourceImageFactory()
               .getResourcesButton(
                   new ResourceCollection(getData(), paa.getCostResources()),
-                  PoliticsText.getInstance(getMap().getUiContext().getResourceLoaderNonStatic())
+                  PoliticsText.getInstance(getMap().getUiContext().getResourceLoader())
                       .getButtonText(paa.getText()));
       button.addActionListener(
           ae -> {
@@ -331,7 +331,7 @@ public class PoliticsPanel extends ActionPanel {
             : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(
         chanceString
-            + PoliticsText.getInstance(getMap().getUiContext().getResourceLoaderNonStatic())
+            + PoliticsText.getInstance(getMap().getUiContext().getResourceLoader())
                 .getDescription(paa.getText()));
   }
 

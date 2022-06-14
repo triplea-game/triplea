@@ -214,7 +214,7 @@ public class TerritoryDetailPanel extends JPanel {
           "<html>"
               + item.getType().getName()
               + ": "
-              + TooltipProperties.getInstance(uiContext.getResourceLoaderNonStatic())
+              + TooltipProperties.getInstance(uiContext.getResourceLoader())
                   .getTooltip(item.getType(), currentPlayer)
               + "</html>";
       label.setToolTipText(toolTipText);

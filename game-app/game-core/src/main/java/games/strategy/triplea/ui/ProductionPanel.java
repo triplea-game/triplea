@@ -346,7 +346,7 @@ class ProductionPanel extends JPanel {
               .append(type.getName())
               .append(": ")
               .append(
-                  TooltipProperties.getInstance(uiContext.getResourceLoaderNonStatic())
+                  TooltipProperties.getInstance(uiContext.getResourceLoader())
                       .getTooltip(type, player));
           name.setText(type.getName());
           if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {

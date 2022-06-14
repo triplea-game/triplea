@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
@@ -48,7 +47,7 @@ public class UiContext {
   @Getter protected static String mapName;
   @Getter protected static String skinName;
   @Getter protected static Path mapLocation;
-  private ResourceLoader resourceLoader;
+  @Getter private final ResourceLoader resourceLoader;
 
   static final String UNIT_SCALE_PREF = "UnitScale";
   static final String MAP_SCALE_PREF = "MapScale";
@@ -100,10 +99,6 @@ public class UiContext {
                 () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
   }
 
-  public ResourceLoader getResourceLoaderNonStatic() {
-    return Preconditions.checkNotNull(resourceLoader);
-  }
-
   UiContext(final GameData data) {
     if (data.getMapName() == null || data.getMapName().isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
@@ -129,9 +124,6 @@ public class UiContext {
     mapLocation = mapPath;
     resourceLoadingPaths.add(mapPath);
 
-    if (resourceLoader != null) {
-      resourceLoader.close();
-    }
     resourceLoader = new ResourceLoader(resourceLoadingPaths);
     mapData = new MapData(resourceLoader);
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());

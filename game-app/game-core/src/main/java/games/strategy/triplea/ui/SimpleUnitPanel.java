@@ -152,7 +152,7 @@ public class SimpleUnitPanel extends JPanel {
       ImageIcon icon = uiContext.getUnitImageFactory().getIcon(imageKey);
       label.setIcon(scaleIcon(icon, scaleFactor));
       MapUnitTooltipManager.setUnitTooltip(
-          label, unitType, player, quantity, uiContext.getResourceLoaderNonStatic());
+          label, unitType, player, quantity, uiContext.getResourceLoader());
     } else if (unit instanceof Resource) {
       ImageIcon icon =
           style == Style.LARGE_ICONS_COLUMN

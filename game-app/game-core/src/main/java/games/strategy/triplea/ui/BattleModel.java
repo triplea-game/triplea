@@ -182,7 +182,7 @@ final class BattleModel extends DefaultTableModel {
       this.count = count;
       this.unitType = imageKey.getType();
       this.icon = uiContext.getUnitImageFactory().getIcon(imageKey);
-      this.resourceLoader = uiContext.getResourceLoaderNonStatic();
+      this.resourceLoader = uiContext.getResourceLoader();
     }
 
     void updateStamp(final JLabel stamp) {

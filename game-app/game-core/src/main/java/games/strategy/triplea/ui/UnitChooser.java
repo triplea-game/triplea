@@ -600,7 +600,7 @@ public final class UnitChooser extends JPanel {
             category.getType(),
             category.getOwner(),
             category.getUnits().size(),
-            uiContext.getResourceLoaderNonStatic());
+            uiContext.getResourceLoader());
       }
 
       @Override
@@ -657,10 +657,10 @@ public final class UnitChooser extends JPanel {
     private UnitImageFactory unitImageFactoryForDecoratedImages = null;
 
     public void makeSureNonWithdrawableFactoryMatchesUiContext(final UiContext uiContext) {
-      if (resourceLoader != uiContext.getResourceLoaderNonStatic()
+      if (resourceLoader != uiContext.getResourceLoader()
           || unitImageFactory != uiContext.getUnitImageFactory()) {
         images.clear();
-        resourceLoader = uiContext.getResourceLoaderNonStatic();
+        resourceLoader = uiContext.getResourceLoader();
         unitImageFactory = uiContext.getUnitImageFactory();
         nonWithdrawableImage = null;
         unitImageFactoryForDecoratedImages = null;

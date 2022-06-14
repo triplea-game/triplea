@@ -460,7 +460,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
     final UiContext uiContext = new UiContext(game.getData());
-    game.setResourceLoader(uiContext.getResourceLoaderNonStatic());
+    game.setResourceLoader(uiContext.getResourceLoader());
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
 
@@ -1672,7 +1672,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           unit.getType(),
           unit.getOwner(),
           mapPanel.getMouseHoverUnits().size(),
-          uiContext.getResourceLoaderNonStatic());
+          uiContext.getResourceLoader());
     }
     return "";
   }
@@ -2075,7 +2075,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** Displays the map located in the directory/archive {@code mapdir}. */
   public void changeMapSkin(final String skinName) {
     uiContext = UiContext.changeMapSkin(data, skinName);
-    game.setResourceLoader(uiContext.getResourceLoaderNonStatic());
+    game.setResourceLoader(uiContext.getResourceLoader());
     // when changing skins, always show relief images
     if (uiContext.getMapData().getHasRelief()) {
       TileImageFactory.setShowReliefImages(true);
