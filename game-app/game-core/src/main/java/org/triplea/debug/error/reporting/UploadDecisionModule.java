@@ -2,11 +2,11 @@ package org.triplea.debug.error.reporting;
 
 import javax.swing.JFrame;
 import lombok.experimental.UtilityClass;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.LoggerRecord;
 import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
 import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
-import org.triplea.injection.Injections;
 
 /**
  * Decision module to handle the case where a user wishes to report an error to TripleA. First we
@@ -23,7 +23,7 @@ public class UploadDecisionModule {
     final var canUploadRequest =
         CanUploadRequest.builder()
             .errorTitle(ErrorReportTitleFormatter.createTitle(logRecord))
-            .gameVersion(Injections.getInstance().getEngineVersion().toString())
+            .gameVersion(ProductVersionReader.getCurrentVersion().toString())
             .build();
 
     final var canUploadErrorReportResponse = uploader.canUploadErrorReport(canUploadRequest);

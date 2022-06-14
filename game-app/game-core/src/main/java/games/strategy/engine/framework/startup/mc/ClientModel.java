@@ -59,8 +59,8 @@ import javax.swing.SwingUtilities;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.startup.ServerSetupModel;
-import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -241,7 +241,7 @@ public class ClientModel implements IMessengerErrorListener {
           ClientMessengerFactory.newClientMessenger(
               props,
               objectStreamFactory,
-              new ClientLogin(this.ui, Injections.getInstance().getEngineVersion()));
+              new ClientLogin(this.ui, ProductVersionReader.getCurrentVersion()));
       // TODO: Project#20 replace no-op sender with a real sender.
       clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
     } catch (final CouldNotLogInException e) {

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.UtilityClass;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.map.data.elements.AttachmentList;
 import org.triplea.map.data.elements.DiceSides;
@@ -65,7 +65,7 @@ public class GameDataExporter {
         .info(info(data))
         .triplea(
             Triplea.builder()
-                .minimumVersion(Injections.getInstance().getEngineVersion().toString())
+                .minimumVersion(ProductVersionReader.getCurrentVersion().toString())
                 .build())
         .diceSides(DiceSides.builder().value(data.getDiceSides()).build())
         .map(map(data))

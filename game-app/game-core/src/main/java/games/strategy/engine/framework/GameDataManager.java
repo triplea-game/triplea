@@ -23,7 +23,7 @@ import java.util.zip.GZIPOutputStream;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
@@ -55,7 +55,7 @@ public final class GameDataManager {
   }
 
   public static Optional<GameData> loadGame(final InputStream is) {
-    return loadGame(Injections.getInstance().getEngineVersion(), is);
+    return loadGame(ProductVersionReader.getCurrentVersion(), is);
   }
 
   /**
@@ -105,7 +105,7 @@ public final class GameDataManager {
                   + "Trying to load incompatible save game version: %s<br>"
                   + "To download an older version of TripleA,<br>"
                   + "please visit: <a href=\"%s\">%s</a>",
-              Injections.getInstance().getEngineVersion(),
+              ProductVersionReader.getCurrentVersion(),
               ((games.strategy.util.Version) version).getExactVersion(),
               UrlConstants.RELEASE_NOTES,
               UrlConstants.RELEASE_NOTES));
@@ -122,7 +122,7 @@ public final class GameDataManager {
                   + "Trying to load game created with: %s<br>"
                   + "To download the latest version of TripleA,<br>"
                   + "please visit: <a href=\"%s\">%s</a>",
-              Injections.getInstance().getEngineVersion(),
+              ProductVersionReader.getCurrentVersion(),
               version,
               UrlConstants.DOWNLOAD_WEBSITE,
               UrlConstants.DOWNLOAD_WEBSITE));

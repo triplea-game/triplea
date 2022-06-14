@@ -15,7 +15,6 @@ import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtracto
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
-import org.triplea.injection.Injections;
 import org.triplea.util.ExitStatus;
 
 /** Runs a headless game server. */
@@ -29,7 +28,7 @@ public final class HeadlessGameRunner {
    * shut down via administrative command.
    */
   public static void main(final String[] args) {
-    Injections.init(constructInjections());
+    ProductVersionReader.init();
     ClientSetting.initialize();
     System.setProperty(LOBBY_GAME_COMMENTS, GameRunner.BOT_GAME_HOST_COMMENT);
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
@@ -116,9 +115,5 @@ public final class HeadlessGameRunner {
             + MAP_FOLDER
             + "=<MAP_FOLDER>"
             + "\n");
-  }
-
-  private static Injections constructInjections() {
-    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
   }
 }

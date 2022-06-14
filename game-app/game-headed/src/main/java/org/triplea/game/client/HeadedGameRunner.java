@@ -36,7 +36,6 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
-import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.map.description.file.MapDescriptionYamlGeneratorRunner;
@@ -92,7 +91,7 @@ public final class HeadedGameRunner {
             + "prohibited by design to avoid UI rendering errors in the headless environment.");
 
     initializeClientSettingAndLogging();
-    Injections.init(constructInjections());
+    ProductVersionReader.init();
     initializeLookAndFeel();
 
     initializeDesktopIntegrations(args);
@@ -120,12 +119,8 @@ public final class HeadedGameRunner {
         .build()
         .extractGameNotes();
 
-    log.info("Launching game, version: {} ", Injections.getInstance().getEngineVersion());
+    log.info("Launching game, version: {} ", ProductVersionReader.getCurrentVersion());
     start();
-  }
-
-  private static Injections constructInjections() {
-    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
   }
 
   /**

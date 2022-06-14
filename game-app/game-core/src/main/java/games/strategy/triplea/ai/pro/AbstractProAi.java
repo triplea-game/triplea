@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
@@ -270,7 +270,7 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
   }
 
   private GameData copyData(GameData data) {
-    Version engineVersion = Injections.getInstance().getEngineVersion();
+    Version engineVersion = ProductVersionReader.getCurrentVersion();
     GameDataManager.Options options = GameDataManager.Options.builder().withDelegates(true).build();
     GameData dataCopy;
     try (GameData.Unlocker ignored = data.acquireWriteLock()) {
