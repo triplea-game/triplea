@@ -1,10 +1,11 @@
 package org.triplea.debug.error.reporting;
 
-import games.strategy.triplea.ui.UiContext;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.Builder;
+import lombok.Setter;
 import org.triplea.debug.LoggerRecord;
 import org.triplea.debug.error.reporting.formatting.ErrorReportBodyFormatter;
 import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
@@ -13,7 +14,13 @@ import org.triplea.injection.Injections;
 import org.triplea.util.Version;
 
 @Builder
-class StackTraceReportModel {
+public class StackTraceReportModel {
+
+  /**
+   * A dirty hack to keep track of the current map for error reporting. Ideally this should be
+   * solved differently.
+   */
+  @Setter @Nullable private static String currentMapName;
 
   @Nonnull private final StackTraceReportView view;
   @Nonnull private final LoggerRecord stackTraceRecord;
@@ -32,10 +39,7 @@ class StackTraceReportModel {
         .title(ErrorReportTitleFormatter.createTitle(stackTraceRecord))
         .body(
             ErrorReportBodyFormatter.buildBody(
-                view.readUserDescription(),
-                UiContext.getMapName(),
-                stackTraceRecord,
-                engineVersion))
+                view.readUserDescription(), currentMapName, stackTraceRecord, engineVersion))
         .gameVersion(Injections.getInstance().getEngineVersion().toString())
         .build();
   }

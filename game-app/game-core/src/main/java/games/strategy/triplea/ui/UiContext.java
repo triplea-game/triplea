@@ -38,13 +38,14 @@ import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.debug.error.reporting.StackTraceReportModel;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 import org.triplea.sound.ClipPlayer;
 
 /** A place to find images and map data for a ui. */
 @Slf4j
 public class UiContext {
-  @Getter protected static String mapName;
+  @Getter private final String mapName;
   @Getter private final String skinName;
   @Getter private final Path mapLocation;
   @Getter private final ResourceLoader resourceLoader;
@@ -92,7 +93,8 @@ public class UiContext {
     if (data.getMapName() == null || data.getMapName().isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
-    UiContext.mapName = data.getMapName();
+    mapName = data.getMapName();
+    StackTraceReportModel.setCurrentMapName(mapName);
 
     List<Path> resourceLoadingPaths = new ArrayList<>();
 
@@ -230,7 +232,7 @@ public class UiContext {
   }
 
   public static UiContext changeMapSkin(GameData gameData, String skinName) {
-    final Preferences prefs = getPreferencesForMap(mapName);
+    final Preferences prefs = getPreferencesForMap(gameData.getMapName());
 
     if (skinName.equals(ORIGINAL_SKIN_NAME)) {
       prefs.put(MAP_SKIN_PREF, skinName);
