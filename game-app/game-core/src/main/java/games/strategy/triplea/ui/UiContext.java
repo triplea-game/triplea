@@ -45,13 +45,8 @@ import org.triplea.sound.ClipPlayer;
 /** A place to find images and map data for a ui. */
 @Slf4j
 public class UiContext {
-  @Getter private final String mapName;
-  @Getter private final String skinName;
-  @Getter private final Path mapLocation;
-  @Getter private final ResourceLoader resourceLoader;
-
-  static final String UNIT_SCALE_PREF = "UnitScale";
-  static final String MAP_SCALE_PREF = "MapScale";
+  private static final String UNIT_SCALE_PREF = "UnitScale";
+  private static final String MAP_SCALE_PREF = "MapScale";
 
   private static final String ORIGINAL_SKIN_NAME = "Original";
 
@@ -65,6 +60,10 @@ public class UiContext {
   @Getter @Setter protected LocalPlayers localPlayers;
 
   @Getter protected double scale;
+  @Getter private final String mapName;
+  @Getter private final String skinName;
+  @Getter private final Path mapLocation;
+  @Getter private final ResourceLoader resourceLoader;
   @Getter private final TileImageFactory tileImageFactory = new TileImageFactory();
   @Getter private UnitImageFactory unitImageFactory;
   @Getter private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
