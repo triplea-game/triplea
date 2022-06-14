@@ -169,7 +169,7 @@ public class ProTerritoryManager {
       }
       patd.setMaxBattleResult(
           calc.estimateAttackBattleResults(
-              proData, t, patd.getMaxUnits(), defenders, new HashSet<>()));
+              proData, t, patd.getMaxUnits(), defenders, Set.of()));
 
       // Add in amphib units if I can't win without them
       if (patd.getMaxBattleResult().getWinPercentage() < proData.getWinPercentage()
@@ -178,7 +178,7 @@ public class ProTerritoryManager {
         combinedUnits.addAll(patd.getMaxAmphibUnits());
         patd.setMaxBattleResult(
             calc.estimateAttackBattleResults(
-                proData, t, new ArrayList<>(combinedUnits), defenders, patd.getMaxBombardUnits()));
+                proData, t, combinedUnits, defenders, patd.getMaxBombardUnits()));
         patd.setNeedAmphibUnits(true);
       }
 
