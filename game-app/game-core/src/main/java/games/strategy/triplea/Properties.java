@@ -589,8 +589,8 @@ public final class Properties implements Constants {
     return properties.get(CONTESTED_TERRITORIES_PRODUCE_NO_INCOME, false);
   }
 
-  public static boolean canAttackFromContestedTerritories(final GameProperties properties) {
-    return properties.get(CAN_ATTACK_FROM_CONTESTED_TERRITORIES, false);
+  public static boolean getAllUnitsCanAttackFromContestedTerritories(GameProperties properties) {
+    return properties.get(ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, false);
   }
 
   public static boolean getSeaBattlesMayBeIgnored(final GameProperties properties) {

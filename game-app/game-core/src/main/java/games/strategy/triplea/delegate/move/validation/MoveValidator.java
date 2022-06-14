@@ -403,7 +403,7 @@ public class MoveValidator {
     // We are in a contested territory owned by the enemy, and we want to move to another enemy
     // owned territory. Do not allow unless each unit can blitz the current territory or allowed by
     // property.
-    if (!Properties.canAttackFromContestedTerritories(data.getProperties())
+    if (!Properties.getAllUnitsCanAttackFromContestedTerritories(data.getProperties())
         && !route.getStart().isWater()
         && Matches.isAtWar(route.getStart().getOwner()).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player))
@@ -420,7 +420,7 @@ public class MoveValidator {
 
     // We are in a contested territory owned by us, and we want to move to an enemy owned territory.
     // Do not allow unless the territory is blitzable or allowed by property.
-    if (!Properties.canAttackFromContestedTerritories(data.getProperties())
+    if (!Properties.getAllUnitsCanAttackFromContestedTerritories(data.getProperties())
         && !route.getStart().isWater()
         && !Matches.isAtWar(route.getStart().getOwner()).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player))

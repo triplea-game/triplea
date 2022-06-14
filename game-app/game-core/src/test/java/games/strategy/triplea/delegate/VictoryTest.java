@@ -206,7 +206,7 @@ class VictoryTest {
           moveDelegate.move(tankAndInfantry, route),
           is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
-      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
@@ -219,7 +219,7 @@ class VictoryTest {
           moveDelegate.move(tankUnit, route),
           is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
-      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(infantryUnit, route), wasPerformedSuccessfully());
       assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
     }
@@ -233,7 +233,7 @@ class VictoryTest {
           moveDelegate.move(infantryUnit, route),
           is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
-      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
       assertThat(moveDelegate.move(infantryUnit, route), wasPerformedSuccessfully());
     }
@@ -253,7 +253,7 @@ class VictoryTest {
           moveDelegate.move(tankUnit, route),
           is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
-      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
@@ -276,7 +276,7 @@ class VictoryTest {
       removeEnemyUnits(italians, angloEgypt);
       assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
 
-      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
@@ -303,7 +303,7 @@ class VictoryTest {
       removeEnemyUnits(italians, transJordan);
       assertThat(transJordan.getOwner().isAtWar(italians), is(true));
 
-      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
@@ -323,7 +323,7 @@ class VictoryTest {
           moveDelegate.move(infantryUnit, route),
           is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
-      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
@@ -342,7 +342,7 @@ class VictoryTest {
       transJordan.setOwner(italians);
       assertThat(Matches.territoryHasEnemyUnits(italians).test(transJordan), is(true));
 
-      gameData.getProperties().set(Constants.CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
+      gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
