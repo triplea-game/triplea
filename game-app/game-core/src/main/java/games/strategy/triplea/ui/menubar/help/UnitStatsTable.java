@@ -72,7 +72,9 @@ public class UnitStatsTable {
               .append(costs.get(player).get(ut).toStringForHtml())
               .append("</td>")
               .append("<td>")
-              .append(TooltipProperties.getInstance().getTooltip(ut, player))
+              .append(
+                  TooltipProperties.getInstance(uiContext.getResourceLoaderNonStatic())
+                      .getTooltip(ut, player))
               .append("</td></tr>");
         }
       }

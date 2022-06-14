@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.ResourceLoader;
 import org.triplea.util.LocalizeHtml;
 
 /** Generates unit tooltips based on the content of the map's {@code tooltips.properties} file. */
@@ -10,12 +11,13 @@ public final class TooltipProperties extends PropertyFile {
   private static final String TOOLTIP = "tooltip";
   private static final String UNIT = "unit";
 
-  private TooltipProperties() {
-    super(PROPERTY_FILE);
+  private TooltipProperties(final ResourceLoader resourceLoader) {
+    super(PROPERTY_FILE, resourceLoader);
   }
 
-  public static TooltipProperties getInstance() {
-    return PropertyFile.getInstance(TooltipProperties.class, TooltipProperties::new);
+  public static TooltipProperties getInstance(final ResourceLoader resourceLoader) {
+    return PropertyFile.getInstance(
+        TooltipProperties.class, () -> new TooltipProperties(resourceLoader));
   }
 
   /** Get unit type tooltip checking for custom tooltip content. */

@@ -184,7 +184,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         if (!getRemotePlayer(player)
             .acceptAction(
                 this.player,
-                PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()),
+                PoliticsText.getInstance(bridge.getResourceLoader())
+                    .getAcceptanceQuestion(paa.getText()),
                 true)) {
           return false;
         }
@@ -206,7 +207,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       }
       playersWhoNeedToAccept.removeAll(paa.getActionAccept());
       for (final GamePlayer player : playersWhoNeedToAccept) {
-        String actionText = PoliticsText.getInstance().getAcceptanceQuestion(paa.getText());
+        String actionText =
+            PoliticsText.getInstance(bridge.getResourceLoader())
+                .getAcceptanceQuestion(paa.getText());
         if (actionText.equals("NONE")) {
           actionText =
               this.player.getName()
@@ -233,7 +236,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         if (!getRemotePlayer(player)
             .acceptAction(
                 this.player,
-                PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()),
+                PoliticsText.getInstance(bridge.getResourceLoader())
+                    .getAcceptanceQuestion(paa.getText()),
                 true)) {
           return false;
         }
@@ -311,8 +315,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
             + " fails on action: "
             + MyFormatter.attachmentNameToText(paa.getName());
     bridge.getHistoryWriter().addChildToEvent(transcriptText);
-    sendNotification(PoliticsText.getInstance().getNotificationFailure(paa.getText()));
-    notifyOtherPlayers(PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
+    sendNotification(
+        PoliticsText.getInstance(bridge.getResourceLoader()).getNotificationFailure(paa.getText()));
+    notifyOtherPlayers(
+        PoliticsText.getInstance(bridge.getResourceLoader())
+            .getNotificationFailureOthers(paa.getText()));
   }
 
   /**
@@ -324,8 +331,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     bridge
         .getSoundChannelBroadcaster()
         .playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, player);
-    sendNotification(PoliticsText.getInstance().getNotificationSuccess(paa.getText()));
-    notifyOtherPlayers(PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
+    sendNotification(
+        PoliticsText.getInstance(bridge.getResourceLoader()).getNotificationSuccess(paa.getText()));
+    notifyOtherPlayers(
+        PoliticsText.getInstance(bridge.getResourceLoader())
+            .getNotificationSuccessOthers(paa.getText()));
   }
 
   /**

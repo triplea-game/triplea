@@ -189,7 +189,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
       if (!getRemotePlayer(player)
           .acceptAction(
               this.player,
-              UserActionText.getInstance().getAcceptanceQuestion(userActionAttachment.getText()),
+              UserActionText.getInstance(bridge.getResourceLoader())
+                  .getAcceptanceQuestion(userActionAttachment.getText()),
               false)) {
         return false;
       }
@@ -258,7 +259,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     bridge
         .getSoundChannelBroadcaster()
         .playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
-    final UserActionText uat = UserActionText.getInstance();
+    final UserActionText uat = UserActionText.getInstance(bridge.getResourceLoader());
     final String text = userActionAttachment.getText();
     sendNotification(uat.getNotificationSuccess(text));
     notifyOtherPlayers(
@@ -280,7 +281,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
             + " fails on action: "
             + MyFormatter.attachmentNameToText(userActionAttachment.getName());
     bridge.getHistoryWriter().addChildToEvent(transcriptText);
-    final UserActionText uat = UserActionText.getInstance();
+    final UserActionText uat = UserActionText.getInstance(bridge.getResourceLoader());
     final String text = userActionAttachment.getText();
     sendNotification(uat.getNotificationFailure(text));
     notifyOtherPlayers(

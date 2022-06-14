@@ -255,7 +255,8 @@ public class PoliticsPanel extends ActionPanel {
               .getResourceImageFactory()
               .getResourcesButton(
                   new ResourceCollection(getData(), paa.getCostResources()),
-                  PoliticsText.getInstance().getButtonText(paa.getText()));
+                  PoliticsText.getInstance(getMap().getUiContext().getResourceLoaderNonStatic())
+                      .getButtonText(paa.getText()));
       button.addActionListener(
           ae -> {
             selectPoliticalActionButton.setEnabled(false);
@@ -323,12 +324,15 @@ public class PoliticsPanel extends ActionPanel {
     return panel;
   }
 
-  private static JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa) {
+  private JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa) {
     final String chanceString =
         paa.getChanceToHit() >= paa.getChanceDiceSides()
             ? ""
             : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
-    return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
+    return new JLabel(
+        chanceString
+            + PoliticsText.getInstance(getMap().getUiContext().getResourceLoaderNonStatic())
+                .getDescription(paa.getText()));
   }
 
   private static final class PoliticalActionComparator

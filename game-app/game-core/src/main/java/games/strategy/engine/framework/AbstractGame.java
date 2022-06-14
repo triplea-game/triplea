@@ -13,11 +13,14 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.triplea.ResourceLoader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.Setter;
 import org.triplea.sound.ISound;
 
 /**
@@ -47,6 +50,9 @@ public abstract class AbstractGame implements IGame {
 
   @Nullable private IDisplay display;
   @Nullable private ISound sound;
+
+  // TODO ensure ResourceLoader is never null
+  @Getter @Setter @Nullable private ResourceLoader resourceLoader;
 
   AbstractGame(
       final GameData data,

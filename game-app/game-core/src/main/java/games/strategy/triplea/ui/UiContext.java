@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
@@ -98,6 +99,10 @@ public class UiContext {
     mapLocation = mapPath;
   }
 
+  public ResourceLoader getResourceLoaderNonStatic() {
+    return Preconditions.checkNotNull(resourceLoader);
+  }
+
   UiContext(final GameData data) {
     if (data.getMapName() == null || data.getMapName().isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
@@ -165,7 +170,8 @@ public class UiContext {
 
   public JLabel newUnitImageLabel(final ImageKey imageKey) {
     final JLabel label = new JLabel(getUnitImageFactory().getIcon(imageKey));
-    MapUnitTooltipManager.setUnitTooltip(label, imageKey.getType(), imageKey.getPlayer(), 1);
+    MapUnitTooltipManager.setUnitTooltip(
+        label, imageKey.getType(), imageKey.getPlayer(), 1, resourceLoader);
     return label;
   }
 

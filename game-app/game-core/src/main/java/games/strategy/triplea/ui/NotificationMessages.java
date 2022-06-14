@@ -1,17 +1,20 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.triplea.ResourceLoader;
+
 /** Loads notification messages from notifications.properties. */
 public class NotificationMessages extends PropertyFile {
 
   private static final String PROPERTY_FILE = "notifications.properties";
   private static final String SOUND_CLIP_SUFFIX = "_sounds";
 
-  protected NotificationMessages() {
-    super(PROPERTY_FILE);
+  protected NotificationMessages(final ResourceLoader resourceLoader) {
+    super(PROPERTY_FILE, resourceLoader);
   }
 
-  public static NotificationMessages getInstance() {
-    return PropertyFile.getInstance(NotificationMessages.class, NotificationMessages::new);
+  public static NotificationMessages getInstance(final ResourceLoader resourceLoader) {
+    return PropertyFile.getInstance(
+        NotificationMessages.class, () -> new NotificationMessages(resourceLoader));
   }
 
   /** Can be null if none exist. */

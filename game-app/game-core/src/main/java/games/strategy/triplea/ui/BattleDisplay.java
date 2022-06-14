@@ -792,7 +792,12 @@ public class BattleDisplay extends JPanel {
         // Add a tooltip, with a count of 1 so that the tooltip doesn't have a number label (so it
         // won't get out of date
         // when units are killed.)
-        MapUnitTooltipManager.setUnitTooltip(unit, category.getType(), category.getOwner(), 1);
+        MapUnitTooltipManager.setUnitTooltip(
+            unit,
+            category.getType(),
+            category.getOwner(),
+            1,
+            uiContext.getResourceLoaderNonStatic());
         for (final UnitOwner owner : category.getDependents()) {
           unit.add(uiContext.newUnitImageLabel(owner.getType(), owner.getOwner()));
         }
