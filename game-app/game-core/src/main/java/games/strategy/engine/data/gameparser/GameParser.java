@@ -39,7 +39,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -814,18 +813,6 @@ public final class GameParser {
         }
       }
     }
-  }
-
-  private static Map<String, String> createForeachVariablesMap(
-      final List<String> foreachVariables,
-      final int currentIndex,
-      final Map<String, List<String>> variables) {
-    final Map<String, String> foreachMap = new HashMap<>();
-    for (final String foreachVariable : foreachVariables) {
-      final List<String> foreachValue = variables.get(foreachVariable);
-      foreachMap.put("@" + foreachVariable.replace("$", "") + "@", foreachValue.get(currentIndex));
-    }
-    return foreachMap;
   }
 
   private void parseAttachment(
