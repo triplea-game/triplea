@@ -7,6 +7,7 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
+import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
 import games.strategy.engine.framework.startup.ui.PlayerSelectorRow;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
@@ -33,7 +34,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import org.triplea.injection.Injections;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
@@ -277,6 +277,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             pl,
             this,
             new HeadedLaunchAction(this),
-            new PlayerTypes(Injections.getInstance().getPlayerTypes())));
+            new PlayerTypes(HeadedPlayerTypes.getPlayerTypes())));
   }
 }

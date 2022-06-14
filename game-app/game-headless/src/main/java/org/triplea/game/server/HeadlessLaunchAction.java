@@ -17,6 +17,7 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.Messengers;
@@ -24,6 +25,7 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +70,11 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public void onEnd(final String message) {
     log.info(message);
+  }
+
+  @Override
+  public Collection<PlayerTypes.Type> getPlayerTypes() {
+    return PlayerTypes.getBuiltInPlayerTypes();
   }
 
   @Override

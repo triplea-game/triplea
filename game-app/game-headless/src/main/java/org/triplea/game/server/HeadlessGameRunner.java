@@ -12,7 +12,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
@@ -120,9 +119,6 @@ public final class HeadlessGameRunner {
   }
 
   private static Injections constructInjections() {
-    return Injections.builder()
-        .engineVersion(new ProductVersionReader().getVersion())
-        .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
-        .build();
+    return Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build();
   }
 }

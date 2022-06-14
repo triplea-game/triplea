@@ -41,10 +41,7 @@ public class GameTestUtils {
   public static void setUp() throws IOException {
     if (Injections.getInstance() == null) {
       Injections.init(
-          Injections.builder()
-              .engineVersion(new ProductVersionReader().getVersion())
-              .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
-              .build());
+          Injections.builder().engineVersion(new ProductVersionReader().getVersion()).build());
     }
     // Use a temp dir for downloaded maps to not interfere with the real downloadedMaps folder.
     Path tempHome = FileUtils.newTempFolder();
