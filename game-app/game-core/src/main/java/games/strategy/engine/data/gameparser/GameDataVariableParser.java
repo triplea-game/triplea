@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.map.data.elements.VariableList;
 
@@ -89,8 +88,7 @@ class GameDataVariableParser {
     return foreachMap;
   }
 
-  public String replaceForeachVariables(
-      final String s, final Map<String, String> foreach) {
+  public String replaceForeachVariables(final String s, final Map<String, String> foreach) {
     String result = s;
     for (final Map.Entry<String, String> entry : foreach.entrySet()) {
       result = result.replace(entry.getKey(), Optional.ofNullable(entry.getValue()).orElse(""));
