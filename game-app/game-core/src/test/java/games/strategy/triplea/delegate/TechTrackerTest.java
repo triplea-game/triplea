@@ -93,7 +93,7 @@ public class TechTrackerTest {
     GamePlayer player = americans(gameData);
     TechnologyFrontier technologyFrontier = gameData.getTechnologyFrontier();
 
-    TechAdvance heavyBomber = gameData.getTechnologyFrontier().getAdvanceByName("Heavy Bomber");
+    TechAdvance heavyBomber = technologyFrontier.getAdvanceByName("Heavy Bomber");
     assertThat(heavyBomber, is(notNullValue()));
 
     // Check that modifying tech via tech tracker (via Change objects), invalidates the cache.
