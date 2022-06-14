@@ -45,7 +45,7 @@ import org.triplea.sound.ClipPlayer;
 @Slf4j
 public class UiContext {
   @Getter protected static String mapName;
-  @Getter protected static String skinName;
+  @Getter private final String skinName;
   @Getter protected static Path mapLocation;
   @Getter private final ResourceLoader resourceLoader;
 
@@ -110,7 +110,7 @@ public class UiContext {
     String preferredSkinPath =
         getPreferencesForMap(data.getMapName()) //
             .get(MAP_SKIN_PREF, null);
-    UiContext.skinName = preferredSkinPath;
+    skinName = preferredSkinPath;
 
     InstalledMapsListing.parseMapFiles()
         .findMapSkin(data.getMapName(), preferredSkinPath)
@@ -359,17 +359,17 @@ public class UiContext {
   }
 
   @Getter
-  public static class MapSkin {
+  public class MapSkin {
     private final boolean currentSkin;
     private final String skinName;
 
     public MapSkin(String skinName) {
       this.skinName = skinName;
-      currentSkin = skinName.equals(UiContext.skinName);
+      currentSkin = skinName.equals(UiContext.this.skinName);
     }
   }
 
-  public static List<MapSkin> getSkins(final String mapName) {
+  public List<MapSkin> getSkins(final String mapName) {
     List<MapSkin> skins = new ArrayList<>();
     skins.add(new MapSkin(ORIGINAL_SKIN_NAME));
 
