@@ -48,7 +48,7 @@ public class UiContext {
   @Getter protected static String mapName;
   @Getter protected static String skinName;
   @Getter protected static Path mapLocation;
-  @Getter protected static ResourceLoader resourceLoader;
+  private ResourceLoader resourceLoader;
 
   static final String UNIT_SCALE_PREF = "UnitScale";
   static final String MAP_SCALE_PREF = "MapScale";
@@ -89,14 +89,15 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
+  /**
+   * @deprecated Kept to not break things. Refactor static variables and remove!
+   */
+  @Deprecated
   public static void setResourceLoader(final GameData gameData) {
-    final Path mapPath =
+    mapLocation =
         InstalledMapsListing.searchAllMapsForMapName(gameData.getMapName())
             .orElseThrow(
                 () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
-
-    resourceLoader = new ResourceLoader(mapPath);
-    mapLocation = mapPath;
   }
 
   public ResourceLoader getResourceLoaderNonStatic() {

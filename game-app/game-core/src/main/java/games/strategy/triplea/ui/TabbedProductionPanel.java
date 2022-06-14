@@ -79,7 +79,8 @@ class TabbedProductionPanel extends ProductionPanel {
             0,
             0));
     final ProductionTabsProperties properties =
-        ProductionTabsProperties.getInstance(gamePlayer, rules);
+        ProductionTabsProperties.getInstance(
+            gamePlayer, rules, uiContext.getResourceLoaderNonStatic());
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
     calculateRowsAndColumns(properties, largestList(ruleLists));
     for (final Tuple<String, List<Rule>> ruleList : ruleLists) {

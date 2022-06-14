@@ -657,10 +657,10 @@ public final class UnitChooser extends JPanel {
     private UnitImageFactory unitImageFactoryForDecoratedImages = null;
 
     public void makeSureNonWithdrawableFactoryMatchesUiContext(final UiContext uiContext) {
-      if (resourceLoader != UiContext.getResourceLoader()
+      if (resourceLoader != uiContext.getResourceLoaderNonStatic()
           || unitImageFactory != uiContext.getUnitImageFactory()) {
         images.clear();
-        resourceLoader = UiContext.getResourceLoader();
+        resourceLoader = uiContext.getResourceLoaderNonStatic();
         unitImageFactory = uiContext.getUnitImageFactory();
         nonWithdrawableImage = null;
         unitImageFactoryForDecoratedImages = null;
