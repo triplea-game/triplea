@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.ResourceLoader;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Window;
@@ -106,8 +105,8 @@ public final class MapUnitTooltipManager implements ActionListener {
       final UnitType unitType,
       final GamePlayer player,
       final int count,
-      final ResourceLoader resourceLoader) {
-    final String text = getTooltipTextForUnit(unitType, player, count, resourceLoader);
+      final UiContext uiContext) {
+    final String text = getTooltipTextForUnit(unitType, player, count, uiContext);
     component.setToolTipText("<html>" + text + "</html>");
   }
 
@@ -123,14 +122,14 @@ public final class MapUnitTooltipManager implements ActionListener {
       final UnitType unitType,
       final GamePlayer player,
       final int count,
-      final ResourceLoader resourceLoader) {
+      final UiContext uiContext) {
     final String firstLine =
         String.format(
             "<b>%s%s (%s)</b><br />",
             count == 1 ? "" : (count + " "),
             StringUtils.capitalize(unitType.getName()),
             player.getName());
-    return firstLine + TooltipProperties.getInstance(resourceLoader).getTooltip(unitType, player);
+    return firstLine + TooltipProperties.getInstance(uiContext).getTooltip(unitType, player);
   }
 
   /**

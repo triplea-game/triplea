@@ -38,7 +38,7 @@ public class UnitPanel extends JPanel {
             + ":  "
             + costs.getInt(category.getType())
             + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; "
-            + TooltipProperties.getInstance(uiContext.getResourceLoader())
+            + TooltipProperties.getInstance(uiContext)
                 .getTooltip(category.getType(), category.getOwner())
             + "</html>";
     setCount(category.getUnits().size());

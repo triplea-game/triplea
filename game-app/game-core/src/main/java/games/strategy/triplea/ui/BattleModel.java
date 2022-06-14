@@ -6,7 +6,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
@@ -172,7 +171,7 @@ final class BattleModel extends DefaultTableModel {
     private int count;
     private ImageIcon icon;
 
-    private ResourceLoader resourceLoader;
+    private UiContext uiContext;
 
     private TableData() {}
 
@@ -182,7 +181,7 @@ final class BattleModel extends DefaultTableModel {
       this.count = count;
       this.unitType = imageKey.getType();
       this.icon = uiContext.getUnitImageFactory().getIcon(imageKey);
-      this.resourceLoader = uiContext.getResourceLoader();
+      this.uiContext = uiContext;
     }
 
     void updateStamp(final JLabel stamp) {
@@ -193,7 +192,7 @@ final class BattleModel extends DefaultTableModel {
       } else {
         stamp.setText("x" + count);
         stamp.setIcon(icon);
-        MapUnitTooltipManager.setUnitTooltip(stamp, unitType, player, count, resourceLoader);
+        MapUnitTooltipManager.setUnitTooltip(stamp, unitType, player, count, uiContext);
       }
     }
   }

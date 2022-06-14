@@ -46,7 +46,7 @@ import org.triplea.sound.ClipPlayer;
 public class UiContext {
   @Getter protected static String mapName;
   @Getter private final String skinName;
-  @Getter protected static Path mapLocation;
+  @Getter private final Path mapLocation;
   @Getter private final ResourceLoader resourceLoader;
 
   static final String UNIT_SCALE_PREF = "UnitScale";
@@ -87,17 +87,6 @@ public class UiContext {
   private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
-
-  /**
-   * @deprecated Kept to not break things. Refactor static variables and remove!
-   */
-  @Deprecated
-  public static void setResourceLoader(final GameData gameData) {
-    mapLocation =
-        InstalledMapsListing.searchAllMapsForMapName(gameData.getMapName())
-            .orElseThrow(
-                () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
-  }
 
   UiContext(final GameData data) {
     if (data.getMapName() == null || data.getMapName().isBlank()) {
@@ -163,8 +152,7 @@ public class UiContext {
 
   public JLabel newUnitImageLabel(final ImageKey imageKey) {
     final JLabel label = new JLabel(getUnitImageFactory().getIcon(imageKey));
-    MapUnitTooltipManager.setUnitTooltip(
-        label, imageKey.getType(), imageKey.getPlayer(), 1, resourceLoader);
+    MapUnitTooltipManager.setUnitTooltip(label, imageKey.getType(), imageKey.getPlayer(), 1, this);
     return label;
   }
 

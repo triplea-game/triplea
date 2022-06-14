@@ -681,7 +681,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** We do NOT want to block the next player from beginning their turn. */
   public void notifyError(final String message) {
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(message, UiContext.getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -717,7 +717,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return;
     }
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(message, UiContext.getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -1669,10 +1669,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     if (!mapPanel.getMouseHoverUnits().isEmpty()) {
       final Unit unit = mapPanel.getMouseHoverUnits().get(0);
       return MapUnitTooltipManager.getTooltipTextForUnit(
-          unit.getType(),
-          unit.getOwner(),
-          mapPanel.getMouseHoverUnits().size(),
-          uiContext.getResourceLoader());
+          unit.getType(), unit.getOwner(), mapPanel.getMouseHoverUnits().size(), uiContext);
     }
     return "";
   }

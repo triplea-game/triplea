@@ -19,7 +19,6 @@ import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.TripleADisplay;
 import java.awt.Component;
 import java.awt.Frame;
@@ -190,9 +189,9 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public boolean promptGameStop(String status, String title) {
+  public boolean promptGameStop(String status, String title, Path mapLocation) {
     // now tell the HOST, and see if they want to continue the game.
-    String displayMessage = LocalizeHtml.localizeImgLinksInHtml(status, UiContext.getMapLocation());
+    String displayMessage = LocalizeHtml.localizeImgLinksInHtml(status, mapLocation);
     if (displayMessage.endsWith("</body>")) {
       displayMessage =
           displayMessage.substring(0, displayMessage.length() - "</body>".length())

@@ -15,14 +15,15 @@ import org.triplea.util.LocalizeHtml;
 class GameNotesMenu {
   private static final String gameNotesTitle = "Game Notes";
 
-  Action buildMenu(final String gameNotes) {
+  Action buildMenu(final String gameNotes, final UiContext uiContext) {
     return SwingAction.of(
         gameNotesTitle,
         e ->
             SwingUtilities.invokeLater(
                 () -> {
                   final JDialog dialog =
-                      InformationDialog.createDialog(notesPanel(gameNotes), gameNotesTitle);
+                      InformationDialog.createDialog(
+                          notesPanel(gameNotes, uiContext), gameNotesTitle);
                   if (dialog.getWidth() < 400) {
                     dialog.setSize(400, dialog.getHeight());
                   }
@@ -39,9 +40,9 @@ class GameNotesMenu {
                 }));
   }
 
-  private static JComponent notesPanel(final String gameNotes) {
+  private static JComponent notesPanel(final String gameNotes, final UiContext uiContext) {
     final String localizedHtml =
-        LocalizeHtml.localizeImgLinksInHtml(gameNotes.trim(), UiContext.getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(gameNotes.trim(), uiContext.getMapLocation());
 
     final GameNotesView gameNotesPane = new GameNotesView();
     gameNotesPane.setText(localizedHtml);

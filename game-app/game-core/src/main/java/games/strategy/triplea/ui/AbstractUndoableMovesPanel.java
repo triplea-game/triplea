@@ -131,7 +131,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
           category.getType(),
           category.getOwner(),
           category.getUnits().size(),
-          movePanel.getMap().getUiContext().getResourceLoader());
+          movePanel.getMap().getUiContext());
     }
     unitsBox.add(Box.createHorizontalGlue());
     final JLabel text = new JLabel(move.getMoveLabel());
