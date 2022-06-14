@@ -1458,7 +1458,7 @@ public class MoveValidator {
       // if we can move without using paratroop tech, do so this allows moving a bomber/infantry
       // from one friendly territory to another
       final Map<Unit, Unit> paratroopersToAirTransports =
-          dependentsToUnitToTransportsMap(airTransportDependents, result);
+          convertTransportKeyedMapToLoadedUnitKeyedMap(airTransportDependents, result);
       if (result.hasError()) {
         return result;
       }
@@ -1493,19 +1493,21 @@ public class MoveValidator {
     return result;
   }
 
-  private Map<Unit, Unit> dependentsToUnitToTransportsMap(
+  private Map<Unit, Unit> convertTransportKeyedMapToLoadedUnitKeyedMap(
       final Map<Unit, Collection<Unit>> airTransportDependents, final MoveValidationResult result) {
     Map<Unit, Unit> unitsToTransport = new HashMap<>();
     for (Unit transport : airTransportDependents.keySet()) {
       int capacity = TransportTracker.getAvailableCapacity(transport);
       for (Unit beingTransported : airTransportDependents.get(transport)) {
         int cost = beingTransported.getUnitAttachment().getTransportCost();
-        unitsToTransport.put(beingTransported, transport);
         // Validate capacity, as airTransportDependents is coming from the move we're validating.
         if (capacity < cost) {
+          // Note: The UI will doesn't allow such a move to be submitted, so we no need for a more
+          // fancy error message here listing specific units.
           result.setError("Not all units could be air transported");
           return Map.of();
         }
+        unitsToTransport.put(beingTransported, transport);
         capacity -= cost;
       }
     }
