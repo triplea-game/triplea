@@ -36,7 +36,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   public void addAdvance(final TechAdvance t) {
     techs.add(t);
     reorderTechsToMatchGameTechsOrder();
-    getData().getTechTracker().onTechnologyChanged();
+    getData().getTechTracker().clearCache();
   }
 
   public void addAdvance(final List<TechAdvance> list) {
@@ -44,7 +44,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
       techs.add(t);
     }
     reorderTechsToMatchGameTechsOrder();
-    getData().getTechTracker().onTechnologyChanged();
+    getData().getTechTracker().clearCache();
   }
 
   public void removeAdvance(final TechAdvance t) {
@@ -52,7 +52,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
       throw new IllegalStateException("Advance not present:" + t);
     }
     techs.remove(t);
-    getData().getTechTracker().onTechnologyChanged();
+    getData().getTechTracker().clearCache();
   }
 
   public TechAdvance getAdvanceByProperty(final String property) {

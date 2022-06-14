@@ -85,7 +85,7 @@ public class TechTrackerTest {
   }
 
   @Test
-  void invalidateCache() {
+  void clearCache() {
     // Test that updating techs updates the TechTracker's cache.
     GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
     TechTracker techTracker = gameData.getTechTracker();

@@ -98,9 +98,9 @@ public class ChangeAttachmentChange extends Change {
           e);
     }
     if (attachment instanceof TechAttachment) {
-      ((TechAttachment) attachment).getData().getTechTracker().onTechnologyChanged();
+      ((TechAttachment) attachment).getData().getTechTracker().clearCache();
     } else if (attachment instanceof TechAbilityAttachment) {
-      ((TechAbilityAttachment) attachment).getData().getTechTracker().onTechnologyChanged();
+      ((TechAbilityAttachment) attachment).getData().getTechTracker().clearCache();
     }
   }
 

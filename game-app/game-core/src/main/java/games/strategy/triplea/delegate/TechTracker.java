@@ -38,7 +38,7 @@ public class TechTracker {
 
   private final Map<Key, Object> cache = new ConcurrentHashMap<>();
 
-  public void onTechnologyChanged() {
+  public void clearCache() {
     cache.clear();
   }
 
