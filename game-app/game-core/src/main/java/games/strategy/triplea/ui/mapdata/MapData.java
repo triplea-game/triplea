@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.UiContext;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -131,7 +130,10 @@ public class MapData {
   @Nullable private final Image errorImage;
   @Nullable private final Image warningImage;
 
+  private final ResourceLoader loader;
+
   public MapData(final ResourceLoader loader) {
+    this.loader = loader;
     try {
       place.putAll(readOptionalPlacementsOneToMany(loader, PLACEMENT_FILE));
       territoryEffects.putAll(readOptionalPointsOneToMany(loader, TERRITORY_EFFECT_FILE));
@@ -761,9 +763,9 @@ public class MapData {
               String largeImageName = "territoryEffects/" + effectName + "_large.png";
               String standardImageName = "territoryEffects/" + effectName + ".png";
 
-              return UiContext.getResourceLoader()
+              return loader
                   .loadImage(largeImageName)
-                  .or(() -> UiContext.getResourceLoader().loadImage(standardImageName))
+                  .or(() -> loader.loadImage(standardImageName))
                   .orElse(null);
             }));
   }
