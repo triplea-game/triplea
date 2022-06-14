@@ -64,19 +64,13 @@ class BattleCalculator implements IBattleCalculator {
         !isRunning.getAndSet(true), "Can't calculate while operation is still running!");
     try {
       final GamePlayer attacker2 =
-          gameData
-              .getPlayerList()
-              .getPlayerId(
-                  attacker == null
-                      ? gameData.getPlayerList().getNullPlayer().getName()
-                      : attacker.getName());
+          attacker == null
+              ? gameData.getPlayerList().getNullPlayer()
+              : gameData.getPlayerList().getPlayerId(attacker.getName());
       final GamePlayer defender2 =
-          gameData
-              .getPlayerList()
-              .getPlayerId(
-                  defender == null
-                      ? gameData.getPlayerList().getNullPlayer().getName()
-                      : defender.getName());
+          defender == null
+              ? gameData.getPlayerList().getNullPlayer()
+              : gameData.getPlayerList().getPlayerId(defender.getName());
       final Territory location2 = gameData.getMap().getTerritory(location.getName());
       final Collection<Unit> attackingUnits =
           GameDataUtils.translateIntoOtherGameData(attacking, gameData);
