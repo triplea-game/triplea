@@ -409,7 +409,7 @@ public class MoveValidator {
         && (route.anyMatch(Matches.isTerritoryEnemy(player))
             && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))) {
       if (!Matches.territoryIsBlitzable(player).test(route.getStart())
-          && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
+          && !units.stream().allMatch(Matches.unitIsAir())) {
         return result.setErrorReturnResult(CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY);
       }
       Predicate<Unit> disallowed = Matches.unitCanBlitz().negate().and(Matches.unitIsNotAir());
