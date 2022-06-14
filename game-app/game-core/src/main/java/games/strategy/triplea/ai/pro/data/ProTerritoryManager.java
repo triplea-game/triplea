@@ -168,8 +168,7 @@ public class ProTerritoryManager {
         defenders = patd.getMaxEnemyDefenders(player);
       }
       patd.setMaxBattleResult(
-          calc.estimateAttackBattleResults(
-              proData, t, patd.getMaxUnits(), defenders, Set.of()));
+          calc.estimateAttackBattleResults(proData, t, patd.getMaxUnits(), defenders, Set.of()));
 
       // Add in amphib units if I can't win without them
       if (patd.getMaxBattleResult().getWinPercentage() < proData.getWinPercentage()
