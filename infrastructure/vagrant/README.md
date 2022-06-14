@@ -1,31 +1,40 @@
 ## Local Development with Vagrant
 
-Vagrant allows you to launch virtual machines via CLI. This allows for
-automation of creating virtual machines where deployments can be tested.
+Vagrant allows you to launch virtual machines via CLI. This can be used
+to simulate deployments to a production server.
 
 Vagrant typically interacts with VM software like VirtualBox which is
 the software that is actually launching the virtual machine.
 
-### Installation
+## Quick Start
 
-#### (1.A) Install, VirtualBox and Ansible
+### Installation
 
 ```bash
 sudo apt install -y virtualbox ansible
 ```
 
-#### (1.B) Install Vagrant
+Install Vagrant from [vagrant download site](https://www.vagrantup.com/downloads.html)
 
-Install from [vagrant download site](https://www.vagrantup.com/downloads.html)
 
-The version in the standard 'apt' repositories is likely to be out of date
-and could have Ruby errors.
-
-#### (2) Launch Vagrant virtual machine
+### Start VM & Run Deployment
 
 ```bash
-cd ~/triplea/infrastructure/vagrant
+cd .../triplea/infrastructure/vagrant
 vagrant up
+cd ..
+./run_ansible --env vagrant
+```
+
+Once the above is completed, vagrant will have launched a VM and ansible
+will have deployed a full lobby server to the machine, available at:
+`https://localhost:8000`
+
+To access the VM:
+
+```bash
+cd .../triplea/infrastructure/vagrant
+vagrant ssh
 ```
 
 *Note*, you may need to do some chowning to be able to run virtualbox as non-root:
@@ -35,39 +44,34 @@ sudo chown $USER:$USER -R ~/.vagrant.d/
 sudo chown $USER:$USER -R ~/triplea/infrastructure/.vagrant/
 ```
 
-### Run Ansible
+### More Useful Commands
+
 
 ```bash
-cd ~/triplea/infrastructure/
-./run_ansible --environment vagrant
-```
+cd ~/triplea/infrastructure/vagrant
 
-#### HTTPS Config
+## check status of vagrant VMs:
+localhost$ vagrant status
 
-Ansible will setup a self-signed certificate to be used by nginx.
-`run_ansible_vagrant` will symlink this certificate from the vagrant virtual
-machine to your local '/usr/local/share/ca-certificates' where it will
-be picked up and added as a trusted certificate.
-
-### Check Results
-
-```bash
-cd ~/triplea/infrastructure
 ## vagrant ssh will connect you to the running virtualbox instance
-vagrant ssh
+localhost$ vagrant ssh
 
 ## check apps are running
-ps -ef | grep java
+vagrant$ ps -ef | grep java
 
-## check logs
-journalctl -f -u triplea-lobby
+## check lobby logs
+vagrant$ journalctl -f -u triplea-lobby
 
 ## log in to database and verify DB and tables exist
-sudo -u postgres psql
+vagrant$ sudo -u postgres psql
 ```
 
-### Clean / Destroy Virtual Servers
-
 ```bash
+# Halt the Virtual Server
+cd ~/triplea/infrastructure/vagrant
+vagrant halt
+
+# Clean / Destroy Virtual Servers
+cd ~/triplea/infrastructure/vagrant
 vagrant destroy -f
 ```
