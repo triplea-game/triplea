@@ -160,9 +160,13 @@ public class ProTerritoryManager {
       final ProTerritory patd = attackMap.get(t);
 
       // Check if I can win without amphib units
-      final List<Unit> defenders =
-          new ArrayList<>(
-              isIgnoringRelationships ? t.getUnitCollection() : patd.getMaxEnemyDefenders(player));
+      final List<Unit> defenders;
+      if (isIgnoringRelationships) {
+        defenders = new ArrayList<>(t.getUnitCollection());
+        defenders.removeAll(patd.getMaxUnits());
+      } else {
+        defenders = patd.getMaxEnemyDefenders(player);
+      }
       patd.setMaxBattleResult(
           calc.estimateAttackBattleResults(
               proData, t, patd.getMaxUnits(), defenders, new HashSet<>()));

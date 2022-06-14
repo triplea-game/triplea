@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
@@ -81,15 +82,11 @@ class BattleCalculator implements IBattleCalculator {
       final Collection<TerritoryEffect> territoryEffects2 =
           GameDataUtils.translateIntoOtherGameData(territoryEffects, gameData);
       gameData.performChange(ChangeFactory.removeUnits(location2, location2.getUnits()));
-      gameData.performChange(ChangeFactory.addUnits(location2, attackingUnits));
-      gameData.performChange(ChangeFactory.addUnits(location2, defendingUnits));
+      gameData.performChange(
+          ChangeFactory.addUnits(location2, mergeUnitCollections(attackingUnits, defendingUnits)));
       final long start = System.currentTimeMillis();
       final AggregateResults aggregateResults = new AggregateResults(runCount);
       final BattleTracker battleTracker = new BattleTracker();
-      // CasualtySortingCaching can cause issues if there is more than 1 one battle being calculated
-      // at the same time (like if the AI and a human are both using the calc)
-      // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference
-      // then convert it to a per-thread, per-calc caching
       final List<Unit> attackerOrderOfLosses =
           OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
               this.attackerOrderOfLosses, attackingUnits, gameData);
@@ -142,6 +139,15 @@ class BattleCalculator implements IBattleCalculator {
     } finally {
       isRunning.set(false);
     }
+  }
+
+  private Collection<Unit> mergeUnitCollections(Collection<Unit> c1, Collection<Unit> c2) {
+    var combined = new HashSet<>(c1);
+    combined.addAll(c2);
+    // Check that the two collections were distinct and didn't have duplicates. This helps catch
+    // logic errors in AI code that would otherwise be hard to debug.
+    Preconditions.checkState(combined.size() == c1.size() + c2.size());
+    return combined;
   }
 
   public void cancel() {
