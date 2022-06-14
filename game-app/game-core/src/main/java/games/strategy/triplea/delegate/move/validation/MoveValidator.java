@@ -85,6 +85,12 @@ public class MoveValidator {
   public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
   public static final String CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY =
       "Cannot attack out of a contested territory";
+  public static final String CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY =
+      "Cannot blitz out of a battle into enemy territory";
+  public static final String NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY =
+      "Not all units can blitz out of empty enemy territory";
+  public static final String CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY =
+      "Cannot blitz out of a battle further into enemy territory";
 
   private final GameData data;
   private final boolean isNonCombat;
@@ -394,15 +400,34 @@ public class MoveValidator {
       }
     }
 
-    // Do not allow non-air attacks out of contested territories unless allowed by properties.
-    final Predicate<Territory> isEnemyOrContestedLand =
-        Matches.territoryIsLand()
-            .and(Matches.isTerritoryEnemy(player).or(Matches.territoryHasEnemyUnits(player)));
+    // We are in a contested territory owned by the enemy, and we want to move to another enemy
+    // owned territory. Do not allow unless each unit can blitz the current territory or allowed by
+    // property.
     if (!Properties.canAttackFromContestedTerritories(data.getProperties())
-        && isEnemyOrContestedLand.test(route.getEnd())
-        && isEnemyOrContestedLand.test(route.getStart())
+        && !route.getStart().isWater()
+        && Matches.isAtWar(route.getStart().getOwner()).test(player)
+        && (route.anyMatch(Matches.isTerritoryEnemy(player))
+            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))) {
+      if (!Matches.territoryIsBlitzable(player).test(route.getStart())
+          && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
+        return result.setErrorReturnResult(CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY);
+      }
+      Predicate<Unit> disallowed = Matches.unitCanBlitz().negate().and(Matches.unitIsNotAir());
+      for (final Unit u : CollectionUtils.getMatches(units, disallowed)) {
+        result.addDisallowedUnit(NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY, u);
+      }
+    }
+
+    // We are in a contested territory owned by us, and we want to move to an enemy owned territory.
+    // Do not allow unless the territory is blitzable or allowed by property.
+    if (!Properties.canAttackFromContestedTerritories(data.getProperties())
+        && !route.getStart().isWater()
+        && !Matches.isAtWar(route.getStart().getOwner()).test(player)
+        && (route.anyMatch(Matches.isTerritoryEnemy(player))
+            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate()))
+        && !Matches.territoryIsBlitzable(player).test(route.getStart())
         && !units.stream().allMatch(Matches.unitIsAir())) {
-      return result.setErrorReturnResult(CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY);
+      return result.setErrorReturnResult(CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY);
     }
 
     // Don't allow aa guns (and other disallowed units) to move in combat unless they are in a
