@@ -180,7 +180,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
     for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       final String name = player.getName();
-      if (launchAction.isAiFallback()) {
+      if (launchAction.shouldMinimizeExpensiveAiUse()) {
         if (player.getIsDisabled()) {
           playersToNodeListing.put(name, messengers.getLocalNode().getName());
           localPlayerTypes.put(name, PlayerTypes.WEAK_AI);
@@ -257,7 +257,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               }
             });
 
-        lobbyWatcherThread.createLobbyWatcher(gameToLobbyConnection, !launchAction.isAiFallback());
+        lobbyWatcherThread.createLobbyWatcher(
+            gameToLobbyConnection, !launchAction.shouldMinimizeExpensiveAiUse());
       } else {
         gameHostingResponse = null;
       }
@@ -336,7 +337,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         return;
       }
       playersEnabledListing.put(playerName, enabled);
-      if (launchAction.isAiFallback()) {
+      if (launchAction.shouldMinimizeExpensiveAiUse()) {
         // we do not want the host bot to actually play, so set to null if enabled,
         // and set to weak ai if disabled
         if (enabled) {
@@ -478,7 +479,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     final Map<String, PlayerTypes.Type> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
     final PlayerTypes.Type defaultLocalType =
-        launchAction.isAiFallback() ? PlayerTypes.WEAK_AI : PlayerTypes.HUMAN_PLAYER;
+        launchAction.shouldMinimizeExpensiveAiUse()
+            ? PlayerTypes.WEAK_AI
+            : PlayerTypes.HUMAN_PLAYER;
     for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
       final String player = entry.getKey();
       final String playedBy = entry.getValue();

@@ -124,7 +124,7 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public boolean isAiFallback() {
+  public boolean shouldMinimizeExpensiveAiUse() {
     return true;
   }
 

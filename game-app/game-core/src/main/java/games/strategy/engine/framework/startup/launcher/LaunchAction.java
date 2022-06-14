@@ -43,10 +43,10 @@ public interface LaunchAction {
   ChatModel createChatModel(String chatName, Messengers messengers);
 
   /**
-   * Controls how sparsely the AI should be used when preparing a game. Headless systems may choose
-   * to avoid AI usage where possible to reduce the load on the system.
+   * Controls if the AI should be avoided when preparing a game. Headless systems may choose to
+   * avoid AI usage where possible to reduce the load on the system.
    */
-  boolean isAiFallback();
+  boolean shouldMinimizeExpensiveAiUse();
 
   WatcherThreadMessaging createThreadMessaging();
 
