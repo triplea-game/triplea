@@ -27,9 +27,6 @@ import org.triplea.java.collections.IntegerMap;
 /** A collection of methods for tracking which players have which technology advances. */
 @AllArgsConstructor
 public class TechTracker {
-  // TODO: Enable caching when ready.
-  private static final boolean ENABLE_CACHING = false;
-
   private final GameData data;
 
   @Value
@@ -40,6 +37,10 @@ public class TechTracker {
   }
 
   private final Map<Key, Object> cache = new ConcurrentHashMap<>();
+
+  public void clearCache() {
+    cache.clear();
+  }
 
   public int getAirDefenseBonus(GamePlayer player, UnitType type) {
     final Supplier<Integer> getter =
@@ -156,17 +157,11 @@ public class TechTracker {
 
   private int getCached(
       GamePlayer player, UnitType type, String property, Supplier<Integer> getter) {
-    if (!ENABLE_CACHING) {
-      return getter.get();
-    }
     return (Integer) cache.computeIfAbsent(new Key(player, type, property), key -> getter.get());
   }
 
   private boolean getCached(
       GamePlayer player, UnitType type, String property, BooleanSupplier getter) {
-    if (!ENABLE_CACHING) {
-      return getter.getAsBoolean();
-    }
     return (Boolean)
         cache.computeIfAbsent(new Key(player, type, property), key -> getter.getAsBoolean());
   }

@@ -37,7 +37,7 @@ public class TechnologyFrontierList extends GameDataComponent {
     for (final TechnologyFrontier t : technologyFrontiers) {
       techs.addAll(t.getTechs());
     }
-    return techs;
+    return Collections.unmodifiableList(techs);
   }
 
   public List<TechnologyFrontier> getFrontiers() {
