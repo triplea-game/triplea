@@ -2,7 +2,6 @@ package games.strategy.engine.data.gameparser;
 
 import static com.google.common.base.Preconditions.checkState;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -113,7 +112,6 @@ class GameDataVariableParserTest {
     parser.parseVariables(readFile(MANY_ELEMENT_LIST));
     var mapping = Map.of("@key1@", "value1", "@key2@", "value3");
 
-    assertThat(parser.replaceForeachVariables(null, mapping), is(nullValue()));
     assertThat(parser.replaceForeachVariables("@key1@", mapping), is("value1"));
     assertThat(parser.replaceForeachVariables("@key2@", mapping), is("value3"));
     assertThat(

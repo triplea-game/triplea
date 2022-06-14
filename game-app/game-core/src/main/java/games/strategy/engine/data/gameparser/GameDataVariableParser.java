@@ -90,10 +90,7 @@ class GameDataVariableParser {
   }
 
   public String replaceForeachVariables(
-      final @Nullable String s, final Map<String, String> foreach) {
-    if (s == null) {
-      return null;
-    }
+      final String s, final Map<String, String> foreach) {
     String result = s;
     for (final Map.Entry<String, String> entry : foreach.entrySet()) {
       result = result.replace(entry.getKey(), Optional.ofNullable(entry.getValue()).orElse(""));
