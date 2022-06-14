@@ -1,10 +1,13 @@
 package games.strategy.engine.data.gameparser;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
@@ -79,5 +82,47 @@ class GameDataVariableParserTest {
     assertThat(result, hasEntry("$contains-nested$", List.of("nested-value")));
     assertThat(result, hasEntry("$many-nested$", List.of("nested-value", "nested-value")));
     assertThat(result.keySet(), hasSize(3));
+  }
+
+  @Test
+  void expandVariableCombinations() throws Exception {
+    parser.parseVariables(readFile(MANY_ELEMENT_LIST));
+    var key1 = parser.expandVariableCombinations("$key1$");
+    assertThat(key1, hasSize(2));
+    assertThat(key1.get(0), equalTo(Map.of("@key1@", "value1")));
+    assertThat(key1.get(1), equalTo(Map.of("@key1@", "value2")));
+
+    var key1Key2 = parser.expandVariableCombinations("$key1$^$key2$");
+    assertThat(key1Key2, hasSize(4));
+    // Note: We explicitly test that the 4 elements are ordered according to variable list order.
+    assertThat(key1Key2.get(0), equalTo(Map.of("@key1@", "value1", "@key2@", "value3")));
+    assertThat(key1Key2.get(1), equalTo(Map.of("@key1@", "value1", "@key2@", "value4")));
+    assertThat(key1Key2.get(2), equalTo(Map.of("@key1@", "value2", "@key2@", "value3")));
+    assertThat(key1Key2.get(3), equalTo(Map.of("@key1@", "value2", "@key2@", "value4")));
+
+    var key2Key1 = parser.expandVariableCombinations("$key2$^$key1$");
+    assertThat(key2Key1, hasSize(4));
+    assertThat(key2Key1.get(0), equalTo(Map.of("@key1@", "value1", "@key2@", "value3")));
+    assertThat(key2Key1.get(1), equalTo(Map.of("@key1@", "value2", "@key2@", "value3")));
+    assertThat(key2Key1.get(2), equalTo(Map.of("@key1@", "value1", "@key2@", "value4")));
+    assertThat(key2Key1.get(3), equalTo(Map.of("@key1@", "value2", "@key2@", "value4")));
+  }
+
+  @Test
+  void replaceForeachVariables() throws Exception {
+    parser.parseVariables(readFile(MANY_ELEMENT_LIST));
+    var mapping = Map.of("@key1@", "value1", "@key2@", "value3");
+
+    assertThat(parser.replaceForeachVariables(null, mapping), is(nullValue()));
+    assertThat(parser.replaceForeachVariables("@key1@", mapping), is("value1"));
+    assertThat(parser.replaceForeachVariables("@key2@", mapping), is("value3"));
+    assertThat(
+        parser.replaceForeachVariables("x_@key1@_y_@key2@_z", mapping), is("x_value1_y_value3_z"));
+  }
+
+  @Test
+  void replaceVariables() throws Exception {
+    parser.parseVariables(readFile(MANY_ELEMENT_LIST));
+    assertThat(parser.replaceVariables("$key1$:foo"), is("value1:value2:foo"));
   }
 }
