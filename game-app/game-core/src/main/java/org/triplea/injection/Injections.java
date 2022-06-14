@@ -90,6 +90,7 @@ public final class Injections {
   @Getter private static Injections instance;
 
   private final Version engineVersion;
+  // TODO Move into LaunchAction implementation
   private final Collection<PlayerTypes.Type> playerTypes;
 
   public static synchronized void init(final Injections injections) {
