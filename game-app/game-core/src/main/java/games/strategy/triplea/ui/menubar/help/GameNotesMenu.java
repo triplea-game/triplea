@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.menubar.help;
 
 import games.strategy.engine.framework.ui.GameNotesView;
-import games.strategy.triplea.ui.UiContext;
+import java.nio.file.Path;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -15,7 +15,7 @@ import org.triplea.util.LocalizeHtml;
 class GameNotesMenu {
   private static final String gameNotesTitle = "Game Notes";
 
-  Action buildMenu(final String gameNotes, final UiContext uiContext) {
+  Action buildMenu(final String gameNotes, final Path mapLocation) {
     return SwingAction.of(
         gameNotesTitle,
         e ->
@@ -23,7 +23,7 @@ class GameNotesMenu {
                 () -> {
                   final JDialog dialog =
                       InformationDialog.createDialog(
-                          notesPanel(gameNotes, uiContext), gameNotesTitle);
+                          notesPanel(gameNotes, mapLocation), gameNotesTitle);
                   if (dialog.getWidth() < 400) {
                     dialog.setSize(400, dialog.getHeight());
                   }
@@ -40,9 +40,8 @@ class GameNotesMenu {
                 }));
   }
 
-  private static JComponent notesPanel(final String gameNotes, final UiContext uiContext) {
-    final String localizedHtml =
-        LocalizeHtml.localizeImgLinksInHtml(gameNotes.trim(), uiContext.getMapLocation());
+  private static JComponent notesPanel(final String gameNotes, final Path mapLocation) {
+    final String localizedHtml = LocalizeHtml.localizeImgLinksInHtml(gameNotes.trim(), mapLocation);
 
     final GameNotesView gameNotesPane = new GameNotesView();
     gameNotesPane.setText(localizedHtml);

@@ -71,11 +71,13 @@ public abstract class AbstractGame implements IGame {
     setupLocalPlayers(gamePlayers);
   }
 
+  @Override
   public void setResourceLoader(final ResourceLoader resourceLoader) {
     this.resourceLoader =
         Preconditions.checkNotNull(resourceLoader, "ResourceLoader needs to be non-null");
   }
 
+  @Override
   public ResourceLoader getResourceLoader() {
     return Preconditions.checkNotNull(
         resourceLoader, "ResourceLoader has been accessed before setting it");
