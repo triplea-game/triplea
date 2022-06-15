@@ -13,7 +13,6 @@ import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -210,8 +209,7 @@ public final class ProTransportUtils {
   }
 
   /**
-   * Check if unit is can land transport and if there are any unused units that could be
-   * transported.
+   * Check if unit is a land transport and if there are any unused units that could be transported.
    */
   public static List<Unit> findBestUnitsToLandTransport(
       final Unit unit, final Territory t, final List<Unit> usedUnits) {
@@ -227,7 +225,7 @@ public final class ProTransportUtils {
                     .and(ProMatches.unitHasLessMovementThan(unit)));
     units.removeAll(usedUnits);
     if (Matches.unitIsLandTransport().negate().test(unit)
-        || !TechAttachment.isMechanizedInfantry(player)
+        || !player.getTechAttachment().getMechanizedInfantry()
         || units.isEmpty()) {
       return List.of(unit);
     }

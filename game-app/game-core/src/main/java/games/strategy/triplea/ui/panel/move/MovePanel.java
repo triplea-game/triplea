@@ -9,7 +9,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
@@ -232,7 +231,7 @@ public class MovePanel extends AbstractMovePanel {
             // Load Bombers with paratroops
             if ((!nonCombat
                     || Properties.getParatroopersCanMoveDuringNonCombat(getData().getProperties()))
-                && TechAttachment.isAirTransportable(getCurrentPlayer())
+                && getCurrentPlayer().getTechAttachment().getParatroopers()
                 && selectedUnits.stream()
                     .anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
               final GamePlayer player = getCurrentPlayer();

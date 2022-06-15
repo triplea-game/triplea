@@ -6,7 +6,6 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.LAND_PARA
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -60,7 +59,7 @@ public class LandParatroopers implements BattleStep {
     private TransportsAndParatroopers() {
       if (battleState.getStatus().isFirstRound()
           && !battleState.getBattleSite().isWater()
-          && TechAttachment.isAirTransportable(battleState.getPlayer(OFFENSE))) {
+          && battleState.getPlayer(OFFENSE).getTechAttachment().getParatroopers()) {
         this.airTransports.addAll(
             CollectionUtils.getMatches(
                 battleState.getBattleSite().getUnits(), Matches.unitIsAirTransport()));
