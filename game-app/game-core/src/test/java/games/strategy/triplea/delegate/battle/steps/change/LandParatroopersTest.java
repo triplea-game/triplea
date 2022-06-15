@@ -65,7 +65,7 @@ class LandParatroopersTest {
   void withoutAirTransportTechDoesNothing() {
     final GamePlayer attacker = mock(GamePlayer.class);
     final TechAttachment techAttachment = mock(TechAttachment.class);
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
+    when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(false);
     final BattleState battleState =
         givenBattleStateBuilder().battleRound(1).attacker(attacker).build();
@@ -81,7 +81,6 @@ class LandParatroopersTest {
   void withoutDependentsDoesNothing() {
     final GamePlayer attacker = mock(GamePlayer.class);
     final TechAttachment techAttachment = mock(TechAttachment.class);
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
 
@@ -113,7 +112,6 @@ class LandParatroopersTest {
   void landParatroopers() {
     final GamePlayer attacker = mock(GamePlayer.class);
     final TechAttachment techAttachment = mock(TechAttachment.class);
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
 
