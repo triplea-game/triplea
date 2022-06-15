@@ -5,10 +5,8 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
@@ -17,27 +15,24 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.TechTracker;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /**
  * Attaches to technologies. Also contains static methods of interpreting data from all technology
- * attachments that a player has.
+ * attachments that a player has. Note: Empty collection fields default to null to minimize memory
+ * use and serialization size.
  */
 public class TechAbilityAttachment extends DefaultAttachment {
   // unitAbilitiesGained Static Strings
@@ -47,13 +42,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1866305599625384294L;
 
   // attachment fields
-  private IntegerMap<UnitType> attackBonus = new IntegerMap<>();
-  private IntegerMap<UnitType> defenseBonus = new IntegerMap<>();
-  private IntegerMap<UnitType> movementBonus = new IntegerMap<>();
-  private IntegerMap<UnitType> radarBonus = new IntegerMap<>();
-  private IntegerMap<UnitType> airAttackBonus = new IntegerMap<>();
-  private IntegerMap<UnitType> airDefenseBonus = new IntegerMap<>();
-  private IntegerMap<UnitType> productionBonus = new IntegerMap<>();
+  private @Nullable IntegerMap<UnitType> attackBonus = null;
+  private @Nullable IntegerMap<UnitType> defenseBonus = null;
+  private @Nullable IntegerMap<UnitType> movementBonus = null;
+  private @Nullable IntegerMap<UnitType> radarBonus = null;
+  private @Nullable IntegerMap<UnitType> airAttackBonus = null;
+  private @Nullable IntegerMap<UnitType> airDefenseBonus = null;
+  private @Nullable IntegerMap<UnitType> productionBonus = null;
   // -1 means not set
   private int minimumTerritoryValueForProductionBonus = -1;
   // -1 means not set
@@ -61,19 +56,19 @@ public class TechAbilityAttachment extends DefaultAttachment {
   // -1 means not set
   private int warBondDiceSides = -1;
   private int warBondDiceNumber = 0;
-  private IntegerMap<UnitType> rocketDiceNumber = new IntegerMap<>();
+  private @Nullable IntegerMap<UnitType> rocketDiceNumber = null;
   private int rocketDistance = 0;
   private int rocketNumberPerTerritory = 1;
-  private Map<UnitType, Set<String>> unitAbilitiesGained = new HashMap<>();
+  private @Nullable Map<UnitType, Set<String>> unitAbilitiesGained = null;
   private boolean airborneForces = false;
-  private IntegerMap<UnitType> airborneCapacity = new IntegerMap<>();
-  private Set<UnitType> airborneTypes = new HashSet<>();
+  private @Nullable IntegerMap<UnitType> airborneCapacity = null;
+  private @Nullable Set<UnitType> airborneTypes = null;
   private int airborneDistance = 0;
-  private Set<UnitType> airborneBases = new HashSet<>();
-  private Map<String, Set<UnitType>> airborneTargetedByAa = new HashMap<>();
-  private IntegerMap<UnitType> attackRollsBonus = new IntegerMap<>();
-  private IntegerMap<UnitType> defenseRollsBonus = new IntegerMap<>();
-  private IntegerMap<UnitType> bombingBonus = new IntegerMap<>();
+  private @Nullable Set<UnitType> airborneBases = null;
+  private @Nullable Map<String, Set<UnitType>> airborneTargetedByAa = null;
+  private @Nullable IntegerMap<UnitType> attackRollsBonus = null;
+  private @Nullable IntegerMap<UnitType> defenseRollsBonus = null;
+  private @Nullable IntegerMap<UnitType> bombingBonus = null;
 
   public TechAbilityAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -97,12 +92,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @VisibleForTesting
-  UnitType getUnitType(final String value) throws GameParseException {
-    return Optional.ofNullable(getData().getUnitTypeList().getUnitType(value))
-        .orElseThrow(() -> new GameParseException("No unit called:" + value + thisErrorMsg()));
-  }
-
-  @VisibleForTesting
   String[] splitAndValidate(final String name, final String value) throws GameParseException {
     final String[] stringArray = splitOnColon(value);
     if (value.isEmpty() || stringArray.length > 2) {
@@ -118,33 +107,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final String name, final String value, final BiConsumer<UnitType, Integer> putter)
       throws GameParseException {
     final String[] s = splitAndValidate(name, value);
-    putter.accept(getUnitType(s[1]), getInt(s[0]));
-  }
-
-  public static int sumIntegerMap(
-      final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
-      final UnitType ut,
-      final Collection<TechAdvance> techAdvances) {
-    return techAdvances.stream()
-        .map(TechAbilityAttachment::get)
-        .filter(Objects::nonNull)
-        .map(mapper)
-        .mapToInt(m -> m.getInt(ut))
-        .sum();
-  }
-
-  @VisibleForTesting
-  static int sumNumbers(
-      final ToIntFunction<TechAbilityAttachment> mapper,
-      final String attachmentType,
-      final Collection<TechAdvance> techAdvances) {
-    return techAdvances.stream()
-        .map(TechAbilityAttachment::get)
-        .filter(Objects::nonNull)
-        .filter(i -> i.getAttachedTo().toString().equals(attachmentType))
-        .mapToInt(mapper)
-        .filter(i -> i > 0)
-        .sum();
+    putter.accept(getUnitTypeOrThrow(s[1]), getInt(s[0]));
   }
 
   @VisibleForTesting
@@ -162,6 +125,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setAttackBonus(final String value) throws GameParseException {
+    if (attackBonus == null) {
+      attackBonus = new IntegerMap<>();
+    }
     applyCheckedValue("attackBonus", value, attackBonus::put);
   }
 
@@ -170,14 +136,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getAttackBonus() {
-    return attackBonus;
+    return getIntegerMapProperty(attackBonus);
   }
 
   private void resetAttackBonus() {
-    attackBonus = new IntegerMap<>();
+    attackBonus = null;
   }
 
   private void setDefenseBonus(final String value) throws GameParseException {
+    if (defenseBonus == null) {
+      defenseBonus = new IntegerMap<>();
+    }
     applyCheckedValue("defenseBonus", value, defenseBonus::put);
   }
 
@@ -186,14 +155,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getDefenseBonus() {
-    return defenseBonus;
+    return getIntegerMapProperty(defenseBonus);
   }
 
   private void resetDefenseBonus() {
-    defenseBonus = new IntegerMap<>();
+    defenseBonus = null;
   }
 
   private void setMovementBonus(final String value) throws GameParseException {
+    if (movementBonus == null) {
+      movementBonus = new IntegerMap<>();
+    }
     applyCheckedValue("movementBonus", value, movementBonus::put);
   }
 
@@ -202,14 +174,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getMovementBonus() {
-    return movementBonus;
+    return getIntegerMapProperty(movementBonus);
   }
 
   private void resetMovementBonus() {
-    movementBonus = new IntegerMap<>();
+    movementBonus = null;
   }
 
   private void setRadarBonus(final String value) throws GameParseException {
+    if (radarBonus == null) {
+      radarBonus = new IntegerMap<>();
+    }
     applyCheckedValue("radarBonus", value, radarBonus::put);
   }
 
@@ -218,14 +193,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getRadarBonus() {
-    return radarBonus;
+    return getIntegerMapProperty(radarBonus);
   }
 
   private void resetRadarBonus() {
-    radarBonus = new IntegerMap<>();
+    radarBonus = null;
   }
 
   private void setAirAttackBonus(final String value) throws GameParseException {
+    if (airAttackBonus == null) {
+      airAttackBonus = new IntegerMap<>();
+    }
     applyCheckedValue("airAttackBonus", value, airAttackBonus::put);
   }
 
@@ -234,14 +212,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getAirAttackBonus() {
-    return airAttackBonus;
+    return getIntegerMapProperty(airAttackBonus);
   }
 
   private void resetAirAttackBonus() {
-    airAttackBonus = new IntegerMap<>();
+    airAttackBonus = null;
   }
 
   private void setAirDefenseBonus(final String value) throws GameParseException {
+    if (airDefenseBonus == null) {
+      airDefenseBonus = new IntegerMap<>();
+    }
     applyCheckedValue("airDefenseBonus", value, airDefenseBonus::put);
   }
 
@@ -250,14 +231,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getAirDefenseBonus() {
-    return airDefenseBonus;
+    return getIntegerMapProperty(airDefenseBonus);
   }
 
   private void resetAirDefenseBonus() {
-    airDefenseBonus = new IntegerMap<>();
+    airDefenseBonus = null;
   }
 
   private void setProductionBonus(final String value) throws GameParseException {
+    if (productionBonus == null) {
+      productionBonus = new IntegerMap<>();
+    }
     applyCheckedValue("productionBonus", value, productionBonus::put);
   }
 
@@ -265,17 +249,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
     productionBonus = value;
   }
 
-  private IntegerMap<UnitType> getProductionBonus() {
-    return productionBonus;
-  }
-
-  public static int getProductionBonus(
-      final UnitType ut, final Collection<TechAdvance> techAdvances) {
-    return sumIntegerMap(TechAbilityAttachment::getProductionBonus, ut, techAdvances);
+  public IntegerMap<UnitType> getProductionBonus() {
+    return getIntegerMapProperty(productionBonus);
   }
 
   private void resetProductionBonus() {
-    productionBonus = new IntegerMap<>();
+    productionBonus = null;
   }
 
   private void setMinimumTerritoryValueForProductionBonus(final String value)
@@ -288,21 +267,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     minimumTerritoryValueForProductionBonus = value;
   }
 
-  private int getMinimumTerritoryValueForProductionBonus() {
+  public int getMinimumTerritoryValueForProductionBonus() {
     return minimumTerritoryValueForProductionBonus;
-  }
-
-  public static int getMinimumTerritoryValueForProductionBonus(
-      final Collection<TechAdvance> techAdvances) {
-    return Math.max(
-        0,
-        techAdvances.stream()
-            .map(TechAbilityAttachment::get)
-            .filter(Objects::nonNull)
-            .mapToInt(TechAbilityAttachment::getMinimumTerritoryValueForProductionBonus)
-            .filter(i -> i != -1)
-            .min()
-            .orElse(-1));
   }
 
   private void resetMinimumTerritoryValueForProductionBonus() {
@@ -394,36 +360,22 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length != 2) {
       throw new GameParseException("rocketDiceNumber must have two fields" + thisErrorMsg());
     }
-    rocketDiceNumber.put(getUnitType(s[1]), getInt(s[0]));
+    if (rocketDiceNumber == null) {
+      rocketDiceNumber = new IntegerMap<>();
+    }
+    rocketDiceNumber.put(getUnitTypeOrThrow(s[1]), getInt(s[0]));
   }
 
   private void setRocketDiceNumber(final IntegerMap<UnitType> value) {
     rocketDiceNumber = value;
   }
 
-  private IntegerMap<UnitType> getRocketDiceNumber() {
-    return rocketDiceNumber;
-  }
-
-  private static int getRocketDiceNumber(
-      final UnitType ut, final Collection<TechAdvance> techAdvances) {
-    return sumIntegerMap(TechAbilityAttachment::getRocketDiceNumber, ut, techAdvances);
-  }
-
-  public static int getRocketDiceNumber(
-      final Collection<Unit> rockets, final TechnologyFrontier technologyFrontier) {
-    int rocketDiceNumber = 0;
-    for (final Unit u : rockets) {
-
-      rocketDiceNumber +=
-          getRocketDiceNumber(
-              u.getType(), TechTracker.getCurrentTechAdvances(u.getOwner(), technologyFrontier));
-    }
-    return rocketDiceNumber;
+  public IntegerMap<UnitType> getRocketDiceNumber() {
+    return getIntegerMapProperty(rocketDiceNumber);
   }
 
   private void resetRocketDiceNumber() {
-    rocketDiceNumber = new IntegerMap<>();
+    rocketDiceNumber = null;
   }
 
   private void setRocketDistance(final String value) throws GameParseException {
@@ -434,13 +386,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     rocketDistance = value;
   }
 
-  private int getRocketDistance() {
+  public int getRocketDistance() {
     return rocketDistance;
-  }
-
-  public static int getRocketDistance(final Collection<TechAdvance> techAdvances) {
-    return sumNumbers(
-        TechAbilityAttachment::getRocketDistance, TechAdvance.TECH_NAME_ROCKETS, techAdvances);
   }
 
   private void resetRocketDistance() {
@@ -455,15 +402,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     rocketNumberPerTerritory = value;
   }
 
-  private int getRocketNumberPerTerritory() {
+  public int getRocketNumberPerTerritory() {
     return rocketNumberPerTerritory;
-  }
-
-  public static int getRocketNumberPerTerritory(final Collection<TechAdvance> techAdvances) {
-    return sumNumbers(
-        TechAbilityAttachment::getRocketNumberPerTerritory,
-        TechAdvance.TECH_NAME_ROCKETS,
-        techAdvances);
   }
 
   private void resetRocketNumberPerTerritory() {
@@ -479,7 +419,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[0];
     // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
+    final UnitType ut = getUnitTypeOrThrow(unitType);
+    if (unitAbilitiesGained == null) {
+      unitAbilitiesGained = new HashMap<>();
+    }
     final Set<String> abilities = unitAbilitiesGained.computeIfAbsent(ut, key -> new HashSet<>());
     // start at 1
     for (int i = 1; i < s.length; i++) {
@@ -492,7 +435,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 + ABILITY_CAN_BOMBARD
                 + thisErrorMsg());
       }
-      abilities.add(ability);
+      abilities.add(ability.intern());
     }
   }
 
@@ -501,11 +444,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public Map<UnitType, Set<String>> getUnitAbilitiesGained() {
-    return Collections.unmodifiableMap(unitAbilitiesGained);
+    return getMapProperty(unitAbilitiesGained);
   }
 
   private void resetUnitAbilitiesGained() {
-    unitAbilitiesGained = new HashMap<>();
+    unitAbilitiesGained = null;
   }
 
   private void setAirborneForces(final String value) {
@@ -525,6 +468,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setAirborneCapacity(final String value) throws GameParseException {
+    if (airborneCapacity == null) {
+      airborneCapacity = new IntegerMap<>();
+    }
     applyCheckedValue("airborneCapacity", value, airborneCapacity::put);
   }
 
@@ -533,7 +479,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private IntegerMap<UnitType> getAirborneCapacity() {
-    return airborneCapacity;
+    return getIntegerMapProperty(airborneCapacity);
   }
 
   public static IntegerMap<UnitType> getAirborneCapacity(
@@ -559,13 +505,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void resetAirborneCapacity() {
-    airborneCapacity = new IntegerMap<>();
+    airborneCapacity = null;
   }
 
   private void setAirborneTypes(final String value) throws GameParseException {
-    for (final String unit : splitOnColon(value)) {
-      airborneTypes.add(getUnitType(unit));
-    }
+    airborneTypes = parseUnitTypes("airborneTypes", value, airborneTypes);
   }
 
   private void setAirborneTypes(final Set<UnitType> value) {
@@ -573,7 +517,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private Set<UnitType> getAirborneTypes() {
-    return airborneTypes;
+    return getSetProperty(airborneTypes);
   }
 
   public static Set<UnitType> getAirborneTypes(final Collection<TechAdvance> techAdvances) {
@@ -586,7 +530,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void resetAirborneTypes() {
-    airborneTypes = new HashSet<>();
+    airborneTypes = null;
   }
 
   private void setAirborneDistance(final String value) throws GameParseException {
@@ -616,9 +560,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setAirborneBases(final String value) throws GameParseException {
-    for (final String u : splitOnColon(value)) {
-      airborneBases.add(getUnitType(u));
-    }
+    airborneBases = parseUnitTypes("airborneBases", value, airborneBases);
   }
 
   private void setAirborneBases(final Set<UnitType> value) {
@@ -626,7 +568,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private Set<UnitType> getAirborneBases() {
-    return airborneBases;
+    return getSetProperty(airborneBases);
   }
 
   public static Set<UnitType> getAirborneBases(final Collection<TechAdvance> techAdvances) {
@@ -639,7 +581,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void resetAirborneBases() {
-    airborneBases = new HashSet<>();
+    airborneBases = null;
   }
 
   private void setAirborneTargettedByAa(final String value) throws GameParseException {
@@ -650,9 +592,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final Set<UnitType> unitTypes = new HashSet<>();
     for (int i = 1; i < s.length; i++) {
-      unitTypes.add(getUnitType(s[i]));
+      unitTypes.add(getUnitTypeOrThrow(s[i]));
     }
-    airborneTargetedByAa.put(s[0], unitTypes);
+    if (airborneTargetedByAa == null) {
+      airborneTargetedByAa = new HashMap<>();
+    }
+    airborneTargetedByAa.put(s[0].intern(), unitTypes);
   }
 
   private void setAirborneTargettedByAa(final Map<String, Set<UnitType>> value) {
@@ -660,7 +605,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private Map<String, Set<UnitType>> getAirborneTargettedByAa() {
-    return airborneTargetedByAa;
+    return getMapProperty(airborneTargetedByAa);
   }
 
   /**
@@ -688,10 +633,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void resetAirborneTargettedByAa() {
-    airborneTargetedByAa = new HashMap<>();
+    airborneTargetedByAa = null;
   }
 
   private void setAttackRollsBonus(final String value) throws GameParseException {
+    if (attackRollsBonus == null) {
+      attackRollsBonus = new IntegerMap<>();
+    }
     applyCheckedValue("attackRollsBonus", value, attackRollsBonus::put);
   }
 
@@ -700,14 +648,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getAttackRollsBonus() {
-    return attackRollsBonus;
+    return getIntegerMapProperty(attackRollsBonus);
   }
 
   private void resetAttackRollsBonus() {
-    attackRollsBonus = new IntegerMap<>();
+    attackRollsBonus = null;
   }
 
   private void setDefenseRollsBonus(final String value) throws GameParseException {
+    if (defenseRollsBonus == null) {
+      defenseRollsBonus = new IntegerMap<>();
+    }
     applyCheckedValue("defenseRollsBonus", value, defenseRollsBonus::put);
   }
 
@@ -716,10 +667,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<UnitType> getDefenseRollsBonus() {
-    return defenseRollsBonus;
+    return getIntegerMapProperty(defenseRollsBonus);
+  }
+
+  private void resetDefenseRollsBonus() {
+    defenseRollsBonus = null;
   }
 
   private void setBombingBonus(final String value) throws GameParseException {
+    if (bombingBonus == null) {
+      bombingBonus = new IntegerMap<>();
+    }
     applyCheckedValue("bombingBonus", value, bombingBonus::put);
   }
 
@@ -727,20 +685,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
     bombingBonus = value;
   }
 
-  private IntegerMap<UnitType> getBombingBonus() {
-    return bombingBonus;
-  }
-
-  public static int getBombingBonus(final UnitType ut, final Collection<TechAdvance> techAdvances) {
-    return sumIntegerMap(TechAbilityAttachment::getBombingBonus, ut, techAdvances);
-  }
-
-  private void resetDefenseRollsBonus() {
-    defenseRollsBonus = new IntegerMap<>();
+  public IntegerMap<UnitType> getBombingBonus() {
+    return getIntegerMapProperty(bombingBonus);
   }
 
   private void resetBombingBonus() {
-    bombingBonus = new IntegerMap<>();
+    bombingBonus = null;
   }
 
   public static boolean getAllowAirborneForces(final Collection<TechAdvance> techAdvances) {
@@ -884,7 +834,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
               // we subtract the base rolls to get the bonus
               final int heavyBomberDiceRollsBonus =
                   heavyBomberDiceRollsTotal
-                      - UnitAttachment.get(bomber).getAttackRolls(GamePlayer.NULL_PLAYERID);
+                      - bomber
+                          .getUnitAttachment()
+                          .getAttackRolls(data.getPlayerList().getNullPlayer());
               taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
               if (heavyBombersLhtr) {
                 // TODO: this all happens WHEN the xml is parsed. Which means if the user changes
@@ -905,19 +857,16 @@ public class TechAbilityAttachment extends DefaultAttachment {
         // shipyards and industrialTechnology = because it is better to use a Trigger to change
         // player's production
         // improvedArtillerySupport = because it is already completely atomized and controlled
-        // through support
-        // attachments
+        // through support attachments
         // paratroopers = because it is already completely atomized and controlled through unit
-        // attachments + game
-        // options
+        // attachments + game options
         // mechanizedInfantry = because it is already completely atomized and controlled through
         // unit attachments
         // IF one of the above named techs changes what it does in a future version of a&a, and the
         // change is large
         // enough or different enough that it cannot be done easily with a new game option,
         // then it is better to create a new tech rather than change the old one, and give the new
-        // one a new name, like
-        // paratroopers2 or paratroopersAttack or Airborne_Forces, or some crap.
+        // one a new name, like paratroopers2 or paratroopersAttack or Airborne_Forces.
       }
     }
   }

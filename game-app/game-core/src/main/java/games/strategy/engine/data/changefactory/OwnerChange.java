@@ -4,7 +4,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.attachments.UnitAttachment;
 
 /** Changes ownership of a territory. */
 class OwnerChange extends Change {
@@ -51,20 +50,7 @@ class OwnerChange extends Change {
 
   @Override
   protected void perform(final GameState data) {
-    // both names could be null
-    final Territory territory = data.getMap().getTerritory(territoryName);
-    final GamePlayer oldOwner = getPlayerId(oldOwnerName, data);
-    final GamePlayer newOwner = getPlayerId(newOwnerName, data);
-    territory.getUnits().stream()
-        .filter(
-            unit -> {
-              final UnitAttachment ua = unit.getUnitAttachment();
-              return !ua.getIsLandTransportable()
-                  && !ua.getIsAirTransportable()
-                  && ua.getMovement(oldOwner) == 0;
-            })
-        .forEach(unit -> unit.setOwner(newOwner));
-    territory.setOwner(newOwner);
+    data.getMap().getTerritory(territoryName).setOwner(getPlayerId(newOwnerName, data));
   }
 
   @Override

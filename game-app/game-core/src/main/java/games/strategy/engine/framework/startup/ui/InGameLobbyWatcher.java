@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
@@ -51,13 +50,15 @@ public class InGameLobbyWatcher {
       final IServerMessenger serverMessenger,
       final GameToLobbyConnection gameToLobbyConnection,
       final WatcherThreadMessaging watcherThreadMessaging,
-      @Nullable final InGameLobbyWatcher oldWatcher) {
+      @Nullable final InGameLobbyWatcher oldWatcher,
+      final boolean isHuman) {
     this(
         serverMessenger,
         gameToLobbyConnection,
         watcherThreadMessaging,
         Optional.ofNullable(oldWatcher).map(old -> old.gameDescription).orElse(null),
-        Optional.ofNullable(oldWatcher).map(old -> old.game).orElse(null));
+        Optional.ofNullable(oldWatcher).map(old -> old.game).orElse(null),
+        isHuman);
   }
 
   private InGameLobbyWatcher(
@@ -65,10 +66,11 @@ public class InGameLobbyWatcher {
       final GameToLobbyConnection gameToLobbyConnection,
       final WatcherThreadMessaging watcherThreadMessaging,
       @Nullable final GameDescription oldGameDescription,
-      @Nullable final IGame oldGame) {
+      @Nullable final IGame oldGame,
+      final boolean isHuman) {
     this.serverMessenger = serverMessenger;
     this.gameToLobbyConnection = gameToLobbyConnection;
-    humanPlayer = !HeadlessGameServer.headless();
+    humanPlayer = isHuman;
 
     final boolean passworded = SystemPropertyReader.serverIsPassworded();
 
@@ -175,11 +177,12 @@ public class InGameLobbyWatcher {
       final IServerMessenger serverMessenger,
       final GameToLobbyConnection gameToLobbyConnection,
       final WatcherThreadMessaging watcherThreadMessaging,
-      final InGameLobbyWatcher oldWatcher) {
+      final InGameLobbyWatcher oldWatcher,
+      final boolean isHuman) {
     try {
       return Optional.of(
           new InGameLobbyWatcher(
-              serverMessenger, gameToLobbyConnection, watcherThreadMessaging, oldWatcher));
+              serverMessenger, gameToLobbyConnection, watcherThreadMessaging, oldWatcher, isHuman));
     } catch (final Exception e) {
       log.error("Failed to create in-game lobby watcher", e);
       return Optional.empty();

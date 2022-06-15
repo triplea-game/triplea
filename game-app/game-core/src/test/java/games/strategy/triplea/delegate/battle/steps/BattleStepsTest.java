@@ -41,6 +41,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.FakeBattleState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -280,7 +281,8 @@ public class BattleStepsTest {
         hitPlayer.getName() + NOTIFY_PREFIX + name + CASUALTIES_SUFFIX);
   }
 
-  private List<String> givenBattleSteps(final BattleState battleState) {
+  private List<String> givenBattleSteps(final FakeBattleState battleState) {
+    battleState.init();
     return BattleSteps.builder()
         .battleActions(battleActions)
         .battleState(battleState)

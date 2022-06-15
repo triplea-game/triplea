@@ -282,7 +282,7 @@ public final class Properties implements Constants {
   }
 
   public static boolean getTriggers(final GameProperties properties) {
-    return properties.get(TRIGGERS, false);
+    return properties.get(USE_TRIGGERS, false);
   }
 
   public static boolean getAlwaysOnAa(final GameProperties properties) {

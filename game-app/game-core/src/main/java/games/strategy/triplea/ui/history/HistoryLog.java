@@ -428,11 +428,8 @@ public class HistoryLog extends JFrame {
   public void printTerritorySummary(final HistoryNode printNode, final GameData data) {
     final Collection<Territory> territories;
     final GamePlayer player = getPlayerId(printNode);
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       territories = data.getMap().getTerritories();
-    } finally {
-      data.releaseReadLock();
     }
     final Collection<GamePlayer> players = new HashSet<>();
     players.add(player);
@@ -442,12 +439,9 @@ public class HistoryLog extends JFrame {
   private void printTerritorySummary(final GameData data) {
     final Collection<Territory> territories;
     final GamePlayer player;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       player = data.getSequence().getStep().getPlayerId();
       territories = data.getMap().getTerritories();
-    } finally {
-      data.releaseReadLock();
     }
     final Collection<GamePlayer> players = new HashSet<>();
     players.add(player);
@@ -465,11 +459,8 @@ public class HistoryLog extends JFrame {
       return;
     }
     final Collection<Territory> territories;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       territories = data.getMap().getTerritories();
-    } finally {
-      data.releaseReadLock();
     }
     printTerritorySummary(allowedPlayers, territories);
   }
@@ -524,12 +515,9 @@ public class HistoryLog extends JFrame {
   public void printProductionSummary(final GameData data) {
     final Collection<GamePlayer> players;
     final Resource pus;
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       pus = data.getResourceList().getResource(Constants.PUS);
       players = data.getPlayerList().getPlayers();
-    } finally {
-      data.releaseReadLock();
     }
     if (pus == null) {
       return;
@@ -558,7 +546,9 @@ public class HistoryLog extends JFrame {
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       if (!place.isWater()
           || (ta != null
-              && !GamePlayer.NULL_PLAYERID.equals(OriginalOwnerTracker.getOriginalOwner(place))
+              && !data.getPlayerList()
+                  .getNullPlayer()
+                  .equals(OriginalOwnerTracker.getOriginalOwner(place))
               && player.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && place.isOwnedBy(player))) {
         isConvoyOrLand = true;

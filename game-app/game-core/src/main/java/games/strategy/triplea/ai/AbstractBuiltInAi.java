@@ -11,7 +11,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
@@ -127,8 +126,11 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
       throw new IllegalStateException(
-          "Select Casualties showing different numbers for number of hits to take vs total "
-              + "size of default casualty selections");
+          "Select Casualties showing different numbers for number of hits to take ("
+              + count
+              + ") vs total size of default casualty selections ("
+              + defaultCasualties.size()
+              + ")");
     }
     if (defaultCasualties.getKilled().isEmpty()) {
       return new CasualtyDetails(defaultCasualties, false);
@@ -219,7 +221,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       final String acceptanceQuestion,
       final boolean politics) {
     // we are dead, just accept
-    if (!this.getGamePlayer().amNotDeadYet(getGameData().getMap())) {
+    if (!this.getGamePlayer().amNotDeadYet()) {
       return true;
     }
     // not related to politics? just accept i guess
@@ -227,8 +229,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
       return true;
     }
     // politics from ally? accept
-    if (Matches.isAllied(this.getGamePlayer(), getGameData().getRelationshipTracker())
-        .test(playerSendingProposal)) {
+    if (Matches.isAllied(this.getGamePlayer()).test(playerSendingProposal)) {
       return true;
     }
     // would we normally be allies?
@@ -306,7 +307,7 @@ public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
         final int num =
             Math.min(
                 attackTokens.getInt(resource),
-                (UnitAttachment.get(u.getType()).getHitPoints()
+                (u.getUnitAttachment().getHitPoints()
                     * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
         resourceMap.put(resource, num);
         kamikazeSuicideAttacks.computeIfAbsent(t, key -> new HashMap<>()).put(u, resourceMap);

@@ -15,7 +15,8 @@ import java.util.Map;
 
 /**
  * An attachment for instances of {@link GamePlayer} that defines properties related to technology
- * advances.
+ * advances. Note: Empty collection fields default to null to minimize memory use and serialization
+ * size.
  */
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
@@ -42,48 +43,12 @@ public class TechAttachment extends DefaultAttachment {
     setGenericTechs();
   }
 
-  /**
-   * Initializes a new instance of the TechAttachment class.
-   *
-   * @deprecated Since many maps do not include a tech attachment for each player (and no maps
-   *     include tech attachments for the Null Player), we must ensure a default tech attachment is
-   *     available for all these players. It is preferred to use the full constructor. Do not delete
-   *     this. TODO: create tech attachments all players that don't have one, as the map is
-   *     initialized.
-   */
-  @Deprecated
-  public TechAttachment() {
-    super(Constants.TECH_ATTACHMENT_NAME, null, null);
-    // TODO: not having game data, and not having generic techs, causes problems. Fix by creating
-    // real tech attachments
-    // for all players who are missing them, at the beginning of the game.
-  }
-
-  // attaches to a PlayerId
-  public static TechAttachment get(final GamePlayer gamePlayer) {
-    final TechAttachment attachment = gamePlayer.getTechAttachment();
-    // dont crash, as a map xml may not set the tech attachment for all players, so just create a
-    // new tech attachment
-    // for them
-    if (attachment == null) {
-      return new TechAttachment();
-    }
-    return attachment;
-  }
-
   static TechAttachment get(final GamePlayer gamePlayer, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
       throw new IllegalStateException(
           "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
     }
-    final TechAttachment attachment = (TechAttachment) gamePlayer.getAttachment(nameOfAttachment);
-    // dont crash, as a map xml may not set the tech attachment for all players, so just create a
-    // new tech attachment
-    // for them
-    if (attachment == null) {
-      return new TechAttachment();
-    }
-    return attachment;
+    return gamePlayer.getTechAttachment();
   }
 
   // setters
@@ -333,7 +298,7 @@ public class TechAttachment extends DefaultAttachment {
   private void setGenericTechs() {
     for (final TechAdvance ta : getData().getTechnologyFrontier()) {
       if (ta instanceof GenericTechAdvance && ((GenericTechAdvance) ta).getAdvance() == null) {
-        genericTech.put(ta.getProperty(), Boolean.FALSE);
+        genericTech.put(ta.getProperty().intern(), Boolean.FALSE);
       }
     }
   }
@@ -344,6 +309,7 @@ public class TechAttachment extends DefaultAttachment {
 
   public void setGenericTech(final String name, final boolean value) {
     genericTech.put(name, value);
+    getData().getTechTracker().clearCache();
   }
 
   public Map<String, Boolean> getGenericTech() {

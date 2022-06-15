@@ -12,7 +12,6 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
@@ -20,6 +19,7 @@ import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.TripleADisplay;
 import java.awt.Component;
 import java.awt.Frame;
@@ -34,14 +34,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.client.HeadedGameRunner;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.java.Interruptibles;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.DefaultSoundChannel;
 import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
+import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.LocalizeHtml;
 
 /**
  * Headed and default implementation of {@link LaunchAction}. Ideally replaceable with any other
@@ -125,8 +126,8 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public PlayerTypes.Type getDefaultPlayerType() {
-    return PlayerTypes.HUMAN_PLAYER;
+  public boolean shouldMinimizeExpensiveAiUse() {
+    return false;
   }
 
   @Override
@@ -156,9 +157,6 @@ public class HeadedLaunchAction implements LaunchAction {
                       ClientSetting.flush();
                       final int port = options.getPort();
                       if (port >= 65536 || port == 0) {
-                        if (HeadlessGameServer.headless()) {
-                          throw new IllegalStateException("Invalid Port: " + port);
-                        }
                         JOptionPane.showMessageDialog(
                             ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
                         return null;
@@ -183,5 +181,29 @@ public class HeadedLaunchAction implements LaunchAction {
   @Override
   public void handleError(String error) {
     SwingComponents.showError(null, "Connection problem", error);
+  }
+
+  @Override
+  public IServerStartupRemote getStartupRemote(
+      IServerStartupRemote.ServerModelView serverModelView) {
+    return new HeadedServerStartupRemote(serverModelView);
+  }
+
+  @Override
+  public boolean promptGameStop(String status, String title) {
+    // now tell the HOST, and see if they want to continue the game.
+    String displayMessage = LocalizeHtml.localizeImgLinksInHtml(status, UiContext.getMapLocation());
+    if (displayMessage.endsWith("</body>")) {
+      displayMessage =
+          displayMessage.substring(0, displayMessage.length() - "</body>".length())
+              + "</br><p>Do you want to continue?</p></body>";
+    } else {
+      displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
+    }
+    return !EventThreadJOptionPane.showConfirmDialog(
+        null,
+        "<html>" + displayMessage + "</html>",
+        "Continue Game?  (" + title + ")",
+        EventThreadJOptionPane.ConfirmDialogType.YES_NO);
   }
 }

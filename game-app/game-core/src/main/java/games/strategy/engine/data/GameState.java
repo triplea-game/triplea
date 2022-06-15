@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import java.util.Map;
@@ -36,6 +37,8 @@ public interface GameState {
 
   /** Returns the Alliance Tracker for the game. */
   AllianceTracker getAllianceTracker();
+
+  TechTracker getTechTracker();
 
   GameSequence getSequence();
 

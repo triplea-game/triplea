@@ -101,20 +101,17 @@ class SupportRuleSort implements Comparator<UnitSupportAttachment> {
     // selection method.
     final UnitType unitType1 = (UnitType) u1.getAttachedTo();
     final UnitType unitType2 = (UnitType) u2.getAttachedTo();
-    final UnitAttachment ua1 = UnitAttachment.get(unitType1);
-    final UnitAttachment ua2 = UnitAttachment.get(unitType2);
+    final UnitAttachment ua1 = unitType1.getUnitAttachment();
+    final UnitAttachment ua2 = unitType2.getUnitAttachment();
     final int unitPower1;
     final int unitPower2;
+    final GamePlayer nullPlayer = u1.getData().getPlayerList().getNullPlayer();
     if (u1.getDefence()) {
-      unitPower1 =
-          ua1.getDefenseRolls(GamePlayer.NULL_PLAYERID) * ua1.getDefense(GamePlayer.NULL_PLAYERID);
-      unitPower2 =
-          ua2.getDefenseRolls(GamePlayer.NULL_PLAYERID) * ua2.getDefense(GamePlayer.NULL_PLAYERID);
+      unitPower1 = ua1.getDefenseRolls(nullPlayer) * ua1.getDefense(nullPlayer);
+      unitPower2 = ua2.getDefenseRolls(nullPlayer) * ua2.getDefense(nullPlayer);
     } else {
-      unitPower1 =
-          ua1.getAttackRolls(GamePlayer.NULL_PLAYERID) * ua1.getAttack(GamePlayer.NULL_PLAYERID);
-      unitPower2 =
-          ua2.getAttackRolls(GamePlayer.NULL_PLAYERID) * ua2.getAttack(GamePlayer.NULL_PLAYERID);
+      unitPower1 = ua1.getAttackRolls(nullPlayer) * ua1.getAttack(nullPlayer);
+      unitPower2 = ua2.getAttackRolls(nullPlayer) * ua2.getAttack(nullPlayer);
     }
 
     return Integer.compare(unitPower2, unitPower1);

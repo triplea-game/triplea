@@ -61,7 +61,7 @@ final class UnitComparatorTest {
     }
 
     @Test
-    void unitsOfSameTypeAreSortedTogether() throws Exception {
+    void unitsOfSameTypeAreSortedTogether() {
       final GameState gameData = TestMapGameData.REVISED.getGameData();
 
       final List<Unit> units = new ArrayList<>();

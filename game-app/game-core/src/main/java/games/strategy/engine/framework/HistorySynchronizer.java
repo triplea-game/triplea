@@ -4,7 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.EventChild;
-import java.util.ConcurrentModificationException;
+import games.strategy.engine.history.HistoryWriter;
 import javax.swing.SwingUtilities;
 
 /**
@@ -14,10 +14,8 @@ import javax.swing.SwingUtilities;
  */
 public class HistorySynchronizer {
   // Note the GameData here and the game are not the same we are keeping gameData in sync with the
-  // history of the game
-  // by listening for changes we do this because our data can change depending where in the history
-  // we are we want to be
-  // able to do this without changing the data for the game
+  // history of the game by listening for changes. We do this because our data can change depending
+  // where we are in history. We want to be able to do this without changing the data for the game.
   private final GameData gameData;
   private int currentRound;
   private final IGame game;
@@ -27,16 +25,8 @@ public class HistorySynchronizer {
         public void gameDataChanged(final Change change) {
           SwingUtilities.invokeLater(
               () -> {
-                try {
-                  final Change localizedChange = (Change) translateIntoMyData(change);
-                  gameData.getHistory().getHistoryWriter().addChange(localizedChange);
-                } catch (ConcurrentModificationException e) {
-                  // Temporary instrumentation to diagnose root cause of:
-                  // https://github.com/triplea-game/triplea/issues/10274
-                  // Include the Change subclass name in the error.
-                  throw new ConcurrentModificationException(
-                      "Translating " + change.getClass().getName(), e);
-                }
+                final Change localizedChange = (Change) translateIntoMyData(change);
+                gameData.getHistory().getHistoryWriter().addChange(localizedChange);
               });
         }
 
@@ -88,14 +78,12 @@ public class HistorySynchronizer {
           }
           SwingUtilities.invokeLater(
               () -> {
+                final HistoryWriter historyWriter = gameData.getHistory().getHistoryWriter();
                 if (currentRound != round) {
                   currentRound = round;
-                  gameData.getHistory().getHistoryWriter().startNextRound(currentRound);
+                  historyWriter.startNextRound(currentRound);
                 }
-                gameData
-                    .getHistory()
-                    .getHistoryWriter()
-                    .startNextStep(stepName, delegateName, player, displayName);
+                historyWriter.startNextStep(stepName, delegateName, player, displayName);
               });
         }
 
@@ -112,11 +100,8 @@ public class HistorySynchronizer {
     }
     gameData = data;
     gameData.forceChangesOnlyInSwingEventThread();
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       currentRound = data.getSequence().getRound();
-    } finally {
-      data.releaseReadLock();
     }
     this.game = game;
     this.game

@@ -79,7 +79,7 @@ public class AttackerAndDefenderSelector {
       // case the owner has units in the land, then they are already in the list but adding a second
       // entry to the list doesn't impact the algorithm.
       final GamePlayer territoryOwner = territory.getOwner();
-      if (territoryOwner != GamePlayer.NULL_PLAYERID) {
+      if (!territoryOwner.isNull()) {
         playersWithUnits.add(territoryOwner);
       }
       final GamePlayer attacker = currentPlayer;
@@ -91,9 +91,7 @@ public class AttackerAndDefenderSelector {
       final List<Unit> defendingUnits =
           defender == null
               ? List.of()
-              : territory
-                  .getUnitCollection()
-                  .getMatches(Matches.alliedUnit(defender, relationshipTracker));
+              : territory.getUnitCollection().getMatches(Matches.alliedUnit(defender));
 
       return AttackerAndDefender.builder()
           .attacker(currentPlayer)
@@ -169,11 +167,11 @@ public class AttackerAndDefenderSelector {
   private Optional<GamePlayer> getOpponentWithPriorityList(
       final GamePlayer player, final List<GamePlayer> priorityPlayers) {
     final Stream<GamePlayer> enemiesPriority =
-        priorityPlayers.stream().filter(Matches.isAtWar(player, relationshipTracker));
+        priorityPlayers.stream().filter(Matches.isAtWar(player));
     final Stream<GamePlayer> neutralsPriority =
         priorityPlayers.stream()
-            .filter(Matches.isAtWar(player, relationshipTracker).negate())
-            .filter(Matches.isAllied(player, relationshipTracker).negate());
+            .filter(Matches.isAtWar(player).negate())
+            .filter(Matches.isAllied(player).negate());
     return Stream.of(
             enemiesPriority,
             playersAtWarWith(player),
@@ -190,7 +188,7 @@ public class AttackerAndDefenderSelector {
    * <p>The returned stream might be empty.
    */
   private Stream<GamePlayer> playersAtWarWith(final GamePlayer p) {
-    return players.stream().filter(Matches.isAtWar(p, relationshipTracker));
+    return players.stream().filter(Matches.isAtWar(p));
   }
 
   /**
@@ -200,7 +198,7 @@ public class AttackerAndDefenderSelector {
    */
   private Stream<GamePlayer> neutralPlayersTowards(final GamePlayer p) {
     return players.stream()
-        .filter(Matches.isAtWar(p, relationshipTracker).negate())
-        .filter(Matches.isAllied(p, relationshipTracker).negate());
+        .filter(Matches.isAtWar(p).negate())
+        .filter(Matches.isAllied(p).negate());
   }
 }

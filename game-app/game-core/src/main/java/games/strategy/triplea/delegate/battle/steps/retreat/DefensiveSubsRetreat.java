@@ -132,16 +132,13 @@ public class DefensiveSubsRetreat implements BattleStep {
     final Predicate<Territory> canalMatch =
         t -> {
           final Route r = new Route(battleState.getBattleSite(), t);
-          return new MoveValidator(battleState.getGameData())
+          return new MoveValidator(battleState.getGameData(), false)
                   .validateCanal(r, unitsToRetreat, battleState.getPlayer(DEFENSE))
               == null;
         };
     final Predicate<Territory> match =
         Matches.territoryIsWater()
-            .and(
-                Matches.territoryHasNoEnemyUnits(
-                    battleState.getPlayer(DEFENSE),
-                    battleState.getGameData().getRelationshipTracker()))
+            .and(Matches.territoryHasNoEnemyUnits(battleState.getPlayer(DEFENSE)))
             .and(canalMatch);
     return CollectionUtils.getMatches(possible, match);
   }

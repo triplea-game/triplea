@@ -351,7 +351,7 @@ public class AirBattle extends AbstractBattle {
             battleSite
                 .getUnitCollection()
                 .getMatches(
-                    Matches.enemyUnit(bridge.getGamePlayer(), gameData.getRelationshipTracker())
+                    Matches.enemyUnit(bridge.getGamePlayer())
                         .and(Matches.unitCanBeDamaged())
                         .and(Matches.unitIsBeingTransported().negate()));
         for (final Unit unit : bombers) {
@@ -584,7 +584,7 @@ public class AirBattle extends AbstractBattle {
     for (final Unit base :
         t.getUnitCollection()
             .getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
-      final int baseMax = UnitAttachment.get(base.getType()).getMaxInterceptCount();
+      final int baseMax = base.getUnitAttachment().getMaxInterceptCount();
       if (baseMax == -1) {
         return Integer.MAX_VALUE;
       }
@@ -843,7 +843,7 @@ public class AirBattle extends AbstractBattle {
   public static Predicate<Unit> defendingGroundSeaBattleInterceptors(
       final GamePlayer attacker, final GameState data) {
     return PredicateBuilder.of(Matches.unitCanAirBattle())
-        .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker))
+        .and(Matches.unitIsEnemyOf(attacker))
         .and(Matches.unitWasInAirBattle().negate())
         .andIf(
             !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
@@ -859,14 +859,14 @@ public class AirBattle extends AbstractBattle {
       final Territory territory, final GamePlayer attacker, final GameState data) {
     final Predicate<Unit> canIntercept =
         PredicateBuilder.of(Matches.unitCanIntercept())
-            .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker))
+            .and(Matches.unitIsEnemyOf(attacker))
             .and(Matches.unitWasInAirBattle().negate())
             .andIf(
                 !Properties.getCanScrambleIntoAirBattles(data.getProperties()),
                 Matches.unitWasScrambled().negate())
             .build();
     final Predicate<Unit> airbasesCanIntercept =
-        Matches.unitIsEnemyOf(data.getRelationshipTracker(), attacker)
+        Matches.unitIsEnemyOf(attacker)
             .and(Matches.unitIsAirBase())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitIsBeingTransported().negate());
@@ -891,7 +891,7 @@ public class AirBattle extends AbstractBattle {
     int maxScrambleDistance = 0;
     if (canScrambleToAirBattle) {
       for (final UnitType unitType : data.getUnitTypeList()) {
-        final UnitAttachment ua = UnitAttachment.get(unitType);
+        final UnitAttachment ua = unitType.getUnitAttachment();
         if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
           maxScrambleDistance = ua.getMaxScrambleDistance();
         }

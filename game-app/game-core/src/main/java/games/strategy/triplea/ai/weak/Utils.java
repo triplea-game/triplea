@@ -40,8 +40,7 @@ final class Utils {
                 location,
                 location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
       final List<Unit> enemies =
-          t.getUnitCollection()
-              .getMatches(Matches.enemyUnit(location.getOwner(), data.getRelationshipTracker()));
+          t.getUnitCollection().getMatches(Matches.enemyUnit(location.getOwner()));
       strength += AiUtils.strength(enemies, true, location.isWater());
     }
     return strength;
@@ -57,6 +56,7 @@ final class Utils {
       if (endCondition.test(t)) {
         final Route r = data.getMap().getRoute(start, t, routeCondition);
         if (r != null
+            && r.hasSteps()
             && (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps())) {
           shortestRoute = r;
         }
@@ -68,9 +68,7 @@ final class Utils {
   static boolean hasLandRouteToEnemyOwnedCapitol(
       final Territory t, final GamePlayer us, final GameState data) {
     for (final GamePlayer player :
-        CollectionUtils.getMatches(
-            data.getPlayerList().getPlayers(),
-            Matches.isAtWar(us, data.getRelationshipTracker()))) {
+        CollectionUtils.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us))) {
       for (final Territory capital :
           TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data.getMap())) {
         if (data.getMap().getDistance(t, capital, Matches.territoryIsLand()) != -1) {

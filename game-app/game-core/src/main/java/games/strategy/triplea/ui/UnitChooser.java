@@ -62,7 +62,6 @@ public final class UnitChooser extends JPanel {
   private final JLabel leftToSelect = new JLabel();
   private final boolean allowMultipleHits;
   private JButton autoSelectButton;
-  private JButton selectNoneButton;
   private final Predicate<Collection<Unit>> match;
   private final ScrollableTextFieldListener textFieldListener =
       new ScrollableTextFieldListener() {
@@ -80,22 +79,13 @@ public final class UnitChooser extends JPanel {
 
   UnitChooser(
       final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependent,
-      final boolean allowTwoHit,
-      final UiContext uiContext) {
-    this(units, List.of(), dependent, allowTwoHit, uiContext);
-  }
-
-  private UnitChooser(
-      final Collection<Unit> units,
-      final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent,
+      final @Nullable Map<Unit, Collection<Unit>> dependents,
       final boolean allowTwoHit,
       final UiContext uiContext) {
     this(
         units,
-        defaultSelections,
-        dependent,
+        List.of(),
+        dependents,
         UnitSeparator.SeparatorCategories.builder().build(),
         allowTwoHit,
         uiContext);
@@ -167,13 +157,16 @@ public final class UnitChooser extends JPanel {
     total = max;
     textFieldListener.changedValue(null);
     autoSelectButton.setVisible(false);
-    selectNoneButton.setVisible(false);
   }
 
   void setMaxAndShowMaxButton(final int max) {
     total = max;
     textFieldListener.changedValue(null);
     autoSelectButton.setText("Max");
+  }
+
+  public void setAllButtonVisible(boolean visible) {
+    autoSelectButton.setVisible(visible);
   }
 
   public void setTitle(final String title) {
@@ -288,8 +281,6 @@ public final class UnitChooser extends JPanel {
     title.setVisible(false);
     final Insets emptyInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    selectNoneButton = new JButton("None");
-    selectNoneButton.setPreferredSize(buttonSize);
     autoSelectButton = new JButton("All");
     autoSelectButton.setPreferredSize(buttonSize);
     add(
@@ -306,7 +297,6 @@ public final class UnitChooser extends JPanel {
             emptyInsets,
             0,
             0));
-    selectNoneButton.addActionListener(e -> selectNone());
     autoSelectButton.addActionListener(e -> autoSelect());
     int rowIndex = 1;
     for (final ChooserEntry entry : entries) {
@@ -343,8 +333,6 @@ public final class UnitChooser extends JPanel {
             0,
             0));
     if (match != null) {
-      autoSelectButton.setVisible(false);
-      selectNoneButton.setVisible(false);
       checkMatches();
     }
   }
@@ -383,12 +371,6 @@ public final class UnitChooser extends JPanel {
       }
     }
     return selectedUnits;
-  }
-
-  private void selectNone() {
-    for (final ChooserEntry entry : entries) {
-      entry.selectNone();
-    }
   }
 
   // does not take into account multiple hit points
@@ -463,13 +445,12 @@ public final class UnitChooser extends JPanel {
           allowMultipleHits
               && category.getHitPoints() > 1
               && category.getDamaged() < category.getHitPoints() - 1;
-      hitTexts = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
-      defaultHits = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
+      final int maxHitPoints = Math.max(1, category.getHitPoints() - category.getDamaged());
+      hitTexts = new ArrayList<>(maxHitPoints);
+      defaultHits = new ArrayList<>(maxHitPoints);
       final int numUnits = category.getUnits().size();
       int hitsUsedSoFar = 0;
-      for (int i = 0, m = Math.max(1, category.getHitPoints() - category.getDamaged());
-          i < m;
-          i++) {
+      for (int i = 0; i < maxHitPoints; i++) {
         // TODO: check if default value includes damaged points or not
         final int hitsToUse = Math.min(numUnits, (defaultValue - hitsUsedSoFar));
         hitsUsedSoFar += hitsToUse;

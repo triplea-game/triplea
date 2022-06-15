@@ -109,7 +109,7 @@ public class GameParsingValidation {
   private List<String> checkThatAllUnitsHaveAttachments() {
     final Collection<UnitType> errors = new ArrayList<>();
     for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
-      final UnitAttachment ua = UnitAttachment.get(ut);
+      final UnitAttachment ua = ut.getUnitAttachment();
       if (ua == null) {
         errors.add(ut);
       }

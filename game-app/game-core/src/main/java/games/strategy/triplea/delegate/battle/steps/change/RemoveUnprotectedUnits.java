@@ -36,9 +36,9 @@ public class RemoveUnprotectedUnits implements BattleStep {
   public List<String> getNames() {
     if (battleState.getBattleSite().isWater()
         && Properties.getTransportCasualtiesRestricted(battleState.getGameData().getProperties())
-        && (battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsTransport())
+        && (battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsSeaTransport())
             || battleState.filterUnits(ALIVE, DEFENSE).stream()
-                .anyMatch(Matches.unitIsTransport()))) {
+                .anyMatch(Matches.unitIsSeaTransport()))) {
       return List.of(REMOVE_UNESCORTED_TRANSPORTS);
     }
     return List.of();
@@ -103,16 +103,16 @@ public class RemoveUnprotectedUnits implements BattleStep {
 
   private List<Unit> getAlliedTransports(final GamePlayer player) {
     final Predicate<Unit> matchAllied =
-        Matches.unitIsTransport()
-            .and(Matches.unitIsNotCombatTransport())
-            .and(Matches.isUnitAllied(player, battleState.getGameData().getRelationshipTracker()))
+        Matches.unitIsSeaTransport()
+            .and(Matches.unitIsNotCombatSeaTransport())
+            .and(Matches.isUnitAllied(player))
             .and(Matches.unitIsSea());
     return CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), matchAllied);
   }
 
   private Collection<Unit> getAlliedUnits(final GamePlayer player) {
     final Predicate<Unit> alliedUnitsMatch =
-        Matches.isUnitAllied(player, battleState.getGameData().getRelationshipTracker())
+        Matches.isUnitAllied(player)
             .and(Matches.unitIsNotLand())
             .and(Matches.unitIsSubmerged().negate());
     return CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), alliedUnitsMatch);
@@ -121,7 +121,7 @@ public class RemoveUnprotectedUnits implements BattleStep {
   private Collection<Unit> getEnemyUnitsThatCanFire(final GamePlayer player) {
     final Predicate<Unit> enemyUnitsMatch =
         Matches.unitIsNotLand()
-            .and(Matches.enemyUnit(player, battleState.getGameData().getRelationshipTracker()))
+            .and(Matches.enemyUnit(player))
             .and(Matches.unitIsSubmerged().negate())
             .and(Matches.unitCanAttack(player));
     return CollectionUtils.getMatches(battleState.getBattleSite().getUnits(), enemyUnitsMatch);

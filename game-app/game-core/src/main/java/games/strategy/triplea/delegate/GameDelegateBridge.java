@@ -109,7 +109,7 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void stopGameSequence() {
-    bridge.stopGameSequence();
+  public void stopGameSequence(String status, String title) {
+    bridge.stopGameSequence(status, title);
   }
 }

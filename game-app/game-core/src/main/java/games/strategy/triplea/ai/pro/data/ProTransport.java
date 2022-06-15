@@ -11,38 +11,23 @@ import lombok.Getter;
 /** The result of an AI amphibious movement analysis. */
 @Getter
 public class ProTransport {
-
   private final Unit transport;
-  private final Map<Territory, Set<Territory>> transportMap;
-  private final Map<Territory, Set<Territory>> seaTransportMap;
+  private final Map<Territory, Set<Territory>> transportMap = new HashMap<>();
+  private final Map<Territory, Set<Territory>> seaTransportMap = new HashMap<>();
 
   ProTransport(final Unit transport) {
     this.transport = transport;
-    transportMap = new HashMap<>();
-    seaTransportMap = new HashMap<>();
   }
 
-  void addTerritories(
-      final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
-    for (final Territory attackTerritory : attackTerritories) {
-      if (transportMap.containsKey(attackTerritory)) {
-        transportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
-      } else {
-        final Set<Territory> territories = new HashSet<>(myUnitsToLoadTerritories);
-        transportMap.put(attackTerritory, territories);
-      }
+  void addTerritories(Set<Territory> attackTerritories, Set<Territory> loadFromTerritories) {
+    for (Territory t : attackTerritories) {
+      transportMap.computeIfAbsent(t, key -> new HashSet<>()).addAll(loadFromTerritories);
     }
   }
 
-  void addSeaTerritories(
-      final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
-    for (final Territory attackTerritory : attackTerritories) {
-      if (seaTransportMap.containsKey(attackTerritory)) {
-        seaTransportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
-      } else {
-        final Set<Territory> territories = new HashSet<>(myUnitsToLoadTerritories);
-        seaTransportMap.put(attackTerritory, territories);
-      }
+  void addSeaTerritories(Set<Territory> attackTerritories, Set<Territory> loadFromTerritories) {
+    for (Territory t : attackTerritories) {
+      seaTransportMap.computeIfAbsent(t, key -> new HashSet<>()).addAll(loadFromTerritories);
     }
   }
 }

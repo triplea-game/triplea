@@ -212,12 +212,9 @@ public abstract class TechAdvance extends NamedAttachable {
    */
   private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(
       final GameData data) {
-    data.acquireReadLock();
     final List<TechAdvance> allAdvances;
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       allAdvances = new ArrayList<>(data.getTechnologyFrontier().getTechs());
-    } finally {
-      data.releaseReadLock();
     }
     final List<TechAdvance> airAndNaval = new ArrayList<>();
     final List<TechAdvance> landAndProduction = new ArrayList<>();
@@ -255,7 +252,7 @@ public abstract class TechAdvance extends NamedAttachable {
 
   /**
    * Returns all tech advances that this player can possibly research. (Or if Player is null,
-   * returns all techs available in the game).
+   * returns all techs available in the game). The returned collection is immutable.
    */
   public static List<TechAdvance> getTechAdvances(
       final TechnologyFrontier technologyFrontier, final GamePlayer player) {
@@ -265,7 +262,7 @@ public abstract class TechAdvance extends NamedAttachable {
           : technologyFrontier.getTechs();
     }
     // the game has no techs, just return empty list
-    return new ArrayList<>();
+    return List.of();
   }
 
   /** Returns all possible tech categories for this player. */

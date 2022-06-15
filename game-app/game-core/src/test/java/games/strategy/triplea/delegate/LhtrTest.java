@@ -114,7 +114,7 @@ class LhtrTest {
   @Test
   void testSubDefenseBonus() {
     final UnitType sub = GameDataTestUtil.submarine(gameData);
-    final UnitAttachment attachment = UnitAttachment.get(sub);
+    final UnitAttachment attachment = sub.getUnitAttachment();
     final GamePlayer japanese = GameDataTestUtil.japanese(gameData);
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));

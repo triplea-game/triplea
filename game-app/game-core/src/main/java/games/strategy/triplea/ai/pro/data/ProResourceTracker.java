@@ -66,7 +66,7 @@ public class ProResourceTracker {
 
   @Override
   public String toString() {
-    return getRemaining().toString();
+    return getRemaining().toString().replaceAll("\n", " ");
   }
 
   private IntegerMap<Resource> getRemaining() {

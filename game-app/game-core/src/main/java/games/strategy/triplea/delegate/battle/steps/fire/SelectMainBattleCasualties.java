@@ -7,7 +7,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
@@ -97,10 +96,11 @@ public class SelectMainBattleCasualties
           TargetUnits.of(
               CollectionUtils.getMatches(
                   step.getFiringGroup().getTargetUnits(),
-                  Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea())),
+                  Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport()
+                      .or(Matches.unitIsNotSea())),
               CollectionUtils.getMatches(
                   step.getFiringGroup().getTargetUnits(),
-                  Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea())));
+                  Matches.unitIsSeaTransportButNotCombatSeaTransport().and(Matches.unitIsSea())));
     } else {
       targetUnits =
           TargetUnits.of(new ArrayList<>(step.getFiringGroup().getTargetUnits()), List.of());
@@ -115,7 +115,7 @@ public class SelectMainBattleCasualties
   private static int getMaxHits(final Collection<Unit> units) {
     int count = 0;
     for (final Unit unit : units) {
-      count += UnitAttachment.get(unit.getType()).getHitPoints();
+      count += unit.getUnitAttachment().getHitPoints();
       count -= unit.getHits();
     }
     return count;

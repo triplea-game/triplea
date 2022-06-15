@@ -116,5 +116,5 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void stopGameSequence() {}
+  public void stopGameSequence(String status, String title) {}
 }

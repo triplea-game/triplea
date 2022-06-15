@@ -20,9 +20,9 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.injection.Injections;
 import org.triplea.util.Version;
 
@@ -127,8 +127,7 @@ public final class GameDataManager {
               UrlConstants.DOWNLOAD_WEBSITE,
               UrlConstants.DOWNLOAD_WEBSITE));
       return false;
-    } else if (!HeadlessGameServer.headless()
-        && ((Version) version).getMinor() > ourVersion.getMinor()) {
+    } else if (!GameRunner.headless() && ((Version) version).getMinor() > ourVersion.getMinor()) {
       // Prompt the user to upgrade
       log.warn(
           "This save was made by a newer version of TripleA.<br>"
@@ -191,7 +190,7 @@ public final class GameDataManager {
       try (OutputStream os = Files.newOutputStream(tempFile);
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
-        saveGameUncompressed(zippedOutStream, gameData, true, engineVersion);
+        saveGameUncompressed(zippedOutStream, gameData, Options.withEverything(), engineVersion);
       }
 
       // now write to sink (ensure sink is closed per method contract)
@@ -204,25 +203,53 @@ public final class GameDataManager {
     }
   }
 
+  @Builder
+  public static class Options {
+    @Builder.Default boolean withDelegates = false;
+    @Builder.Default boolean withHistory = false;
+    @Builder.Default boolean withAttachmentXmlData = false;
+
+    public static Options withEverything() {
+      return builder().withDelegates(true).withHistory(true).withAttachmentXmlData(true).build();
+    }
+
+    public static Options forBattleCalculator() {
+      return builder().build();
+    }
+  }
+
   public static void saveGameUncompressed(
       final OutputStream sink,
       final GameData data,
-      final boolean saveDelegateInfo,
+      final Options options,
       final Version engineVersion)
       throws IOException {
     // write to temporary file first in case of error
     try (ObjectOutputStream outStream = new ObjectOutputStream(sink)) {
       outStream.writeObject(engineVersion);
-      data.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
+        final var history = data.getHistory();
+        if (!options.withHistory) {
+          data.resetHistory();
+        }
+        // TODO: Attachment order data is only used for XML export and takes up lots of memory.
+        // Could we remove it and just get the info again from the XML when exporting?
+        final var attachments = data.getAttachmentOrderAndValues();
+        if (!options.withAttachmentXmlData) {
+          data.setAttachmentOrderAndValues(null);
+        }
         outStream.writeObject(data);
-        if (saveDelegateInfo) {
+        if (!options.withAttachmentXmlData) {
+          data.setAttachmentOrderAndValues(attachments);
+        }
+        if (!options.withHistory) {
+          data.setHistory(history);
+        }
+        if (options.withDelegates) {
           writeDelegates(data, outStream);
         } else {
           outStream.writeObject(DELEGATE_LIST_END);
         }
-      } finally {
-        data.releaseReadLock();
       }
     }
   }

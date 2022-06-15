@@ -54,7 +54,7 @@ public class ProOddsCalculator {
 
     // Determine if attackers have no chance
     final double strengthDifference =
-        ProBattleUtils.estimateStrengthDifference(proData, t, attackingUnits, defendingUnits);
+        ProBattleUtils.estimateStrengthDifference(t, attackingUnits, defendingUnits);
     if (strengthDifference < 45) {
       return new ProBattleResult(0, -999, false, new ArrayList<>(), defendingUnits, 1);
     }
@@ -82,7 +82,7 @@ public class ProOddsCalculator {
 
     // Determine if defenders have no chance
     final double strengthDifference =
-        ProBattleUtils.estimateStrengthDifference(proData, t, attackingUnits, defendingUnits);
+        ProBattleUtils.estimateStrengthDifference(t, attackingUnits, defendingUnits);
     if (strengthDifference > 55) {
       final boolean isLandAndCanOnlyBeAttackedByAir =
           !t.isWater()

@@ -85,7 +85,7 @@ public interface IDelegateBridge {
    * <p>This method allows the delegate to signal that the game is over, but does not force the ui
    * or the display to shutdown.
    */
-  void stopGameSequence();
+  void stopGameSequence(String status, String title);
 
   void leaveDelegateExecution();
 

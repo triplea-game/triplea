@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -74,19 +75,31 @@ public final class FileUtils {
 
   /**
    * Searches a file system starting from a given directory looking for a file or directory with a
-   * matching name.
+   * matching name. If multiple matching paths are found, returns the one closest to the root (via
+   * minimum length of the absolute path).
    *
-   * @param searchRoot The directory whose contents we will search (and sub-directories)
+   * @param searchRoot The directory whose contents we will search (and subdirectories).
    * @param maxDepth The maximum number of subdirectories to search. Zero means only search the
    *     'searchRoot' directory.
    * @param fileName The name of the file to be search for.
    * @return A file matching the given name or empty if not found.
    */
-  public Optional<Path> findAny(final Path searchRoot, final int maxDepth, final String fileName) {
+  public Optional<Path> findClosestToRoot(
+      final Path searchRoot, final int maxDepth, final String fileName) {
     return find(searchRoot, maxDepth, fileName).stream().findAny();
   }
 
-  public Collection<Path> find(final Path searchRoot, final int maxDepth, final String fileName) {
+  /**
+   * Searches a file system starting from a given directory looking for files or directories with
+   * matching names. The resulting list will be in ascending order by absolute path length.
+   *
+   * @param searchRoot The directory whose contents we will search (and subdirectories).
+   * @param maxDepth The maximum number of subdirectories to search. Zero means only search the
+   *     'searchRoot' directory.
+   * @param fileName The name of the file to be search for.
+   * @return A list of files matching the given name or an empty list if not.
+   */
+  public List<Path> find(final Path searchRoot, final int maxDepth, final String fileName) {
     Preconditions.checkArgument(Files.isDirectory(searchRoot), searchRoot.toAbsolutePath());
     Preconditions.checkArgument(Files.exists(searchRoot), searchRoot.toAbsolutePath());
     Preconditions.checkArgument(maxDepth > -1);
@@ -94,6 +107,9 @@ public final class FileUtils {
     try (Stream<Path> files = Files.walk(searchRoot, maxDepth)) {
       return files
           .filter(f -> f.getFileName().toString().equals(fileName))
+          // Sort by path length (shortest to longest), so that the ordering is deterministic and
+          // paths closer to the root are earlier in the list.
+          .sorted(Comparator.comparingInt(f -> f.toAbsolutePath().toString().length()))
           .collect(Collectors.toList());
     } catch (final IOException e) {
       log.error(
@@ -243,7 +259,7 @@ public final class FileUtils {
   }
 
   /**
-   * Does an overwrite of one folder onto another and rolls back if there any errors. The rollback
+   * Does an overwrite of one folder onto another and rolls back if there were errors. The rollback
    * is done by first moving the destination folder to a backup location. If there are any errors
    * then we delete whatever we copied and move the backup location back to the destination
    * location.
@@ -287,8 +303,7 @@ public final class FileUtils {
       return true;
     }
 
-    // otherwise create a backup of the destination folder before we replace it
-
+    // otherwise, create a backup of the destination folder before we replace it
     final Path backupFolder;
     try {
       backupFolder = Files.createTempDirectory("temp-dir").resolve(dest.getFileName());
@@ -298,7 +313,7 @@ public final class FileUtils {
     }
 
     try {
-      // make a complete backup by moving the dest folder to backup
+      // make a complete backup by moving the dest folder to back up
       fileMoveOperation.move(dest, backupFolder);
 
       // do the folder move

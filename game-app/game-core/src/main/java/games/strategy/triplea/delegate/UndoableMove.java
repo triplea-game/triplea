@@ -55,7 +55,7 @@ public class UndoableMove extends AbstractUndoableMove {
     return route;
   }
 
-  public boolean getcanUndo() {
+  public boolean getCanUndo() {
     return reasonCantUndo == null && dependents.isEmpty();
   }
 
@@ -123,7 +123,7 @@ public class UndoableMove extends AbstractUndoableMove {
             final Collection<Unit> enemyTargetsTotal =
                 end.getUnitCollection()
                     .getMatches(
-                        Matches.enemyUnit(bridge.getGamePlayer(), data.getRelationshipTracker())
+                        Matches.enemyUnit(bridge.getGamePlayer())
                             .and(Matches.unitCanBeDamaged())
                             .and(Matches.unitIsBeingTransported().negate()));
             final Collection<Unit> enemyTargets =

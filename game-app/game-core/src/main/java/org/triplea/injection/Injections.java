@@ -46,8 +46,9 @@ import org.triplea.util.Version;
  *
  * <h2>Note on constructor Injection</h2>
  *
- * Generaly, Injections.getInsance().getXXX() should only be used to pass arguments to constructors.
- * Injections.getInstance() should never be used outside of passing parameters to a constructor.
+ * Generally, Injections.getInstance().getXXX() should only be used to pass arguments to
+ * constructors. Injections.getInstance() should never be used outside of passing parameters to a
+ * constructor.
  *
  * <p>Do *not* use Injections as a singleton, do *not* use Injections to create static coupling.
  *
@@ -64,7 +65,7 @@ import org.triplea.util.Version;
  *   }
  *
  *   static SomeClass factoryMethod() {
- *     return new SomeClass(Injectisons.getInstance().getErrorMessageStrategy());
+ *     return new SomeClass(Injections.getInstance().getErrorMessageStrategy());
  *   }
  * }
  * }</pre>

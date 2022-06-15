@@ -7,7 +7,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.AbstractGame;
-import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.MessengerException;
@@ -25,7 +24,7 @@ import org.triplea.sound.ISound;
 @RequiredArgsConstructor
 public class DefaultDelegateBridge implements IDelegateBridge {
   private final GameData gameData;
-  private final IGame game;
+  private final ServerGame game;
   private final IDelegateHistoryWriter historyWriter;
   private final RandomStats randomStats;
   private final DelegateExecutionManager delegateExecutionManager;
@@ -148,8 +147,8 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void stopGameSequence() {
-    ((ServerGame) game).stopGameSequence();
+  public void stopGameSequence(String status, String title) {
+    game.stopGameSequence(status, title);
   }
 
   @Override

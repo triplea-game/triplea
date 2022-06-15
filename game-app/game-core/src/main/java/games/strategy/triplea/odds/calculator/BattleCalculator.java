@@ -9,12 +9,14 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
@@ -38,7 +40,10 @@ class BattleCalculator implements IBattleCalculator {
   }
 
   BattleCalculator(GameData data, Version engineVersion) {
-    this(GameDataUtils.cloneGameData(data, false, engineVersion).orElse(null));
+    this(
+        GameDataUtils.cloneGameData(
+                data, GameDataManager.Options.forBattleCalculator(), engineVersion)
+            .orElse(null));
   }
 
   BattleCalculator(byte[] data, Version engineVersion) {
@@ -60,15 +65,13 @@ class BattleCalculator implements IBattleCalculator {
         !isRunning.getAndSet(true), "Can't calculate while operation is still running!");
     try {
       final GamePlayer attacker2 =
-          gameData
-              .getPlayerList()
-              .getPlayerId(
-                  attacker == null ? GamePlayer.NULL_PLAYERID.getName() : attacker.getName());
+          attacker == null
+              ? gameData.getPlayerList().getNullPlayer()
+              : gameData.getPlayerList().getPlayerId(attacker.getName());
       final GamePlayer defender2 =
-          gameData
-              .getPlayerList()
-              .getPlayerId(
-                  defender == null ? GamePlayer.NULL_PLAYERID.getName() : defender.getName());
+          defender == null
+              ? gameData.getPlayerList().getNullPlayer()
+              : gameData.getPlayerList().getPlayerId(defender.getName());
       final Territory location2 = gameData.getMap().getTerritory(location.getName());
       final Collection<Unit> attackingUnits =
           GameDataUtils.translateIntoOtherGameData(attacking, gameData);
@@ -79,15 +82,11 @@ class BattleCalculator implements IBattleCalculator {
       final Collection<TerritoryEffect> territoryEffects2 =
           GameDataUtils.translateIntoOtherGameData(territoryEffects, gameData);
       gameData.performChange(ChangeFactory.removeUnits(location2, location2.getUnits()));
-      gameData.performChange(ChangeFactory.addUnits(location2, attackingUnits));
-      gameData.performChange(ChangeFactory.addUnits(location2, defendingUnits));
+      gameData.performChange(
+          ChangeFactory.addUnits(location2, mergeUnitCollections(attackingUnits, defendingUnits)));
       final long start = System.currentTimeMillis();
       final AggregateResults aggregateResults = new AggregateResults(runCount);
       final BattleTracker battleTracker = new BattleTracker();
-      // CasualtySortingCaching can cause issues if there is more than 1 one battle being calculated
-      // at the same time (like if the AI and a human are both using the calc)
-      // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference
-      // then convert it to a per-thread, per-calc caching
       final List<Unit> attackerOrderOfLosses =
           OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
               this.attackerOrderOfLosses, attackingUnits, gameData);
@@ -140,6 +139,16 @@ class BattleCalculator implements IBattleCalculator {
     } finally {
       isRunning.set(false);
     }
+  }
+
+  private Collection<Unit> mergeUnitCollections(Collection<Unit> c1, Collection<Unit> c2) {
+    var combined = new HashSet<>(c1);
+    combined.addAll(c2);
+    Preconditions.checkState(
+        combined.size() == c1.size() + c2.size(),
+        "Attackers and defenders collections must be distinct with no duplicates. "
+            + "This helps catch logic errors in AI code that would otherwise be hard to debug.");
+    return combined;
   }
 
   public void cancel() {

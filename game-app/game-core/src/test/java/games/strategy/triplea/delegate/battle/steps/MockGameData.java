@@ -25,6 +25,7 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -43,6 +44,8 @@ public class MockGameData {
   private final GameSequence gameSequence = mock(GameSequence.class);
   private final TechTracker techTracker = mock(TechTracker.class);
   private final ResourceList resourceList = mock(ResourceList.class);
+  private final PlayerList playerList = mock(PlayerList.class);
+  private final TechnologyFrontier technologyFrontier = mock(TechnologyFrontier.class);
 
   private MockGameData() {
     lenient().when(gameData.getProperties()).thenReturn(gameProperties);
@@ -52,6 +55,9 @@ public class MockGameData {
     lenient().when(gameData.getSequence()).thenReturn(gameSequence);
     lenient().when(gameData.getTechTracker()).thenReturn(techTracker);
     lenient().when(gameData.getResourceList()).thenReturn(resourceList);
+    lenient().when(gameData.getPlayerList()).thenReturn(playerList);
+    lenient().when(gameData.getTechnologyFrontier()).thenReturn(technologyFrontier);
+    lenient().when(playerList.getNullPlayer()).thenCallRealMethod();
   }
 
   public static MockGameData givenGameData() {
@@ -77,12 +83,16 @@ public class MockGameData {
 
   public MockGameData withAlliedRelationship(
       final GamePlayer player1, final GamePlayer player2, final boolean value) {
+    lenient().when(player1.getData()).thenReturn(gameData);
+    lenient().when(player2.getData()).thenReturn(gameData);
     when(relationshipTracker.isAllied(player1, player2)).thenReturn(value);
     return this;
   }
 
   public MockGameData withWarRelationship(
       final GamePlayer player1, final GamePlayer player2, final boolean value) {
+    lenient().when(player1.getData()).thenReturn(gameData);
+    lenient().when(player2.getData()).thenReturn(gameData);
     when(relationshipTracker.isAtWar(player1, player2)).thenReturn(value);
     return this;
   }

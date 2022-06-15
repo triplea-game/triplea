@@ -50,9 +50,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
     // isProductionPerValuedTerritoryRestricted, then they want 1 infantry for each territory with
     // PU value > 0
     if (Properties.getProductionPerValuedTerritoryRestricted(getData().getProperties())
-        && (ra == null
-            || ra.getProductionPerXTerritories() == null
-            || ra.getProductionPerXTerritories().isEmpty())) {
+        && (ra == null || ra.getProductionPerXTerritories().isEmpty())) {
       productionPerXTerritories.put(
           getData().getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY), 1);
     } else if (Properties.getProductionPerXTerritoriesRestricted(getData().getProperties())
@@ -94,7 +92,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
               || terrName.equals("India")
               || terrName.equals("Yunnan")
               || terrName.equals("Szechwan"))
-          && getData().getRelationshipTracker().isAllied(current.getOwner(), player)) {
+          && current.getOwner().isAllied(player)) {
         ++burmaRoadCount;
       }
     }

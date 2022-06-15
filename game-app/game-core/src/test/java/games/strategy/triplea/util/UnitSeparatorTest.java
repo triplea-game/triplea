@@ -101,9 +101,9 @@ class UnitSeparatorTest {
   void testCategorizeWithAirUnitsWithDifferentMovement_simplePositiveCase() {
 
     final UnitType dragon = givenUnitType("Dragon");
-    UnitAttachment.get(dragon).setHitPoints(2);
-    UnitAttachment.get(dragon).setMovement(4);
-    UnitAttachment.get(dragon).setIsAir(true);
+    dragon.getUnitAttachment().setHitPoints(2);
+    dragon.getUnitAttachment().setMovement(4);
+    dragon.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player1));
@@ -124,9 +124,9 @@ class UnitSeparatorTest {
   @Test
   void testCategorizeWithAirUnitsWithDifferentMovement_insensitiveToAirUnitsOneHitPoint() {
     final UnitType drake = givenUnitType("Drake");
-    UnitAttachment.get(drake).setHitPoints(1);
-    UnitAttachment.get(drake).setMovement(4);
-    UnitAttachment.get(drake).setIsAir(true);
+    drake.getUnitAttachment().setHitPoints(1);
+    drake.getUnitAttachment().setMovement(4);
+    drake.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(drake.createTemp(2, player1));
@@ -148,9 +148,9 @@ class UnitSeparatorTest {
   void
       testCategorizeWithAirUnitsWithDifferentMovement_regardingAirUnitsInsensitiveToMovementFlag() {
     final UnitType dragon = givenUnitType("Dragon");
-    UnitAttachment.get(dragon).setHitPoints(2);
-    UnitAttachment.get(dragon).setMovement(4);
-    UnitAttachment.get(dragon).setIsAir(true);
+    dragon.getUnitAttachment().setHitPoints(2);
+    dragon.getUnitAttachment().setMovement(4);
+    dragon.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player1));
@@ -180,9 +180,9 @@ class UnitSeparatorTest {
   @Test
   void testCategorizeWithAirUnitsWithDifferentMovement_sensitiveToAirUnitsWithOneHitPointLeft() {
     final UnitType dragon = givenUnitType("Dragon");
-    UnitAttachment.get(dragon).setHitPoints(2);
-    UnitAttachment.get(dragon).setMovement(4);
-    UnitAttachment.get(dragon).setIsAir(true);
+    dragon.getUnitAttachment().setHitPoints(2);
+    dragon.getUnitAttachment().setMovement(4);
+    dragon.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player1));
@@ -207,9 +207,9 @@ class UnitSeparatorTest {
   @Test
   void testCategorizeWithAirUnitsWithDifferentMovement_unitsWithDifferentHitsInDifferentCategory() {
     final UnitType dragon = givenUnitType("Dragon");
-    UnitAttachment.get(dragon).setHitPoints(2);
-    UnitAttachment.get(dragon).setMovement(4);
-    UnitAttachment.get(dragon).setIsAir(true);
+    dragon.getUnitAttachment().setHitPoints(2);
+    dragon.getUnitAttachment().setMovement(4);
+    dragon.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(dragon.createTemp(2, player1));
@@ -228,13 +228,13 @@ class UnitSeparatorTest {
   @Test
   void testCategorizeWithAirUnitsWithDifferentMovement_insensitiveToNonAirUnits() {
     final UnitType tank = givenUnitType("Tank");
-    UnitAttachment.get(tank).setHitPoints(2);
-    UnitAttachment.get(tank).setMovement(4);
+    tank.getUnitAttachment().setHitPoints(2);
+    tank.getUnitAttachment().setMovement(4);
 
     final UnitType battleship = givenUnitType("Battleship");
-    UnitAttachment.get(battleship).setHitPoints(2);
-    UnitAttachment.get(battleship).setMovement(4);
-    UnitAttachment.get(battleship).setIsSea(true);
+    battleship.getUnitAttachment().setHitPoints(2);
+    battleship.getUnitAttachment().setMovement(4);
+    battleship.getUnitAttachment().setIsSea(true);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(tank.createTemp(2, player1));

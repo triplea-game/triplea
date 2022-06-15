@@ -8,7 +8,6 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.IGameLoader;
-import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
@@ -19,6 +18,7 @@ import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.Util;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -32,12 +32,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Predicate;
 import lombok.Getter;
 import org.triplea.injection.Injections;
 import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
+import org.triplea.java.ObjectUtils;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.map.description.file.MapDescriptionYaml;
 import org.triplea.map.game.notes.GameNotes;
@@ -53,19 +56,15 @@ import org.triplea.util.Version;
  * Units...) are protected by a read/write lock. If you are reading the game data, you should read
  * while you have the read lock as below.
  *
- * <p><code>
- * data.acquireReadLock();
- * try
- * {
- *   //read data here
+ * <pre>{@code
+ * try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
+ *   gameData.getStuff();
  * }
- * finally
- * {
- *   data.releaseReadLock();
- * }
- * </code> The exception is delegates within a start(), end() or any method called from an
- * IRemotePlayer through the delegates remote interface. The delegate will have a read lock for the
- * duration of those methods.
+ * }</pre>
+ *
+ * <p>The exception is delegates within a start(), end() or any method called from an IRemotePlayer
+ * through the delegates remote interface. The delegate will have a read lock for the duration of
+ * those methods.
  *
  * <p>Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made
  * through a DelegateBridge or through a History object.
@@ -107,7 +106,7 @@ public class GameData implements Serializable, GameState {
   @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
-  private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
+  private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
@@ -366,30 +365,69 @@ public class GameData implements Serializable, GameState {
     territoryListeners = new CopyOnWriteArrayList<>();
     dataChangeListeners = new CopyOnWriteArrayList<>();
     delegates = new HashMap<>();
+    fixUpNullPlayers();
+  }
+
+  @RemoveOnNextMajorRelease
+  private void fixUpNullPlayers() {
+    // Old save games may have territories and units owned by a different null player object that
+    // has a null data. Update them to the new null player, so that code can rely on getData()
+    // not being null.
+    GamePlayer nullPlayer = playerList.getNullPlayer();
+    for (Territory t : getMap().getTerritories()) {
+      // Note: We use referenceEquals() because .equals() or .isOwnedBy() is not sufficient.
+      if (t.getOwner().isNull() && !ObjectUtils.referenceEquals(t.getOwner(), nullPlayer)) {
+        t.setOwner(nullPlayer);
+      }
+    }
+    for (Unit u : getUnits()) {
+      // Note: We use referenceEquals() because .equals() or .isOwnedBy() is not sufficient.
+      if (u.getOwner().isNull() && !ObjectUtils.referenceEquals(u.getOwner(), nullPlayer)) {
+        u.setOwner(nullPlayer);
+      }
+    }
+  }
+
+  public interface Unlocker extends Closeable {
+    @Override
+    void close();
   }
 
   /**
    * No changes to the game data should be made unless this lock is held. calls to acquire lock will
-   * block if the lock is held, and will be held until the release method is called
+   * block if the lock is held, and will be held until the release method is called.
+   *
+   * <p>Example use:
+   *
+   * <pre>{@code
+   * try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
+   *   gameData.getStuff();
+   * }
+   * }</pre>
    */
-  public void acquireReadLock() {
-    readWriteLock.readLock().lock();
-  }
-
-  public void releaseReadLock() {
-    readWriteLock.readLock().unlock();
+  public Unlocker acquireReadLock() {
+    return acquireLock(readWriteLock.readLock());
   }
 
   /**
    * No changes to the game data should be made unless this lock is held. calls to acquire lock will
-   * block if the lock is held, and will be held until the release method is called
+   * block if the lock is held, and will be held until the release method is called.
+   *
+   * <p>Example use:
+   *
+   * <pre>{@code
+   * try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
+   *   gameData.doStuff();
+   * }
+   * }</pre>
    */
-  public void acquireWriteLock() {
-    readWriteLock.writeLock().lock();
+  public Unlocker acquireWriteLock() {
+    return acquireLock(readWriteLock.writeLock());
   }
 
-  public void releaseWriteLock() {
-    readWriteLock.writeLock().unlock();
+  private static Unlocker acquireLock(Lock lock) {
+    lock.lock();
+    return lock::unlock;
   }
 
   public void addToAttachmentOrderAndValues(
@@ -399,6 +437,11 @@ public class GameData implements Serializable, GameState {
 
   public List<Tuple<IAttachment, List<Tuple<String, String>>>> getAttachmentOrderAndValues() {
     return attachmentOrderAndValues;
+  }
+
+  public void setAttachmentOrderAndValues(
+      List<Tuple<IAttachment, List<Tuple<String, String>>>> values) {
+    attachmentOrderAndValues = values;
   }
 
   /**
@@ -457,14 +500,12 @@ public class GameData implements Serializable, GameState {
 
   /**
    * Call this before starting the game and before the game data has been sent to the clients in
-   * order to make any final modifications to the game data. For example, this method will remove
-   * player delegates for players who have been disabled.
+   * order to remove player delegates for players who have been disabled.
    */
-  public void doPreGameStartDataModifications(final PlayerListing playerListing) {
+  public void preGameDisablePlayers(final Predicate<GamePlayer> shouldDisablePlayer) {
     final Set<GamePlayer> playersWhoShouldBeRemoved = new HashSet<>();
-    final Map<String, Boolean> playersEnabledListing = playerListing.getPlayersEnabledListing();
     playerList.getPlayers().stream()
-        .filter(p -> (p.getCanBeDisabled() && !playersEnabledListing.get(p.getName())))
+        .filter(p -> (p.getCanBeDisabled() && shouldDisablePlayer.test(p)))
         .forEach(
             p -> {
               p.setIsDisabled(true);
@@ -498,13 +539,10 @@ public class GameData implements Serializable, GameState {
     if (areChangesOnlyInSwingEventThread()) {
       Util.ensureOnEventDispatchThread();
     }
-    try {
-      acquireWriteLock();
+    try (Unlocker ignored = acquireWriteLock()) {
       change.perform(this);
-    } finally {
-      releaseWriteLock();
     }
-    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
+    dataChangeListeners.forEach(listener -> listener.gameDataChanged(change));
     GameDataEvent.lookupEvent(change).ifPresent(this::fireGameDataEvent);
   }
 
@@ -525,11 +563,8 @@ public class GameData implements Serializable, GameState {
    * the lock will have been to no effect anyways!
    */
   public int getCurrentRound() {
-    try {
-      acquireReadLock();
+    try (GameData.Unlocker ignored = acquireReadLock()) {
       return getSequence().getRound();
-    } finally {
-      releaseReadLock();
     }
   }
 

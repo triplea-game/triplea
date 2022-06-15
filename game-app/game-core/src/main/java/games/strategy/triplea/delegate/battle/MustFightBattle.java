@@ -29,7 +29,6 @@ import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
 import games.strategy.engine.history.change.units.TransformDamagedUnitsHistoryChange;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -149,9 +148,7 @@ public class MustFightBattle extends DependentBattle
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
     defendingUnits.addAll(
-        this.battleSite
-            .getUnitCollection()
-            .getMatches(Matches.enemyUnit(attacker, data.getRelationshipTracker())));
+        this.battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker)));
     maxRounds =
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
@@ -160,10 +157,7 @@ public class MustFightBattle extends DependentBattle
 
   void resetDefendingUnits(final GamePlayer attacker, final GameState data) {
     defendingUnits.clear();
-    defendingUnits.addAll(
-        battleSite
-            .getUnitCollection()
-            .getMatches(Matches.enemyUnit(attacker, data.getRelationshipTracker())));
+    defendingUnits.addAll(battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker)));
   }
 
   /** Used for head-less battles. */
@@ -235,8 +229,7 @@ public class MustFightBattle extends DependentBattle
       // allied air can not participate in the battle so set transportedBy on each allied air unit
       // and remove them from the attacking units
       final TransportTracker.AlliedAirTransportChange alliedAirTransportChange =
-          TransportTracker.markTransportedByForAlliedAirOnCarrier(
-              units, gameData.getRelationshipTracker(), attacker);
+          TransportTracker.markTransportedByForAlliedAirOnCarrier(units, attacker);
       change.add(alliedAirTransportChange.getChange());
       this.attackingUnits.removeAll(alliedAirTransportChange.getAlliedAir());
     }
@@ -249,7 +242,7 @@ public class MustFightBattle extends DependentBattle
     }
     // TODO: This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
     // If attacker stops in an occupied territory, movement stops (battle is optional)
-    if (new MoveValidator(gameData).onlyIgnoredUnitsOnPath(route, attacker, false)) {
+    if (new MoveValidator(gameData, false).onlyIgnoredUnitsOnPath(route, attacker, false)) {
       return change;
     }
     change.add(ChangeFactory.markNoMovementChange(nonAir));
@@ -292,8 +285,7 @@ public class MustFightBattle extends DependentBattle
       remaining.addAll(
           CollectionUtils.getMatches(
               unitsLeftInTerritory,
-              Matches.unitIsOwnedBy(defender)
-                  .or(Matches.enemyUnit(attacker, gameData.getRelationshipTracker()))));
+              Matches.unitIsOwnedBy(defender).or(Matches.enemyUnit(attacker))));
     }
     return new ArrayList<>(remaining);
   }
@@ -833,14 +825,14 @@ public class MustFightBattle extends DependentBattle
     // there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
     final Predicate<Unit> enemyUnitsThatPreventRetreat =
-        PredicateBuilder.of(Matches.enemyUnit(attacker, gameData.getRelationshipTracker()))
+        PredicateBuilder.of(Matches.enemyUnit(attacker))
             .and(Matches.unitIsNotInfrastructure())
             .and(Matches.unitIsBeingTransported().negate())
             .and(Matches.unitIsSubmerged().negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
             .andIf(
                 Properties.getIgnoreTransportInMovement(gameData.getProperties()),
-                Matches.unitIsNotTransportButCouldBeCombatTransport())
+                Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport())
             .build();
     Collection<Territory> possible =
         CollectionUtils.getMatches(
@@ -1279,38 +1271,11 @@ public class MustFightBattle extends DependentBattle
       final Collection<Unit> enemyUnits,
       final boolean attacking,
       final boolean removeForNextRound) {
-    final List<Unit> unitList = new ArrayList<>(units);
-    if (battleSite.isWater()) {
-      unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitIsLand()));
-    }
-    // still allow infrastructure type units that can provide support have combat abilities
-    // remove infrastructure units that can't take part in combat (air/naval bases, etc...)
-    unitList.removeAll(
-        CollectionUtils.getMatches(
-            unitList,
-            Matches.unitCanBeInBattle(
-                    attacking,
-                    !battleSite.isWater(),
-                    (removeForNextRound ? round + 1 : round),
-                    false,
-                    enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet()))
-                .negate()));
-    // remove capturableOnEntering units (veqryn)
-    unitList.removeAll(
-        CollectionUtils.getMatches(
-            unitList,
-            Matches.unitCanBeCapturedOnEnteringToInThisTerritory(
-                attacker, battleSite, gameData.getProperties())));
-    // remove any allied air units that are stuck on damaged carriers (veqryn)
-    unitList.removeAll(
-        CollectionUtils.getMatches(
-            unitList,
-            Matches.unitIsBeingTransported()
-                .and(Matches.unitIsAir())
-                .and(Matches.unitCanLandOnCarrier())));
-    // remove any units that were in air combat (veqryn)
-    unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitWasInAirBattle()));
-    return unitList;
+    int battleRound = (removeForNextRound ? round + 1 : round);
+    return CollectionUtils.getMatches(
+        units,
+        Matches.unitCanParticipateInCombat(
+            attacking, attacker, battleSite, battleRound, enemyUnits));
   }
 
   private void addRoundResetStep(final List<IExecutable> steps) {
@@ -1371,8 +1336,7 @@ public class MustFightBattle extends DependentBattle
     whoWon = WhoWon.DEFENDER;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, defender.getName() + " win");
     if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(gameData.getProperties())) {
-      if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).size()
-          == 0) {
+      if (CollectionUtils.countMatches(defendingUnits, Matches.unitIsNotInfrastructure()) == 0) {
         final List<Unit> allyOfAttackerUnits =
             battleSite.getUnitCollection().getMatches(Matches.unitIsNotInfrastructure());
         if (!allyOfAttackerUnits.isEmpty()) {
@@ -1459,8 +1423,7 @@ public class MustFightBattle extends DependentBattle
 
     // do we need to change ownership
     if (attackingUnits.stream().anyMatch(Matches.unitIsNotAir())) {
-      if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker, gameData.getRelationshipTracker())
-          .test(battleSite)) {
+      if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker).test(battleSite)) {
         battleTracker.addToConquered(battleSite);
       }
       battleTracker.takeOver(battleSite, attacker, bridge, null, attackingUnits);
@@ -1527,7 +1490,7 @@ public class MustFightBattle extends DependentBattle
         defendingAir.remove(currentUnit);
         continue;
       }
-      carrierCost += UnitAttachment.get(currentUnit.getType()).getCarrierCost();
+      carrierCost += currentUnit.getUnitAttachment().getCarrierCost();
       if (carrierCapacity >= carrierCost) {
         defendingAir.remove(currentUnit);
       }

@@ -222,11 +222,9 @@ public class BattleDisplay extends JPanel {
       }
     }
     final Map<Unit, Collection<Unit>> dependentsMap;
-    gameData.acquireReadLock();
-    try {
+
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       dependentsMap = CasualtyUtil.getDependents(killedUnits);
-    } finally {
-      gameData.releaseReadLock();
     }
     final Collection<Unit> dependentUnitsReturned = new ArrayList<>();
     for (final Collection<Unit> dependentCollection : dependentsMap.values()) {
@@ -779,7 +777,7 @@ public class BattleDisplay extends JPanel {
         final Iterable<UnitCategory> categoryIter, final boolean damaged, final boolean disabled) {
       for (final UnitCategory category : categoryIter) {
         final JPanel panel = new JPanel();
-        final Optional<ImageIcon> unitImage =
+        final ImageIcon unitImage =
             uiContext
                 .getUnitImageFactory()
                 .getIcon(
@@ -789,7 +787,7 @@ public class BattleDisplay extends JPanel {
                         .damaged(damaged && category.hasDamageOrBombingUnitDamage())
                         .disabled(disabled && category.getDisabled())
                         .build());
-        final JLabel unit = unitImage.map(JLabel::new).orElseGet(JLabel::new);
+        final JLabel unit = new JLabel(unitImage);
         panel.add(unit);
         // Add a tooltip, with a count of 1 so that the tooltip doesn't have a number label (so it
         // won't get out of date

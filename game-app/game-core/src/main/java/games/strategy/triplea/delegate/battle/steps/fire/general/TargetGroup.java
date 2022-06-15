@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.battle.steps.fire.general;
 import com.google.common.collect.Sets;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,12 +67,12 @@ class TargetGroup {
   private static Set<UnitType> findTargets(
       final UnitType unitType, final Set<UnitType> unitTypes, final Set<UnitType> enemyUnitTypes) {
     final Set<UnitType> targets = new HashSet<>(enemyUnitTypes);
-    targets.removeAll(UnitAttachment.get(unitType).getCanNotTarget());
+    targets.removeAll(unitType.getUnitAttachment().getCanNotTarget());
     return unitTypes.stream().anyMatch(Matches.unitTypeIsDestroyer())
         ? targets
         : targets.stream()
             .filter(
-                target -> !UnitAttachment.get(target).getCanNotBeTargetedBy().contains(unitType))
+                target -> !target.getUnitAttachment().getCanNotBeTargetedBy().contains(unitType))
             .collect(Collectors.toSet());
   }
 

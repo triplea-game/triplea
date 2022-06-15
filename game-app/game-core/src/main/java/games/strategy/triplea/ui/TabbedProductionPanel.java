@@ -221,7 +221,7 @@ class TabbedProductionPanel extends ProductionPanel {
       final NamedAttachable resourceOrUnit = rule.getProductionRule().getAnyResultKey();
       if (resourceOrUnit instanceof UnitType) {
         final UnitType type = (UnitType) resourceOrUnit;
-        final UnitAttachment attach = UnitAttachment.get(type);
+        final UnitAttachment attach = type.getUnitAttachment();
         if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1) {
           upgradeConsumesRules.add(rule);
         }

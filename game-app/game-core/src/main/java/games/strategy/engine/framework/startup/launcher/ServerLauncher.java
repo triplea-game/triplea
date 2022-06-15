@@ -116,7 +116,7 @@ public class ServerLauncher implements ILauncher {
       serverModel.allowRemoveConnections();
       log.info("Game Status: Launching");
       messengers.registerRemote(serverReady, ClientModel.CLIENT_READY_CHANNEL);
-      gameData.doPreGameStartDataModifications(playerListing);
+      playerListing.doPreGameStartDataModifications(gameData);
       abortLaunch = testShouldWeAbort();
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<Player> localPlayerSet =

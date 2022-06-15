@@ -2,7 +2,6 @@ package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.ProductionRule;
@@ -249,12 +248,11 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       final GamePlayer playerSendingProposal,
       final String acceptanceQuestion,
       final boolean politics) {
-    final GameState data = getGameData();
-    return !this.getGamePlayer().amNotDeadYet(data.getMap())
+    return !getGamePlayer().amNotDeadYet()
         || getPlayerBridge().isGameOver()
         || ui.acceptAction(
             playerSendingProposal,
-            "To " + this.getGamePlayer().getName() + ": " + acceptanceQuestion,
+            "To " + getGamePlayer().getName() + ": " + acceptanceQuestion,
             politics);
   }
 

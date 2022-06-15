@@ -8,7 +8,6 @@ import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -170,7 +169,7 @@ public class FlowFieldAi extends AbstractAi {
             .map(Map.Entry::getKey)
             .filter(UnitType.class::isInstance)
             .map(UnitType.class::cast)
-            .filter(unitType -> UnitAttachment.get(unitType).getMovement(getGamePlayer()) > 0)
+            .filter(unitType -> unitType.getUnitAttachment().getMovement(getGamePlayer()) > 0)
             .map(
                 unitType ->
                     influenceMapBuilder.buildMaps(

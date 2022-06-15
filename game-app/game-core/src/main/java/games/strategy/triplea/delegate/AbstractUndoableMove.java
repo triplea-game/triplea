@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Set;
 
 /** Contains all the data to describe an abstract move (move or placement) and to undo it. */
 public abstract class AbstractUndoableMove implements Serializable {
@@ -29,19 +28,7 @@ public abstract class AbstractUndoableMove implements Serializable {
     this.units = units;
   }
 
-  public boolean containsAnyOf(final Set<Unit> units) {
-    if (units == null) {
-      return false;
-    }
-    for (final Unit unit : units) {
-      if (containsUnit(unit)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean containsUnit(final Unit unit) {
+  public boolean containsUnit(final Unit unit) {
     return units.contains(unit);
   }
 

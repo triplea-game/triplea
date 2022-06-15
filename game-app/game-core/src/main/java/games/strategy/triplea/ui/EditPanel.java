@@ -14,7 +14,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -377,13 +376,10 @@ class EditPanel extends ActionPanel {
             currentAction = this;
             setWidgetActivation();
             final MustMoveWithDetails mustMoveWithDetails;
-            try {
-              getData().acquireReadLock();
+            try (GameData.Unlocker ignored = getData().acquireReadLock()) {
               mustMoveWithDetails =
                   MoveValidator.getMustMoveWith(
                       selectedTerritory, new HashMap<>(), getCurrentPlayer());
-            } finally {
-              getData().releaseReadLock();
             }
             final boolean mustChoose;
             final List<Unit> allUnits = new ArrayList<>(selectedTerritory.getUnits());
@@ -578,12 +574,9 @@ class EditPanel extends ActionPanel {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            getData().acquireReadLock();
             final Collection<TechAdvance> techs;
-            try {
+            try (GameData.Unlocker ignored = getData().acquireReadLock()) {
               techs = TechnologyDelegate.getAvailableTechs(player, data.getTechnologyFrontier());
-            } finally {
-              getData().releaseReadLock();
             }
             if (techs.isEmpty()) {
               cancelEditAction.actionPerformed(null);
@@ -640,9 +633,8 @@ class EditPanel extends ActionPanel {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            getData().acquireReadLock();
             final Collection<TechAdvance> techs;
-            try {
+            try (GameData.Unlocker ignored = getData().acquireReadLock()) {
               techs = TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier());
               // there is no way to "undo" these two techs, so do not allow them to be removed
               techs.removeIf(
@@ -650,8 +642,6 @@ class EditPanel extends ActionPanel {
                       ta.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS)
                           || ta.getProperty()
                               .equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY));
-            } finally {
-              getData().releaseReadLock();
             }
             if (techs.isEmpty()) {
               cancelEditAction.actionPerformed(null);
@@ -736,7 +726,7 @@ class EditPanel extends ActionPanel {
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
             for (final Unit u : units) {
               currentDamageMap.put(
-                  u, Triple.of(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
+                  u, Triple.of(u.getUnitAttachment().getHitPoints() - 1, 0, u.getHits()));
             }
             final IndividualUnitPanel unitPanel =
                 new IndividualUnitPanel(
@@ -965,8 +955,7 @@ class EditPanel extends ActionPanel {
       add(new JButton(addTechAction));
       add(new JButton(removeTechAction));
     }
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
       if (allUnitTypes.stream().anyMatch(Matches.unitTypeHasMoreThanOneHitPointTotal())) {
         add(new JButton(changeUnitHitDamageAction));
@@ -975,8 +964,6 @@ class EditPanel extends ActionPanel {
           && allUnitTypes.stream().anyMatch(Matches.unitTypeCanBeDamaged())) {
         add(new JButton(changeUnitBombingDamageAction));
       }
-    } finally {
-      data.releaseReadLock();
     }
     add(new JButton(changePoliticalRelationships));
     add(Box.createVerticalStrut(15));
@@ -1001,7 +988,7 @@ class EditPanel extends ActionPanel {
 
   private static Comparator<Unit> getRemovableUnitsOrder() {
     return (u1, u2) -> {
-      if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
+      if (u1.getUnitAttachment().getTransportCapacity() != -1) {
         // Sort by decreasing transport capacity
         return Comparator.<Unit, Collection<Unit>>comparing(
                 Unit::getTransporting,
@@ -1078,7 +1065,7 @@ class EditPanel extends ActionPanel {
 
   private static boolean doesNeutralHaveUnitsOnMap(final GameState data) {
     return data.getMap().getTerritories().stream()
-        .anyMatch(Matches.territoryHasUnitsOwnedBy(GamePlayer.NULL_PLAYERID));
+        .anyMatch(Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getNullPlayer()));
   }
 
   @Override

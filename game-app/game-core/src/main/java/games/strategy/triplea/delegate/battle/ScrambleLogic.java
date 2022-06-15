@@ -57,18 +57,16 @@ public class ScrambleLogic {
     this.territoriesWithBattles = territoriesWithBattles;
     this.battleTracker = battleTracker;
     this.airbaseThatCanScramblePredicate =
-        Matches.unitIsEnemyOf(data.getRelationshipTracker(), player)
+        Matches.unitIsEnemyOf(player)
             .and(Matches.unitIsAirBase())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitIsBeingTransported().negate());
     this.canScrambleFromPredicate =
-        PredicateBuilder.of(
-                Matches.territoryIsWater()
-                    .or(Matches.isTerritoryEnemy(player, data.getRelationshipTracker())))
+        PredicateBuilder.of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(player)))
             .and(
                 Matches.territoryHasUnitsThatMatch(
                     Matches.unitCanScramble()
-                        .and(Matches.unitIsEnemyOf(data.getRelationshipTracker(), player))
+                        .and(Matches.unitIsEnemyOf(player))
                         .and(Matches.unitIsNotDisabled())))
             .and(Matches.territoryHasUnitsThatMatch(airbaseThatCanScramblePredicate))
             .andIf(
@@ -81,7 +79,7 @@ public class ScrambleLogic {
   private static int computeMaxScrambleDistance(final GameState data) {
     int maxScrambleDistance = 0;
     for (final UnitType unitType : data.getUnitTypeList()) {
-      final UnitAttachment ua = UnitAttachment.get(unitType);
+      final UnitAttachment ua = unitType.getUnitAttachment();
       if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }
@@ -166,7 +164,7 @@ public class ScrambleLogic {
       return Map.of();
     }
     final Predicate<Unit> unitCanScramble =
-        Matches.unitIsEnemyOf(data.getRelationshipTracker(), player)
+        Matches.unitIsEnemyOf(player)
             .and(Matches.unitCanScramble())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitWasScrambled().negate());

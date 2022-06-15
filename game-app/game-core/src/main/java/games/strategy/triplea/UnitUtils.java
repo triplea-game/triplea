@@ -3,16 +3,13 @@ package games.strategy.triplea;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +32,6 @@ public class UnitUtils {
       final Collection<Unit> unitsAtStartOfStepInTerritory,
       final Territory producer,
       final GamePlayer player,
-      final TechnologyFrontier technologyFrontier,
       final GameProperties properties,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
@@ -44,11 +40,11 @@ public class UnitUtils {
             unitsAtStartOfStepInTerritory,
             producer,
             player,
-            technologyFrontier,
+            player.getData().getTechTracker(),
             properties,
             accountForDamage),
         producer,
-        TechTracker.getCurrentTechAdvances(player, technologyFrontier),
+        player.getData().getTechTracker(),
         properties,
         accountForDamage,
         mathMaxZero);
@@ -65,7 +61,7 @@ public class UnitUtils {
       final Collection<Unit> units,
       final Territory producer,
       final GamePlayer player,
-      final TechnologyFrontier technologyFrontier,
+      final TechTracker techTracker,
       final GameProperties properties,
       final boolean accountForDamage) {
     final Predicate<Unit> factoryMatch =
@@ -81,13 +77,7 @@ public class UnitUtils {
     int highestCapacity = Integer.MIN_VALUE;
     for (final Unit u : factories) {
       final int capacity =
-          getHowMuchCanUnitProduce(
-              u,
-              producer,
-              TechTracker.getCurrentTechAdvances(player, technologyFrontier),
-              properties,
-              accountForDamage,
-              false);
+          getHowMuchCanUnitProduce(u, producer, techTracker, properties, accountForDamage, false);
       productionPotential.put(u, capacity);
       if (capacity > highestCapacity) {
         highestCapacity = capacity;
@@ -108,7 +98,7 @@ public class UnitUtils {
   public static int getHowMuchCanUnitProduce(
       final Unit unit,
       final Territory producer,
-      final Collection<TechAdvance> techAdvances,
+      final TechTracker techTracker,
       final GameProperties properties,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
@@ -118,7 +108,7 @@ public class UnitUtils {
     if (!Matches.unitCanProduceUnits().test(unit)) {
       return 0;
     }
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    final UnitAttachment ua = unit.getUnitAttachment();
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
     int territoryProduction = 0;
     int territoryUnitProduction = 0;
@@ -162,9 +152,8 @@ public class UnitUtils {
     }
     // Increase production if have industrial technology
     if (territoryProduction
-        >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(techAdvances)) {
-
-      productionCapacity += TechAbilityAttachment.getProductionBonus(unit.getType(), techAdvances);
+        >= techTracker.getMinimumTerritoryValueForProductionBonus(unit.getOwner())) {
+      productionCapacity += techTracker.getProductionBonus(unit.getOwner(), unit.getType());
     }
     return mathMaxZero ? Math.max(0, productionCapacity) : productionCapacity;
   }

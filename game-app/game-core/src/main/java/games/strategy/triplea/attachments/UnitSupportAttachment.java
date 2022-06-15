@@ -27,7 +27,8 @@ import lombok.Value;
 
 /**
  * An attachment for instances of {@link UnitType} that defines properties for unit types that
- * support other units.
+ * support other units. Note: Empty collection fields default to null to minimize memory use and
+ * serialization size.
  *
  * <p>The set of UnitSupportAttachments do not change during a game.
  */
@@ -39,7 +40,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   private static final long serialVersionUID = -3015679930172496082L;
 
-  private Set<UnitType> unitType = null;
+  private @Nullable Set<UnitType> unitType = null;
   private boolean offence = false;
   private boolean defence = false;
   private boolean roll = false;
@@ -50,15 +51,15 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private int number = 0;
   private boolean allied = false;
   private boolean enemy = false;
-  private BonusType bonusType = null;
-  private List<GamePlayer> players = new ArrayList<>();
+  private @Nullable BonusType bonusType = null;
+  private @Nullable List<GamePlayer> players = null;
   private boolean impArtTech = false;
   // strings
   // roll or strength or AAroll or AAstrength
-  private String dice;
+  private @Nullable String dice;
   // offence or defence
-  private String side;
-  private String faction;
+  private @Nullable String side;
+  private @Nullable String faction;
 
   /** Type to represent name and count */
   @Value
@@ -102,17 +103,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void setUnitType(final String names) throws GameParseException {
-    if (names == null) {
-      unitType = null;
-      return;
-    }
     unitType = new HashSet<>();
     for (final String element : splitOnColon(names)) {
-      final UnitType type = getData().getUnitTypeList().getUnitType(element);
-      if (type == null) {
-        throw new GameParseException("Could not find unitType. name:" + element + thisErrorMsg());
-      }
-      unitType.add(type);
+      unitType.add(getUnitTypeOrThrow(element));
     }
   }
 
@@ -129,10 +122,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @VisibleForTesting
   public UnitSupportAttachment setFaction(final String faction) throws GameParseException {
     this.faction = faction;
-    if (faction == null) {
-      resetFaction();
-      return this;
-    }
     allied = false;
     enemy = false;
     for (final String element : splitOnColon(faction)) {
@@ -148,7 +137,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return this;
   }
 
-  private String getFaction() {
+  private @Nullable String getFaction() {
     return faction;
   }
 
@@ -159,10 +148,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @VisibleForTesting
   public UnitSupportAttachment setSide(final String side) throws GameParseException {
-    if (side == null) {
-      resetSide();
-      return this;
-    }
     defence = false;
     offence = false;
     for (final String element : splitOnColon(side)) {
@@ -174,11 +159,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
         throw new GameParseException(side + " side must be defence or offence" + thisErrorMsg());
       }
     }
-    this.side = side;
+    this.side = side.intern();
     return this;
   }
 
-  private String getSide() {
+  private @Nullable String getSide() {
     return side;
   }
 
@@ -191,10 +176,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @VisibleForTesting
   public UnitSupportAttachment setDice(final String dice) throws GameParseException {
     resetDice();
-    if (dice == null) {
-      return this;
-    }
-    this.dice = dice;
+    this.dice = dice.intern();
     for (final String element : splitOnColon(dice)) {
       if (element.equalsIgnoreCase("roll")) {
         roll = true;
@@ -212,6 +194,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return this;
   }
 
+  @Nullable
   String getDice() {
     return dice;
   }
@@ -278,14 +261,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void setPlayers(final String names) throws GameParseException {
-    final String[] s = splitOnColon(names);
-    for (final String element : s) {
-      final GamePlayer player = getData().getPlayerList().getPlayerId(element);
-      if (player == null) {
-        throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
-      }
-      players.add(player);
-    }
+    players = parsePlayerList(names, players);
   }
 
   @VisibleForTesting
@@ -295,11 +271,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   public List<GamePlayer> getPlayers() {
-    return players;
+    return getListProperty(players);
   }
 
   private void resetPlayers() {
-    players = new ArrayList<>();
+    players = null;
   }
 
   private void setImpArtTech(final String tech) {
@@ -361,7 +337,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return offence;
   }
 
-  public BonusType getBonusType() {
+  public @Nullable BonusType getBonusType() {
     return bonusType;
   }
 
@@ -395,7 +371,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private static Set<UnitType> getTargets(final UnitTypeList unitTypeList) {
-    Set<UnitType> types = null;
+    Set<UnitType> types = Set.of();
     for (final UnitSupportAttachment rule : get(unitTypeList)) {
       if (rule.getBonusType().isOldArtilleryRule()) {
         types = rule.getUnitType();
@@ -412,9 +388,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void addUnitTypes(final Set<UnitType> types) {
-    if (types == null) {
-      return;
-    }
     if (unitType == null) {
       unitType = new HashSet<>();
     }

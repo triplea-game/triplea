@@ -703,7 +703,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (to.isWater()
         && (!Properties.getWW2V2(getData().getProperties())
             && !Properties.getUnitPlacementInEnemySeas(getData().getProperties()))
-        && to.anyUnitsMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
+        && to.anyUnitsMatch(Matches.enemyUnit(player))) {
       return "Cannot place sea units with enemy naval units";
     }
     // make sure there is a factory
@@ -802,7 +802,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final IntegerMap<String> constructionMap =
         howManyOfEachConstructionCanPlace(to, to, units, player);
     for (final Unit currentUnit : CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
+      final UnitAttachment ua = currentUnit.getUnitAttachment();
       /*
        * if (ua.getIsFactory() && !ua.getIsConstruction())
        * constructionMap.add("factory", -1);
@@ -877,7 +877,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     // account for any unit placement restrictions by territory
     for (final Unit currentUnit : units) {
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
+      final UnitAttachment ua = currentUnit.getUnitAttachment();
       // Can be null!
       final TerritoryAttachment ta = TerritoryAttachment.get(to);
       if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
@@ -929,7 +929,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final boolean water = to.isWater();
     if (water
         && (!Properties.getWW2V2(properties) && !Properties.getUnitPlacementInEnemySeas(properties))
-        && to.anyUnitsMatch(Matches.enemyUnit(player, getData().getRelationshipTracker()))) {
+        && to.anyUnitsMatch(Matches.enemyUnit(player))) {
       return null;
     }
     final Collection<Unit> units = new ArrayList<>(allUnits);
@@ -1024,7 +1024,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     final Collection<Unit> placeableUnits3 = new ArrayList<>();
     for (final Unit currentUnit : placeableUnits2) {
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
+      final UnitAttachment ua = currentUnit.getUnitAttachment();
       // Can be null!
       final TerritoryAttachment ta = TerritoryAttachment.get(to);
       if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
@@ -1076,7 +1076,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       // remove units which are now consumed, then test the rest of the consuming units on the
       // diminishing pile of units
       // which were in the territory at start of turn
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       final IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
       final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
       for (final UnitType ut : requiredUnits) {
@@ -1249,7 +1249,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             unitsAtStartOfStepInTerritory(producer),
             producer,
             player,
-            getData().getTechnologyFrontier(),
             getData().getProperties(),
             true,
             true);
@@ -1399,7 +1398,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       toProduction = terrAttachment.getProduction();
     }
     for (final Unit currentUnit : CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
+      final UnitAttachment ua = currentUnit.getUnitAttachment();
       // account for any unit placement restrictions by territory
       if (Properties.getUnitPlacementRestrictions(getData().getProperties())) {
         final String[] terrs = ua.getUnitPlacementRestrictions();
@@ -1443,7 +1442,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (unitsInTo.stream().anyMatch(Matches.unitIsConstruction())) {
       for (final Unit currentUnit :
           CollectionUtils.getMatches(unitsInTo, Matches.unitIsConstruction())) {
-        final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
+        final UnitAttachment ua = currentUnit.getUnitAttachment();
         /*
          * if (Matches.UnitIsFactory.test(currentUnit) && !ua.getIsConstruction())
          * unitMapTO.add("factory", 1);
@@ -1482,7 +1481,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // deal with already placed units
     for (final Unit currentUnit :
         CollectionUtils.getMatches(unitsPlacedAlready, Matches.unitIsConstruction())) {
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
+      final UnitAttachment ua = currentUnit.getUnitAttachment();
       unitMapTypePerTurn.add(ua.getConstructionType(), -1);
     }
     // modify this list based on how many we can place per turn
@@ -1503,7 +1502,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   static int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    final UnitAttachment ua = unit.getUnitAttachment();
     if (!ua.getIsConstruction()
         || ua.getConstructionsPerTerrPerTypePerTurn() < 1
         || ua.getMaxConstructionsPerTypePerTerr() < 1) {
@@ -1632,8 +1631,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       if (Objects.equals(u1, u2)) {
         return 0;
       }
-      final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
-      final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+      final UnitAttachment ua1 = u1.getUnitAttachment();
+      final UnitAttachment ua2 = u2.getUnitAttachment();
       if (ua1 == null && ua2 == null) {
         return 0;
       }

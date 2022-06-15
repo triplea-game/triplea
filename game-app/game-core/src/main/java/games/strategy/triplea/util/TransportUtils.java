@@ -187,8 +187,7 @@ public final class TransportUtils {
     for (final UnitCategory unitType : unitTypes) {
       final int transportCost = unitType.getTransportCost();
       for (final UnitCategory transportType : transportTypes) {
-        final int transportCapacity =
-            UnitAttachment.get(transportType.getType()).getTransportCapacity();
+        final int transportCapacity = transportType.getUnitAttachment().getTransportCapacity();
         if (transportCost > 0 && transportCapacity >= transportCost) {
           final int transportCount =
               CollectionUtils.countMatches(
@@ -210,8 +209,7 @@ public final class TransportUtils {
       return 0;
     }
     return units.stream()
-        .map(Unit::getType)
-        .map(UnitAttachment::get)
+        .map(Unit::getUnitAttachment)
         .mapToInt(UnitAttachment::getTransportCost)
         .sum();
   }
@@ -231,10 +229,8 @@ public final class TransportUtils {
     final List<Unit> canBeTransported = new ArrayList<>(units);
     canBeTransported.sort(
         Comparator.comparing(
-            Unit::getType,
-            Comparator.comparing(
-                UnitAttachment::get,
-                Comparator.comparing(UnitAttachment::getTransportCost).reversed())));
+            Unit::getUnitAttachment,
+            Comparator.comparing(UnitAttachment::getTransportCost).reversed()));
     return canBeTransported;
   }
 
@@ -243,7 +239,7 @@ public final class TransportUtils {
       final List<Unit> canTransport,
       final Map<Unit, Unit> mapping,
       final IntegerMap<Unit> addedLoad) {
-    final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
+    final int cost = unit.getUnitAttachment().getTransportCost();
     for (final Unit transport : canTransport) {
       final int capacity =
           TransportTracker.getAvailableCapacity(transport) - addedLoad.getInt(transport);
@@ -261,7 +257,7 @@ public final class TransportUtils {
     int capacity = TransportTracker.getAvailableCapacity(transport);
     for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext(); ) {
       final Unit unit = it.next();
-      final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
+      final int cost = unit.getUnitAttachment().getTransportCost();
       if (capacity >= cost) {
         capacity -= cost;
         mapping.put(unit, transport);
@@ -357,7 +353,7 @@ public final class TransportUtils {
    */
   public static Collection<Unit> chooseEquivalentUnitsToUnload(
       final Route route, final Collection<Unit> units) {
-    if (!route.isUnload() || !units.stream().anyMatch(Matches.unitIsLand())) {
+    if (!route.isUnload() || units.stream().noneMatch(Matches.unitIsLand())) {
       return new ArrayList<>(units);
     }
     final List<Unit> updatedUnits = new ArrayList<>(units);

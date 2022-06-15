@@ -54,8 +54,7 @@ public final class AirMovementValidator {
         || units.stream().noneMatch(Matches.unitIsAir()) // No air units, nothing to check
         || route.hasNoSteps() // if there are no steps, we didn't move, so it is always OK!
         // we can land at the end, nothing left to check
-        || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
-            .test(route.getEnd())
+        || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player).test(route.getEnd())
         // if kamikaze - we do not do any validation at all, cus they can all die and we don't care
         || Properties.getKamikazeAirplanes(data.getProperties())) {
       return result;
@@ -74,7 +73,7 @@ public final class AirMovementValidator {
     final Predicate<Unit> airAlliedNotOwned =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
+            .and(Matches.isUnitAllied(player))
             .and(Matches.unitIsAir())
             .and(Matches.unitCanLandOnCarrier());
     final Set<Unit> airThatMustLandOnCarriersHash = new HashSet<>();
@@ -88,8 +87,7 @@ public final class AirMovementValidator {
         CollectionUtils.getMatches(units, Matches.unitIsCarrier());
     if (!movingCarriersAtStartLocationBeingMoved.isEmpty()) {
       final Map<Unit, Collection<Unit>> carrierToAlliedCargo =
-          MoveValidator.carrierMustMoveWith(
-              units, routeStart, data.getRelationshipTracker(), player);
+          MoveValidator.carrierMustMoveWith(units, routeStart, player);
       for (final Collection<Unit> alliedAirOnCarrier : carrierToAlliedCargo.values()) {
         airThatMustLandOnCarriersHash.addAll(alliedAirOnCarrier);
       }
@@ -140,25 +138,19 @@ public final class AirMovementValidator {
                 routeEnd,
                 maxMovementLeftForTheseAirUnitsBeingValidated,
                 // where can we fly to?
-                Matches.airCanFlyOver(
-                    player,
-                    data.getProperties(),
-                    data.getRelationshipTracker(),
-                    areNeutralsPassableByAir(data))));
+                Matches.airCanFlyOver(player, areNeutralsPassableByAir(data))));
     // we only want to consider
     landingSpots.removeAll(
-        CollectionUtils.getMatches(
-            landingSpots, Matches.seaCanMoveOver(player, data.getProperties()).negate()));
+        CollectionUtils.getMatches(landingSpots, Matches.seaCanMoveOver(player).negate()));
     // places we can move carriers to
-    landingSpots.sort(
-        getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data.getProperties())));
+    landingSpots.sort(getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player)));
     final Collection<Territory> potentialCarrierOrigins = new LinkedHashSet<>(landingSpots);
     potentialCarrierOrigins.addAll(
         data.getMap()
             .getNeighbors(
                 new HashSet<>(landingSpots),
                 maxMovementLeftForAllOwnedCarriers,
-                Matches.seaCanMoveOver(player, data.getProperties())));
+                Matches.seaCanMoveOver(player)));
     potentialCarrierOrigins.remove(routeEnd);
     potentialCarrierOrigins.removeAll(
         CollectionUtils.getMatches(
@@ -213,7 +205,7 @@ public final class AirMovementValidator {
     final Predicate<Unit> carrierAlliedNotOwned =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
+            .and(Matches.isUnitAllied(player))
             .and(Matches.unitIsCarrier());
     final boolean landAirOnNewCarriers =
         Properties.getLhtrCarrierProductionRules(data.getProperties())
@@ -228,8 +220,7 @@ public final class AirMovementValidator {
       if (landAirOnNewCarriers
           && !carriersInProductionQueue.isEmpty()
           && Matches.territoryIsWater().test(t)
-          && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
-                  data, player)
+          && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(player)
               .test(t)) {
         // TODO: Here we are assuming that this factory can produce all of the carriers. Actually
         // it might not be able to produce any carriers (because of complex requires units coding)
@@ -268,13 +259,13 @@ public final class AirMovementValidator {
     final Predicate<Unit> alliedNotOwnedAirMatch =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
+            .and(Matches.isUnitAllied(player))
             .and(Matches.unitIsAir())
             .and(Matches.unitCanLandOnCarrier());
     final Predicate<Unit> alliedNotOwnedCarrierMatch =
         Matches.unitIsOwnedBy(player)
             .negate()
-            .and(Matches.isUnitAllied(player, data.getRelationshipTracker()))
+            .and(Matches.isUnitAllied(player))
             .and(Matches.unitIsCarrier());
     final Territory routeEnd = route.getEnd();
     final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
@@ -377,8 +368,7 @@ public final class AirMovementValidator {
             CollectionUtils.getMatches(unitsInCarrierSpot, alliedNotOwnedAirMatch);
         final Map<Unit, Collection<Unit>> mustMoveWithMap =
             // this only returns the allied cargo
-            MoveValidator.carrierMustMoveWith(
-                ownedCarriersInCarrierSpot, carrierSpot, data.getRelationshipTracker(), player);
+            MoveValidator.carrierMustMoveWith(ownedCarriersInCarrierSpot, carrierSpot, player);
         // planes that MUST travel with the carrier
         // get the current capacity for the carrier spot
         int carrierSpotCapacity = landingSpotsWithCarrierCapacity.getInt(carrierSpot);
@@ -443,7 +433,7 @@ public final class AirMovementValidator {
                 .getRouteForUnits(
                     carrierSpot,
                     landingSpot,
-                    Matches.seaCanMoveOver(player, data.getProperties()),
+                    Matches.seaCanMoveOver(player),
                     ownedCarriersInCarrierSpot,
                     player);
         if (toLandingSpot == null) {
@@ -630,10 +620,7 @@ public final class AirMovementValidator {
 
     // Remove suicide units if combat move and any enemy units at destination
     final Collection<Unit> enemyUnitsAtEnd =
-        route
-            .getEnd()
-            .getUnitCollection()
-            .getMatches(Matches.enemyUnit(player, player.getData().getRelationshipTracker()));
+        route.getEnd().getUnitCollection().getMatches(Matches.enemyUnit(player));
     if (!enemyUnitsAtEnd.isEmpty() && GameStepPropertiesHelper.isCombatMove(player.getData())) {
       ownedAir.removeIf(Matches.unitIsSuicideOnAttack());
     }
@@ -661,11 +648,7 @@ public final class AirMovementValidator {
             .getRouteForUnit(
                 currentSpot,
                 landingSpot,
-                Matches.airCanFlyOver(
-                    player,
-                    data.getProperties(),
-                    data.getRelationshipTracker(),
-                    areNeutralsPassableByAir),
+                Matches.airCanFlyOver(player, areNeutralsPassableByAir),
                 unit,
                 player);
     return (route != null)
@@ -709,14 +692,8 @@ public final class AirMovementValidator {
         CollectionUtils.getMatches(
             data.getMap()
                 .getNeighborsByMovementCost(
-                    current,
-                    movementLeft,
-                    Matches.airCanFlyOver(
-                        player,
-                        data.getProperties(),
-                        data.getRelationshipTracker(),
-                        areNeutralsPassableByAir)),
-            Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
+                    current, movementLeft, Matches.airCanFlyOver(player, areNeutralsPassableByAir)),
+            Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player));
     for (final Territory landingSpot : possibleSpots) {
       if (canAirReachThisSpot(
           unit, data, player, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {
@@ -804,36 +781,32 @@ public final class AirMovementValidator {
    * accounts for damaged carriers with special properties and restrictions.
    */
   public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn) {
-    if (Matches.unitIsCarrier().test(unit)) {
-      // here we check to see if the unit can no longer carry units
-      if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITS_MAY_NOT_LAND_ON_CARRIER)
-          .test(unit)) {
-        // and we must check to make sure we let any allied air that are cargo stay here
-        if (Matches.unitHasWhenCombatDamagedEffect(
-                UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER)
-            .test(unit)) {
-          int cargo = 0;
-          final Collection<Unit> airCargo =
-              territoryUnitsAreCurrentlyIn
-                  .getUnitCollection()
-                  .getMatches(Matches.unitIsAir().and(Matches.unitCanLandOnCarrier()));
-          for (final Unit airUnit : airCargo) {
-            if (airUnit.getTransportedBy() != null && airUnit.getTransportedBy().equals(unit)) {
-              // capacity = are cargo only
-              cargo += UnitAttachment.get(airUnit.getType()).getCarrierCost();
-            }
-          }
-          return cargo;
-        }
-
-        // capacity = zero 0
-        return 0;
-      }
-
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getCarrierCapacity();
+    if (!Matches.unitIsCarrier().test(unit)) {
+      return 0;
     }
-    return 0;
+    // here we check to see if the unit can no longer carry units
+    if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITS_MAY_NOT_LAND_ON_CARRIER)
+        .test(unit)) {
+      return unit.getUnitAttachment().getCarrierCapacity();
+    }
+    // and we must check to make sure we let any allied air that are cargo stay here
+    if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER)
+        .test(unit)) {
+      // capacity = zero 0
+      return 0;
+    }
+    int cargo = 0;
+    final Collection<Unit> airCargo =
+        territoryUnitsAreCurrentlyIn
+            .getUnitCollection()
+            .getMatches(Matches.unitIsAir().and(Matches.unitCanLandOnCarrier()));
+    for (final Unit airUnit : airCargo) {
+      if (airUnit.getTransportedBy() != null && airUnit.getTransportedBy().equals(unit)) {
+        // capacity = are cargo only
+        cargo += airUnit.getUnitAttachment().getCarrierCost();
+      }
+    }
+    return cargo;
   }
 
   public static int carrierCost(final Collection<Unit> units) {
@@ -846,7 +819,7 @@ public final class AirMovementValidator {
 
   public static int carrierCost(final Unit unit) {
     if (Matches.unitCanLandOnCarrier().test(unit)) {
-      return UnitAttachment.get(unit.getType()).getCarrierCost();
+      return unit.getUnitAttachment().getCarrierCost();
     }
     return 0;
   }
@@ -857,9 +830,7 @@ public final class AirMovementValidator {
 
   public static Collection<Unit> getFriendly(
       final Territory territory, final GamePlayer player, final GameState data) {
-    return territory
-        .getUnitCollection()
-        .getMatches(Matches.alliedUnit(player, data.getRelationshipTracker()));
+    return territory.getUnitCollection().getMatches(Matches.alliedUnit(player));
   }
 
   private static boolean areNeutralsPassableByAir(final GameState data) {

@@ -31,7 +31,7 @@ class RouteFinder {
   @Nullable private final GamePlayer player;
 
   RouteFinder(final GameMap map, final Predicate<Territory> condition) {
-    this(new MoveValidator(map.getData()), map, condition, Set.of(), null);
+    this(map, condition, Set.of(), null);
   }
 
   RouteFinder(
@@ -39,7 +39,8 @@ class RouteFinder {
       final Predicate<Territory> condition,
       final Collection<Unit> units,
       final GamePlayer player) {
-    this(new MoveValidator(map.getData()), map, condition, units, player);
+    // Note: We only use MoveValidator for canal checks, where isNonCombat isn't used.
+    this(new MoveValidator(map.getData(), false), map, condition, units, player);
   }
 
   Optional<Route> findRouteByDistance(final Territory start, final Territory end) {
