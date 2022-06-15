@@ -110,7 +110,6 @@ public final class ProTransportUtils {
     }
 
     // Get units if transport already loaded
-    final List<Unit> selectedUnits = new ArrayList<>();
     // Get all units that can be transported
     final List<Unit> units = new ArrayList<>();
     for (final Territory loadFrom : territoriesToLoadFrom) {
@@ -124,8 +123,7 @@ public final class ProTransportUtils {
             .thenComparing(getDecreasingAttackComparator(player)));
 
     // Get best units that can be loaded
-    selectedUnits.addAll(selectUnitsToTransportFromList(transport, units));
-    return selectedUnits;
+    return selectUnitsToTransportFromList(transport, units);
   }
 
   /** Selects the best units to load on the transport from the given list. */
