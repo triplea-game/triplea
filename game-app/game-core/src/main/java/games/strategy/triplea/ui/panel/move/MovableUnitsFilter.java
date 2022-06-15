@@ -7,7 +7,6 @@ import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.UndoableMove;
@@ -167,7 +166,7 @@ final class MovableUnitsFilter {
   }
 
   private boolean hasLandTransports(final List<Unit> units) {
-    return TechAttachment.isMechanizedInfantry(player)
+    return player.getTechAttachment().getMechanizedInfantry()
         && units.stream().anyMatch(Matches.unitIsLandTransport());
   }
 

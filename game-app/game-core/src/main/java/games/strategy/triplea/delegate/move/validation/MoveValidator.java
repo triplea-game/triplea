@@ -17,7 +17,6 @@ import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.BaseEditDelegate;
@@ -920,7 +919,7 @@ public class MoveValidator {
 
   private static int getNumLandTransportsWithoutCapacity(
       final Collection<Unit> units, final GamePlayer player) {
-    if (TechAttachment.isMechanizedInfantry(player)) {
+    if (player.getTechAttachment().getMechanizedInfantry()) {
       final Predicate<Unit> transportLand =
           Matches.unitIsLandTransportWithoutCapacity().and(Matches.unitIsOwnedBy(player));
       return CollectionUtils.countMatches(units, transportLand);
@@ -931,7 +930,7 @@ public class MoveValidator {
   private static IntegerMap<Unit> getLandTransportsWithCapacity(
       final Collection<Unit> units, final GamePlayer player) {
     final IntegerMap<Unit> map = new IntegerMap<>();
-    if (TechAttachment.isMechanizedInfantry(player)) {
+    if (player.getTechAttachment().getMechanizedInfantry()) {
       final Predicate<Unit> transportLand =
           Matches.unitIsLandTransportWithCapacity().and(Matches.unitIsOwnedBy(player));
       for (final Unit unit : CollectionUtils.getMatches(units, transportLand)) {
@@ -1413,7 +1412,7 @@ public class MoveValidator {
   // checks if there are non-paratroopers present that cause move validations to fail
   private static boolean nonParatroopersPresent(
       final GamePlayer player, final Collection<Unit> units) {
-    if (!TechAttachment.isAirTransportable(player)) {
+    if (!player.getTechAttachment().getParatroopers()) {
       return true;
     }
     if (!units.stream().allMatch(Matches.unitIsAir().or(Matches.unitIsLand()))) {
@@ -1443,7 +1442,7 @@ public class MoveValidator {
       final Route route,
       final GamePlayer player,
       final MoveValidationResult result) {
-    if (!TechAttachment.isAirTransportable(player)) {
+    if (!player.getTechAttachment().getParatroopers()) {
       return result;
     }
     if (units.stream().noneMatch(Matches.unitIsAirTransportable())
