@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
