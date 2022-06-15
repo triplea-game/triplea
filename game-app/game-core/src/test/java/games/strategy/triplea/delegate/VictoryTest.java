@@ -175,7 +175,7 @@ class VictoryTest {
 
   /**
    * These tests verify move validation concerning attacks between angloEgypt to transJordan, with
-   * angloEgypt set up as a contested (owned by enemy or with enemy units, depending on the test).
+   * angloEgypt set up as contested (owned by enemy or with enemy units, depending on the test).
    */
   @Nested
   final class AttackingFromContestedTerritory {
