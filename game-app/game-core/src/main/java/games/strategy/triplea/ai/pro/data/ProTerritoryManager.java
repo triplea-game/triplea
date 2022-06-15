@@ -163,6 +163,7 @@ public class ProTerritoryManager {
       final List<Unit> defenders;
       if (isIgnoringRelationships) {
         defenders = new ArrayList<>(t.getUnitCollection());
+        // Don't include any of the attacking units as defenders.
         defenders.removeAll(patd.getMaxUnits());
       } else {
         defenders = patd.getMaxEnemyDefenders(player);

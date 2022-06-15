@@ -144,9 +144,10 @@ class BattleCalculator implements IBattleCalculator {
   private Collection<Unit> mergeUnitCollections(Collection<Unit> c1, Collection<Unit> c2) {
     var combined = new HashSet<>(c1);
     combined.addAll(c2);
-    // Check that the two collections were distinct and didn't have duplicates. This helps catch
-    // logic errors in AI code that would otherwise be hard to debug.
-    Preconditions.checkState(combined.size() == c1.size() + c2.size());
+    Preconditions.checkState(
+        combined.size() == c1.size() + c2.size(),
+        "Attackers and defenders collections must be distinct with no duplicates. "
+            + "This helps catch logic errors in AI code that would otherwise be hard to debug.");
     return combined;
   }
 
