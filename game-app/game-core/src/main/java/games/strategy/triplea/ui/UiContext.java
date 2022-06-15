@@ -177,6 +177,7 @@ public class UiContext {
       activeToDeactivate.clear();
       windowsToCloseOnShutdown.clear();
     }
+    StackTraceReportModel.setCurrentMapName(null);
     resourceLoader.close();
   }
 
