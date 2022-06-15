@@ -181,6 +181,8 @@ public interface Constants {
   String AIR_BATTLE_ROUNDS = "Air Battle Rounds";
   String SEA_BATTLE_ROUNDS = "Sea Battle Rounds";
   String LAND_BATTLE_ROUNDS = "Land Battle Rounds";
+  String SEA_BATTLES_MAY_BE_IGNORED = "Sea Battles May Be Ignored";
+  String LAND_BATTLES_MAY_BE_IGNORED = "Land Battles May Be Ignored";
   String AIR_BATTLE_ATTACKERS_CAN_RETREAT = "Air Battle Attackers Can Retreat";
   String AIR_BATTLE_DEFENDERS_CAN_RETREAT = "Air Battle Defenders Can Retreat";
   String CAN_SCRAMBLE_INTO_AIR_BATTLES = "Can Scramble Into Air Battles";
@@ -189,7 +191,6 @@ public interface Constants {
   String CONTESTED_TERRITORIES_PRODUCE_NO_INCOME = "Contested Territories Produce No Income";
   String ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES =
       "All Units Can Attack From Contested Territories";
-  String SEA_BATTLES_MAY_BE_IGNORED = "Sea Battles May Be Ignored";
   String ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY =
       "Abandoned Territories May Be Taken Over Immediately";
   String DISABLED_PLAYERS_ASSETS_DELETED = "Disabled Players Assets Deleted";
