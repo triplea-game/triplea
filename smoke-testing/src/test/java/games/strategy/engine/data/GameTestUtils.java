@@ -51,6 +51,8 @@ public class GameTestUtils {
     System.setProperty("user.home", tempHome.toString());
     ClientSetting.initialize();
     assertTrue(ClientFileSystemHelper.getUserMapsFolder().startsWith(tempHome.toAbsolutePath()));
+    ClientSetting.aiMovePauseDuration.setValue(0);
+    ClientSetting.aiCombatStepPauseDuration.setValue(0);
 
     Path tempRoot = FileUtils.newTempFolder();
     FileUtils.writeToFile(tempRoot.resolve(".triplea-root"), "");
