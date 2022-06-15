@@ -525,7 +525,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
         final Player remotePlayer = bridge.getRemotePlayer();
-        if (territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data.getProperties())) {
+        if ((territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data.getProperties())) ||
+            (!territory.isWater() && Properties.getLandBattlesMayBeIgnored(data.getProperties()))) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
