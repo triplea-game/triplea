@@ -61,9 +61,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
     }
     final boolean transporting1 = u1.isTransporting();
     final boolean transporting2 = u2.isTransporting();
-    final UnitAttachment ua1 = u1.getUnitAttachment();
-    final UnitAttachment ua2 = u2.getUnitAttachment();
-    if (ua1.equals(ua2)
+    if (u1.getType().equals(u2.getType())
         && u1.isOwnedBy(u2.getOwner())
         && u1.getWasAmphibious() == u2.getWasAmphibious()) {
       if (transporting1 && !transporting2) {
@@ -173,6 +171,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     } else if (!airOrCarrierOrTransport1 && airOrCarrierOrTransport2) {
       return -1;
     }
+    final UnitAttachment ua1 = u1.getUnitAttachment();
+    final UnitAttachment ua2 = u2.getUnitAttachment();
     return ua1.getMovement(u1.getOwner()) - ua2.getMovement(u2.getOwner());
   }
 }

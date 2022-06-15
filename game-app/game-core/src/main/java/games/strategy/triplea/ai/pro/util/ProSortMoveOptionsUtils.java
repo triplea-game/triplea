@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,7 @@ public final class ProSortMoveOptionsUtils {
 
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new ArrayList<>(unitAttackOptions.entrySet());
+    final Map<Object, Double> attackEfficiencyCache = new HashMap<>();
     list.sort(
         (o1, o2) -> {
           final Collection<Territory> territories1 =
@@ -133,9 +135,11 @@ public final class ProSortMoveOptionsUtils {
 
           // Sort by attack efficiency
           final double attackEfficiency1 =
-              calculateAttackEfficiency(proData, player, attackMap, territories1, unit1);
+              attackEfficiencyCache.computeIfAbsent(o1, key ->
+                  calculateAttackEfficiency(proData, player, attackMap, territories1, unit1));
           final double attackEfficiency2 =
-              calculateAttackEfficiency(proData, player, attackMap, territories2, unit2);
+              attackEfficiencyCache.computeIfAbsent(o2, key ->
+                  calculateAttackEfficiency(proData, player, attackMap, territories2, unit2));
           if (attackEfficiency1 != attackEfficiency2) {
             return (attackEfficiency1 < attackEfficiency2) ? 1 : -1;
           }
