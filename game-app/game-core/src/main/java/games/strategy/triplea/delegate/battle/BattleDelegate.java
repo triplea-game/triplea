@@ -906,7 +906,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
         }
       } else if (battle instanceof MustFightBattle) {
-        ((MustFightBattle) battle).resetDefendingUnits(player, data);
+        ((MustFightBattle) battle).resetDefendingUnits(player);
       }
       // now make sure any amphibious battles that are dependent on this 'new' sea battle have their
       // dependencies set.
@@ -919,7 +919,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
             if (adjacentBattle instanceof MustFightBattle) {
               // and we want to reset the defenders if the scrambling air has left that battle
-              ((MustFightBattle) adjacentBattle).resetDefendingUnits(player, data);
+              ((MustFightBattle) adjacentBattle).resetDefendingUnits(player);
             }
           }
         }
