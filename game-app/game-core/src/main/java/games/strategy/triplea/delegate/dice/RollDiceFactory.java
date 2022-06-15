@@ -6,7 +6,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.dice.calculator.LowLuckDice;
@@ -36,7 +35,7 @@ public class RollDiceFactory {
       final Territory battleSite,
       final CombatValue combatValueCalculator) {
 
-    final String typeAa = UnitAttachment.get(CollectionUtils.getAny(aaUnits).getType()).getTypeAa();
+    final String typeAa = CollectionUtils.getAny(aaUnits).getUnitAttachment().getTypeAa();
     final GamePlayer player = CollectionUtils.getAny(aaUnits).getOwner();
     final String annotation =
         player.getName() + " roll " + typeAa + " dice in " + battleSite.getName();
@@ -91,7 +90,7 @@ public class RollDiceFactory {
       final IRandomStats.DiceType diceType,
       final String annotation) {
     if (rollCount == 0) {
-      return new DiceRoll(new ArrayList<>(), 0, 0, playerRolling.getName());
+      return new DiceRoll(List.of(), 0, 0, playerRolling.getName());
     }
     final int[] random =
         bridge.getRandom(diceSides, rollCount, playerRolling, diceType, annotation);

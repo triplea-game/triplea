@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -127,8 +128,7 @@ class ProductionRepairPanel extends JPanel {
     if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
       return;
     }
-    this.data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = this.data.acquireReadLock()) {
       this.gamePlayer = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       Predicate<Unit> myDamagedUnits =
@@ -158,8 +158,6 @@ class ProductionRepairPanel extends JPanel {
           }
         }
       }
-    } finally {
-      this.data.releaseReadLock();
     }
   }
 
@@ -269,11 +267,8 @@ class ProductionRepairPanel extends JPanel {
       final String propertyName = gamePlayer.getName() + " bid";
       final int bid = data.getProperties().get(propertyName, 0);
       final ResourceCollection bidCollection = new ResourceCollection(data);
-      data.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
         bidCollection.addResource(data.getResourceList().getResource(Constants.PUS), bid);
-      } finally {
-        data.releaseReadLock();
       }
       return bidCollection;
     }
@@ -301,18 +296,14 @@ class ProductionRepairPanel extends JPanel {
             "Rule unit type "
                 + type.getName()
                 + " does not match "
-                + repairUnit.toString()
+                + repairUnit
                 + ".  Please make sure your maps are up to date!");
       }
       repairResults = rule.getResults().getInt(type);
       final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
 
-      final JLabel label =
-          uiContext
-              .getUnitImageFactory()
-              .getIcon(ImageKey.of(repairUnit))
-              .map(imageIcon -> new JLabel(text, imageIcon, SwingConstants.LEFT))
-              .orElseGet(() -> new JLabel(text, SwingConstants.LEFT));
+      final ImageIcon icon = uiContext.getUnitImageFactory().getIcon(ImageKey.of(repairUnit));
+      final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
       final JLabel info = new JLabel(territoryUnitIsIn.getName());
       maxRepairAmount = repairUnit.getHowMuchCanThisUnitBeRepaired(territoryUnitIsIn);
       final JLabel remaining = new JLabel("Damage left to repair: " + maxRepairAmount);

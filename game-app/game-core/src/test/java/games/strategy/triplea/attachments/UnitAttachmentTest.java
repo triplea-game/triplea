@@ -29,7 +29,6 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import java.security.SecureRandom;
-import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -149,15 +148,14 @@ class UnitAttachmentTest {
       final String trueString = Boolean.toString(true);
       final String falseString = Boolean.toString(false);
 
-      final Map<String, Tuple<String, IntegerMap<UnitType>>> mapReference =
-          attachment.getWhenCapturedChangesInto();
-
       final int random1 = rand.nextInt();
       final IntegerMap<UnitType> expected1 = new IntegerMap<>(ImmutableMap.of(unit1, random1));
 
       attachment.setWhenCapturedChangesInto(
           concatWithColon(from, to, trueString, unit1String, String.valueOf(random1)));
-      assertEquals(Tuple.of(trueString, expected1), mapReference.get(from + ":" + to));
+      assertEquals(
+          Tuple.of(trueString, expected1),
+          attachment.getWhenCapturedChangesInto().get(from + ":" + to));
 
       final int random2 = rand.nextInt();
       final int random3 = rand.nextInt();
@@ -174,7 +172,9 @@ class UnitAttachmentTest {
               String.valueOf(random2),
               unit2String,
               String.valueOf(random3)));
-      assertEquals(Tuple.of(falseString, expected2), mapReference.get(from + ":" + to));
+      assertEquals(
+          Tuple.of(falseString, expected2),
+          attachment.getWhenCapturedChangesInto().get(from + ":" + to));
     }
 
     private String concatWithColon(final String... args) {

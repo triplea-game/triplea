@@ -9,7 +9,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ final class EditValidator {
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {
     if (territory.isWater()
-        && territory.isOwnedBy(GamePlayer.NULL_PLAYERID)
+        && territory.getOwner().isNull()
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }
@@ -57,15 +56,11 @@ final class EditValidator {
     if (territory.isWater()) {
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
         if (units.stream().anyMatch(Matches.unitIsLand())) {
-          if (units.isEmpty()
-              || !units.stream()
-                  .allMatch(Matches.alliedUnit(player, data.getRelationshipTracker()))) {
+          if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player))) {
             return "Can't add mixed nationality units to water";
           }
           final Predicate<Unit> friendlySeaTransports =
-              Matches.unitIsTransport()
-                  .and(Matches.unitIsSea())
-                  .and(Matches.alliedUnit(player, data.getRelationshipTracker()));
+              Matches.unitIsSeaTransport().and(Matches.unitIsSea()).and(Matches.alliedUnit(player));
           final Collection<Unit> seaTransports =
               CollectionUtils.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd =
@@ -91,10 +86,9 @@ final class EditValidator {
           }
           // Set up matches
           final Predicate<Unit> friendlyCarriers =
-              Matches.unitIsCarrier()
-                  .and(Matches.alliedUnit(player, data.getRelationshipTracker()));
+              Matches.unitIsCarrier().and(Matches.alliedUnit(player));
           final Predicate<Unit> friendlyAirUnits =
-              Matches.unitIsAir().and(Matches.alliedUnit(player, data.getRelationshipTracker()));
+              Matches.unitIsAir().and(Matches.alliedUnit(player));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(
@@ -228,7 +222,7 @@ final class EditValidator {
     }
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
-      if (dmg < 0 || dmg >= UnitAttachment.get(u.getType()).getHitPoints()) {
+      if (dmg < 0 || dmg >= u.getUnitAttachment().getHitPoints()) {
         return "Damage cannot be less than zero or equal to or greater than unit "
             + "hitpoints (if you want to kill the unit, use remove unit)";
       }

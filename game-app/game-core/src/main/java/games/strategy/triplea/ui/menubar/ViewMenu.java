@@ -74,6 +74,7 @@ final class ViewMenu extends JMenu {
     addUnitSizeMenu();
     addLockMap();
     addShowUnitsMenu();
+    addShowUnitsInStatusBarMenu();
     addFlagDisplayModeMenu();
 
     if (uiContext.getMapData().useTerritoryEffectMarkers()) {
@@ -213,7 +214,7 @@ final class ViewMenu extends JMenu {
     unitSizeGroup.add(radioItem56);
     unitSizeGroup.add(radioItem50);
     radioItem100.setSelected(true);
-    // select the closest to to the default size
+    // select the closest to the default size
     final Enumeration<AbstractButton> enum1 = unitSizeGroup.getElements();
     boolean matchFound = false;
     while (enum1.hasMoreElements()) {
@@ -317,11 +318,22 @@ final class ViewMenu extends JMenu {
     showUnitsBox.setSelected(true);
     showUnitsBox.addActionListener(
         e -> {
-          final boolean tfselected = showUnitsBox.isSelected();
-          uiContext.setShowUnits(tfselected);
+          uiContext.setShowUnits(showUnitsBox.isSelected());
           frame.getMapPanel().resetMap();
         });
     add(showUnitsBox);
+  }
+
+  private void addShowUnitsInStatusBarMenu() {
+    JCheckBoxMenuItem checkbox = new JCheckBoxMenuItem("Show Units in Status Bar");
+    checkbox.setSelected(true);
+    checkbox.addActionListener(
+        e -> {
+          uiContext.setShowUnitsInStatusBar(checkbox.isSelected());
+          // Trigger a bottom bar update.
+          frame.getBottomBar().setTerritory(frame.getMapPanel().getCurrentTerritory());
+        });
+    add(checkbox);
   }
 
   private void addMapFontAndColorEditorMenu() {
@@ -423,8 +435,7 @@ final class ViewMenu extends JMenu {
     territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
     territoryEffectsBox.addActionListener(
         e -> {
-          final boolean tfselected = territoryEffectsBox.isSelected();
-          uiContext.setShowTerritoryEffects(tfselected);
+          uiContext.setShowTerritoryEffects(territoryEffectsBox.isSelected());
           frame.getMapPanel().resetMap();
         });
     add(territoryEffectsBox);

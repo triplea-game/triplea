@@ -54,7 +54,7 @@ public class OriginalOwnerTracker implements Serializable {
     for (final Territory t : data.getMap()) {
       GamePlayer originalOwner = getOriginalOwner(t);
       if (originalOwner == null) {
-        originalOwner = GamePlayer.NULL_PLAYERID;
+        originalOwner = data.getPlayerList().getNullPlayer();
       }
       if (originalOwner.equals(player)) {
         territories.add(t);

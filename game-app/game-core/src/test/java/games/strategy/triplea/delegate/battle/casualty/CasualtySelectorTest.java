@@ -23,7 +23,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -175,7 +174,8 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -238,7 +238,8 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -302,7 +303,8 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -366,7 +368,8 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -430,7 +433,8 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -500,7 +504,8 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -565,7 +570,8 @@ class CasualtySelectorTest {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(data.getUnitTypeList()))),
             defendingAa,
             bridge,

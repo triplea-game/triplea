@@ -347,7 +347,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                     .showDialog())
         .build()
         .selectGameFile(JOptionPane.getFrameForComponent(this))
-        .ifPresent(file -> loadSaveFile(file));
+        .ifPresent(this::loadSaveFile);
   }
 
   public void loadSaveFile(final Path file) {

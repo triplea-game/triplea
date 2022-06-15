@@ -4,12 +4,15 @@ import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
+import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die;
@@ -30,20 +33,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
 class TotalPowerAndTotalRollsTest {
 
-  @Mock GamePlayer owner;
-
-  private Unit givenUnit(final String name, final GameData gameData) {
-    return givenUnit(givenUnitType(name, gameData));
+  private GamePlayer givenPlayer(GameData gameData) {
+    GamePlayer player = mock(GamePlayer.class);
+    lenient().when(player.getData()).thenReturn(gameData);
+    lenient().when(player.getTechAttachment()).thenReturn(mock(TechAttachment.class));
+    return player;
   }
 
-  private Unit givenUnit(final UnitType unitType) {
+  private Unit givenUnit(String name, GamePlayer owner) {
+    return givenUnit(givenUnitType(name, owner.getData()), owner);
+  }
+
+  private Unit givenUnit(UnitType unitType, GamePlayer owner) {
     return unitType.createTemp(1, owner).get(0);
   }
 
@@ -56,14 +63,14 @@ class TotalPowerAndTotalRollsTest {
   }
 
   UnitSupportAttachment givenUnitSupportAttachment(
-      final GameData gameData, final UnitType unitType, final String name, final String diceType)
+      final GamePlayer player, final UnitType unitType, final String name, final String diceType)
       throws GameParseException {
-    return new UnitSupportAttachment("rule" + name, unitType, gameData)
+    return new UnitSupportAttachment("rule" + name, unitType, player.getData())
         .setBonus(1)
         .setBonusType("bonus" + name)
         .setDice(diceType)
         .setNumber(1)
-        .setPlayers(List.of(owner))
+        .setPlayers(List.of(player))
         .setSide("offence")
         .setFaction("allied");
   }
@@ -74,7 +81,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void singleAaWithOneRoll() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
       final List<Unit> units = List.of(unit);
       final List<Die> sortedDie = new ArrayList<>();
@@ -116,7 +123,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void singleAaWithOneRollNoHit() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
       final List<Unit> units = List.of(unit);
       final List<Die> sortedDie = new ArrayList<>();
@@ -132,7 +139,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void singleAaWithTwoRoll() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
       final List<Unit> units = List.of(unit);
       final List<Die> sortedDie = new ArrayList<>();
@@ -149,7 +156,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void singleAaWithMoreRollsThanTargets() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(3);
       final List<Unit> units = List.of(unit);
       final List<Die> sortedDie = new ArrayList<>();
@@ -168,9 +175,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithSamePower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -186,9 +194,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithDifferentPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(1);
 
       final List<Unit> units = List.of(unit, unit2);
@@ -205,9 +214,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithDifferentPowerAndMoreRollsThanTargets() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(2);
 
       final List<Unit> units = List.of(unit, unit2);
@@ -233,9 +243,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithDifferentPowerAndOnlyOneHit() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(1);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -253,7 +264,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneAaWithInfinite() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit);
       final List<Die> sortedDie = new ArrayList<>();
@@ -278,9 +289,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithInfiniteWithSamePower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -306,9 +318,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithInfiniteWithDifferentPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -336,12 +349,13 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithInfiniteWithDifferentDice() {
       final GameData gameData = givenGameData().build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment()
           .setOffensiveAttackAa(2)
           .setMaxAaAttacks(-1)
           .setOffensiveAttackAaMaxDieSides(4);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2
           .getUnitAttachment()
           .setOffensiveAttackAa(3)
@@ -374,9 +388,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithOneRollAndInfiniteSamePower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -401,9 +416,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithOneRollAndInfiniteWhereInfiniteIsHigher() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -432,9 +448,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void twoAaWithOneRollAndInfiniteWhereInfiniteIsLower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -461,7 +478,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneAaWithOverStack() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit);
       final List<Die> sortedDie = new ArrayList<>();
@@ -477,7 +494,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneAaWithOverStackAndMoreRollsThanTargets() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(5).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit);
       final List<Die> sortedDie = new ArrayList<>();
@@ -503,7 +520,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneAaWithOverstackAndInfinite() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit);
       final List<Die> sortedDie = new ArrayList<>();
@@ -523,9 +540,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneOverstackAndOneInfinite() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -553,9 +571,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneOverstackAndOneInfiniteDifferentPowers() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -584,9 +603,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneOverstackAndOneNormal() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -609,9 +629,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneOverstackAndOneNormalDifferentPowers() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit, unit2);
       final List<Die> sortedDie = new ArrayList<>();
@@ -634,11 +655,12 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneOverstackOneInfiniteAndOneNormalSamePower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
-      final Unit unit3 = givenUnit("test3", gameData);
+      final Unit unit3 = givenUnit("test3", player);
       unit3.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit, unit2, unit3);
       final List<Die> sortedDie = new ArrayList<>();
@@ -663,11 +685,12 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsBest() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(4).setMaxAaAttacks(2);
-      final Unit unit3 = givenUnit("test3", gameData);
+      final Unit unit3 = givenUnit("test3", player);
       unit3.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit, unit2, unit3);
       final List<Die> sortedDie = new ArrayList<>();
@@ -692,11 +715,12 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void oneOverstackOneInfiniteAndOneNormalDifferentPowersWhereNormalIsWorst() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
-      final Unit unit3 = givenUnit("test3", gameData);
+      final Unit unit3 = givenUnit("test3", player);
       unit3.getUnitAttachment().setOffensiveAttackAa(4).setMaxAaAttacks(2).setMayOverStackAa(true);
       final List<Unit> units = List.of(unit, unit2, unit3);
       final List<Die> sortedDie = new ArrayList<>();
@@ -735,11 +759,12 @@ class TotalPowerAndTotalRollsTest {
 
     @BeforeEach
     void setUp() {
-      unit1 = givenUnit("test1", gameData);
-      unit2 = givenUnit("test2", gameData);
-      unit3 = givenUnit("test3", gameData);
-      unit4 = givenUnit("test4", gameData);
-      unit5 = givenUnit("test5", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      unit1 = givenUnit("test1", player);
+      unit2 = givenUnit("test2", player);
+      unit3 = givenUnit("test3", player);
+      unit4 = givenUnit("test4", player);
+      unit5 = givenUnit("test5", player);
       units.addAll(List.of(unit1, unit2, unit3, unit4, unit5));
     }
 
@@ -806,7 +831,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void singleUnitWithCustomDice() {
       final GameData gameData = givenGameData().build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment()
           .setOffensiveAttackAa(2)
           .setMaxAaAttacks(1)
@@ -829,7 +854,8 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void singleDefensiveUnitWithCustomDice() {
       final GameData gameData = givenGameData().build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setAttackAa(2).setMaxAaAttacks(1).setAttackAaMaxDieSides(8);
 
       final AaPowerStrengthAndRolls aaPowerAndRolls =
@@ -849,20 +875,21 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void singleUnitWithSupport() throws GameParseException {
       final GameData gameData = givenGameData().build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment()
           .setOffensiveAttackAa(2)
           .setMaxAaAttacks(1)
           .setOffensiveAttackAaMaxDieSides(4);
 
-      final Unit supportUnit = givenUnit("support", gameData);
+      final Unit supportUnit = givenUnit("support", player);
       final UnitSupportAttachment unitSupportAttachment =
           new UnitSupportAttachment("rule", supportUnit.getType(), gameData)
               .setBonus(2)
               .setBonusType("bonus")
               .setDice("AAstrength:AAroll")
               .setNumber(1)
-              .setPlayers(List.of(owner))
+              .setPlayers(List.of(player))
               .setSide("offence")
               .setFaction("allied")
               .setUnitType(Set.of(unit.getType()));
@@ -901,11 +928,12 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void multipleUnitsWithSameDice() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(1);
-      final Unit unit3 = givenUnit("test3", gameData);
+      final Unit unit3 = givenUnit("test3", player);
       unit3.getUnitAttachment().setOffensiveAttackAa(4).setMaxAaAttacks(1);
 
       final AaPowerStrengthAndRolls aaPowerAndRolls =
@@ -928,18 +956,19 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void multipleUnitsWithDifferentDice() {
       final GameData gameData = givenGameData().build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment()
           .setOffensiveAttackAa(2)
           .setMaxAaAttacks(1)
           .setOffensiveAttackAaMaxDieSides(6);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2
           .getUnitAttachment()
           .setOffensiveAttackAa(3)
           .setMaxAaAttacks(1)
           .setOffensiveAttackAaMaxDieSides(5);
-      final Unit unit3 = givenUnit("test3", gameData);
+      final Unit unit3 = givenUnit("test3", player);
       unit3
           .getUnitAttachment()
           .setOffensiveAttackAa(4)
@@ -965,18 +994,19 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void multipleUnitsWithDifferentDice2() {
       final GameData gameData = givenGameData().build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment()
           .setOffensiveAttackAa(3)
           .setMaxAaAttacks(1)
           .setOffensiveAttackAaMaxDieSides(8);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2
           .getUnitAttachment()
           .setOffensiveAttackAa(3)
           .setMaxAaAttacks(1)
           .setOffensiveAttackAaMaxDieSides(7);
-      final Unit unit3 = givenUnit("test3", gameData);
+      final Unit unit3 = givenUnit("test3", player);
       unit3
           .getUnitAttachment()
           .setOffensiveAttackAa(3)
@@ -1006,7 +1036,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void unitWithZeroRollsAlwaysGetsZeroStrength() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(0);
 
       final AaPowerStrengthAndRolls result =
@@ -1026,7 +1056,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void unitWithZeroPowerAlwaysGetsZeroRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(0).setMaxAaAttacks(1);
 
       final AaPowerStrengthAndRolls result =
@@ -1046,16 +1076,17 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void strongestAaGetsSupport() throws GameParseException {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit strongUnit = givenUnit("strong", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit strongUnit = givenUnit("strong", player);
       strongUnit.getUnitAttachment().setOffensiveAttackAa(4).setMaxAaAttacks(1);
-      final Unit weakUnit = givenUnit("weak", gameData);
+      final Unit weakUnit = givenUnit("weak", player);
       weakUnit.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
-      final Unit lessWeakUnit = givenUnit("lessWeak", gameData);
+      final Unit lessWeakUnit = givenUnit("lessWeak", player);
       lessWeakUnit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(1);
 
-      final Unit supportUnit = givenUnit("support", gameData);
+      final Unit supportUnit = givenUnit("support", player);
       final UnitSupportAttachment unitSupportAttachment =
-          givenUnitSupportAttachment(gameData, supportUnit.getType(), "test", "AAstrength:AAroll")
+          givenUnitSupportAttachment(player, supportUnit.getType(), "test", "AAstrength:AAroll")
               .setBonus(1)
               .setUnitType(
                   Set.of(strongUnit.getType(), weakUnit.getType(), lessWeakUnit.getType()));
@@ -1101,7 +1132,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void unitWithZeroRollsAlwaysGetsZeroPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setAttack(1).setAttackRolls(0);
 
       final PowerStrengthAndRolls result =
@@ -1124,7 +1155,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void unitWithZeroPowerAlwaysGetsZeroRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setAttack(0).setAttackRolls(1);
 
       final PowerStrengthAndRolls result =
@@ -1146,23 +1177,24 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void attackUnitsWithMultipleSupportUnits() throws GameParseException {
       final GameData gameData = givenGameData().withDiceSides(6).build();
+      final GamePlayer player = givenPlayer(gameData);
       final UnitType unitType = givenUnitType("test", gameData);
-      final Unit unit = givenUnit(unitType);
+      final Unit unit = givenUnit(unitType, player);
       unit.getUnitAttachment().setAttack(1).setAttackRolls(1);
-      final Unit otherSupportedUnit = givenUnit(unitType);
+      final Unit otherSupportedUnit = givenUnit(unitType, player);
       unit.getUnitAttachment().setAttack(1).setAttackRolls(1);
-      final Unit nonSupportedUnit = givenUnit(unitType);
+      final Unit nonSupportedUnit = givenUnit(unitType, player);
       unit.getUnitAttachment().setAttack(1).setAttackRolls(1);
 
-      final Unit supportUnit = givenUnit("support", gameData);
+      final Unit supportUnit = givenUnit("support", player);
       final UnitSupportAttachment unitSupportAttachment =
-          givenUnitSupportAttachment(gameData, supportUnit.getType(), "test", "strength:roll")
+          givenUnitSupportAttachment(player, supportUnit.getType(), "test", "strength:roll")
               .setNumber(2)
               .setBonus(1)
               .setUnitType(Set.of(unit.getType()));
-      final Unit supportUnit2 = givenUnit("support2", gameData);
+      final Unit supportUnit2 = givenUnit("support2", player);
       final UnitSupportAttachment unitSupportAttachment2 =
-          givenUnitSupportAttachment(gameData, supportUnit2.getType(), "test2", "strength:roll")
+          givenUnitSupportAttachment(player, supportUnit2.getType(), "test2", "strength:roll")
               .setBonus(1)
               .setUnitType(Set.of(unit.getType()));
 
@@ -1224,9 +1256,10 @@ class TotalPowerAndTotalRollsTest {
     @DisplayName("If either power or rolls is 0, then don't add the other value if it is not 0")
     void noPowerOrRollsIsZeroTotalPowerAndRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(0).setMaxAaAttacks(10);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(10).setMaxAaAttacks(0);
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
@@ -1246,9 +1279,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void rollOfOneJustAddsPowerAndRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(1);
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
@@ -1268,9 +1302,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void rollIsMultipliedWithPower() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(3).setMaxAaAttacks(2);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(2).setMaxAaAttacks(2);
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
@@ -1291,7 +1326,7 @@ class TotalPowerAndTotalRollsTest {
     @DisplayName("If the power is more than the dice sides, then dice sides will be used")
     void individualPowerIsLimitedToDiceSides() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(8).setMaxAaAttacks(2);
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
@@ -1317,8 +1352,7 @@ class TotalPowerAndTotalRollsTest {
         final int expectedPower,
         final int expectedRolls) {
       final GameData gameData = givenGameData().withDiceSides(diceSides).build();
-
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setAttack(strength).setAttackRolls(rolls);
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
@@ -1360,7 +1394,7 @@ class TotalPowerAndTotalRollsTest {
         final int expectedRolls) {
       final GameData gameData = givenGameData().withDiceSides(diceSides).build();
 
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setAttack(strength).setAttackRolls(rolls).setChooseBestRoll(true);
 
       final PowerStrengthAndRolls powerStrengthAndRolls =
@@ -1388,7 +1422,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void noTargetsIsZeroRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(0).setMaxAaAttacks(0);
 
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
@@ -1408,9 +1442,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void zeroStrengthOrZeroRollIsZeroTotalRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(0).setMaxAaAttacks(10);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(10).setMaxAaAttacks(0);
 
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
@@ -1433,7 +1468,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void unitWithInfiniteRollsMeansRollsEqualToTarget() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
           AaPowerStrengthAndRolls.build(
@@ -1454,9 +1489,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void multipleUnitsWithInfiniteRollsMeansRollsEqualToTarget() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
           AaPowerStrengthAndRolls.build(
@@ -1477,9 +1513,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void infiniteUnitAndNonInfiniteUnitMeansRollsEqualsToTarget() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(10);
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
           AaPowerStrengthAndRolls.build(
@@ -1500,7 +1537,7 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void rollsOfNonInfiniteUnitEqualsRolls() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final Unit unit = givenUnit("test", givenPlayer(gameData));
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(1);
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
           AaPowerStrengthAndRolls.build(
@@ -1518,9 +1555,10 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void rollsOfNonInfiniteUnitGreaterThanTargetCountMeansRollsEqualsTarget() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit unit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(2);
-      final Unit unit2 = givenUnit("test2", gameData);
+      final Unit unit2 = givenUnit("test2", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(2);
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
           AaPowerStrengthAndRolls.build(
@@ -1541,15 +1579,16 @@ class TotalPowerAndTotalRollsTest {
     @Test
     void overstackUnitCanCauseRollsToGoOverTargetCount() {
       final GameData gameData = givenGameData().withDiceSides(6).build();
-      final Unit overstackUnit = givenUnit("test", gameData);
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit overstackUnit = givenUnit("test", player);
       overstackUnit
           .getUnitAttachment()
           .setOffensiveAttackAa(1)
           .setMaxAaAttacks(2)
           .setMayOverStackAa(true);
-      final Unit unit = givenUnit("test2", gameData);
+      final Unit unit = givenUnit("test2", player);
       unit.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(3);
-      final Unit unit2 = givenUnit("test3", gameData);
+      final Unit unit2 = givenUnit("test3", player);
       unit2.getUnitAttachment().setOffensiveAttackAa(1).setMaxAaAttacks(-1);
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
           AaPowerStrengthAndRolls.build(

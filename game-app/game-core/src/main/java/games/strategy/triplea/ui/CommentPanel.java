@@ -134,8 +134,7 @@ class CommentPanel extends JPanel {
   private void readHistoryTreeEvent(final TreeModelEvent e) {
     SwingAction.invokeNowOrLater(
         () -> {
-          data.acquireReadLock();
-          try {
+          try (GameData.Unlocker ignored = data.acquireReadLock()) {
             final Document doc = text.getDocument();
             final HistoryNode node = (HistoryNode) e.getTreePath().getLastPathComponent();
             final TreeNode child =
@@ -161,8 +160,6 @@ class CommentPanel extends JPanel {
                 log.error("Failed to add history node", e1);
               }
             }
-          } finally {
-            data.releaseReadLock();
           }
         });
   }

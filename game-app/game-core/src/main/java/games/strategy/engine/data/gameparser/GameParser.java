@@ -9,6 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
@@ -32,7 +33,6 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.io.InputStream;
@@ -244,7 +244,7 @@ public final class GameParser {
     data.setDiceSides(diceSides == null ? 6 : diceSides.getValue());
   }
 
-  private boolean isEngineCompatibleWithMap(final Triplea tripleA) throws EngineVersionException {
+  private boolean isEngineCompatibleWithMap(final Triplea tripleA) {
 
     return tripleA == null
         || tripleA.getMinimumVersion().isBlank()
@@ -871,7 +871,11 @@ public final class GameParser {
     final String className = current.getJavaClass();
     final Attachable attachable =
         findAttachment(current, Optional.ofNullable(current.getType()).orElse("unitType"), foreach);
-    final String name = replaceForeachVariables(current.getName(), foreach);
+    String name = replaceForeachVariables(current.getName(), foreach);
+    // Only replace if needed, as replaceAll() can be slow.
+    if (name.contains("ttatchment")) {
+      name = name.replaceAll("ttatchment", "ttachment");
+    }
     final IAttachment attachment =
         xmlGameElementMapper
             .newAttachment(className, name, attachable, data)
@@ -880,7 +884,7 @@ public final class GameParser {
                     new GameParseException(
                         "Attachment of type " + className + " could not be instantiated"));
     // replace-all to automatically correct legacy (1.8) attachment spelling
-    attachable.addAttachment(name.replaceAll("ttatchment", "ttachment"), attachment);
+    attachable.addAttachment(name, attachment);
 
     final List<Tuple<String, String>> attachmentOptionValues =
         setOptions(attachment, current.getOptions(), foreach, variables);
@@ -919,6 +923,7 @@ public final class GameParser {
       final Map<String, List<String>> variables)
       throws GameParseException {
     final List<Tuple<String, String>> results = new ArrayList<>();
+    final Map<String, MutableProperty<?>> propertyMap = attachment.getPropertyMap();
     for (final AttachmentList.Attachment.Option option : options) {
       if (option.getName() == null || option.getValue() == null) {
         continue;
@@ -943,8 +948,7 @@ public final class GameParser {
       final String interpolatedValue = replaceVariables(valueWithForeach, variables);
       final String finalValue = LegacyPropertyMapper.mapLegacyOptionValue(name, interpolatedValue);
       try {
-        attachment
-            .getProperty(name)
+        Optional.ofNullable(propertyMap.get(name))
             .orElseThrow(
                 () ->
                     new GameParseException(
@@ -961,7 +965,7 @@ public final class GameParser {
                 xmlUri, attachment, e.getMessage()),
             e);
       }
-      results.add(Tuple.of(name, finalValue));
+      results.add(Tuple.of(name.intern(), finalValue.intern()));
     }
     return results;
   }
@@ -986,7 +990,10 @@ public final class GameParser {
   private String replaceVariables(final String s, final Map<String, List<String>> variables) {
     String result = s;
     for (final Entry<String, List<String>> entry : variables.entrySet()) {
-      result = result.replace(entry.getKey(), String.join(":", entry.getValue()));
+      // Avoid doing the expensive String.join() if there's nothing to replace.
+      if (result.contains(entry.getKey())) {
+        result = result.replace(entry.getKey(), String.join(":", entry.getValue()));
+      }
     }
     return result;
   }
@@ -1012,7 +1019,7 @@ public final class GameParser {
       final UnitType type = getUnitType(current.getUnitType());
       final String ownerString = current.getOwner();
       final int hits = Optional.ofNullable(current.getHitsTaken()).orElse(0);
-      if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
+      if (hits < 0 || hits > type.getUnitAttachment().getHitPoints() - 1) {
         throw new GameParseException(
             "hitsTaken cannot be less than zero or greater than one less than total hitPoints");
       }
@@ -1024,7 +1031,7 @@ public final class GameParser {
 
       final GamePlayer owner;
       if (ownerString == null || ownerString.isBlank()) {
-        owner = GamePlayer.NULL_PLAYERID;
+        owner = territory.getData().getPlayerList().getNullPlayer();
       } else {
         owner = getPlayerIdOptional(current.getOwner()).orElse(null);
       }

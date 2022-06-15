@@ -5,7 +5,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.assertMoveError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.load;
 import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
-import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;

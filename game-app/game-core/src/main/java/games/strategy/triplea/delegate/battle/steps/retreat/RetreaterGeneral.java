@@ -109,7 +109,7 @@ class RetreaterGeneral implements Retreater {
       final Collection<Unit> units, final Territory retreatTo) {
     final CompositeChange change = new CompositeChange();
     final Collection<Unit> transports =
-        CollectionUtils.getMatches(units, Matches.unitIsTransport());
+        CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
     for (final Unit transport : transports) {
       final Collection<Unit> retreated = battleState.getTransportDependents(List.of(transport));
       if (!retreated.isEmpty()) {

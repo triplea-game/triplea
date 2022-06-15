@@ -4,10 +4,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.Setter;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * Contains some utility methods that subclasses can use to make writing attachments easier. FYI:
@@ -23,8 +34,8 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   private static final long serialVersionUID = -1985116207387301730L;
   private static final Splitter COLON_SPLITTER = Splitter.on(':');
 
-  private Attachable attachedTo;
-  private String name;
+  @Getter @Setter private Attachable attachedTo;
+  @Getter private String name;
 
   protected DefaultAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -68,16 +79,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     }
   }
 
-  /** Throws an error if format is invalid. */
-  protected static BigDecimal getBigDecimal(final String value) {
-    try {
-      return new BigDecimal(value);
-    } catch (final NumberFormatException e) {
-      throw new IllegalArgumentException(
-          "Attachments: " + value + " is not a valid decimal value", e);
-    }
-  }
-
   /** Throws an error if format is invalid. Must be either true or false ignoring case. */
   protected static boolean getBool(final String value) {
     if (value.equalsIgnoreCase(Constants.PROPERTY_TRUE)) {
@@ -104,28 +105,12 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   @Override
-  public Attachable getAttachedTo() {
-    return attachedTo;
-  }
-
-  @Override
-  public void setAttachedTo(final Attachable attachable) {
-    attachedTo = attachable;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
   public void setName(final String name) {
     this.name =
         Optional.ofNullable(name)
             // replace-all to automatically correct legacy (1.8) attachment spelling
             .map(attachmentName -> attachmentName.replaceAll("ttatch", "ttach"))
             .orElse(null);
-    ;
   }
 
   /**
@@ -155,5 +140,84 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
         && Objects.equals(
             Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
         && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
+  }
+
+  protected Territory getTerritoryOrThrow(String name) throws GameParseException {
+    return Optional.ofNullable(getData().getMap().getTerritory(name))
+        .orElseThrow(() -> new GameParseException("No territory named: " + name + thisErrorMsg()));
+  }
+
+  protected List<GamePlayer> parsePlayerList(final String value, List<GamePlayer> existingList)
+      throws GameParseException {
+    for (final String name : splitOnColon(value)) {
+      if (existingList == null) {
+        existingList = new ArrayList<>();
+      }
+      existingList.add(getPlayerOrThrow(name));
+    }
+    return existingList;
+  }
+
+  protected GamePlayer getPlayerOrThrow(String name) throws GameParseException {
+    return Optional.ofNullable(getData().getPlayerList().getPlayerId(name))
+        .orElseThrow(() -> new GameParseException("No player named: " + name + thisErrorMsg()));
+  }
+
+  protected Set<UnitType> parseUnitTypes(String context, String value, Set<UnitType> existingSet)
+      throws GameParseException {
+    for (final String u : splitOnColon(value)) {
+      if (existingSet == null) {
+        existingSet = new HashSet<>();
+      }
+      existingSet.add(getUnitTypeOrThrow(u));
+    }
+    return existingSet;
+  }
+
+  public UnitType getUnitTypeOrThrow(String unitType) throws GameParseException {
+    return Optional.ofNullable(getData().getUnitTypeList().getUnitType(unitType))
+        .orElseThrow(() -> new GameParseException("No unit type: " + unitType + thisErrorMsg()));
+  }
+
+  protected static <T> List<T> getListProperty(@Nullable List<T> value) {
+    if (value == null) {
+      return List.of();
+    }
+    return Collections.unmodifiableList(value);
+  }
+
+  protected static <K, V> Map<K, V> getMapProperty(@Nullable Map<K, V> value) {
+    if (value == null) {
+      return Map.of();
+    }
+    return Collections.unmodifiableMap(value);
+  }
+
+  protected static <T> Set<T> getSetProperty(@Nullable Set<T> value) {
+    if (value == null) {
+      return Set.of();
+    }
+    return Collections.unmodifiableSet(value);
+  }
+
+  protected static <T> IntegerMap<T> getIntegerMapProperty(@Nullable IntegerMap<T> value) {
+    if (value == null) {
+      return IntegerMap.of();
+    }
+    return IntegerMap.unmodifiableViewOf(value);
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public static Object copyPropertyValue(Object value) {
+    if (value instanceof List) {
+      return new ArrayList((List) value);
+    } else if (value instanceof IntegerMap) {
+      return new IntegerMap((IntegerMap) value);
+    } else if (value instanceof Set) {
+      return new HashSet((Set) value);
+    } else if (value instanceof Map) {
+      return new HashMap((Map) value);
+    }
+    return value;
   }
 }

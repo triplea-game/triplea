@@ -115,8 +115,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     final Collection<UnitCategory> unitsToPlace;
     final boolean showUnitsToPlace;
     final GameData data = getData();
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final GameStep step = data.getSequence().getStep();
       if (step == null) {
         return;
@@ -145,8 +144,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       } else {
         data.removeDataChangeListener(this);
       }
-    } finally {
-      data.releaseReadLock();
     }
 
     SwingUtilities.invokeLater(
@@ -164,12 +161,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   public void gameDataChanged(final Change change) {
     final Collection<UnitCategory> unitsToPlace;
     final GameData data = getData();
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final GamePlayer player = data.getSequence().getStep().getPlayerId();
       unitsToPlace = UnitSeparator.categorize(player.getUnits());
-    } finally {
-      data.releaseReadLock();
     }
 
     SwingUtilities.invokeLater(
@@ -206,8 +200,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   private PlaceableUnits getUnitsToPlace(final Territory territory) {
-    getData().acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = getData().acquireReadLock()) {
       // not our territory
       if (!territory.isWater() && !territory.isOwnedBy(getCurrentPlayer())) {
         if (GameStepPropertiesHelper.isBid(getData())) {
@@ -252,8 +245,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             JOptionPane.INFORMATION_MESSAGE);
       }
       return production;
-    } finally {
-      getData().releaseReadLock();
     }
   }
 

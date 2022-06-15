@@ -8,22 +8,24 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import org.triplea.java.RenameOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 
-/** The Purpose of this class is to hold shared and simple methods used by RulesAttachment. */
+/**
+ * The Purpose of this class is to hold shared and simple methods used by RulesAttachment. Note:
+ * Empty collection fields default to null to minimize memory use and serialization size.
+ */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
 
@@ -33,17 +35,17 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
   // Note: Subclasses should use getPlayers() which take into account getAttachedTo().
-  private List<GamePlayer> players = new ArrayList<>();
+  private @Nullable List<GamePlayer> players = null;
   protected int objectiveValue = 0;
   // only matters for objectiveValue, does not affect the condition
   protected int uses = -1;
   // condition for what turn it is
   @RenameOnNextMajorRelease(newName = "rounds")
-  protected Map<Integer, Integer> turns = null;
+  protected @Nullable Map<Integer, Integer> turns = null;
   // for on/off conditions
   protected boolean switched = true;
   // allows custom GameProperties
-  protected String gameProperty = null;
+  protected @Nullable String gameProperty = null;
   // Determines if we will be counting each for the purposes of objectiveValue
   private boolean countEach = false;
   // Used with the next Territory conditions to determine the number of territories needed to be
@@ -56,14 +58,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   private void setPlayers(final String names) throws GameParseException {
-    final PlayerList pl = getData().getPlayerList();
-    for (final String p : splitOnColon(names)) {
-      final GamePlayer player = pl.getPlayerId(p);
-      if (player == null) {
-        throw new GameParseException("Could not find player. name:" + p + thisErrorMsg());
-      }
-      players.add(player);
-    }
+    players = parsePlayerList(names, players);
   }
 
   private void setPlayers(final List<GamePlayer> value) {
@@ -71,11 +66,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   protected List<GamePlayer> getPlayers() {
-    return players.isEmpty() ? new ArrayList<>(List.of((GamePlayer) getAttachedTo())) : players;
+    List<GamePlayer> result = getListProperty(players);
+    return result.isEmpty() ? List.of((GamePlayer) getAttachedTo()) : result;
   }
 
   private void resetPlayers() {
-    players = new ArrayList<>();
+    players = null;
   }
 
   @Override
@@ -163,10 +159,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   private void setGameProperty(final String value) {
-    gameProperty = value;
+    gameProperty = value.intern();
   }
 
-  private String getGameProperty() {
+  private @Nullable String getGameProperty() {
     return gameProperty;
   }
 
@@ -179,10 +175,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   private void setRounds(final String rounds) throws GameParseException {
-    if (rounds == null) {
-      turns = null;
-      return;
-    }
     turns = new HashMap<>();
     final String[] s = splitOnColon(rounds);
     if (s.length < 1) {
@@ -217,17 +209,17 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   @VisibleForTesting
   public Map<Integer, Integer> getRounds() {
-    return turns;
+    return getMapProperty(turns);
   }
 
   private void resetRounds() {
     turns = null;
   }
 
-  protected boolean checkTurns(final GameState data) {
+  protected boolean checkRounds(final GameState data) {
     final int turn = data.getSequence().getRound();
-    for (final int t : turns.keySet()) {
-      if (turn >= t && turn <= turns.get(t)) {
+    for (final Map.Entry<Integer, Integer> entry : getRounds().entrySet()) {
+      if (turn >= entry.getKey() && turn <= entry.getValue()) {
         return true;
       }
     }
@@ -259,7 +251,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
               CollectionUtils.getMatches(
                   OriginalOwnerTracker.getOriginallyOwned(data, player),
                   // TODO: does this account for occupiedTerrOf???
-                  Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
+                  Matches.territoryIsNotImpassableToLandUnits(player)));
         }
         setTerritoryCount(originalTerritories.size());
         return originalTerritories;
@@ -277,7 +269,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           ownedTerrsNoWater.addAll(
               CollectionUtils.getMatches(
                   gameMap.getTerritoriesOwnedBy(player),
-                  Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
+                  Matches.territoryIsNotImpassableToLandUnits(player)));
         }
         setTerritoryCount(ownedTerrsNoWater.size());
         return ownedTerrsNoWater;
@@ -347,6 +339,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     if (terrList != null && terrList.length > 0) {
       getListedTerritories(terrList, true, true);
       // removed checks for length & group commands because it breaks the setTerritoryCount feature.
+      for (int i = 0; i < terrList.length; i++) {
+        terrList[i] = terrList[i].intern();
+      }
     }
   }
 

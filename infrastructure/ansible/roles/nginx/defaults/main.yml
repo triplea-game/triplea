@@ -6,6 +6,8 @@ lets_encrypt_cert_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pe
 
 dhparams_pem_file: /etc/nginx/dhparam.pem
 
+nginx_generate_dhparam: true
+
 nginx_allowed_ports:
   - 443
   - 80

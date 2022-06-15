@@ -7,6 +7,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.export.GameDataExporter;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.history.HistoryNode;
@@ -106,12 +107,9 @@ final class ExportMenu extends JMenu {
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
-    try {
-      gameData.acquireReadLock();
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData);
       GameXmlWriter.exportXml(xmlGameModel, chooser.getSelectedFile().toPath());
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
@@ -165,9 +163,10 @@ final class ExportMenu extends JMenu {
       return;
     }
     try (PrintWriter writer =
-        new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8.toString())) {
-      gameData.acquireReadLock();
-      final GameData clone = GameDataUtils.cloneGameData(gameData).orElse(null);
+            new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8.toString());
+        GameData.Unlocker ignored = gameData.acquireReadLock()) {
+      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+      final GameData clone = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
       if (clone == null) {
         return;
       }
@@ -232,7 +231,7 @@ final class ExportMenu extends JMenu {
         writer.println("Unit Types: ,");
         writer.append("Name,Listed Abilities\n");
         for (final UnitType unitType : gameData.getUnitTypeList()) {
-          final UnitAttachment ua = UnitAttachment.get(unitType);
+          final UnitAttachment ua = unitType.getUnitAttachment();
           if (ua == null) {
             continue;
           }
@@ -350,8 +349,6 @@ final class ExportMenu extends JMenu {
       }
     } catch (final IOException e) {
       log.error("Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e);
-    } finally {
-      gameData.releaseReadLock();
     }
   }
 
@@ -392,14 +389,12 @@ final class ExportMenu extends JMenu {
     final JFrame frame = new JFrame("Export Setup Charts");
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     final GameData clonedGameData;
-    gameData.acquireReadLock();
-    try {
-      clonedGameData = GameDataUtils.cloneGameData(gameData).orElse(null);
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
+      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+      clonedGameData = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
       if (clonedGameData == null) {
         return;
       }
-    } finally {
-      gameData.releaseReadLock();
     }
     final JComponent newContentPane = new SetupFrame(clonedGameData);
     // content panes must be opaque

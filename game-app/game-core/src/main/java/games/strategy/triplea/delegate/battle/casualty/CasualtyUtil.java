@@ -17,7 +17,7 @@ public class CasualtyUtil {
     }
     int totalHitPoints = 0;
     for (final Unit u : units) {
-      final UnitAttachment ua = UnitAttachment.get(u.getType());
+      final UnitAttachment ua = u.getUnitAttachment();
       if (!ua.getIsInfrastructure()) {
         totalHitPoints += ua.getHitPoints();
         totalHitPoints -= u.getHits();

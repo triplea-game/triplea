@@ -1,6 +1,5 @@
 package tools.util;
 
-import games.strategy.ui.Util;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.util.Collection;
@@ -11,6 +10,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ToolsUtil {
+  public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
+
   /**
    * Finds a land territory name or some sea zone name where the point is contained in according to
    * the territory name -> polygons map.
@@ -42,7 +43,7 @@ public class ToolsUtil {
       final Collection<Polygon> polygons = terrPolygons.get(terrName);
       for (final Polygon poly : polygons) {
         if (poly.contains(p)) {
-          if (Util.isTerritoryNameIndicatingWater(terrName)) {
+          if (isTerritoryNameIndicatingWater(terrName)) {
             lastWaterTerrName = terrName;
           } else {
             return terrName;
@@ -51,5 +52,16 @@ public class ToolsUtil {
       } // polygons collection loop
     } // terrPolygons map loop
     return lastWaterTerrName;
+  }
+
+  /**
+   * Checks whether name indicates water or not (meaning name starts or ends with default text).
+   *
+   * @param territoryName - territory name
+   * @return true if yes, false otherwise
+   */
+  public static boolean isTerritoryNameIndicatingWater(final String territoryName) {
+    return territoryName.endsWith(TERRITORY_SEA_ZONE_INFIX)
+        || territoryName.startsWith(TERRITORY_SEA_ZONE_INFIX);
   }
 }

@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,7 +23,7 @@ import org.triplea.java.collections.IntegerMap;
 @ExtendWith(MockitoExtension.class)
 class UnitCollectionTest {
 
-  @Mock private GameData mockGameData;
+  private GameData mockGameData = givenGameData().build();
   private UnitType unitTypeOne;
   private UnitType unitTypeTwo;
   private final GamePlayer defaultGamePlayer =

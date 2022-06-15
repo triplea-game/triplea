@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui.mapdata;
 
-import games.strategy.ui.Util;
 import java.awt.Polygon;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
+import tools.util.ToolsUtil;
 
 @UtilityClass
 class IslandTerritoryFinder {
@@ -40,11 +40,12 @@ class IslandTerritoryFinder {
   }
 
   private static Set<String> filterSeaTerritories(final Set<String> territoryNames) {
-    return filterTerritories(territoryNames, Util::isTerritoryNameIndicatingWater);
+    return filterTerritories(territoryNames, ToolsUtil::isTerritoryNameIndicatingWater);
   }
 
   private static Set<String> filterNotSeaTerritories(final Set<String> territoryNames) {
-    return filterTerritories(territoryNames, Predicate.not(Util::isTerritoryNameIndicatingWater));
+    return filterTerritories(
+        territoryNames, Predicate.not(ToolsUtil::isTerritoryNameIndicatingWater));
   }
 
   /** Returns a subset of territories matching a given filter. */

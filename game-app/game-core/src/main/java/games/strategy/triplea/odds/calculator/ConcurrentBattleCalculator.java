@@ -6,6 +6,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import java.util.Collection;
 import java.util.List;
@@ -123,16 +124,16 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
           Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
       final Version engineVersion = Injections.getInstance().getEngineVersion();
       final byte[] serializedData;
-      try {
+      try (GameData.Unlocker ignored = data.acquireWriteLock()) {
         // Serialize the data, then release lock on it so game can continue (ie: we don't want to
         // lock on it while we copy it 16 times).
-        data.acquireWriteLock();
-        serializedData = GameDataUtils.gameDataToBytes(data, false, engineVersion).orElse(null);
+        serializedData =
+            GameDataUtils.gameDataToBytes(
+                    data, GameDataManager.Options.forBattleCalculator(), engineVersion)
+                .orElse(null);
         if (serializedData == null) {
           return;
         }
-      } finally {
-        data.releaseWriteLock();
       }
       if (cancelCurrentOperation.get() >= 0) {
         // Create the first battle calc on the current thread to measure the end-to-end copy time.

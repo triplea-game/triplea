@@ -44,7 +44,13 @@ public class AttackerAndDefenderSelectorTest {
   private final Territory russia = gameData.getMap().getTerritory("Russia");
 
   private final List<GamePlayer> players =
-      List.of(russians, germans, british, japanese, americans, GamePlayer.NULL_PLAYERID);
+      List.of(
+          russians,
+          germans,
+          british,
+          japanese,
+          americans,
+          gameData.getPlayerList().getNullPlayer());
 
   @Test
   void testNoCurrentPlayer() {
@@ -83,9 +89,7 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(
-        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
-        is(true));
+    assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
@@ -152,9 +156,7 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(
-        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
-        is(true));
+    assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
@@ -303,10 +305,8 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(
-        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
-        is(true));
-    assertThat(defender.orElseThrow(), is(not(GamePlayer.NULL_PLAYERID)));
+    assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
+    assertThat(defender.orElseThrow(), is(not(gameData.getPlayerList().getNullPlayer())));
     assertThat(attAndDef.getAttackingUnits(), is(empty()));
     assertThat(attAndDef.getDefendingUnits(), is(empty()));
   }
@@ -373,9 +373,7 @@ public class AttackerAndDefenderSelectorTest {
     final Optional<GamePlayer> defender = attAndDef.getDefender();
     assertThat(attacker, isPresentAndIs(russians));
     assertThat(defender, isPresent());
-    assertThat(
-        gameData.getRelationshipTracker().isAtWar(attacker.orElseThrow(), defender.orElseThrow()),
-        is(true));
+    assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
     assertThat(
         attAndDef.getAttackingUnits(),
         containsInAnyOrder(filterTerritoryUnitsByOwner(russia, russians)));

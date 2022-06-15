@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
@@ -162,12 +161,12 @@ class AvatarPanelFactory {
 
   private static Comparator<UnitCategory> unitRenderingOrder(final GamePlayer currentPlayer) {
     final Comparator<UnitCategory> isAir =
-        Comparator.comparing(unitCategory -> UnitAttachment.get(unitCategory.getType()).getIsAir());
+        Comparator.comparing(unitCategory -> unitCategory.getUnitAttachment().getIsAir());
     final Comparator<UnitCategory> isSea =
-        Comparator.comparing(unitCategory -> UnitAttachment.get(unitCategory.getType()).getIsSea());
+        Comparator.comparing(unitCategory -> unitCategory.getUnitAttachment().getIsSea());
     final Comparator<UnitCategory> unitAttackPower =
         Comparator.comparingInt(
-            unitCategory -> UnitAttachment.get(unitCategory.getType()).getAttack(currentPlayer));
+            unitCategory -> unitCategory.getUnitAttachment().getAttack(currentPlayer));
     final Comparator<UnitCategory> unitName =
         Comparator.comparing(unitCategory -> unitCategory.getType().getName());
 

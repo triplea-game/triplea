@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("UnmatchedTest")
 class MapTest {
+  private GameData gameData = givenGameData().build();
+
   private Territory aa;
   private Territory ab;
   private Territory ac;
@@ -38,22 +41,22 @@ class MapTest {
     // llww
     // llwl
     // llww
-    aa = new Territory("aa", false, null);
-    ab = new Territory("ab", false, null);
-    ac = new Territory("ac", false, null);
-    ad = new Territory("ad", false, null);
-    ba = new Territory("ba", false, null);
-    bb = new Territory("bb", false, null);
-    bc = new Territory("bc", true, null);
-    bd = new Territory("bd", true, null);
-    ca = new Territory("ca", false, null);
-    cb = new Territory("cb", false, null);
-    cc = new Territory("cc", true, null);
-    cd = new Territory("cd", false, null);
-    da = new Territory("da", false, null);
-    db = new Territory("db", false, null);
-    dc = new Territory("dc", true, null);
-    dd = new Territory("dd", true, null);
+    aa = new Territory("aa", false, gameData);
+    ab = new Territory("ab", false, gameData);
+    ac = new Territory("ac", false, gameData);
+    ad = new Territory("ad", false, gameData);
+    ba = new Territory("ba", false, gameData);
+    bb = new Territory("bb", false, gameData);
+    bc = new Territory("bc", true, gameData);
+    bd = new Territory("bd", true, gameData);
+    ca = new Territory("ca", false, gameData);
+    cb = new Territory("cb", false, gameData);
+    cc = new Territory("cc", true, gameData);
+    cd = new Territory("cd", false, gameData);
+    da = new Territory("da", false, gameData);
+    db = new Territory("db", false, gameData);
+    dc = new Territory("dc", true, gameData);
+    dd = new Territory("dd", true, gameData);
     map = new GameMap(null);
     map.addTerritory(aa);
     map.addTerritory(ab);
@@ -95,7 +98,7 @@ class MapTest {
     map.addConnection(ad, bd);
     map.addConnection(bd, cd);
     map.addConnection(cd, dd);
-    nowhere = new Territory("nowhere", false, null);
+    nowhere = new Territory("nowhere", false, gameData);
   }
 
   @Test

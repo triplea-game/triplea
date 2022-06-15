@@ -22,7 +22,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
@@ -257,7 +256,7 @@ class DiceRollTest {
     final List<Unit> units = artillery.create(1, russians);
     // Set the supported unit count
     for (final Unit unit : units) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       ua.setUnitSupportCount("2");
     }
     // Now add the infantry
@@ -495,7 +494,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -513,7 +513,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -532,7 +533,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -566,7 +568,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -593,7 +596,7 @@ class DiceRollTest {
     GameDataTestUtil.addTo(finnland, aaGunList);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     List<Unit> fighterList = fighterType.create(1, russians);
-    TechAttachment.get(germans).setAaRadar("true");
+    germans.getTechAttachment().setAaRadar("true");
     final IDelegateBridge bridge = newDelegateBridge(russians);
     whenGetRandom(bridge)
         .thenAnswer(withValues(1)) // aa radar hits at 1 (0 based)
@@ -604,7 +607,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -622,7 +626,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,
@@ -641,7 +646,8 @@ class DiceRollTest {
             CollectionUtils.getMatches(
                 fighterList,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(aaGunList.iterator().next().getType())
+                    CollectionUtils.getAny(aaGunList)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             aaGunList,
             bridge,

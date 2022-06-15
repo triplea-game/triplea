@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import org.triplea.util.LocalizeHtml;
 
 /** Generates unit tooltips based on the content of the map's {@code tooltips.properties} file. */
@@ -21,15 +20,17 @@ public final class TooltipProperties extends PropertyFile {
 
   /** Get unit type tooltip checking for custom tooltip content. */
   public String getTooltip(final UnitType unitType, final GamePlayer gamePlayer) {
-
     final String customTip = getToolTip(unitType, gamePlayer, false);
     if (!customTip.isEmpty()) {
       return LocalizeHtml.localizeImgLinksInHtml(customTip, UiContext.getMapLocation());
     }
     final String generated =
-        UnitAttachment.get(unitType)
+        unitType
+            .getUnitAttachment()
             .toStringShortAndOnlyImportantDifferences(
-                (gamePlayer == null ? GamePlayer.NULL_PLAYERID : gamePlayer));
+                (gamePlayer == null
+                    ? unitType.getData().getPlayerList().getNullPlayer()
+                    : gamePlayer));
     final String appendedTip = getToolTip(unitType, gamePlayer, true);
     if (!appendedTip.isEmpty()) {
       return generated
@@ -49,7 +50,9 @@ public final class TooltipProperties extends PropertyFile {
                 + "."
                 + ut.getName()
                 + "."
-                + (gamePlayer == null ? GamePlayer.NULL_PLAYERID.getName() : gamePlayer.getName())
+                + (gamePlayer == null
+                    ? ut.getData().getPlayerList().getNullPlayer().getName()
+                    : gamePlayer.getName())
                 + append,
             "");
     return (tooltip == null || tooltip.isEmpty())

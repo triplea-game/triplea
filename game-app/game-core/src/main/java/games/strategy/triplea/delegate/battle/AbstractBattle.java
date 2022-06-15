@@ -101,7 +101,7 @@ abstract class AbstractBattle implements IBattle {
   void clearTransportedBy(final IDelegateBridge bridge) {
     // Clear the transported_by for successfully off loaded units
     final Collection<Unit> transports =
-        CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport());
+        CollectionUtils.getMatches(attackingUnits, Matches.unitIsSeaTransport());
     if (!transports.isEmpty()) {
       final CompositeChange change = new CompositeChange();
       final Collection<Unit> dependents = getTransportDependents(transports);
@@ -269,7 +269,7 @@ abstract class AbstractBattle implements IBattle {
   static GamePlayer findDefender(
       final Territory battleSite, final GamePlayer attacker, final GameState data) {
     if (battleSite == null) {
-      return GamePlayer.NULL_PLAYERID;
+      return data.getPlayerList().getNullPlayer();
     }
     GamePlayer defender = null;
     if (!battleSite.isWater()) {
@@ -278,18 +278,16 @@ abstract class AbstractBattle implements IBattle {
     if (data == null || attacker == null) {
       // This is needed for many TESTs, so do not delete
       if (defender == null) {
-        return GamePlayer.NULL_PLAYERID;
+        return data.getPlayerList().getNullPlayer();
       }
       return defender;
     }
-    if (defender == null
-        || battleSite.isWater()
-        || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
+    if (defender == null || battleSite.isWater() || !attacker.isAtWar(defender)) {
       // if water find the defender based on who has the most units in the territory
       final IntegerMap<GamePlayer> players = battleSite.getUnitCollection().getPlayerUnitCounts();
       int max = -1;
       for (final GamePlayer current : players.keySet()) {
-        if (current.equals(attacker) || !data.getRelationshipTracker().isAtWar(attacker, current)) {
+        if (current.equals(attacker) || !attacker.isAtWar(current)) {
           continue;
         }
         final int count = players.getInt(current);
@@ -300,7 +298,7 @@ abstract class AbstractBattle implements IBattle {
       }
     }
     if (defender == null) {
-      return GamePlayer.NULL_PLAYERID;
+      return data.getPlayerList().getNullPlayer();
     }
     return defender;
   }

@@ -81,8 +81,7 @@ final class MatchesTest {
     private Territory territory;
 
     private Predicate<Territory> newMatch() {
-      return Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(
-          player, gameData.getRelationshipTracker());
+      return Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player);
     }
 
     private Unit newAirUnitFor(final GamePlayer player) {
@@ -107,9 +106,9 @@ final class MatchesTest {
 
       player = GameDataTestUtil.germans(gameData);
       alliedPlayer = GameDataTestUtil.japanese(gameData);
-      assertThat(gameData.getRelationshipTracker().isAtWar(player, alliedPlayer), is(false));
+      assertThat(player.isAtWar(alliedPlayer), is(false));
       enemyPlayer = GameDataTestUtil.russians(gameData);
-      assertThat(gameData.getRelationshipTracker().isAtWar(player, enemyPlayer), is(true));
+      assertThat(player.isAtWar(enemyPlayer), is(true));
 
       territory = gameData.getMap().getTerritory("Germany");
       territory.setOwner(player);
@@ -178,7 +177,7 @@ final class MatchesTest {
     }
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
       gameData = TestMapGameData.DELEGATE_TEST.getGameData();
 
       player = GameDataTestUtil.germans(gameData);
@@ -209,14 +208,14 @@ final class MatchesTest {
 
     @Test
     void shouldMatchWhenLandTerritoryIsUnownedAndHasTerritoryAttachment() {
-      landTerritory.setOwner(GamePlayer.NULL_PLAYERID);
+      landTerritory.setOwner(gameData.getPlayerList().getNullPlayer());
 
       assertThat(newMatch(), matches(landTerritory));
     }
 
     @Test
     void shouldMatchWhenLandTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
-      landTerritory.setOwner(GamePlayer.NULL_PLAYERID);
+      landTerritory.setOwner(gameData.getPlayerList().getNullPlayer());
       TerritoryAttachment.remove(landTerritory);
 
       assertThat(newMatch(), matches(landTerritory));
@@ -236,14 +235,14 @@ final class MatchesTest {
 
     @Test
     void shouldMatchWhenSeaTerritoryIsUnownedAndHasTerritoryAttachment() {
-      seaTerritory.setOwner(GamePlayer.NULL_PLAYERID);
+      seaTerritory.setOwner(gameData.getPlayerList().getNullPlayer());
 
       assertThat(newMatch(), matches(seaTerritory));
     }
 
     @Test
     void shouldNotMatchWhenSeaTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
-      seaTerritory.setOwner(GamePlayer.NULL_PLAYERID);
+      seaTerritory.setOwner(gameData.getPlayerList().getNullPlayer());
       TerritoryAttachment.remove(seaTerritory);
 
       assertThat(newMatch(), notMatches(seaTerritory));

@@ -237,7 +237,7 @@
 			player IDREF #REQUIRED
 			quantity CDATA #REQUIRED
 		>
-	<!ELEMENT resourceInitialize (resourceGiven+) >
+	<!ELEMENT resourceInitialize (resourceGiven*) >
 		<!ELEMENT resourceGiven EMPTY>
 		<!ATTLIST resourceGiven
 			player IDREF #REQUIRED

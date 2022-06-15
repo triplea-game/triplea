@@ -101,7 +101,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public GamePlayer getGamePlayer() {
-    return GamePlayer.NULL_PLAYERID;
+    return gameData.getPlayerList().getNullPlayer();
   }
 
   @Override
@@ -126,7 +126,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   public void addChange(final Change change) {}
 
   @Override
-  public void stopGameSequence() {}
+  public void stopGameSequence(String status, String title) {}
 
   static class DummyGameModifiedChannel implements IGameModifiedChannel {
     @Override

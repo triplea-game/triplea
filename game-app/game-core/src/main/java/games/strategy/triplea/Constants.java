@@ -37,6 +37,7 @@ public interface Constants {
   String PUS = "PUs";
   String TECH_TOKENS = "techTokens";
   String VPS = "VPs";
+  // Property names:
   String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
   String FACTORIES_PER_COUNTRY_PROPERTY = "maxFactoriesPerTerritory";
   String TWO_HIT_BATTLESHIP_PROPERTY = "Two hit battleship";
@@ -115,49 +116,18 @@ public interface Constants {
   String WW2V3 = "WW2V3";
   String ECONOMIC_VICTORY = "Economic Victory";
   String SUBMERSIBLE_SUBS = "Submersible Subs";
-  String ORIGINAL_OWNER = "originalOwner";
   String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
-  String USE_SHIPYARDS = "Use Shipyards";
   String LOW_LUCK = "Low Luck";
   String PU_CAP = "Territory Turn Limit";
   String KAMIKAZE = "Kamikaze Airplanes";
   String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
-  String EDIT_MODE = "EditMode";
-  // by default this is 0, but for lhtr, it is 1
-  String SUPER_SUB_DEFENSE_BONUS = "Super Sub Defence Bonus";
-  // unit types
-  String UNIT_TYPE_INFANTRY = "infantry";
-  String UNIT_TYPE_INF = "inf";
-  String UNIT_TYPE_MOTORIZED = "motorized";
-  String UNIT_TYPE_ARMOUR = "armour";
-  String UNIT_TYPE_TRANSPORT = "transport";
-  String UNIT_TYPE_SUBMARINE = "submarine";
-  String UNIT_TYPE_BATTLESHIP = "battleship";
-  String UNIT_TYPE_MARINE = "marine";
-  String UNIT_TYPE_CARRIER = "carrier";
-  String UNIT_TYPE_FIGHTER = "fighter";
-  String UNIT_TYPE_BOMBER = "bomber";
-  String UNIT_TYPE_FACTORY = "factory";
-  String UNIT_TYPE_AAGUN = "aaGun";
-  String UNIT_TYPE_ARTILLERY = "artillery";
-  String UNIT_TYPE_DESTROYER = "destroyer";
-  String SMALL_MAP_FILENAME = "smallMap";
-  String[] SMALL_MAP_EXTENSIONS = {"jpeg", "jpg", "png"};
-  String MAP_NAME = "mapName";
   // new scramble property names
   String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";
   String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
   String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";
   String SCRAMBLE_FROM_ISLAND_ONLY = "Scramble From Island Only";
   String SCRAMBLE_TO_ANY_AMPHIBIOUS_ASSAULT = "Scramble To Any Amphibious Assault";
-
-  String OLD_ART_RULE_NAME = "ArtyOld";
-  String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
-  String SUPPORT_RULE_NAME_OLD_TEMP_FIRST =
-      SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME + "TempFirst";
-  String TRIGGERS = "Use Triggers";
   String PU_MULTIPLIER = "Multiply PUs";
-
   String LL_AA_ONLY = "Low Luck for AntiAircraft";
   String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
   String PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT = "Paratroopers Can Move During Non Combat";
@@ -207,6 +177,7 @@ public interface Constants {
       "Submarines Prevent Unescorted Amphibious Assaults";
   String SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT =
       "Submarines Defending May Submerge Or Retreat";
+  String SUPER_SUB_DEFENSE_BONUS = "Super Sub Defence Bonus";
   String AIR_BATTLE_ROUNDS = "Air Battle Rounds";
   String SEA_BATTLE_ROUNDS = "Sea Battle Rounds";
   String LAND_BATTLE_ROUNDS = "Land Battle Rounds";
@@ -214,7 +185,6 @@ public interface Constants {
   String AIR_BATTLE_DEFENDERS_CAN_RETREAT = "Air Battle Defenders Can Retreat";
   String CAN_SCRAMBLE_INTO_AIR_BATTLES = "Can Scramble Into Air Battles";
   String TERRITORIES_ARE_ASSIGNED_RANDOMLY = "Territories Are Assigned Randomly";
-  String USE_FUEL_COST = "Use Fuel Cost";
   String RETREATING_UNITS_REMAIN_IN_PLACE = "Retreating Units Remain In Place";
   String CONTESTED_TERRITORIES_PRODUCE_NO_INCOME = "Contested Territories Produce No Income";
   String SEA_BATTLES_MAY_BE_IGNORED = "Sea Battles May Be Ignored";
@@ -226,6 +196,37 @@ public interface Constants {
   String ENTER_TERRITORIES_WITH_HIGHER_MOVEMENT_COSTS_THEN_REMAINING_MOVEMENT =
       "Enter Territories With Higher Movement Costs Then Remaining Moves";
   String UNITS_CAN_LOAD_IN_HOSTILE_SEA_ZONES = "Units Can Load In Hostile Sea Zones";
+  String USE_TRIGGERS = "Use Triggers";
+  String USE_POLITICS = "Use Politics";
+  String USE_FUEL_COST = "Use Fuel Cost";
+  String USE_SHIPYARDS = "Use Shipyards";
+
+  String OLD_ART_RULE_NAME = "ArtyOld";
+  String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
+  String SUPPORT_RULE_NAME_OLD_TEMP_FIRST =
+      SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME + "TempFirst";
+  String EDIT_MODE = "EditMode";
+  // by default this is 0, but for lhtr, it is 1
+  String ORIGINAL_OWNER = "originalOwner";
+  // unit types
+  String UNIT_TYPE_INFANTRY = "infantry";
+  String UNIT_TYPE_INF = "inf";
+  String UNIT_TYPE_MOTORIZED = "motorized";
+  String UNIT_TYPE_ARMOUR = "armour";
+  String UNIT_TYPE_TRANSPORT = "transport";
+  String UNIT_TYPE_SUBMARINE = "submarine";
+  String UNIT_TYPE_BATTLESHIP = "battleship";
+  String UNIT_TYPE_MARINE = "marine";
+  String UNIT_TYPE_CARRIER = "carrier";
+  String UNIT_TYPE_FIGHTER = "fighter";
+  String UNIT_TYPE_BOMBER = "bomber";
+  String UNIT_TYPE_FACTORY = "factory";
+  String UNIT_TYPE_AAGUN = "aaGun";
+  String UNIT_TYPE_ARTILLERY = "artillery";
+  String UNIT_TYPE_DESTROYER = "destroyer";
+  String SMALL_MAP_FILENAME = "smallMap";
+  String[] SMALL_MAP_EXTENSIONS = {"jpeg", "jpg", "png"};
+  String MAP_NAME = "mapName";
 
   // relationships stuff
   String RELATIONSHIP_TYPE_SELF = "self_relation";
@@ -242,7 +243,6 @@ public interface Constants {
   String RELATIONSHIP_PROPERTY_DEFAULT = "default";
   String RELATIONSHIP_PROPERTY_TRUE = "true";
   String RELATIONSHIP_PROPERTY_FALSE = "false";
-  String USE_POLITICS = "Use Politics";
   String PROPERTY_TRUE = "true";
   String PROPERTY_FALSE = "false";
 

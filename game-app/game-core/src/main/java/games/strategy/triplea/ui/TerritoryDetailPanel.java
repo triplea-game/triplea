@@ -13,7 +13,6 @@ import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -176,16 +175,13 @@ public class TerritoryDetailPanel extends JPanel {
 
     // Get the unit information under lock as otherwise they may change on the game thread causing a
     // ConcurrentModificationException.
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       unitsList = UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
       unitsLabel =
           "Units: "
               + territory.getUnits().stream()
                   .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
                   .count();
-    } finally {
-      gameData.releaseReadLock();
     }
 
     unitInfo.setText(unitsLabel);
@@ -205,29 +201,23 @@ public class TerritoryDetailPanel extends JPanel {
         currentPlayer = item.getOwner();
         panel.add(Box.createVerticalStrut(15));
       }
-      final Optional<ImageIcon> unitIcon =
-          uiContext.getUnitImageFactory().getIcon(ImageKey.of(item));
-      if (unitIcon.isPresent()) {
-        // overlay flag onto upper-right of icon
-        final ImageIcon flagIcon =
-            new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
-        final Icon flaggedUnitIcon =
-            new OverlayIcon(
-                unitIcon.get(),
-                flagIcon,
-                unitIcon.get().getIconWidth() - (flagIcon.getIconWidth() / 2),
-                0);
-        final JLabel label =
-            new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
-        final String toolTipText =
-            "<html>"
-                + item.getType().getName()
-                + ": "
-                + TooltipProperties.getInstance().getTooltip(item.getType(), currentPlayer)
-                + "</html>";
-        label.setToolTipText(toolTipText);
-        panel.add(label);
-      }
+      final ImageIcon unitIcon = uiContext.getUnitImageFactory().getIcon(ImageKey.of(item));
+      // overlay flag onto upper-right of icon
+      final ImageIcon flagIcon =
+          new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
+      final Icon flaggedUnitIcon =
+          new OverlayIcon(
+              unitIcon, flagIcon, unitIcon.getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
+      final JLabel label =
+          new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
+      final String toolTipText =
+          "<html>"
+              + item.getType().getName()
+              + ": "
+              + TooltipProperties.getInstance().getTooltip(item.getType(), currentPlayer)
+              + "</html>";
+      label.setToolTipText(toolTipText);
+      panel.add(label);
     }
     return panel;
   }

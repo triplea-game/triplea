@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.math.BigDecimal;
@@ -59,8 +58,7 @@ public class UnitSeparator {
         Comparator.comparing(
                 UnitCategory::getOwner,
                 Comparator.comparing((final GamePlayer p) -> !p.equals(t.getOwner()))
-                    .thenComparing(
-                        p -> Matches.isAtWar(p, data.getRelationshipTracker()).test(t.getOwner()))
+                    .thenComparing(p -> Matches.isAtWar(p).test(t.getOwner()))
                     .thenComparing(data.getPlayerList().getPlayers()::indexOf))
             .thenComparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType()))
             .thenComparing(
@@ -93,7 +91,7 @@ public class UnitSeparator {
     for (final Unit current : units) {
       BigDecimal unitMovement = new BigDecimal(-1);
       if (separatorCategories.movement
-          || (separatorCategories.transportMovement && Matches.unitIsTransport().test(current))
+          || (separatorCategories.transportMovement && Matches.unitIsSeaTransport().test(current))
           || (separatorCategories.movementForAirUnitsOnly
               && isAirWithHitPointsRemaining(current))) {
         unitMovement = current.getMovementLeft();
@@ -135,7 +133,6 @@ public class UnitSeparator {
   }
 
   private static boolean isAirWithHitPointsRemaining(final Unit unit) {
-    return UnitAttachment.get(unit.getType()).getIsAir()
-        && UnitAttachment.get(unit.getType()).getHitPoints() > 1;
+    return unit.getUnitAttachment().getIsAir() && unit.getUnitAttachment().getHitPoints() > 1;
   }
 }

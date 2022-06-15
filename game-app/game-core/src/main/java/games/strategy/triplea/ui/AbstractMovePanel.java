@@ -188,7 +188,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
     if (movesMade != null) {
       for (final UndoableMove move : movesMade) {
-        if (move != null && move.containsAnyOf(units) && move.getcanUndo()) {
+        if (move != null && units.stream().anyMatch(move::containsUnit) && move.getCanUndo()) {
           movesToUndo.add(move);
         }
       }

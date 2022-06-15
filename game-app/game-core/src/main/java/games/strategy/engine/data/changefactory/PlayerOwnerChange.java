@@ -49,7 +49,9 @@ class PlayerOwnerChange extends Change {
       final Unit unit = data.getUnits().get(id);
       if (!oldOwnerNamesByUnitId.get(id).equals(unit.getOwner().getName())) {
         throw new IllegalStateException(
-            "Wrong owner, expecting"
+            "Wrong "
+                + unit.getType().getName()
+                + " owner, expecting "
                 + oldOwnerNamesByUnitId.get(id)
                 + " but got "
                 + unit.getOwner());

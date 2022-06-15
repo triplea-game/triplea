@@ -27,16 +27,13 @@ public final class GameStepPropertiesHelper {
    * purchase phase and false for all others.
    */
   public static boolean isSkipPosting(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final String defaultSkipPosting = isPurchaseDelegate(data) ? "true" : "false";
       return Boolean.parseBoolean(
           data.getSequence()
               .getStep()
               .getProperties()
               .getProperty(GameStep.PropertyKeys.SKIP_POSTING, defaultSkipPosting));
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -59,8 +56,7 @@ public final class GameStepPropertiesHelper {
       players.add(defaultPlayer);
     }
 
-    gameData.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       final @Nullable String encodedPlayerNames =
           gameData.getSequence().getStep().getProperties().getProperty(propertyKey);
       if (encodedPlayerNames != null) {
@@ -77,8 +73,6 @@ public final class GameStepPropertiesHelper {
           }
         }
       }
-    } finally {
-      gameData.releaseReadLock();
     }
 
     return players;
@@ -86,16 +80,13 @@ public final class GameStepPropertiesHelper {
 
   /** For various things related to movement validation. */
   public static boolean isAirborneMove(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final String prop =
           data.getSequence()
               .getStep()
               .getProperties()
               .getProperty(GameStep.PropertyKeys.AIRBORNE_MOVE);
       return prop != null ? Boolean.parseBoolean(prop) : isAirborneDelegate(data);
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -106,8 +97,7 @@ public final class GameStepPropertiesHelper {
   /** For various things related to movement validation. */
   public static boolean isCombatMove(
       final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final String prop =
           data.getSequence()
               .getStep()
@@ -123,16 +113,13 @@ public final class GameStepPropertiesHelper {
         throw new IllegalStateException(
             "Cannot determine combat or not: " + data.getSequence().getStep().getName());
       }
-    } finally {
-      data.releaseReadLock();
     }
   }
 
   /** For various things related to movement validation. */
   public static boolean isNonCombatMove(
       final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       if (data.getSequence().getStep().isNonCombat()) {
         return true;
       } else if (isCombatDelegate(data) || doNotThrowErrorIfNotMoveDelegate) {
@@ -141,8 +128,6 @@ public final class GameStepPropertiesHelper {
         throw new IllegalStateException(
             "Cannot determine combat or not: " + data.getSequence().getStep().getName());
       }
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -151,8 +136,7 @@ public final class GameStepPropertiesHelper {
    * depending.
    */
   static boolean isRepairUnits(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final boolean repairAtStartAndOnlyOwn =
           Properties.getBattleshipsRepairAtBeginningOfRound(data.getProperties());
       final boolean repairAtEndAndAll =
@@ -173,8 +157,6 @@ public final class GameStepPropertiesHelper {
 
       return (isCombatDelegate(data) && repairAtStartAndOnlyOwn)
           || (data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll);
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -182,16 +164,13 @@ public final class GameStepPropertiesHelper {
    * Resets then gives bonus movement. Normally would occur at the start of combat movement phase.
    */
   static boolean isGiveBonusMovement(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final String prop =
           data.getSequence()
               .getStep()
               .getProperties()
               .getProperty(GameStep.PropertyKeys.GIVE_BONUS_MOVEMENT);
       return prop != null ? Boolean.parseBoolean(prop) : isCombatDelegate(data);
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -200,8 +179,7 @@ public final class GameStepPropertiesHelper {
    * also at end of placement phase.
    */
   public static boolean isRemoveAirThatCanNotLand(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final String prop =
           data.getSequence()
               .getStep()
@@ -215,8 +193,6 @@ public final class GameStepPropertiesHelper {
                   data.getSequence().getStep().getDelegate().getClass()))
           && (isNonCombatDelegate(data)
               || data.getSequence().getStep().getName().endsWith("Place"));
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -239,16 +215,13 @@ public final class GameStepPropertiesHelper {
    * does not occur.
    */
   static boolean isResetUnitStateAtStart(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final String prop =
           data.getSequence()
               .getStep()
               .getProperties()
               .getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_START);
       return Boolean.parseBoolean(prop);
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -257,30 +230,24 @@ public final class GameStepPropertiesHelper {
    * occurs at end of noncombat move phase.
    */
   static boolean isResetUnitStateAtEnd(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final String prop =
           data.getSequence()
               .getStep()
               .getProperties()
               .getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_END);
       return prop != null ? Boolean.parseBoolean(prop) : isNonCombatDelegate(data);
-    } finally {
-      data.releaseReadLock();
     }
   }
 
   /** Indicates bid purchase or placement is enabled for the specified game. */
   public static boolean isBid(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final String prop =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.BID);
       return prop != null
           ? Boolean.parseBoolean(prop)
           : (isBidPurchaseDelegate(data) || isBidPlaceDelegate(data));
-    } finally {
-      data.releaseReadLock();
     }
   }
 
@@ -303,15 +270,12 @@ public final class GameStepPropertiesHelper {
    * infrastructure that provides movement bonus or repairs unit HP.
    */
   public static boolean isOnlyRepairIfDisabled(final GameData data) {
-    data.acquireReadLock();
-    try {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
       return Boolean.parseBoolean(
           data.getSequence()
               .getStep()
               .getProperties()
               .getProperty(GameStep.PropertyKeys.ONLY_REPAIR_IF_DISABLED, "false"));
-    } finally {
-      data.releaseReadLock();
     }
   }
 

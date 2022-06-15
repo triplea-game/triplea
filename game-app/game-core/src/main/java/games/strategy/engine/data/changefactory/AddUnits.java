@@ -7,6 +7,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,28 +26,30 @@ public class AddUnits extends Change {
    */
   private final Map<UUID, String> unitOwnerMap;
 
-  AddUnits(final UnitCollection collection, final Collection<Unit> units) {
-    this.units = units;
-    unitOwnerMap = buildUnitOwnerMap(units);
-    name = collection.getHolder().getName();
-    type = collection.getHolder().getType();
+  AddUnits(UnitCollection collection, Collection<Unit> units) {
+    this(collection.getHolder().getName(), collection.getHolder().getType(), units);
   }
 
-  AddUnits(final String name, final String type, final Collection<Unit> units) {
-    this.units = units;
-    unitOwnerMap = buildUnitOwnerMap(units);
-    this.type = type;
+  AddUnits(String name, String type, Collection<Unit> units) {
+    this(name, type, units, AddUnits.buildUnitOwnerMap(units));
+  }
+
+  AddUnits(String name, String type, Collection<Unit> units, Map<UUID, String> unitOwnerMap) {
     this.name = name;
+    this.type = type;
+    this.units = List.copyOf(units);
+    this.unitOwnerMap = unitOwnerMap;
   }
 
-  private Map<UUID, String> buildUnitOwnerMap(final Collection<Unit> units) {
+  /** Returns an unmodifiable map of unit UUIDs to player names. */
+  public static Map<UUID, String> buildUnitOwnerMap(final Collection<Unit> units) {
     return units.stream()
         .collect(
             Collectors.toMap(
                 Unit::getId,
                 unit -> {
                   if (unit.getOwner() == null || unit.getOwner().getName() == null) {
-                    return GamePlayer.NULL_PLAYERID.getName();
+                    return unit.getData().getPlayerList().getNullPlayer().getName();
                   }
                   return unit.getOwner().getName();
                 }));
@@ -54,7 +57,8 @@ public class AddUnits extends Change {
 
   @Override
   public Change invert() {
-    return new RemoveUnits(name, type, units);
+    // Note: We pass in unitOwnerMap so that invert() doesn't rely on the current game state.
+    return new RemoveUnits(name, type, units, unitOwnerMap);
   }
 
   @Override

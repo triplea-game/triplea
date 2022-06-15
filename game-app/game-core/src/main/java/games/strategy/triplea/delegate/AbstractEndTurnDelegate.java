@@ -26,7 +26,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -163,7 +162,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       final Change change = ChangeFactory.changeResourcesChange(player, pus, toAdd);
       bridge.addChange(change);
 
-      if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null) {
+      if (Properties.getPacificTheater(data.getProperties()) && pa != null) {
         final Change changeVp =
             (ChangeFactory.attachmentPropertyChange(
                 pa, (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
@@ -472,9 +471,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
         throw new IllegalStateException("No attachment for owned territory:" + current.getName());
       }
       // Match will Check if territory is originally owned convoy center, or if it is contested
-      if (Matches.territoryCanCollectIncomeFrom(
-              current.getOwner(), data.getProperties(), data.getRelationshipTracker())
-          .test(current)) {
+      if (Matches.territoryCanCollectIncomeFrom(current.getOwner()).test(current)) {
         value += attachment.getProduction();
       }
     }
@@ -497,7 +494,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     if (blockable.isEmpty()) {
       return 0;
     }
-    final Predicate<Unit> enemyUnits = Matches.enemyUnit(player, data.getRelationshipTracker());
+    final Predicate<Unit> enemyUnits = Matches.enemyUnit(player);
     int totalLoss = 0;
     final boolean rollDiceForBlockadeDamage =
         Properties.getConvoyBlockadesRollDiceForCost(data.getProperties());
@@ -510,9 +507,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
           CollectionUtils.getMatches(
               map.getNeighbors(b),
               Matches.isTerritoryOwnedBy(player)
-                  .and(
-                      Matches.territoryCanCollectIncomeFrom(
-                          player, data.getProperties(), data.getRelationshipTracker())));
+                  .and(Matches.territoryCanCollectIncomeFrom(player)));
       final int maxLoss = getProduction(viableNeighbors);
       if (maxLoss <= 0) {
         continue;
@@ -525,7 +520,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       if (rollDiceForBlockadeDamage) {
         int numberOfDice = 0;
         for (final Unit u : enemies) {
-          numberOfDice += UnitAttachment.get(u.getType()).getBlockade();
+          numberOfDice += u.getUnitAttachment().getBlockade();
         }
         if (numberOfDice > 0) {
           // there is an issue with maps that have lots of rolls without any pause between them:
@@ -554,7 +549,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
         }
       } else {
         for (final Unit u : enemies) {
-          loss += UnitAttachment.get(u.getType()).getBlockade();
+          loss += u.getUnitAttachment().getBlockade();
         }
       }
       if (loss <= 0) {

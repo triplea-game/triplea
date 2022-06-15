@@ -61,8 +61,7 @@ public class FiringGroupSplitterAa
                 battleState.getPlayer(side.getOpposite()),
                 Matches.unitIsAaForCombatOnly(),
                 battleState.getStatus().getRound(),
-                side == DEFENSE,
-                battleState.getGameData().getRelationshipTracker()));
+                side == DEFENSE));
 
     final List<String> typeAas = UnitAttachment.getAllOfTypeAas(aaUnits);
 
@@ -80,7 +79,8 @@ public class FiringGroupSplitterAa
 
       // grab the unit types that this typeAa can fire at
       final Set<UnitType> validTargetTypes =
-          UnitAttachment.get(CollectionUtils.getAny(firingUnits).getType())
+          CollectionUtils.getAny(firingUnits)
+              .getUnitAttachment()
               .getTargetsAa(battleState.getGameData().getUnitTypeList());
 
       final Collection<Unit> targetUnits =

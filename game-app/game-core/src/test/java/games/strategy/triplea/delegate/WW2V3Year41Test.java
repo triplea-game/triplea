@@ -68,7 +68,6 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
@@ -169,7 +168,8 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -238,7 +238,8 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -311,7 +312,8 @@ class WW2V3Year41Test {
             CollectionUtils.getMatches(
                 planes,
                 Matches.unitIsOfTypes(
-                    UnitAttachment.get(defendingAa.iterator().next().getType())
+                    CollectionUtils.getAny(defendingAa)
+                        .getUnitAttachment()
                         .getTargetsAa(gameData.getUnitTypeList()))),
             defendingAa,
             bridge,
@@ -460,7 +462,7 @@ class WW2V3Year41Test {
     final Territory sz13 = territory("13 Sea Zone", gameData);
     final Route sz9ToSz13 = new Route(sz9, territory("12 Sea Zone", gameData), sz13);
     // move the transport to attack, this is suicide but valid
-    move(sz9.getUnitCollection().getMatches(Matches.unitIsTransport()), sz9ToSz13);
+    move(sz9.getUnitCollection().getMatches(Matches.unitIsSeaTransport()), sz9ToSz13);
     // load the transport
     load(gibraltar.getUnits(), new Route(gibraltar, sz13));
     moveDelegate.end();
@@ -485,7 +487,7 @@ class WW2V3Year41Test {
     final Territory uk = territory("United Kingdom", gameData);
     final Route sz9ToSz7 = new Route(sz9, territory("8 Sea Zone", gameData), sz7);
     // move the transport to attack, this is suicide but valid
-    final List<Unit> transports = sz9.getUnitCollection().getMatches(Matches.unitIsTransport());
+    final List<Unit> transports = sz9.getUnitCollection().getMatches(Matches.unitIsSeaTransport());
     move(transports, sz9ToSz7);
     // load the transport
     load(uk.getUnitCollection().getMatches(Matches.unitIsLandTransportable()), new Route(uk, sz7));
@@ -1011,11 +1013,11 @@ class WW2V3Year41Test {
     // move the battleship
     move(sz14.getUnitCollection().getMatches(Matches.unitHasMoreThanOneHitPointTotal()), r);
     // move everything
-    move(sz14.getUnitCollection().getMatches(Matches.unitIsNotTransport()), r);
+    move(sz14.getUnitCollection().getMatches(Matches.unitIsNotSeaTransport()), r);
     // undo it
     move.undoMove(1);
     // move again
-    move(sz14.getUnitCollection().getMatches(Matches.unitIsNotTransport()), r);
+    move(sz14.getUnitCollection().getMatches(Matches.unitIsNotSeaTransport()), r);
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz12);
     // only 3 attacking units
@@ -1326,12 +1328,12 @@ class WW2V3Year41Test {
     // Set the tech for DDs bombard
     // ww2v3 doesn't have this tech, so this does nothing...
     // TechAttachment.get(italians).setDestroyerBombard("true");
-    UnitAttachment.get(destroyer(gameData)).setCanBombard("true");
+    destroyer(gameData).getUnitAttachment().setCanBombard("true");
     // Set the bombard strength for the DDs
     final Collection<Unit> dds =
         CollectionUtils.getMatches(sz15.getUnits(), Matches.unitIsDestroyer());
     for (final Unit unit : dds) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       ua.setBombard(3);
     }
     // start the battle phase, this will ask the user to bombard
@@ -1443,7 +1445,7 @@ class WW2V3Year41Test {
     final Territory france = territory("France", gameData);
     final Territory germany = territory("Germany", gameData);
     final Territory poland = territory("Poland", gameData);
-    TechAttachment.get(germans).setMechanizedInfantry("true");
+    germans.getTechAttachment().setMechanizedInfantry("true");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1461,7 +1463,7 @@ class WW2V3Year41Test {
     final GamePlayer germans = germans(gameData);
     final Territory france = territory("France", gameData);
     final Territory germany = territory("Germany", gameData);
-    TechAttachment.get(germans).setMechanizedInfantry("true");
+    germans.getTechAttachment().setMechanizedInfantry("true");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1482,14 +1484,14 @@ class WW2V3Year41Test {
   void testParatroopsWalkOnWater() {
     final GamePlayer germans = germans(gameData);
     final Territory france = territory("France", gameData);
-    TechAttachment.get(germans).setParatroopers("true");
+    germans.getTechAttachment().setParatroopers("true");
     final Route r = new Route(france, territory("7 Sea Zone", gameData));
     final Collection<Unit> paratroopers =
         france.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     assertFalse(paratroopers.isEmpty());
     final MoveValidationResult results =
-        new MoveValidator(gameData)
-            .validateMove(new MoveDescription(paratroopers, r), germans, false, null);
+        new MoveValidator(gameData, false)
+            .validateMove(new MoveDescription(paratroopers, r), germans);
     assertFalse(results.isMoveValid());
   }
 
@@ -1500,7 +1502,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    TechAttachment.get(germans).setParatroopers("true");
+    germans.getTechAttachment().setParatroopers("true");
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory germany = territory("Germany", gameData);
     final Territory karelia = territory("Karelia S.S.R.", gameData);
@@ -1510,8 +1512,7 @@ class WW2V3Year41Test {
     toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results =
-        new MoveValidator(gameData)
-            .validateMove(new MoveDescription(toMove, r), germans, false, null);
+        new MoveValidator(gameData, false).validateMove(new MoveDescription(toMove, r), germans);
     assertFalse(results.isMoveValid());
   }
 
@@ -1532,8 +1533,7 @@ class WW2V3Year41Test {
     toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results =
-        new MoveValidator(gameData)
-            .validateMove(new MoveDescription(toMove, r), germans, false, null);
+        new MoveValidator(gameData, false).validateMove(new MoveDescription(toMove, r), germans);
     assertFalse(results.isMoveValid());
   }
 
@@ -1548,7 +1548,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    TechAttachment.get(germans).setParatroopers("true");
+    germans.getTechAttachment().setParatroopers("true");
     List<Unit> paratrooper =
         germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     paratrooper = paratrooper.subList(0, 1);
@@ -1570,7 +1570,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    TechAttachment.get(germans).setParatroopers("true");
+    germans.getTechAttachment().setParatroopers("true");
     final List<Unit> paratrooper =
         nwe.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     move(paratrooper, new Route(nwe, germany));
@@ -1594,7 +1594,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    TechAttachment.get(germans).setParatroopers("true");
+    germans.getTechAttachment().setParatroopers("true");
     // Move the bomber first
     final List<Unit> bomber = germany.getUnitCollection().getMatches(Matches.unitIsAirTransport());
     move(bomber, new Route(germany, poland));
@@ -1619,7 +1619,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    TechAttachment.get(germans).setParatroopers("true");
+    germans.getTechAttachment().setParatroopers("true");
     final List<Unit> bomberAndParatroop = new ArrayList<>();
     bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
     // add 2 infantry
@@ -1644,7 +1644,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    TechAttachment.get(germans).setParatroopers("true");
+    germans.getTechAttachment().setParatroopers("true");
     List<Unit> paratroopers =
         germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     paratroopers = paratroopers.subList(0, 1);
@@ -1683,7 +1683,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    TechAttachment.get(germans).setParatroopers("true");
+    germans.getTechAttachment().setParatroopers("true");
     List<Unit> paratrooper =
         germany.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     paratrooper = paratrooper.subList(0, 1);
@@ -1925,7 +1925,7 @@ class WW2V3Year41Test {
     // Remove original capital
     final TerritoryAttachment taMongolia = TerritoryAttachment.get(mongolia);
     final TerritoryAttachment taKiangsu = TerritoryAttachment.get(kiangsu);
-    taMongolia.setCapital(null);
+    taMongolia.getProperty("capital").get().resetValue();
     // Set as NEW capital
     taKiangsu.setCapital(Constants.PLAYER_NAME_CHINESE);
     // Remove all units

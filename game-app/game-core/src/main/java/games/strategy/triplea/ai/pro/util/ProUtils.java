@@ -74,21 +74,19 @@ public final class ProUtils {
 
   public static List<GamePlayer> getEnemyPlayers(final GamePlayer player) {
     final GameState data = player.getData();
-    return getFilteredPlayers(
-        data, Matches.isAllied(player, data.getRelationshipTracker()).negate());
+    return getFilteredPlayers(data, Matches.isAllied(player).negate());
   }
 
   private static List<GamePlayer> getAlliedPlayers(final GamePlayer player) {
     final GameState data = player.getData();
-    return getFilteredPlayers(data, Matches.isAllied(player, data.getRelationshipTracker()));
+    return getFilteredPlayers(data, Matches.isAllied(player));
   }
 
   /** Given a player, finds all non-allied (enemy) players. */
   public static List<GamePlayer> getPotentialEnemyPlayers(final GamePlayer player) {
-    final var tracker = player.getData().getRelationshipTracker();
     // Remove allied and passive neutrals.
     final Predicate<GamePlayer> potentialEnemy =
-        not(Matches.isAllied(player, tracker)).and(not(ProUtils::isPassiveNeutralPlayer));
+        not(Matches.isAllied(player)).and(not(ProUtils::isPassiveNeutralPlayer));
     return getFilteredPlayers(player.getData(), potentialEnemy);
   }
 
@@ -99,9 +97,7 @@ public final class ProUtils {
 
   /** Computes PU production amount a given player currently has based on a given game data. */
   public static double getPlayerProduction(final GamePlayer player, final GameState data) {
-    final Predicate<Territory> canCollectIncomeFrom =
-        Matches.territoryCanCollectIncomeFrom(
-            player, data.getProperties(), data.getRelationshipTracker());
+    final Predicate<Territory> canCollectIncomeFrom = Matches.territoryCanCollectIncomeFrom(player);
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea
@@ -128,8 +124,7 @@ public final class ProUtils {
     }
     enemyCapitals.retainAll(
         CollectionUtils.getMatches(
-            enemyCapitals,
-            Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
+            enemyCapitals, Matches.territoryIsNotImpassableToLandUnits(player)));
     enemyCapitals.retainAll(
         CollectionUtils.getMatches(
             enemyCapitals, Matches.isTerritoryOwnedByAnyOf(getPotentialEnemyPlayers(player))));
@@ -146,11 +141,8 @@ public final class ProUtils {
           TerritoryAttachment.getAllCurrentlyOwnedCapitals(alliedPlayer, data.getMap()));
     }
     capitals.retainAll(
-        CollectionUtils.getMatches(
-            capitals, Matches.territoryIsNotImpassableToLandUnits(player, data.getProperties())));
-    capitals.retainAll(
-        CollectionUtils.getMatches(
-            capitals, Matches.isTerritoryAllied(player, data.getRelationshipTracker())));
+        CollectionUtils.getMatches(capitals, Matches.territoryIsNotImpassableToLandUnits(player)));
+    capitals.retainAll(CollectionUtils.getMatches(capitals, Matches.isTerritoryAllied(player)));
     return capitals;
   }
 
@@ -162,7 +154,7 @@ public final class ProUtils {
   public static int getClosestEnemyLandTerritoryDistance(
       final GameState data, final GamePlayer player, final Territory t) {
     final Predicate<Territory> canMoveLandUnits =
-        ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
+        ProMatches.territoryCanPotentiallyMoveLandUnits(player);
     final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, canMoveLandUnits);
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
@@ -188,7 +180,7 @@ public final class ProUtils {
       final Territory t,
       final Map<Territory, Double> territoryValueMap) {
     final Predicate<Territory> canMoveLandUnits =
-        ProMatches.territoryCanPotentiallyMoveLandUnits(player, data.getProperties());
+        ProMatches.territoryCanPotentiallyMoveLandUnits(player);
     final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, canMoveLandUnits);
     final List<Territory> enemyLandTerritories =
         CollectionUtils.getMatches(
@@ -221,8 +213,7 @@ public final class ProUtils {
     final Set<Territory> neighborTerritories = data.getMap().getNeighbors(t, 9);
     final List<Territory> enemyOrAdjacentLandTerritories =
         CollectionUtils.getMatches(
-            neighborTerritories,
-            ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(data, player));
+            neighborTerritories, ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyOrAdjacentLandTerritories) {
       final int distance =

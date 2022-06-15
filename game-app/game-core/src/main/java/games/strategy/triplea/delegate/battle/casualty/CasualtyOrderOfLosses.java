@@ -247,13 +247,13 @@ class CasualtyOrderOfLosses {
     boolean isAmphibious;
 
     static AmphibType of(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       // only track amphibious if both marine and was amphibious
       return new AmphibType(unit.getType(), ua.getIsMarine() != 0 && unit.getWasAmphibious());
     }
 
     boolean matches(final Unit unit) {
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      final UnitAttachment ua = unit.getUnitAttachment();
       return type.equals(unit.getType())
           && (ua.getIsMarine() == 0 || isAmphibious == unit.getWasAmphibious());
     }

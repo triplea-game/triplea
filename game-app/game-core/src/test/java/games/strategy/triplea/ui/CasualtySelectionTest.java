@@ -31,9 +31,9 @@ class CasualtySelectionTest {
   void testPlayerMayChooseToDistributeHitsToUnitsWithDifferentMovement_simplePositiveCase() {
     final GamePlayer player = new GamePlayer("player", gameData);
     final UnitType dragon = givenUnitType("Dragon");
-    UnitAttachment.get(dragon).setHitPoints(2);
-    UnitAttachment.get(dragon).setMovement(4);
-    UnitAttachment.get(dragon).setIsAir(true);
+    dragon.getUnitAttachment().setHitPoints(2);
+    dragon.getUnitAttachment().setMovement(4);
+    dragon.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>(dragon.createTemp(2, player));
 
@@ -49,9 +49,9 @@ class CasualtySelectionTest {
   void testPlayerMay_Movement_onlyUnitsWithMoreThanOneHitpointLeftCount() {
     final GamePlayer player = new GamePlayer("player", gameData);
     final UnitType dragon = givenUnitType("Dragon");
-    UnitAttachment.get(dragon).setHitPoints(2);
-    UnitAttachment.get(dragon).setMovement(4);
-    UnitAttachment.get(dragon).setIsAir(true);
+    dragon.getUnitAttachment().setHitPoints(2);
+    dragon.getUnitAttachment().setMovement(4);
+    dragon.getUnitAttachment().setIsAir(true);
 
     final List<Unit> units = new ArrayList<>(dragon.createTemp(2, player));
 
@@ -69,8 +69,8 @@ class CasualtySelectionTest {
   @Test
   void testPlayerMayChooseToDistributeHitsToUnitsWithDifferentMovement_noAirUnits() {
     final UnitType mechInfantry = givenUnitType("mech infantry");
-    UnitAttachment.get(mechInfantry).setHitPoints(2);
-    UnitAttachment.get(mechInfantry).setMovement(4);
+    mechInfantry.getUnitAttachment().setHitPoints(2);
+    mechInfantry.getUnitAttachment().setMovement(4);
 
     final List<Unit> units = new ArrayList<>();
     units.addAll(mechInfantry.createTemp(2, player1));

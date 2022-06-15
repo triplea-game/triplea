@@ -57,4 +57,22 @@ public interface IServerStartupRemote extends IRemote {
 
   @RemoteActionCode(1)
   void changeToGameOptions(byte[] bytes);
+
+  interface ServerModelView {
+    PlayerListing getPlayerListing();
+
+    void takePlayer(final INode who, final String playerName);
+
+    void releasePlayer(final INode who, final String playerName);
+
+    void disablePlayer(final String playerName);
+
+    void enablePlayer(final String playerName);
+
+    boolean isGameStarted(final INode newNode);
+
+    byte[] getSaveGame();
+
+    byte[] getGameOptions();
+  }
 }

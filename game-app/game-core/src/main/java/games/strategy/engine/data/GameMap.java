@@ -312,7 +312,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Predicate<Territory> cond,
       final Unit unit,
       final GamePlayer player) {
-    return getRouteForUnits(start, end, cond, Set.of(unit), player);
+    return getRouteForUnits(start, end, cond, List.of(unit), player);
   }
 
   /**

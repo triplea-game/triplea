@@ -148,11 +148,8 @@ public class PoliticalStateOverview extends JPanel {
       }
     }
     if (relType == null) {
-      data.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
         relType = data.getRelationshipTracker().getRelationshipType(player1, player2);
-      } finally {
-        data.releaseReadLock();
       }
     }
     return relType;
@@ -195,13 +192,10 @@ public class PoliticalStateOverview extends JPanel {
                             && player1.equals(changesSoFar.getSecond())));
 
             // see if there is actually a change
-            data.acquireReadLock();
             final RelationshipType actualRelationship;
-            try {
+            try (GameData.Unlocker ignored = data.acquireReadLock()) {
               actualRelationship =
                   data.getRelationshipTracker().getRelationshipType(player1, player2);
-            } finally {
-              data.releaseReadLock();
             }
             if (!chosenRelationship.equals(actualRelationship)) {
               // add new change

@@ -24,10 +24,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold
- * conditions (ie: RulesAttachments), should extend this instead of DefaultAttachment.
+ * conditions (ie: RulesAttachments), should extend this instead of DefaultAttachment. Note: Empty
+ * collection fields default to null to minimize memory use and serialization size.
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
   public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
@@ -40,7 +42,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   private static final Splitter HYPHEN_SPLITTER = Splitter.on('-');
 
   // list of conditions that this condition can contain
-  protected List<RulesAttachment> conditions = new ArrayList<>();
+  protected @Nullable List<RulesAttachment> conditions = null;
   // conditionType modifies the relationship of conditions
   protected String conditionType = AND;
   // will logically negate the entire condition, including contained conditions
@@ -90,11 +92,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   @Override
   public List<RulesAttachment> getConditions() {
-    return conditions;
+    return getListProperty(conditions);
   }
 
   protected void resetConditions() {
-    conditions = new ArrayList<>();
+    conditions = null;
   }
 
   private void setInvert(final boolean s) {
@@ -111,7 +113,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (uppercaseValue.matches("AND|OR|\\d+(?:-\\d+)?")) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
-        conditionType = uppercaseValue;
+        conditionType = uppercaseValue.intern();
         return;
       }
     }
@@ -278,7 +280,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
               + " format: \"1:10\" for 10% chance"
               + thisErrorMsg());
     }
-    this.chance = chance;
+    this.chance = chance.intern();
   }
 
   /**

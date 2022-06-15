@@ -112,8 +112,8 @@ public final class UnitComparator {
       if (!t1.equals(t2)) {
         // Land transportable units should have higher priority than non-land transportable ones,
         // when all else is equal.
-        final int isLandTransportable1 = UnitAttachment.get(t1).getIsLandTransportable() ? 1 : 0;
-        final int isLandTransportable2 = UnitAttachment.get(t2).getIsLandTransportable() ? 1 : 0;
+        final int isLandTransportable1 = t1.getUnitAttachment().getIsLandTransportable() ? 1 : 0;
+        final int isLandTransportable2 = t2.getUnitAttachment().getIsLandTransportable() ? 1 : 0;
         if (isLandTransportable1 != isLandTransportable2) {
           return isLandTransportable2 - isLandTransportable1;
         }
@@ -138,8 +138,6 @@ public final class UnitComparator {
 
   public static Comparator<Unit> getDecreasingBombardComparator() {
     return Comparator.comparing(
-        Unit::getType,
-        Comparator.comparing(
-            UnitAttachment::get, Comparator.comparingInt(UnitAttachment::getBombard).reversed()));
+        Unit::getUnitAttachment, Comparator.comparingInt(UnitAttachment::getBombard).reversed());
   }
 }

@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -14,8 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -107,14 +107,12 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
     }
 
     private synchronized void loadData() {
-      // copy so acquire/release read lock are on the same object!
+      // copy so that the object doesn't change underneath us
       final GameData gameData = EconomyPanel.this.gameData;
-      gameData.acquireReadLock();
-      try {
+      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
-        final Map<String, Set<GamePlayer>> allianceMap =
-            gameData.getAllianceTracker().getAllianceMap();
-        collectedData = new String[players.size() + allianceMap.size()][resourceStats.size() + 1];
+        final List<String> alliances = getAlliancesToShow(gameData.getAllianceTracker());
+        collectedData = new String[players.size() + alliances.size()][resourceStats.size() + 1];
         int row = 0;
         final Map<GamePlayer, IntegerMap<Resource>> resourceIncomeMap = new HashMap<>();
         for (final GamePlayer player : players) {
@@ -130,23 +128,27 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
           }
           row++;
         }
-        for (final Entry<String, Set<GamePlayer>> alliance : allianceMap.entrySet()) {
-          collectedData[row][0] = alliance.getKey();
+        for (final String alliance : alliances) {
+          collectedData[row][0] = "<html><b>" + alliance;
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
-            final double amount =
-                resourceStat.getValue(alliance.getKey(), gameData, uiContext.getMapData());
+            final double amount = resourceStat.getValue(alliance, gameData, uiContext.getMapData());
             final int income =
-                alliance.getValue().stream()
+                gameData.getAllianceTracker().getPlayersInAlliance(alliance).stream()
                     .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource))
                     .sum();
             collectedData[row][i + 1] = getResourceAmountAndIncome(amount, income);
           }
           row++;
         }
-      } finally {
-        gameData.releaseReadLock();
       }
+    }
+
+    private List<String> getAlliancesToShow(AllianceTracker tracker) {
+      return tracker.getAlliances().stream()
+          .filter(a -> tracker.getPlayersInAlliance(a).size() > 1)
+          .sorted()
+          .collect(Collectors.toList());
     }
 
     private String getResourceAmountAndIncome(final double amount, final int income) {

@@ -106,8 +106,7 @@ public class PurchasePanel extends ActionPanel {
           purchasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), gamePlayer);
           add(SwingComponents.leftBox(purchasedUnits));
 
-          getData().acquireReadLock();
-          try {
+          try (GameData.Unlocker ignored = getData().acquireReadLock()) {
             purchasedPreviousRoundsUnits.setUnitsFromCategories(
                 UnitSeparator.categorize(gamePlayer.getUnits()));
             add(Box.createVerticalStrut(4));
@@ -115,8 +114,6 @@ public class PurchasePanel extends ActionPanel {
               add(SwingComponents.leftBox(purchasedPreviousRoundsLabel));
             }
             add(SwingComponents.leftBox(purchasedPreviousRoundsUnits));
-          } finally {
-            getData().releaseReadLock();
           }
           add(Box.createVerticalGlue());
           refresh.run();
@@ -141,9 +138,8 @@ public class PurchasePanel extends ActionPanel {
     // player tries to produce too much
     if (Properties.getWW2V2(getData().getProperties())
         || Properties.getPlacementRestrictedByFactory(getData().getProperties())) {
-      getData().acquireReadLock();
       int totalProd = 0;
-      try {
+      try (GameData.Unlocker ignored = getData().acquireReadLock()) {
         for (final Territory t :
             CollectionUtils.getMatches(
                 getData().getMap().getTerritories(),
@@ -151,16 +147,8 @@ public class PurchasePanel extends ActionPanel {
           final GameData data = getData();
           totalProd +=
               UnitUtils.getProductionPotentialOfTerritory(
-                  t.getUnits(),
-                  t,
-                  getCurrentPlayer(),
-                  data.getTechnologyFrontier(),
-                  data.getProperties(),
-                  true,
-                  true);
+                  t.getUnits(), t, getCurrentPlayer(), data.getProperties(), true, true);
         }
-      } finally {
-        getData().releaseReadLock();
       }
       // sum production for all units except factories
       int totalProduced = 0;

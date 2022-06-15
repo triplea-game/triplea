@@ -4,10 +4,10 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +33,10 @@ public class History extends DefaultTreeModel {
   private final HistoryWriter writer = new HistoryWriter(this);
   private final List<Change> changes = new ArrayList<>();
   private final GameData gameData;
-  private HistoryNode currentNode;
-  private HistoryPanel panel = null;
+  private HistoryPanel panel;
+  // Index at which point we are in history. Only valid if seekingEnabled is true.
+  private int nextChangeIndex;
+  private boolean seekingEnabled = false;
 
   public History(final GameData data) {
     super(new RootHistoryNode("Game History"));
@@ -51,21 +53,21 @@ public class History extends DefaultTreeModel {
     return writer;
   }
 
-  public void setTreePanel(final HistoryPanel panel) {
+  public HistoryNode enableSeeking(final HistoryPanel panel) {
+    Preconditions.checkNotNull(panel);
+    Preconditions.checkState(!seekingEnabled);
     this.panel = panel;
+    nextChangeIndex = changes.size();
+    seekingEnabled = true;
+    HistoryNode lastNode = getLastNode();
+    gotoNode(lastNode);
+    return lastNode;
   }
 
   public void goToEnd() {
     if (panel != null) {
       panel.goToEnd();
     }
-  }
-
-  public Optional<GamePlayer> getActivePlayer() {
-    if (currentNode instanceof Step) {
-      return GamePlayer.asOptional(((Step) currentNode).getPlayerId());
-    }
-    return Optional.empty();
   }
 
   public HistoryNode getLastNode() {
@@ -80,7 +82,7 @@ public class History extends DefaultTreeModel {
     return getLastChildInternal((HistoryNode) node.getLastChild());
   }
 
-  private int getLastChange(final HistoryNode node) {
+  private int getNextChange(final HistoryNode node) {
     int lastChangeIndex;
     if (node == getRoot()) {
       lastChangeIndex = 0;
@@ -93,7 +95,7 @@ public class History extends DefaultTreeModel {
       // If this node is still current, or comes from an old save game where we didn't set it, get
       // the last change index from its last child node.
       if (lastChangeIndex == -1 && node.getChildCount() > 0) {
-        lastChangeIndex = getLastChange((HistoryNode) node.getLastChild());
+        lastChangeIndex = getNextChange((HistoryNode) node.getLastChild());
       }
     } else {
       lastChangeIndex = 0;
@@ -104,37 +106,25 @@ public class History extends DefaultTreeModel {
     return lastChangeIndex;
   }
 
-  public Change getDelta(final HistoryNode start, final HistoryNode end) {
-    assertCorrectThread();
-    final int firstChange = getLastChange(start);
-    final int lastChange = getLastChange(end);
-    if (firstChange == lastChange) {
-      return null;
-    }
+  private Change getDeltaTo(int changeIndex) {
     final List<Change> deltaChanges =
-        changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
+        changes.subList(
+            Math.min(nextChangeIndex, changeIndex), Math.max(nextChangeIndex, changeIndex));
     final Change compositeChange = new CompositeChange(deltaChanges);
-    return (lastChange >= firstChange) ? compositeChange : compositeChange.invert();
+    return (changeIndex >= nextChangeIndex) ? compositeChange : compositeChange.invert();
   }
 
   /** Changes the game state to reflect the historical state at {@code node}. */
   public synchronized void gotoNode(final HistoryNode node) {
-    // Setting node to null causes problems, because we'll restore the state to the start, but then
-    // next gotoNode() call will reset currentNode to getLastNode() causing an invalid delta.
-    Preconditions.checkNotNull(node);
     assertCorrectThread();
-    gameData.acquireWriteLock();
-    try {
-      if (currentNode == null) {
-        currentNode = getLastNode();
+    Preconditions.checkNotNull(node);
+    Preconditions.checkState(seekingEnabled);
+    try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
+      final int nodeChangeIndex = getNextChange(node);
+      if (nodeChangeIndex != nextChangeIndex) {
+        gameData.performChange(getDeltaTo(nodeChangeIndex));
+        nextChangeIndex = nodeChangeIndex;
       }
-      final Change dataChange = getDelta(currentNode, node);
-      currentNode = node;
-      if (dataChange != null) {
-        gameData.performChange(dataChange);
-      }
-    } finally {
-      gameData.releaseWriteLock();
     }
   }
 
@@ -143,13 +133,15 @@ public class History extends DefaultTreeModel {
    * removes all changes that occurred after this node.
    */
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
-    gotoNode(removeAfterNode);
     assertCorrectThread();
-    gameData.acquireWriteLock();
-    try {
-      final int lastChange = getLastChange(removeAfterNode) + 1;
-      while (changes.size() > lastChange) {
-        changes.remove(lastChange);
+    if (!seekingEnabled) {
+      nextChangeIndex = changes.size();
+      seekingEnabled = true;
+    }
+    gotoNode(getNearestLeafAtOrBefore(removeAfterNode).orElse((HistoryNode) getRoot()));
+    try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
+      if (changes.size() > nextChangeIndex) {
+        changes.subList(nextChangeIndex, changes.size()).clear();
       }
       final Enumeration<?> enumeration =
           ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
@@ -160,7 +152,7 @@ public class History extends DefaultTreeModel {
         final HistoryNode node = (HistoryNode) enumeration.nextElement();
         if (node instanceof IndexedHistoryNode) {
           final int index = ((IndexedHistoryNode) node).getChangeStartIndex();
-          if (index >= lastChange) {
+          if (index >= nextChangeIndex) {
             startRemoving = true;
           }
           if (startRemoving) {
@@ -168,21 +160,24 @@ public class History extends DefaultTreeModel {
           }
         }
       }
-      while (!nodesToRemove.isEmpty()) {
-        this.removeNodeFromParent(nodesToRemove.remove(0));
+      for (HistoryNode node : nodesToRemove) {
+        removeNodeFromParent(node);
       }
-    } finally {
-      gameData.releaseWriteLock();
     }
+  }
+
+  public Optional<HistoryNode> getNearestLeafAtOrBefore(HistoryNode node) {
+    if (node.isLeaf()) {
+      return Optional.of(node);
+    }
+    return Optional.ofNullable((HistoryNode) node.getPreviousLeaf());
   }
 
   synchronized void changeAdded(final Change change) {
     changes.add(change);
-    if (currentNode == null) {
-      return;
-    }
-    if (currentNode == getLastNode()) {
+    if (seekingEnabled && nextChangeIndex == changes.size()) {
       gameData.performChange(change);
+      nextChangeIndex = changes.size();
     }
   }
 
@@ -191,7 +186,7 @@ public class History extends DefaultTreeModel {
   }
 
   List<Change> getChanges() {
-    return changes;
+    return Collections.unmodifiableList(changes);
   }
 
   GameData getGameData() {

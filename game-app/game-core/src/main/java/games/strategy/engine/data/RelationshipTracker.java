@@ -173,7 +173,10 @@ public class RelationshipTracker extends GameDataComponent {
     for (final GamePlayer p : getData().getPlayerList().getPlayers()) {
       setRelationship(p, p, getSelfRelationshipType());
     }
-    setRelationship(GamePlayer.NULL_PLAYERID, GamePlayer.NULL_PLAYERID, getSelfRelationshipType());
+    setRelationship(
+        getData().getPlayerList().getNullPlayer(),
+        getData().getPlayerList().getNullPlayer(),
+        getSelfRelationshipType());
   }
 
   /**
@@ -182,7 +185,7 @@ public class RelationshipTracker extends GameDataComponent {
    */
   public void setNullPlayerRelations() {
     for (final GamePlayer p : getData().getPlayerList().getPlayers()) {
-      setRelationship(p, GamePlayer.NULL_PLAYERID, getNullRelationshipType());
+      setRelationship(p, getData().getPlayerList().getNullPlayer(), getNullRelationshipType());
     }
   }
 

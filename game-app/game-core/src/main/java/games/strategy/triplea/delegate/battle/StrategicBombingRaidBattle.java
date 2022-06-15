@@ -97,7 +97,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         TechAbilityAttachment.getAirborneTargettedByAa(
             TechTracker.getCurrentTechAdvances(attacker, gameData.getTechnologyFrontier()));
     final Predicate<Unit> defenders =
-        Matches.enemyUnit(attacker, gameData.getRelationshipTracker())
+        Matches.enemyUnit(attacker)
             .and(
                 Matches.unitCanBeDamaged()
                     .or(
@@ -107,8 +107,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                             attacker,
                             Matches.unitIsAaForBombingThisUnitOnly(),
                             round,
-                            true,
-                            gameData.getRelationshipTracker())));
+                            true)));
     if (targets.isEmpty()) {
       defendingUnits = CollectionUtils.getMatches(battleSite.getUnits(), defenders);
     } else {
@@ -121,8 +120,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   attacker,
                   Matches.unitIsAaForBombingThisUnitOnly(),
                   round,
-                  true,
-                  gameData.getRelationshipTracker()));
+                  true));
       targets.addAll(this.targets.keySet());
       defendingUnits = targets;
     }
@@ -217,8 +215,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                     attacker,
                     Matches.unitIsAaForBombingThisUnitOnly(),
                     round,
-                    true,
-                    gameData.getRelationshipTracker()));
+                    true));
     aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
     // reverse since stacks are in reverse order
     Collections.reverse(aaTypes);
@@ -458,7 +455,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
         final Set<UnitType> targetUnitTypesForThisTypeAa =
-            UnitAttachment.get(CollectionUtils.getAny(currentPossibleAa).getType())
+            CollectionUtils.getAny(currentPossibleAa)
+                .getUnitAttachment()
                 .getTargetsAa(gameData.getUnitTypeList());
 
         final Set<UnitType> airborneTypesTargetedToo =
@@ -736,7 +734,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               if (rolls < 1) {
                 continue;
               }
-              final UnitAttachment ua = UnitAttachment.get(u.getType());
+              final UnitAttachment ua = u.getUnitAttachment();
               int maxDice = ua.getBombingMaxDieSides();
               final int bonus = ua.getBombingBonus();
               // both could be -1, meaning they were not set. if they were not set, then we use
@@ -773,7 +771,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             if (rolls < 1) {
               continue;
             }
-            final UnitAttachment ua = UnitAttachment.get(u.getType());
+            final UnitAttachment ua = u.getUnitAttachment();
             int maxDice = ua.getBombingMaxDieSides();
             int bonus = ua.getBombingBonus();
             // both could be -1, meaning they were not set. if they were not set, then we use
@@ -845,7 +843,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final Map<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage
       for (final Unit attacker : attackingUnits) {
-        final UnitAttachment ua = UnitAttachment.get(attacker.getType());
+        final UnitAttachment ua = attacker.getUnitAttachment();
         final int rolls = getSbrRolls(attacker, StrategicBombingRaidBattle.this.attacker);
         int costThisUnit = 0;
         if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
@@ -884,14 +882,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
         }
 
-        costThisUnit =
-            Math.max(
-                0,
-                (costThisUnit
-                    + TechAbilityAttachment.getBombingBonus(
-                        attacker.getType(),
-                        TechTracker.getCurrentTechAdvances(
-                            attacker.getOwner(), gameData.getTechnologyFrontier()))));
+        final int bonus =
+            gameData.getTechTracker().getBombingBonus(attacker.getOwner(), attacker.getType());
+        costThisUnit = Math.max(0, (costThisUnit + bonus));
         if (limitDamage) {
           costThisUnit = Math.min(costThisUnit, damageLimit);
         }
@@ -1014,7 +1007,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   @VisibleForTesting
   public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
-    return UnitAttachment.get(unit.getType()).getAttackRolls(gamePlayer);
+    return unit.getUnitAttachment().getAttackRolls(gamePlayer);
   }
 
   @Override

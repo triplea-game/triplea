@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
+import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -12,7 +13,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
@@ -27,9 +27,7 @@ import org.triplea.java.collections.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
 class CasualtyOrderOfLossesTest {
-
-  @Mock GameData gameData;
-  @Mock UnitTypeList unitTypeList;
+  final GameData gameData = givenGameData().build();
   @Mock GamePlayer player;
   @Mock UnitAttachment unitAttachment;
 

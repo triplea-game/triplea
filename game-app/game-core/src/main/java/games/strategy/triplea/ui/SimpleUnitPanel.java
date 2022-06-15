@@ -13,28 +13,31 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
+import java.awt.Image;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Setter;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.WrapLayout;
 
-/** A Simple panel that displays a list of units. */
-@Slf4j
+/** A simple panel that displays a list of units. */
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
   private final UiContext uiContext;
   private final Style style;
+  @Setter private double scaleFactor = 1.0;
+  @Setter private boolean showCountsForSingleUnits = true;
 
   public enum Style {
     LARGE_ICONS_COLUMN,
+    SMALL_ICONS_ROW,
     SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY
   }
 
@@ -47,6 +50,8 @@ public class SimpleUnitPanel extends JPanel {
     this.style = style;
     if (style == Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY) {
       setLayout(new WrapLayout());
+    } else if (style == Style.SMALL_ICONS_ROW) {
+      setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     } else {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
@@ -132,10 +137,11 @@ public class SimpleUnitPanel extends JPanel {
       final boolean damaged,
       final boolean disabled) {
     final JLabel label = new JLabel();
-    label.setText(" x " + quantity);
+    if (showCountsForSingleUnits || quantity > 1) {
+      label.setText("x " + quantity);
+    }
     if (unit instanceof UnitType) {
       final UnitType unitType = (UnitType) unit;
-
       final UnitImageFactory.ImageKey imageKey =
           UnitImageFactory.ImageKey.builder()
               .player(player)
@@ -143,19 +149,28 @@ public class SimpleUnitPanel extends JPanel {
               .damaged(damaged)
               .disabled(disabled)
               .build();
-      final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(imageKey);
-      if (icon.isEmpty() && !uiContext.isShutDown()) {
-        final String imageName = imageKey.getFullName();
-        log.error("missing unit icon (won't be displayed): " + imageName + ", " + imageKey);
-      }
-      icon.ifPresent(label::setIcon);
+      ImageIcon icon = uiContext.getUnitImageFactory().getIcon(imageKey);
+      label.setIcon(scaleIcon(icon, scaleFactor));
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);
     } else if (unit instanceof Resource) {
-      label.setIcon(
+      ImageIcon icon =
           style == Style.LARGE_ICONS_COLUMN
               ? uiContext.getResourceImageFactory().getLargeIcon(unit.getName())
-              : uiContext.getResourceImageFactory().getIcon(unit.getName()));
+              : uiContext.getResourceImageFactory().getIcon(unit.getName());
+      label.setIcon(scaleIcon(icon, scaleFactor));
     }
     add(label);
+    if (style == Style.SMALL_ICONS_ROW) {
+      add(Box.createHorizontalStrut(8));
+    }
+  }
+
+  private static ImageIcon scaleIcon(ImageIcon icon, double scaleFactor) {
+    if (scaleFactor == 1.0) {
+      return icon;
+    }
+    int width = (int) (icon.getIconWidth() * scaleFactor);
+    int height = (int) (icon.getIconHeight() * scaleFactor);
+    return new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
   }
 }

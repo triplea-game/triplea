@@ -113,11 +113,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   public UnitAttachment getUnitAttachment() {
-    return (UnitAttachment) type.getAttachment("unitAttachment");
+    return type.getUnitAttachment();
   }
 
   public void setOwner(final @Nullable GamePlayer player) {
-    owner = Optional.ofNullable(player).orElse(GamePlayer.NULL_PLAYERID);
+    owner = Optional.ofNullable(player).orElse(getData().getPlayerList().getNullPlayer());
   }
 
   public final boolean isOwnedBy(final GamePlayer player) {
@@ -159,7 +159,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     if (!Matches.unitCanBeDamaged().test(this)) {
       return -1;
     }
-    final UnitAttachment ua = UnitAttachment.get(getType());
+    final UnitAttachment ua = getType().getUnitAttachment();
     final int territoryUnitProduction = TerritoryAttachment.getUnitProduction(t);
     if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData().getProperties())) {
       if (ua.getMaxDamage() <= 0) {
@@ -489,11 +489,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
   /** Does not account for any movement already made. Generally equal to UnitType movement */
   public int getMaxMovementAllowed() {
-    return Math.max(0, bonusMovement + UnitAttachment.get(getType()).getMovement(getOwner()));
+    return Math.max(0, bonusMovement + getType().getUnitAttachment().getMovement(getOwner()));
   }
 
   public BigDecimal getMovementLeft() {
-    return new BigDecimal(UnitAttachment.get(getType()).getMovement(getOwner()))
+    return new BigDecimal(getType().getUnitAttachment().getMovement(getOwner()))
         .add(new BigDecimal(bonusMovement))
         .subtract(alreadyMoved);
   }

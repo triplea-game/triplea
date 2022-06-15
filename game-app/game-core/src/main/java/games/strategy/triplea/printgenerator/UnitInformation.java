@@ -52,14 +52,15 @@ class UnitInformation {
             unitInformation.write(StringUtils.capitalize(currentType.getName()) + ",");
           }
           unitInformation.write(getCostInformation(currentType, printData.getData()) + ",");
+          final GamePlayer nullPlayer = currentType.getData().getPlayerList().getNullPlayer();
           unitInformation.write(
-              currentAttachment.getMovement(GamePlayer.NULL_PLAYERID)
+              currentAttachment.getMovement(nullPlayer)
                   + ","
-                  + currentAttachment.getAttack(GamePlayer.NULL_PLAYERID)
+                  + currentAttachment.getAttack(nullPlayer)
                   + ","
-                  + currentAttachment.getDefense(GamePlayer.NULL_PLAYERID)
+                  + currentAttachment.getDefense(nullPlayer)
                   + ","
-                  + (!currentAttachment.getCanBlitz(GamePlayer.NULL_PLAYERID) ? "-" : "true")
+                  + (!currentAttachment.getCanBlitz(nullPlayer) ? "-" : "true")
                   + ","
                   + (!currentAttachment.getArtillery() ? "-" : "true")
                   + ","
