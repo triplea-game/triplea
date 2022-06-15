@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -193,13 +194,13 @@ public final class ProTransportUtils {
       final Unit unit,
       final List<Unit> alreadyMovedUnits,
       final Map<Territory, ProTerritory> moveMap) {
-    final List<Unit> movedUnits = getMovedUnits(alreadyMovedUnits, moveMap);
+    final Set<Unit> movedUnits = getMovedUnits(alreadyMovedUnits, moveMap);
     return findBestUnitsToLandTransport(unit, proData.getUnitTerritory(unit), movedUnits);
   }
 
-  public static List<Unit> getMovedUnits(
+  public static Set<Unit> getMovedUnits(
       final List<Unit> alreadyMovedUnits, final Map<Territory, ProTerritory> attackMap) {
-    final List<Unit> movedUnits = new ArrayList<>(alreadyMovedUnits);
+    final Set<Unit> movedUnits = new HashSet<>(alreadyMovedUnits);
     movedUnits.addAll(
         attackMap.values().stream()
             .map(ProTerritory::getAllDefenders)
@@ -212,9 +213,15 @@ public final class ProTransportUtils {
    * Check if unit is a land transport and if there are any unused units that could be transported.
    */
   public static List<Unit> findBestUnitsToLandTransport(
-      final Unit unit, final Territory t, final List<Unit> usedUnits) {
+      final Unit unit, final Territory t, final Set<Unit> usedUnits) {
     if (usedUnits.contains(unit)) {
+      // Can't even move this unit.
       return List.of();
+    }
+    if (unit.getUnitAttachment().getTransportCapacity() == 0 &&
+        Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
+      // Optimization: This unit can't transport anything else.
+      return List.of(unit);
     }
     final GamePlayer player = unit.getOwner();
     final List<Unit> units =
