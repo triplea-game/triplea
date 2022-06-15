@@ -219,7 +219,7 @@ public final class ProTransportUtils {
       return List.of();
     }
     if (unit.getUnitAttachment().getTransportCapacity() == 0 &&
-        Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
+        !Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
       // Optimization: This unit can't transport anything else.
       return List.of(unit);
     }
