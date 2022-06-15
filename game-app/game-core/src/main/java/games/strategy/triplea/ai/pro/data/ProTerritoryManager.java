@@ -160,12 +160,16 @@ public class ProTerritoryManager {
       final ProTerritory patd = attackMap.get(t);
 
       // Check if I can win without amphib units
-      final List<Unit> defenders =
-          new ArrayList<>(
-              isIgnoringRelationships ? t.getUnitCollection() : patd.getMaxEnemyDefenders(player));
+      final List<Unit> defenders;
+      if (isIgnoringRelationships) {
+        defenders = new ArrayList<>(t.getUnitCollection());
+        // Don't include any of the attacking units as defenders.
+        defenders.removeAll(patd.getMaxUnits());
+      } else {
+        defenders = patd.getMaxEnemyDefenders(player);
+      }
       patd.setMaxBattleResult(
-          calc.estimateAttackBattleResults(
-              proData, t, patd.getMaxUnits(), defenders, new HashSet<>()));
+          calc.estimateAttackBattleResults(proData, t, patd.getMaxUnits(), defenders, Set.of()));
 
       // Add in amphib units if I can't win without them
       if (patd.getMaxBattleResult().getWinPercentage() < proData.getWinPercentage()
@@ -174,7 +178,7 @@ public class ProTerritoryManager {
         combinedUnits.addAll(patd.getMaxAmphibUnits());
         patd.setMaxBattleResult(
             calc.estimateAttackBattleResults(
-                proData, t, new ArrayList<>(combinedUnits), defenders, patd.getMaxBombardUnits()));
+                proData, t, combinedUnits, defenders, patd.getMaxBombardUnits()));
         patd.setNeedAmphibUnits(true);
       }
 
