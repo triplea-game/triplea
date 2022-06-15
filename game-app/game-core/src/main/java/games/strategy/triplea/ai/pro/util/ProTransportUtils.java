@@ -218,12 +218,12 @@ public final class ProTransportUtils {
       // Can't even move this unit.
       return List.of();
     }
-    if (unit.getUnitAttachment().getTransportCapacity() == 0 &&
-        !Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
-      // Optimization: This unit can't transport anything else.
+    final GamePlayer player = unit.getOwner();
+    if (!Matches.unitIsLandTransport().test(unit)
+        || !player.getTechAttachment().getMechanizedInfantry()) {
+      // This unit can't transport anything else.
       return List.of(unit);
     }
-    final GamePlayer player = unit.getOwner();
     final List<Unit> units =
         t.getUnitCollection()
             .getMatches(
@@ -231,9 +231,7 @@ public final class ProTransportUtils {
                     .and(Matches.unitIsLandTransportable())
                     .and(ProMatches.unitHasLessMovementThan(unit)));
     units.removeAll(usedUnits);
-    if (Matches.unitIsLandTransport().negate().test(unit)
-        || !player.getTechAttachment().getMechanizedInfantry()
-        || units.isEmpty()) {
+    if (units.isEmpty()) {
       return List.of(unit);
     }
     final List<Unit> results = new ArrayList<>();
