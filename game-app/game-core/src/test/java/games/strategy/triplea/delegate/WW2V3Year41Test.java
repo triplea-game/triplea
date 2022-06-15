@@ -1445,6 +1445,7 @@ class WW2V3Year41Test {
     assertError(error);
   }
 
+  /** Tests verifying legal moves with the mech infantry tech. */
   @Nested
   final class MechInfantry {
     final GamePlayer germans = germans(gameData);
@@ -1461,6 +1462,7 @@ class WW2V3Year41Test {
       moveDelegate(gameData).start();
     }
 
+    /** Test that a a tank can carry an infantry two moves. */
     @Test
     void testMechInfSimple() {
       // 1 armour and 1 infantry
@@ -1471,6 +1473,7 @@ class WW2V3Year41Test {
       move(toMove, new Route(france, germany, poland));
     }
 
+    /** Test that a a tank can't carry an infantry that already moved. */
     @Test
     void testMechInfUnitAlreadyMovedSimple() {
       // get rid of the infantry in france
@@ -1484,6 +1487,7 @@ class WW2V3Year41Test {
       assertError(moveDelegate(gameData).move(france.getUnits(), r));
     }
 
+    /** Test blitzing behavior to ensure a tank can blitz while carrying an infantry (but not 2). */
     @Test
     void testMechInfBlitz() {
       final Territory eastPoland = territory("East Poland", gameData);
@@ -1505,6 +1509,7 @@ class WW2V3Year41Test {
     }
   }
 
+  /** Tests verifying legal moves with the mech infantry tech. */
   @Nested
   final class Paratroopers {
     final GamePlayer germans = germans(gameData);
@@ -1527,6 +1532,7 @@ class WW2V3Year41Test {
       germans.getTechAttachment().setParatroopers("true");
     }
 
+    /** Test that paratroopers can't walk on water. */
     @Test
     void testParatroopsWalkOnWater() {
       final Territory france = territory("France", gameData);
@@ -1540,6 +1546,7 @@ class WW2V3Year41Test {
       assertFalse(results.isMoveValid());
     }
 
+    /** Tests that a bomber can't carry a tank as a paratrooper. */
     @Test
     void testBomberTankOverWater() {
       final Territory sz5 = territory("5 Sea Zone", gameData);
@@ -1563,6 +1570,7 @@ class WW2V3Year41Test {
       assertFalse(validator.validateMove(new MoveDescription(toMove, r), germans).isMoveValid());
     }
 
+    /** Tests that paratroopers can move as regular units, without being air transported. */
     @Test
     void testMoveParatroopersAsNonPartroops() {
       // move a bomber and a paratrooper
@@ -1577,6 +1585,7 @@ class WW2V3Year41Test {
       move(bomberAndParatroop, new Route(germany, nwe));
     }
 
+    /** Tests that paratroopers that have moved can't be air transported. */
     @Test
     void testCantMoveParatroopersThatMovedPreviously() {
       // make sure infantry can't be moved as paratroopers after moving
@@ -1595,6 +1604,7 @@ class WW2V3Year41Test {
       assertError(moveDelegate(gameData).performMove(move));
     }
 
+    /** Tests that paratroopers can't be air transported by bombers that moved previously. */
     @Test
     void testCantTransportParatroopersWithBombersThatMovedPreviously() {
       // make sure bombers can't move then pick up paratroopers
@@ -1613,6 +1623,7 @@ class WW2V3Year41Test {
       assertError(moveDelegate(gameData).performMove(move));
     }
 
+    /** Tests that paratroopers a bomber can't air transport two paratroopers. */
     @Test
     void testMoveOneParatrooperPerBomber() {
       // make sure only 1 paratroop per bomber can be moved
@@ -1627,6 +1638,7 @@ class WW2V3Year41Test {
       assertError(error);
     }
 
+    /** Tests that you can't make two air transport moves with the same units. */
     @Test
     void testParatroopersMoveTwice() {
       // After a battle move to put a bomber + infantry (paratroop) in a first enemy
@@ -1651,6 +1663,7 @@ class WW2V3Year41Test {
       assertError(moveDelegate(gameData).performMove(move));
     }
 
+    /** Tests that blitz restrictions don't apply to units being air transported. */
     @Test
     void testParatroopersFlyOverBlitzedTerritory() {
       // We should be able to blitz a territory, then fly over it with paratroops to battle.
@@ -1670,6 +1683,7 @@ class WW2V3Year41Test {
       assertValid(moveDelegate(gameData).performMove(move));
     }
 
+    /** Tests that extra infantry attacking along paratroopers doesn't gain blitz ability. */
     @Test
     void testBlitzWithParatroopers() {
       // Check that extra infantry can't come along on a blitz if they're not air transported.

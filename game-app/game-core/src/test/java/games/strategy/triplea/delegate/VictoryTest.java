@@ -173,6 +173,10 @@ class VictoryTest {
     moveDelegate.end();
   }
 
+  /**
+   * These tests verify move validation concerning attacks between angloEgypt to transJordan, with
+   * angloEgypt set up as a contested (owned by enemy or with enemy units, depending on the test).
+   */
   @Nested
   final class AttackingFromContestedTerritory {
     final List<Unit> infantryUnit = infantry.create(1, italians);
@@ -199,6 +203,7 @@ class VictoryTest {
       moveDelegate.start();
     }
 
+    /** Attack with tank and infantry from a battle in angloEgypt to a battle in transJordan. */
     @Test
     void testAttackWithBothUnits() {
       assertThat(
@@ -209,6 +214,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
+    /** Attack with infantry, then tank from a battle in angloEgypt to a battle in transJordan. */
     @Test
     void testAttackWithInfantryThenTank() {
       assertThat(
@@ -223,6 +229,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
     }
 
+    /** Attack with tank, then infantry from a battle in angloEgypt to a battle in transJordan. */
     @Test
     void testAttackWithTankThenInfantry() {
       assertThat(
@@ -237,6 +244,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(infantryUnit, route), wasPerformedSuccessfully());
     }
 
+    /** Attack from a battle in angloEgypt to an empty enemy-owned transJordan. */
     @Test
     void testAttackToEmptyEnemyTerritory() {
       removeEnemyUnits(italians, transJordan);
@@ -256,6 +264,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
+    /** Attack from an empty enemy-owned angloEgypt to a battle in transJordan. */
     @Test
     void testAttackFromContestedTerritoryWithNoEnemies() {
       removeEnemyUnits(italians, angloEgypt);
@@ -270,6 +279,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
     }
 
+    /** Attack from an empty enemy-owned angloEgypt to a battle in transJordan. */
     @Test
     void testAttackFromContestedTerritoryWithNoEnemiesWithPropertySet() {
       removeEnemyUnits(italians, angloEgypt);
@@ -279,6 +289,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
+    /** Attack from an empty enemy-owned angloEgypt to an empty enemy-owned transJordan. */
     @Test
     void testAttackFromContestedTerritoryWithNoEnemiesToEmptyEnemyTerritory() {
       removeEnemyUnits(italians, angloEgypt);
@@ -295,6 +306,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
     }
 
+    /** Attack from an empty enemy-owned angloEgypt to an empty enemy-owned transJordan. */
     @Test
     void testAttackFromContestedTerritoryWithNoEnemiesToEmptyEnemyTerritoryWithPropertySet() {
       removeEnemyUnits(italians, angloEgypt);
@@ -306,6 +318,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
+    /** Attack from friendly angloEgypt with enemy units to a battle in transJordan. */
     @Test
     void testAttackFromOwnContestedTerritory() {
       // Make angloEgypt owned by italians, but with enemy units.
@@ -326,6 +339,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
+    /** Attack from a battle in angloEgypt to friendly transJordan with enemy units. */
     @Test
     void testAttackToOwnContestedTerritory() {
       // Make transJordan owned by italians, but with enemy units.
@@ -335,6 +349,7 @@ class VictoryTest {
       assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
     }
 
+    /** Attack from a battle in angloEgypt to friendly transJordan with enemy units. */
     @Test
     void testAttackToOwnContestedTerritoryWithPropertySet() {
       // Make transJordan owned by italians, but with enemy units.
