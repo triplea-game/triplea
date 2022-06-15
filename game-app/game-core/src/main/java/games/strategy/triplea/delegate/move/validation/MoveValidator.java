@@ -83,8 +83,6 @@ public class MoveValidator {
   public static final String TRANSPORT_CANNOT_LOAD_AFTER_COMBAT =
       "Transport cannot load after being in combat";
   public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
-  public static final String CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY =
-      "Cannot attack out of a contested territory";
   public static final String CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY =
       "Cannot blitz out of a battle into enemy territory";
   public static final String NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY =

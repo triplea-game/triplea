@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,27 +41,24 @@ import org.triplea.java.collections.IntegerMap;
  * probably should never be played.
  */
 class VictoryTest {
-  private GameData gameData = TestMapGameData.VICTORY_TEST.getGameData();
-  private GamePlayer italians = GameDataTestUtil.italians(gameData);
-  private GamePlayer germans = GameDataTestUtil.germans(gameData);
-  private GamePlayer british = GameDataTestUtil.british(gameData);
-  private UnitType motorized =
-      gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MOTORIZED);
-  private UnitType armour = GameDataTestUtil.armour(gameData);
-  private UnitType infantry = GameDataTestUtil.infantry(gameData);
-  private UnitType fighter = GameDataTestUtil.fighter(gameData);
-  private UnitType carrier = GameDataTestUtil.carrier(gameData);
-  private Territory belgianCongo = gameData.getMap().getTerritory("Belgian Congo");
-  private Territory frenchEquatorialAfrica =
-      gameData.getMap().getTerritory("French Equatorial Africa");
-  private Territory frenchWestAfrica = gameData.getMap().getTerritory("French West Africa");
-  private Territory angloEgypt = gameData.getMap().getTerritory("Anglo Egypt");
-  private Territory kenya = gameData.getMap().getTerritory("Kenya");
-  private Territory libya = gameData.getMap().getTerritory("Libya");
-
-  private Territory transJordan = gameData.getMap().getTerritory("Trans-Jordan");
-  private Territory sz29 = gameData.getMap().getTerritory("29 Sea Zone");
-  private Territory sz30 = gameData.getMap().getTerritory("30 Sea Zone");
+  private final GameData gameData = TestMapGameData.VICTORY_TEST.getGameData();
+  private final GamePlayer italians = GameDataTestUtil.italians(gameData);
+  private final GamePlayer germans = GameDataTestUtil.germans(gameData);
+  private final GamePlayer british = GameDataTestUtil.british(gameData);
+  private final UnitType motorized = unitType(Constants.UNIT_TYPE_MOTORIZED, gameData);
+  private final UnitType armour = GameDataTestUtil.armour(gameData);
+  private final UnitType infantry = GameDataTestUtil.infantry(gameData);
+  private final UnitType fighter = GameDataTestUtil.fighter(gameData);
+  private final UnitType carrier = GameDataTestUtil.carrier(gameData);
+  private final Territory belgianCongo = territory("Belgian Congo", gameData);
+  private final Territory frenchEquatorialAfrica = territory("French Equatorial Africa", gameData);
+  private final Territory frenchWestAfrica = territory("French West Africa", gameData);
+  private final Territory angloEgypt = territory("Anglo Egypt", gameData);
+  private final Territory kenya = territory("Kenya", gameData);
+  private final Territory libya = territory("Libya", gameData);
+  private final Territory transJordan = territory("Trans-Jordan", gameData);
+  private final Territory sz29 = territory("29 Sea Zone", gameData);
+  private final Territory sz30 = territory("30 Sea Zone", gameData);
   private IDelegateBridge testBridge;
   private IntegerMap<Resource> italianResources;
   private MoveDelegate moveDelegate;
@@ -351,10 +350,6 @@ class VictoryTest {
       Collection<Unit> enemyUnits = CollectionUtils.getMatches(t.getUnits(), isEnemy);
       gameData.performChange(ChangeFactory.removeUnits(t, enemyUnits));
       assertThat(CollectionUtils.countMatches(t.getUnits(), isEnemy), is(0));
-    }
-
-    Matcher<String> isNotAllowedWithContestedAttackError() {
-      return is(MoveValidator.CANNOT_ATTACK_OUT_OF_CONTESTED_TERRITORY);
     }
 
     Matcher<Object> wasPerformedSuccessfully() {
