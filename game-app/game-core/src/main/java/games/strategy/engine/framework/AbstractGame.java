@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.PlayerList;
@@ -19,8 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
-import lombok.Getter;
-import lombok.Setter;
 import org.triplea.sound.ISound;
 
 /**
@@ -51,8 +50,7 @@ public abstract class AbstractGame implements IGame {
   @Nullable private IDisplay display;
   @Nullable private ISound sound;
 
-  // TODO ensure ResourceLoader is never null
-  @Getter @Setter @Nullable private ResourceLoader resourceLoader;
+  @Nullable private ResourceLoader resourceLoader;
 
   AbstractGame(
       final GameData data,
@@ -71,6 +69,16 @@ public abstract class AbstractGame implements IGame {
     }
     playerManager = new PlayerManager(allPlayers);
     setupLocalPlayers(gamePlayers);
+  }
+
+  public void setResourceLoader(final ResourceLoader resourceLoader) {
+    this.resourceLoader =
+        Preconditions.checkNotNull(resourceLoader, "ResourceLoader needs to be non-null");
+  }
+
+  public ResourceLoader getResourceLoader() {
+    return Preconditions.checkNotNull(
+        resourceLoader, "ResourceLoader has been accessed before setting it");
   }
 
   private void setupLocalPlayers(final Set<Player> localPlayers) {
