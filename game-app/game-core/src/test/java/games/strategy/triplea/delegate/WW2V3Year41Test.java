@@ -1450,9 +1450,9 @@ class WW2V3Year41Test {
   @Nested
   final class MechInfantry {
     final GamePlayer germans = germans(gameData);
-    final Territory france = territory("France", gameData);
-    final Territory germany = territory("Germany", gameData);
-    final Territory poland = territory("Poland", gameData);
+    final Territory france = getTerritory("France");
+    final Territory germany = getTerritory("Germany");
+    final Territory poland = getTerritory("Poland");
 
     @BeforeEach
     void setUp() {
@@ -1468,8 +1468,7 @@ class WW2V3Year41Test {
     void testMechInfSimple() {
       // 1 armour and 1 infantry
       final UnitCollection franceUnits = france.getUnitCollection();
-      final List<Unit> toMove =
-          new ArrayList<>(franceUnits.getMatches(Matches.unitCanBlitz()));
+      final List<Unit> toMove = new ArrayList<>(franceUnits.getMatches(Matches.unitCanBlitz()));
       assertThat(toMove, hasSize(1)); // ensure transporting unit was added
       toMove.add(franceUnits.getMatches(Matches.unitIsLandTransportable()).get(0));
       assertThat(toMove, hasSize(2)); // ensure Mech infantry unit was added
@@ -1494,8 +1493,8 @@ class WW2V3Year41Test {
     /** Test blitzing behavior to ensure a tank can blitz while carrying an infantry (but not 2). */
     @Test
     void testMechInfBlitz() {
-      final Territory eastPoland = territory("East Poland", gameData);
-      final Territory beloRussia = territory("Belorussia", gameData);
+      final Territory eastPoland = getTerritory("East Poland");
+      final Territory beloRussia = getTerritory("Belorussia");
       final Route r = new Route(poland, eastPoland, beloRussia);
       removeFrom(eastPoland, eastPoland.getUnits());
       // Test with regular infantry and 2mv infantry to make sure they don't get blitz either.
@@ -1517,13 +1516,13 @@ class WW2V3Year41Test {
   @Nested
   final class Paratroopers {
     final GamePlayer germans = germans(gameData);
-    final Territory germany = getTerritory("Germany", gameData);
-    final Territory poland = territory("Poland", gameData);
-    final Territory eastPoland = territory("East Poland", gameData);
-    final Territory beloRussia = territory("Belorussia", gameData);
-    final Territory ukraine = territory("Ukraine", gameData);
-    final Territory bulgaria = territory("Bulgaria Romania");
-    final Territory nwe = territory("Northwestern Europe", gameData);
+    final Territory germany = getTerritory("Germany");
+    final Territory poland = getTerritory("Poland");
+    final Territory eastPoland = getTerritory("East Poland");
+    final Territory beloRussia = getTerritory("Belorussia");
+    final Territory ukraine = getTerritory("Ukraine");
+    final Territory bulgaria = getTerritory("Bulgaria Romania");
+    final Territory nwe = getTerritory("Northwestern Europe");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     final List<Unit> tanks = poland.getUnitCollection().getMatches(Matches.unitCanBlitz());
 
@@ -1539,7 +1538,7 @@ class WW2V3Year41Test {
     /** Test that paratroopers can't walk on water. */
     @Test
     void testParatroopsWalkOnWater() {
-      final Territory france = territory("France", gameData);
+      final Territory france = getTerritory("France");
       final Route r = new Route(france, getTerritory("7 Sea Zone"));
       final Collection<Unit> paratroopers =
           france.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
@@ -1553,8 +1552,8 @@ class WW2V3Year41Test {
     /** Tests that a bomber can't carry a tank as a paratrooper. */
     @Test
     void testBomberTankOverWater() {
-      final Territory sz5 = territory("5 Sea Zone", gameData);
-      final Territory karelia = territory("Karelia S.S.R.", gameData);
+      final Territory sz5 = getTerritory("5 Sea Zone");
+      final Territory karelia = getTerritory("Karelia S.S.R.");
       final Route r = new Route(germany, sz5, karelia);
       addTo(germany, armour(gameData).create(1, germans));
       final List<Unit> toMove = germany.getUnitCollection().getMatches(Matches.unitCanBlitz());
