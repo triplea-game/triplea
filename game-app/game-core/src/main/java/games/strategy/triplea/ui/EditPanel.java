@@ -29,7 +29,7 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.triplea.util.TuvUtils;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -706,7 +706,7 @@ class EditPanel extends ActionPanel {
             sortUnitsToRemove(units);
             units.sort(
                 new UnitBattleComparator(
-                        TuvUtils.getCostsForTuv(player, getData()),
+                        new TuvCostsCalculator().getCostsForTuv(player),
                         getData(),
                         CombatValueBuilder.mainCombatValue()
                             .enemyUnits(List.of())
@@ -794,7 +794,7 @@ class EditPanel extends ActionPanel {
             sortUnitsToRemove(units);
             units.sort(
                 new UnitBattleComparator(
-                        TuvUtils.getCostsForTuv(player, getData()),
+                        new TuvCostsCalculator().getCostsForTuv(player),
                         getData(),
                         CombatValueBuilder.mainCombatValue()
                             .enemyUnits(List.of())

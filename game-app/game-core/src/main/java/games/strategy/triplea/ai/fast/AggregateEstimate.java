@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.odds.calculator.AggregateResults;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.Collection;
 import org.triplea.java.collections.IntegerMap;
@@ -54,8 +55,9 @@ class AggregateEstimate extends AggregateResults {
       final GamePlayer defender,
       final Collection<Unit> defenders,
       final GameData data) {
-    final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTuv(attacker, data);
-    final IntegerMap<UnitType> defenderCostsForTuv = TuvUtils.getCostsForTuv(defender, data);
+    final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+    final IntegerMap<UnitType> attackerCostsForTuv = tuvCalculator.getCostsForTuv(attacker);
+    final IntegerMap<UnitType> defenderCostsForTuv = tuvCalculator.getCostsForTuv(defender);
     final int attackerTotalTuv = TuvUtils.getTuv(attackers, attackerCostsForTuv);
     final int defenderTotalTuv = TuvUtils.getTuv(defenders, defenderCostsForTuv);
     final Tuple<Double, Double> average =

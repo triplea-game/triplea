@@ -10,34 +10,35 @@ import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
-class TuvUtilsTest {
+class TuvCostsCalculatorTest {
   private GameData gameData = TestMapGameData.TWW.getGameData();
+  private TuvCostsCalculator calculator = new TuvCostsCalculator();
 
   @Test
   void testCostsForTuv() {
     final GamePlayer germans = GameDataTestUtil.germany(gameData);
-    final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
+    final IntegerMap<UnitType> result = calculator.getCostsForTuv(germans);
     assertEquals(3, result.getInt(GameDataTestUtil.germanInfantry(gameData)));
   }
 
   @Test
   void testCostsForTuvWithConsumesUnit() {
     final GamePlayer germans = GameDataTestUtil.germany(gameData);
-    final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
+    final IntegerMap<UnitType> result = calculator.getCostsForTuv(germans);
     assertEquals(11, result.getInt(GameDataTestUtil.germanFactory(gameData)));
   }
 
   @Test
   void testCostsForTuvWithConsumesUnitChain() {
     final GamePlayer germans = GameDataTestUtil.germany(gameData);
-    final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
+    final IntegerMap<UnitType> result = calculator.getCostsForTuv(germans);
     assertEquals(12, result.getInt(GameDataTestUtil.germanFortification(gameData)));
   }
 
   @Test
   void testCostsForTuvWithXmlPropertySet() {
     final GamePlayer germans = GameDataTestUtil.germany(gameData);
-    final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
+    final IntegerMap<UnitType> result = calculator.getCostsForTuv(germans);
     assertEquals(25, result.getInt(GameDataTestUtil.germanBattleship(gameData)));
   }
 }

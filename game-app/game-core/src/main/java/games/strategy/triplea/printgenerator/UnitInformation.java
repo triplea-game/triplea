@@ -9,7 +9,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.util.TuvUtils;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +23,8 @@ import org.triplea.java.collections.CollectionUtils;
 
 @Slf4j
 class UnitInformation {
+  final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+
   void saveToFile(
       final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
     final Path outFile = printData.getOutDir().resolve("General Information.csv");
@@ -110,7 +112,7 @@ class UnitInformation {
     }
   }
 
-  private static int getCostInformation(final UnitType type, final GameData data) {
+  private int getCostInformation(final UnitType type, final GameData data) {
     final ProductionFrontier production =
         data.getProductionFrontierList().getProductionFrontier("production");
     if (production != null) {
@@ -122,7 +124,7 @@ class UnitInformation {
       }
     } else {
       final GamePlayer player = CollectionUtils.getAny(data.getPlayerList().getPlayers());
-      final int cost = TuvUtils.getCostsForTuv(player, data).getInt(type);
+      final int cost = tuvCalculator.getCostsForTuv(player).getInt(type);
       if (cost > 0) {
         return cost;
       }

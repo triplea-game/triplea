@@ -179,10 +179,8 @@ public class AirBattle extends AbstractBattle {
               if (!intercept) {
                 return;
               }
-              final IntegerMap<UnitType> defenderCosts =
-                  bridge.getCostsForTuv(defender);
-              final IntegerMap<UnitType> attackerCosts =
-                  bridge.getCostsForTuv(attacker);
+              final IntegerMap<UnitType> defenderCosts = bridge.getCostsForTuv(defender);
+              final IntegerMap<UnitType> attackerCosts = bridge.getCostsForTuv(attacker);
               attackingUnits.removeAll(attackingWaitingToDie);
               remove(attackingWaitingToDie, bridge, battleSite);
               defendingUnits.removeAll(defendingWaitingToDie);

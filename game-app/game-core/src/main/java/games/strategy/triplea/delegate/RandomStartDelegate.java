@@ -11,7 +11,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.TuvUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;

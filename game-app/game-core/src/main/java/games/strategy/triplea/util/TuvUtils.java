@@ -30,21 +30,6 @@ import org.triplea.java.collections.IntegerMap;
 @UtilityClass
 public class TuvUtils {
   /**
-   * Return map where keys are unit types and values are PU costs of that unit type, based on a
-   * player. Any production rule that produces multiple units (like artillery in NWO, costs 7 but
-   * makes 2 artillery, meaning effective price is 3.5 each) will have their costs rounded up on a
-   * per unit basis (so NWO artillery will become 4). Therefore, this map should NOT be used for
-   * Purchasing information!
-   *
-   * @param player The player to get costs schedule for
-   * @param data The game data.
-   * @return a map of unit types to PU cost
-   */
-  public static IntegerMap<UnitType> getCostsForTuv(final GamePlayer player, final GameData data) {
-    return new TuvCostsCalculator().getCostsForTuv(player);
-  }
-
-  /**
    * Return map where keys are unit types and values are resource costs of that unit type, based on
    * a player. Any production rule that produces multiple units (like artillery in NWO, costs 7 but
    * makes 2 artillery, meaning effective price is 3.5 each) will have their costs rounded up on a

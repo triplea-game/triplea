@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.battle.BattleResults;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -165,8 +166,9 @@ public class AggregateResults {
     //
     // Because mean(x_i+c) = mean(x_i)+c for a constant c - the startingTuv in this case - we save
     // some computations and add the startingTuv after we have calculated the mean.
-    final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTuv(attacker, data);
-    final IntegerMap<UnitType> defenderCostsForTuv = TuvUtils.getCostsForTuv(defender, data);
+    final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+    final IntegerMap<UnitType> attackerCostsForTuv = tuvCalculator.getCostsForTuv(attacker);
+    final IntegerMap<UnitType> defenderCostsForTuv = tuvCalculator.getCostsForTuv(defender);
     final int attackerStartingTuv = TuvUtils.getTuv(attackers, attackerCostsForTuv);
     final int defenderStartingTuv = TuvUtils.getTuv(defenders, defenderCostsForTuv);
     final Mean mean = new Mean();
