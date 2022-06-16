@@ -10,10 +10,12 @@ import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.Messengers;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import org.triplea.game.chat.ChatModel;
@@ -29,6 +31,8 @@ public interface LaunchAction {
   void onGameInterrupt();
 
   void onEnd(String message);
+
+  Collection<PlayerTypes.Type> getPlayerTypes();
 
   IDisplay startGame(LocalPlayers localPlayers, IGame game, Set<Player> players, Chat chat);
 

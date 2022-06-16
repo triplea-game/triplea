@@ -38,8 +38,8 @@ public class AiGameTest {
     game.setStopGameOnDelegateExecutionStop(true);
     while (!game.isGameOver()) {
       game.runNextStep();
-      if (game.getData().getSequence().getRound() > 100) {
-        log.warn("No winner after 100 rounds");
+      if (game.getData().getSequence().getRound() > 50) {
+        log.warn("No winner after 50 rounds");
         break;
       }
     }

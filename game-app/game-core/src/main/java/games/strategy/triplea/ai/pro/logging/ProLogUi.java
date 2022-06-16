@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 import org.triplea.swing.SwingAction;
 
 /** Class to manage log window display. */
@@ -57,10 +58,12 @@ public final class ProLogUi {
   }
 
   static void notifyAiLogMessage(final String message) {
-    if (settingsWindow == null) {
-      return;
-    }
-    settingsWindow.addMessage(message);
+    SwingUtilities.invokeLater(
+        () -> {
+          if (settingsWindow != null) {
+            settingsWindow.addMessage(message);
+          }
+        });
   }
 
   public static void notifyStartOfRound(final int round, final String name) {

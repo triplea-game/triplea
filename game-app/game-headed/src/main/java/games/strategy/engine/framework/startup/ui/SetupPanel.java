@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -17,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
-import org.triplea.injection.Injections;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -114,7 +114,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             new Insets(0, 5, 5, 0),
             0,
             0));
-    final PlayerTypes playerTypes = new PlayerTypes(Injections.getInstance().getPlayerTypes());
+    final PlayerTypes playerTypes = new PlayerTypes(HeadedPlayerTypes.getPlayerTypes());
     final JComboBox<String> setAllTypes = new JComboBox<>(playerTypes.getAvailablePlayerLabels());
     setAllTypes.insertItemAt(SET_ALL_DEFAULT_LABEL, 0);
     setAllTypes.setSelectedIndex(-1);
@@ -223,7 +223,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
               data.getAllianceTracker().getAlliancesPlayerIsIn(player),
               this,
               data.getProperties(),
-              new PlayerTypes(Injections.getInstance().getPlayerTypes()));
+              new PlayerTypes(HeadedPlayerTypes.getPlayerTypes()));
       playerRows.add(selector);
       if (!player.isHidden()) {
         selector.layout(++gridy, panel);

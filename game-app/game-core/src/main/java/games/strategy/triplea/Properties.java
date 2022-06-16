@@ -561,6 +561,14 @@ public final class Properties implements Constants {
     return properties.get(LAND_BATTLE_ROUNDS, -1);
   }
 
+  public static boolean getSeaBattlesMayBeIgnored(final GameProperties properties) {
+    return properties.get(SEA_BATTLES_MAY_BE_IGNORED, false);
+  }
+
+  public static boolean getLandBattlesMayBeIgnored(final GameProperties properties) {
+    return properties.get(LAND_BATTLES_MAY_BE_IGNORED, false);
+  }
+
   public static boolean getAirBattleAttackersCanRetreat(final GameProperties properties) {
     return properties.get(AIR_BATTLE_ATTACKERS_CAN_RETREAT, false);
   }
@@ -589,8 +597,8 @@ public final class Properties implements Constants {
     return properties.get(CONTESTED_TERRITORIES_PRODUCE_NO_INCOME, false);
   }
 
-  public static boolean getSeaBattlesMayBeIgnored(final GameProperties properties) {
-    return properties.get(SEA_BATTLES_MAY_BE_IGNORED, false);
+  public static boolean getAllUnitsCanAttackFromContestedTerritories(GameProperties properties) {
+    return properties.get(ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, false);
   }
 
   public static boolean getAbandonedTerritoriesMayBeTakenOverImmediately(

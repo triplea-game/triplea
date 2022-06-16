@@ -720,9 +720,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // check we havent just put a factory there (should we be checking producer?)
     if (getAlreadyProduced(producer).stream().anyMatch(Matches.unitCanProduceUnits())
         || getAlreadyProduced(to).stream().anyMatch(Matches.unitCanProduceUnits())) {
-      return "Factory in " + producer.getName() + " cant produce until 1 turn after it is created";
+      return "Factory in " + producer.getName() + " can't produce until 1 turn after it is created";
     }
-    return "No Factory in " + producer.getName();
+    return "No factory in " + producer.getName();
   }
 
   /**

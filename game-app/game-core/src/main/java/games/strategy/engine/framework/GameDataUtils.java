@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.io.IoUtils;
 import org.triplea.util.Version;
 
@@ -17,7 +17,7 @@ import org.triplea.util.Version;
 @UtilityClass
 public final class GameDataUtils {
   public static Optional<GameData> cloneGameData(GameData data, GameDataManager.Options options) {
-    return cloneGameData(data, options, Injections.getInstance().getEngineVersion());
+    return cloneGameData(data, options, ProductVersionReader.getCurrentVersion());
   }
 
   /**

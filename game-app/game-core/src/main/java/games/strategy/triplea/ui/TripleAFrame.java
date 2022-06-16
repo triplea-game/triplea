@@ -141,7 +141,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
@@ -1860,7 +1860,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                             GameDataUtils.cloneGameData(
                                     data,
                                     GameDataManager.Options.withEverything(),
-                                    Injections.getInstance().getEngineVersion())
+                                    ProductVersionReader.getCurrentVersion())
                                 .orElse(null);
                         if (datacopy != null) {
                           datacopy
@@ -1898,9 +1898,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                               .getSequence()
                               .setRoundAndStep(round, stepDisplayName, currentPlayer);
                           GameDataManager.saveGame(
-                              fileOutputStream,
-                              datacopy,
-                              Injections.getInstance().getEngineVersion());
+                              fileOutputStream, datacopy, ProductVersionReader.getCurrentVersion());
                           JOptionPane.showMessageDialog(
                               TripleAFrame.this,
                               "Game Saved",

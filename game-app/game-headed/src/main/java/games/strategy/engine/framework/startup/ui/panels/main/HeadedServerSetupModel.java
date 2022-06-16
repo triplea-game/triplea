@@ -33,10 +33,10 @@ import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
-import org.triplea.injection.Injections;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
@@ -77,7 +77,7 @@ public class HeadedServerSetupModel implements ServerSetupModel {
       final ServerModel serverModel, @Nullable final GameHostingResponse gameHostingResponse) {
 
     final ClientLoginValidator clientLoginValidator =
-        new ClientLoginValidator(Injections.getInstance().getEngineVersion());
+        new ClientLoginValidator(ProductVersionReader.getCurrentVersion());
     clientLoginValidator.setGamePassword(System.getProperty(SERVER_PASSWORD));
     clientLoginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
     serverModel.getMessenger().setLoginValidator(clientLoginValidator);

@@ -6,11 +6,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
 import lombok.Setter;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.LoggerRecord;
 import org.triplea.debug.error.reporting.formatting.ErrorReportBodyFormatter;
 import org.triplea.debug.error.reporting.formatting.ErrorReportTitleFormatter;
 import org.triplea.http.client.error.report.ErrorReportRequest;
-import org.triplea.injection.Injections;
 import org.triplea.util.Version;
 
 @Builder
@@ -40,7 +40,7 @@ public class StackTraceReportModel {
         .body(
             ErrorReportBodyFormatter.buildBody(
                 view.readUserDescription(), currentMapName, stackTraceRecord, engineVersion))
-        .gameVersion(Injections.getInstance().getEngineVersion().toString())
+        .gameVersion(ProductVersionReader.getCurrentVersion().toString())
         .build();
   }
 

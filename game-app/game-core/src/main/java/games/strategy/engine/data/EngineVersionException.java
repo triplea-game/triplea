@@ -1,7 +1,7 @@
 package games.strategy.engine.data;
 
 import java.nio.file.Path;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 
 /** A checked exception that indicates a game engine is not compatible with a map. */
 public final class EngineVersionException extends Exception {
@@ -16,7 +16,7 @@ public final class EngineVersionException extends Exception {
         String.format(
             "Current engine version: %s, is not compatible with version: %s, "
                 + "required by game-XML: %s",
-            Injections.getInstance().getEngineVersion(),
+            ProductVersionReader.getCurrentVersion(),
             minimumVersionFound,
             xmlFileBeingParsed.toAbsolutePath()));
   }

@@ -50,9 +50,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
-import org.triplea.injection.Injections;
 import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
 import org.triplea.map.data.elements.AttachmentList;
@@ -105,7 +105,7 @@ public final class GameParser {
     log.debug("Parsing game XML: {}", xmlFile.toAbsolutePath());
     final Optional<GameData> gameData =
         GameParser.parse(
-            xmlFile, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
+            xmlFile, new XmlGameElementMapper(), ProductVersionReader.getCurrentVersion());
 
     // if parsed, find the 'map.yml' from a parent folder and set the 'mapName' property
     // using the 'map name' from 'map.yml'
