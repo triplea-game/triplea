@@ -44,7 +44,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
   public ObjectiveDummyDelegateBridge(final GameData data) {
     gameData = data;
-    writer = new DelegateHistoryWriter(new DummyGameModifiedChannel(), gameData);
+    writer = new DelegateHistoryWriter((IGameModifiedChannel) null, gameData);
   }
 
   @Override
@@ -135,32 +135,6 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void stopGameSequence(String status, String title) {}
-
-  static class DummyGameModifiedChannel implements IGameModifiedChannel {
-    @Override
-    public void addChildToEvent(final String text, final Object renderingData) {}
-
-    @Override
-    public void gameDataChanged(final Change change) {}
-
-    @Override
-    public void shutDown() {}
-
-    @Override
-    public void startHistoryEvent(final String event) {}
-
-    @Override
-    public void startHistoryEvent(final String event, final Object renderingData) {}
-
-    @Override
-    public void stepChanged(
-        final String stepName,
-        final String delegateName,
-        final GamePlayer player,
-        final int round,
-        final String displayName,
-        final boolean loadedFromSavedGame) {}
-  }
 
   static class ObjectivePanelDummyPlayer extends AbstractBuiltInAi {
     ObjectivePanelDummyPlayer(final String name) {

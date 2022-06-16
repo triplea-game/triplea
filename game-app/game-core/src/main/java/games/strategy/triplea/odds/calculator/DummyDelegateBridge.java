@@ -8,6 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.units.UnitDamageReceivedChange;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
@@ -68,7 +69,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
     gameData = data;
     this.attacker = attacker;
     this.allChanges = allChanges;
-    writer = new DelegateHistoryWriter(new DummyGameModifiedChannel(), gameData);
+    writer = new DelegateHistoryWriter((IGameModifiedChannel) null, gameData);
   }
 
   @Override
