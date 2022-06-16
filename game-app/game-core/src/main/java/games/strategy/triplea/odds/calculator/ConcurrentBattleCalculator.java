@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
 import org.triplea.util.Version;
@@ -122,7 +122,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final long startTime = System.currentTimeMillis();
       final long startMemory =
           Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-      final Version engineVersion = Injections.getInstance().getEngineVersion();
+      final Version engineVersion = ProductVersionReader.getCurrentVersion();
       final byte[] serializedData;
       try (GameData.Unlocker ignored = data.acquireWriteLock()) {
         // Serialize the data, then release lock on it so game can continue (ie: we don't want to

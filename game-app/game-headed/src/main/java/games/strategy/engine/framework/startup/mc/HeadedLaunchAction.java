@@ -12,6 +12,7 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
@@ -26,6 +27,7 @@ import java.awt.Frame;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import javax.swing.JOptionPane;
@@ -72,6 +74,11 @@ public class HeadedLaunchAction implements LaunchAction {
   public void onEnd(final String message) {
     SwingUtilities.invokeLater(
         () -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message));
+  }
+
+  @Override
+  public Collection<PlayerTypes.Type> getPlayerTypes() {
+    return HeadedPlayerTypes.getPlayerTypes();
   }
 
   @Override
