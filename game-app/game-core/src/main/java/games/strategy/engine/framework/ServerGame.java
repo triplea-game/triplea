@@ -498,6 +498,12 @@ public class ServerGame extends AbstractGame {
       if (!(delegate instanceof IPersistentDelegate)) {
         continue;
       }
+      if (delegateRandomSource == null) {
+        delegateRandomSource =
+            (IRandomSource)
+                delegateExecutionManager.newOutboundImplementation(
+                    randomSource, new Class<?>[] {IRandomSource.class});
+      }
       final DefaultDelegateBridge bridge =
           new DefaultDelegateBridge(
               gameData,
@@ -505,14 +511,8 @@ public class ServerGame extends AbstractGame {
               new DelegateHistoryWriter(messengers),
               randomStats,
               delegateExecutionManager,
-              clientNetworkBridge);
-      if (delegateRandomSource == null) {
-        delegateRandomSource =
-            (IRandomSource)
-                delegateExecutionManager.newOutboundImplementation(
-                    randomSource, new Class<?>[] {IRandomSource.class});
-      }
-      bridge.setRandomSource(delegateRandomSource);
+              clientNetworkBridge,
+              delegateRandomSource);
       delegateExecutionManager.enterDelegateExecution();
       try {
         delegate.setDelegateBridgeAndPlayer(bridge);
@@ -525,6 +525,12 @@ public class ServerGame extends AbstractGame {
 
   private void startStep(final boolean stepIsRestoredFromSavedGame) {
     // dont save if we just loaded
+    if (delegateRandomSource == null) {
+      delegateRandomSource =
+          (IRandomSource)
+              delegateExecutionManager.newOutboundImplementation(
+                  randomSource, new Class<?>[] {IRandomSource.class});
+    }
     final DefaultDelegateBridge bridge =
         new DefaultDelegateBridge(
             gameData,
@@ -532,14 +538,8 @@ public class ServerGame extends AbstractGame {
             new DelegateHistoryWriter(messengers),
             randomStats,
             delegateExecutionManager,
-            clientNetworkBridge);
-    if (delegateRandomSource == null) {
-      delegateRandomSource =
-          (IRandomSource)
-              delegateExecutionManager.newOutboundImplementation(
-                  randomSource, new Class<?>[] {IRandomSource.class});
-    }
-    bridge.setRandomSource(delegateRandomSource);
+            clientNetworkBridge,
+            delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should
     // not be)
     // we cannot do this the very first run through, because there are no history nodes yet. We
