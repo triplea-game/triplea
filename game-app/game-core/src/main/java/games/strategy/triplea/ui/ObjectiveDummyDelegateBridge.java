@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -37,14 +36,13 @@ import org.triplea.util.Tuple;
 public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
-  private final DelegateHistoryWriter writer;
+  private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final GameData gameData;
   private final ObjectivePanelDummyPlayer dummyAi =
       new ObjectivePanelDummyPlayer("objective panel dummy");
 
   public ObjectiveDummyDelegateBridge(final GameData data) {
     gameData = data;
-    writer = new DelegateHistoryWriter((IGameModifiedChannel) null, gameData);
   }
 
   @Override

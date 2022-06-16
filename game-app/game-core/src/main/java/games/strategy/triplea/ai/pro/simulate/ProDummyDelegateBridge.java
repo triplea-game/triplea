@@ -6,7 +6,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
@@ -30,7 +29,7 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final GamePlayer player;
   private final AbstractProAi proAi;
-  private final DelegateHistoryWriter writer;
+  private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final GameData gameData;
   private final CompositeChange allChanges = new CompositeChange();
 
@@ -39,7 +38,6 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
     this.proAi = proAi;
     gameData = data;
     this.player = player;
-    writer = new DelegateHistoryWriter((IGameModifiedChannel) null, data);
   }
 
   @Override

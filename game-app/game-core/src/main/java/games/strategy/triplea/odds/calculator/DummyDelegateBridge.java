@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.units.UnitDamageReceivedChange;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
@@ -31,7 +30,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
   private final DummyPlayer attackingPlayer;
   private final DummyPlayer defendingPlayer;
   private final GamePlayer attacker;
-  private final DelegateHistoryWriter writer;
+  private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final CompositeChange allChanges;
   private final GameData gameData;
   private MustFightBattle battle = null;
@@ -69,7 +68,6 @@ public class DummyDelegateBridge implements IDelegateBridge {
     gameData = data;
     this.attacker = attacker;
     this.allChanges = allChanges;
-    writer = new DelegateHistoryWriter((IGameModifiedChannel) null, gameData);
   }
 
   @Override
