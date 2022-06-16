@@ -16,11 +16,9 @@ import org.triplea.sound.ISound;
 /** TripleA implementation of DelegateBridge. */
 public class GameDelegateBridge implements IDelegateBridge {
   private final IDelegateBridge bridge;
-  private final GameDelegateHistoryWriter historyWriter;
 
   public GameDelegateBridge(final IDelegateBridge bridge) {
     this.bridge = bridge;
-    historyWriter = new GameDelegateHistoryWriter(this.bridge.getHistoryWriter(), getData());
   }
 
   @Override
@@ -41,7 +39,7 @@ public class GameDelegateBridge implements IDelegateBridge {
   /** Return our custom historyWriter instead of the default one. */
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
-    return historyWriter;
+    return bridge.getHistoryWriter();
   }
 
   @Override
