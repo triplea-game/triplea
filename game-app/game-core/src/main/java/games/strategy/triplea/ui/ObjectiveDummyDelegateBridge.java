@@ -37,14 +37,14 @@ import org.triplea.util.Tuple;
 public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
-  private final DelegateHistoryWriter writer =
-      new DelegateHistoryWriter(new DummyGameModifiedChannel());
+  private final DelegateHistoryWriter writer;
   private final GameData gameData;
   private final ObjectivePanelDummyPlayer dummyAi =
       new ObjectivePanelDummyPlayer("objective panel dummy");
 
   public ObjectiveDummyDelegateBridge(final GameData data) {
     gameData = data;
+    writer = new DelegateHistoryWriter(new DummyGameModifiedChannel(), gameData);
   }
 
   @Override

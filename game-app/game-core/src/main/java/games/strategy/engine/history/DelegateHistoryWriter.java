@@ -1,5 +1,6 @@
 package games.strategy.engine.history;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.message.IChannelMessenger;
@@ -12,13 +13,18 @@ import javax.annotation.Nullable;
  */
 public class DelegateHistoryWriter implements IDelegateHistoryWriter {
   @Nullable private final IGameModifiedChannel channel;
+  private final GameData gameData;
 
-  public DelegateHistoryWriter(final IChannelMessenger messenger) {
-    this((IGameModifiedChannel) messenger.getChannelBroadcaster(IGame.GAME_MODIFICATION_CHANNEL));
+  public DelegateHistoryWriter(final IChannelMessenger messenger, final GameData gameData) {
+    this(
+        (IGameModifiedChannel) messenger.getChannelBroadcaster(IGame.GAME_MODIFICATION_CHANNEL),
+        gameData);
   }
 
-  public DelegateHistoryWriter(@Nullable final IGameModifiedChannel channel) {
+  public DelegateHistoryWriter(
+      @Nullable final IGameModifiedChannel channel, final GameData gameData) {
     this.channel = channel;
+    this.gameData = gameData;
   }
 
   @Override

@@ -508,7 +508,7 @@ public class ServerGame extends AbstractGame {
           new DefaultDelegateBridge(
               gameData,
               this,
-              new DelegateHistoryWriter(messengers),
+              new DelegateHistoryWriter(messengers, gameData),
               randomStats,
               delegateExecutionManager,
               clientNetworkBridge,
@@ -535,7 +535,7 @@ public class ServerGame extends AbstractGame {
         new DefaultDelegateBridge(
             gameData,
             this,
-            new DelegateHistoryWriter(messengers),
+            new DelegateHistoryWriter(messengers, gameData),
             randomStats,
             delegateExecutionManager,
             clientNetworkBridge,

@@ -30,8 +30,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
   private final DummyPlayer attackingPlayer;
   private final DummyPlayer defendingPlayer;
   private final GamePlayer attacker;
-  private final DelegateHistoryWriter writer =
-      new DelegateHistoryWriter(new DummyGameModifiedChannel());
+  private final DelegateHistoryWriter writer;
   private final CompositeChange allChanges;
   private final GameData gameData;
   private MustFightBattle battle = null;
@@ -69,6 +68,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
     gameData = data;
     this.attacker = attacker;
     this.allChanges = allChanges;
+    writer = new DelegateHistoryWriter(new DummyGameModifiedChannel(), gameData);
   }
 
   @Override
