@@ -2323,10 +2323,11 @@
 - mapName: ww2v6_variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v6_variants/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/ww2v6_variants/master/preview.png
   description: |
     <br>Variants for World War II V6, created by Cernel, WWIIv6 Factory & WWIIv6 No Capital
+    <br>WW2v6-Buildcaps and WW2v6-Upkeep created by Roger Cooper
 - mapName: Genuine 39
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/genuine39/archive/master.zip
