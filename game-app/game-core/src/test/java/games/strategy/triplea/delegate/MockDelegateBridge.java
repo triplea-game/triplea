@@ -50,6 +50,7 @@ public final class MockDelegateBridge {
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
+    when(delegateBridge.getCostsForTuv(any())).thenCallRealMethod();
     return delegateBridge;
   }
 
