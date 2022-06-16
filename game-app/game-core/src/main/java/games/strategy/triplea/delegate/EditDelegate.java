@@ -43,6 +43,11 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
+  public boolean getEditMode() {
+    return getEditMode(getData().getProperties());
+  }
+
+  @Override
   public String removeUnits(final Territory territory, final Collection<Unit> units) {
     String result = checkEditMode();
     if (result != null) {
@@ -363,10 +368,6 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
     return true;
   }
 
-  public boolean getEditMode() {
-    return getEditMode(getData().getProperties());
-  }
-
   private String checkPlayerId() {
     final Player remotePlayer = bridge.getRemotePlayer();
     if (!bridge.getGamePlayer().equals(remotePlayer.getGamePlayer())) {
@@ -386,6 +387,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
     return null;
   }
 
+  @Override
   public void setEditMode(final boolean editMode) {
     final Player remotePlayer = bridge.getRemotePlayer();
     if (!bridge.getGamePlayer().equals(remotePlayer.getGamePlayer())) {
@@ -395,6 +397,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
     bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, editMode, getData()));
   }
 
+  @Override
   public String addComment(final String message) {
     final String result = checkPlayerId();
     if (result != null) {
