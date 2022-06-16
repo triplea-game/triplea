@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.DateTimeUtil;
 import org.triplea.java.ThreadRunner;
 
@@ -50,7 +50,7 @@ public class TestPostAction implements BiConsumer<String, Integer> {
           final CompletableFuture<String> future =
               poster.postTurnSummary(
                   "Test summary from TripleA, engine version: "
-                      + Injections.getInstance().getEngineVersion()
+                      + ProductVersionReader.getCurrentVersion()
                       + ", time: "
                       + DateTimeUtil.getLocalizedTime(),
                   "Testing Forum poster",

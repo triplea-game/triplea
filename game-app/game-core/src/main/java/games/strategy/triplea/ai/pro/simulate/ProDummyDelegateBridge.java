@@ -11,6 +11,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Properties;
@@ -46,6 +47,12 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void sendMessage(final WebSocketMessage webSocketMessage) {}
+
+  @Override
+  public ResourceLoader getResourceLoader() {
+    throw new UnsupportedOperationException(
+        "ProDummyDelegateBridge does not have a resource loader");
+  }
 
   @Override
   public void leaveDelegateExecution() {}

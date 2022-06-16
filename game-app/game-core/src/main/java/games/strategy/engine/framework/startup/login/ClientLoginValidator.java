@@ -11,7 +11,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.Version;
 
@@ -78,7 +78,7 @@ public final class ClientLoginValidator implements ILoginValidator {
     if (engineVersion.getMajor() != clientVersion.getMajor()) {
       return String.format(
           "Client is using %s but the server requires a version compatible with version %s",
-          clientVersion, Injections.getInstance().getEngineVersion());
+          clientVersion, ProductVersionReader.getCurrentVersion());
     }
 
     final String remoteIp = remoteAddress.getAddress().getHostAddress();

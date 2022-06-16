@@ -9,20 +9,23 @@ public final class TooltipProperties extends PropertyFile {
   private static final String PROPERTY_FILE = "tooltips.properties";
   private static final String TOOLTIP = "tooltip";
   private static final String UNIT = "unit";
+  private final UiContext uiContext;
 
-  private TooltipProperties() {
-    super(PROPERTY_FILE);
+  private TooltipProperties(final UiContext uiContext) {
+    super(PROPERTY_FILE, uiContext.getResourceLoader());
+    this.uiContext = uiContext;
   }
 
-  public static TooltipProperties getInstance() {
-    return PropertyFile.getInstance(TooltipProperties.class, TooltipProperties::new);
+  public static TooltipProperties getInstance(final UiContext uiContext) {
+    return PropertyFile.getInstance(
+        TooltipProperties.class, () -> new TooltipProperties(uiContext));
   }
 
   /** Get unit type tooltip checking for custom tooltip content. */
   public String getTooltip(final UnitType unitType, final GamePlayer gamePlayer) {
     final String customTip = getToolTip(unitType, gamePlayer, false);
     if (!customTip.isEmpty()) {
-      return LocalizeHtml.localizeImgLinksInHtml(customTip, UiContext.getMapLocation());
+      return LocalizeHtml.localizeImgLinksInHtml(customTip, uiContext.getMapLocation());
     }
     final String generated =
         unitType
@@ -34,7 +37,7 @@ public final class TooltipProperties extends PropertyFile {
     final String appendedTip = getToolTip(unitType, gamePlayer, true);
     if (!appendedTip.isEmpty()) {
       return generated
-          + LocalizeHtml.localizeImgLinksInHtml(appendedTip, UiContext.getMapLocation());
+          + LocalizeHtml.localizeImgLinksInHtml(appendedTip, uiContext.getMapLocation());
     }
     return generated;
   }

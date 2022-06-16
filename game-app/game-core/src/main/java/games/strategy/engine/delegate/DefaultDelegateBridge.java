@@ -15,6 +15,7 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.triplea.ResourceLoader;
 import java.util.Properties;
 import lombok.RequiredArgsConstructor;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
@@ -154,5 +155,10 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public void sendMessage(final WebSocketMessage webSocketMessage) {
     clientNetworkBridge.sendMessage(webSocketMessage);
+  }
+
+  @Override
+  public ResourceLoader getResourceLoader() {
+    return game.getResourceLoader();
   }
 }

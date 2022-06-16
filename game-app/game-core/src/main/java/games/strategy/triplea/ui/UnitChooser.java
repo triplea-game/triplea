@@ -57,6 +57,7 @@ public final class UnitChooser extends JPanel {
 
   @VisibleForTesting public final List<ChooserEntry> entries = new ArrayList<>();
   private final Map<Unit, Collection<Unit>> dependents;
+  private final UiContext uiContext;
   private JTextArea title;
   private int total = -1;
   private final JLabel leftToSelect = new JLabel();
@@ -100,6 +101,7 @@ public final class UnitChooser extends JPanel {
     this.allowMultipleHits = allowMultipleHits;
     NonWithdrawableFactory.makeSureNonWithdrawableFactoryMatchesUiContext(uiContext);
     this.match = match;
+    this.uiContext = uiContext;
   }
 
   UnitChooser(
@@ -594,7 +596,7 @@ public final class UnitChooser extends JPanel {
         this.damaged = damaged;
 
         MapUnitTooltipManager.setUnitTooltip(
-            this, category.getType(), category.getOwner(), category.getUnits().size());
+            this, category.getType(), category.getOwner(), category.getUnits().size(), uiContext);
       }
 
       @Override
@@ -651,10 +653,10 @@ public final class UnitChooser extends JPanel {
     private UnitImageFactory unitImageFactoryForDecoratedImages = null;
 
     public void makeSureNonWithdrawableFactoryMatchesUiContext(final UiContext uiContext) {
-      if (resourceLoader != UiContext.getResourceLoader()
+      if (resourceLoader != uiContext.getResourceLoader()
           || unitImageFactory != uiContext.getUnitImageFactory()) {
         images.clear();
-        resourceLoader = UiContext.getResourceLoader();
+        resourceLoader = uiContext.getResourceLoader();
         unitImageFactory = uiContext.getUnitImageFactory();
         nonWithdrawableImage = null;
         unitImageFactoryForDecoratedImages = null;

@@ -13,6 +13,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import org.triplea.swing.SwingComponents;
 
@@ -64,12 +65,13 @@ class PlayerChooser extends JOptionPane {
             }
           }
         });
-    setMessage(SwingComponents.newJScrollPane(list));
+    JScrollPane scrollPane = SwingComponents.newJScrollPane(list);
 
     final int maxSize = 700;
-    final int suggestedSize = this.players.size() * 40;
+    final int suggestedSize = list.getPreferredSize().height;
     final int actualSize = Math.min(suggestedSize, maxSize);
-    setPreferredSize(new Dimension(300, actualSize));
+    scrollPane.setPreferredSize(new Dimension(300, actualSize));
+    setMessage(scrollPane);
   }
 
   /**

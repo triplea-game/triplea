@@ -8,6 +8,7 @@ import games.strategy.engine.framework.network.ui.SetPasswordAction;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
@@ -39,7 +40,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
-import org.triplea.injection.Injections;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -349,7 +349,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
               entry.getKey(),
               reloadSelections,
               entry.getValue(),
-              new PlayerTypes(Injections.getInstance().getPlayerTypes()));
+              new PlayerTypes(HeadedPlayerTypes.getPlayerTypes()));
       playerRows.add(newPlayerRow);
       newPlayerRow.update(players, playersEnabled);
     }

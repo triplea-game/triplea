@@ -49,7 +49,7 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.JMenuItemBuilder;
@@ -172,7 +172,7 @@ final class ExportMenu extends JMenu {
       }
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
-      writer.append(Injections.getInstance().getEngineVersion().toString()).println(',');
+      writer.append(ProductVersionReader.getCurrentVersion().toString()).println(',');
       writer.append("Game Name: ,");
       writer.append(gameData.getGameName()).println(',');
       writer.println();

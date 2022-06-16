@@ -219,7 +219,8 @@ public class UserActionPanel extends ActionPanel {
               .getResourceImageFactory()
               .getResourcesButton(
                   new ResourceCollection(getData(), uaa.getCostResources()),
-                  UserActionText.getInstance().getButtonText(uaa.getText()));
+                  UserActionText.getInstance(getMap().getUiContext().getResourceLoader())
+                      .getButtonText(uaa.getText()));
       button.addActionListener(
           ae -> {
             selectUserActionButton.setEnabled(false);
@@ -289,11 +290,14 @@ public class UserActionPanel extends ActionPanel {
     return panel;
   }
 
-  private static JLabel getActionDescriptionLabel(final UserActionAttachment paa) {
+  private JLabel getActionDescriptionLabel(final UserActionAttachment paa) {
     final String chanceString =
         paa.getChanceToHit() >= paa.getChanceDiceSides()
             ? ""
             : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
-    return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
+    return new JLabel(
+        chanceString
+            + UserActionText.getInstance(getMap().getUiContext().getResourceLoader())
+                .getDescription(paa.getText()));
   }
 }

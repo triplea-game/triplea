@@ -246,7 +246,7 @@ final class ViewMenu extends JMenu {
     add(mapSubMenu);
     final ButtonGroup mapButtonGroup = new ButtonGroup();
     final Collection<UiContext.MapSkin> skins =
-        UiContext.getSkins(frame.getGame().getData().getMapName());
+        uiContext.getSkins(frame.getGame().getData().getMapName());
     mapSubMenu.setEnabled(skins.size() > 1);
     for (final UiContext.MapSkin mapSkin : skins) {
       final JMenuItem mapMenuItem = new JRadioButtonMenuItem(mapSkin.getSkinName());

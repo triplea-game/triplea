@@ -141,7 +141,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
@@ -383,7 +383,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     addTab("Players", statsPanel, KeyCode.P);
     economyPanel = new EconomyPanel(data, uiContext);
     addTab("Resources", economyPanel, KeyCode.R);
-    objectivePanel = new ObjectivePanel(data);
+    objectivePanel = new ObjectivePanel(data, uiContext);
     if (objectivePanel.isEmpty()) {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
@@ -460,6 +460,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
     final UiContext uiContext = new UiContext(game.getData());
+    game.setResourceLoader(uiContext.getResourceLoader());
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
 
@@ -680,7 +681,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** We do NOT want to block the next player from beginning their turn. */
   public void notifyError(final String message) {
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(message, UiContext.getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -716,7 +717,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return;
     }
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(message, UiContext.getMapLocation());
+        LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
     messageAndDialogThreadPool.submit(
         () ->
             EventThreadJOptionPane.showMessageDialogWithScrollPane(
@@ -1668,7 +1669,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     if (!mapPanel.getMouseHoverUnits().isEmpty()) {
       final Unit unit = mapPanel.getMouseHoverUnits().get(0);
       return MapUnitTooltipManager.getTooltipTextForUnit(
-          unit.getType(), unit.getOwner(), mapPanel.getMouseHoverUnits().size());
+          unit.getType(), unit.getOwner(), mapPanel.getMouseHoverUnits().size(), uiContext);
     }
     return "";
   }
@@ -1859,7 +1860,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                             GameDataUtils.cloneGameData(
                                     data,
                                     GameDataManager.Options.withEverything(),
-                                    Injections.getInstance().getEngineVersion())
+                                    ProductVersionReader.getCurrentVersion())
                                 .orElse(null);
                         if (datacopy != null) {
                           datacopy
@@ -1897,9 +1898,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                               .getSequence()
                               .setRoundAndStep(round, stepDisplayName, currentPlayer);
                           GameDataManager.saveGame(
-                              fileOutputStream,
-                              datacopy,
-                              Injections.getInstance().getEngineVersion());
+                              fileOutputStream, datacopy, ProductVersionReader.getCurrentVersion());
                           JOptionPane.showMessageDialog(
                               TripleAFrame.this,
                               "Game Saved",
@@ -2071,6 +2070,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** Displays the map located in the directory/archive {@code mapdir}. */
   public void changeMapSkin(final String skinName) {
     uiContext = UiContext.changeMapSkin(data, skinName);
+    game.setResourceLoader(uiContext.getResourceLoader());
     // when changing skins, always show relief images
     if (uiContext.getMapData().getHasRelief()) {
       TileImageFactory.setShowReliefImages(true);

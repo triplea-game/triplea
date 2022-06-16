@@ -30,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessLaunchAction;
-import org.triplea.injection.Injections;
 import org.triplea.io.ContentDownloader;
 import org.triplea.io.FileUtils;
 import org.triplea.java.collections.CollectionUtils;
@@ -39,18 +38,16 @@ import org.triplea.java.collections.CollectionUtils;
 @Slf4j
 public class GameTestUtils {
   public static void setUp() throws IOException {
-    if (Injections.getInstance() == null) {
-      Injections.init(
-          Injections.builder()
-              .engineVersion(new ProductVersionReader().getVersion())
-              .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
-              .build());
+    if (ProductVersionReader.getCurrentVersionOptional().isEmpty()) {
+      ProductVersionReader.init();
     }
     // Use a temp dir for downloaded maps to not interfere with the real downloadedMaps folder.
     Path tempHome = FileUtils.newTempFolder();
     System.setProperty("user.home", tempHome.toString());
     ClientSetting.initialize();
     assertTrue(ClientFileSystemHelper.getUserMapsFolder().startsWith(tempHome.toAbsolutePath()));
+    ClientSetting.aiMovePauseDuration.setValue(0);
+    ClientSetting.aiCombatStepPauseDuration.setValue(0);
 
     Path tempRoot = FileUtils.newTempFolder();
     FileUtils.writeToFile(tempRoot.resolve(".triplea-root"), "");

@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,7 @@ public final class ProSortMoveOptionsUtils {
 
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new ArrayList<>(unitAttackOptions.entrySet());
+    final Map<Object, Double> attackEfficiencyCache = new HashMap<>();
     list.sort(
         (o1, o2) -> {
           final Collection<Territory> territories1 =
@@ -128,27 +130,29 @@ public final class ProSortMoveOptionsUtils {
             return 0;
           }
 
-          final Unit unit1 = o1.getKey();
-          final Unit unit2 = o2.getKey();
+          final Unit u1 = o1.getKey();
+          final Unit u2 = o2.getKey();
 
           // Sort by attack efficiency
           final double attackEfficiency1 =
-              calculateAttackEfficiency(proData, player, attackMap, territories1, unit1);
+              attackEfficiencyCache.computeIfAbsent(
+                  o1, k -> calculateAttackEfficiency(proData, player, attackMap, territories1, u1));
           final double attackEfficiency2 =
-              calculateAttackEfficiency(proData, player, attackMap, territories2, unit2);
+              attackEfficiencyCache.computeIfAbsent(
+                  o2, k -> calculateAttackEfficiency(proData, player, attackMap, territories2, u2));
           if (attackEfficiency1 != attackEfficiency2) {
             return (attackEfficiency1 < attackEfficiency2) ? 1 : -1;
           }
 
-          final UnitType unitType1 = unit1.getType();
-          final UnitType unitType2 = unit2.getType();
+          final UnitType unitType1 = u1.getType();
+          final UnitType unitType2 = u2.getType();
 
           // If unit types are equal and are air, then sort by average distance.
           if (unitType1.equals(unitType2) && unitType1.getUnitAttachment().getIsAir()) {
             final Predicate<Territory> predicate =
                 ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, true);
-            final Territory territory1 = unitTerritoryMap.get(unit1);
-            final Territory territory2 = unitTerritoryMap.get(unit2);
+            final Territory territory1 = unitTerritoryMap.get(u1);
+            final Territory territory2 = unitTerritoryMap.get(u2);
             int distance1 = 0;
             for (final Territory t : territories1) {
               distance1 += data.getMap().getDistanceIgnoreEndForCondition(territory1, t, predicate);

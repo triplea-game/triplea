@@ -756,8 +756,6 @@ public class ProCombatMoveAi {
         double enemyTuvSwing = 0.0;
         for (final Territory unloadTerritory : territoryTransportAndBombardMap.keySet()) {
           if (enemyAttackOptions.getMax(unloadTerritory) != null) {
-            final List<Unit> enemyAttackers =
-                enemyAttackOptions.getMax(unloadTerritory).getMaxUnits();
             final Set<Unit> defenders =
                 new HashSet<>(
                     unloadTerritory
@@ -767,11 +765,13 @@ public class ProCombatMoveAi {
             if (defendMap.get(unloadTerritory) != null) {
               defenders.addAll(defendMap.get(unloadTerritory).getMaxUnits());
             }
+            final Set<Unit> enemyAttackers =
+                enemyAttackOptions.getMax(unloadTerritory).getMaxUnits();
             final ProBattleResult result =
                 calc.calculateBattleResults(
                     proData,
                     unloadTerritory,
-                    enemyAttackOptions.getMax(unloadTerritory).getMaxUnits(),
+                    enemyAttackers,
                     new ArrayList<>(defenders),
                     new HashSet<>());
             final ProBattleResult minResult =
@@ -1608,7 +1608,7 @@ public class ProCombatMoveAi {
               || (!result.isHasLandUnitRemaining() && minWinTerritory == null)) {
 
             // Find units that haven't attacked and can be transported
-            final List<Unit> alreadyAttackedWithUnits =
+            final Set<Unit> alreadyAttackedWithUnits =
                 ProTransportUtils.getMovedUnits(alreadyMovedUnits, attackMap);
             for (final ProTransport proTransportData : transportMapList) {
               if (proTransportData.getTransport().equals(transport)) {
@@ -1639,7 +1639,7 @@ public class ProCombatMoveAi {
                           .getSeaTransportMap()
                           .get(destination)
                           .containsAll(loadFromTerritories)) {
-                    List<Unit> attackers = new ArrayList<>();
+                    Set<Unit> attackers = Set.of();
                     if (enemyAttackOptions.getMax(destination) != null) {
                       attackers = enemyAttackOptions.getMax(destination).getMaxUnits();
                     }

@@ -319,16 +319,6 @@ public class TechAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameState data) {}
 
-  public static boolean isMechanizedInfantry(final GamePlayer player) {
-    final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    return ta != null && ta.getMechanizedInfantry();
-  }
-
-  public static boolean isAirTransportable(final GamePlayer player) {
-    final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    return ta != null && ta.getParatroopers();
-  }
-
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()

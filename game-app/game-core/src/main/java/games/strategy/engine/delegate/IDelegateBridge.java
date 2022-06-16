@@ -7,6 +7,7 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.triplea.ResourceLoader;
 import java.util.Properties;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.ISound;
@@ -94,4 +95,6 @@ public interface IDelegateBridge {
   GameData getData();
 
   void sendMessage(WebSocketMessage webSocketMessage);
+
+  ResourceLoader getResourceLoader();
 }

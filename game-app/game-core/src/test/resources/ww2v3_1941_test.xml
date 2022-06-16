@@ -615,6 +615,7 @@
 
         <unitList>
                 <unit name="infantry"/>
+                <unit name="infantry_2mv"/>
                 <unit name="artillery"/>
                 <unit name="armour"/>
                 <unit name="fighter"/>
@@ -1105,6 +1106,16 @@
                          <option name="artillerySupportable" value="true"/>
                 </attachment>
 
+                <!-- This unit type is only for testing and doesn't exist in the actual ww2v3 rules. -->
+                <attachment name="unitAttachment" attachTo="infantry_2mv" javaClass="UnitAttachment">
+                        <option name="movement" value="2"/>
+                        <option name="transportCost" value="2"/>
+                        <option name="isInfantry" value="true"/>
+                        <option name="isAirTransportable" value="true"/>
+                        <option name="attack" value="1"/>
+                        <option name="defense" value="2"/>
+                        <option name="artillerySupportable" value="true"/>
+                </attachment>
 
                 <!-- Artillery -->
                 <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">

@@ -171,6 +171,8 @@ final class BattleModel extends DefaultTableModel {
     private int count;
     private ImageIcon icon;
 
+    private UiContext uiContext;
+
     private TableData() {}
 
     TableData(
@@ -179,6 +181,7 @@ final class BattleModel extends DefaultTableModel {
       this.count = count;
       this.unitType = imageKey.getType();
       this.icon = uiContext.getUnitImageFactory().getIcon(imageKey);
+      this.uiContext = uiContext;
     }
 
     void updateStamp(final JLabel stamp) {
@@ -189,7 +192,7 @@ final class BattleModel extends DefaultTableModel {
       } else {
         stamp.setText("x" + count);
         stamp.setIcon(icon);
-        MapUnitTooltipManager.setUnitTooltip(stamp, unitType, player, count);
+        MapUnitTooltipManager.setUnitTooltip(stamp, unitType, player, count, uiContext);
       }
     }
   }

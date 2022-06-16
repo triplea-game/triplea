@@ -13,6 +13,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.PlainRandomSource;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.List;
@@ -77,6 +78,12 @@ public class DummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void sendMessage(final WebSocketMessage webSocketMessage) {}
+
+  @Override
+  public ResourceLoader getResourceLoader() {
+    throw new UnsupportedOperationException(
+        "DummyDelegateBridge does not provide a ResourceLoader");
+  }
 
   @Override
   public void leaveDelegateExecution() {}

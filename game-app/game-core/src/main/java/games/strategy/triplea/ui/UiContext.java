@@ -38,19 +38,15 @@ import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.debug.error.reporting.StackTraceReportModel;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 import org.triplea.sound.ClipPlayer;
 
 /** A place to find images and map data for a ui. */
 @Slf4j
 public class UiContext {
-  @Getter protected static String mapName;
-  @Getter protected static String skinName;
-  @Getter protected static Path mapLocation;
-  @Getter protected static ResourceLoader resourceLoader;
-
-  static final String UNIT_SCALE_PREF = "UnitScale";
-  static final String MAP_SCALE_PREF = "MapScale";
+  private static final String UNIT_SCALE_PREF = "UnitScale";
+  private static final String MAP_SCALE_PREF = "MapScale";
 
   private static final String ORIGINAL_SKIN_NAME = "Original";
 
@@ -64,6 +60,10 @@ public class UiContext {
   @Getter @Setter protected LocalPlayers localPlayers;
 
   @Getter protected double scale;
+  @Getter private final String mapName;
+  @Getter private final String skinName;
+  @Getter private final Path mapLocation;
+  @Getter private final ResourceLoader resourceLoader;
   @Getter private final TileImageFactory tileImageFactory = new TileImageFactory();
   @Getter private UnitImageFactory unitImageFactory;
   @Getter private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
@@ -88,28 +88,19 @@ public class UiContext {
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
-  public static void setResourceLoader(final GameData gameData) {
-    final Path mapPath =
-        InstalledMapsListing.searchAllMapsForMapName(gameData.getMapName())
-            .orElseThrow(
-                () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
-
-    resourceLoader = new ResourceLoader(mapPath);
-    mapLocation = mapPath;
-  }
-
   UiContext(final GameData data) {
     if (data.getMapName() == null || data.getMapName().isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
-    UiContext.mapName = data.getMapName();
+    mapName = data.getMapName();
+    StackTraceReportModel.setCurrentMapName(mapName);
 
     List<Path> resourceLoadingPaths = new ArrayList<>();
 
     String preferredSkinPath =
         getPreferencesForMap(data.getMapName()) //
             .get(MAP_SKIN_PREF, null);
-    UiContext.skinName = preferredSkinPath;
+    skinName = preferredSkinPath;
 
     InstalledMapsListing.parseMapFiles()
         .findMapSkin(data.getMapName(), preferredSkinPath)
@@ -123,9 +114,6 @@ public class UiContext {
     mapLocation = mapPath;
     resourceLoadingPaths.add(mapPath);
 
-    if (resourceLoader != null) {
-      resourceLoader.close();
-    }
     resourceLoader = new ResourceLoader(resourceLoadingPaths);
     mapData = new MapData(resourceLoader);
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
@@ -165,7 +153,7 @@ public class UiContext {
 
   public JLabel newUnitImageLabel(final ImageKey imageKey) {
     final JLabel label = new JLabel(getUnitImageFactory().getIcon(imageKey));
-    MapUnitTooltipManager.setUnitTooltip(label, imageKey.getType(), imageKey.getPlayer(), 1);
+    MapUnitTooltipManager.setUnitTooltip(label, imageKey.getType(), imageKey.getPlayer(), 1, this);
     return label;
   }
 
@@ -189,6 +177,7 @@ public class UiContext {
       activeToDeactivate.clear();
       windowsToCloseOnShutdown.clear();
     }
+    StackTraceReportModel.setCurrentMapName(null);
     resourceLoader.close();
   }
 
@@ -243,7 +232,7 @@ public class UiContext {
   }
 
   public static UiContext changeMapSkin(GameData gameData, String skinName) {
-    final Preferences prefs = getPreferencesForMap(mapName);
+    final Preferences prefs = getPreferencesForMap(gameData.getMapName());
 
     if (skinName.equals(ORIGINAL_SKIN_NAME)) {
       prefs.put(MAP_SKIN_PREF, skinName);
@@ -360,17 +349,17 @@ public class UiContext {
   }
 
   @Getter
-  public static class MapSkin {
+  public class MapSkin {
     private final boolean currentSkin;
     private final String skinName;
 
     public MapSkin(String skinName) {
       this.skinName = skinName;
-      currentSkin = skinName.equals(UiContext.skinName);
+      currentSkin = skinName.equals(UiContext.this.skinName);
     }
   }
 
-  public static List<MapSkin> getSkins(final String mapName) {
+  public List<MapSkin> getSkins(final String mapName) {
     List<MapSkin> skins = new ArrayList<>();
     skins.add(new MapSkin(ORIGINAL_SKIN_NAME));
 
