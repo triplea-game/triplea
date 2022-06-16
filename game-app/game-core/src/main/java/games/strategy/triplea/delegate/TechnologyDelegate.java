@@ -194,7 +194,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     int techHits;
     int remainder = 0;
     final int diceSides = data.getDiceSides();
-    if (BaseEditDelegate.getEditMode(data.getProperties())) {
+    if (EditDelegate.getEditMode(data.getProperties())) {
       final Player tripleaPlayer = bridge.getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(techRolls, diceSides, annotation, diceSides);
       techHits = getTechHits(random);
@@ -373,7 +373,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final String annotation = player.getName() + " rolling to see what tech advances are acquired";
     final int[] random;
     if (Properties.getSelectableTechRoll(getData().getProperties())
-        || BaseEditDelegate.getEditMode(getData().getProperties())) {
+        || EditDelegate.getEditMode(getData().getProperties())) {
       final Player tripleaPlayer = bridge.getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(hits, 0, annotation, available.size());
     } else {

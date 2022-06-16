@@ -20,10 +20,10 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -450,7 +450,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData().getProperties());
+      final boolean isEditMode = EditDelegate.getEditMode(bridge.getData().getProperties());
       for (final String currentTypeAa : aaTypes) {
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
@@ -699,7 +699,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         return;
       }
       dice = new int[rollCount];
-      final boolean isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
+      final boolean isEditMode = EditDelegate.getEditMode(gameData.getProperties());
       if (isEditMode) {
         final String annotation =
             attacker.getName()

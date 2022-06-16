@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.EditDelegate;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
@@ -31,7 +31,7 @@ public class DelegateHistoryWriter implements IDelegateHistoryWriter {
   }
 
   private String getEventPrefix() {
-    if (BaseEditDelegate.getEditMode(gameData.getProperties())) {
+    if (EditDelegate.getEditMode(gameData.getProperties())) {
       return "EDIT: ";
     }
     return "";

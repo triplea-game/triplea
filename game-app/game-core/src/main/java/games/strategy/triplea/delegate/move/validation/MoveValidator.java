@@ -21,7 +21,7 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
-import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
@@ -1027,7 +1027,7 @@ public class MoveValidator {
   }
 
   private static boolean getEditMode(final GameProperties properties) {
-    return BaseEditDelegate.getEditMode(properties);
+    return EditDelegate.getEditMode(properties);
   }
 
   private static boolean hasConqueredNonBlitzedNonWaterOnRoute(
