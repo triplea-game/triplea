@@ -26,6 +26,8 @@ import org.triplea.util.Version;
 
 class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
+  // Use a single TuvCostsCalculator so its computations are cached.
+  private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
   @Setter private boolean keepOneAttackingLandUnit = false;
   @Setter private boolean amphibious = false;
   @Setter private int retreatAfterRound = -1;
@@ -93,8 +95,6 @@ class BattleCalculator implements IBattleCalculator {
       final List<Unit> defenderOrderOfLosses =
           OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
               this.defenderOrderOfLosses, defendingUnits, gameData);
-      // Use a single TuvCostsCalculator so its computations are cached.
-      final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
       for (int i = 0; i < runCount && !cancelled; i++) {
         final CompositeChange allChanges = new CompositeChange();
         final DummyDelegateBridge bridge =
