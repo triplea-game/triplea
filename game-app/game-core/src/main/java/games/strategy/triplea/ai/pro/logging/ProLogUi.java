@@ -58,10 +58,12 @@ public final class ProLogUi {
   }
 
   static void notifyAiLogMessage(final String message) {
-    if (settingsWindow == null) {
-      return;
-    }
-    SwingUtilities.invokeLater(() -> settingsWindow.addMessage(message));
+    SwingUtilities.invokeLater(
+        () -> {
+          if (settingsWindow != null) {
+            settingsWindow.addMessage(message);
+          }
+        });
   }
 
   public static void notifyStartOfRound(final int round, final String name) {
