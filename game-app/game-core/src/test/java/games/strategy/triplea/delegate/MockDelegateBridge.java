@@ -15,6 +15,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import org.mockito.stubbing.Answer;
@@ -43,7 +44,8 @@ public final class MockDelegateBridge {
         .addChange(any());
     when(delegateBridge.getData()).thenReturn(gameData);
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
-    when(delegateBridge.getHistoryWriter()).thenReturn(DelegateHistoryWriter.NO_OP_INSTANCE);
+    when(delegateBridge.getHistoryWriter())
+        .thenReturn(new DelegateHistoryWriter((IGameModifiedChannel) null));
     when(delegateBridge.getGamePlayer()).thenReturn(gamePlayer);
     final Player remotePlayer = mock(Player.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);

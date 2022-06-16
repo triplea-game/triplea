@@ -11,19 +11,13 @@ import javax.annotation.Nullable;
  * functions. The rest of the history writers functions should only be used by the GameData.
  */
 public class DelegateHistoryWriter implements IDelegateHistoryWriter {
-  public static final DelegateHistoryWriter NO_OP_INSTANCE = new DelegateHistoryWriter();
-
   @Nullable private final IGameModifiedChannel channel;
-
-  private DelegateHistoryWriter() {
-    this((IGameModifiedChannel) null);
-  }
 
   public DelegateHistoryWriter(final IChannelMessenger messenger) {
     this((IGameModifiedChannel) messenger.getChannelBroadcaster(IGame.GAME_MODIFICATION_CHANNEL));
   }
 
-  public DelegateHistoryWriter(final IGameModifiedChannel channel) {
+  public DelegateHistoryWriter(@Nullable final IGameModifiedChannel channel) {
     this.channel = channel;
   }
 
