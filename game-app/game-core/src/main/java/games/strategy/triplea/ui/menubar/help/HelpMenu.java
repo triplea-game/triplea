@@ -33,9 +33,10 @@ public final class HelpMenu {
     final var helpMenu = menu.add(UnitHelpMenu.buildMenu(gameData, uiContext));
     helpMenu.setMnemonic(KeyEvent.VK_U);
 
-    final String gameNotes = gameData.loadGameNotes();
+    final String gameNotes = gameData.loadGameNotes(uiContext.getMapLocation());
     if (!gameNotes.isBlank()) {
-      menu.add(GameNotesMenu.buildMenu(gameNotes)).setMnemonic(KeyEvent.VK_N);
+      menu.add(GameNotesMenu.buildMenu(gameNotes, uiContext.getMapLocation()))
+          .setMnemonic(KeyEvent.VK_N);
     }
 
     menu.addSeparator();

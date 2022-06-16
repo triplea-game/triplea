@@ -14,6 +14,7 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ai.AbstractBuiltInAi;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -53,6 +54,12 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void sendMessage(final WebSocketMessage webSocketMessage) {}
+
+  @Override
+  public ResourceLoader getResourceLoader() {
+    throw new UnsupportedOperationException(
+        "ObjectiveDummyDelegateBridge does not provide a ResourceLoader!");
+  }
 
   @Override
   public void leaveDelegateExecution() {}

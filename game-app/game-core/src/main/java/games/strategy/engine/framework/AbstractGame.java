@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.PlayerList;
@@ -13,6 +14,7 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.triplea.ResourceLoader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -48,6 +50,8 @@ public abstract class AbstractGame implements IGame {
   @Nullable private IDisplay display;
   @Nullable private ISound sound;
 
+  @Nullable private ResourceLoader resourceLoader;
+
   AbstractGame(
       final GameData data,
       final Set<Player> gamePlayers,
@@ -65,6 +69,18 @@ public abstract class AbstractGame implements IGame {
     }
     playerManager = new PlayerManager(allPlayers);
     setupLocalPlayers(gamePlayers);
+  }
+
+  @Override
+  public void setResourceLoader(final ResourceLoader resourceLoader) {
+    this.resourceLoader =
+        Preconditions.checkNotNull(resourceLoader, "ResourceLoader needs to be non-null");
+  }
+
+  @Override
+  public ResourceLoader getResourceLoader() {
+    return Preconditions.checkNotNull(
+        resourceLoader, "ResourceLoader has been accessed before setting it");
   }
 
   private void setupLocalPlayers(final Set<Player> localPlayers) {

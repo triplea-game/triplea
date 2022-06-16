@@ -21,10 +21,6 @@ public abstract class PropertyFile {
     this(loader.loadAsResource(fileName));
   }
 
-  protected PropertyFile(final String fileName) {
-    this(fileName, UiContext.getResourceLoader());
-  }
-
   @VisibleForTesting
   protected PropertyFile(final Properties properties) {
     this.properties = properties;

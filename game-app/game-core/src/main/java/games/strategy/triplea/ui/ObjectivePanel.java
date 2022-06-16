@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -60,16 +61,19 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
   private GameData gameData;
   private IDelegateBridge dummyDelegate;
 
-  ObjectivePanel(final GameData data) {
+  private final ResourceLoader resourceLoader;
+
+  ObjectivePanel(final GameData data, final UiContext uiContext) {
     gameData = data;
     dummyDelegate = new ObjectiveDummyDelegateBridge(data);
+    resourceLoader = uiContext.getResourceLoader();
     initLayout();
     gameData.addDataChangeListener(this);
   }
 
   @Override
   public String getName() {
-    return ObjectiveProperties.getInstance().getName();
+    return ObjectiveProperties.getInstance(resourceLoader).getName();
   }
 
   public boolean isEmpty() {
@@ -123,7 +127,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
 
     private void setObjectiveStats() {
       statsObjective = new LinkedHashMap<>();
-      final ObjectiveProperties op = ObjectiveProperties.getInstance();
+      final ObjectiveProperties op = ObjectiveProperties.getInstance(resourceLoader);
       final String gameName =
           FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_')
               .replaceAll(" ", "_")

@@ -104,8 +104,9 @@ public final class MapUnitTooltipManager implements ActionListener {
       final JComponent component,
       final UnitType unitType,
       final GamePlayer player,
-      final int count) {
-    final String text = getTooltipTextForUnit(unitType, player, count);
+      final int count,
+      final UiContext uiContext) {
+    final String text = getTooltipTextForUnit(unitType, player, count, uiContext);
     component.setToolTipText("<html>" + text + "</html>");
   }
 
@@ -118,14 +119,17 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @return The tooltip text.
    */
   public static String getTooltipTextForUnit(
-      final UnitType unitType, final GamePlayer player, final int count) {
+      final UnitType unitType,
+      final GamePlayer player,
+      final int count,
+      final UiContext uiContext) {
     final String firstLine =
         String.format(
             "<b>%s%s (%s)</b><br />",
             count == 1 ? "" : (count + " "),
             StringUtils.capitalize(unitType.getName()),
             player.getName());
-    return firstLine + TooltipProperties.getInstance().getTooltip(unitType, player);
+    return firstLine + TooltipProperties.getInstance(uiContext).getTooltip(unitType, player);
   }
 
   /**

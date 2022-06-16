@@ -16,12 +16,12 @@ import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
-import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.Util;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -580,18 +580,17 @@ public class GameData implements Serializable, GameState {
    * Reads the game notes from the game-notes file and returns that text with an auto-generated
    * header. Returns empty if the 'map.yml' or game notes file cannot be found.
    */
-  public String loadGameNotes() {
+  public String loadGameNotes(final Path mapLocation) {
     // Given a game name, the map.yml file can tell us the path to the game xml file.
     // From the game-xml file name, we can find the game-notes file.
-    return findMapDescriptionYaml()
+    return findMapDescriptionYaml(mapLocation)
         .flatMap(yaml -> yaml.getGameXmlPathByGameName(getGameName()))
         .map(GameNotes::loadGameNotes)
         .orElse("");
   }
 
-  private Optional<MapDescriptionYaml> findMapDescriptionYaml() {
-    return FileUtils.findFileInParentFolders(
-            UiContext.getMapLocation(), MapDescriptionYaml.MAP_YAML_FILE_NAME)
+  private Optional<MapDescriptionYaml> findMapDescriptionYaml(final Path mapLocation) {
+    return FileUtils.findFileInParentFolders(mapLocation, MapDescriptionYaml.MAP_YAML_FILE_NAME)
         .flatMap(MapDescriptionYaml::fromFile);
   }
 }

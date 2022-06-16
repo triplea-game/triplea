@@ -35,16 +35,17 @@ class ProductionTabsProperties {
   private final List<Rule> rules;
   private List<Tuple<String, List<Rule>>> ruleLists;
 
-  protected ProductionTabsProperties(final GamePlayer gamePlayer, final List<Rule> rules) {
+  protected ProductionTabsProperties(
+      final GamePlayer gamePlayer, final List<Rule> rules, final ResourceLoader loader) {
     this.rules = rules;
-    final ResourceLoader loader = UiContext.getResourceLoader();
     properties = loader.loadAsResource(PROPERTY_FILE + "." + gamePlayer.getName() + ".properties");
     // no production_tabs.france.properties check for production_tabs.properties
     properties.putAll(loader.loadAsResource(PROPERTY_FILE + ".properties"));
   }
 
-  static ProductionTabsProperties getInstance(final GamePlayer gamePlayer, final List<Rule> rules) {
-    return new ProductionTabsProperties(gamePlayer, rules);
+  static ProductionTabsProperties getInstance(
+      final GamePlayer gamePlayer, final List<Rule> rules, final ResourceLoader resourceLoader) {
+    return new ProductionTabsProperties(gamePlayer, rules, resourceLoader);
   }
 
   List<Tuple<String, List<Rule>>> getRuleLists() {

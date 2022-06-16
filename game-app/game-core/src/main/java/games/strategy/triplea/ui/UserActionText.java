@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.triplea.ResourceLoader;
+
 /** Same as PoliticsText but for user actions. */
 public class UserActionText extends PropertyFile {
   // Filename
@@ -14,12 +16,12 @@ public class UserActionText extends PropertyFile {
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
-  private UserActionText() {
-    super(PROPERTY_FILE);
+  private UserActionText(final ResourceLoader resourceLoader) {
+    super(PROPERTY_FILE, resourceLoader);
   }
 
-  public static UserActionText getInstance() {
-    return PropertyFile.getInstance(UserActionText.class, UserActionText::new);
+  public static UserActionText getInstance(final ResourceLoader resourceLoader) {
+    return PropertyFile.getInstance(UserActionText.class, () -> new UserActionText(resourceLoader));
   }
 
   private String getString(final String value) {

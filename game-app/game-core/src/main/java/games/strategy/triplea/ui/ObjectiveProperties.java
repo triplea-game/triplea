@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.triplea.ResourceLoader;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -9,12 +10,13 @@ public class ObjectiveProperties extends PropertyFile {
   private static final String PROPERTY_FILE = "objectives.properties";
   private static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
 
-  protected ObjectiveProperties() {
-    super(PROPERTY_FILE);
+  protected ObjectiveProperties(final ResourceLoader resourceLoader) {
+    super(PROPERTY_FILE, resourceLoader);
   }
 
-  public static ObjectiveProperties getInstance() {
-    return PropertyFile.getInstance(ObjectiveProperties.class, ObjectiveProperties::new);
+  public static ObjectiveProperties getInstance(final ResourceLoader resourceLoader) {
+    return PropertyFile.getInstance(
+        ObjectiveProperties.class, () -> new ObjectiveProperties(resourceLoader));
   }
 
   public String getName() {

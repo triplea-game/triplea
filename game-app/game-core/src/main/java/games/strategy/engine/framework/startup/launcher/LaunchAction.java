@@ -66,5 +66,5 @@ public interface LaunchAction {
    *
    * @return true if the game should stop execution, false otherwise.
    */
-  boolean promptGameStop(String status, String title);
+  boolean promptGameStop(String status, String title, Path mapLocation);
 }
