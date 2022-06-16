@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.util.BreadthFirstSearch;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
@@ -29,8 +30,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
@@ -1300,5 +1303,27 @@ public class ProTerritoryManager {
       return range;
     }
     return unit.getMovementLeft();
+  }
+
+  public Optional<Territory> findClosestTerritory(
+      Collection<Territory> fromTerritories,
+      Predicate<Territory> canMove,
+      Predicate<Territory> isDestination) {
+    BreadthFirstSearch bfs = new BreadthFirstSearch(fromTerritories, canMove.or(isDestination));
+    MutableObject<Territory> destination = new MutableObject<>();
+    bfs.traverse(
+        new BreadthFirstSearch.Visitor() {
+          @Override
+          public void visit(final Territory territory) {
+            if (destination.getValue() == null && isDestination.test(territory)) {
+              destination.setValue(territory);
+            }
+          }
+
+          public boolean shouldContinueSearch(final int distanceSearched) {
+            return destination.getValue() == null;
+          }
+        });
+    return Optional.ofNullable(destination.getValue());
   }
 }

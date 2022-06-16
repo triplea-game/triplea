@@ -3,11 +3,13 @@ package games.strategy.engine.data.util;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.ObjectUtils;
+import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Implements Breadth First Search (BFS) to traverse / find territories. Since the search criteria
@@ -41,19 +43,23 @@ public final class BreadthFirstSearch {
   }
 
   /**
-   * @param startTerritory The territory from where to start the search.
+   * @param startTerritories The territories from where to start the search.
    * @param neighborCondition Condition that neighboring territories must match to be considered
    *     neighbors.
    */
   public BreadthFirstSearch(
-      final Territory startTerritory, final Predicate<Territory> neighborCondition) {
-    this.map = startTerritory.getData().getMap();
-    this.visited = new HashSet<>(List.of(startTerritory));
-    this.territoriesToCheck = new ArrayDeque<>(List.of(startTerritory));
+      Collection<Territory> startTerritories, Predicate<Territory> neighborCondition) {
+    this.map = CollectionUtils.getAny(startTerritories).getData().getMap();
+    this.visited = new HashSet<>(startTerritories);
+    this.territoriesToCheck = new ArrayDeque<>(startTerritories);
     this.neighborCondition = neighborCondition;
   }
 
-  public BreadthFirstSearch(final Territory startTerritory) {
+  public BreadthFirstSearch(Territory startTerritory, Predicate<Territory> neighborCondition) {
+    this(List.of(startTerritory), neighborCondition);
+  }
+
+  public BreadthFirstSearch(Territory startTerritory) {
     this(startTerritory, t -> true);
   }
 

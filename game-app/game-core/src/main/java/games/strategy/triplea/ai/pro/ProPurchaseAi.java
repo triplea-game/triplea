@@ -348,23 +348,24 @@ class ProPurchaseAi {
         prioritizeSeaTerritories(purchaseTerritories);
     purchaseSeaAndAmphibUnits(purchaseTerritories, prioritizedSeaTerritories, purchaseOptions);
 
-    // Try to use any remaining PUs on high value units
-    purchaseUnitsWithRemainingProduction(
-        purchaseTerritories, purchaseOptions.getLandOptions(), purchaseOptions.getAirOptions());
-    upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions);
+    // Try to use any remaining PUs on high value units, except if we need to save up for a fleet.
+    if (!shouldSaveUpForAFleet(purchaseOptions, purchaseTerritories)) {
+      purchaseUnitsWithRemainingProduction(
+          purchaseTerritories, purchaseOptions.getLandOptions(), purchaseOptions.getAirOptions());
 
-    // Try to purchase land/sea factory with extra PUs
-    purchaseFactory(
-        factoryPurchaseTerritories,
-        purchaseTerritories,
-        prioritizedLandTerritories,
-        purchaseOptions,
-        true);
+      upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions);
 
-    // Add factory purchase territory to list if not empty
-    if (!factoryPurchaseTerritories.isEmpty()) {
-      purchaseTerritories.putAll(factoryPurchaseTerritories);
+      // Try to purchase land/sea factory with extra PUs
+      purchaseFactory(
+          factoryPurchaseTerritories,
+          purchaseTerritories,
+          prioritizedLandTerritories,
+          purchaseOptions,
+          true);
     }
+
+    // Add factory purchase territory to list
+    purchaseTerritories.putAll(factoryPurchaseTerritories);
 
     // Determine final count of each production rule
     final IntegerMap<ProductionRule> purchaseMap =
@@ -378,6 +379,43 @@ class ProPurchaseAi {
 
     territoryManager = null;
     return purchaseTerritories;
+  }
+
+  private boolean shouldSaveUpForAFleet(
+      final ProPurchaseOptionMap purchaseOptions,
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+    if (resourceTracker.isEmpty()
+        || purchaseOptions.getSeaDefenseOptions().isEmpty()
+        || purchaseOptions.getSeaTransportOptions().isEmpty()) {
+      return false;
+    }
+    Optional<Territory> enemyTerritoryReachableByLand =
+        territoryManager.findClosestTerritory(
+            purchaseTerritories.keySet(),
+            ProMatches.territoryCanPotentiallyMoveLandUnits(player),
+            Matches.isTerritoryEnemy(player).and(Matches.territoryIsLand()));
+    if (enemyTerritoryReachableByLand.isPresent()) {
+      // An enemy territory is reachable by land, no need to save for a fleet.
+      return false;
+    }
+    // See if we can reach the enemy by sea from a sea placement territory.
+    var placeSeaTerritories = new HashSet<Territory>();
+    for (ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
+      for (ProPlaceTerritory placeTerritory : purchaseTerritory.getCanPlaceTerritories()) {
+        if (placeTerritory.getTerritory().isWater()) {
+          placeSeaTerritories.add(placeTerritory.getTerritory());
+        }
+      }
+    }
+    Optional<Territory> enemyLandReachableBySea =
+        territoryManager.findClosestTerritory(
+            placeSeaTerritories,
+            ProMatches.territoryCanMoveSeaUnits(player, true),
+            Matches.isTerritoryEnemy(player).and(Matches.territoryIsLand()));
+    if (enemyLandReachableBySea.isPresent()) {
+      ProLogger.info("Saving up for a fleet, since enemy territories are only reachable by sea");
+    }
+    return enemyLandReachableBySea.isPresent();
   }
 
   void place(

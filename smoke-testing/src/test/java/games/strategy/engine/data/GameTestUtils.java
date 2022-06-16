@@ -37,6 +37,8 @@ import org.triplea.java.collections.CollectionUtils;
 @UtilityClass
 @Slf4j
 public class GameTestUtils {
+  private static Map<URI, Path> downloadedMaps = new HashMap<>();
+
   public static void setUp() throws IOException {
     if (ProductVersionReader.getCurrentVersionOptional().isEmpty()) {
       ProductVersionReader.init();
@@ -63,13 +65,21 @@ public class GameTestUtils {
     return gameSelector;
   }
 
-  private static Path downloadMap(URI uri) throws IOException {
-    Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve("map.zip");
-    log.info("Downloading from: " + uri);
-    try (ContentDownloader downloader = new ContentDownloader(uri)) {
-      Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
-    }
-    return ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo).orElseThrow();
+  private static Path downloadMap(URI uri) {
+    return downloadedMaps.computeIfAbsent(
+        uri,
+        key -> {
+          Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve("map.zip");
+          log.info("Downloading from: " + uri);
+          try {
+            try (ContentDownloader downloader = new ContentDownloader(uri)) {
+              Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
+            }
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+          return ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo).orElseThrow();
+        });
   }
 
   private static URI getMapDownloadURI(String mapName) throws URISyntaxException {

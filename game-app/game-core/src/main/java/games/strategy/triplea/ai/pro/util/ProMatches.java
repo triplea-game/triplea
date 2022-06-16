@@ -198,7 +198,8 @@ public final class ProMatches {
 
   public static Predicate<Territory> territoryCanMoveSeaUnitsThrough(
       final GamePlayer player, final boolean isCombatMove) {
-    return territoryCanMoveSeaUnits(player, isCombatMove).and(territoryHasOnlyIgnoredUnits(player));
+    return territoryCanMoveSeaUnits(player, isCombatMove)
+        .and(not(Matches.territoryIsBlockedSea(player)));
   }
 
   public static Predicate<Territory> territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
@@ -207,7 +208,7 @@ public final class ProMatches {
       final List<Territory> clearedTerritories,
       final List<Territory> notTerritories) {
     final Predicate<Territory> onlyIgnoredOrClearedMatch =
-        territoryHasOnlyIgnoredUnits(player).or(clearedTerritories::contains);
+        not(Matches.territoryIsBlockedSea(player)).or(clearedTerritories::contains);
     return territoryCanMoveSeaUnits(player, isCombatMove)
         .and(onlyIgnoredOrClearedMatch)
         .and(not(notTerritories::contains));
