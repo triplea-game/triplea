@@ -55,7 +55,7 @@ public class CasualtySelector {
       final GamePlayer player,
       final Collection<Unit> targetsToPickFrom,
       final CombatValue combatValue,
-      final Territory battlesite,
+      final Territory battleSite,
       final IDelegateBridge bridge,
       final String text,
       final DiceRoll dice,
@@ -92,7 +92,7 @@ public class CasualtySelector {
           List.of(),
           new CasualtyDetails(),
           battleId,
-          battlesite,
+          battleSite,
           allowMultipleHitsPerUnit);
     }
 
@@ -109,7 +109,7 @@ public class CasualtySelector {
             hitsRemaining,
             player,
             combatValue,
-            battlesite,
+            battleSite,
             costs,
             data,
             allowMultipleHitsPerUnit);
@@ -144,7 +144,7 @@ public class CasualtySelector {
                 List.of(),
                 defaultCasualties,
                 battleId,
-                battlesite,
+                battleSite,
                 allowMultipleHitsPerUnit);
 
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
@@ -197,7 +197,7 @@ public class CasualtySelector {
           player,
           sortedTargetsToPickFrom,
           combatValue,
-          battlesite,
+          battleSite,
           bridge,
           text,
           dice,
@@ -221,7 +221,7 @@ public class CasualtySelector {
           player,
           sortedTargetsToPickFrom,
           combatValue,
-          battlesite,
+          battleSite,
           bridge,
           text,
           dice,
