@@ -11,7 +11,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
@@ -95,7 +94,7 @@ class BattleCalculator implements IBattleCalculator {
               this.defenderOrderOfLosses, defendingUnits, gameData);
       for (int i = 0; i < runCount && !cancelled; i++) {
         final CompositeChange allChanges = new CompositeChange();
-        final DummyDelegateBridge bridge1 =
+        final DummyDelegateBridge bridge =
             new DummyDelegateBridge(
                 attacker2,
                 gameData,
@@ -106,7 +105,6 @@ class BattleCalculator implements IBattleCalculator {
                 retreatAfterRound,
                 retreatAfterXUnitsLeft,
                 retreatWhenOnlyAirLeft);
-        final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
         final MustFightBattle battle =
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);
@@ -125,7 +123,7 @@ class BattleCalculator implements IBattleCalculator {
         }
         battle.setUnits(
             defendingUnits, attackingUnits, bombardingUnits, defender2, territoryEffects2);
-        bridge1.setBattle(battle);
+        bridge.setBattle(battle);
         battle.fight(bridge);
         aggregateResults.addResult(new BattleResults(battle, gameData));
         // restore the game to its original state

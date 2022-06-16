@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryNode;
@@ -19,11 +18,6 @@ import games.strategy.triplea.Constants;
 public abstract class BaseEditDelegate extends BasePersistentDelegate {
   private static final String EDITMODE_ON = "Turning on Edit Mode";
   private static final String EDITMODE_OFF = "Turning off Edit Mode";
-
-  @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
-  }
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {

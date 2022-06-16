@@ -28,7 +28,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseTripleADelegate;
-import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.RocketsFireHelper;
 import games.strategy.triplea.delegate.TechTracker;
@@ -76,11 +75,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean needToFireRockets = true;
   private RocketsFireHelper rocketHelper;
   private IBattle currentBattle = null;
-
-  @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
-  }
 
   @Override
   public void start() {
