@@ -180,9 +180,9 @@ public class AirBattle extends AbstractBattle {
                 return;
               }
               final IntegerMap<UnitType> defenderCosts =
-                  TuvUtils.getCostsForTuv(defender, gameData);
+                  bridge.getCostsForTuv(defender);
               final IntegerMap<UnitType> attackerCosts =
-                  TuvUtils.getCostsForTuv(attacker, gameData);
+                  bridge.getCostsForTuv(attacker);
               attackingUnits.removeAll(attackingWaitingToDie);
               remove(attackingWaitingToDie, bridge, battleSite);
               defendingUnits.removeAll(defendingWaitingToDie);

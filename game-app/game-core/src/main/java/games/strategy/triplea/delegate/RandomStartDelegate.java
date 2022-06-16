@@ -103,7 +103,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (randomTerritories) {
         pos += hitRandom[i];
         i++;
-        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(currentPickingPlayer, data);
+        final IntegerMap<UnitType> costs = bridge.getCostsForTuv(currentPickingPlayer);
         final List<Unit> units = new ArrayList<>(currentPickingPlayer.getUnits());
 
         units.sort(Comparator.comparingInt(unit -> costs.getInt(unit.getType())));

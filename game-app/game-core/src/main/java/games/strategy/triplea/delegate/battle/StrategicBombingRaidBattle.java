@@ -305,7 +305,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               HistoryChangeFactory.removeUnitsFromTerritory(battleSite, suicideUnits)
                   .perform(bridge);
 
-              final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+              final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
               final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, attacker, costs, gameData);
               attackerLostTuv += tuvLostAttacker;
             }
@@ -321,7 +321,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 // targets.removeAll(unitsCanDie);
                 HistoryChangeFactory.removeUnitsFromTerritory(battleSite, unitsCanDie)
                     .perform(bridge);
-                final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(defender, gameData);
+                final IntegerMap<UnitType> costs = bridge.getCostsForTuv(defender);
                 final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, defender, costs, gameData);
                 defenderLostTuv += tuvLostDefender;
               }
@@ -652,7 +652,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final IDelegateBridge bridge, final CasualtyDetails casualties, final String currentTypeAa) {
     final List<Unit> killed = casualties.getKilled();
     if (!killed.isEmpty()) {
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+      final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
       final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
       attackerLostTuv += tuvLostAttacker;
       // attackingUnits.removeAll(casualties);

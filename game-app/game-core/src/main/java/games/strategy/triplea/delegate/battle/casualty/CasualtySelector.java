@@ -102,7 +102,7 @@ public class CasualtySelector {
 
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do
     // it here.
-    final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
+    final IntegerMap<UnitType> costs = bridge.getCostsForTuv(player);
     final Tuple<CasualtyList, List<Unit>> defaultCasualtiesAndSortedTargets =
         getDefaultCasualties(
             targetsToPickFrom,
