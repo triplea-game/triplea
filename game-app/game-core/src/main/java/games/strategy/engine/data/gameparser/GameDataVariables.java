@@ -12,19 +12,20 @@ import java.util.stream.Stream;
 import lombok.Getter;
 import org.triplea.map.data.elements.VariableList;
 
-class GameDataVariableParser {
+class GameDataVariables {
   @Getter private Map<String, List<String>> variables;
 
-  Map<String, List<String>> parseVariables(final VariableList root) {
-    variables = root == null ? Map.of() : parseVariableElement(root.getVariables());
-    return variables;
+  private GameDataVariables(Map<String, List<String>> variables) {
+    this.variables = variables;
   }
 
-  private Map<String, List<String>> parseVariableElement(
-      final List<VariableList.Variable> variableList) {
+  static GameDataVariables parse(final VariableList root) {
+    if (root == null) {
+      return new GameDataVariables(Map.of());
+    }
     final Map<String, List<String>> variables = new HashMap<>();
 
-    for (final VariableList.Variable current : variableList) {
+    for (final VariableList.Variable current : root.getVariables()) {
       final String name = "$" + current.getName() + "$";
       final List<String> values =
           current.getElements().stream()
@@ -33,10 +34,10 @@ class GameDataVariableParser {
               .collect(Collectors.toList());
       variables.put(name, values);
     }
-    return Collections.unmodifiableMap(variables);
+    return new GameDataVariables(Collections.unmodifiableMap(variables));
   }
 
-  private Stream<String> findNestedVariables(
+  private static Stream<String> findNestedVariables(
       final String value, final Map<String, List<String>> variables) {
     if (!variables.containsKey(value)) {
       return Stream.of(value);

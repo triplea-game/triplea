@@ -80,7 +80,7 @@ public final class GameParser {
   @Nonnull private final GameData data;
   private final String xmlUri;
   private final XmlGameElementMapper xmlGameElementMapper;
-  private final GameDataVariableParser variableParser = new GameDataVariableParser();
+  private GameDataVariables variables;
   private final Version engineVersion;
 
   private GameParser(
@@ -179,7 +179,7 @@ public final class GameParser {
 
     parseDelegates(game.getGamePlay().getDelegates());
 
-    variableParser.parseVariables(game.getVariableList());
+    variables = GameDataVariables.parse(game.getVariableList());
     parseSteps(game.getGamePlay().getSequence().getSteps());
 
     Optional.ofNullable(game.getGamePlay().getOffset()).ifPresent(this::parseOffset);
@@ -807,7 +807,7 @@ public final class GameParser {
         parseAttachment(current, Map.of());
       } else {
         final List<Map<String, String>> combinations =
-            variableParser.expandVariableCombinations(foreach);
+            variables.expandVariableCombinations(foreach);
         for (Map<String, String> foreachMap : combinations) {
           parseAttachment(current, foreachMap);
         }
@@ -821,7 +821,7 @@ public final class GameParser {
     final String className = current.getJavaClass();
     final Attachable attachable =
         findAttachment(current, Optional.ofNullable(current.getType()).orElse("unitType"), foreach);
-    String name = variableParser.replaceForeachVariables(current.getName(), foreach);
+    String name = variables.replaceForeachVariables(current.getName(), foreach);
     // Only replace if needed, as replaceAll() can be slow.
     if (name.contains("ttatchment")) {
       name = name.replaceAll("ttatchment", "ttachment");
@@ -845,7 +845,7 @@ public final class GameParser {
   private Attachable findAttachment(
       final AttachmentList.Attachment element, final String type, final Map<String, String> foreach)
       throws GameParseException {
-    final String attachTo = variableParser.replaceForeachVariables(element.getAttachTo(), foreach);
+    final String attachTo = variables.replaceForeachVariables(element.getAttachTo(), foreach);
     switch (type) {
       case "unitType":
         return getUnitType(attachTo);
@@ -893,9 +893,8 @@ public final class GameParser {
       if (containsEmptyForeachVariable(countAndValue, foreach)) {
         continue; // Skip adding option if contains empty foreach variable
       }
-      final String valueWithForeach =
-          variableParser.replaceForeachVariables(countAndValue, foreach);
-      final String interpolatedValue = variableParser.replaceVariables(valueWithForeach);
+      final String valueWithForeach = variables.replaceForeachVariables(countAndValue, foreach);
+      final String interpolatedValue = variables.replaceVariables(valueWithForeach);
       final String finalValue = LegacyPropertyMapper.mapLegacyOptionValue(name, interpolatedValue);
       try {
         Optional.ofNullable(propertyMap.get(name))
