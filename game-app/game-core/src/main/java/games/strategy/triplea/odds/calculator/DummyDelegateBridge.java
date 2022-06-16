@@ -37,7 +37,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
   private final CompositeChange allChanges;
   private final GameData gameData;
   private MustFightBattle battle = null;
-  private TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+  private final TuvCostsCalculator tuvCalculator;
 
   public DummyDelegateBridge(
       final GamePlayer attacker,
@@ -48,7 +48,8 @@ public class DummyDelegateBridge implements IDelegateBridge {
       final boolean attackerKeepOneLandUnit,
       final int retreatAfterRound,
       final int retreatAfterXUnitsLeft,
-      final boolean retreatWhenOnlyAirLeft) {
+      final boolean retreatWhenOnlyAirLeft,
+      final TuvCostsCalculator tuvCalculator) {
     attackingPlayer =
         new DummyPlayer(
             this,
@@ -72,6 +73,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
     gameData = data;
     this.attacker = attacker;
     this.allChanges = allChanges;
+    this.tuvCalculator = tuvCalculator;
   }
 
   @Override

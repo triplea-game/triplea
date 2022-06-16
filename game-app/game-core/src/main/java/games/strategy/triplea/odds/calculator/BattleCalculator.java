@@ -14,6 +14,7 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -92,6 +93,8 @@ class BattleCalculator implements IBattleCalculator {
       final List<Unit> defenderOrderOfLosses =
           OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
               this.defenderOrderOfLosses, defendingUnits, gameData);
+      // Use a single TuvCostsCalculator so its computations are cached.
+      final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
       for (int i = 0; i < runCount && !cancelled; i++) {
         final CompositeChange allChanges = new CompositeChange();
         final DummyDelegateBridge bridge =
@@ -104,7 +107,8 @@ class BattleCalculator implements IBattleCalculator {
                 keepOneAttackingLandUnit,
                 retreatAfterRound,
                 retreatAfterXUnitsLeft,
-                retreatWhenOnlyAirLeft);
+                retreatWhenOnlyAirLeft,
+                tuvCalculator);
         final MustFightBattle battle =
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);
