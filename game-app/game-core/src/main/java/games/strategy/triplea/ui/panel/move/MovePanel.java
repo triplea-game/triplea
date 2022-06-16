@@ -10,7 +10,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
-import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -983,7 +983,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private boolean isEditMode() {
-    return BaseEditDelegate.getEditMode(getData().getProperties());
+    return EditDelegate.getEditMode(getData().getProperties());
   }
 
   private Route getRoute(

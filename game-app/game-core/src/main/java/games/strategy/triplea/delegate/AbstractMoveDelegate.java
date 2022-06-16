@@ -105,7 +105,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   protected GamePlayer getUnitsOwner(final Collection<Unit> units) {
     // if we are not in edit mode, return player. if we are in edit mode, we use whoever's units
     // these are.
-    return (units.isEmpty() || !BaseEditDelegate.getEditMode(getData().getProperties()))
+    return (units.isEmpty() || !EditDelegate.getEditMode(getData().getProperties()))
         ? player
         : CollectionUtils.getAny(units).getOwner();
   }

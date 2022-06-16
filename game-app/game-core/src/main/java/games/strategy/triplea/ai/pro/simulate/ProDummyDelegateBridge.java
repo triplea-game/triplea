@@ -29,7 +29,7 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final GamePlayer player;
   private final AbstractProAi proAi;
-  private final DelegateHistoryWriter writer = DelegateHistoryWriter.NO_OP_INSTANCE;
+  private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final GameData gameData;
   private final CompositeChange allChanges = new CompositeChange();
 
