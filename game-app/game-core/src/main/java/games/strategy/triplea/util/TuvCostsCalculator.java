@@ -20,7 +20,7 @@ import org.triplea.java.collections.IntegerMap;
 
 public class TuvCostsCalculator {
   @Nullable private IntegerMap<UnitType> costsAll;
-  private Map<GamePlayer, IntegerMap<UnitType>> costsPerPlayer = new HashMap<>();
+  private final Map<GamePlayer, IntegerMap<UnitType>> costsPerPlayer = new HashMap<>();
 
   /**
    * Return map where keys are unit types and values are PU costs of that unit type, based on a
@@ -33,7 +33,7 @@ public class TuvCostsCalculator {
    * @return a map of unit types to PU cost
    */
   public IntegerMap<UnitType> getCostsForTuv(final GamePlayer player) {
-    return costsPerPlayer.computeIfAbsent(player, p -> computeCostsForTuv(p));
+    return costsPerPlayer.computeIfAbsent(player, this::computeCostsForTuv);
   }
 
   public IntegerMap<UnitType> computeCostsForTuv(final GamePlayer player) {
@@ -59,11 +59,7 @@ public class TuvCostsCalculator {
   }
 
   private IntegerMap<UnitType> computeBaseCostsForPlayer(GamePlayer player) {
-    final Resource pus;
-    try (GameData.Unlocker ignored = player.getData().acquireReadLock()) {
-      pus = player.getData().getResourceList().getResource(Constants.PUS);
-    }
-
+    final Resource pus = player.getData().getResourceList().getResource(Constants.PUS);
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {
@@ -92,10 +88,7 @@ public class TuvCostsCalculator {
    */
   private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(
       final GameData data) {
-    final Resource pus;
-    try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      pus = data.getResourceList().getResource(Constants.PUS);
-    }
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final Map<UnitType, List<Integer>> differentCosts = new HashMap<>();
     for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {
@@ -111,13 +104,7 @@ public class TuvCostsCalculator {
       // we round up the cost
       final int roundedCostPerSingle =
           (int) Math.ceil((double) costPerGroup / (double) numberProduced);
-      if (differentCosts.containsKey(ut)) {
-        differentCosts.get(ut).add(roundedCostPerSingle);
-      } else {
-        final List<Integer> listTemp = new ArrayList<>();
-        listTemp.add(roundedCostPerSingle);
-        differentCosts.put(ut, listTemp);
-      }
+      differentCosts.computeIfAbsent(ut, key -> new ArrayList<>()).add(roundedCostPerSingle);
     }
     for (final UnitType ut : differentCosts.keySet()) {
       int totalCosts = 0;
