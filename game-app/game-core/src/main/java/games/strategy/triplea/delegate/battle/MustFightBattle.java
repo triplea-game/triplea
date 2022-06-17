@@ -441,7 +441,7 @@ public class MustFightBattle extends DependentBattle
       removeUnits(lost, bridge, battleSite, OFFENSE);
     }
     if (attackingUnits.isEmpty()) {
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+      final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
       final int tuvLostAttacker =
           (withdrawn ? 0 : TuvUtils.getTuv(lost, attacker, costs, gameData));
       attackerLostTuv += tuvLostAttacker;
@@ -1505,9 +1505,9 @@ public class MustFightBattle extends DependentBattle
       return;
     }
     // a handy summary of all the units killed
-    IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+    IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
     final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
-    costs = TuvUtils.getCostsForTuv(defender, gameData);
+    costs = bridge.getCostsForTuv(defender);
     final int tuvLostDefender = TuvUtils.getTuv(killed, defender, costs, gameData);
     final int tuvChange = tuvLostDefender - tuvLostAttacker;
     bridge

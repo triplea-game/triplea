@@ -29,7 +29,7 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.triplea.util.TuvUtils;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -703,25 +703,7 @@ class EditPanel extends ActionPanel {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            sortUnitsToRemove(units);
-            units.sort(
-                new UnitBattleComparator(
-                        TuvUtils.getCostsForTuv(player, getData()),
-                        getData(),
-                        CombatValueBuilder.mainCombatValue()
-                            .enemyUnits(List.of())
-                            .friendlyUnits(List.of())
-                            .side(BattleState.Side.OFFENSE)
-                            .gameSequence(getData().getSequence())
-                            .supportAttachments(getData().getUnitTypeList().getSupportRules())
-                            .lhtrHeavyBombers(
-                                Properties.getLhtrHeavyBombers(getData().getProperties()))
-                            .gameDiceSides(getData().getDiceSides())
-                            .territoryEffects(List.of())
-                            .build(),
-                        true,
-                        false)
-                    .reversed());
+            sortUnits(player, units);
             // unit mapped to <max, min, current>
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
             for (final Unit u : units) {
@@ -791,25 +773,7 @@ class EditPanel extends ActionPanel {
               cancelEditAction.actionPerformed(null);
               return;
             }
-            sortUnitsToRemove(units);
-            units.sort(
-                new UnitBattleComparator(
-                        TuvUtils.getCostsForTuv(player, getData()),
-                        getData(),
-                        CombatValueBuilder.mainCombatValue()
-                            .enemyUnits(List.of())
-                            .friendlyUnits(List.of())
-                            .side(BattleState.Side.OFFENSE)
-                            .gameSequence(getData().getSequence())
-                            .supportAttachments(getData().getUnitTypeList().getSupportRules())
-                            .lhtrHeavyBombers(
-                                Properties.getLhtrHeavyBombers(getData().getProperties()))
-                            .gameDiceSides(getData().getDiceSides())
-                            .territoryEffects(List.of())
-                            .build(),
-                        true,
-                        false)
-                    .reversed());
+            sortUnits(player, units);
             // unit mapped to <max, min, current>
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
             for (final Unit u : units) {
@@ -968,6 +932,26 @@ class EditPanel extends ActionPanel {
     add(new JButton(changePoliticalRelationships));
     add(Box.createVerticalStrut(15));
     setWidgetActivation();
+  }
+
+  private void sortUnits(GamePlayer player, List<Unit> units) {
+    units.sort(
+        new UnitBattleComparator(
+                new TuvCostsCalculator().getCostsForTuv(player),
+                getData(),
+                CombatValueBuilder.mainCombatValue()
+                    .enemyUnits(List.of())
+                    .friendlyUnits(List.of())
+                    .side(BattleState.Side.OFFENSE)
+                    .gameSequence(getData().getSequence())
+                    .supportAttachments(getData().getUnitTypeList().getSupportRules())
+                    .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(getData().getProperties()))
+                    .gameDiceSides(getData().getDiceSides())
+                    .territoryEffects(List.of())
+                    .build(),
+                true,
+                false)
+            .reversed());
   }
 
   @SuppressWarnings("PMD.UnusedFormalParameter")

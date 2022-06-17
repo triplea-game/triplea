@@ -71,7 +71,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.panel.move.MovePanel;
 import games.strategy.triplea.ui.panels.map.MapPanel;
-import games.strategy.triplea.util.TuvUtils;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
@@ -1161,6 +1161,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     SwingUtilities.invokeLater(
         () -> {
           final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
+          final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
           for (final Map.Entry<Territory, Collection<Unit>> entry :
               possibleUnitsToAttack.entrySet()) {
             final List<Unit> units = new ArrayList<>(entry.getValue());
@@ -1179,7 +1180,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                         .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
                         .build(),
                     entry.getKey(),
-                    TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
+                    tuvCalculator.getCostsForTuv(units.get(0).getOwner()),
                     data);
             // OOL is ordered with the first unit the owner would want to remove but in a kamikaze
             // the player who picks is the attacker, so flip the order

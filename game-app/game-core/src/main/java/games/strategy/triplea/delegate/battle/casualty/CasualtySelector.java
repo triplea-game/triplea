@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.util.Collection;
@@ -55,7 +54,7 @@ public class CasualtySelector {
       final GamePlayer player,
       final Collection<Unit> targetsToPickFrom,
       final CombatValue combatValue,
-      final Territory battlesite,
+      final Territory battleSite,
       final IDelegateBridge bridge,
       final String text,
       final DiceRoll dice,
@@ -92,7 +91,7 @@ public class CasualtySelector {
           List.of(),
           new CasualtyDetails(),
           battleId,
-          battlesite,
+          battleSite,
           allowMultipleHitsPerUnit);
     }
 
@@ -102,14 +101,14 @@ public class CasualtySelector {
 
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do
     // it here.
-    final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
+    final IntegerMap<UnitType> costs = bridge.getCostsForTuv(player);
     final Tuple<CasualtyList, List<Unit>> defaultCasualtiesAndSortedTargets =
         getDefaultCasualties(
             targetsToPickFrom,
             hitsRemaining,
             player,
             combatValue,
-            battlesite,
+            battleSite,
             costs,
             data,
             allowMultipleHitsPerUnit);
@@ -144,7 +143,7 @@ public class CasualtySelector {
                 List.of(),
                 defaultCasualties,
                 battleId,
-                battlesite,
+                battleSite,
                 allowMultipleHitsPerUnit);
 
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
@@ -197,7 +196,7 @@ public class CasualtySelector {
           player,
           sortedTargetsToPickFrom,
           combatValue,
-          battlesite,
+          battleSite,
           bridge,
           text,
           dice,
@@ -221,7 +220,7 @@ public class CasualtySelector {
           player,
           sortedTargetsToPickFrom,
           combatValue,
-          battlesite,
+          battleSite,
           bridge,
           text,
           dice,
