@@ -271,7 +271,8 @@ class MovableUnitsFilterTest {
       // Without the tech, only the bomber can move.
       russians.getTechAttachment().setParatroopers("false");
       {
-        final var result = filterUnits(data, russians, route, List.of(bomber, infantry), dependentUnits);
+        final var result =
+            filterUnits(data, russians, route, List.of(bomber, infantry), dependentUnits);
         // TODO: This should probably be SOME_UNITS_CAN_MOVE, but the UI code never actually passes
         // invalid dependent units when the tech doesn't exist, so this does not matter much.
         assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
