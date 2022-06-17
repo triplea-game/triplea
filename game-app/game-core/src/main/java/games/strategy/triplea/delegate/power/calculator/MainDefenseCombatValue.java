@@ -129,14 +129,7 @@ class MainDefenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      Map<Unit, IntegerMap<Unit>> support = new HashMap<>();
-      for (var entry : supportFromFriends.getUnitsGivingSupport().entrySet()) {
-        support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
-      }
-      for (var entry : supportFromEnemies.getUnitsGivingSupport().entrySet()) {
-        support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
-      }
-      return support;
+      return SupportCalculator.getCombinedSupportsGiven(supportFromFriends, supportFromEnemies);
     }
   }
 
@@ -196,14 +189,7 @@ class MainDefenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      Map<Unit, IntegerMap<Unit>> support = new HashMap<>();
-      for (var entry : supportFromFriends.getUnitsGivingSupport().entrySet()) {
-        support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
-      }
-      for (var entry : supportFromEnemies.getUnitsGivingSupport().entrySet()) {
-        support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
-      }
-      return support;
+      return SupportCalculator.getCombinedSupportsGiven(supportFromFriends, supportFromEnemies);
     }
   }
 }

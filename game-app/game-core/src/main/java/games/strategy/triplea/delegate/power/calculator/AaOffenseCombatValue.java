@@ -107,19 +107,7 @@ class AaOffenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return Stream.of(
-              supportFromFriends.getUnitsGivingSupport(),
-              supportFromEnemies.getUnitsGivingSupport())
-          .flatMap(map -> map.entrySet().stream())
-          .collect(
-              Collectors.toMap(
-                  Map.Entry::getKey,
-                  Map.Entry::getValue,
-                  (value1, value2) -> {
-                    final IntegerMap<Unit> merged = new IntegerMap<>(value1);
-                    merged.add(value2);
-                    return merged;
-                  }));
+      return SupportCalculator.getCombinedSupportsGiven(supportFromFriends, supportFromEnemies);
     }
   }
 }
