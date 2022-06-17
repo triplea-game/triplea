@@ -10,8 +10,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
@@ -24,8 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class DefensiveGeneralTest {
 
-  @Mock ExecutionStack executionStack;
-  @Mock IDelegateBridge delegateBridge;
   @Mock BattleActions battleActions;
 
   @Nested
