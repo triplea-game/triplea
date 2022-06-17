@@ -12,8 +12,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -198,19 +196,14 @@ class MainDefenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return Stream.of(
-              supportFromFriends.getUnitsGivingSupport(),
-              supportFromEnemies.getUnitsGivingSupport())
-          .flatMap(map -> map.entrySet().stream())
-          .collect(
-              Collectors.toMap(
-                  Map.Entry::getKey,
-                  Map.Entry::getValue,
-                  (value1, value2) -> {
-                    final IntegerMap<Unit> merged = new IntegerMap<>(value1);
-                    merged.add(value2);
-                    return merged;
-                  }));
+      Map<Unit, IntegerMap<Unit>> support = new HashMap<>();
+      for (var entry : supportFromFriends.getUnitsGivingSupport().entrySet()) {
+        support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
+      }
+      for (var entry : supportFromEnemies.getUnitsGivingSupport().entrySet()) {
+        support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
+      }
+      return support;
     }
   }
 }

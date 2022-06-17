@@ -82,7 +82,7 @@ public class SupportCalculator {
   }
 
   public int getSupport(final UnitSupportAttachment rule) {
-    return supportUnits.getOrDefault(rule, new IntegerMap<>()).totalValues();
+    return supportUnits.getOrDefault(rule, IntegerMap.of()).totalValues();
   }
 
   public Collection<List<UnitSupportAttachment>> getUnitSupportAttachments() {
