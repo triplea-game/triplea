@@ -716,8 +716,12 @@ public class MoveValidator {
         && !units.containsAll(unitsToSeaTransports.values())) {
       return result.setErrorReturnResult("Transports not found in route end");
     }
+    // All units in air transport map must be present in the units collection.
+    if (!units.containsAll(airTransportDependents.keySet()) ||
+        airTransportDependents.values().stream().anyMatch(not(units::containsAll))) {
+      return result.setErrorReturnResult("Air transports map contains units not being moved");
+    }
     if (!isEditMode) {
-
       // Make sure all units are at least friendly
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.enemyUnit(player))) {
         result.addDisallowedUnit("Can only move friendly units", unit);
@@ -1599,7 +1603,7 @@ public class MoveValidator {
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
         Collection<Unit> transporting = airTransport.getTransporting(start);
-        if (transporting.isEmpty() && !airTransportDependents.isEmpty()) {
+        if (transporting.isEmpty() && airTransportDependents.containsKey(airTransport)) {
           transporting = airTransportDependents.get(airTransport);
         }
         mustMoveWith.put(airTransport, transporting);

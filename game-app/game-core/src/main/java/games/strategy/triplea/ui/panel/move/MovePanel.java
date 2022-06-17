@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui.panel.move;
 
+import static java.util.function.Predicate.not;
+
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -219,7 +221,7 @@ public class MovePanel extends AbstractMovePanel {
             final int maxCount = mouseDetails.isAltDown() ? MULTI_SELECT_NUMBER : 1;
             units.stream()
                 .filter(unitsToMoveMatch)
-                .filter(Predicate.not(selectedUnits::contains))
+                .filter(not(selectedUnits::contains))
                 .sorted(UnitComparator.getHighestToLowestMovementComparator())
                 .limit(maxCount)
                 .forEachOrdered(selectedUnits::add);
@@ -261,8 +263,8 @@ public class MovePanel extends AbstractMovePanel {
               if (!unitsToLoad.isEmpty() && !candidateAirTransports.isEmpty()) {
                 final Collection<Unit> airTransportsToLoad =
                     getAirTransportsToLoad(candidateAirTransports);
-                selectedUnits.addAll(airTransportsToLoad);
                 if (!airTransportsToLoad.isEmpty()) {
+                  selectedUnits.addAll(airTransportsToLoad);
                   final Collection<Unit> loadedAirTransports =
                       getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
                   selectedUnits.addAll(loadedAirTransports);
@@ -543,6 +545,9 @@ public class MovePanel extends AbstractMovePanel {
               seaTransports == null
                   ? Map.of()
                   : TransportUtils.mapTransports(route, units, seaTransports);
+          // If different air units were selected in the confirm dialog than the ones transporting,
+          // remove them from the dependents map.
+          airTransportDependents.keySet().removeIf(not(units::contains));
           final MoveDescription message =
               new MoveDescription(units, route, unitsToSeaTransports, airTransportDependents);
           setMoveMessage(message);
