@@ -716,8 +716,12 @@ public class MoveValidator {
         && !units.containsAll(unitsToSeaTransports.values())) {
       return result.setErrorReturnResult("Transports not found in route end");
     }
+    // All units in air transport map must be present in the units collection.
+    if (!units.containsAll(airTransportDependents.keySet())
+        || airTransportDependents.values().stream().anyMatch(not(units::containsAll))) {
+      return result.setErrorReturnResult("Air transports map contains units not being moved");
+    }
     if (!isEditMode) {
-
       // Make sure all units are at least friendly
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.enemyUnit(player))) {
         result.addDisallowedUnit("Can only move friendly units", unit);
@@ -1583,7 +1587,9 @@ public class MoveValidator {
         CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
     for (final Unit transport : transports) {
       final Collection<Unit> transporting = transport.getTransporting(start);
-      mustMoveWith.put(transport, new ArrayList<>(transporting));
+      if (!transporting.isEmpty()) {
+        mustMoveWith.put(transport, new ArrayList<>(transporting));
+      }
     }
     return mustMoveWith;
   }
@@ -1597,11 +1603,11 @@ public class MoveValidator {
         CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
     // Then check those that have already had their transportedBy set
     for (final Unit airTransport : airTransports) {
-      if (!mustMoveWith.containsKey(airTransport)) {
-        Collection<Unit> transporting = airTransport.getTransporting(start);
-        if (transporting.isEmpty() && !airTransportDependents.isEmpty()) {
-          transporting = airTransportDependents.get(airTransport);
-        }
+      Collection<Unit> transporting = airTransport.getTransporting(start);
+      if (transporting.isEmpty()) {
+        transporting = airTransportDependents.getOrDefault(airTransport, List.of());
+      }
+      if (!transporting.isEmpty()) {
         mustMoveWith.put(airTransport, transporting);
       }
     }
