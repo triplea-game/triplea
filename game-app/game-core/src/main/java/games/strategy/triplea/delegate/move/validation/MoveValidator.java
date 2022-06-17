@@ -717,8 +717,8 @@ public class MoveValidator {
       return result.setErrorReturnResult("Transports not found in route end");
     }
     // All units in air transport map must be present in the units collection.
-    if (!units.containsAll(airTransportDependents.keySet()) ||
-        airTransportDependents.values().stream().anyMatch(not(units::containsAll))) {
+    if (!units.containsAll(airTransportDependents.keySet())
+        || airTransportDependents.values().stream().anyMatch(not(units::containsAll))) {
       return result.setErrorReturnResult("Air transports map contains units not being moved");
     }
     if (!isEditMode) {

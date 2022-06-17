@@ -1497,9 +1497,9 @@ class WW2V3Year41Test {
       // Test with regular infantry and 2mv infantry to make sure they don't get blitz either.
       UnitType[] unitTypesToTest =
           new UnitType[] {infantry(gameData), unitType("infantry_2mv", gameData)};
-      for (UnitType paratrooperUnitType : unitTypesToTest) {
+      for (UnitType infantryType : unitTypesToTest) {
         List<Unit> units = new ArrayList<>(armour(gameData).create(1, germans));
-        units.addAll(paratrooperUnitType.create(2, germans));
+        units.addAll(infantryType.create(2, germans));
         addTo(poland, units);
         // Can only carry one of the infantry with one tank. The other can't blitz.
         assertError(moveDelegate(gameData).performMove(new MoveDescription(units, r)));
@@ -1627,15 +1627,50 @@ class WW2V3Year41Test {
     @Test
     void testMoveOneParatrooperPerBomber() {
       // make sure only 1 paratroop per bomber can be moved
-      final List<Unit> bomberAndParatroop = new ArrayList<>();
-      bomberAndParatroop.addAll(
-          germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
+      final List<Unit> units = new ArrayList<>();
+      units.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
+      assertThat(units, hasSize(1));
       // add 2 infantry
-      bomberAndParatroop.addAll(germany.getUnitCollection().getUnits(infantry(gameData), 2));
+      units.addAll(germany.getUnitCollection().getUnits(infantry(gameData), 2));
+      assertThat(units, hasSize(3));
       // move the units to east poland
-      final String error =
-          moveDelegate(gameData).move(bomberAndParatroop, new Route(germany, poland, eastPoland));
-      assertError(error);
+      Route route = new Route(germany, poland, eastPoland);
+      // It should be an error with an empty dependents map.
+      MoveDescription move = new MoveDescription(units, route, Map.of(), Map.of());
+      assertError(moveDelegate(gameData).performMove(move));
+      // And also an error with one specifying the bomber should carry both.
+      move = new MoveDescription(units, route, Map.of(), Map.of(units.get(0), units.subList(1, 3)));
+      assertError(moveDelegate(gameData).performMove(move));
+      // And also an error with one specifying the bomber should carry just one of the two.
+      move = new MoveDescription(units, route, Map.of(), Map.of(units.get(0), units.subList(1, 2)));
+      assertError(moveDelegate(gameData).performMove(move));
+    }
+
+    /** Tests that all units in the air transport map must exist in the units being moved list. */
+    @Test
+    void testExtraUnitsInAirTransportMap() {
+      Unit airTransport1 = bomber(gameData).create(germans);
+      Unit airTransport2 = bomber(gameData).create(germans);
+      Unit infantry1 = infantry(gameData).create(germans);
+      Unit infantry2 = infantry(gameData).create(germans);
+      addTo(germany, List.of(airTransport1, airTransport2, infantry1, infantry2));
+      Route route = new Route(germany, poland, eastPoland);
+
+      // Pass in an extra air transport, transporting an infantry, both not in the list.
+      Map<Unit, Collection<Unit>> dependents =
+          Map.of(airTransport1, List.of(infantry1), airTransport2, List.of(infantry2));
+      Collection<Unit> units = List.of(airTransport1, infantry1);
+      MoveDescription move = new MoveDescription(units, route, Map.of(), dependents);
+      assertError(moveDelegate(gameData).performMove(move));
+      // Pass in an extra air transport, not transporting anything.
+      dependents = Map.of(airTransport1, List.of(infantry1), airTransport2, List.of());
+      move = new MoveDescription(units, route, Map.of(), dependents);
+      assertError(moveDelegate(gameData).performMove(move));
+      // Pass in an infantry not in the list.
+      dependents = Map.of(airTransport1, List.of(infantry1));
+      units = List.of(airTransport1);
+      move = new MoveDescription(units, route, Map.of(), dependents);
+      assertError(moveDelegate(gameData).performMove(move));
     }
 
     /** Tests that you can't make two air transport moves with the same units. */
