@@ -10,8 +10,8 @@ import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -78,7 +78,7 @@ public class CasualtySelector {
             ? extraHits
             : dice.getHits();
 
-    if (BaseEditDelegate.getEditMode(data.getProperties())) {
+    if (EditDelegate.getEditMode(data.getProperties())) {
       return tripleaPlayer.selectCasualties(
           targetsToPickFrom,
           dependents,

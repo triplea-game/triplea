@@ -12,7 +12,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
@@ -36,11 +35,6 @@ import org.triplea.java.collections.IntegerMap;
  */
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean needToInitialize = true;
-
-  @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
-  }
 
   @Override
   public void start() {

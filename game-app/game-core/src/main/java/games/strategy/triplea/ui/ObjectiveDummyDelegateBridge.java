@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -37,8 +36,7 @@ import org.triplea.util.Tuple;
 public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
-  private final DelegateHistoryWriter writer =
-      new DelegateHistoryWriter(new DummyGameModifiedChannel());
+  private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final GameData gameData;
   private final ObjectivePanelDummyPlayer dummyAi =
       new ObjectivePanelDummyPlayer("objective panel dummy");
@@ -135,32 +133,6 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void stopGameSequence(String status, String title) {}
-
-  static class DummyGameModifiedChannel implements IGameModifiedChannel {
-    @Override
-    public void addChildToEvent(final String text, final Object renderingData) {}
-
-    @Override
-    public void gameDataChanged(final Change change) {}
-
-    @Override
-    public void shutDown() {}
-
-    @Override
-    public void startHistoryEvent(final String event) {}
-
-    @Override
-    public void startHistoryEvent(final String event, final Object renderingData) {}
-
-    @Override
-    public void stepChanged(
-        final String stepName,
-        final String delegateName,
-        final GamePlayer player,
-        final int round,
-        final String displayName,
-        final boolean loadedFromSavedGame) {}
-  }
 
   static class ObjectivePanelDummyPlayer extends AbstractBuiltInAi {
     ObjectivePanelDummyPlayer(final String name) {

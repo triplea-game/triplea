@@ -30,7 +30,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   private final RandomStats randomStats;
   private final DelegateExecutionManager delegateExecutionManager;
   private final ClientNetworkBridge clientNetworkBridge;
-  private IRandomSource randomSource;
+  private final IRandomSource randomSource;
 
   @Override
   public GameData getData() {
@@ -40,10 +40,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public GamePlayer getGamePlayer() {
     return gameData.getSequence().getStep().getPlayerId();
-  }
-
-  public void setRandomSource(final IRandomSource randomSource) {
-    this.randomSource = randomSource;
   }
 
   /**

@@ -7,7 +7,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
@@ -53,11 +52,6 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     super.initialize(name, displayName);
     techs = new HashMap<>();
     techCost = -1;
-  }
-
-  @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
   @Override
@@ -200,7 +194,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     int techHits;
     int remainder = 0;
     final int diceSides = data.getDiceSides();
-    if (BaseEditDelegate.getEditMode(data.getProperties())) {
+    if (EditDelegate.getEditMode(data.getProperties())) {
       final Player tripleaPlayer = bridge.getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(techRolls, diceSides, annotation, diceSides);
       techHits = getTechHits(random);
@@ -379,7 +373,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final String annotation = player.getName() + " rolling to see what tech advances are acquired";
     final int[] random;
     if (Properties.getSelectableTechRoll(getData().getProperties())
-        || BaseEditDelegate.getEditMode(getData().getProperties())) {
+        || EditDelegate.getEditMode(getData().getProperties())) {
       final Player tripleaPlayer = bridge.getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(hits, 0, annotation, available.size());
     } else {

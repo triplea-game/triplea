@@ -58,11 +58,6 @@ public class MoveDelegate extends AbstractMoveDelegate {
   private IntegerMap<Territory> pusLost = new IntegerMap<>();
 
   @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
-  }
-
-  @Override
   public void start() {
     super.start();
     final GameData data = getData();

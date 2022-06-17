@@ -7,7 +7,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -46,7 +46,7 @@ public class SelectMainBattleCasualties
     final int hitsLeftForRestrictedTransports = hitCount - totalHitPointsAvailable;
 
     final CasualtyDetails casualtyDetails;
-    if (BaseEditDelegate.getEditMode(step.getBattleState().getGameData().getProperties())) {
+    if (EditDelegate.getEditMode(step.getBattleState().getGameData().getProperties())) {
       final CasualtyDetails message =
           selectFunction.apply(bridge, step, step.getFiringGroup().getTargetUnits(), 0);
       casualtyDetails = new CasualtyDetails(message, true);

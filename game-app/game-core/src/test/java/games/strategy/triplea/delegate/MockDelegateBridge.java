@@ -43,7 +43,8 @@ public final class MockDelegateBridge {
         .addChange(any());
     when(delegateBridge.getData()).thenReturn(gameData);
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
-    when(delegateBridge.getHistoryWriter()).thenReturn(DelegateHistoryWriter.NO_OP_INSTANCE);
+    when(delegateBridge.getHistoryWriter())
+        .thenReturn(DelegateHistoryWriter.createNoOpImplementation());
     when(delegateBridge.getGamePlayer()).thenReturn(gamePlayer);
     final Player remotePlayer = mock(Player.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
