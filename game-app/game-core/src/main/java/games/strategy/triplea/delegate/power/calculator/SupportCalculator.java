@@ -90,8 +90,7 @@ public class SupportCalculator {
   }
 
   public static Map<Unit, IntegerMap<Unit>> getCombinedSupportGiven(
-      AvailableSupports supportFromFriends,
-      AvailableSupports supportFromEnemies) {
+      AvailableSupports supportFromFriends, AvailableSupports supportFromEnemies) {
     Map<Unit, IntegerMap<Unit>> support = new HashMap<>();
     for (var entry : supportFromFriends.getUnitsGivingSupport().entrySet()) {
       support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());

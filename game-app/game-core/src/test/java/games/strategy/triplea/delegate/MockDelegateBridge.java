@@ -67,7 +67,7 @@ public final class MockDelegateBridge {
 
   public static Answer<int[]> withDiceValues(final int... values) {
     for (int i = 0; i < values.length; i++) {
-      // A die roll of N maps to a random value of N - 1.
+      // A die roll of N corresponds to a random value of N - 1.
       values[i] -= 1;
     }
     return withValues(values);
