@@ -9,8 +9,6 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -128,7 +126,7 @@ class MainOffenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return SupportCalculator.getCombinedSupportsGiven(supportFromFriends, supportFromEnemies);
+      return SupportCalculator.getCombinedSupportGiven(supportFromFriends, supportFromEnemies);
     }
   }
 
@@ -158,7 +156,7 @@ class MainOffenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return SupportCalculator.getCombinedSupportsGiven(supportFromFriends, supportFromEnemies);
+      return SupportCalculator.getCombinedSupportGiven(supportFromFriends, supportFromEnemies);
     }
   }
 }

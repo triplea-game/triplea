@@ -2,8 +2,6 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import games.strategy.engine.data.Unit;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
@@ -26,6 +24,6 @@ class AaRoll implements RollCalculator {
 
   @Override
   public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-    return SupportCalculator.getCombinedSupportsGiven(supportFromFriends, supportFromEnemies);
+    return SupportCalculator.getCombinedSupportGiven(supportFromFriends, supportFromEnemies);
   }
 }

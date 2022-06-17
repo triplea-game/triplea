@@ -9,7 +9,6 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -129,7 +128,7 @@ class MainDefenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return SupportCalculator.getCombinedSupportsGiven(supportFromFriends, supportFromEnemies);
+      return SupportCalculator.getCombinedSupportGiven(supportFromFriends, supportFromEnemies);
     }
   }
 
@@ -189,7 +188,7 @@ class MainDefenseCombatValue implements CombatValue {
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return SupportCalculator.getCombinedSupportsGiven(supportFromFriends, supportFromEnemies);
+      return SupportCalculator.getCombinedSupportGiven(supportFromFriends, supportFromEnemies);
     }
   }
 }

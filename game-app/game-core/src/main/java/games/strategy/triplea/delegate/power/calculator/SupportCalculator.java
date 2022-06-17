@@ -89,7 +89,7 @@ public class SupportCalculator {
     return supportRules.values();
   }
 
-  public static Map<Unit, IntegerMap<Unit>> getCombinedSupportsGiven(
+  public static Map<Unit, IntegerMap<Unit>> getCombinedSupportGiven(
       AvailableSupports supportFromFriends,
       AvailableSupports supportFromEnemies) {
     Map<Unit, IntegerMap<Unit>> support = new HashMap<>();
