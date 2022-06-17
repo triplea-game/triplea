@@ -40,6 +40,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CA
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -1748,6 +1749,20 @@ class WW2V3Year41Test {
         move = new MoveDescription(units, route, Map.of(), dependents);
         assertError(moveDelegate(gameData).performMove(move));
       }
+    }
+
+    @Test
+    void testMustMoveWith() {
+      Unit airTransport1 = bomber(gameData).create(germans);
+      Unit airTransport2 = bomber(gameData).create(germans);
+      Unit infantry1 = infantry(gameData).create(germans);
+      Unit infantry2 = infantry(gameData).create(germans);
+      addTo(germany, List.of(airTransport1, airTransport2, infantry1, infantry2));
+
+      Map<Unit, Collection<Unit>> dependents = Map.of(airTransport1, List.of(infantry1));
+      var details = MoveValidator.getMustMoveWith(germany, dependents, germans);
+      assertThat(details.getMustMoveWith().keySet(), hasSize(1));
+      assertThat(details.getMustMoveWithForUnit(airTransport1), containsInAnyOrder(infantry1));
     }
   }
 

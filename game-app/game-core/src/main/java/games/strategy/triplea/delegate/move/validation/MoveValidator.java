@@ -1587,7 +1587,9 @@ public class MoveValidator {
         CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
     for (final Unit transport : transports) {
       final Collection<Unit> transporting = transport.getTransporting(start);
-      mustMoveWith.put(transport, new ArrayList<>(transporting));
+      if (!transporting.isEmpty()) {
+        mustMoveWith.put(transport, new ArrayList<>(transporting));
+      }
     }
     return mustMoveWith;
   }
@@ -1601,11 +1603,11 @@ public class MoveValidator {
         CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
     // Then check those that have already had their transportedBy set
     for (final Unit airTransport : airTransports) {
-      if (!mustMoveWith.containsKey(airTransport)) {
-        Collection<Unit> transporting = airTransport.getTransporting(start);
-        if (transporting.isEmpty() && airTransportDependents.containsKey(airTransport)) {
-          transporting = airTransportDependents.get(airTransport);
-        }
+      Collection<Unit> transporting = airTransport.getTransporting(start);
+      if (transporting.isEmpty()) {
+        transporting = airTransportDependents.getOrDefault(airTransport, List.of());
+      }
+      if (!transporting.isEmpty()) {
         mustMoveWith.put(airTransport, transporting);
       }
     }
