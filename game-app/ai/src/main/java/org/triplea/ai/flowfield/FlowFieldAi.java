@@ -7,7 +7,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -29,7 +29,7 @@ import org.triplea.ai.flowfield.neighbors.MapWithNeighbors;
 import org.triplea.ai.flowfield.neighbors.NeighborGetter;
 import org.triplea.ai.flowfield.odds.LanchesterDebugAction;
 
-public class FlowFieldAi extends AbstractBuiltInAi {
+public class FlowFieldAi extends AbstractAi {
 
   @Getter private Collection<InfluenceMap> diffusions = new ArrayList<>();
   private int round = -1;

@@ -64,8 +64,8 @@ import org.triplea.util.Tuple;
  * done through an IDelegate using a change).
  */
 @Slf4j
-public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
-  public AbstractBuiltInAi(final String name, final PlayerTypes.Type playerType) {
+public abstract class AbstractAi extends AbstractBasePlayer {
+  public AbstractAi(final String name, final PlayerTypes.Type playerType) {
     super(name, playerType);
   }
 

@@ -12,7 +12,7 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -55,7 +55,7 @@ import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
 /** Pro AI. */
-public abstract class AbstractProAi extends AbstractBuiltInAi {
+public abstract class AbstractProAi extends AbstractAi {
 
   private final ProOddsCalculator calc;
   @Getter private final ProData proData;

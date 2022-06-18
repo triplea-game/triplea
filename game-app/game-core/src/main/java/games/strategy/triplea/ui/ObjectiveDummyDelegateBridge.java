@@ -14,7 +14,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -134,7 +134,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   @Override
   public void stopGameSequence(String status, String title) {}
 
-  static class ObjectivePanelDummyPlayer extends AbstractBuiltInAi {
+  static class ObjectivePanelDummyPlayer extends AbstractAi {
     ObjectivePanelDummyPlayer(final String name) {
       super(name, PlayerTypes.BATTLE_CALC_DUMMY);
     }

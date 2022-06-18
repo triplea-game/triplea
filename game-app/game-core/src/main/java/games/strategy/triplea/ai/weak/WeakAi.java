@@ -17,7 +17,7 @@ import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -46,7 +46,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** A very weak ai, based on some simple rules. */
-public class WeakAi extends AbstractBuiltInAi {
+public class WeakAi extends AbstractAi {
 
   public WeakAi(final String name) {
     super(name, PlayerTypes.WEAK_AI);

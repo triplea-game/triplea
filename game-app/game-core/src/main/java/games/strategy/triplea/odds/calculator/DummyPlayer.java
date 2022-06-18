@@ -7,7 +7,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -26,7 +26,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 
-class DummyPlayer extends AbstractBuiltInAi {
+class DummyPlayer extends AbstractAi {
   private final boolean keepAtLeastOneLand;
   // negative = do not retreat
   private final int retreatAfterRound;
