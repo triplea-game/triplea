@@ -40,3 +40,4 @@ exclude_patterns:
   - "gradlew"
   - ".github/ISSUE_TEMPLATES/*"
   - "**/*Test.java"
+  - "*.md"
