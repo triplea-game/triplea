@@ -52,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
-import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.util.Tuple;
 
@@ -256,6 +255,14 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
             politics);
   }
 
+  private void playSound(final String soundPath) {
+    if (ui == null) {
+      log.warn("UI not set when trying to play sound");
+      return;
+    }
+    ui.getUiContext().getClipPlayer().playClip(soundPath, getGamePlayer());
+  }
+
   private void tech() {
     if (getPlayerBridge().isGameOver()) {
       return;
@@ -276,7 +283,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
 
     final GamePlayer gamePlayer = this.getGamePlayer();
     if (!soundPlayedAlreadyTechnology) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, gamePlayer);
+      playSound(SoundPath.CLIP_PHASE_TECHNOLOGY);
       soundPlayedAlreadyTechnology = true;
     }
     final TechRoll techRoll = ui.getTechRolls(gamePlayer);
@@ -317,12 +324,12 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     final GamePlayer gamePlayer = this.getGamePlayer();
 
     if (nonCombat && !soundPlayedAlreadyNonCombatMove) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, gamePlayer);
+      playSound(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT);
       soundPlayedAlreadyNonCombatMove = true;
     }
 
     if (!nonCombat && !soundPlayedAlreadyCombatMove) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, gamePlayer);
+      playSound(SoundPath.CLIP_PHASE_MOVE_COMBAT);
       soundPlayedAlreadyCombatMove = true;
     }
     // getMove will block until all moves are done. We recursively call this same method until
@@ -398,7 +405,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     final GamePlayer gamePlayer = this.getGamePlayer();
     // play a sound for this phase
     if (!bid && !soundPlayedAlreadyPurchase) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, gamePlayer);
+      playSound(SoundPath.CLIP_PHASE_PURCHASE);
       soundPlayedAlreadyPurchase = true;
     }
     // Check if any factories need to be repaired
@@ -499,7 +506,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         return;
       }
       if (!soundPlayedAlreadyBattle) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, gamePlayer);
+        playSound(SoundPath.CLIP_PHASE_BATTLE);
         soundPlayedAlreadyBattle = true;
       }
       final FightBattleDetails details = ui.getBattle(gamePlayer, battles.getBattles());
@@ -537,7 +544,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     }
     while (true) {
       if (!soundPlayedAlreadyPlacement) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, gamePlayer);
+        playSound(SoundPath.CLIP_PHASE_PLACEMENT);
         soundPlayedAlreadyPlacement = true;
       }
       final PlaceData placeData = ui.waitForPlace(gamePlayer, bid, getPlayerBridge());
@@ -583,7 +590,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
             this.getGamePlayer(), getGameData().getMap())) {
       // do not play if we are reloading a savegame from pbem (gets annoying)
       if (!endTurnDelegate.getHasPostedTurnSummary()) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, this.getGamePlayer());
+        playSound(SoundPath.CLIP_PHASE_END_TURN);
       }
       soundPlayedAlreadyEndTurn = true;
     }

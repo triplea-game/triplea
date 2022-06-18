@@ -25,6 +25,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
@@ -133,7 +134,7 @@ public class ClipPlayer {
 
   private final ResourceLoader resourceLoader;
 
-  private ClipPlayer(final ResourceLoader resourceLoader) {
+  public ClipPlayer(final ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
   }
 
@@ -147,6 +148,8 @@ public class ClipPlayer {
     }
   }
 
+  // Do not use kept temporarily
+  @Deprecated
   public static synchronized void setResourceLoader(final ResourceLoader resourceLoader) {
     // load the sounds in a background thread,
     // avoids the pause where sounds do not load right away
@@ -216,6 +219,7 @@ public class ClipPlayer {
     }
   }
 
+  @Deprecated
   public static void play(final String clipName) {
     play(clipName, null);
   }
@@ -226,7 +230,9 @@ public class ClipPlayer {
    * @param clipPath - the folder containing sound clips to be played. One of the sound clip files
    *     will be chosen at random.
    * @param gamePlayer - the name of the player, or null
+   * @deprecated Use non-static instance of clip player
    */
+  @Deprecated
   public static void play(final String clipPath, final GamePlayer gamePlayer) {
     synchronized (ClipPlayer.class) {
       if (clipPlayer == null) {
@@ -236,7 +242,11 @@ public class ClipPlayer {
     clipPlayer.playClip(clipPath, gamePlayer);
   }
 
-  private void playClip(final String clipName, final GamePlayer gamePlayer) {
+  public void playClip(final String clipName) {
+    playClip(clipName, null);
+  }
+
+  public void playClip(final String clipName, @Nullable final GamePlayer gamePlayer) {
     if (!isSoundEnabled() || isSoundClipMuted(clipName)) {
       return;
     }
