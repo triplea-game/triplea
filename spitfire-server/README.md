@@ -2,10 +2,10 @@
 
 ### Background
 
-Lobby-Server is a 'new' server to host lobby and other functionalities. Historically this was 
-powered by a pure java stack that used java sockets (NIO). The java server was written very early 
-in the project, mid-2000s, the 'http-server' allows for a modern (2019) server to be used. 
-The modern server has integration with JDBI, annotation based rate limiting, authentication and 
+Lobby-Server is a 'new' server to host lobby and other functionalities. Historically this was
+powered by a pure java stack that used java sockets (NIO). The java server was written very early
+in the project, mid-2000s, the 'http-server' allows for a modern (2019) server to be used.
+The modern server has integration with JDBI, annotation based rate limiting, authentication and
 affords an opportunity to rewrite the lobby server in a simpler and more modular fashion.
 
 ### Authentication
