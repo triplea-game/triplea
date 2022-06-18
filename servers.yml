@@ -1,19 +1,9 @@
 latest: 2.5.22294
 servers:
-  - version: "2.6.0"
-    lobby_uri: https://prerelease.triplea-game.org
-    message: |
-      Welcome to the TripleA PRE-RELEASE lobby!
   - version: "2.0.20057"
     lobby_uri: https://prod2-lobby.triplea-game.org
     message: |
       Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
-  - version: "2.0.19800"
-    inactive: true
-  - version: "2.0.0"
-    lobby_uri: https://prerelease.triplea-game.org
-    message: |
-      Welcome to the TripleA PRE-RELEASE lobby!
   - version: "0.0"
     inactive: true
