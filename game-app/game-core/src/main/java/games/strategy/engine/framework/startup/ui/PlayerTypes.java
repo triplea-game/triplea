@@ -23,7 +23,7 @@ public class PlayerTypes {
       new Type("Human") {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new TripleAPlayer(name, HUMAN_PLAYER);
+          return new TripleAPlayer(name, HUMAN_PLAYER, false);
         }
       };
   public static final Type WEAK_AI =
@@ -52,7 +52,7 @@ public class PlayerTypes {
       new Type("Client", false) {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new TripleAPlayer(name, CLIENT_PLAYER);
+          return new TripleAPlayer(name, CLIENT_PLAYER, true);
         }
       };
   /** A 'dummy' player type used for battle calc. */

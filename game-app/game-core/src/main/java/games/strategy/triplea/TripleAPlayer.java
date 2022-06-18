@@ -50,6 +50,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -63,6 +64,7 @@ import org.triplea.util.Tuple;
  */
 @Slf4j
 public class TripleAPlayer extends AbstractBasePlayer {
+  @Getter private final boolean isClient;
   private TripleAFrame ui;
   private boolean soundPlayedAlreadyCombatMove = false;
   private boolean soundPlayedAlreadyNonCombatMove = false;
@@ -88,8 +90,10 @@ public class TripleAPlayer extends AbstractBasePlayer {
         }
       };
 
-  public TripleAPlayer(final String name, final PlayerTypes.Type playerType) {
+  public TripleAPlayer(
+      final String name, final PlayerTypes.Type playerType, final boolean isClient) {
     super(name, playerType);
+    this.isClient = isClient;
   }
 
   @Override
