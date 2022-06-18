@@ -146,7 +146,6 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.EventThreadJOptionPane;
@@ -1651,7 +1650,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 () -> {
                   final Boolean play = requiredTurnSeries.get(player);
                   if (play != null && play) {
-                    ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
+                    getUiContext()
+                        .getClipPlayer()
+                        .playClip(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
                     requiredTurnSeries.put(player, false);
                   }
                   // center on capital of player, if it is a new player

@@ -114,7 +114,6 @@ public class ClipPlayer {
   private static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final String MP3_SUFFIX = ".mp3";
-  private static ClipPlayer clipPlayer;
 
   private static final Set<String> mutedClips = ConcurrentHashMap.newKeySet();
 
@@ -146,21 +145,6 @@ public class ClipPlayer {
       log.info("Unable to create audio device, is there audio on the system? " + e.getMessage(), e);
       return false;
     }
-  }
-
-  // Do not use kept temporarily
-  @Deprecated
-  public static synchronized void setResourceLoader(final ResourceLoader resourceLoader) {
-    // load the sounds in a background thread,
-    // avoids the pause where sounds do not load right away
-    ThreadRunner.runInNewThread(
-        () -> {
-          // make a new clip player if we switch resource loaders (ie: if we switch maps)
-          if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
-            // make a new clip player with our new resource loader
-            clipPlayer = new ClipPlayer(resourceLoader);
-          }
-        });
   }
 
   static boolean isSoundClipMuted(final String clipName) {
@@ -219,33 +203,17 @@ public class ClipPlayer {
     }
   }
 
-  @Deprecated
-  public static void play(final String clipName) {
-    play(clipName, null);
+  public void playClip(final String clipName) {
+    playClip(clipName, null);
   }
 
   /**
    * Plays the specified player-specific clip.
    *
-   * @param clipPath - the folder containing sound clips to be played. One of the sound clip files
+   * @param clipName - the folder containing sound clips to be played. One of the sound clip files
    *     will be chosen at random.
    * @param gamePlayer - the name of the player, or null
-   * @deprecated Use non-static instance of clip player
    */
-  @Deprecated
-  public static void play(final String clipPath, final GamePlayer gamePlayer) {
-    synchronized (ClipPlayer.class) {
-      if (clipPlayer == null) {
-        clipPlayer = new ClipPlayer(new ResourceLoader(Path.of("sounds")));
-      }
-    }
-    clipPlayer.playClip(clipPath, gamePlayer);
-  }
-
-  public void playClip(final String clipName) {
-    playClip(clipName, null);
-  }
-
   public void playClip(final String clipName, @Nullable final GamePlayer gamePlayer) {
     if (!isSoundEnabled() || isSoundClipMuted(clipName)) {
       return;

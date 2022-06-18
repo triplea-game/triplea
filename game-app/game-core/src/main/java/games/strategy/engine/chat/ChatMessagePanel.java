@@ -46,6 +46,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   private static final int MAX_LINES = 5000;
 
   private final ChatFloodControl floodControl = new ChatFloodControl();
+  private final ClipPlayer clipPlayer;
   private JTextPane text;
   private JScrollPane scrollPane;
   private JTextField nextMessage;
@@ -76,8 +77,10 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     GAME
   }
 
-  public ChatMessagePanel(final Chat chat, final ChatSoundProfile chatSoundProfile) {
+  public ChatMessagePanel(
+      final Chat chat, final ChatSoundProfile chatSoundProfile, final ClipPlayer clipPlayer) {
     this.chatSoundProfile = chatSoundProfile;
+    this.clipPlayer = clipPlayer;
     init();
     setChat(chat);
   }
@@ -242,7 +245,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
                 final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
                 scrollModel.setValue(scrollModel.getMaximum());
               });
-          ClipPlayer.play(sound);
+          clipPlayer.playClip(sound);
         });
   }
 
@@ -284,7 +287,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   public void playerJoined(final String message) {
     addGenericMessage(message);
     if (chatSoundProfile == ChatSoundProfile.GAME) {
-      ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
+      clipPlayer.playClip(SoundPath.CLIP_CHAT_JOIN_GAME);
     }
   }
 

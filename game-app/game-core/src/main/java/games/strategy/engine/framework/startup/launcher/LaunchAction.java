@@ -18,6 +18,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.sound.ISound;
 
@@ -34,9 +36,7 @@ public interface LaunchAction {
 
   Collection<PlayerTypes.Type> getPlayerTypes();
 
-  IDisplay startGame(LocalPlayers localPlayers, IGame game, Set<Player> players, Chat chat);
-
-  ISound getSoundChannel(LocalPlayers localPlayers);
+  UserInterface startGame(LocalPlayers localPlayers, IGame game, Set<Player> players, Chat chat);
 
   Path getAutoSaveFile();
 
@@ -67,4 +67,11 @@ public interface LaunchAction {
    * @return true if the game should stop execution, false otherwise.
    */
   boolean promptGameStop(String status, String title, Path mapLocation);
+
+  @AllArgsConstructor
+  @Getter
+  class UserInterface {
+    private final IDisplay display;
+    private final ISound sound;
+  }
 }

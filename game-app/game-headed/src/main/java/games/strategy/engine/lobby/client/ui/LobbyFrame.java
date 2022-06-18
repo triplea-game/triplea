@@ -12,6 +12,7 @@ import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAct
 import games.strategy.engine.lobby.client.ui.action.MutePlayerAction;
 import games.strategy.engine.lobby.client.ui.action.player.info.ShowPlayerInformationAction;
 import games.strategy.triplea.EngineImageLoader;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.QuitHandler;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
@@ -19,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -26,6 +28,7 @@ import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.game.client.HeadedGameRunner;
+import org.triplea.sound.ClipPlayer;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -48,7 +51,9 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         new LobbyChatTransmitter(
             lobbyClient.getPlayerToLobbyConnection(), lobbyClient.getUserName());
     final Chat chat = new Chat(chatTransmitter);
-    final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
+    final ChatMessagePanel chatMessagePanel =
+        new ChatMessagePanel(
+            chat, ChatSoundProfile.LOBBY, new ClipPlayer(new ResourceLoader(Path.of("sounds"))));
     chatMessagePanel.addServerMessage(lobbyClient.getLobbyMessage());
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));

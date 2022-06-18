@@ -2,13 +2,16 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.ResourceLoader;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.nio.file.Path;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.Interruptibles;
+import org.triplea.sound.ClipPlayer;
 import org.triplea.swing.SwingAction;
 
 /**
@@ -27,7 +30,10 @@ public class ChatPanel extends JPanel implements ChatModel {
   public ChatPanel(final Chat chat, final ChatSoundProfile chatSoundProfile) {
     setSize(300, 200);
     chatPlayerPanel = new ChatPlayerPanel(chat);
-    chatMessagePanel = new ChatMessagePanel(chat, chatSoundProfile);
+    // TODO use different ClipPlayer
+    chatMessagePanel =
+        new ChatMessagePanel(
+            chat, chatSoundProfile, new ClipPlayer(new ResourceLoader(Path.of("sounds"))));
     setLayout(new BorderLayout());
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     split.setLeftComponent(chatMessagePanel);

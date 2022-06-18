@@ -10,14 +10,16 @@ import java.util.Collection;
  */
 public class DefaultSoundChannel implements ISound {
   private final LocalPlayers localPlayers;
+  private final ClipPlayer clipPlayer;
 
-  public DefaultSoundChannel(final LocalPlayers localPlayers) {
+  public DefaultSoundChannel(final LocalPlayers localPlayers, final ClipPlayer clipPlayer) {
     this.localPlayers = localPlayers;
+    this.clipPlayer = clipPlayer;
   }
 
   @Override
   public void playSoundForAll(final String clipName, final GamePlayer gamePlayer) {
-    ClipPlayer.play(clipName, gamePlayer);
+    clipPlayer.playClip(clipName, gamePlayer);
   }
 
   @Override
@@ -40,7 +42,7 @@ public class DefaultSoundChannel implements ISound {
     final boolean includingObserversLocalNotEmpty = localPlayers.getLocalPlayers().isEmpty();
 
     if (isPlaying || includingObserversLocalNotEmpty) {
-      ClipPlayer.play(clipName);
+      clipPlayer.playClip(clipName);
     }
   }
 }
