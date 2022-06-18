@@ -59,9 +59,6 @@ public class TripleA implements IGameLoader {
       }
     }
     final LocalPlayers localPlayers = new LocalPlayers(players);
-    LaunchAction.UserInterface userInterface =
-        launchAction.startGame(localPlayers, game, players, chat);
-    game.setDisplay(userInterface.getDisplay());
-    game.setSoundChannel(userInterface.getSound());
+    launchAction.startGame(localPlayers, game, players, chat);
   }
 }

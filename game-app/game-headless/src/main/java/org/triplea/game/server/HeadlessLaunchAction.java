@@ -78,7 +78,7 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public UserInterface startGame(
+  public void startGame(
       final LocalPlayers localPlayers,
       final IGame game,
       final Set<Player> players,
@@ -89,7 +89,8 @@ public class HeadlessLaunchAction implements LaunchAction {
             .orElseThrow(
                 () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
     game.setResourceLoader(new ResourceLoader(mapPath));
-    return new UserInterface(new HeadlessDisplay(), new HeadlessSoundChannel());
+    game.setDisplay(new HeadlessDisplay());
+    game.setSoundChannel(new HeadlessSoundChannel());
   }
 
   @Override

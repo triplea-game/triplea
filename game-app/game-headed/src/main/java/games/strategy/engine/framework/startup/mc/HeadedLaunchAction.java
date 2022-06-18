@@ -78,7 +78,7 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public UserInterface startGame(
+  public void startGame(
       final LocalPlayers localPlayers,
       final IGame game,
       final Set<Player> players,
@@ -101,8 +101,8 @@ public class HeadedLaunchAction implements LaunchAction {
         ((TripleAPlayer) player).setFrame(frame);
       }
     }
-    return new UserInterface(
-        new TripleADisplay(frame),
+    game.setDisplay(new TripleADisplay(frame));
+    game.setSoundChannel(
         new DefaultSoundChannel(localPlayers, frame.getUiContext().getClipPlayer()));
   }
 
