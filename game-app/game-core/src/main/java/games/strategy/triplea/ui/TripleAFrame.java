@@ -1652,7 +1652,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   if (play != null && play) {
                     getUiContext()
                         .getClipPlayer()
-                        .playClip(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
+                        .play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
                     requiredTurnSeries.put(player, false);
                   }
                   // center on capital of player, if it is a new player

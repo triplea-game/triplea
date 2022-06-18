@@ -95,7 +95,7 @@ public class HeadedLaunchAction implements LaunchAction {
           frame.toFront();
         });
 
-    frame.getUiContext().getClipPlayer().playClip(SoundPath.CLIP_GAME_START);
+    frame.getUiContext().getClipPlayer().play(SoundPath.CLIP_GAME_START);
     for (final Player player : players) {
       if (player instanceof TripleAPlayer) {
         ((TripleAPlayer) player).setFrame(frame);

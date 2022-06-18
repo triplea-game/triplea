@@ -245,7 +245,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
                 final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
                 scrollModel.setValue(scrollModel.getMaximum());
               });
-          clipPlayer.playClip(sound);
+          clipPlayer.play(sound);
         });
   }
 
@@ -287,7 +287,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   public void playerJoined(final String message) {
     addGenericMessage(message);
     if (chatSoundProfile == ChatSoundProfile.GAME) {
-      clipPlayer.playClip(SoundPath.CLIP_CHAT_JOIN_GAME);
+      clipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
     }
   }
 

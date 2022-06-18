@@ -219,7 +219,7 @@ public class PoliticsPanel extends ActionPanel {
     }
 
     if (this.firstRun) {
-      clipPlayer.playClip(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
+      clipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
     }
     SwingUtilities.invokeLater(
         () -> {

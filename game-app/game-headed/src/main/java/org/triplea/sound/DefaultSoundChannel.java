@@ -19,7 +19,7 @@ public class DefaultSoundChannel implements ISound {
 
   @Override
   public void playSoundForAll(final String clipName, final GamePlayer gamePlayer) {
-    clipPlayer.playClip(clipName, gamePlayer);
+    clipPlayer.play(clipName, gamePlayer);
   }
 
   @Override
@@ -42,7 +42,7 @@ public class DefaultSoundChannel implements ISound {
     final boolean includingObserversLocalNotEmpty = localPlayers.getLocalPlayers().isEmpty();
 
     if (isPlaying || includingObserversLocalNotEmpty) {
-      clipPlayer.playClip(clipName);
+      clipPlayer.play(clipName);
     }
   }
 }

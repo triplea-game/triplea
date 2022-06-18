@@ -260,7 +260,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       log.warn("UI not set when trying to play sound");
       return;
     }
-    ui.getUiContext().getClipPlayer().playClip(soundPath, getGamePlayer());
+    ui.getUiContext().getClipPlayer().play(soundPath, getGamePlayer());
   }
 
   private void tech() {

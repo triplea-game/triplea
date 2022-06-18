@@ -204,8 +204,8 @@ public class ClipPlayer {
     }
   }
 
-  public void playClip(final String clipName) {
-    playClip(clipName, null);
+  public void play(final String clipName) {
+    play(clipName, null);
   }
 
   /**
@@ -215,7 +215,7 @@ public class ClipPlayer {
    *     will be chosen at random.
    * @param gamePlayer - the name of the player, or null
    */
-  public void playClip(final String clipName, @Nullable final GamePlayer gamePlayer) {
+  public void play(final String clipName, @Nullable final GamePlayer gamePlayer) {
     if (!isSoundEnabled() || isSoundClipMuted(clipName)) {
       return;
     }

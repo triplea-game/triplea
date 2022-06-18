@@ -167,7 +167,7 @@ public class UserActionPanel extends ActionPanel {
       parent
           .getUiContext()
           .getClipPlayer()
-          .playClip(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
+          .play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
     }
     SwingUtilities.invokeLater(
         () -> {
