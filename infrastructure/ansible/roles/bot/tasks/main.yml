@@ -12,7 +12,6 @@
     system: yes
 
 - name: deploy scripts to admin home
-  tags: [deploy]
   template:
     src: "{{ item }}.j2"
     dest: "{{ admin_home }}/{{ item }}"
@@ -36,7 +35,7 @@
     - "{{ bot_maps_folder }}"
 
 - name: deploy zip file (prerelease build only)
-  tags: [prerelease, deploy]
+  tags: [prerelease]
   copy:
     src: "triplea-game-headless-{{ bot_version }}.zip"
     dest: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
@@ -45,7 +44,7 @@
 
 
 - name: download zip file (release build only)
-  tags: [release, deploy]
+  tags: [release]
   get_url:
     url: "{{ zip_download }}"
     dest: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
@@ -53,7 +52,6 @@
     group: "{{ bot_user }}"
 
 - name: extract zip file
-  tags: [deploy]
   unarchive:
     remote_src: yes
     src: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
@@ -70,7 +68,6 @@
     group: "{{ bot_user }}"
 
 - name: deploy run_server script
-  tags: [deploy]
   template:
     src: run_server.j2
     dest: "{{ bot_install_home }}/run_server"
@@ -79,14 +76,12 @@
     group: "{{ bot_user }}"
 
 - name: install systemd service script
-  tags: [deploy]
   template:
     src: bot.service.j2
     dest: /lib/systemd/system/bot@.service
     mode: "644"
 
 - name: reload systemd
-  tags: [deploy]
   systemd:
     daemon_reload: yes
 
