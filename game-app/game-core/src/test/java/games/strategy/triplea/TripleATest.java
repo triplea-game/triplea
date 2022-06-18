@@ -7,12 +7,14 @@ import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
@@ -62,10 +64,15 @@ public class TripleATest {
 
     when(serverGame.getData()).thenReturn(gameData);
     when(gameData.getDelegate(anyString())).thenReturn(null);
-    when(launchAction.startGame(
-            any(LocalPlayers.class), any(ServerGame.class), anySet(), any(Chat.class)))
-        .thenReturn(display);
-    when(launchAction.getSoundChannel(any(LocalPlayers.class))).thenReturn(sound);
+    doAnswer(
+            invocation -> {
+              IGame game = invocation.getArgument(1);
+              game.setDisplay(display);
+              game.setSoundChannel(sound);
+              return null;
+            })
+        .when(launchAction)
+        .startGame(any(LocalPlayers.class), any(IGame.class), anySet(), any(Chat.class));
 
     tripleA.startGame(serverGame, playerSet, launchAction, chat);
     verify(gameData).addDelegate(isA(EditDelegate.class));

@@ -22,6 +22,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -44,6 +45,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
  */
 public class PoliticsPanel extends ActionPanel {
   private static final long serialVersionUID = -4661479948450261578L;
+  private final ClipPlayer clipPlayer;
   private JButton selectPoliticalActionButton = null;
   private JButton doneButton = null;
   private PoliticalActionAttachment choice = null;
@@ -56,8 +58,10 @@ public class PoliticsPanel extends ActionPanel {
    */
   private final Action selectPoliticalActionAction;
 
-  PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
+  PoliticsPanel(
+      final GameData data, final MapPanel map, final JFrame parent, final ClipPlayer clipPlayer) {
     super(data, map);
+    this.clipPlayer = clipPlayer;
     selectPoliticalActionAction =
         SwingAction.of(
             "Do Politics...",
@@ -215,7 +219,7 @@ public class PoliticsPanel extends ActionPanel {
     }
 
     if (this.firstRun) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
+      clipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
     }
     SwingUtilities.invokeLater(
         () -> {

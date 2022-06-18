@@ -57,6 +57,7 @@ public class UiContext {
   private static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
   private static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
   private static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
+  @Getter private final ClipPlayer clipPlayer;
 
   @Getter protected MapData mapData;
   @Getter @Setter protected LocalPlayers localPlayers;
@@ -131,9 +132,9 @@ public class UiContext {
     tileImageFactory.setResourceLoader(resourceLoader);
     mapImage = new MapImage(resourceLoader);
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
-    // change the resource loader (this allows us to play sounds the map folder, rather than just
-    // default sounds)
-    ClipPlayer.setResourceLoader(resourceLoader);
+    // set the resource loader
+    // this allows us to play sounds the map folder, rather than just default sounds
+    clipPlayer = new ClipPlayer(resourceLoader);
     // load a new cursor
     cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();

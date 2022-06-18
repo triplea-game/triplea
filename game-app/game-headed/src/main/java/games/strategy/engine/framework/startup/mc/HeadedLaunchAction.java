@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.mc;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
@@ -36,9 +35,7 @@ import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.java.Interruptibles;
-import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.DefaultSoundChannel;
-import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
@@ -81,7 +78,7 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public IDisplay startGame(
+  public void startGame(
       final LocalPlayers localPlayers,
       final IGame game,
       final Set<Player> players,
@@ -98,18 +95,15 @@ public class HeadedLaunchAction implements LaunchAction {
           frame.toFront();
         });
 
-    ClipPlayer.play(SoundPath.CLIP_GAME_START);
+    frame.getUiContext().getClipPlayer().play(SoundPath.CLIP_GAME_START);
     for (final Player player : players) {
       if (player instanceof TripleAPlayer) {
         ((TripleAPlayer) player).setFrame(frame);
       }
     }
-    return new TripleADisplay(frame);
-  }
-
-  @Override
-  public ISound getSoundChannel(final LocalPlayers localPlayers) {
-    return new DefaultSoundChannel(localPlayers);
+    game.setDisplay(new TripleADisplay(frame));
+    game.setSoundChannel(
+        new DefaultSoundChannel(localPlayers, frame.getUiContext().getClipPlayer()));
   }
 
   @Override

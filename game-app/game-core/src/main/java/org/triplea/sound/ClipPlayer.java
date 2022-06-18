@@ -13,8 +13,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,8 +23,8 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
 import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import lombok.extern.slf4j.Slf4j;
@@ -113,7 +111,6 @@ public class ClipPlayer {
   private static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final String MP3_SUFFIX = ".mp3";
-  private static ClipPlayer clipPlayer;
 
   private static final Set<String> mutedClips = ConcurrentHashMap.newKeySet();
 
@@ -129,12 +126,16 @@ public class ClipPlayer {
     }
   }
 
-  protected final Map<String, List<URL>> sounds = new HashMap<>();
+  private final Map<String, List<URL>> sounds = new ConcurrentHashMap<>();
 
   private final ResourceLoader resourceLoader;
 
-  private ClipPlayer(final ResourceLoader resourceLoader) {
+  public ClipPlayer(final ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
+  }
+
+  public ClipPlayer() {
+    this(new ResourceLoader(Path.of("sounds")));
   }
 
   public static boolean hasAudio() {
@@ -145,19 +146,6 @@ public class ClipPlayer {
       log.info("Unable to create audio device, is there audio on the system? " + e.getMessage(), e);
       return false;
     }
-  }
-
-  public static synchronized void setResourceLoader(final ResourceLoader resourceLoader) {
-    // load the sounds in a background thread,
-    // avoids the pause where sounds do not load right away
-    ThreadRunner.runInNewThread(
-        () -> {
-          // make a new clip player if we switch resource loaders (ie: if we switch maps)
-          if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
-            // make a new clip player with our new resource loader
-            clipPlayer = new ClipPlayer(resourceLoader);
-          }
-        });
   }
 
   static boolean isSoundClipMuted(final String clipName) {
@@ -216,27 +204,18 @@ public class ClipPlayer {
     }
   }
 
-  public static void play(final String clipName) {
+  public void play(final String clipName) {
     play(clipName, null);
   }
 
   /**
    * Plays the specified player-specific clip.
    *
-   * @param clipPath - the folder containing sound clips to be played. One of the sound clip files
+   * @param clipName - the folder containing sound clips to be played. One of the sound clip files
    *     will be chosen at random.
    * @param gamePlayer - the name of the player, or null
    */
-  public static void play(final String clipPath, final GamePlayer gamePlayer) {
-    synchronized (ClipPlayer.class) {
-      if (clipPlayer == null) {
-        clipPlayer = new ClipPlayer(new ResourceLoader(Path.of("sounds")));
-      }
-    }
-    clipPlayer.playClip(clipPath, gamePlayer);
-  }
-
-  private void playClip(final String clipName, final GamePlayer gamePlayer) {
+  public void play(final String clipName, @Nullable final GamePlayer gamePlayer) {
     if (!isSoundEnabled() || isSoundClipMuted(clipName)) {
       return;
     }
@@ -256,9 +235,7 @@ public class ClipPlayer {
                             URI.create(clip.toString()),
                             inputStream -> {
                               try {
-                                final AudioDevice audioDevice =
-                                    FactoryRegistry.systemRegistry().createAudioDevice();
-                                new AdvancedPlayer(inputStream, audioDevice).play();
+                                new AdvancedPlayer(inputStream).play();
                               } catch (final Exception e) {
                                 log.error("Failed to play: " + clip, e);
                               }
@@ -274,18 +251,13 @@ public class ClipPlayer {
   }
 
   private Optional<URL> loadClipPath(final String pathName) {
-    if (!sounds.containsKey(pathName)) {
-      // parse sounds for the first time
-      sounds.put(pathName, parseClipPaths(pathName));
-    }
-    final List<URL> availableSounds = sounds.get(pathName);
-    if (availableSounds == null || availableSounds.isEmpty()) {
+    final List<URL> availableSounds = sounds.computeIfAbsent(pathName, this::parseClipPaths);
+    if (availableSounds.isEmpty()) {
       return Optional.empty();
     }
     // we want to pick a random sound from this folder, as users
     // don't like hearing the same ones over and over again
-    Collections.shuffle(availableSounds);
-    return Optional.of(availableSounds.get(0));
+    return Optional.of(availableSounds.get((int) (Math.random() * availableSounds.size())));
   }
 
   /**
@@ -313,7 +285,6 @@ public class ClipPlayer {
     resourcePath = resourcePath.replace('\\', '/');
     final List<URL> availableSounds = new ArrayList<>();
     if ("NONE".equals(resourcePath)) {
-      sounds.put(pathName, availableSounds);
       return availableSounds;
     }
     for (final String path : Splitter.on(';').split(resourcePath)) {
@@ -331,7 +302,7 @@ public class ClipPlayer {
    *
    * @param resourceAndPathUrl (URL uses '/', not File.separator or '\')
    */
-  protected List<URL> findClipFiles(final String resourceAndPathUrl) {
+  private List<URL> findClipFiles(final String resourceAndPathUrl) {
     final URL thisSoundUrl = resourceLoader.getResource(resourceAndPathUrl);
     if (thisSoundUrl == null) {
       return List.of();

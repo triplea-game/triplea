@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -165,7 +164,10 @@ public class UserActionPanel extends ActionPanel {
     }
 
     if (this.firstRun) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
+      parent
+          .getUiContext()
+          .getClipPlayer()
+          .play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
     }
     SwingUtilities.invokeLater(
         () -> {

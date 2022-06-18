@@ -26,6 +26,7 @@ import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.game.client.HeadedGameRunner;
+import org.triplea.sound.ClipPlayer;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -48,7 +49,8 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         new LobbyChatTransmitter(
             lobbyClient.getPlayerToLobbyConnection(), lobbyClient.getUserName());
     final Chat chat = new Chat(chatTransmitter);
-    final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
+    final ChatMessagePanel chatMessagePanel =
+        new ChatMessagePanel(chat, ChatSoundProfile.LOBBY, new ClipPlayer());
     chatMessagePanel.addServerMessage(lobbyClient.getLobbyMessage());
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
