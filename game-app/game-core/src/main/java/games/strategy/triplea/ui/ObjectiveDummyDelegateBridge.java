@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
@@ -136,7 +135,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
   static class ObjectivePanelDummyPlayer extends AbstractAi {
     ObjectivePanelDummyPlayer(final String name) {
-      super(name, PlayerTypes.BATTLE_CALC_DUMMY);
+      super(name, "ObjectivePanelDummyPlayer");
     }
 
     @Override

@@ -37,9 +37,9 @@ class PlayerTypesTest {
             playerType -> {
               final Player result = playerType.newPlayerWithName(testName);
               assertThat(
-                  "The player type should match after construction, input type: " + playerType,
-                  result.getPlayerType(),
-                  is(playerType));
+                  "The player label should match after construction, input type: " + playerType,
+                  result.getPlayerLabel(),
+                  is(playerType.getLabel()));
               assertThat(
                   "The name is a passed in parameter, this should still match after construction",
                   result.getName(),

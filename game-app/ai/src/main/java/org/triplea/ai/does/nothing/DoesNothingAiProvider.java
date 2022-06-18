@@ -6,8 +6,8 @@ import games.strategy.triplea.ai.AiProvider;
 
 public class DoesNothingAiProvider implements AiProvider {
   @Override
-  public AbstractAi create(final String name, final PlayerTypes.AiType playerType) {
-    return new DoesNothingAi(name, playerType);
+  public AbstractAi create(final String name, final String playerLabel) {
+    return new DoesNothingAi(name, playerLabel);
   }
 
   @Override

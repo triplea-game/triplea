@@ -23,28 +23,28 @@ public class PlayerTypes {
       new Type("Human") {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new TripleAPlayer(name, HUMAN_PLAYER, false);
+          return new TripleAPlayer(name, getLabel(), false);
         }
       };
   public static final Type WEAK_AI =
       new Type("Easy (AI)") {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new WeakAi(name);
+          return new WeakAi(name, getLabel());
         }
       };
   public static final Type FAST_AI =
       new Type("Fast (AI)") {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new FastAi(name);
+          return new FastAi(name, getLabel());
         }
       };
   public static final Type PRO_AI =
       new Type("Hard (AI)") {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new ProAi(name);
+          return new ProAi(name, getLabel());
         }
       };
   /** A hidden player type to represent network connected players. */
@@ -52,7 +52,7 @@ public class PlayerTypes {
       new Type("Client", false) {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new TripleAPlayer(name, CLIENT_PLAYER, true);
+          return new TripleAPlayer(name, getLabel(), true);
         }
       };
   /** A 'dummy' player type used for battle calc. */
@@ -138,7 +138,7 @@ public class PlayerTypes {
 
     @Override
     public Player newPlayerWithName(final String name) {
-      return this.aiProvider.create(name, this);
+      return this.aiProvider.create(name, aiProvider.getLabel());
     }
   }
 }

@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
@@ -34,8 +33,8 @@ public class FlowFieldAi extends AbstractAi {
   @Getter private Collection<InfluenceMap> diffusions = new ArrayList<>();
   private int round = -1;
 
-  public FlowFieldAi(final String name, final PlayerTypes.AiType playerType) {
-    super(name, playerType);
+  public FlowFieldAi(final String name, final String playerLabel) {
+    super(name, playerLabel);
   }
 
   @Override

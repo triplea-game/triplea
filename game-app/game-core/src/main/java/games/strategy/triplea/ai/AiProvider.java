@@ -1,9 +1,7 @@
 package games.strategy.triplea.ai;
 
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
-
 public interface AiProvider {
-  AbstractAi create(String name, PlayerTypes.AiType playerType);
+  AbstractAi create(String name, String playerLabel);
 
   String getLabel();
 }

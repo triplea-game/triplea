@@ -13,7 +13,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
@@ -48,8 +47,14 @@ import org.triplea.java.collections.IntegerMap;
 /** A very weak ai, based on some simple rules. */
 public class WeakAi extends AbstractAi {
 
+  public WeakAi(final String name, final String playerLabel) {
+    super(name, playerLabel);
+  }
+
   public WeakAi(final String name) {
-    super(name, PlayerTypes.WEAK_AI);
+    // This class may be used as fallback implementation
+    // for Player. If this is the case assign the "Temporary" label
+    super(name, "Temporary");
   }
 
   @Override

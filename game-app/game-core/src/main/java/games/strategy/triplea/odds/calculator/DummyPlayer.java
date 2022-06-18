@@ -6,7 +6,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -46,7 +45,7 @@ class DummyPlayer extends AbstractAi {
       final int retreatAfterRound,
       final int retreatAfterXUnitsLeft,
       final boolean retreatWhenOnlyAirLeft) {
-    super(name, PlayerTypes.BATTLE_CALC_DUMMY);
+    super(name, "DummyPlayer");
     this.keepAtLeastOneLand = keepAtLeastOneLand;
     this.retreatAfterRound = retreatAfterRound;
     this.retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;

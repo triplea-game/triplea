@@ -7,7 +7,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
@@ -22,8 +21,8 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
  */
 public class DoesNothingAi extends AbstractAi {
 
-  public DoesNothingAi(final String name, final PlayerTypes.AiType playerType) {
-    super(name, playerType);
+  public DoesNothingAi(final String name, final String playerLabel) {
+    super(name, playerLabel);
   }
 
   @Override

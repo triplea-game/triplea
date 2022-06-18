@@ -4,7 +4,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -39,8 +38,7 @@ public interface Player extends IRemote {
   @RemoteActionCode(6)
   String getName();
 
-  @RemoteActionCode(8)
-  PlayerTypes.Type getPlayerType();
+  String getPlayerLabel();
 
   /**
    * Start the given step. stepName appears as it does in the game xml file. The game step will

@@ -9,7 +9,6 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -90,9 +89,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
         }
       };
 
-  public TripleAPlayer(
-      final String name, final PlayerTypes.Type playerType, final boolean isClient) {
-    super(name, playerType);
+  public TripleAPlayer(final String name, final String playerLabel, final boolean isClient) {
+    super(name, playerLabel);
     this.isClient = isClient;
   }
 

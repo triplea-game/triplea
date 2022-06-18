@@ -629,10 +629,9 @@ public class ServerGame extends AbstractGame {
                       ? " are"
                       : " is")
                   + " now being played by: "
-                  + player.getPlayerType().getLabel());
+                  + player.getPlayerLabel());
       final GamePlayer p = data.getPlayerList().getPlayerId(player.getName());
-      final String newWhoAmI =
-          ((isHuman ? "Human" : "AI") + ":" + player.getPlayerType().getLabel());
+      final String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getPlayerLabel());
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
       }

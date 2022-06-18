@@ -2,7 +2,6 @@ package games.strategy.triplea.player;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.player.Player;
 import lombok.Getter;
@@ -21,16 +20,16 @@ public abstract class AbstractBasePlayer implements Player {
   @Getter(onMethod_ = {@Override})
   private final String name; // what nation are we playing? ex: "Americans"
 
-  private final PlayerTypes.Type playerType;
+  private final String playerLabel;
 
   @Getter(onMethod_ = {@Override})
   private GamePlayer gamePlayer;
 
   @Getter private IPlayerBridge playerBridge;
 
-  public AbstractBasePlayer(final String name, final PlayerTypes.Type playerType) {
+  public AbstractBasePlayer(final String name, final String playerLabel) {
     this.name = name;
-    this.playerType = playerType;
+    this.playerLabel = playerLabel;
   }
 
   /** Anything that overrides this MUST call super.initialize(playerBridge, playerId); */
@@ -41,8 +40,8 @@ public abstract class AbstractBasePlayer implements Player {
   }
 
   @Override
-  public PlayerTypes.Type getPlayerType() {
-    return playerType;
+  public String getPlayerLabel() {
+    return playerLabel;
   }
 
   /** Get the GameData for the game. */

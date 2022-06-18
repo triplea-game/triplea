@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -79,8 +78,8 @@ public abstract class AbstractProAi extends AbstractAi {
       final String name,
       final IBattleCalculator battleCalculator,
       final ProData proData,
-      final PlayerTypes.Type playerType) {
-    super(name, playerType);
+      final String playerLabel) {
+    super(name, playerLabel);
     this.proData = proData;
     calc = new ProOddsCalculator(battleCalculator);
     combatMoveAi = new ProCombatMoveAi(this);
