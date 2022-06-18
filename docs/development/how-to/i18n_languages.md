@@ -15,14 +15,6 @@
 
 ### General Questions
 
-### Quantity Questions
-
-### Process Questions
-
-## Open Questions
-
-### General Questions
-
 1. How many strings are there approximately in TripleA?
     - game-app\ai 102
     - game-app\game-core 12628
@@ -54,16 +46,3 @@
 6. There is a cost to this capability, do the returns justify those costs (and particularly at this time)?
     - The cost will only increase in the future if we don't start at some point.
 
-### Process Questions
-
-1. We're going to be blocked pretty quickly by save game compability. What is your plan to address that?
-    - What are you referring to here?
-2. Will we ever have a feature be held up because we need translations? If yes, how can we avoid that? If no, how do
-   ensure that we reasonably keep up with having translations?
-    - I18nResourceBundleTest covers the completeness of the translations. Can we avoid that a specific test is blocking
-      us?
-3. How will we roll this out? It seems odd that simply booting would cause a smattering of strings to be translated but
-   not quite everything. It feels like that would make for an unreleasable state - how can we avoid that so we can do
-   this work incrementally and still have a releasable product after each increment?
-    - We can control which language we allow and default back to English. It is also an option to allow a new settings
-      option and start with an explorative feature.  
