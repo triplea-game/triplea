@@ -115,7 +115,7 @@ final class ViewMenu extends JMenu {
             "Map Zoom",
             e -> {
               final SpinnerNumberModel model = new SpinnerNumberModel();
-              model.setMaximum(100);
+              model.setMaximum(UiContext.MAP_SCALE_MAX_VALUE * 100);
               model.setMinimum((int) Math.ceil(frame.getMapPanel().getMinScale() * 100));
               model.setStepSize(1);
               model.setValue((int) Math.round(frame.getMapPanel().getScale() * 100));
