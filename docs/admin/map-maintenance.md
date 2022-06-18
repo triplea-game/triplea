@@ -1,58 +1,12 @@
 # Map Maintenance
 
-Notes for map admins for map maintenance:
+Notes for map admins on managing the map maintenance:
 
-Below assumes you'll clone: `triplea-game/assets` -> `~/work/assets`, and create a folder called `~/work/maps` into which all maps will be cloned.
+- Create a 'maps' work folder: `mkdir -p ~/work/maps; cd ~/work/maps`
+- Clone repo: <https://github.com/triplea-maps/admin_scripts>
+- Run clone-all script: <https://github.com/triplea-maps/admin_scripts/blob/master/bin/clone_all.sh>
 
-***Clone all maps:***
-```
-cd ~/work/maps/
+At the end of this, the `~/work/maps/` folder will contain a cloned copy of each of the github map repositories.
+From here individual updates can be made and pushed, or changes can be made in bulk using 'for-each' loops. Check
+the 'admin_scripts' repository for additional useful scripts and general patterns for bulk changes.
 
-export OAUTH_TOKEN=............
-for i in $(seq 1 6); do
-  for map in $(
-    curl -s -H "Authorization: token ${OAUTH_TOKEN}" \
-        "https://api.github.com/orgs/triplea-maps/repos?page=$i&size=100" \
-      | grep "ssh_url" \
-      | sed 's|^.*: "\(.*\)",$|\1|' \
-  ); do
-    git clone $map
-  done
-done
-```
-
-***Find all Player Names***
-
-```
-cd maps/
-echo "" > full_player_list;
-
-while read i; do
-   grep "<player name" "$i" \
-      | sed 's/^.*name="//' \
-      | sed 's/".*//'  >> full_player_list;
-done < <(find . -path "**/games/**" -name "*.xml");
-
-sort full_player_list | uniq -c > players
-mv players full_player_list
-```
-
-***Find flags that do not belong to any player***
-
-```
-cd maps/
-for i in $(ls ../assets/game_headed_assets/flags/ | sed 's/.png$//' | sed 's/.gif$//' | sed 's/_small$//' | sed 's/_large//' | sort | uniq); do grep -q $i full_player_list || echo "$i not found"; done;
-```
-
-***List of all resources***
-
-```
-cd maps/
-while read map; do grep "resource" "$map"; done < <(find . -name "*.xml")  | grep "resource name" | sed 's/^\s*//'  | sort | uniq
-```
-
-***List of all Territory Effects***
-```
-cd maps/
-while read map; do grep "territoryEffect" "$map"; done < <(find . -name "*.xml")  | grep "territoryEffect name=" | sed 's/^\s*//' | sed 's/.*name="//' | sed 's/".*$//' | tr 'A-Z' 'a-z' | sort | uniq
-```

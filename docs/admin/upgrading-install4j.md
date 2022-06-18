@@ -9,7 +9,7 @@
 ## License Key
 
 Install4j has a website to upgrade the install4j license key:
-https://www.ej-technologies.com/support/upgradeProduct
+<https://www.ej-technologies.com/support/upgradeProduct>
 
 After that is done:
  - record the license key in the secrets file.
@@ -18,9 +18,8 @@ After that is done:
 
 ## Install4j Config
 
-- Install install4j locally.
+- Install install4j locally: <https://www.ej-technologies.com/download/install4j/files>
 - Launch install4j
 - Locate the *.install4j file checked into the code
-- Open the 'install4j' file as a project and 'save'
-- Commit the file updates and push
-
+- Open the 'install4j' file as a project, make changes from the Install4j UI and then 'save'
+- This will update the checked in *.install4j file, commit these changes & submit a PR
