@@ -10,26 +10,67 @@
 
 ## Getting Started
 
-- Fork <https://github.com/triplea-game/triplea>
-- Clone your newly forked repository
-- Create a new branch in your fork repository and do the checkout (see the [typical workflow](./how-to/typical-git-workflow.md))
-- Follow TripleA's [pull requests process here](./reference/dev-process/pull-requests.md).
+- Fork: <https://github.com/triplea-game/triplea>
+- Using your favorite git-client, clone the newly forked repository 
+- Setup IDE: [/docs/development/how-to/ide-setup](../how-to/ide-setup>)
+- Use a feature-branch workflow, see: [typical git workflow](./how-to/typical-git-workflow.md))
+- Submit pull request, see: [pull requests process](./reference/dev-process/pull-requests.md).
 
 ## Compile and launch TripleA
+
 ```bash
 ./gradlew :game-app:game-headed:run
 ```
 
+For more detailed steps on building the project, see:
+- [how-to/cli-build-commands.md](./how-to/cli-build-commands.md)
+
+TripleA can also be launched from IDE as well, there  are run-configurations
+checked into the code that the IDE should automatically find.
+
 ## Launch Local Database
 
 ```bash
+# requires docker to be installed
 ./spitfire-server/database/start_docker_db
 ```
 
-This will:
-- start a postgres DB docker container
-- run flyway to install a database schema
-- load a sample 'SQL' file to populate a small sample dataset
+This will launch a postgres database on docker and will install the latest
+TripleA schema with a small sample dataset for local testing.
+
+After the database is launched you can:
+- run the full set of tests
+- launch a local lobby
+
+## Running all tests & checks locally before PR
+
+The verify script will execute all checks done as part of the PR
+builds. First launch a local database, then run the verify script:
+```
+cd .../triplea/
+./verify
+```
+
+## Run Formatting
+
+We use 'google java format', a plugin can be installed to IDE to properly format
+from IDE. Everything can be formatted as well from CLI:
+
+```
+./gradew spotlessApply
+```
+
+## Launch local lobby:
+
+Lobby can be launched via the checked-in run configurations from IDE, or from CLI:
+```bash
+./gradlew :spitfire-server:dropwizard-server:run
+```
+
+To connect to local lobby, from the game client:
+  - 'settings > testing > local lobby'
+  - play online
+  - use 'test:test' to login to local lobby as a moderator
 
 ### Working with database
 
@@ -50,42 +91,19 @@ This will:
 ./spitfire-server/database/reset_docker_db
 ```
 
-## Launch local lobby:
-
-```bash
-./gradlew :spitfire-server:dropwizard-server:run
-```
-
-To connect to local lobby, from the game client:
-  - 'settings > testing > local lobby'
-  - play online
-  - use 'test:test' to login to local lobby as a moderator
-
-## Run all checks and tests
-
-```bash
-./verify
-```
-
-## Run formatting:
-
-```
-./format
-```
-
-## Reference
-
-For more detailed steps on building the project, see:
-- [how-to/cli-build-commands.md](./how-to/cli-build-commands.md)
-- [how-to/typical-git-workflow.md](./how-to/typical-git-workflow.md)
-
-## Coding Style Guide & Expectations
-
-- Code formatting is google java format
-- Checkstyle will verify low level code style standards
-- Generally write tests for new and modified code
+## Code Conventions
 
 Full list of coding conventions can be found at: [reference/code-conventions](./reference/code-conventions)
+
+## Deployment & Infrastructure Development
+
+The deployment code is inside of the '[/infrastructure](./infrastructure)' folder.
+
+We use [ansible](https://www.ansible.com/) to execute deployments.
+
+You can test out deployment code by first launching a virtual machine and then running a deployment
+against that virtual machine. See '[infrastructure/vagrant/REAMDE.md](./infrastructure/vagrant/REAMDE.md)'
+for more information.
 
 # Pitfalls and Pain Points to be aware of
 
