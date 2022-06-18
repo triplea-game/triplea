@@ -1,5 +1,8 @@
 # Git Help and Typical Commands
 
+First, fork the triplea-game repo and clone your forked repo. By default the cloned
+repo folder will be 'triplea'.
+
 ## (one-time) Add TripleA main repository 'upstream' as a git remote
 
 ```
@@ -10,7 +13,7 @@ git remote add upstream git@github.com:triplea-game/triplea.git
 ## Typical workflow
 
 ```
-cd ~/work/triplea/
+cd triplea/
 git checkout master
 
 ## Refresh to latest code
@@ -35,4 +38,4 @@ git push origin
 ## Follow the 'create PR' web link
 ```
 
-Read more about TripleA's  [pull requests process here](../reference/dev-process/pull-requests.md).
+Read more about TripleA's  [pull requests process here](../../project/pull-requests.md).
