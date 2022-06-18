@@ -10,15 +10,10 @@ public class ProAi extends AbstractProAi {
   private static final ConcurrentBattleCalculator concurrentCalc = new ConcurrentBattleCalculator();
 
   public ProAi(final String name) {
-    super(name, concurrentCalc, new ProData());
+    super(name, concurrentCalc, new ProData(), PlayerTypes.PRO_AI);
     // cuncurrentCalc is static so that it can be shared across all ProAi instances
     // at the end of a game, it needs to be cleared up
     GameShutdownRegistry.registerShutdownAction(() -> concurrentCalc.setGameData(null));
-  }
-
-  @Override
-  public PlayerTypes.Type getPlayerType() {
-    return PlayerTypes.PRO_AI;
   }
 
   @Override

@@ -13,12 +13,7 @@ public class FastAi extends AbstractProAi {
   }
 
   private FastAi(final String name, final ProData proData) {
-    super(name, new FastOddsEstimator(proData), proData);
-  }
-
-  @Override
-  public PlayerTypes.Type getPlayerType() {
-    return PlayerTypes.FAST_AI;
+    super(name, new FastOddsEstimator(proData), proData, PlayerTypes.FAST_AI);
   }
 
   @Override

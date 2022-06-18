@@ -136,7 +136,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
   static class ObjectivePanelDummyPlayer extends AbstractBuiltInAi {
     ObjectivePanelDummyPlayer(final String name) {
-      super(name);
+      super(name, PlayerTypes.BATTLE_CALC_DUMMY);
     }
 
     @Override
@@ -245,11 +245,6 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
         final Collection<Unit> potentialTargets,
         final Collection<Unit> bombers) {
       throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public PlayerTypes.Type getPlayerType() {
-      return PlayerTypes.BATTLE_CALC_DUMMY;
     }
   }
 }

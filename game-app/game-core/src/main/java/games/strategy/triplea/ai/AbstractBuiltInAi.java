@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -64,8 +65,8 @@ import org.triplea.util.Tuple;
  */
 @Slf4j
 public abstract class AbstractBuiltInAi extends AbstractBasePlayer {
-  public AbstractBuiltInAi(final String name) {
-    super(name);
+  public AbstractBuiltInAi(final String name, final PlayerTypes.Type playerType) {
+    super(name, playerType);
   }
 
   @Override

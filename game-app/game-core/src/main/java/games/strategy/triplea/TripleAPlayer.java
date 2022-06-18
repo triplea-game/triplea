@@ -9,6 +9,7 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -32,9 +33,10 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.AbstractHumanPlayer;
+import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.PlaceData;
+import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,7 +62,8 @@ import org.triplea.util.Tuple;
  * delegate, and done through an IDelegate, which we get through getPlayerBridge().getRemote()
  */
 @Slf4j
-public abstract class TripleAPlayer extends AbstractHumanPlayer {
+public class TripleAPlayer extends AbstractBasePlayer {
+  private TripleAFrame ui;
   private boolean soundPlayedAlreadyCombatMove = false;
   private boolean soundPlayedAlreadyNonCombatMove = false;
   private boolean soundPlayedAlreadyPurchase = false;
@@ -85,8 +88,8 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         }
       };
 
-  public TripleAPlayer(final String name) {
-    super(name);
+  public TripleAPlayer(final String name, final PlayerTypes.Type playerType) {
+    super(name, playerType);
   }
 
   @Override
@@ -806,5 +809,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     }
     return ui.pickTerritoryAndUnits(
         this.getGamePlayer(), territoryChoices, unitChoices, unitsPerPick);
+  }
+
+  public final void setFrame(final TripleAFrame frame) {
+    ui = frame;
   }
 }

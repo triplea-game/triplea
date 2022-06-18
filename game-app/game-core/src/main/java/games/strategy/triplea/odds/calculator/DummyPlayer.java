@@ -46,7 +46,7 @@ class DummyPlayer extends AbstractBuiltInAi {
       final int retreatAfterRound,
       final int retreatAfterXUnitsLeft,
       final boolean retreatWhenOnlyAirLeft) {
-    super(name);
+    super(name, PlayerTypes.BATTLE_CALC_DUMMY);
     this.keepAtLeastOneLand = keepAtLeastOneLand;
     this.retreatAfterRound = retreatAfterRound;
     this.retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
@@ -54,11 +54,6 @@ class DummyPlayer extends AbstractBuiltInAi {
     bridge = dummyDelegateBridge;
     isAttacker = attacker;
     this.orderOfLosses = orderOfLosses;
-  }
-
-  @Override
-  public PlayerTypes.Type getPlayerType() {
-    return PlayerTypes.BATTLE_CALC_DUMMY;
   }
 
   private MustFightBattle getBattle() {

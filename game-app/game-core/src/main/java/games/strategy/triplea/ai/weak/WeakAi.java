@@ -49,12 +49,7 @@ import org.triplea.java.collections.IntegerMap;
 public class WeakAi extends AbstractBuiltInAi {
 
   public WeakAi(final String name) {
-    super(name);
-  }
-
-  @Override
-  public PlayerTypes.Type getPlayerType() {
-    return PlayerTypes.WEAK_AI;
+    super(name, PlayerTypes.WEAK_AI);
   }
 
   @Override
