@@ -325,7 +325,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       commentSplit.setResizeWeight(0.5);
       commentSplit.setTopComponent(commentPanel);
       commentSplit.setBottomComponent(null);
-      chatPanel = new ChatPanel(chat, ChatSoundProfile.GAME);
+      chatPanel = new ChatPanel(chat, ChatSoundProfile.GAME, getUiContext().getClipPlayer());
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
       final Dimension chatPrefSize =
           new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);

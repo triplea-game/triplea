@@ -132,7 +132,8 @@ public class UiContext {
     tileImageFactory.setResourceLoader(resourceLoader);
     mapImage = new MapImage(resourceLoader);
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
-    // set the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
+    // set the resource loader (this allows us to play sounds the map folder, rather than just
+    // default sounds)
     clipPlayer = new ClipPlayer(resourceLoader);
     // load a new cursor
     cursor = Cursor.getDefaultCursor();

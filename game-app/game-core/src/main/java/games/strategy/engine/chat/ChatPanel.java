@@ -2,10 +2,8 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.net.Messengers;
-import games.strategy.triplea.ResourceLoader;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.nio.file.Path;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -27,13 +25,11 @@ public class ChatPanel extends JPanel implements ChatModel {
   private final ChatPlayerPanel chatPlayerPanel;
   private final ChatMessagePanel chatMessagePanel;
 
-  public ChatPanel(final Chat chat, final ChatSoundProfile chatSoundProfile) {
+  public ChatPanel(
+      final Chat chat, final ChatSoundProfile chatSoundProfile, final ClipPlayer clipPlayer) {
     setSize(300, 200);
     chatPlayerPanel = new ChatPlayerPanel(chat);
-    // TODO use different ClipPlayer
-    chatMessagePanel =
-        new ChatMessagePanel(
-            chat, chatSoundProfile, new ClipPlayer(new ResourceLoader(Path.of("sounds"))));
+    chatMessagePanel = new ChatMessagePanel(chat, chatSoundProfile, clipPlayer);
     setLayout(new BorderLayout());
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     split.setLeftComponent(chatMessagePanel);
@@ -53,8 +49,11 @@ public class ChatPanel extends JPanel implements ChatModel {
   public static ChatPanel newChatPanel(
       final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
     final Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers));
+    final ClipPlayer clipPlayer = new ClipPlayer();
     return Interruptibles.awaitResult(
-            () -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat, chatSoundProfile)))
+            () ->
+                SwingAction.invokeAndWaitResult(
+                    () -> new ChatPanel(chat, chatSoundProfile, clipPlayer)))
         .result
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }

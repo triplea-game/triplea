@@ -137,6 +137,10 @@ public class ClipPlayer {
     this.resourceLoader = resourceLoader;
   }
 
+  public ClipPlayer() {
+    this(new ResourceLoader(Path.of("sounds")));
+  }
+
   public static boolean hasAudio() {
     try {
       FactoryRegistry.systemRegistry().createAudioDevice();
