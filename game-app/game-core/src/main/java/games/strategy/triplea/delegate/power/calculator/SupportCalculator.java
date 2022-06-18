@@ -82,10 +82,22 @@ public class SupportCalculator {
   }
 
   public int getSupport(final UnitSupportAttachment rule) {
-    return supportUnits.getOrDefault(rule, new IntegerMap<>()).totalValues();
+    return supportUnits.getOrDefault(rule, IntegerMap.of()).totalValues();
   }
 
   public Collection<List<UnitSupportAttachment>> getUnitSupportAttachments() {
     return supportRules.values();
+  }
+
+  public static Map<Unit, IntegerMap<Unit>> getCombinedSupportGiven(
+      AvailableSupports supportFromFriends, AvailableSupports supportFromEnemies) {
+    Map<Unit, IntegerMap<Unit>> support = new HashMap<>();
+    for (var entry : supportFromFriends.getUnitsGivingSupport().entrySet()) {
+      support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
+    }
+    for (var entry : supportFromEnemies.getUnitsGivingSupport().entrySet()) {
+      support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
+    }
+    return support;
   }
 }
