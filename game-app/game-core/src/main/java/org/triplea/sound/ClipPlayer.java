@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import lombok.extern.slf4j.Slf4j;
@@ -238,9 +237,7 @@ public class ClipPlayer {
                             URI.create(clip.toString()),
                             inputStream -> {
                               try {
-                                final AudioDevice audioDevice =
-                                    FactoryRegistry.systemRegistry().createAudioDevice();
-                                new AdvancedPlayer(inputStream, audioDevice).play();
+                                new AdvancedPlayer(inputStream).play();
                               } catch (final Exception e) {
                                 log.error("Failed to play: " + clip, e);
                               }
