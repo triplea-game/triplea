@@ -13,8 +13,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -128,7 +126,7 @@ public class ClipPlayer {
     }
   }
 
-  protected final Map<String, List<URL>> sounds = new HashMap<>();
+  private final Map<String, List<URL>> sounds = new ConcurrentHashMap<>();
 
   private final ResourceLoader resourceLoader;
 
@@ -253,18 +251,13 @@ public class ClipPlayer {
   }
 
   private Optional<URL> loadClipPath(final String pathName) {
-    if (!sounds.containsKey(pathName)) {
-      // parse sounds for the first time
-      sounds.put(pathName, parseClipPaths(pathName));
-    }
-    final List<URL> availableSounds = sounds.get(pathName);
-    if (availableSounds == null || availableSounds.isEmpty()) {
+    final List<URL> availableSounds = sounds.computeIfAbsent(pathName, this::parseClipPaths);
+    if (availableSounds.isEmpty()) {
       return Optional.empty();
     }
     // we want to pick a random sound from this folder, as users
     // don't like hearing the same ones over and over again
-    Collections.shuffle(availableSounds);
-    return Optional.of(availableSounds.get(0));
+    return Optional.of(availableSounds.get((int) (Math.random() * availableSounds.size())));
   }
 
   /**
@@ -292,7 +285,6 @@ public class ClipPlayer {
     resourcePath = resourcePath.replace('\\', '/');
     final List<URL> availableSounds = new ArrayList<>();
     if ("NONE".equals(resourcePath)) {
-      sounds.put(pathName, availableSounds);
       return availableSounds;
     }
     for (final String path : Splitter.on(';').split(resourcePath)) {
@@ -310,7 +302,7 @@ public class ClipPlayer {
    *
    * @param resourceAndPathUrl (URL uses '/', not File.separator or '\')
    */
-  protected List<URL> findClipFiles(final String resourceAndPathUrl) {
+  private List<URL> findClipFiles(final String resourceAndPathUrl) {
     final URL thisSoundUrl = resourceLoader.getResource(resourceAndPathUrl);
     if (thisSoundUrl == null) {
       return List.of();
