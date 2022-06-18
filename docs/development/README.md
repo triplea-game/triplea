@@ -13,7 +13,7 @@
 - Fork: <https://github.com/triplea-game/triplea>
 - Using your favorite git-client, clone the newly forked repository 
 - Setup IDE: [/docs/development/how-to/ide-setup](../how-to/ide-setup>)
-- Use a feature-branch workflow, see: [typical git workflow](./how-to/typical-git-workflow.md))
+- Use a feature-branch workflow, see: [typical git workflow](reference/typical-git-workflow.md))
 - Submit pull request, see: [pull requests process](../project/pull-requests.md).
 
 ## Compile and launch TripleA
@@ -23,7 +23,7 @@
 ```
 
 For more detailed steps on building the project, see:
-- [how-to/cli-build-commands.md](./how-to/cli-build-commands.md)
+- [how-to/cli-build-commands.md](reference/cli-build-commands.md)
 
 TripleA can also be launched from IDE as well, there  are run-configurations
 checked into the code that the IDE should automatically find.
