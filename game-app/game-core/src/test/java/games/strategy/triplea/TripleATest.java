@@ -64,8 +64,7 @@ public class TripleATest {
     when(gameData.getDelegate(anyString())).thenReturn(null);
     when(launchAction.startGame(
             any(LocalPlayers.class), any(ServerGame.class), anySet(), any(Chat.class)))
-        .thenReturn(display);
-    when(launchAction.getSoundChannel(any(LocalPlayers.class))).thenReturn(sound);
+        .thenReturn(new LaunchAction.UserInterface(display, sound));
 
     tripleA.startGame(serverGame, playerSet, launchAction, chat);
     verify(gameData).addDelegate(isA(EditDelegate.class));
