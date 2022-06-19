@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.AfterEach;
@@ -44,7 +45,7 @@ class WebSocketConnectionTest {
 
     @BeforeEach
     void setUp() {
-      webSocketConnection = new WebSocketConnection(INVALID_URI);
+      webSocketConnection = new WebSocketConnection(INVALID_URI, Map.of());
       webSocketConnection.connect(webSocketConnectionListener, err -> {});
       listener = webSocketConnection.getInternalListener();
     }
@@ -132,7 +133,7 @@ class WebSocketConnectionTest {
 
     @BeforeEach
     void setUp() {
-      webSocketConnection = new WebSocketConnection(INVALID_URI);
+      webSocketConnection = new WebSocketConnection(INVALID_URI, Map.of());
     }
 
     private void requiresSendTextAction() {

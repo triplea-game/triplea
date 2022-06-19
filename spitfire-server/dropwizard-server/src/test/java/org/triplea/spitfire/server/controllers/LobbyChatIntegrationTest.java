@@ -102,7 +102,8 @@ class LobbyChatIntegrationTest extends ControllerIntegrationTest {
             ControllerIntegrationTest.MODERATOR,
             err -> {
               throw new AssertionError("Error on moderator: " + err);
-            });
+            },
+            "2.6");
     newModerator.addMessageListener(
         PlayerStatusUpdateReceivedMessage.TYPE, modPlayerStatusEvents::add);
     newModerator.addMessageListener(PlayerLeftMessage.TYPE, modPlayerLeftEvents::add);
@@ -120,7 +121,8 @@ class LobbyChatIntegrationTest extends ControllerIntegrationTest {
             ControllerIntegrationTest.PLAYER,
             err -> {
               throw new AssertionError("Error on chatter: " + err);
-            });
+            },
+            "2.6");
     newChatter.addMessageListener(
         PlayerStatusUpdateReceivedMessage.TYPE, chatterPlayerStatusEvents::add);
     newChatter.addMessageListener(PlayerLeftMessage.TYPE, chatterPlayerLeftEvents::add);

@@ -11,6 +11,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.HttpLobbyClient;
+import org.triplea.http.client.lobby.ClientVersionHeader;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
@@ -41,12 +42,14 @@ public class PlayerToLobbyConnection {
   public PlayerToLobbyConnection(
       @Nonnull final URI lobbyUri,
       @Nonnull final ApiKey apiKey,
-      @Nonnull final Consumer<String> errorHandler) {
+      @Nonnull final Consumer<String> errorHandler,
+      @Nonnull final String version) {
     httpLobbyClient = HttpLobbyClient.newClient(lobbyUri, apiKey);
     webSocket =
         GenericWebSocketClient.builder()
             .errorHandler(errorHandler)
             .websocketUri(URI.create(lobbyUri + WebsocketPaths.PLAYER_CONNECTIONS))
+            .headers(ClientVersionHeader.buildHeader(version))
             .build();
     webSocket.connect();
     gameListingClient = httpLobbyClient.newGameListingClient();

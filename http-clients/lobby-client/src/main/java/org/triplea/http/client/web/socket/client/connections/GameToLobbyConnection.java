@@ -9,6 +9,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.HttpLobbyClient;
+import org.triplea.http.client.lobby.ClientVersionHeader;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
@@ -38,7 +39,8 @@ public class GameToLobbyConnection {
   public GameToLobbyConnection(
       final URI lobbyUri,
       final GameHostingResponse gameHostingResponse,
-      final Consumer<String> errorHandler) {
+      final Consumer<String> errorHandler,
+      final String version) {
     publicVisibleIp = gameHostingResponse.getPublicVisibleIp();
     lobbyClient = HttpLobbyClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
 
@@ -46,6 +48,7 @@ public class GameToLobbyConnection {
         GenericWebSocketClient.builder()
             .errorHandler(errorHandler)
             .websocketUri(URI.create(lobbyUri.toString() + WebsocketPaths.GAME_CONNECTIONS))
+            .headers(ClientVersionHeader.buildHeader(version))
             .build();
     webSocket.connect();
     lobbyWatcherClient =

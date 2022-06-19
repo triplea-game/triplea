@@ -236,7 +236,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 gameSelectorModel, serverMessenger, launchAction.createThreadMessaging());
 
         gameToLobbyConnection =
-            new GameToLobbyConnection(lobbyUri, gameHostingResponse, errorHandler);
+            new GameToLobbyConnection(
+                lobbyUri,
+                gameHostingResponse,
+                errorHandler,
+                ProductVersionReader.getCurrentVersion().toString());
 
         serverMessenger.setGameToLobbyConnection(gameToLobbyConnection);
 

@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +53,7 @@ class GameRelayServerTest {
   private GenericWebSocketClient createClientWithReceivedMessageQueue(
       final Collection<SampleMessage> receivedMessageQueue) {
 
-    final GenericWebSocketClient webSocketClient = new GenericWebSocketClient(SERVER_URI);
+    final GenericWebSocketClient webSocketClient = new GenericWebSocketClient(SERVER_URI, Map.of());
     webSocketClient.addListener(SampleMessage.TYPE, receivedMessageQueue::add);
     webSocketClient.connect();
     return webSocketClient;
