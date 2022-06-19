@@ -127,7 +127,7 @@ public class History extends DefaultTreeModel {
       }
     }
   }
-  
+
   /**
    * Changes the game state to reflect the historical state at {@code removeAfterNode}, and then
    * removes all changes that occurred after this node.
