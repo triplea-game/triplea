@@ -17,7 +17,6 @@ import java.util.Collection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.test.common.TestDataFileReader;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
@@ -82,7 +81,7 @@ class GithubApiClientTest {
         TestDataFileReader.readContents("sample_responses/branch_listing_response.json");
     server.stubFor(
         get("/repos/example-org/map-repo/branches/master")
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo("token test-token"))
+            .withHeader("Authorization", equalTo("token test-token"))
             .willReturn(aResponse().withStatus(200).withBody(exampleResponse)));
 
     final BranchInfoResponse branchInfoResponse =
@@ -103,7 +102,7 @@ class GithubApiClientTest {
         TestDataFileReader.readContents("sample_responses/latest_release_response.json");
     server.stubFor(
         get("/repos/example-org/map-repo/releases/latest")
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo("token test-token"))
+            .withHeader("Authorization", equalTo("token test-token"))
             .willReturn(aResponse().withStatus(200).withBody(exampleResponse)));
 
     final String latestVersion =

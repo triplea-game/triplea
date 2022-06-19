@@ -11,8 +11,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.WireMockTest;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.test.common.JsonUtil;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -71,7 +71,7 @@ class ModeratorChatClientTest extends WireMockTest {
             .withRequestBody(equalTo(PLAYER_CHAT_ID.getValue()))
             .willReturn(WireMock.aResponse().withStatus(200)));
 
-    newClient(server).disconnectPlayer(PLAYER_CHAT_ID);
+    newClient(server).disconnectPlayer(PLAYER_CHAT_ID.getValue());
   }
 
   @Test

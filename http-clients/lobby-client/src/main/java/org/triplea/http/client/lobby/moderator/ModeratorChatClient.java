@@ -1,48 +1,39 @@
 package org.triplea.http.client.lobby.moderator;
 
+import feign.RequestLine;
 import java.net.URI;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /** Provides access to moderator lobby commands, such as 'disconnect' player, and 'ban' player. */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ModeratorChatClient {
-  public static final String DISCONNECT_PLAYER_PATH = "/lobby/moderator/disconnect-player";
-  public static final String BAN_PLAYER_PATH = "/lobby/moderator/ban-player";
-  public static final String MUTE_USER = "/lobby/moderator/mute-player";
-  public static final String FETCH_GAME_CHAT_HISTORY = "/lobby/moderator/fetch-game-chat-history";
+public interface ModeratorChatClient {
+  String DISCONNECT_PLAYER_PATH = "/lobby/moderator/disconnect-player";
+  String BAN_PLAYER_PATH = "/lobby/moderator/ban-player";
+  String MUTE_USER = "/lobby/moderator/mute-player";
+  String FETCH_GAME_CHAT_HISTORY = "/lobby/moderator/fetch-game-chat-history";
 
-  private AuthenticationHeaders authenticationHeaders;
-  private ModeratorChatFeignClient moderatorLobbyFeignClient;
-
-  public static ModeratorChatClient newClient(final URI lobbyUri, final ApiKey apiKey) {
-    return new ModeratorChatClient(
-        new AuthenticationHeaders(apiKey),
-        new HttpClient<>(ModeratorChatFeignClient.class, lobbyUri).get());
+  static ModeratorChatClient newClient(final URI lobbyUri, final ApiKey apiKey) {
+    return HttpClient.newClient(
+        ModeratorChatClient.class, lobbyUri, new AuthenticationHeaders(apiKey).createHeaders());
   }
 
-  public void banPlayer(final BanPlayerRequest banPlayerRequest) {
-    moderatorLobbyFeignClient.banPlayer(authenticationHeaders.createHeaders(), banPlayerRequest);
-  }
+  @RequestLine("POST " + ModeratorChatClient.BAN_PLAYER_PATH)
+  void banPlayer(BanPlayerRequest banPlayerRequest);
 
-  public void disconnectPlayer(final PlayerChatId playerChatId) {
-    moderatorLobbyFeignClient.disconnectPlayer(
-        authenticationHeaders.createHeaders(), playerChatId.getValue());
-  }
+  @RequestLine("POST " + ModeratorChatClient.DISCONNECT_PLAYER_PATH)
+  void disconnectPlayer(String value);
 
-  public List<ChatHistoryMessage> fetchChatHistoryForGame(final String gameId) {
-    return moderatorLobbyFeignClient.fetchChatHistoryForGame(
-        authenticationHeaders.createHeaders(), gameId);
-  }
+  @RequestLine("POST " + ModeratorChatClient.FETCH_GAME_CHAT_HISTORY)
+  List<ChatHistoryMessage> fetchChatHistoryForGame(String gameId);
 
-  public void muteUser(final PlayerChatId playerChatId, final long minutes) {
-    moderatorLobbyFeignClient.mutePlayer(
-        authenticationHeaders.createHeaders(),
+  @RequestLine("POST " + ModeratorChatClient.MUTE_USER)
+  void muteUser(MuteUserRequest muteUserRequest);
+
+  default void muteUser(final PlayerChatId playerChatId, final long minutes) {
+    muteUser(
         MuteUserRequest.builder() //
             .playerChatId(playerChatId.getValue())
             .minutes(minutes)

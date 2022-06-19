@@ -48,6 +48,6 @@ class UserAccountControllerIntegrationTest extends ControllerIntegrationTest {
 
     client.changeEmail("email@email-test.com");
 
-    assertThat(client.fetchEmail(), is("email@email-test.com"));
+    assertThat(client.fetchEmail().getUserEmail(), is("email@email-test.com"));
   }
 }

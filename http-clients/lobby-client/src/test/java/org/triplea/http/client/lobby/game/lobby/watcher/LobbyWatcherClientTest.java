@@ -12,9 +12,9 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.TestData;
 import org.triplea.http.client.WireMockTest;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.test.common.JsonUtil;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 

@@ -31,7 +31,7 @@ public class HttpModeratorToolboxClient {
     toolboxModeratorManagementClient = ToolboxModeratorManagementClient.newClient(lobbyUri, apiKey);
     toolboxBadWordsClient = ToolboxBadWordsClient.newClient(lobbyUri, apiKey);
     toolboxEventLogClient = ToolboxEventLogClient.newClient(lobbyUri, apiKey);
-    mapsClient = new MapsClient(lobbyUri);
+    mapsClient = MapsClient.newClient(lobbyUri);
     mapTagAdminClient = MapTagAdminClient.newClient(lobbyUri, apiKey);
   }
 

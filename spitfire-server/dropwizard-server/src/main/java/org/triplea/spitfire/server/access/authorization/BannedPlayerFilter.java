@@ -19,7 +19,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanDao;
-import org.triplea.http.client.AuthenticationHeaders;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.spitfire.server.ResponseStatus;
 

@@ -1,4 +1,4 @@
-package org.triplea.http.client;
+package org.triplea.http.client.lobby;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,15 +16,15 @@ public class AuthenticationHeaders {
   private final ApiKey apiKey;
 
   /** Creates headers containing both an API-Key and a 'System-Id'. */
-  public Map<String, Object> createHeaders() {
-    final Map<String, Object> headerMap = new HashMap<>();
+  public Map<String, String> createHeaders() {
+    final Map<String, String> headerMap = new HashMap<>();
     headerMap.put(API_KEY_HEADER, KEY_BEARER_PREFIX + " " + apiKey);
     headerMap.putAll(systemIdHeaders());
     return headerMap;
   }
 
   /** Creates headers containing 'System-Id' only. */
-  public static Map<String, Object> systemIdHeaders() {
+  public static Map<String, String> systemIdHeaders() {
     return Map.of(SYSTEM_ID_HEADER, SystemIdLoader.load().getValue());
   }
 }

@@ -13,7 +13,7 @@ import java.security.Principal;
 import java.time.Duration;
 import lombok.experimental.UtilityClass;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-import org.triplea.http.client.AuthenticationHeaders;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 @UtilityClass
 public class AuthenticationConfiguration {
