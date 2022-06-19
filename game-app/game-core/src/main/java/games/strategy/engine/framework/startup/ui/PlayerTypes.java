@@ -37,16 +37,6 @@ public class PlayerTypes {
           return new ProAi(name, getLabel());
         }
       };
-  /** A 'dummy' player type used for battle calc. */
-  public static final Type BATTLE_CALC_DUMMY =
-      new Type("None (AI)", false) {
-        @Override
-        public Player newPlayerWithName(final String name) {
-          throw new UnsupportedOperationException(
-              "Fail fast - bad configuration, should instantiate dummy player "
-                  + "type only for battle calc");
-        }
-      };
 
   Collection<Type> playerTypes;
 
@@ -55,11 +45,7 @@ public class PlayerTypes {
   }
 
   public static Collection<Type> getBuiltInPlayerTypes() {
-    return List.of(
-        PlayerTypes.WEAK_AI,
-        PlayerTypes.FAST_AI,
-        PlayerTypes.PRO_AI,
-        PlayerTypes.BATTLE_CALC_DUMMY);
+    return List.of(PlayerTypes.WEAK_AI, PlayerTypes.FAST_AI, PlayerTypes.PRO_AI);
   }
 
   /**
