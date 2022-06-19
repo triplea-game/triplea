@@ -52,7 +52,7 @@ public class TripleATest {
   @Test
   void testNewPlayersAreRetrievedFromGivenPlayerNames() {
     final Map<String, PlayerTypes.Type> playerNames = new HashMap<>();
-    playerNames.put("first", PlayerTypes.HUMAN_PLAYER);
+    playerNames.put("first", PlayerTypes.FAST_AI);
     playerNames.put("second", PlayerTypes.WEAK_AI);
     playerNames.put("third", PlayerTypes.PRO_AI);
     final Set<Player> players = tripleA.newPlayers(playerNames);

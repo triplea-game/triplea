@@ -160,4 +160,9 @@ public class HeadlessLaunchAction implements LaunchAction {
   public boolean promptGameStop(String status, String title, Path mapLocation) {
     return true;
   }
+
+  @Override
+  public PlayerTypes.Type getDefaultLocalType() {
+    return PlayerTypes.WEAK_AI;
+  }
 }

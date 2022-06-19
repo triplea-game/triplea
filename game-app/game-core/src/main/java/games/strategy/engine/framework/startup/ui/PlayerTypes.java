@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.player.Player;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
@@ -18,14 +17,6 @@ import lombok.Value;
 public class PlayerTypes {
 
   public static final String DOES_NOTHING_PLAYER_LABEL = "Does Nothing (AI)";
-
-  public static final Type HUMAN_PLAYER =
-      new Type("Human") {
-        @Override
-        public Player newPlayerWithName(final String name) {
-          return new TripleAPlayer(name, getLabel(), false);
-        }
-      };
   public static final Type WEAK_AI =
       new Type("Easy (AI)") {
         @Override
@@ -47,14 +38,6 @@ public class PlayerTypes {
           return new ProAi(name, getLabel());
         }
       };
-  /** A hidden player type to represent network connected players. */
-  public static final Type CLIENT_PLAYER =
-      new Type("Client", false) {
-        @Override
-        public Player newPlayerWithName(final String name) {
-          return new TripleAPlayer(name, getLabel(), true);
-        }
-      };
   /** A 'dummy' player type used for battle calc. */
   public static final Type BATTLE_CALC_DUMMY =
       new Type("None (AI)", false) {
@@ -74,11 +57,9 @@ public class PlayerTypes {
 
   public static Collection<Type> getBuiltInPlayerTypes() {
     return List.of(
-        PlayerTypes.HUMAN_PLAYER,
         PlayerTypes.WEAK_AI,
         PlayerTypes.FAST_AI,
         PlayerTypes.PRO_AI,
-        PlayerTypes.CLIENT_PLAYER,
         PlayerTypes.BATTLE_CALC_DUMMY);
   }
 
@@ -117,7 +98,7 @@ public class PlayerTypes {
     @Getter(AccessLevel.PACKAGE)
     private final boolean visible;
 
-    Type(final String label) {
+    public Type(final String label) {
       this(label, true);
     }
 

@@ -18,12 +18,12 @@ class PlayerTypesTest {
     assertThat(
         "Ensure we do not have an example invisible player type in the selection list",
         List.of(playerTypes.getAvailablePlayerLabels()),
-        Matchers.not(IsCollectionContaining.hasItem(PlayerTypes.CLIENT_PLAYER.getLabel())));
+        Matchers.not(IsCollectionContaining.hasItem(PlayerTypes.BATTLE_CALC_DUMMY.getLabel())));
 
     assertThat(
         "Ensure we have a visible player type in the selection list",
         List.of(playerTypes.getAvailablePlayerLabels()),
-        IsCollectionContaining.hasItem(PlayerTypes.HUMAN_PLAYER.getLabel()));
+        IsCollectionContaining.hasItem(PlayerTypes.WEAK_AI.getLabel()));
   }
 
   @Test

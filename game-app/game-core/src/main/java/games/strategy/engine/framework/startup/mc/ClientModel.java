@@ -81,6 +81,7 @@ public class ClientModel implements IMessengerErrorListener {
   private final ServerSetupModel typePanelModel;
   private final WaitWindow gameLoadingWindow;
   private final LaunchAction launchAction;
+  private final PlayerTypes.Type clientType;
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
   private Messengers messengers;
   private IClientMessenger messenger;
@@ -155,11 +156,13 @@ public class ClientModel implements IMessengerErrorListener {
       final ServerSetupModel typePanelModel,
       final LaunchAction launchAction,
       final Runnable showMainFrame,
-      final Runnable clientLeftGame) {
+      final Runnable clientLeftGame,
+      final PlayerTypes.Type clientType) {
     this.launchAction = launchAction;
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel = gameSelectorModel;
     this.showMainFrame = showMainFrame;
+    this.clientType = clientType;
     this.clientLeftGame = clientLeftGame;
     final Interruptibles.Result<WaitWindow> window =
         Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(WaitWindow::new));
@@ -355,7 +358,7 @@ public class ClientModel implements IMessengerErrorListener {
         playersToNodes.entrySet().stream()
             .filter(e -> e.getValue() != null)
             .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerTypes.CLIENT_PLAYER));
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> clientType));
     final Set<Player> playerSet = data.getGameLoader().newPlayers(playerMapping);
     game = new ClientGame(data, playerSet, players, messengers, clientNetworkBridge);
     ThreadRunner.runInNewThread(

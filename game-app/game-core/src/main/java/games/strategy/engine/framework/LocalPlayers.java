@@ -29,7 +29,6 @@ public class LocalPlayers {
 
   private static boolean isGamePlayerWithPlayerId(
       final Player player, final GamePlayer gamePlayer) {
-    return player.getGamePlayer().equals(gamePlayer)
-        && !player.isAi();
+    return player.getGamePlayer().equals(gamePlayer) && !player.isAi();
   }
 }
