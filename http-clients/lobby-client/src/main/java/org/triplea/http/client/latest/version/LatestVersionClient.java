@@ -4,8 +4,8 @@ import java.net.URI;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

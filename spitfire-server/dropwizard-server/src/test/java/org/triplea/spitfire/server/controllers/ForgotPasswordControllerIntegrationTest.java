@@ -2,9 +2,9 @@ package org.triplea.spitfire.server.controllers;
 
 import java.net.URI;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")

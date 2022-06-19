@@ -4,8 +4,8 @@ import feign.FeignException;
 import java.net.URI;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
  * Http client to communicate with the maps server and get a listing of maps available for download.

@@ -4,8 +4,8 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.Map;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
  * Client to poll for moderator actions and to check with server for players that have been banned.

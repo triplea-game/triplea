@@ -3,8 +3,8 @@ package org.triplea.http.client.lobby.game.hosting.request;
 import java.net.URI;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
  * Use this client to request a connection to lobby and to post a game. If the request is

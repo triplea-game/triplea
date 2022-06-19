@@ -3,9 +3,9 @@ package org.triplea.http.client.maps.tag.admin;
 import java.net.URI;
 import java.util.List;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.GenericServerResponse;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /** Http client for 'map tag' administrative functionality. EG: updating a maps tag value. */
 public class MapTagAdminClient {

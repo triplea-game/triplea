@@ -8,8 +8,8 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 
 /**

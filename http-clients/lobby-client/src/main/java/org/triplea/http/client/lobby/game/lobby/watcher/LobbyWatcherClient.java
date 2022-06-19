@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
  * Http client for interacting with lobby game listing. Can be used to post, remove, boot, fetch and

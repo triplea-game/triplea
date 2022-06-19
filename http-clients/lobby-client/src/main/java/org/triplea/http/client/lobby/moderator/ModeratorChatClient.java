@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /** Provides access to moderator lobby commands, such as 'disconnect' player, and 'ban' player. */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

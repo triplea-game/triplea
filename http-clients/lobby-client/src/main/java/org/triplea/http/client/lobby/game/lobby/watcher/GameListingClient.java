@@ -5,8 +5,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
  * Client for interaction with the lobby game listing. Some operations are synchronous, game listing

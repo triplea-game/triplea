@@ -30,6 +30,7 @@ import lombok.experimental.UtilityClass;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.test.common.JsonUtil;
 

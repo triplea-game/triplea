@@ -4,8 +4,8 @@ import java.net.URI;
 import java.util.Collection;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 
 /** Http client for generic actions that can be executed by a player in lobby. */

@@ -5,8 +5,8 @@ import java.net.URI;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /** Http client to upload error reports to the http lobby server. */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -8,9 +8,9 @@ import com.google.gson.Gson;
 import java.net.URI;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
 class ForgotPasswordClientTest extends WireMockTest {

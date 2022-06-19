@@ -4,8 +4,8 @@ import java.net.URI;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserAccountClient {
