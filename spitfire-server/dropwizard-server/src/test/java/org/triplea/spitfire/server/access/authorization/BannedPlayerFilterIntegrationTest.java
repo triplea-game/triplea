@@ -51,7 +51,7 @@ class BannedPlayerFilterIntegrationTest extends ControllerIntegrationTest {
   }
 
   @SuppressWarnings("SameParameterValue")
-  private static Map<String, Object> headersWithSystemId(final String systemId) {
+  private static Map<String, String> headersWithSystemId(final String systemId) {
     return Map.of(AuthenticationHeaders.SYSTEM_ID_HEADER, systemId);
   }
 }

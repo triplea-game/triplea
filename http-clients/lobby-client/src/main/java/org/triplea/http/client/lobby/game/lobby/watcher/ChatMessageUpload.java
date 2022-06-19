@@ -13,10 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode
-@ToString(exclude = "apiKey")
+@ToString
 public class ChatMessageUpload {
   private String fromPlayer;
   private String chatMessage;
   private String gameId;
-  private String apiKey;
 }

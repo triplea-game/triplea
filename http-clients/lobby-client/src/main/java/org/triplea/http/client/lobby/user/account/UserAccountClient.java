@@ -14,24 +14,25 @@ public class UserAccountClient {
   public static final String FETCH_EMAIL_PATH = "/user-account/fetch-email";
   public static final String CHANGE_EMAIL_PATH = "/user-account/change-email";
 
-  private final AuthenticationHeaders authenticationHeaders;
   private final UserAccountFeignClient userAccountFeignClient;
 
   public static UserAccountClient newClient(final URI serverUri, final ApiKey apiKey) {
     return new UserAccountClient(
-        new AuthenticationHeaders(apiKey),
-        new HttpClient<>(UserAccountFeignClient.class, serverUri).get());
+        HttpClient.newClient(
+            UserAccountFeignClient.class,
+            serverUri,
+            new AuthenticationHeaders(apiKey).createHeaders()));
   }
 
   public void changePassword(final String newPassword) {
-    userAccountFeignClient.changePassword(authenticationHeaders.createHeaders(), newPassword);
+    userAccountFeignClient.changePassword(newPassword);
   }
 
   public String fetchEmail() {
-    return userAccountFeignClient.fetchEmail(authenticationHeaders.createHeaders()).getUserEmail();
+    return userAccountFeignClient.fetchEmail().getUserEmail();
   }
 
   public void changeEmail(final String newEmail) {
-    userAccountFeignClient.changeEmail(authenticationHeaders.createHeaders(), newEmail);
+    userAccountFeignClient.changeEmail(newEmail);
   }
 }

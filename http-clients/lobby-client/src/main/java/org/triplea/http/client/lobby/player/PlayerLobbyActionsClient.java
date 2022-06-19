@@ -13,13 +13,14 @@ public class PlayerLobbyActionsClient {
   public static final String FETCH_PLAYER_INFORMATION = "/lobby/fetch-player-info";
   public static final String FETCH_PLAYERS_IN_GAME = "/lobby/fetch-players-in-game";
 
-  private final AuthenticationHeaders authenticationHeaders;
   private final PlayerLobbyActionsFeignClient playerLobbyActionsFeignClient;
 
   public PlayerLobbyActionsClient(final URI lobbyUri, final ApiKey apiKey) {
-    authenticationHeaders = new AuthenticationHeaders(apiKey);
     playerLobbyActionsFeignClient =
-        new HttpClient<>(PlayerLobbyActionsFeignClient.class, lobbyUri).get();
+        HttpClient.newClient(
+            PlayerLobbyActionsFeignClient.class,
+            lobbyUri,
+            new AuthenticationHeaders(apiKey).createHeaders());
   }
 
   public static PlayerLobbyActionsClient newClient(final URI lobbyUri, final ApiKey apiKey) {
@@ -27,12 +28,10 @@ public class PlayerLobbyActionsClient {
   }
 
   public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
-    return playerLobbyActionsFeignClient.fetchPlayerInformation(
-        authenticationHeaders.createHeaders(), playerChatId.getValue());
+    return playerLobbyActionsFeignClient.fetchPlayerInformation(playerChatId.getValue());
   }
 
   public Collection<String> fetchPlayersInGame(final String gameId) {
-    return playerLobbyActionsFeignClient.fetchPlayersInGame(
-        authenticationHeaders.createHeaders(), gameId);
+    return playerLobbyActionsFeignClient.fetchPlayersInGame(gameId);
   }
 }

@@ -18,10 +18,12 @@ public class GameHostingClient {
   private final GameHostingFeignClient gameHostingFeignClient;
 
   public static GameHostingClient newClient(final URI lobby) {
-    return new GameHostingClient(new HttpClient<>(GameHostingFeignClient.class, lobby).get());
+    return new GameHostingClient(
+        HttpClient.newClient(
+            GameHostingFeignClient.class, lobby, AuthenticationHeaders.systemIdHeaders()));
   }
 
   public GameHostingResponse sendGameHostingRequest() {
-    return gameHostingFeignClient.sendGameHostingRequest(AuthenticationHeaders.systemIdHeaders());
+    return gameHostingFeignClient.sendGameHostingRequest();
   }
 }

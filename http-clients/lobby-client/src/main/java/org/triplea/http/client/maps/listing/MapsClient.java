@@ -17,12 +17,14 @@ public class MapsClient {
   private final MapsFeignClient mapsFeignClient;
 
   public MapsClient(final URI mapsServerUri) {
-    mapsFeignClient = new HttpClient<>(MapsFeignClient.class, mapsServerUri).get();
+    mapsFeignClient =
+        HttpClient.newClient(
+            MapsFeignClient.class, mapsServerUri, AuthenticationHeaders.systemIdHeaders());
   }
 
   public List<MapDownloadItem> fetchMapDownloads() {
     try {
-      return mapsFeignClient.fetchMapListing(AuthenticationHeaders.systemIdHeaders());
+      return mapsFeignClient.fetchMapListing();
     } catch (FeignException e) {
       log.warn(
           "Failed to download the list of available maps from TripleA servers.\n"

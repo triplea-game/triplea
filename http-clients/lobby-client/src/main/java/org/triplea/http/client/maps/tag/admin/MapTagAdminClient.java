@@ -13,11 +13,13 @@ public class MapTagAdminClient {
   public static final String UPDATE_MAP_TAG_PATH = "/maps/update-tag";
 
   private final MapTagAdminFeignClient mapTagAdminClient;
-  private final ApiKey apiKey;
 
   public MapTagAdminClient(final URI mapsServerUri, final ApiKey apiKey) {
-    mapTagAdminClient = new HttpClient<>(MapTagAdminFeignClient.class, mapsServerUri).get();
-    this.apiKey = apiKey;
+    mapTagAdminClient =
+        HttpClient.newClient(
+            MapTagAdminFeignClient.class,
+            mapsServerUri,
+            new AuthenticationHeaders(apiKey).createHeaders());
   }
 
   public static MapTagAdminClient newClient(final URI mapsServerUri, final ApiKey apiKey) {
@@ -25,12 +27,10 @@ public class MapTagAdminClient {
   }
 
   public List<MapTagMetaData> fetchTagsMetaData() {
-    return mapTagAdminClient.fetchAllowedMapTagValues(
-        new AuthenticationHeaders(apiKey).createHeaders());
+    return mapTagAdminClient.fetchAllowedMapTagValues();
   }
 
   public GenericServerResponse updateMapTag(final UpdateMapTagRequest updateMapTagRequest) {
-    return mapTagAdminClient.updateMapTag(
-        new AuthenticationHeaders(apiKey).createHeaders(), updateMapTagRequest);
+    return mapTagAdminClient.updateMapTag(updateMapTagRequest);
   }
 }

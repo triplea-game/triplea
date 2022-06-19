@@ -3,7 +3,6 @@ package org.triplea.http.client.lobby.moderator.toolbox.words;
 import feign.FeignException;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,21 +18,22 @@ public class ToolboxBadWordsClient {
   public static final String BAD_WORD_REMOVE_PATH = "/moderator-toolbox/bad-words/remove";
   public static final String BAD_WORD_GET_PATH = "/moderator-toolbox/bad-words/get";
 
-  private final Map<String, Object> authenticationHeaders;
   private final ToolboxBadWordsFeignClient client;
 
   public static ToolboxBadWordsClient newClient(final URI serverUri, final ApiKey apiKey) {
     return new ToolboxBadWordsClient(
-        new AuthenticationHeaders(apiKey).createHeaders(),
-        new HttpClient<>(ToolboxBadWordsFeignClient.class, serverUri).get());
+        HttpClient.newClient(
+            ToolboxBadWordsFeignClient.class,
+            serverUri,
+            new AuthenticationHeaders(apiKey).createHeaders()));
   }
 
   public void removeBadWord(final String badWord) {
-    client.removeBadWord(authenticationHeaders, badWord);
+    client.removeBadWord(badWord);
   }
 
   public void addBadWord(final String badWord) {
-    client.addBadWord(authenticationHeaders, badWord);
+    client.addBadWord(badWord);
   }
 
   /**
@@ -42,7 +42,7 @@ public class ToolboxBadWordsClient {
    */
   public List<String> getBadWords() {
     try {
-      return client.getBadWords(authenticationHeaders);
+      return client.getBadWords();
     } catch (final FeignException e) {
       log.error("Failed to fetch list of bad words", e);
       return List.of();

@@ -13,7 +13,6 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
-import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
@@ -230,7 +229,6 @@ public class LobbyLogin {
                   () ->
                       ForgotPasswordClient.newClient(lobbyUri)
                           .sendForgotPasswordRequest(
-                              AuthenticationHeaders.systemIdHeaders(),
                               ForgotPasswordRequest.builder()
                                   .username(panel.getUserName())
                                   .email(panel.getEmail())

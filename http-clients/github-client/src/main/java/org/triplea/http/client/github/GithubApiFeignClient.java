@@ -2,7 +2,6 @@ package org.triplea.http.client.github;
 
 import com.google.common.annotations.VisibleForTesting;
 import feign.FeignException;
-import feign.HeaderMap;
 import feign.Headers;
 import feign.Param;
 import feign.QueryMap;
@@ -27,27 +26,16 @@ interface GithubApiFeignClient {
    */
   @RequestLine("POST " + CREATE_ISSUE_PATH)
   CreateIssueResponse newIssue(
-      @HeaderMap Map<String, Object> headerMap,
-      @Param("org") String org,
-      @Param("repo") String repo,
-      CreateIssueRequest createIssueRequest);
+      @Param("org") String org, @Param("repo") String repo, CreateIssueRequest createIssueRequest);
 
   @RequestLine("GET " + LIST_REPOS_PATH)
   List<MapRepoListing> listRepos(
-      @HeaderMap Map<String, Object> headerMap,
-      @QueryMap Map<String, String> queryParams,
-      @Param("org") String org);
+      @QueryMap Map<String, String> queryParams, @Param("org") String org);
 
   @RequestLine("GET " + BRANCHES_PATH)
   BranchInfoResponse getBranchInfo(
-      @HeaderMap Map<String, Object> headerMap,
-      @Param("org") String org,
-      @Param("repo") String repo,
-      @Param("branch") String branch);
+      @Param("org") String org, @Param("repo") String repo, @Param("branch") String branch);
 
   @RequestLine("GET " + LATEST_RELEASE_PATH)
-  LatestReleaseResponse getLatestRelease(
-      @HeaderMap Map<String, Object> headerMap,
-      @Param("org") String org,
-      @Param("repo") String repo);
+  LatestReleaseResponse getLatestRelease(@Param("org") String org, @Param("repo") String repo);
 }

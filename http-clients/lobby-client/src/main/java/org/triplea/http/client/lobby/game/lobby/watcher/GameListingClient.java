@@ -19,21 +19,23 @@ public class GameListingClient {
   public static final String FETCH_GAMES_PATH = "/lobby/games/fetch-games";
   public static final String BOOT_GAME_PATH = "/lobby/games/boot-game";
 
-  @Nonnull private final AuthenticationHeaders authenticationHeaders;
   @Nonnull private final GameListingFeignClient gameListingFeignClient;
 
   public static GameListingClient newClient(final URI serverUri, final ApiKey apiKey) {
     return GameListingClient.builder()
-        .authenticationHeaders(new AuthenticationHeaders(apiKey))
-        .gameListingFeignClient(new HttpClient<>(GameListingFeignClient.class, serverUri).get())
+        .gameListingFeignClient(
+            HttpClient.newClient(
+                GameListingFeignClient.class,
+                serverUri,
+                new AuthenticationHeaders(apiKey).createHeaders()))
         .build();
   }
 
   public List<LobbyGameListing> fetchGameListing() {
-    return gameListingFeignClient.fetchGameListing(authenticationHeaders.createHeaders());
+    return gameListingFeignClient.fetchGameListing();
   }
 
   public void bootGame(final String gameId) {
-    gameListingFeignClient.bootGame(authenticationHeaders.createHeaders(), gameId);
+    gameListingFeignClient.bootGame(gameId);
   }
 }

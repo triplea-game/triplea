@@ -2,7 +2,6 @@ package org.triplea.http.client.error.report;
 
 import feign.FeignException;
 import java.net.URI;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
@@ -15,14 +14,13 @@ public class ErrorReportClient {
   public static final String CAN_UPLOAD_ERROR_REPORT_PATH = "/error-report-check";
   public static final int MAX_REPORTS_PER_DAY = 5;
 
-  private final Map<String, Object> headers;
   private final ErrorReportFeignClient errorReportFeignClient;
 
   /** Creates an error report uploader clients, sends error reports and gets a response back. */
   public static ErrorReportClient newClient(final URI uri) {
     return new ErrorReportClient(
-        AuthenticationHeaders.systemIdHeaders(),
-        new HttpClient<>(ErrorReportFeignClient.class, uri).get());
+        HttpClient.newClient(
+            ErrorReportFeignClient.class, uri, AuthenticationHeaders.systemIdHeaders()));
   }
 
   /**
@@ -31,7 +29,7 @@ public class ErrorReportClient {
    * @throws FeignException Thrown on non-2xx responses.
    */
   public ErrorReportResponse uploadErrorReport(final ErrorReportRequest request) {
-    return errorReportFeignClient.uploadErrorReport(headers, request);
+    return errorReportFeignClient.uploadErrorReport(request);
   }
 
   /**
@@ -40,6 +38,6 @@ public class ErrorReportClient {
    */
   public CanUploadErrorReportResponse canUploadErrorReport(
       final CanUploadRequest canUploadRequest) {
-    return errorReportFeignClient.canUploadErrorReport(headers, canUploadRequest);
+    return errorReportFeignClient.canUploadErrorReport(canUploadRequest);
   }
 }

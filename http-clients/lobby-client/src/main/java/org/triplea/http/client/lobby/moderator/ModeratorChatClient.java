@@ -17,32 +17,30 @@ public class ModeratorChatClient {
   public static final String MUTE_USER = "/lobby/moderator/mute-player";
   public static final String FETCH_GAME_CHAT_HISTORY = "/lobby/moderator/fetch-game-chat-history";
 
-  private AuthenticationHeaders authenticationHeaders;
   private ModeratorChatFeignClient moderatorLobbyFeignClient;
 
   public static ModeratorChatClient newClient(final URI lobbyUri, final ApiKey apiKey) {
     return new ModeratorChatClient(
-        new AuthenticationHeaders(apiKey),
-        new HttpClient<>(ModeratorChatFeignClient.class, lobbyUri).get());
+        HttpClient.newClient(
+            ModeratorChatFeignClient.class,
+            lobbyUri,
+            new AuthenticationHeaders(apiKey).createHeaders()));
   }
 
   public void banPlayer(final BanPlayerRequest banPlayerRequest) {
-    moderatorLobbyFeignClient.banPlayer(authenticationHeaders.createHeaders(), banPlayerRequest);
+    moderatorLobbyFeignClient.banPlayer(banPlayerRequest);
   }
 
   public void disconnectPlayer(final PlayerChatId playerChatId) {
-    moderatorLobbyFeignClient.disconnectPlayer(
-        authenticationHeaders.createHeaders(), playerChatId.getValue());
+    moderatorLobbyFeignClient.disconnectPlayer(playerChatId.getValue());
   }
 
   public List<ChatHistoryMessage> fetchChatHistoryForGame(final String gameId) {
-    return moderatorLobbyFeignClient.fetchChatHistoryForGame(
-        authenticationHeaders.createHeaders(), gameId);
+    return moderatorLobbyFeignClient.fetchChatHistoryForGame(gameId);
   }
 
   public void muteUser(final PlayerChatId playerChatId, final long minutes) {
     moderatorLobbyFeignClient.mutePlayer(
-        authenticationHeaders.createHeaders(),
         MuteUserRequest.builder() //
             .playerChatId(playerChatId.getValue())
             .minutes(minutes)

@@ -1,6 +1,7 @@
 package org.triplea.http.client.github;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import feign.FeignException;
 import java.net.URI;
 import java.util.Collection;
@@ -9,7 +10,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.HttpClient;
@@ -23,12 +23,6 @@ public class GithubApiClient {
   static final String STUBBED_RETURN_VALUE =
       "API-token==test--returned-a-stubbed-github-issue-link";
 
-  /**
-   * 'authToken' is optionally needed. If null, the client will still work but will have more
-   * restrictive API rate limits.
-   */
-  @Nullable private final String authToken;
-
   private final GithubApiFeignClient githubApiFeignClient;
   /**
    * Flag useful for testing, when set to true no API calls will be made and a hardcoded stubbed
@@ -39,8 +33,13 @@ public class GithubApiClient {
   @Builder
   public GithubApiClient(
       @Nonnull final URI uri, @Nonnull final String authToken, final boolean stubbingModeEnabled) {
-    githubApiFeignClient = new HttpClient<>(GithubApiFeignClient.class, uri).get();
-    this.authToken = authToken;
+    githubApiFeignClient =
+        HttpClient.newClient(
+            GithubApiFeignClient.class,
+            uri,
+            Strings.isNullOrEmpty(authToken)
+                ? Map.of()
+                : Map.of("Authorization", "token " + authToken));
     this.stubbingModeEnabled = stubbingModeEnabled;
   }
 
@@ -60,19 +59,7 @@ public class GithubApiClient {
           STUBBED_RETURN_VALUE + String.valueOf(Math.random()).substring(0, 5));
     }
 
-    final Map<String, Object> tokens = buildAuthorizationHeaders();
-    return githubApiFeignClient.newIssue(tokens, githubOrg, githubRepo, createIssueRequest);
-  }
-
-  private Map<String, Object> buildAuthorizationHeaders() {
-    final Map<String, Object> tokens = new HashMap<>();
-    // authToken is not required, can happen in dev environments.
-    // Without an auth token the only consequence is the github API rate
-    // limit is more strict.
-    if (authToken != null && !authToken.isBlank() && !authToken.equalsIgnoreCase("test")) {
-      tokens.put("Authorization", "token " + authToken);
-    }
-    return tokens;
+    return githubApiFeignClient.newIssue(githubOrg, githubRepo, createIssueRequest);
   }
 
   /**
@@ -97,13 +84,11 @@ public class GithubApiClient {
 
   private Collection<MapRepoListing> listRepositories(
       final String githubOrg, final int pageNumber) {
-    final Map<String, Object> tokens = buildAuthorizationHeaders();
-
     final Map<String, String> queryParams = new HashMap<>();
     queryParams.put("per_page", "100");
     queryParams.put("page", String.valueOf(pageNumber));
 
-    return githubApiFeignClient.listRepos(tokens, queryParams, githubOrg);
+    return githubApiFeignClient.listRepos(queryParams, githubOrg);
   }
 
   /**
@@ -121,14 +106,12 @@ public class GithubApiClient {
    */
   public BranchInfoResponse fetchBranchInfo(
       final String org, final String repo, final String branch) {
-    final Map<String, Object> tokens = buildAuthorizationHeaders();
-    return githubApiFeignClient.getBranchInfo(tokens, org, repo, branch);
+    return githubApiFeignClient.getBranchInfo(org, repo, branch);
   }
 
   public Optional<String> fetchLatestVersion(final String org, final String repo) {
-    final Map<String, Object> tokens = buildAuthorizationHeaders();
     try {
-      return Optional.of(githubApiFeignClient.getLatestRelease(tokens, org, repo).getTagName());
+      return Optional.of(githubApiFeignClient.getLatestRelease(org, repo).getTagName());
     } catch (final FeignException e) {
       log.info("No data received from server for latest engine version", e);
       return Optional.empty();

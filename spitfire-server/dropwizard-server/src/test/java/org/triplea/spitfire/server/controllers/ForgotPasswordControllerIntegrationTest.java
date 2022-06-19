@@ -4,7 +4,6 @@ import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
-import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
@@ -18,15 +17,12 @@ class ForgotPasswordControllerIntegrationTest extends ControllerIntegrationTest 
   @Test
   void badArgs() {
     assertBadRequest(
-        () ->
-            client.sendForgotPasswordRequest(
-                AuthenticationHeaders.systemIdHeaders(), ForgotPasswordRequest.builder().build()));
+        () -> client.sendForgotPasswordRequest(ForgotPasswordRequest.builder().build()));
   }
 
   @Test
   void forgotPassword() {
     client.sendForgotPasswordRequest(
-        AuthenticationHeaders.systemIdHeaders(),
         ForgotPasswordRequest.builder().username("user").email("email").build());
   }
 }

@@ -14,26 +14,24 @@ public class LobbyLoginClient {
   public static final String CREATE_ACCOUNT = "/user-login/create-account";
 
   private final LobbyLoginFeignClient lobbyLoginFeignClient;
-  private final Map<String, Object> headers;
 
   public static LobbyLoginClient newClient(final URI uri) {
     return newClient(uri, AuthenticationHeaders.systemIdHeaders());
   }
 
   @VisibleForTesting
-  public static LobbyLoginClient newClient(final URI uri, final Map<String, Object> headers) {
-    return new LobbyLoginClient(new HttpClient<>(LobbyLoginFeignClient.class, uri).get(), headers);
+  public static LobbyLoginClient newClient(final URI uri, final Map<String, String> headers) {
+    return new LobbyLoginClient(HttpClient.newClient(LobbyLoginFeignClient.class, uri, headers));
   }
 
   public LobbyLoginResponse login(final String userName, final String password) {
     return lobbyLoginFeignClient.login(
-        headers, LoginRequest.builder().name(userName).password(password).build());
+        LoginRequest.builder().name(userName).password(password).build());
   }
 
   public CreateAccountResponse createAccount(
       final String username, final String email, final String password) {
     return lobbyLoginFeignClient.createAccount(
-        AuthenticationHeaders.systemIdHeaders(),
         CreateAccountRequest.builder().username(username).email(email).password(password).build());
   }
 }

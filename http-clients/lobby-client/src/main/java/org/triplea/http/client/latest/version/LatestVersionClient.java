@@ -15,7 +15,9 @@ public class LatestVersionClient {
   private final LatestVersionFeignClient latestVersionFeignClient;
 
   public static LatestVersionClient newClient(final URI uri) {
-    return new LatestVersionClient(new HttpClient<>(LatestVersionFeignClient.class, uri).get());
+    return new LatestVersionClient(
+        HttpClient.newClient(
+            LatestVersionFeignClient.class, uri, AuthenticationHeaders.systemIdHeaders()));
   }
 
   /**
@@ -24,8 +26,7 @@ public class LatestVersionClient {
    * @throws feign.FeignException thrown if server unavailable or returns 500
    */
   public LatestVersionResponse fetchLatestVersion() {
-    final var latestVersionResponse =
-        latestVersionFeignClient.fetchLatestVersion(AuthenticationHeaders.systemIdHeaders());
+    final var latestVersionResponse = latestVersionFeignClient.fetchLatestVersion();
 
     log.info(
         "Server fetch returned latest engine version: {}",

@@ -2,7 +2,6 @@ package org.triplea.http.client.remote.actions;
 
 import java.net.InetAddress;
 import java.net.URI;
-import java.util.Map;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
@@ -16,11 +15,12 @@ public class RemoteActionsClient {
 
   private final RemoteActionsFeignClient remoteActionsFeignClient;
 
-  private final Map<String, Object> headers;
-
   public RemoteActionsClient(final URI serverUri, final ApiKey apiKey) {
-    remoteActionsFeignClient = new HttpClient<>(RemoteActionsFeignClient.class, serverUri).get();
-    headers = new AuthenticationHeaders(apiKey).createHeaders();
+    remoteActionsFeignClient =
+        HttpClient.newClient(
+            RemoteActionsFeignClient.class,
+            serverUri,
+            new AuthenticationHeaders(apiKey).createHeaders());
   }
 
   public static RemoteActionsClient newClient(final URI serverUri, final ApiKey apiKey) {
@@ -28,10 +28,10 @@ public class RemoteActionsClient {
   }
 
   public boolean checkIfPlayerIsBanned(final InetAddress ipAddress) {
-    return remoteActionsFeignClient.checkIfPlayerIsBanned(headers, ipAddress.getHostAddress());
+    return remoteActionsFeignClient.checkIfPlayerIsBanned(ipAddress.getHostAddress());
   }
 
   public void sendShutdownRequest(final String gameId) {
-    remoteActionsFeignClient.sendShutdown(headers, gameId);
+    remoteActionsFeignClient.sendShutdown(gameId);
   }
 }

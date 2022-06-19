@@ -23,44 +23,39 @@ public class LobbyWatcherClient {
   public static final String PLAYER_LEFT_PATH = "/lobby/games/player-left";
   public static final String UPLOAD_CHAT_PATH = "/lobby/chat/upload";
 
-  private final ApiKey apiKey;
-  private final AuthenticationHeaders authenticationHeaders;
   private final LobbyWatcherFeignClient lobbyWatcherFeignClient;
 
   public static LobbyWatcherClient newClient(final URI serverUri, final ApiKey apiKey) {
     return new LobbyWatcherClient(
-        apiKey,
-        new AuthenticationHeaders(apiKey),
-        new HttpClient<>(LobbyWatcherFeignClient.class, serverUri).get());
+        HttpClient.newClient(
+            LobbyWatcherFeignClient.class,
+            serverUri,
+            new AuthenticationHeaders(apiKey).createHeaders()));
   }
 
   public GamePostingResponse postGame(final GamePostingRequest gamePostingRequest) {
-    return lobbyWatcherFeignClient.postGame(
-        authenticationHeaders.createHeaders(), gamePostingRequest);
+    return lobbyWatcherFeignClient.postGame(gamePostingRequest);
   }
 
   public void updateGame(final String gameId, final LobbyGame lobbyGame) {
     lobbyWatcherFeignClient.updateGame(
-        authenticationHeaders.createHeaders(),
         UpdateGameRequest.builder().gameId(gameId).gameData(lobbyGame).build());
   }
 
   public boolean sendKeepAlive(final String gameId) {
-    return lobbyWatcherFeignClient.sendKeepAlive(authenticationHeaders.createHeaders(), gameId);
+    return lobbyWatcherFeignClient.sendKeepAlive(gameId);
   }
 
   public void removeGame(final String gameId) {
-    lobbyWatcherFeignClient.removeGame(authenticationHeaders.createHeaders(), gameId);
+    lobbyWatcherFeignClient.removeGame(gameId);
   }
 
   public void uploadChatMessage(final ChatUploadParams uploadChatMessageParams) {
-    lobbyWatcherFeignClient.uploadChat(
-        authenticationHeaders.createHeaders(), uploadChatMessageParams.toChatMessageUpload(apiKey));
+    lobbyWatcherFeignClient.uploadChat(uploadChatMessageParams.toChatMessageUpload());
   }
 
   public void playerJoined(final String gameId, final UserName playerName) {
     lobbyWatcherFeignClient.playerJoined(
-        authenticationHeaders.createHeaders(),
         PlayerJoinedNotification.builder()
             .gameId(gameId)
             .playerName(playerName.getValue())
@@ -69,7 +64,6 @@ public class LobbyWatcherClient {
 
   public void playerLeft(final String gameId, final UserName playerName) {
     lobbyWatcherFeignClient.playerLeft(
-        authenticationHeaders.createHeaders(),
         PlayerLeftNotification.builder() //
             .gameId(gameId)
             .playerName(playerName.getValue())
