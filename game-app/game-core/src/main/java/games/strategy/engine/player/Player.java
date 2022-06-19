@@ -40,6 +40,8 @@ public interface Player extends IRemote {
 
   String getPlayerLabel();
 
+  boolean isAi();
+
   /**
    * Start the given step. stepName appears as it does in the game xml file. The game step will
    * finish executing when this method returns.

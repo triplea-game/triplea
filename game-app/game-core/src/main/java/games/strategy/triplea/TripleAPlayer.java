@@ -107,6 +107,11 @@ public class TripleAPlayer extends AbstractBasePlayer {
   }
 
   @Override
+  public boolean isAi() {
+    return false;
+  }
+
+  @Override
   public void start(final String name) {
     // must call super.start
     super.start(name);

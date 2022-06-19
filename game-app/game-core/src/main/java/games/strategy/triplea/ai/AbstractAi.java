@@ -706,4 +706,9 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   public static void combatStepPause() {
     Interruptibles.sleep(ClientSetting.aiCombatStepPauseDuration.getValueOrThrow());
   }
+
+  @Override
+  public boolean isAi() {
+    return true;
+  }
 }
