@@ -7,9 +7,6 @@ flyway_extracted_location: "/home/flyway/flyway-{{ flyway_version }}"
 
 flyway_db_url: "jdbc:postgresql://localhost:5432/{{ lobby_db_name }}"
 
-# Location where migration .sql files can be downloaded. This is the SQL that flway will be executing
-migrations_url: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/migrations.zip"
-
 flyway_user: "{{ lobby_db_user }}"
 
 flyway_password: "{{ lobby_db_password }}"

@@ -22,20 +22,11 @@
     owner: flyway
     group: flyway
 
-- name: copy flyway migrations zip (prerelease build only)
-  tags: [prerelease]
+- name: copy flyway migrations zip
   copy:
     src: "migrations.zip"
     dest: "/home/flyway/migrations.zip"
     mode: "0644"
-    owner: flyway
-    group: flyway
-
-- name: download flyway migrations (release build only)
-  tags: [release]
-  get_url:
-    url: "{{ migrations_url }}"
-    dest: "/home/flyway/migrations.zip"
     owner: flyway
     group: flyway
 
