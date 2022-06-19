@@ -8,10 +8,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.triplea.ai.does.nothing.DoesNothingAiProvider;
-import org.triplea.ai.flowfield.FlowFieldAiProvider;
+import org.triplea.ai.does.nothing.DoesNothingAi;
+import org.triplea.ai.flowfield.FlowFieldAi;
 
 public class HeadedPlayerTypes {
+
+  private static final String FLOW_FIELD_LABEL = "FlowField (AI)";
 
   public static final PlayerTypes.Type HUMAN_PLAYER =
       new PlayerTypes.Type("Human") {
@@ -30,20 +32,34 @@ public class HeadedPlayerTypes {
       };
 
   private static boolean filterBetaPlayerType(final PlayerTypes.Type playerType) {
-    if (playerType.getLabel().equals("FlowField (AI)")) {
+    if (playerType.getLabel().equals(FLOW_FIELD_LABEL)) {
       return ClientSetting.showBetaFeatures.getValue().orElse(false);
     }
     return true;
   }
 
+  private static PlayerTypes.Type getDoesNothingType() {
+    return new PlayerTypes.Type(PlayerTypes.DOES_NOTHING_PLAYER_LABEL) {
+      @Override
+      public Player newPlayerWithName(String name) {
+        return new DoesNothingAi(name, getLabel());
+      }
+    };
+  }
+
+  private static PlayerTypes.Type getFlowFieldType() {
+    return new PlayerTypes.Type(FLOW_FIELD_LABEL) {
+      @Override
+      public Player newPlayerWithName(String name) {
+        return new FlowFieldAi(name, getLabel());
+      }
+    };
+  }
+
   public static Collection<PlayerTypes.Type> getPlayerTypes() {
     return Stream.of(
             PlayerTypes.getBuiltInPlayerTypes(),
-            List.of(
-                HUMAN_PLAYER,
-                CLIENT_PLAYER,
-                new PlayerTypes.AiType(new DoesNothingAiProvider()),
-                new PlayerTypes.AiType(new FlowFieldAiProvider())))
+            List.of(HUMAN_PLAYER, CLIENT_PLAYER, getDoesNothingType(), getFlowFieldType()))
         .flatMap(Collection::stream)
         .filter(HeadedPlayerTypes::filterBetaPlayerType)
         .collect(Collectors.toList());

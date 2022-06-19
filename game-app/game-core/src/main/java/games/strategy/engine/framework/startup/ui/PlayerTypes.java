@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.player.Player;
-import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.weak.WeakAi;
@@ -107,19 +106,5 @@ public class PlayerTypes {
      * method will create the corresponding {@code IRemotePlayer} instance.
      */
     public abstract Player newPlayerWithName(String name);
-  }
-
-  public static class AiType extends Type {
-    private final AiProvider aiProvider;
-
-    public AiType(final AiProvider aiProvide) {
-      super(aiProvide.getLabel());
-      this.aiProvider = aiProvide;
-    }
-
-    @Override
-    public Player newPlayerWithName(final String name) {
-      return this.aiProvider.create(name, aiProvider.getLabel());
-    }
   }
 }
