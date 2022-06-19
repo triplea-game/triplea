@@ -1,8 +1,7 @@
 package org.triplea.http.client.lobby.game.hosting.request;
 
+import feign.RequestLine;
 import java.net.URI;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 
@@ -11,19 +10,14 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
  * successful, the lobby will respond with an API key which can then be used to create a {@code
  * GameListingClient}.
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameHostingClient {
-  public static final String GAME_HOSTING_REQUEST_PATH = "/lobby/game-hosting-request";
+public interface GameHostingClient {
+  String GAME_HOSTING_REQUEST_PATH = "/lobby/game-hosting-request";
 
-  private final GameHostingFeignClient gameHostingFeignClient;
-
-  public static GameHostingClient newClient(final URI lobby) {
-    return new GameHostingClient(
-        HttpClient.newClient(
-            GameHostingFeignClient.class, lobby, AuthenticationHeaders.systemIdHeaders()));
+  static GameHostingClient newClient(final URI lobby) {
+    return HttpClient.newClient(
+        GameHostingClient.class, lobby, AuthenticationHeaders.systemIdHeaders());
   }
 
-  public GameHostingResponse sendGameHostingRequest() {
-    return gameHostingFeignClient.sendGameHostingRequest();
-  }
+  @RequestLine("POST " + GameHostingClient.GAME_HOSTING_REQUEST_PATH)
+  GameHostingResponse sendGameHostingRequest();
 }

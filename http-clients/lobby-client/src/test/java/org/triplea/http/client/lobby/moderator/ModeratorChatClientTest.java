@@ -71,7 +71,7 @@ class ModeratorChatClientTest extends WireMockTest {
             .withRequestBody(equalTo(PLAYER_CHAT_ID.getValue()))
             .willReturn(WireMock.aResponse().withStatus(200)));
 
-    newClient(server).disconnectPlayer(PLAYER_CHAT_ID);
+    newClient(server).disconnectPlayer(PLAYER_CHAT_ID.getValue());
   }
 
   @Test

@@ -1,37 +1,39 @@
 package org.triplea.http.client.lobby.login;
 
-import com.google.common.annotations.VisibleForTesting;
+import feign.RequestLine;
 import java.net.URI;
 import java.util.Map;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class LobbyLoginClient {
-  public static final String LOGIN_PATH = "/user-login/authenticate";
-  public static final String CREATE_ACCOUNT = "/user-login/create-account";
+public interface LobbyLoginClient {
+  String LOGIN_PATH = "/user-login/authenticate";
+  String CREATE_ACCOUNT = "/user-login/create-account";
 
-  private final LobbyLoginFeignClient lobbyLoginFeignClient;
-
-  public static LobbyLoginClient newClient(final URI uri) {
+  static LobbyLoginClient newClient(final URI uri) {
     return newClient(uri, AuthenticationHeaders.systemIdHeaders());
   }
 
-  @VisibleForTesting
-  public static LobbyLoginClient newClient(final URI uri, final Map<String, String> headers) {
-    return new LobbyLoginClient(HttpClient.newClient(LobbyLoginFeignClient.class, uri, headers));
+  static LobbyLoginClient newClient(final URI uri, final Map<String, String> headers) {
+    return HttpClient.newClient(LobbyLoginClient.class, uri, headers);
   }
 
-  public LobbyLoginResponse login(final String userName, final String password) {
-    return lobbyLoginFeignClient.login(
-        LoginRequest.builder().name(userName).password(password).build());
+  @RequestLine("POST " + LobbyLoginClient.LOGIN_PATH)
+  LobbyLoginResponse login(LoginRequest loginRequest);
+
+  default LobbyLoginResponse login(final String userName, final String password) {
+    return login(LoginRequest.builder().name(userName).password(password).build());
   }
 
-  public CreateAccountResponse createAccount(
-      final String username, final String email, final String password) {
-    return lobbyLoginFeignClient.createAccount(
-        CreateAccountRequest.builder().username(username).email(email).password(password).build());
+  @RequestLine("POST " + LobbyLoginClient.CREATE_ACCOUNT)
+  CreateAccountResponse createAccount(CreateAccountRequest build);
+
+  default CreateAccountResponse createAccount(String username, String email, String password) {
+    return createAccount(
+        CreateAccountRequest.builder() //
+            .username(username)
+            .email(email)
+            .password(password)
+            .build());
   }
 }

@@ -17,7 +17,6 @@ import org.triplea.http.client.HttpClient;
 /** Can be used to interact with github's webservice API. */
 @Slf4j
 public class GithubApiClient {
-
   /** If this client is set to 'test' mode, we will return a stubbed response. */
   @VisibleForTesting
   static final String STUBBED_RETURN_VALUE =

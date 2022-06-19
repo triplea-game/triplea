@@ -42,7 +42,7 @@ class UserAccountClientTest extends WireMockTest {
                     .withStatus(200)
                     .withBody(JsonUtil.toJson(new FetchEmailResponse(EMAIL)))));
 
-    final String result = newClient(server).fetchEmail();
+    final String result = newClient(server).fetchEmail().getUserEmail();
 
     assertThat(result, is(EMAIL));
   }

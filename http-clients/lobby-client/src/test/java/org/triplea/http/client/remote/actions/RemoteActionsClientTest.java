@@ -27,7 +27,7 @@ class RemoteActionsClientTest extends WireMockTest {
       givenServerStubForIsPlayerBanned(IPV4, server, true);
 
       final boolean result =
-          WireMockTest.newClient(server, RemoteActionsClient::new)
+          WireMockTest.newClient(server, RemoteActionsClient::newClient)
               .checkIfPlayerIsBanned(IpAddressParser.fromString(IPV4));
 
       assertThat(result, is(true));
@@ -49,7 +49,7 @@ class RemoteActionsClientTest extends WireMockTest {
     void sendShutdownRequest(@WiremockResolver.Wiremock final WireMockServer server) {
       givenServerStubForSendShutdownRequest("gameId", server);
 
-      WireMockTest.newClient(server, RemoteActionsClient::new) //
+      WireMockTest.newClient(server, RemoteActionsClient::newClient) //
           .sendShutdownRequest("gameId");
     }
 

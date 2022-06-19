@@ -2,16 +2,13 @@ package org.triplea.http.client.github;
 
 import com.google.common.annotations.VisibleForTesting;
 import feign.FeignException;
-import feign.Headers;
 import feign.Param;
 import feign.QueryMap;
 import feign.RequestLine;
 import java.util.List;
 import java.util.Map;
-import org.triplea.http.client.HttpConstants;
 
 @SuppressWarnings("InterfaceNeverImplemented")
-@Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
 interface GithubApiFeignClient {
 
   @VisibleForTesting String CREATE_ISSUE_PATH = "/repos/{org}/{repo}/issues";

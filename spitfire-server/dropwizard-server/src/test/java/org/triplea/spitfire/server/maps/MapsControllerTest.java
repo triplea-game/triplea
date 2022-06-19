@@ -14,13 +14,13 @@ class MapsControllerTest extends ControllerIntegrationTest {
   private final MapsClient client;
 
   MapsControllerTest(final URI localhost) {
-    this.client = new MapsClient(localhost);
+    this.client = MapsClient.newClient(localhost);
   }
 
   /** Invoke the maps listing endpoint and verify response data is present. */
   @Test
   void fetchMapDownloads() {
-    final var result = client.fetchMapDownloads();
+    final var result = client.fetchMapListing();
 
     assertThat(result, hasSize(2));
     for (int i = 0; i < 2; i++) {

@@ -1,11 +1,9 @@
 package org.triplea.http.client.forgot.password;
 
 import feign.FeignException;
-import feign.Headers;
 import feign.RequestLine;
 import java.net.URI;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.HttpConstants;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
@@ -13,9 +11,6 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
  * user.
  */
 @SuppressWarnings("InterfaceNeverImplemented")
-@Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
-// TODO: Project#12 Hide the raw feign client, make consistent with other http clients that
-//  have a wrapper to hide the headers.
 public interface ForgotPasswordClient {
 
   String FORGOT_PASSWORD_PATH = "/forgot-password";

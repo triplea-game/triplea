@@ -1,23 +1,16 @@
 package org.triplea.http.client.latest.version;
 
+import feign.RequestLine;
 import java.net.URI;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 
-@Slf4j
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class LatestVersionClient {
-  public static final String LATEST_VERSION_PATH = "/latest-version";
+public interface LatestVersionClient {
+  String LATEST_VERSION_PATH = "/latest-version";
 
-  private final LatestVersionFeignClient latestVersionFeignClient;
-
-  public static LatestVersionClient newClient(final URI uri) {
-    return new LatestVersionClient(
-        HttpClient.newClient(
-            LatestVersionFeignClient.class, uri, AuthenticationHeaders.systemIdHeaders()));
+  static LatestVersionClient newClient(final URI uri) {
+    return HttpClient.newClient(
+        LatestVersionClient.class, uri, AuthenticationHeaders.systemIdHeaders());
   }
 
   /**
@@ -25,12 +18,6 @@ public class LatestVersionClient {
    *
    * @throws feign.FeignException thrown if server unavailable or returns 500
    */
-  public LatestVersionResponse fetchLatestVersion() {
-    final var latestVersionResponse = latestVersionFeignClient.fetchLatestVersion();
-
-    log.info(
-        "Server fetch returned latest engine version: {}",
-        latestVersionResponse.getLatestEngineVersion());
-    return latestVersionResponse;
-  }
+  @RequestLine("GET " + LatestVersionClient.LATEST_VERSION_PATH)
+  LatestVersionResponse fetchLatestVersion();
 }

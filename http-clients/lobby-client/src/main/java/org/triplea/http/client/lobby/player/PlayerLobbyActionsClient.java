@@ -1,37 +1,28 @@
 package org.triplea.http.client.lobby.player;
 
+import feign.RequestLine;
 import java.net.URI;
 import java.util.Collection;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 
 /** Http client for generic actions that can be executed by a player in lobby. */
-public class PlayerLobbyActionsClient {
-  public static final String FETCH_PLAYER_INFORMATION = "/lobby/fetch-player-info";
-  public static final String FETCH_PLAYERS_IN_GAME = "/lobby/fetch-players-in-game";
+public interface PlayerLobbyActionsClient {
+  String FETCH_PLAYER_INFORMATION = "/lobby/fetch-player-info";
+  String FETCH_PLAYERS_IN_GAME = "/lobby/fetch-players-in-game";
 
-  private final PlayerLobbyActionsFeignClient playerLobbyActionsFeignClient;
-
-  public PlayerLobbyActionsClient(final URI lobbyUri, final ApiKey apiKey) {
-    playerLobbyActionsFeignClient =
-        HttpClient.newClient(
-            PlayerLobbyActionsFeignClient.class,
-            lobbyUri,
-            new AuthenticationHeaders(apiKey).createHeaders());
+  static PlayerLobbyActionsClient newClient(final URI lobbyUri, final ApiKey apiKey) {
+    return HttpClient.newClient(
+        PlayerLobbyActionsClient.class,
+        lobbyUri,
+        new AuthenticationHeaders(apiKey).createHeaders());
   }
 
-  public static PlayerLobbyActionsClient newClient(final URI lobbyUri, final ApiKey apiKey) {
-    return new PlayerLobbyActionsClient(lobbyUri, apiKey);
-  }
+  @RequestLine("POST " + PlayerLobbyActionsClient.FETCH_PLAYER_INFORMATION)
+  PlayerSummary fetchPlayerInformation(String playerId);
 
-  public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
-    return playerLobbyActionsFeignClient.fetchPlayerInformation(playerChatId.getValue());
-  }
-
-  public Collection<String> fetchPlayersInGame(final String gameId) {
-    return playerLobbyActionsFeignClient.fetchPlayersInGame(gameId);
-  }
+  @RequestLine("POST " + PlayerLobbyActionsClient.FETCH_PLAYERS_IN_GAME)
+  Collection<String> fetchPlayersInGame(String gameId);
 }

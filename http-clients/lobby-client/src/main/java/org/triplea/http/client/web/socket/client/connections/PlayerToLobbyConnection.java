@@ -103,7 +103,7 @@ public class PlayerToLobbyConnection {
   }
 
   public void disconnectPlayer(final PlayerChatId playerChatId) {
-    httpLobbyClient.getModeratorLobbyClient().disconnectPlayer(playerChatId);
+    httpLobbyClient.getModeratorLobbyClient().disconnectPlayer(playerChatId.getValue());
   }
 
   public void banPlayer(final BanPlayerRequest banPlayerRequest) {
@@ -111,7 +111,7 @@ public class PlayerToLobbyConnection {
   }
 
   public String fetchEmail() {
-    return httpLobbyClient.getUserAccountClient().fetchEmail();
+    return httpLobbyClient.getUserAccountClient().fetchEmail().getUserEmail();
   }
 
   public void changeEmail(final String newEmail) {
@@ -123,7 +123,9 @@ public class PlayerToLobbyConnection {
   }
 
   public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
-    return httpLobbyClient.getPlayerLobbyActionsClient().fetchPlayerInformation(playerChatId);
+    return httpLobbyClient
+        .getPlayerLobbyActionsClient()
+        .fetchPlayerInformation(playerChatId.getValue());
   }
 
   public void mutePlayer(final PlayerChatId playerChatId, final long minutes) {

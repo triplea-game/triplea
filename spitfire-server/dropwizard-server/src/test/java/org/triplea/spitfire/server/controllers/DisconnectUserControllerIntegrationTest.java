@@ -24,12 +24,12 @@ class DisconnectUserControllerIntegrationTest extends ControllerIntegrationTest 
     assertNotAuthorized(
         ControllerIntegrationTest.NOT_MODERATORS,
         apiKey -> ModeratorChatClient.newClient(localhost, apiKey),
-        client -> client.disconnectPlayer(PlayerChatId.of("chat-id")));
+        client -> client.disconnectPlayer("chat-id"));
   }
 
   @Test
   @DisplayName("Send disconnect request, verify we get a 400 for chat-id not found")
   void disconnectPlayer() {
-    assertBadRequest(() -> client.disconnectPlayer(CHAT_ID));
+    assertBadRequest(() -> client.disconnectPlayer(CHAT_ID.getValue()));
   }
 }

@@ -29,8 +29,8 @@ public class HttpLobbyClient {
     httpModeratorToolboxClient = HttpModeratorToolboxClient.newClient(lobbyUri, apiKey);
     moderatorLobbyClient = ModeratorChatClient.newClient(lobbyUri, apiKey);
     userAccountClient = UserAccountClient.newClient(lobbyUri, apiKey);
-    remoteActionsClient = new RemoteActionsClient(lobbyUri, apiKey);
-    playerLobbyActionsClient = new PlayerLobbyActionsClient(lobbyUri, apiKey);
+    remoteActionsClient = RemoteActionsClient.newClient(lobbyUri, apiKey);
+    playerLobbyActionsClient = PlayerLobbyActionsClient.newClient(lobbyUri, apiKey);
   }
 
   public GameListingClient newGameListingClient() {
