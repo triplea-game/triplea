@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Postconditions;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
@@ -50,6 +51,7 @@ import org.triplea.swing.jpanel.GridBagConstraintsFill;
  * <p>The dialog is used by various use cases like placing units or choosing which units take hits
  * in a battle round.
  */
+@Slf4j
 public final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
 
@@ -733,10 +735,15 @@ public final class UnitChooser extends JPanel {
 
       unitImageFactoryForDecoratedImages = unitImageFactory.withScaleFactor(scaleFactor);
 
-      Postconditions.assertState(
-          nonWithdrawableImage.getHeight()
-              == getNonWithdrawableImageHeight(
-                  unitImageFactoryForDecoratedImages.getUnitImageHeight()));
+      double expectedHeight =
+          getNonWithdrawableImageHeight(unitImageFactoryForDecoratedImages.getUnitImageHeight());
+      if (nonWithdrawableImage.getHeight() != expectedHeight) {
+        // Don't use Postconditions.assertState() as that turns a UI glitch into a game hang.
+        log.warn(
+            "Unexpected nonWithdrawableImage height {} != {}",
+            nonWithdrawableImage.getHeight(),
+            expectedHeight);
+      }
     }
 
     /**
