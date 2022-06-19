@@ -34,19 +34,9 @@
     - "{{ bot_install_home }}"
     - "{{ bot_maps_folder }}"
 
-- name: deploy zip file (prerelease build only)
-  tags: [prerelease]
+- name: deploy game-headless-zip file
   copy:
     src: "triplea-game-headless-{{ bot_version }}.zip"
-    dest: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
-    owner: "{{ bot_user }}"
-    group: "{{ bot_user }}"
-
-
-- name: download zip file (release build only)
-  tags: [release]
-  get_url:
-    url: "{{ zip_download }}"
     dest: "{{ bot_install_home }}/triplea-game-headless-{{ bot_version }}.zip"
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"

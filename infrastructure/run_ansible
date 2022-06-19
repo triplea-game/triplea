@@ -3,7 +3,6 @@
 set -eu
 
 ENVIRONMENT_VAGRANT=vagrant
-ENVIRONMENT_PRERELEASE=prerelease
 ENVIRONMENT_PRODUCTION=production
 
 # This script orchestrates deployments via ansible. If a prerelease deployment is done then
@@ -14,10 +13,9 @@ function usage() {
   echo ""
   echo "Examples:"
   echo "$0 --environment $ENVIRONMENT_VAGRANT"
-  echo "$0 --environment $ENVIRONMENT_PRERELEASE"
   echo ""
   echo "[options]"
-  echo "  --environment [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRERELEASE|$ENVIRONMENT_PRODUCTION]"
+  echo "  --environment [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRODUCTION]"
   echo "      The target environment for the deployment."
   echo "         $ENVIRONMENT_VAGRANT is an environment that can be launched locally via a VM"
   echo "  --tags [ansible tags]"
@@ -40,8 +38,7 @@ while [[ $# -gt 1 ]]; do
   case $key in
     --environment)
       ENVIRONMENT="$2"
-      if [[ "$ENVIRONMENT" != "$ENVIRONMENT_PRERELEASE" \
-         && "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" \
+      if [[ "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" \
          && "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]]; then
         echo "Error, invalid value for --environment:  $ENVIRONMENT"
         usage
@@ -103,24 +100,11 @@ fi
 # Parse version number from product.properties
 VERSION=$(sed 's/.*=\s*//' "$(find .. -path "*/src/main/*" -name "product.properties")")
 
-# If we are deploying to production then we will download artifacts by version number
-# Otherwise we need to build the artifacts that we will be deploying
-if [ "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" ]; then
-  .include/build_latest_artifacts "$VERSION"
-fi
-
-# Do not execute release tasks unless we are deploying to production.
-# For example a release task would be to download an artifact and
-# a prerelease task would be to upload an artifact
-SKIP_TAGS=release
-if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
-  SKIP_TAGS=prerelease
-fi
+.include/build_latest_artifacts "$VERSION"
 
 # Run deployment
 ansible-playbook \
   --extra-vars "version=$VERSION" \
-  --skip-tags $SKIP_TAGS \
    --inventory ansible/inventory/$ENVIRONMENT \
    $ANSIBLE_ARG_VAULT_PASSWORD $ANSIBLE_ARG_TAGS ansible/site.yml
 
