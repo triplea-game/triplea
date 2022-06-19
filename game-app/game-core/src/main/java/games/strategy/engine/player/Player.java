@@ -4,6 +4,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -37,6 +38,13 @@ public interface Player extends IRemote {
   /** Returns the nation name. */
   @RemoteActionCode(6)
   String getName();
+
+  @SuppressWarnings("unused")
+  @RemoveOnNextMajorRelease
+  @RemoteActionCode(8)
+  default PlayerTypes.Type getPlayerType() {
+    throw new UnsupportedOperationException("This method should not be called over the network");
+  }
 
   String getPlayerLabel();
 
