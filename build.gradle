@@ -150,7 +150,7 @@ subprojects {
     // add a testlistener to all tasks of type Test
     tasks.withType(Test) {
         afterTest { TestDescriptor descriptor, TestResult result ->
-            if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+            if(result.resultType == TestResult.ResultType.FAILURE){
                 failedTests << ["${descriptor.className}::${descriptor.name}"]
             }
         }
@@ -186,9 +186,9 @@ subprojects {
 
     jacocoTestReport {
         reports {
-            xml.enabled = true
+            xml.required = true
             xml.destination file("${buildDir}/jacoco.xml")
-            html.enabled = true
+            html.required = true
         }
     }
 
