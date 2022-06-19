@@ -175,7 +175,7 @@ public class History extends DefaultTreeModel {
 
   synchronized void changeAdded(final Change change) {
     changes.add(change);
-    if (seekingEnabled && nextChangeIndex == changes.size()) {
+    if (seekingEnabled && nextChangeIndex == changes.size() - 1) {
       gameData.performChange(change);
       nextChangeIndex = changes.size();
     }
