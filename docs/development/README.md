@@ -45,7 +45,8 @@ After the database is launched you can:
 ## Running all tests & checks locally before PR
 
 The verify script will execute all checks done as part of the PR
-builds. First launch a local database, then run the verify script:
+builds. The verify script will launch a local database if it is not
+already running. 
 ```
 cd .../triplea/
 ./verify
