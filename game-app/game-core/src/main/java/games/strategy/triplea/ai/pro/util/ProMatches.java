@@ -197,7 +197,8 @@ public final class ProMatches {
 
   public static Predicate<Territory> territoryCanMoveSeaUnitsThrough(
       final GamePlayer player, final boolean isCombatMove) {
-    return territoryCanMoveSeaUnits(player, isCombatMove).and(territoryHasOnlyIgnoredUnits(player));
+    return territoryCanMoveSeaUnits(player, isCombatMove)
+        .and(not(Matches.territoryIsBlockedSea(player)));
   }
 
   public static Predicate<Territory> territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
@@ -206,21 +207,10 @@ public final class ProMatches {
       final List<Territory> clearedTerritories,
       final List<Territory> notTerritories) {
     final Predicate<Territory> onlyIgnoredOrClearedMatch =
-        territoryHasOnlyIgnoredUnits(player).or(clearedTerritories::contains);
-    return territoryCanMoveSeaUnits(player, isCombatMove)
+        Matches.territoryIsBlockedSea(player).or(clearedTerritories::contains);
+    return territoryCanMoveSeaUnitsThrough(player, isCombatMove)
         .and(onlyIgnoredOrClearedMatch)
         .and(not(notTerritories::contains));
-  }
-
-  private static Predicate<Territory> territoryHasOnlyIgnoredUnits(final GamePlayer player) {
-    return t -> {
-      final Predicate<Unit> subOnly =
-          Matches.unitIsInfrastructure()
-              .or(Matches.unitCanBeMovedThroughByEnemies())
-              .or(Matches.enemyUnit(player).negate());
-      return t.getUnitCollection().allMatch(subOnly)
-          || Matches.territoryHasNoEnemyUnits(player).test(t);
-    };
   }
 
   public static Predicate<Territory> territoryHasEnemyUnitsOrCantBeHeld(
