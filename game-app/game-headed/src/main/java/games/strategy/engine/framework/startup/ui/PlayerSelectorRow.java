@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
+import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
 import games.strategy.triplea.Constants;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -64,7 +65,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
             if (enabledCheckBox.isSelected()) {
               enabled = true;
               // the 1st in the list should be human
-              PlayerSelectorRow.this.playerTypes.setSelectedItem(PlayerTypes.HUMAN_PLAYER);
+              PlayerSelectorRow.this.playerTypes.setSelectedItem(HeadedPlayerTypes.HUMAN_PLAYER);
             } else {
               enabled = false;
               // the 2nd in the list should be Weak AI
@@ -80,7 +81,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     this.playerTypes = new JComboBox<>(this.playerTypesProvider.getAvailablePlayerLabels());
     String previousSelection = reloadSelections.get(playerName);
     if (previousSelection.equalsIgnoreCase("Client")) {
-      previousSelection = PlayerTypes.HUMAN_PLAYER.getLabel();
+      previousSelection = HeadedPlayerTypes.HUMAN_PLAYER.getLabel();
     }
     if (List.of(this.playerTypesProvider.getAvailablePlayerLabels()).contains(previousSelection)) {
       this.playerTypes.setSelectedItem(previousSelection);
@@ -100,7 +101,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
                       row ->
                           row.alliances != null
                               && row.alliances.getText().equals(alliancesLabelText))
-                  .forEach(row -> row.setPlayerType(PlayerTypes.HUMAN_PLAYER.getLabel())));
+                  .forEach(row -> row.setPlayerType(HeadedPlayerTypes.HUMAN_PLAYER.getLabel())));
     }
 
     incomePercentage =
@@ -255,7 +256,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     } else if (player.isDefaultTypeDoesNothing()) {
       playerTypes.setSelectedItem(PlayerTypes.DOES_NOTHING_PLAYER_LABEL);
     } else {
-      playerTypes.setSelectedItem(PlayerTypes.HUMAN_PLAYER.getLabel());
+      playerTypes.setSelectedItem(HeadedPlayerTypes.HUMAN_PLAYER.getLabel());
     }
   }
 

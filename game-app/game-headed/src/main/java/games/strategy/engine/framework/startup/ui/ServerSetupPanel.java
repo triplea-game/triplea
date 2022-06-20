@@ -382,7 +382,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
           public void actionPerformed(final ActionEvent e) {
             if (enabledCheckBox.isSelected()) {
               model.enablePlayer(nameLabel.getText());
-              type.setSelectedItem(PlayerTypes.HUMAN_PLAYER);
+              type.setSelectedItem(HeadedPlayerTypes.HUMAN_PLAYER);
             } else {
               model.disablePlayer(nameLabel.getText());
               type.setSelectedItem(PlayerTypes.WEAK_AI);

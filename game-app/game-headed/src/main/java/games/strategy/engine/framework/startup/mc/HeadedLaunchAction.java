@@ -206,4 +206,9 @@ public class HeadedLaunchAction implements LaunchAction {
         "Continue Game?  (" + title + ")",
         EventThreadJOptionPane.ConfirmDialogType.YES_NO);
   }
+
+  @Override
+  public PlayerTypes.Type getDefaultLocalPlayerType() {
+    return HeadedPlayerTypes.HUMAN_PLAYER;
+  }
 }

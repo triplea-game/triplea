@@ -482,10 +482,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
     final Map<String, PlayerTypes.Type> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerTypes.Type defaultLocalType =
-        launchAction.shouldMinimizeExpensiveAiUse()
-            ? PlayerTypes.WEAK_AI
-            : PlayerTypes.HUMAN_PLAYER;
+    final PlayerTypes.Type defaultLocalType = launchAction.getDefaultLocalPlayerType();
     for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
       final String player = entry.getKey();
       final String playedBy = entry.getValue();
@@ -503,7 +500,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   public Optional<ServerLauncher> getLauncher() {
     synchronized (this) {
       disallowRemoveConnections();
-      // -1 since we dont count ourselves
+      // -1 since we don't count ourselves
       final int clientCount = serverMessenger.getNodes().size() - 1;
       final Map<String, INode> remotePlayers = new HashMap<>();
       for (final Entry<String, String> entry : playersToNodeListing.entrySet()) {

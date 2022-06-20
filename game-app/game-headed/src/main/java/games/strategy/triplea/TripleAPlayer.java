@@ -32,9 +32,10 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.AbstractHumanPlayer;
+import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.PlaceData;
+import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +49,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -60,7 +62,9 @@ import org.triplea.util.Tuple;
  * delegate, and done through an IDelegate, which we get through getPlayerBridge().getRemote()
  */
 @Slf4j
-public abstract class TripleAPlayer extends AbstractHumanPlayer {
+public class TripleAPlayer extends AbstractBasePlayer {
+  @Getter private final boolean isClient;
+  private TripleAFrame ui;
   private boolean soundPlayedAlreadyCombatMove = false;
   private boolean soundPlayedAlreadyNonCombatMove = false;
   private boolean soundPlayedAlreadyPurchase = false;
@@ -85,8 +89,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         }
       };
 
-  public TripleAPlayer(final String name) {
-    super(name);
+  public TripleAPlayer(final String name, final String playerLabel, final boolean isClient) {
+    super(name, playerLabel);
+    this.isClient = isClient;
   }
 
   @Override
@@ -99,6 +104,11 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     if (ui != null) {
       ui.notifyMessage(message, title);
     }
+  }
+
+  @Override
+  public boolean isAi() {
+    return false;
   }
 
   @Override
@@ -806,5 +816,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     }
     return ui.pickTerritoryAndUnits(
         this.getGamePlayer(), territoryChoices, unitChoices, unitsPerPick);
+  }
+
+  public final void setFrame(final TripleAFrame frame) {
+    ui = frame;
   }
 }

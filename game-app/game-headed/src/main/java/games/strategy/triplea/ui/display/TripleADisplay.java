@@ -4,7 +4,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -151,7 +150,7 @@ public class TripleADisplay implements IDisplay {
         // if we have any local players, we are not an observer
         isObserver = false;
         if (player instanceof TripleAPlayer) {
-          if (player.getPlayerType().equals(PlayerTypes.CLIENT_PLAYER)) {
+          if (((TripleAPlayer) player).isClient()) {
             isClient = true;
           } else {
             isHost = true;
