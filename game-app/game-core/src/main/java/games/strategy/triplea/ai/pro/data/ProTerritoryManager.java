@@ -1173,7 +1173,7 @@ public class ProTerritoryManager {
           transportMap.get(t).removeAll(landMoveTerritories);
         }
       }
-      transportMap.keySet().removeIf(key -> transportMap.get(key).isEmpty());
+      transportMap.values().removeIf(Collection::isEmpty);
     }
 
     // Add transport units to attack map
