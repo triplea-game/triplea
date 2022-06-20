@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -25,32 +24,34 @@ import org.triplea.java.ThreadRunner;
 public class HeadlessGameServer {
   private final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-  private final HeadlessServerSetupModel setupPanelModel =
-      new HeadlessServerSetupModel(gameSelectorModel, this);
-  @Nullable private HeadlessServerSetup headlessServerSetup = null;
+  private final HeadlessServerSetup headlessServerSetup;
   private ServerGame game = null;
   private boolean shutDown = false;
 
-  private HeadlessGameServer() {}
+  private HeadlessGameServer() {
+    headlessServerSetup =
+        new HeadlessServerSetupModel(gameSelectorModel, this).createHeadlessServerSetup();
+  }
 
   public static void runHeadlessGameServer() {
     Preconditions.checkState(
         GameRunner.headless(), "TripleA must be headless to invoke this method!");
-    HeadlessGameServer headlessGameServer = new HeadlessGameServer();
+    log.info("Headless Start");
+    new HeadlessGameServer().start();
+  }
+
+  private void start() {
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
                 () -> {
                   log.info("Running ShutdownHook.");
-                  headlessGameServer.shutDown = true;
-                  Optional.ofNullable(headlessGameServer.game).ifPresent(ServerGame::stopGame);
-                  Optional.ofNullable(headlessGameServer.headlessServerSetup)
-                      .ifPresent(HeadlessServerSetup::cancel);
+                  shutDown = true;
+                  Optional.ofNullable(game).ifPresent(ServerGame::stopGame);
+                  headlessServerSetup.cancel();
                 }));
 
-    log.info("Headless Start");
-    headlessGameServer.headlessServerSetup = headlessGameServer.setupPanelModel.showSelectType();
-    headlessGameServer.waitForUsers();
+    waitForUsers();
   }
 
   public Collection<String> getAvailableGames() {

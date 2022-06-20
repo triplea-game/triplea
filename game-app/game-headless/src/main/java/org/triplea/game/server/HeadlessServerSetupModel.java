@@ -20,7 +20,7 @@ public class HeadlessServerSetupModel {
   private final GameSelectorModel gameSelectorModel;
   private final HeadlessGameServer headlessGameServer;
 
-  public HeadlessServerSetup showSelectType() {
+  public HeadlessServerSetup createHeadlessServerSetup() {
     final ServerModel serverModel =
         new ServerModel(gameSelectorModel, new HeadlessLaunchAction(headlessGameServer));
     return onServerMessengerCreated(serverModel, serverModel.initialize().orElse(null));
