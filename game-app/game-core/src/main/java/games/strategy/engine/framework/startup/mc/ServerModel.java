@@ -54,7 +54,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.chat.ChatModel;
-import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
@@ -77,7 +76,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
-  private final ServerSetupModel serverSetupModel;
   private ServerMessenger serverMessenger;
   private Messengers messengers;
   private GameData data;
@@ -102,16 +100,14 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   @Getter @Nullable private LobbyWatcherThread lobbyWatcherThread;
   @Nullable private GameToLobbyConnection gameToLobbyConnection;
 
-  public ServerModel(
-      final GameSelectorModel gameSelectorModel,
-      final ServerSetupModel serverSetupModel,
-      final LaunchAction launchAction) {
+  public ServerModel(final GameSelectorModel gameSelectorModel, final LaunchAction launchAction) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
-    this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
-    this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.launchAction = launchAction;
-    getServerProps()
-        .ifPresent(props -> this.createServerMessenger(props, launchAction::handleError));
+  }
+
+  public Optional<GameHostingResponse> initialize() {
+    this.gameSelectorModel.addObserver(gameSelectorObserver);
+    return getServerProps().map(props -> createServerMessenger(props, launchAction::handleError));
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -214,7 +210,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     return launchAction.getFallbackConnection(this::cancel);
   }
 
-  private void createServerMessenger(
+  private GameHostingResponse createServerMessenger(
       final ServerConnectionProps props, final Consumer<String> errorHandler) {
     try {
       this.serverMessenger =
@@ -284,7 +280,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
-      serverSetupModel.onServerMessengerCreated(this, gameHostingResponse);
+      return gameHostingResponse;
     } catch (final BindException e) {
       log.warn(
           "Could not open network port, please close any other TripleA games you are\n"
@@ -296,6 +292,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       log.error("Unable to create server socket.", e);
       cancel();
     }
+    return null;
   }
 
   private PlayerListing getPlayerListingInternal() {

@@ -24,11 +24,12 @@ public class HeadlessServerSetupModel implements ServerSetupModel {
 
   @Override
   public void showSelectType() {
-    new ServerModel(gameSelectorModel, this, new HeadlessLaunchAction(headlessGameServer));
+    final ServerModel serverModel =
+        new ServerModel(gameSelectorModel, new HeadlessLaunchAction(headlessGameServer));
+    onServerMessengerCreated(serverModel, serverModel.initialize().orElse(null));
   }
 
-  @Override
-  public void onServerMessengerCreated(
+  private void onServerMessengerCreated(
       final ServerModel serverModel, final GameHostingResponse gameHostingResponse) {
     checkNotNull(gameHostingResponse, "hosting response is null, did the bot connect to lobby?");
     checkNotNull(System.getProperty(LOBBY_URI));
