@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +70,7 @@ public class ServerGame extends AbstractGame {
   private IRandomSource randomSource = new PlainRandomSource();
   private IRandomSource delegateRandomSource;
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
-  @Getter @Setter private InGameLobbyWatcherWrapper inGameLobbyWatcher;
+  @Nullable @Getter private final InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
   private final LaunchAction launchAction;
   private final ClientNetworkBridge clientNetworkBridge;
@@ -93,9 +94,28 @@ public class ServerGame extends AbstractGame {
       final Messengers messengers,
       final ClientNetworkBridge clientNetworkBridge,
       final LaunchAction launchAction) {
+    this(
+        data,
+        localPlayers,
+        remotePlayerMapping,
+        messengers,
+        clientNetworkBridge,
+        launchAction,
+        null);
+  }
+
+  public ServerGame(
+      final GameData data,
+      final Set<Player> localPlayers,
+      final Map<String, INode> remotePlayerMapping,
+      final Messengers messengers,
+      final ClientNetworkBridge clientNetworkBridge,
+      final LaunchAction launchAction,
+      @Nullable final InGameLobbyWatcherWrapper inGameLobbyWatcher) {
     super(data, localPlayers, remotePlayerMapping, messengers, clientNetworkBridge);
     this.clientNetworkBridge = clientNetworkBridge;
     this.launchAction = launchAction;
+    this.inGameLobbyWatcher = inGameLobbyWatcher;
     gameModifiedChannel =
         new IGameModifiedChannel() {
           @Override

@@ -516,7 +516,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         }
       }
 
-      final ServerLauncher serverLauncherNew =
+      final ServerLauncher serverLauncher =
           new ServerLauncher(
               clientCount,
               messengers,
@@ -524,11 +524,12 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               getPlayerListingInternal(),
               remotePlayers,
               this,
-              launchAction);
-      Optional.ofNullable(lobbyWatcherThread)
-          .map(LobbyWatcherThread::getLobbyWatcher)
-          .ifPresent(serverLauncherNew::setInGameLobbyWatcher);
-      return Optional.of(serverLauncherNew);
+              launchAction,
+              Optional.ofNullable(lobbyWatcherThread)
+                  .map(LobbyWatcherThread::getLobbyWatcher)
+                  .orElse(null));
+
+      return Optional.of(serverLauncher);
     }
   }
 
