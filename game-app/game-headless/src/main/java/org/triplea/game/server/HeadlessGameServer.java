@@ -8,13 +8,14 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
-import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -24,8 +25,8 @@ import org.triplea.java.ThreadRunner;
 public class HeadlessGameServer {
   private final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-  private final HeadlessServerSetup headlessServerSetup;
-  private ServerGame game = null;
+  @Nonnull private final HeadlessServerSetup headlessServerSetup;
+  @Nullable private ServerGame game = null;
   private boolean shutDown = false;
 
   private HeadlessGameServer() {
@@ -61,20 +62,14 @@ public class HeadlessGameServer {
   public synchronized void setGameMapTo(final String gameName) {
     log.info("Requested to change map to: " + gameName);
     // don't change mid-game and only if we have the game
-    if (headlessServerSetup != null && game == null && availableGames.hasGame(gameName)) {
+    if (game == null && availableGames.hasGame(gameName)) {
       gameSelectorModel.load(availableGames.findGameXmlPathByGameName(gameName).orElseThrow());
       log.info("Changed to game map: " + gameName);
     } else {
       log.info(
           String.format(
-              "Did NOT change game map to: %s, "
-                  + "getPanel == null ? %s, "
-                  + "game == null ? %s, "
-                  + "have game? %s",
-              gameName,
-              headlessServerSetup != null,
-              game == null,
-              availableGames.hasGame(gameName)));
+              "Did NOT change game map to: %s, " + "game == null ? %s, " + "have game? %s",
+              gameName, game == null, availableGames.hasGame(gameName)));
     }
   }
 
@@ -82,7 +77,7 @@ public class HeadlessGameServer {
     Preconditions.checkArgument(
         Files.exists(file), "File must exist to load it: " + file.toAbsolutePath());
     // don't change mid-game
-    if (headlessServerSetup != null && game == null && gameSelectorModel.load(file)) {
+    if (game == null && gameSelectorModel.load(file)) {
       log.info("Changed to save: " + file.getFileName());
     }
   }
@@ -94,7 +89,7 @@ public class HeadlessGameServer {
    */
   public synchronized void loadGameSave(final InputStream input) {
     // don't change mid-game
-    if (headlessServerSetup != null && game == null) {
+    if (game == null) {
       GameDataManager.loadGame(input)
           .filter(this::checkGameIsAvailableOnServer)
           .ifPresent(gameSelectorModel::setGameData);
@@ -118,7 +113,7 @@ public class HeadlessGameServer {
    */
   public synchronized void loadGameOptions(final byte[] bytes) {
     // don't change mid-game
-    if (headlessServerSetup != null && game == null) {
+    if (game == null) {
       if (bytes == null || bytes.length == 0) {
         return;
       }
@@ -138,7 +133,7 @@ public class HeadlessGameServer {
   /** Updates current 'HeadlessGameServer.game' instance to be set to the given parameter. */
   public synchronized void setServerGame(final ServerGame serverGame) {
     game = serverGame;
-    if (serverGame != null) {
+    if (game != null) {
       log.info(
           "Game starting up: "
               + game.isGameSequenceRunning()
@@ -158,7 +153,7 @@ public class HeadlessGameServer {
         shutDown = true;
         break;
       }
-      if (headlessServerSetup != null && headlessServerSetup.canGameStart()) {
+      if (headlessServerSetup.canGameStart()) {
         final boolean started = startHeadlessGame();
         if (!started) {
           log.warn("Error in launcher, going back to waiting.");
@@ -172,7 +167,7 @@ public class HeadlessGameServer {
 
   private synchronized boolean startHeadlessGame() {
     try {
-      if (headlessServerSetup != null && headlessServerSetup.canGameStart()) {
+      if (headlessServerSetup.canGameStart()) {
         log.info(
             "Starting Game: "
                 + gameSelectorModel.getGameData().getGameName()
@@ -195,9 +190,7 @@ public class HeadlessGameServer {
       log.error("Failed to start headless game", e);
       // if we do not do this, we can get into an infinite loop of launching a game, then crashing
       // out, then launching, etc.
-      Optional.ofNullable(headlessServerSetup)
-          .map(HeadlessServerSetup::getModel)
-          .ifPresent(ServerModel::setAllPlayersToNullNodes);
+      headlessServerSetup.getModel().setAllPlayersToNullNodes();
     }
     return false;
   }
