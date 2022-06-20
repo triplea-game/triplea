@@ -1119,13 +1119,13 @@ public class ProTerritoryManager {
             if (!transport.getTransporting(transportTerritory).isEmpty()) {
               haveUnitsToTransport = true;
             } else if (Matches.territoryHasEnemySeaUnits(player).negate().test(from)) {
-              int transportCapacity = transport.getUnitAttachment().getTransportCapacity();
+              int capacity = transport.getUnitAttachment().getTransportCapacity();
+              Predicate<Unit> canFitOnTransport =
+                  canBeTransported.and(u -> u.getUnitAttachment().getTransportCost() <= capacity);
               for (Territory loadTerritory : map.getNeighbors(from)) {
-                for (Unit unit : loadTerritory.getUnitCollection().getMatches(canBeTransported)) {
-                  if (unit.getUnitAttachment().getTransportCost() <= transportCapacity) {
-                    loadFromTerritories.add(loadTerritory);
-                    haveUnitsToTransport = true;
-                  }
+                if (loadTerritory.getUnitCollection().anyMatch(canFitOnTransport)) {
+                  loadFromTerritories.add(loadTerritory);
+                  haveUnitsToTransport = true;
                 }
               }
             }
