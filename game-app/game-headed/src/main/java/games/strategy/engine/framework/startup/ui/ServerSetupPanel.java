@@ -304,15 +304,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public boolean canGameStart() {
-    if (gameSelectorModel.getGameData() == null) {
-      return false;
-    }
-    final Map<String, String> players = model.getPlayersToNodeListing();
-    if (players.isEmpty() || players.containsValue(null)) {
-      return false;
-    }
-    // make sure at least 1 player is enabled
-    return model.getPlayersEnabledListing().containsValue(Boolean.TRUE);
+    return SetupModel.canGameStartHelper(gameSelectorModel, model);
   }
 
   @Override
