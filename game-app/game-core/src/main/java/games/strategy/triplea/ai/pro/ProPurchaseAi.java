@@ -2083,7 +2083,7 @@ class ProPurchaseAi {
         }
 
         // Add transport units to sea place territory and amphib units to land place territory
-        if (amphibUnitsToPlace.isEmpty() || transportUnitsToPlace.isEmpty()) {
+        if (!amphibUnitsToPlace.isEmpty() || !transportUnitsToPlace.isEmpty()) {
           for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
             if (landTerritory.equals(ppt.getTerritory())) {
               addUnitsToPlace(ppt, amphibUnitsToPlace);
