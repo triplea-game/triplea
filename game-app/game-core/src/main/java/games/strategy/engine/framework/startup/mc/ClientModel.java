@@ -60,7 +60,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
-import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -78,7 +77,7 @@ public class ClientModel implements IMessengerErrorListener {
           IServerReady.class);
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final GameSelectorModel gameSelectorModel;
-  private final ServerSetupModel typePanelModel;
+  private final Runnable showSelectType;
   private final WaitWindow gameLoadingWindow;
   private final LaunchAction launchAction;
   private final PlayerTypes.Type clientType;
@@ -114,7 +113,7 @@ public class ClientModel implements IMessengerErrorListener {
         public void cannotJoinGame(final String reason) {
           SwingUtilities.invokeLater(
               () -> {
-                typePanelModel.showSelectType();
+                showSelectType.run();
                 EventThreadJOptionPane.showMessageDialog(ui, "Could not join game: " + reason);
               });
         }
@@ -153,13 +152,13 @@ public class ClientModel implements IMessengerErrorListener {
 
   public ClientModel(
       final GameSelectorModel gameSelectorModel,
-      final ServerSetupModel typePanelModel,
+      final Runnable showSelectType,
       final LaunchAction launchAction,
       final Runnable showMainFrame,
       final Runnable clientLeftGame,
       final PlayerTypes.Type clientType) {
     this.launchAction = launchAction;
-    this.typePanelModel = typePanelModel;
+    this.showSelectType = showSelectType;
     this.gameSelectorModel = gameSelectorModel;
     this.showMainFrame = showMainFrame;
     this.clientType = clientType;

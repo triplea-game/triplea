@@ -35,18 +35,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.client.HeadedGameRunner;
-import org.triplea.game.startup.ServerSetupModel;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
-public class HeadedServerSetupModel implements ServerSetupModel {
+public class HeadedServerSetupModel {
   @Getter protected final GameSelectorModel gameSelectorModel;
   protected SetupPanel panel = null;
 
   @Setter private Consumer<SetupPanel> panelChangeListener;
   @Setter private JFrame ui;
 
-  @Override
   public void showSelectType() {
     setGameTypePanel(new MetaSetupPanel(this));
   }
@@ -104,7 +102,7 @@ public class HeadedServerSetupModel implements ServerSetupModel {
     final ClientModel model =
         new ClientModel(
             gameSelectorModel,
-            this,
+            this::showSelectType,
             new HeadedLaunchAction(ui),
             HeadedGameRunner::showMainFrame,
             HeadedGameRunner::clientLeftGame,
