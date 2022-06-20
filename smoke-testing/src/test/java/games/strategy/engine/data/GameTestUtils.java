@@ -61,15 +61,15 @@ public class GameTestUtils {
   public static GameSelectorModel loadGameFromURI(String mapName, String mapXmlPath)
       throws Exception {
     GameSelectorModel gameSelector = new GameSelectorModel();
-    gameSelector.load(downloadMap(getMapDownloadURI(mapName)).resolve(mapXmlPath));
+    gameSelector.load(downloadMap(getMapDownloadURI(mapName), mapName).resolve(mapXmlPath));
     return gameSelector;
   }
 
-  private static Path downloadMap(URI uri) {
+  private static Path downloadMap(URI uri, String mapName) {
     return downloadedMaps.computeIfAbsent(
         uri,
         key -> {
-          Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve("map.zip");
+          Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve(mapName + ".zip");
           log.info("Downloading from: " + uri);
           try {
             try (ContentDownloader downloader = new ContentDownloader(uri)) {
