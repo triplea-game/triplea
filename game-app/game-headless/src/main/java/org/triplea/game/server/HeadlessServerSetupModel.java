@@ -11,30 +11,25 @@ import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.triplea.config.product.ProductVersionReader;
-import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 
 /** Setup panel model for headless server. */
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class HeadlessServerSetupModel implements ServerSetupModel {
+public class HeadlessServerSetupModel {
 
   private final GameSelectorModel gameSelectorModel;
   private final HeadlessGameServer headlessGameServer;
-  private HeadlessServerSetup headlessServerSetup;
 
-  @Override
-  public void showSelectType() {
+  public HeadlessServerSetup showSelectType() {
     final ServerModel serverModel =
         new ServerModel(gameSelectorModel, new HeadlessLaunchAction(headlessGameServer));
-    onServerMessengerCreated(serverModel, serverModel.initialize().orElse(null));
+    return onServerMessengerCreated(serverModel, serverModel.initialize().orElse(null));
   }
 
-  private void onServerMessengerCreated(
+  private HeadlessServerSetup onServerMessengerCreated(
       final ServerModel serverModel, final GameHostingResponse gameHostingResponse) {
     checkNotNull(gameHostingResponse, "hosting response is null, did the bot connect to lobby?");
     checkNotNull(System.getProperty(LOBBY_URI));
-
-    Optional.ofNullable(headlessServerSetup).ifPresent(HeadlessServerSetup::cancel);
 
     final ClientLoginValidator loginValidator =
         new ClientLoginValidator(ProductVersionReader.getCurrentVersion());
@@ -43,10 +38,6 @@ public class HeadlessServerSetupModel implements ServerSetupModel {
     Optional.ofNullable(serverModel.getLobbyWatcherThread())
         .map(LobbyWatcherThread::getLobbyWatcher)
         .ifPresent(lobbyWatcher -> lobbyWatcher.setGameSelectorModel(gameSelectorModel));
-    headlessServerSetup = new HeadlessServerSetup(serverModel, gameSelectorModel);
-  }
-
-  public HeadlessServerSetup getPanel() {
-    return headlessServerSetup;
+    return new HeadlessServerSetup(serverModel, gameSelectorModel);
   }
 }
