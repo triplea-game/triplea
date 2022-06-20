@@ -210,6 +210,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     return launchAction.getFallbackConnection(this::cancel);
   }
 
+  @Nullable
   private GameHostingResponse createServerMessenger(
       final ServerConnectionProps props, final Consumer<String> errorHandler) {
     try {
