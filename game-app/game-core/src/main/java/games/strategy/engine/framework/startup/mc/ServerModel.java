@@ -47,7 +47,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -107,7 +106,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
   public Optional<GameHostingResponse> initialize() {
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    return getServerProps().map(props -> createServerMessenger(props, launchAction::handleError));
+    return getServerProps().map(this::createServerMessenger);
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -211,8 +210,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   }
 
   @Nullable
-  private GameHostingResponse createServerMessenger(
-      final ServerConnectionProps props, final Consumer<String> errorHandler) {
+  private GameHostingResponse createServerMessenger(final ServerConnectionProps props) {
     try {
       this.serverMessenger =
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
@@ -236,7 +234,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             new GameToLobbyConnection(
                 lobbyUri,
                 gameHostingResponse,
-                errorHandler,
+                launchAction::handleError,
                 ProductVersionReader.getCurrentVersion().toString());
 
         serverMessenger.setGameToLobbyConnection(gameToLobbyConnection);
