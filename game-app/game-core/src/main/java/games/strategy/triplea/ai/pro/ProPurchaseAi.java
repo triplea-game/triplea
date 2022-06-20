@@ -5,9 +5,11 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.ai.AbstractAi;
@@ -346,10 +348,11 @@ class ProPurchaseAi {
     // Prioritize sea place options and purchase units
     final List<ProPlaceTerritory> prioritizedSeaTerritories =
         prioritizeSeaTerritories(purchaseTerritories);
-    purchaseSeaAndAmphibUnits(purchaseTerritories, prioritizedSeaTerritories, purchaseOptions);
+    final boolean shouldSaveUpForAFleet =
+        purchaseSeaAndAmphibUnits(purchaseTerritories, prioritizedSeaTerritories, purchaseOptions);
 
     // Try to use any remaining PUs on high value units, except if we need to save up for a fleet.
-    if (!shouldSaveUpForAFleet(purchaseOptions, purchaseTerritories)) {
+    if (!shouldSaveUpForAFleet) {
       purchaseUnitsWithRemainingProduction(
           purchaseTerritories, purchaseOptions.getLandOptions(), purchaseOptions.getAirOptions());
 
@@ -400,11 +403,17 @@ class ProPurchaseAi {
     }
     // See if we can reach the enemy by sea from a sea placement territory.
     var placeSeaTerritories = new HashSet<Territory>();
+    int maxSeaUnitsThatCanBePlaced = 0;
     for (ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
+      boolean canProduceSeaUnits = false;
       for (ProPlaceTerritory placeTerritory : purchaseTerritory.getCanPlaceTerritories()) {
         if (placeTerritory.getTerritory().isWater()) {
           placeSeaTerritories.add(placeTerritory.getTerritory());
+          canProduceSeaUnits = true;
         }
+      }
+      if (canProduceSeaUnits) {
+        maxSeaUnitsThatCanBePlaced += purchaseTerritory.getUnitProduction();
       }
     }
     Optional<Territory> enemyLandReachableBySea =
@@ -412,10 +421,23 @@ class ProPurchaseAi {
             placeSeaTerritories,
             ProMatches.territoryCanMoveSeaUnits(player, true),
             Matches.isTerritoryEnemy(player).and(Matches.territoryIsLand()));
-    if (enemyLandReachableBySea.isPresent()) {
-      ProLogger.info("Saving up for a fleet, since enemy territories are only reachable by sea");
+    if (enemyLandReachableBySea.isEmpty()) {
+      return false;
     }
-    return enemyLandReachableBySea.isPresent();
+    // Don't save up more if we already have enough PUs to buy the biggest fleet we can.
+    IntegerMap<Resource> maxShipCost = IntegerMap.of();
+    Resource pus = player.getData().getResourceList().getResource(Constants.PUS);
+    for (ProPurchaseOption option : purchaseOptions.getSeaDefenseOptions()) {
+      if (option.getCost() > maxShipCost.getInt(pus)) {
+        maxShipCost = option.getCosts();
+      }
+    }
+    maxShipCost.multiplyAllValuesBy(maxSeaUnitsThatCanBePlaced);
+    if (resourceTracker.hasEnough(maxShipCost)) {
+      return false;
+    }
+    ProLogger.info("Saving up for a fleet, since enemy territories are only reachable by sea");
+    return true;
   }
 
   void place(
@@ -1497,16 +1519,19 @@ class ProPurchaseAi {
     return sortedTerritories;
   }
 
-  private void purchaseSeaAndAmphibUnits(
+  // Returns true if we should try to save up resources for a fleet next turn.
+  private boolean purchaseSeaAndAmphibUnits(
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final List<ProPlaceTerritory> prioritizedSeaTerritories,
       final ProPurchaseOptionMap purchaseOptions) {
     if (resourceTracker.isEmpty()) {
-      return;
+      return false;
     }
     ProLogger.info("Purchase sea and amphib units with resources: " + resourceTracker);
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    boolean boughtUnits = false;
+    boolean wantedToBuyUnitsButCouldNotDefendThem = false;
 
     final Predicate<Territory> canMoveSea = ProMatches.territoryCanMoveSeaUnits(player, false);
     // Loop through prioritized territories and purchase sea units
@@ -1676,6 +1701,7 @@ class ProPurchaseAi {
                   "%s, placedUnits=%s, TUVSwing=%s, win%%=%s",
                   t, unitsToPlace, result.getTuvSwing(), result.getWinPercentage()));
           addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
+          boughtUnits = true;
         } else {
           resourceTracker.clearTempPurchases();
           setCantHoldPlaceTerritory(placeTerritory, purchaseTerritories);
@@ -1689,6 +1715,7 @@ class ProPurchaseAi {
                   unitsToPlace,
                   attackers,
                   defendingUnits));
+          wantedToBuyUnitsButCouldNotDefendThem = true;
           continue;
         }
       }
@@ -1865,11 +1892,15 @@ class ProPurchaseAi {
       }
 
       // Add sea defender units to place territory
-      addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
+      if (!unitsToPlace.isEmpty()) {
+        addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
+        boughtUnits = true;
+      }
 
       // Loop through adjacent purchase territories and purchase transport/amphib units
       final int distance =
           ProTransportUtils.findMaxMovementForTransports(purchaseOptions.getSeaTransportOptions());
+      final Predicate<Territory> canMoveSea = ProMatches.territoryCanMoveSeaUnits(player, false);
       final Set<Territory> territoriesToCheck = new HashSet<>();
       for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
         final Territory landTerritory = purchaseTerritory.getTerritory();
@@ -2052,12 +2083,15 @@ class ProPurchaseAi {
         }
 
         // Add transport units to sea place territory and amphib units to land place territory
-        for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
-          if (landTerritory.equals(ppt.getTerritory())) {
-            addUnitsToPlace(ppt, amphibUnitsToPlace);
-          } else if (placeTerritory.equals(ppt)) {
-            addUnitsToPlace(ppt, transportUnitsToPlace);
+        if (amphibUnitsToPlace.isEmpty() || transportUnitsToPlace.isEmpty()) {
+          for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
+            if (landTerritory.equals(ppt.getTerritory())) {
+              addUnitsToPlace(ppt, amphibUnitsToPlace);
+            } else if (placeTerritory.equals(ppt)) {
+              addUnitsToPlace(ppt, transportUnitsToPlace);
+            }
           }
+          boughtUnits = true;
         }
         ProLogger.trace(
             String.format(
@@ -2065,6 +2099,12 @@ class ProPurchaseAi {
                 t, landTerritory, transportUnitsToPlace, amphibUnitsToPlace));
       }
     }
+
+    // If we wanted to buy a fleet, but didn't because it couldn't be defended, check if we should
+    // save up for one. If so, check if we should save up.
+    return !boughtUnits
+        && wantedToBuyUnitsButCouldNotDefendThem
+        && shouldSaveUpForAFleet(purchaseOptions, purchaseTerritories);
   }
 
   private void purchaseUnitsWithRemainingProduction(
