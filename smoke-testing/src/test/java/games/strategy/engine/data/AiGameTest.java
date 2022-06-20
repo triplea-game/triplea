@@ -66,6 +66,9 @@ public class AiGameTest {
       }
       log.info(i + " first round stats: " + getResourceSummary(game.getData()));
       assertThat(game.isGameOver(), is(false));
+      // Need to call stopGame() to ensure ProAI resets its static ConcurrentBattleCalculator, else
+      // the next test will use the wrong GameData for simulation.
+      game.stopGame();
     }
   }
 
