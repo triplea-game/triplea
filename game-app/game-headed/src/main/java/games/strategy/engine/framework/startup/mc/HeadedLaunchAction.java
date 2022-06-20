@@ -208,7 +208,7 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public PlayerTypes.Type getDefaultLocalType() {
+  public PlayerTypes.Type getDefaultLocalPlayerType() {
     return HeadedPlayerTypes.HUMAN_PLAYER;
   }
 }

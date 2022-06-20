@@ -478,7 +478,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
     final Map<String, PlayerTypes.Type> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerTypes.Type defaultLocalType = launchAction.getDefaultLocalType();
+    final PlayerTypes.Type defaultLocalType = launchAction.getDefaultLocalPlayerType();
     for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
       final String player = entry.getKey();
       final String playedBy = entry.getValue();

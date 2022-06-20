@@ -162,7 +162,7 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public PlayerTypes.Type getDefaultLocalType() {
+  public PlayerTypes.Type getDefaultLocalPlayerType() {
     return PlayerTypes.WEAK_AI;
   }
 }

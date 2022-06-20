@@ -64,5 +64,5 @@ public interface LaunchAction {
    */
   boolean promptGameStop(String status, String title, Path mapLocation);
 
-  PlayerTypes.Type getDefaultLocalType();
+  PlayerTypes.Type getDefaultLocalPlayerType();
 }
