@@ -608,7 +608,7 @@ class ProPurchaseAi {
         }
 
         // Find current battle result
-        final Set<Unit> enemyAttackingUnits =
+        final Collection<Unit> enemyAttackingUnits =
             new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
         final ProBattleResult result =
@@ -1606,7 +1606,6 @@ class ProPurchaseAi {
                   purchaseTerritory.getTerritory(),
                   isBid);
           seaPurchaseOptionsForTerritory.addAll(purchaseOptions.getAirOptions());
-
           // Purchase enough sea defenders to hold territory
           while (true) {
             final boolean hasOnlyRetreatingSubs =
