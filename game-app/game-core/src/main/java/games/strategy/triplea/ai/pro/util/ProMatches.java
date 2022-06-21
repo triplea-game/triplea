@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
+import org.triplea.java.PredicateBuilder;
 
 /** Pro AI matches. */
 @UtilityClass
@@ -228,6 +229,20 @@ public final class ProMatches {
       return t.getUnitCollection().allMatch(nonBlockingUnit)
           || Matches.territoryHasNoEnemyUnits(player).test(t);
     };
+  }
+
+  public static Predicate<Territory> territoryIsBlockedSea(final GamePlayer player) {
+    final Predicate<Unit> transport =
+        not(Matches.unitIsSeaTransportButNotCombatSeaTransport()).and(not(Matches.unitIsLand()));
+    final Predicate<Unit> unitCond =
+        PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
+            .and(Matches.alliedUnit(player).negate())
+            .and(Matches.unitCanBeMovedThroughByEnemies().negate())
+            .andIf(
+                Properties.getIgnoreTransportInMovement(player.getData().getProperties()),
+                transport)
+            .build();
+    return Matches.territoryHasUnitsThatMatch(unitCond).negate().and(Matches.territoryIsWater());
   }
 
   public static Predicate<Territory> territoryHasEnemyUnitsOrCantBeHeld(

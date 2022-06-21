@@ -254,7 +254,7 @@ public class MovePanel extends AbstractMovePanel {
                   Matches.unitIsAirTransport()
                       .and(Matches.unitIsOwnedBy(player))
                       .and(Matches.unitHasNotMoved())
-                      .and(Matches.transportIsNotTransporting());
+                      .and(transport -> transport.getTransporting(t).isEmpty());
               final Collection<Unit> candidateAirTransports =
                   CollectionUtils.getMatches(
                       t.getUnitCollection().getMatches(unitsToMoveMatch),

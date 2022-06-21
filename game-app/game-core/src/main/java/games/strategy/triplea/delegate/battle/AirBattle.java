@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
+import static java.util.function.Predicate.not;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -196,7 +198,7 @@ public class AirBattle extends AbstractBattle {
               // kill any suicide attackers (veqryn)
               final Predicate<Unit> attackerSuicide =
                   PredicateBuilder.of(Matches.unitIsSuicideOnAttack())
-                      .andIf(isBombingRun, Matches.unitIsNotStrategicBomber())
+                      .andIf(isBombingRun, not(Matches.unitIsStrategicBomber()))
                       .build();
               if (attackingUnits.stream().anyMatch(attackerSuicide)) {
                 final List<Unit> suicideUnits =
