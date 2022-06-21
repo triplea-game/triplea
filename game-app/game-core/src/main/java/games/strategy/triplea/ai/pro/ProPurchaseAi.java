@@ -1900,7 +1900,6 @@ class ProPurchaseAi {
       // Loop through adjacent purchase territories and purchase transport/amphib units
       final int distance =
           ProTransportUtils.findMaxMovementForTransports(purchaseOptions.getSeaTransportOptions());
-      final Predicate<Territory> canMoveSea = ProMatches.territoryCanMoveSeaUnits(player, false);
       final Set<Territory> territoriesToCheck = new HashSet<>();
       for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
         final Territory landTerritory = purchaseTerritory.getTerritory();
