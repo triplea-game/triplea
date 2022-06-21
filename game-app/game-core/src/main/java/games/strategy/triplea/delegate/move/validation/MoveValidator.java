@@ -1430,7 +1430,7 @@ public class MoveValidator {
     if (!units.stream().allMatch(Matches.unitIsAir().or(Matches.unitIsLand()))) {
       return true;
     }
-    if (units.stream().anyMatch(Matches.unitIsNotAirTransportable().and(Matches.unitIsLand()))) {
+    if (units.stream().anyMatch(not(Matches.unitIsAirTransportable()).and(Matches.unitIsLand()))) {
       return true;
     }
     return !allLandUnitsAreBeingParatroopered(units);
