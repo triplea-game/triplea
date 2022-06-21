@@ -26,6 +26,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1162,29 +1163,24 @@ public class ProCombatMoveAi {
       final Set<Unit> alreadyAttackedWithUnits) {
     final boolean raidsMayBePrecededByAirBattles =
         Properties.getRaidsMayBePreceededByAirBattles(data.getProperties());
-    territoryManager
-        .getAttackOptions()
-        .getBomberMoveMap()
-        .entrySet()
-        .forEach(
-            bomberEntry -> {
-              final Unit bomber = bomberEntry.getKey();
-              if (alreadyAttackedWithUnits.contains(bomber)) {
-                return; // already attacked bombers cannot move
-              }
-              Set<Territory> bomberTargetTerritories = bomberEntry.getValue();
-              if (raidsMayBePrecededByAirBattles) {
-                bomberTargetTerritories =
-                    new HashSet(
-                        CollectionUtils.getMatches(
-                            bomberTargetTerritories,
-                            terr ->
-                                AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
-                                    terr, player, data, true)));
-              }
-              determineBestBombingAttackForBomber(
-                  attackMap, sortedUnitAttackOptions, bomberTargetTerritories, bomber);
-            });
+    if (raidsMayBePrecededByAirBattles) {
+      return; // no raids possible
+    }
+    for (final Map.Entry<Unit, Set<Territory>> bomberEntry :
+        territoryManager.getAttackOptions().getBomberMoveMap().entrySet()) {
+      final Unit bomber = bomberEntry.getKey();
+      if (alreadyAttackedWithUnits.contains(bomber)) {
+        return; // already attacked bombers cannot move
+      }
+      final Collection<Territory> bomberTargetTerritories =
+          CollectionUtils.getMatches(
+              bomberEntry.getValue(),
+              terr ->
+                  !AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
+                      terr, player, data, true));
+      determineBestBombingAttackForBomber(
+          attackMap, sortedUnitAttackOptions, bomberTargetTerritories, bomber);
+    }
   }
 
   /**
@@ -1198,7 +1194,7 @@ public class ProCombatMoveAi {
   private void determineBestBombingAttackForBomber(
       final Map<Territory, ProTerritory> attackMap,
       final Map<Unit, Set<Territory>> sortedUnitAttackOptions,
-      final Set<Territory> bomberTargetTerritories,
+      final Collection<Territory> bomberTargetTerritories,
       final Unit bomber) {
     final Predicate<Unit> bombingTargetMatch =
         Matches.unitCanProduceUnitsAndCanBeDamaged()
@@ -1225,7 +1221,7 @@ public class ProCombatMoveAi {
         }
         // assume each other bomber causes a damage of 3
         final int remainingDamagePotential =
-            maxDamageProduction - neededDamageUnits - 3 * sameTargetBombers.size();
+            maxDamageProduction + neededDamageUnits - 3 * sameTargetBombers.size();
         final int bombingScore = (1 + 9 * noAaBombingDefense) * remainingDamagePotential;
         if (bombingScore >= maxBombingScore) {
           maxBombingScore = bombingScore;
