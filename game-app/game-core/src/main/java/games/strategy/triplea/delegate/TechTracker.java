@@ -237,7 +237,7 @@ public class TechTracker {
     final Collection<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
     final TechAttachment attachment = gamePlayer.getTechAttachment();
     for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(gamePlayer)) {
-      if (tf.getTechs().stream().anyMatch(t -> !t.hasTech(attachment))) {
+      if (tf.getTechs().stream().allMatch(t -> t.hasTech(attachment))) {
         technologyFrontiers.add(tf);
       }
     }

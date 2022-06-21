@@ -3,12 +3,10 @@ package org.triplea.spitfire.server.controllers;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
-import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,9 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpConstants;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
@@ -73,14 +71,16 @@ class GameListingWebsocketIntegrationTest extends ControllerIntegrationTest {
   private interface GamePostingTestOverrideClient {
     /** Posts a game, for test-only, returns a game-id from server. */
     @RequestLine("POST " + LobbyWatcherController.TEST_ONLY_GAME_POSTING_PATH)
-    GamePostingResponse postGame(
-        @HeaderMap Map<String, Object> headers, GamePostingRequest gamePostingRequest);
+    GamePostingResponse postGame(GamePostingRequest gamePostingRequest);
   }
 
   @BeforeEach
   void setUp() {
     gamePostingTestOverrideClient =
-        new HttpClient<>(GamePostingTestOverrideClient.class, localhost).get();
+        HttpClient.newClient(
+            GamePostingTestOverrideClient.class,
+            localhost,
+            new AuthenticationHeaders(ControllerIntegrationTest.HOST).createHeaders());
 
     lobbyWatcherClient = LobbyWatcherClient.newClient(localhost, ControllerIntegrationTest.HOST);
 
@@ -90,7 +90,8 @@ class GameListingWebsocketIntegrationTest extends ControllerIntegrationTest {
             ControllerIntegrationTest.PLAYER,
             error -> {
               throw new AssertionError(error);
-            });
+            },
+            "2.6");
     playerToLobbyConnection.addMessageListener(
         LobbyGameUpdatedMessage.TYPE,
         messageContext -> gameUpdatedListener.accept(messageContext.getLobbyGameListing()));
@@ -113,11 +114,7 @@ class GameListingWebsocketIntegrationTest extends ControllerIntegrationTest {
   }
 
   private String postGame() {
-    return gamePostingTestOverrideClient
-        .postGame(
-            new AuthenticationHeaders(ControllerIntegrationTest.HOST).createHeaders(),
-            GAME_POSTING_REQUEST)
-        .getGameId();
+    return gamePostingTestOverrideClient.postGame(GAME_POSTING_REQUEST).getGameId();
   }
 
   @Test

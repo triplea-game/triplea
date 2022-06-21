@@ -8,7 +8,6 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.MessengersChatTransmitter;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
@@ -36,7 +35,6 @@ import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.debug.ChatAppender;
 import org.triplea.java.ThreadRunner;
 import org.triplea.sound.HeadlessSoundChannel;
-import org.triplea.sound.ISound;
 
 @Slf4j
 public class HeadlessLaunchAction implements LaunchAction {
@@ -80,7 +78,7 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public IDisplay startGame(
+  public void startGame(
       final LocalPlayers localPlayers,
       final IGame game,
       final Set<Player> players,
@@ -91,12 +89,8 @@ public class HeadlessLaunchAction implements LaunchAction {
             .orElseThrow(
                 () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
     game.setResourceLoader(new ResourceLoader(mapPath));
-    return new HeadlessDisplay();
-  }
-
-  @Override
-  public ISound getSoundChannel(final LocalPlayers localPlayers) {
-    return new HeadlessSoundChannel();
+    game.setDisplay(new HeadlessDisplay());
+    game.setSoundChannel(new HeadlessSoundChannel());
   }
 
   @Override
@@ -165,5 +159,10 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public boolean promptGameStop(String status, String title, Path mapLocation) {
     return true;
+  }
+
+  @Override
+  public PlayerTypes.Type getDefaultLocalPlayerType() {
+    return PlayerTypes.WEAK_AI;
   }
 }

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import games.strategy.engine.player.Player;
 import java.util.List;
-import org.hamcrest.Matchers;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.Test;
 
@@ -16,14 +15,9 @@ class PlayerTypesTest {
   void playerTypes() {
     final PlayerTypes playerTypes = new PlayerTypes(PlayerTypes.getBuiltInPlayerTypes());
     assertThat(
-        "Ensure we do not have an example invisible player type in the selection list",
-        List.of(playerTypes.getAvailablePlayerLabels()),
-        Matchers.not(IsCollectionContaining.hasItem(PlayerTypes.CLIENT_PLAYER.getLabel())));
-
-    assertThat(
         "Ensure we have a visible player type in the selection list",
         List.of(playerTypes.getAvailablePlayerLabels()),
-        IsCollectionContaining.hasItem(PlayerTypes.HUMAN_PLAYER.getLabel()));
+        IsCollectionContaining.hasItem(PlayerTypes.WEAK_AI.getLabel()));
   }
 
   @Test
@@ -31,15 +25,15 @@ class PlayerTypesTest {
     final String testName = "example";
 
     final PlayerTypes playerTypesProvider = new PlayerTypes(PlayerTypes.getBuiltInPlayerTypes());
-    playerTypesProvider.getPlayerTypes().stream()
-        .filter(playerType -> !playerType.equals(PlayerTypes.BATTLE_CALC_DUMMY))
+    playerTypesProvider
+        .getPlayerTypes()
         .forEach(
             playerType -> {
               final Player result = playerType.newPlayerWithName(testName);
               assertThat(
-                  "The player type should match after construction, input type: " + playerType,
-                  result.getPlayerType(),
-                  is(playerType));
+                  "The player label should match after construction, input type: " + playerType,
+                  result.getPlayerLabel(),
+                  is(playerType.getLabel()));
               assertThat(
                   "The name is a passed in parameter, this should still match after construction",
                   result.getName(),

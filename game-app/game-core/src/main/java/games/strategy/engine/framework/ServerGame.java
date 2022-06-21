@@ -38,7 +38,6 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
@@ -618,7 +617,7 @@ public class ServerGame extends AbstractGame {
     bridge.getHistoryWriter().startEvent("Game Loaded");
     for (final Player player : localPlayers) {
       allPlayersString.remove(player.getName());
-      final boolean isHuman = player instanceof TripleAPlayer;
+      final boolean isAi = player.isAi();
       bridge
           .getHistoryWriter()
           .addChildToEvent(
@@ -629,10 +628,9 @@ public class ServerGame extends AbstractGame {
                       ? " are"
                       : " is")
                   + " now being played by: "
-                  + player.getPlayerType().getLabel());
+                  + player.getPlayerLabel());
       final GamePlayer p = data.getPlayerList().getPlayerId(player.getName());
-      final String newWhoAmI =
-          ((isHuman ? "Human" : "AI") + ":" + player.getPlayerType().getLabel());
+      final String newWhoAmI = (isAi ? "AI" : "Human") + ":" + player.getPlayerLabel();
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
       }

@@ -24,9 +24,7 @@ final class GameParserTest {
   @Test
   @DisplayName("Verify backward compatibility can parse 1.8 maps")
   void backwardCompatibilityCheck() throws Exception {
-    final Path mapFile =
-        Path.of(GameParserTest.class.getClassLoader().getResource("v1_8_map__270BC.xml").toURI());
-
+    final Path mapFile = getTestMap("v1_8_map__270BC.xml");
     final GameData gameData =
         GameParser.parse(mapFile, new XmlGameElementMapper(), new Version("2.0.0")).orElseThrow();
     assertNotNullGameData(gameData);
@@ -152,5 +150,9 @@ final class GameParserTest {
                     is(decapitalizedValue));
               });
     }
+  }
+
+  private Path getTestMap(String name) throws Exception {
+    return Path.of(GameParserTest.class.getClassLoader().getResource(name).toURI());
   }
 }

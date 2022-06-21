@@ -7,6 +7,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
+import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
@@ -107,7 +108,8 @@ public class HeadedServerSetupModel implements ServerSetupModel {
             this,
             new HeadedLaunchAction(ui),
             HeadedGameRunner::showMainFrame,
-            HeadedGameRunner::clientLeftGame);
+            HeadedGameRunner::clientLeftGame,
+            HeadedPlayerTypes.CLIENT_PLAYER);
     if (model.createClientMessenger(ui)) {
       SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
     } else {

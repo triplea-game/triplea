@@ -14,6 +14,7 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,8 @@ import org.triplea.util.Version;
 
 class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
+  // Use a single TuvCostsCalculator so its computations are cached.
+  private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
   @Setter private boolean keepOneAttackingLandUnit = false;
   @Setter private boolean amphibious = false;
   @Setter private int retreatAfterRound = -1;
@@ -104,7 +107,8 @@ class BattleCalculator implements IBattleCalculator {
                 keepOneAttackingLandUnit,
                 retreatAfterRound,
                 retreatAfterXUnitsLeft,
-                retreatWhenOnlyAirLeft);
+                retreatWhenOnlyAirLeft,
+                tuvCalculator);
         final MustFightBattle battle =
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);

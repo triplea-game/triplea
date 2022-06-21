@@ -17,7 +17,7 @@ import ru.lanwen.wiremock.ext.WiremockResolver;
 class MapTagAdminClientTest extends WireMockTest {
 
   private static MapTagAdminClient newClient(final WireMockServer wireMockServer) {
-    return newClient(wireMockServer, MapTagAdminClient::new);
+    return newClient(wireMockServer, MapTagAdminClient::newClient);
   }
 
   @Test
@@ -44,7 +44,7 @@ class MapTagAdminClientTest extends WireMockTest {
                     .withStatus(200)
                     .withBody(JsonUtil.toJson(getMapTagMetaDataResponse))));
 
-    final var result = newClient(wireMockServer).fetchTagsMetaData();
+    final var result = newClient(wireMockServer).fetchAllowedMapTagValues();
 
     assertThat(result, is(getMapTagMetaDataResponse));
   }

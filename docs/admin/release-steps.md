@@ -43,11 +43,6 @@ Clean up the above output and update the release-notes.md page on website.
 Increase latest version to the release. This will trigger in-game
 notifications to upgrade
 
-## Update partner sites:
-
-  - http://www.freewarefiles.com/TripleA_program_56699.html
-  - http://download.cnet.com/TripleA/3000-18516_4-75184098.html
-
 ## Post to forums:
 
   - https://forums.triplea-game.org/category/1/announcements

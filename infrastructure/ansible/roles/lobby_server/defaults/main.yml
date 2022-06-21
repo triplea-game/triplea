@@ -13,8 +13,6 @@ lobby_server_db_user: lobby_user
 github_api_token: ""
 lobby_artifact: triplea-dropwizard-server-{{ lobby_version }}.zip
 lobby_jar_file: triplea-dropwizard-server-{{ lobby_version }}.jar
-lobby_artifact_download: |
-  "{{ github_releases_url }}/{{ lobby_version }}/{{ lobby_artifact }}"
 lobby_restart_on_new_deployment: true
 
 # How often to run map indexing. We need to be able to index all maps

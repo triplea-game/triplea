@@ -8,13 +8,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -134,9 +133,9 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   @Override
   public void stopGameSequence(String status, String title) {}
 
-  static class ObjectivePanelDummyPlayer extends AbstractBuiltInAi {
+  static class ObjectivePanelDummyPlayer extends AbstractAi {
     ObjectivePanelDummyPlayer(final String name) {
-      super(name);
+      super(name, "ObjectivePanelDummyPlayer");
     }
 
     @Override
@@ -245,11 +244,6 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
         final Collection<Unit> potentialTargets,
         final Collection<Unit> bombers) {
       throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public PlayerTypes.Type getPlayerType() {
-      return PlayerTypes.BATTLE_CALC_DUMMY;
     }
   }
 }

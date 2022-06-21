@@ -10,6 +10,7 @@ import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.ClientVersionHeader;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
@@ -41,12 +42,14 @@ public class PlayerToLobbyConnection {
   public PlayerToLobbyConnection(
       @Nonnull final URI lobbyUri,
       @Nonnull final ApiKey apiKey,
-      @Nonnull final Consumer<String> errorHandler) {
+      @Nonnull final Consumer<String> errorHandler,
+      @Nonnull final String version) {
     httpLobbyClient = HttpLobbyClient.newClient(lobbyUri, apiKey);
     webSocket =
         GenericWebSocketClient.builder()
             .errorHandler(errorHandler)
             .websocketUri(URI.create(lobbyUri + WebsocketPaths.PLAYER_CONNECTIONS))
+            .headers(ClientVersionHeader.buildHeader(version))
             .build();
     webSocket.connect();
     gameListingClient = httpLobbyClient.newGameListingClient();
@@ -103,7 +106,7 @@ public class PlayerToLobbyConnection {
   }
 
   public void disconnectPlayer(final PlayerChatId playerChatId) {
-    httpLobbyClient.getModeratorLobbyClient().disconnectPlayer(playerChatId);
+    httpLobbyClient.getModeratorLobbyClient().disconnectPlayer(playerChatId.getValue());
   }
 
   public void banPlayer(final BanPlayerRequest banPlayerRequest) {
@@ -111,7 +114,7 @@ public class PlayerToLobbyConnection {
   }
 
   public String fetchEmail() {
-    return httpLobbyClient.getUserAccountClient().fetchEmail();
+    return httpLobbyClient.getUserAccountClient().fetchEmail().getUserEmail();
   }
 
   public void changeEmail(final String newEmail) {
@@ -123,7 +126,9 @@ public class PlayerToLobbyConnection {
   }
 
   public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
-    return httpLobbyClient.getPlayerLobbyActionsClient().fetchPlayerInformation(playerChatId);
+    return httpLobbyClient
+        .getPlayerLobbyActionsClient()
+        .fetchPlayerInformation(playerChatId.getValue());
   }
 
   public void mutePlayer(final PlayerChatId playerChatId, final long minutes) {

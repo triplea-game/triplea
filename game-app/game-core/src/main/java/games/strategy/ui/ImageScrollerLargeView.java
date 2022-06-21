@@ -2,6 +2,7 @@ package games.strategy.ui;
 
 import com.google.common.primitives.Doubles;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.UiContext;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -74,7 +75,7 @@ public class ImageScrollerLargeView extends JComponent {
             insideCount++;
             if (insideCount > 6) {
               // Scroll the map when the mouse has hovered inside the scroll zone for long enough
-              SwingUtilities.invokeLater(new Scroller());
+              SwingUtilities.invokeLater(ImageScrollerLargeView.this::scroll);
             }
           }
         }
@@ -317,7 +318,7 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   private double constrainScale(final double value) {
-    return Doubles.constrainToRange(value, getMinScale(), 1.0);
+    return Doubles.constrainToRange(value, getMinScale(), UiContext.MAP_SCALE_MAX_VALUE);
   }
 
   /** Update will not be seen until update is called. Resets the offscreen image to the original. */
@@ -327,13 +328,6 @@ public class ImageScrollerLargeView extends JComponent {
 
   public int getYOffset() {
     return model.getY();
-  }
-
-  private class Scroller implements Runnable {
-    @Override
-    public void run() {
-      scroll();
-    }
   }
 
   protected double getScaledWidth() {

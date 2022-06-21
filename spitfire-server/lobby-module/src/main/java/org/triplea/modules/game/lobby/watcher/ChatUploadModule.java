@@ -29,9 +29,11 @@ public class ChatUploadModule {
         jdbi.onDemand(LobbyGameDao.class), gameListing::isValidApiKeyAndGameId);
   }
 
-  public boolean upload(final ChatMessageUpload chatMessageUpload) {
+  public boolean upload(final String apiKey, final ChatMessageUpload chatMessageUpload) {
     if (gameIdValidator.test(
-        ApiKey.of(chatMessageUpload.getApiKey()), chatMessageUpload.getGameId())) {
+        // truncate 'Bearer ' from the apiKey if
+        ApiKey.of(apiKey.startsWith("Bearer ") ? apiKey.substring("Bearer ".length()) : apiKey),
+        chatMessageUpload.getGameId())) {
       lobbyGameDao.recordChat(chatMessageUpload);
       return true;
     }

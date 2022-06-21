@@ -11,7 +11,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.TuvUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,7 +102,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (randomTerritories) {
         pos += hitRandom[i];
         i++;
-        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(currentPickingPlayer, data);
+        final IntegerMap<UnitType> costs = bridge.getCostsForTuv(currentPickingPlayer);
         final List<Unit> units = new ArrayList<>(currentPickingPlayer.getUnits());
 
         units.sort(Comparator.comparingInt(unit -> costs.getInt(unit.getType())));

@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -53,20 +54,24 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
 
   @Builder
   public GenericWebSocketClient(
-      @Nonnull final URI websocketUri, @Nonnull final Consumer<String> errorHandler) {
+      @Nonnull final URI websocketUri,
+      @Nonnull final Consumer<String> errorHandler,
+      @Nonnull final Map<String, String> headers) {
     this(
-        new WebSocketProtocolSwapper().apply(websocketUri), errorHandler, WebSocketConnection::new);
-  }
-
-  public GenericWebSocketClient(@Nonnull final URI websocketUri) {
-    this(websocketUri, log::warn);
+        new WebSocketProtocolSwapper().apply(websocketUri),
+        errorHandler,
+        uri -> new WebSocketConnection(uri, headers));
   }
 
   @VisibleForTesting
+  public GenericWebSocketClient(final URI websocketUri, Map<String, String> headers) {
+    this(websocketUri, log::warn, headers);
+  }
+
   GenericWebSocketClient(
-      final URI websocketUri,
-      final Consumer<String> errorHandler,
-      final Function<URI, WebSocketConnection> webSocketConnectionFactory) {
+      URI websocketUri,
+      Consumer<String> errorHandler,
+      Function<URI, WebSocketConnection> webSocketConnectionFactory) {
     Preconditions.checkArgument(
         websocketUri.getScheme().equals("ws") || websocketUri.getScheme().equals("wss"),
         "Websocket URI scheme must be either ws or wss, but was: " + websocketUri);

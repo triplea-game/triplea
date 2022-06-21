@@ -1572,10 +1572,10 @@ class ProNonCombatMoveAi {
             // Find best unload territory
             Territory unloadToTerritory =
                 possibleUnloadTerritories.stream()
-                    .filter(t -> moveMap.get(t).isCanHold())
+                    .filter(t -> moveMap.get(t) != null && moveMap.get(t).isCanHold())
                     .findAny()
                     .orElse(CollectionUtils.getAny(possibleUnloadTerritories));
-            proDestination = moveMap.get(unloadToTerritory);
+            proDestination = proData.getProTerritory(moveMap, unloadToTerritory);
             ProLogger.trace(
                 String.format(
                     "%s moved to safest territory at %s and unloading to %s with %s, "
@@ -1586,8 +1586,8 @@ class ProNonCombatMoveAi {
                     amphibUnits,
                     minStrengthDifference));
           } else {
-            proDestination = moveMap.get(minTerritory);
             // Move transport with units since no unload options
+            proDestination = proData.getProTerritory(moveMap, minTerritory);
             ProLogger.trace(
                 String.format(
                     "%s moved to safest territory at %s with %s, strengthDifference=%s",

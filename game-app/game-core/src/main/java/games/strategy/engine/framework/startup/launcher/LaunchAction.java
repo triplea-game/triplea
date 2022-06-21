@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.launcher;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
@@ -19,7 +18,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import org.triplea.game.chat.ChatModel;
-import org.triplea.sound.ISound;
 
 /**
  * Abstraction to allow decoupling the UI framework (namely swing) from the launching code. Ideally
@@ -34,9 +32,7 @@ public interface LaunchAction {
 
   Collection<PlayerTypes.Type> getPlayerTypes();
 
-  IDisplay startGame(LocalPlayers localPlayers, IGame game, Set<Player> players, Chat chat);
-
-  ISound getSoundChannel(LocalPlayers localPlayers);
+  void startGame(LocalPlayers localPlayers, IGame game, Set<Player> players, Chat chat);
 
   Path getAutoSaveFile();
 
@@ -67,4 +63,6 @@ public interface LaunchAction {
    * @return true if the game should stop execution, false otherwise.
    */
   boolean promptGameStop(String status, String title, Path mapLocation);
+
+  PlayerTypes.Type getDefaultLocalPlayerType();
 }

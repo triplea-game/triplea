@@ -17,13 +17,14 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.player.Player;
+import lombok.experimental.UtilityClass;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
 import org.triplea.sound.ISound;
 
+@UtilityClass
 public final class MockDelegateBridge {
-  private MockDelegateBridge() {}
 
   /**
    * Returns a new delegate bridge suitable for testing the given game data and player.
@@ -50,6 +51,7 @@ public final class MockDelegateBridge {
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
+    when(delegateBridge.getCostsForTuv(any())).thenCallRealMethod();
     return delegateBridge;
   }
 
@@ -60,9 +62,17 @@ public final class MockDelegateBridge {
   public static Answer<int[]> withValues(final int... values) {
     return invocation -> {
       final int count = invocation.getArgument(1);
-      assertThat("count of requested random values does not match", values.length, is(count));
+      assertThat("count of requested random values does not match", count, is(values.length));
       return values;
     };
+  }
+
+  public static Answer<int[]> withDiceValues(final int... values) {
+    for (int i = 0; i < values.length; i++) {
+      // A die roll of N corresponds to a random value of N - 1.
+      values[i] -= 1;
+    }
+    return withValues(values);
   }
 
   public static void thenGetRandomShouldHaveBeenCalled(

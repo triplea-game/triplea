@@ -3,9 +3,11 @@ package org.triplea.http.client.maps.listing;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import feign.FeignException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.WireMockTest;
@@ -37,7 +39,7 @@ class MapsClientTest extends WireMockTest {
               .build());
 
   private static MapsClient newClient(final WireMockServer wireMockServer) {
-    return newClient(wireMockServer, MapsClient::new);
+    return newClient(wireMockServer, MapsClient::newClient);
   }
 
   @Test
@@ -49,7 +51,7 @@ class MapsClientTest extends WireMockTest {
                     .withStatus(200)
                     .withBody(JsonUtil.toJson(mapsListingResponse))));
 
-    final var result = newClient(wireMockServer).fetchMapDownloads();
+    final var result = newClient(wireMockServer).fetchMapListing();
 
     assertThat(result, is(mapsListingResponse));
   }
@@ -60,8 +62,6 @@ class MapsClientTest extends WireMockTest {
         get(MapsClient.MAPS_LISTING_PATH)
             .willReturn(WireMock.aResponse().withStatus(404).withBody("404 Not Found")));
 
-    final var result = newClient(wireMockServer).fetchMapDownloads();
-
-    assertThat(result, is(List.of()));
+    assertThrows(FeignException.class, () -> newClient(wireMockServer).fetchMapListing());
   }
 }

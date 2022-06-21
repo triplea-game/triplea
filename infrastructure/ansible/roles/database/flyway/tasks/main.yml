@@ -22,20 +22,11 @@
     owner: flyway
     group: flyway
 
-- name: copy flyway migrations zip (prerelease build only)
-  tags: [deploy, prerelease]
+- name: copy flyway migrations zip
   copy:
     src: "migrations.zip"
     dest: "/home/flyway/migrations.zip"
     mode: "0644"
-    owner: flyway
-    group: flyway
-
-- name: download flyway migrations (release build only)
-  tags: [deploy, release]
-  get_url:
-    url: "{{ migrations_url }}"
-    dest: "/home/flyway/migrations.zip"
     owner: flyway
     group: flyway
 
@@ -48,7 +39,6 @@
     path : "{{ flyway_extracted_location }}/migrations"
 
 - name: extract migrations
-  tags: [deploy]
   unarchive:
      src: "/home/flyway/migrations.zip"
      remote_src: true
@@ -66,7 +56,6 @@
     group: flyway
 
 - name: run flyway
-  tags: [deploy]
   command: |
      {{ flyway_extracted_location }}/flyway
           -X

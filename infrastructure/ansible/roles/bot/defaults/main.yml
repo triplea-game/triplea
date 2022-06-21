@@ -25,10 +25,6 @@ bot_numbers: ["01", "02", "03", "04" ]
 # EG: with bot_prefix = 1, and bot_number=01, the bot number in the bot name will be '101'.
 bot_prefix: ""
 
-# Download URL for grabbing bot artifacts, used only in production release builds, prerelease
-# builds use a locally built artifact.
-zip_download: "https://github.com/triplea-game/triplea/releases/download/{{ bot_version }}/triplea-game-headless-{{ bot_version }}.zip"
-
 # Name of the bot server, this will typically be overriden in inventory. The final name of the bot host is
 # concatenation of the "Bot" the "bot name", and the "bot number" with prefix.
 bot_name: "Server"

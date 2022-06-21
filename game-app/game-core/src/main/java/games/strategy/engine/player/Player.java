@@ -39,8 +39,16 @@ public interface Player extends IRemote {
   @RemoteActionCode(6)
   String getName();
 
+  @SuppressWarnings("unused")
+  @RemoveOnNextMajorRelease
   @RemoteActionCode(8)
-  PlayerTypes.Type getPlayerType();
+  default PlayerTypes.Type getPlayerType() {
+    throw new UnsupportedOperationException("This method should not be called over the network");
+  }
+
+  String getPlayerLabel();
+
+  boolean isAi();
 
   /**
    * Start the given step. stepName appears as it does in the game xml file. The game step will

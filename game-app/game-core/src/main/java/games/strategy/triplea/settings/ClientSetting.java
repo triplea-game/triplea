@@ -240,7 +240,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   /** A method exposing internals for testing purposes. */
   @VisibleForTesting
-  static void resetPreferences() {
+  public static void resetPreferences() {
     preferencesRef.set(null);
   }
 

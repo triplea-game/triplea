@@ -8,7 +8,6 @@ import static org.hamcrest.core.IsNull.nullValue;
 import java.net.URI;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
@@ -34,8 +33,7 @@ class PlayerInfoControllerIntegrationTest extends ControllerIntegrationTest {
   Http 400 - Bad Request: Player could not be found, have they left chat?
   */
   void fetchPlayerInfo() {
-    final PlayerSummary playerSummary =
-        client.fetchPlayerInformation(PlayerChatId.of("chatter-chat-id2"));
+    final PlayerSummary playerSummary = client.fetchPlayerInformation("chatter-chat-id2");
 
     assertThat(playerSummary.getCurrentGames(), is(notNullValue()));
     assertThat(playerSummary.getIp(), is(nullValue()));
@@ -51,8 +49,7 @@ class PlayerInfoControllerIntegrationTest extends ControllerIntegrationTest {
   Http 400 - Bad Request: Player could not be found, have they left chat?
   */
   void fetchPlayerInfoAsModerator() {
-    final PlayerSummary playerSummary =
-        moderatorClient.fetchPlayerInformation(PlayerChatId.of("chatter-chat-id2"));
+    final PlayerSummary playerSummary = moderatorClient.fetchPlayerInformation("chatter-chat-id2");
 
     assertThat(playerSummary.getIp(), is(notNullValue()));
     assertThat(playerSummary.getRegistrationDateEpochMillis(), is(notNullValue()));

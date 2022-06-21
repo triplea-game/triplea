@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
-import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
+import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ACTIVE;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
@@ -27,8 +27,8 @@ public class MainDiceRoller
             step.getBattleState().getBattleSite(),
             step.getBattleState().getStatus().getRound()),
         CombatValueBuilder.mainCombatValue()
-            .enemyUnits(step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()))
-            .friendlyUnits(step.getBattleState().filterUnits(ALIVE, step.getSide()))
+            .enemyUnits(step.getBattleState().filterUnits(ACTIVE, step.getSide().getOpposite()))
+            .friendlyUnits(step.getBattleState().filterUnits(ACTIVE, step.getSide()))
             .side(step.getSide())
             .gameSequence(step.getBattleState().getGameData().getSequence())
             .supportAttachments(

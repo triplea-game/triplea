@@ -20,13 +20,16 @@ public abstract class AbstractBasePlayer implements Player {
   @Getter(onMethod_ = {@Override})
   private final String name; // what nation are we playing? ex: "Americans"
 
+  private final String playerLabel;
+
   @Getter(onMethod_ = {@Override})
   private GamePlayer gamePlayer;
 
   @Getter private IPlayerBridge playerBridge;
 
-  public AbstractBasePlayer(final String name) {
+  public AbstractBasePlayer(final String name, final String playerLabel) {
     this.name = name;
+    this.playerLabel = playerLabel;
   }
 
   /** Anything that overrides this MUST call super.initialize(playerBridge, playerId); */
@@ -34,6 +37,11 @@ public abstract class AbstractBasePlayer implements Player {
   public void initialize(final IPlayerBridge playerBridge, final GamePlayer gamePlayer) {
     this.playerBridge = playerBridge;
     this.gamePlayer = gamePlayer;
+  }
+
+  @Override
+  public String getPlayerLabel() {
+    return playerLabel;
   }
 
   /** Get the GameData for the game. */

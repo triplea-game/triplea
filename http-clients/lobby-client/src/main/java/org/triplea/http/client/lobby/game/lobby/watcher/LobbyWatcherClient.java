@@ -1,75 +1,71 @@
 package org.triplea.http.client.lobby.game.lobby.watcher;
 
+import feign.RequestLine;
 import java.net.URI;
-import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
  * Http client for interacting with lobby game listing. Can be used to post, remove, boot, fetch and
  * update games.
  */
-@AllArgsConstructor
-public class LobbyWatcherClient {
+public interface LobbyWatcherClient {
 
-  public static final String KEEP_ALIVE_PATH = "/lobby/games/keep-alive";
-  public static final String POST_GAME_PATH = "/lobby/games/post-game";
-  public static final String UPDATE_GAME_PATH = "/lobby/games/update-game";
-  public static final String REMOVE_GAME_PATH = "/lobby/games/remove-game";
-  public static final String PLAYER_JOINED_PATH = "/lobby/games/player-joined";
-  public static final String PLAYER_LEFT_PATH = "/lobby/games/player-left";
-  public static final String UPLOAD_CHAT_PATH = "/lobby/chat/upload";
+  String KEEP_ALIVE_PATH = "/lobby/games/keep-alive";
+  String POST_GAME_PATH = "/lobby/games/post-game";
+  String UPDATE_GAME_PATH = "/lobby/games/update-game";
+  String REMOVE_GAME_PATH = "/lobby/games/remove-game";
+  String PLAYER_JOINED_PATH = "/lobby/games/player-joined";
+  String PLAYER_LEFT_PATH = "/lobby/games/player-left";
+  String UPLOAD_CHAT_PATH = "/lobby/chat/upload";
 
-  private final ApiKey apiKey;
-  private final AuthenticationHeaders authenticationHeaders;
-  private final LobbyWatcherFeignClient lobbyWatcherFeignClient;
-
-  public static LobbyWatcherClient newClient(final URI serverUri, final ApiKey apiKey) {
-    return new LobbyWatcherClient(
-        apiKey,
-        new AuthenticationHeaders(apiKey),
-        new HttpClient<>(LobbyWatcherFeignClient.class, serverUri).get());
+  static LobbyWatcherClient newClient(final URI serverUri, final ApiKey apiKey) {
+    return HttpClient.newClient(
+        LobbyWatcherClient.class, serverUri, new AuthenticationHeaders(apiKey).createHeaders());
   }
 
-  public GamePostingResponse postGame(final GamePostingRequest gamePostingRequest) {
-    return lobbyWatcherFeignClient.postGame(
-        authenticationHeaders.createHeaders(), gamePostingRequest);
+  @RequestLine("POST " + LobbyWatcherClient.POST_GAME_PATH)
+  GamePostingResponse postGame(GamePostingRequest gamePostingRequest);
+
+  @RequestLine("POST " + LobbyWatcherClient.UPDATE_GAME_PATH)
+  void updateGame(UpdateGameRequest updateGameRequest);
+
+  default void updateGame(final String gameId, final LobbyGame lobbyGame) {
+    updateGame(UpdateGameRequest.builder().gameId(gameId).gameData(lobbyGame).build());
   }
 
-  public void updateGame(final String gameId, final LobbyGame lobbyGame) {
-    lobbyWatcherFeignClient.updateGame(
-        authenticationHeaders.createHeaders(),
-        UpdateGameRequest.builder().gameId(gameId).gameData(lobbyGame).build());
+  @RequestLine("POST " + LobbyWatcherClient.KEEP_ALIVE_PATH)
+  boolean sendKeepAlive(String gameId);
+
+  @RequestLine("POST " + LobbyWatcherClient.REMOVE_GAME_PATH)
+  void removeGame(String gameId);
+
+  @RequestLine("POST " + LobbyWatcherClient.UPLOAD_CHAT_PATH)
+  String uploadChatMessage(ChatMessageUpload chatMessageUpload);
+
+  default void uploadChatMessage(final ChatUploadParams uploadChatMessageParams) {
+    uploadChatMessage(uploadChatMessageParams.toChatMessageUpload());
   }
 
-  public boolean sendKeepAlive(final String gameId) {
-    return lobbyWatcherFeignClient.sendKeepAlive(authenticationHeaders.createHeaders(), gameId);
-  }
+  @RequestLine("POST " + LobbyWatcherClient.PLAYER_JOINED_PATH)
+  String playerJoined(PlayerJoinedNotification playerJoinedNotification);
 
-  public void removeGame(final String gameId) {
-    lobbyWatcherFeignClient.removeGame(authenticationHeaders.createHeaders(), gameId);
-  }
-
-  public void uploadChatMessage(final ChatUploadParams uploadChatMessageParams) {
-    lobbyWatcherFeignClient.uploadChat(
-        authenticationHeaders.createHeaders(), uploadChatMessageParams.toChatMessageUpload(apiKey));
-  }
-
-  public void playerJoined(final String gameId, final UserName playerName) {
-    lobbyWatcherFeignClient.playerJoined(
-        authenticationHeaders.createHeaders(),
+  default void playerJoined(final String gameId, final UserName playerName) {
+    playerJoined(
         PlayerJoinedNotification.builder()
             .gameId(gameId)
             .playerName(playerName.getValue())
             .build());
   }
 
-  public void playerLeft(final String gameId, final UserName playerName) {
-    lobbyWatcherFeignClient.playerLeft(
-        authenticationHeaders.createHeaders(),
+  @RequestLine("POST " + LobbyWatcherClient.PLAYER_LEFT_PATH)
+  String playerLeft(PlayerLeftNotification playerLeftNotification);
+
+  default void playerLeft(final String gameId, final UserName playerName) {
+    playerLeft(
         PlayerLeftNotification.builder() //
             .gameId(gameId)
             .playerName(playerName.getValue())

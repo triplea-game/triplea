@@ -2669,3 +2669,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Finnish_Winter_War/master/preview.png
   description: |
    <br>The Soviet invasion of Finland in 1939
+- mapName: Belgium Provincial War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Belgium/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Belgium/master/preview.png
+  description: |
+   <br>Conflict on a map of Belgium

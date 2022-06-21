@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
@@ -230,7 +229,6 @@ public class LobbyLogin {
                   () ->
                       ForgotPasswordClient.newClient(lobbyUri)
                           .sendForgotPasswordRequest(
-                              AuthenticationHeaders.systemIdHeaders(),
                               ForgotPasswordRequest.builder()
                                   .username(panel.getUserName())
                                   .email(panel.getEmail())

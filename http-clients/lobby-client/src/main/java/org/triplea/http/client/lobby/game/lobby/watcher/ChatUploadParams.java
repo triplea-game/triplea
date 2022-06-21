@@ -2,7 +2,6 @@ package org.triplea.http.client.lobby.game.lobby.watcher;
 
 import lombok.Builder;
 import lombok.Value;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
 
 /**
@@ -16,12 +15,11 @@ public class ChatUploadParams {
   String chatMessage;
   String gameId;
 
-  ChatMessageUpload toChatMessageUpload(final ApiKey apiKey) {
+  ChatMessageUpload toChatMessageUpload() {
     return ChatMessageUpload.builder()
         .fromPlayer(fromPlayer.getValue())
         .chatMessage(chatMessage)
         .gameId(gameId)
-        .apiKey(apiKey.getValue())
         .build();
   }
 }

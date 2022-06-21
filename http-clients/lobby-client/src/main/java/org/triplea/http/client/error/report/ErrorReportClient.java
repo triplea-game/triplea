@@ -1,28 +1,21 @@
 package org.triplea.http.client.error.report;
 
 import feign.FeignException;
+import feign.RequestLine;
 import java.net.URI;
-import java.util.Map;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /** Http client to upload error reports to the http lobby server. */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ErrorReportClient {
-  public static final String ERROR_REPORT_PATH = "/error-report";
-  public static final String CAN_UPLOAD_ERROR_REPORT_PATH = "/error-report-check";
-  public static final int MAX_REPORTS_PER_DAY = 5;
-
-  private final Map<String, Object> headers;
-  private final ErrorReportFeignClient errorReportFeignClient;
+public interface ErrorReportClient {
+  String ERROR_REPORT_PATH = "/error-report";
+  String CAN_UPLOAD_ERROR_REPORT_PATH = "/error-report-check";
+  int MAX_REPORTS_PER_DAY = 5;
 
   /** Creates an error report uploader clients, sends error reports and gets a response back. */
-  public static ErrorReportClient newClient(final URI uri) {
-    return new ErrorReportClient(
-        AuthenticationHeaders.systemIdHeaders(),
-        new HttpClient<>(ErrorReportFeignClient.class, uri).get());
+  static ErrorReportClient newClient(final URI uri) {
+    return HttpClient.newClient(
+        ErrorReportClient.class, uri, AuthenticationHeaders.systemIdHeaders());
   }
 
   /**
@@ -30,16 +23,13 @@ public class ErrorReportClient {
    *
    * @throws FeignException Thrown on non-2xx responses.
    */
-  public ErrorReportResponse uploadErrorReport(final ErrorReportRequest request) {
-    return errorReportFeignClient.uploadErrorReport(headers, request);
-  }
+  @RequestLine("POST " + ErrorReportClient.ERROR_REPORT_PATH)
+  ErrorReportResponse uploadErrorReport(ErrorReportRequest request);
 
   /**
    * Checks if user can upload a request. A request can be uploaded if: - it has not yet been
    * reported - reporting version is greater than fix version - user is not banned
    */
-  public CanUploadErrorReportResponse canUploadErrorReport(
-      final CanUploadRequest canUploadRequest) {
-    return errorReportFeignClient.canUploadErrorReport(headers, canUploadRequest);
-  }
+  @RequestLine("POST " + ErrorReportClient.CAN_UPLOAD_ERROR_REPORT_PATH)
+  CanUploadErrorReportResponse canUploadErrorReport(CanUploadRequest canUploadRequest);
 }

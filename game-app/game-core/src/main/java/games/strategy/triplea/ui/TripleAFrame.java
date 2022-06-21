@@ -71,7 +71,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.panel.move.MovePanel;
 import games.strategy.triplea.ui.panels.map.MapPanel;
-import games.strategy.triplea.util.TuvUtils;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
@@ -146,7 +146,6 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.EventThreadJOptionPane;
@@ -326,7 +325,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       commentSplit.setResizeWeight(0.5);
       commentSplit.setTopComponent(commentPanel);
       commentSplit.setBottomComponent(null);
-      chatPanel = new ChatPanel(chat, ChatSoundProfile.GAME);
+      chatPanel = new ChatPanel(chat, ChatSoundProfile.GAME, getUiContext().getClipPlayer());
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
       final Dimension chatPrefSize =
           new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);
@@ -1161,6 +1160,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     SwingUtilities.invokeLater(
         () -> {
           final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
+          final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
           for (final Map.Entry<Territory, Collection<Unit>> entry :
               possibleUnitsToAttack.entrySet()) {
             final List<Unit> units = new ArrayList<>(entry.getValue());
@@ -1179,7 +1179,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                         .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
                         .build(),
                     entry.getKey(),
-                    TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
+                    tuvCalculator.getCostsForTuv(units.get(0).getOwner()),
                     data);
             // OOL is ordered with the first unit the owner would want to remove but in a kamikaze
             // the player who picks is the attacker, so flip the order
@@ -1650,7 +1650,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 () -> {
                   final Boolean play = requiredTurnSeries.get(player);
                   if (play != null && play) {
-                    ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
+                    getUiContext()
+                        .getClipPlayer()
+                        .play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
                     requiredTurnSeries.put(player, false);
                   }
                   // center on capital of player, if it is a new player

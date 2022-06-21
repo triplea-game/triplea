@@ -2,14 +2,12 @@ package org.triplea.http.client.lobby.moderator.toolbox.log;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import feign.RequestLine;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 
 /**
@@ -17,32 +15,29 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
  * have accessed the lobby. The data is useful for informative reasons and provides the key
  * parameters for adding user name or user bans.
  */
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class ToolboxAccessLogClient {
-  public static final String FETCH_ACCESS_LOG_PATH = "/moderator-toolbox/access-log";
+public interface ToolboxAccessLogClient {
+  String FETCH_ACCESS_LOG_PATH = "/moderator-toolbox/access-log";
 
-  private final Map<String, Object> authenticationHeaders;
-  private final ToolboxAccessLogFeignClient client;
-
-  public static ToolboxAccessLogClient newClient(final URI serverUri, final ApiKey apiKey) {
-    return new ToolboxAccessLogClient(
-        new AuthenticationHeaders(apiKey).createHeaders(),
-        new HttpClient<>(ToolboxAccessLogFeignClient.class, serverUri).get());
+  static ToolboxAccessLogClient newClient(final URI serverUri, final ApiKey apiKey) {
+    return HttpClient.newClient(
+        ToolboxAccessLogClient.class, serverUri, new AuthenticationHeaders(apiKey).createHeaders());
   }
 
-  public List<AccessLogData> getAccessLog(final PagingParams pagingParams) {
-    return getAccessLog(AccessLogSearchRequest.EMPTY_SEARCH, pagingParams);
-  }
+  @RequestLine("POST " + ToolboxAccessLogClient.FETCH_ACCESS_LOG_PATH)
+  List<AccessLogData> getAccessLog(AccessLogRequest accessLogRequest);
 
-  public List<AccessLogData> getAccessLog(
+  default List<AccessLogData> getAccessLog(
       final AccessLogSearchRequest searchRequest, final PagingParams pagingParams) {
     checkArgument(pagingParams.getRowNumber() >= 0);
     checkArgument(pagingParams.getPageSize() > 0);
-    return client.getAccessLog(
-        authenticationHeaders,
+    return getAccessLog(
         AccessLogRequest.builder()
             .accessLogSearchRequest(searchRequest)
             .pagingParams(pagingParams)
             .build());
+  }
+
+  default List<AccessLogData> getAccessLog(final PagingParams pagingParams) {
+    return getAccessLog(AccessLogSearchRequest.EMPTY_SEARCH, pagingParams);
   }
 }
