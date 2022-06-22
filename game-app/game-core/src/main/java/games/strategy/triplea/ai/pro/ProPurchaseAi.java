@@ -555,7 +555,7 @@ class ProPurchaseAi {
             calc.calculateBattleResults(
                 proData,
                 t,
-                new ArrayList<>(enemyAttackingUnits),
+                enemyAttackingUnits,
                 placeTerritory.getDefendingUnits(),
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
         placeTerritory.setMinBattleResult(result);
@@ -805,7 +805,7 @@ class ProPurchaseAi {
               calc.calculateBattleResults(
                   proData,
                   t,
-                  new ArrayList<>(enemyAttackingUnits),
+                  enemyAttackingUnits,
                   defenders,
                   enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
@@ -1221,7 +1221,7 @@ class ProPurchaseAi {
             calc.estimateDefendBattleResults(
                 proData,
                 t,
-                new ArrayList<>(enemyAttackingUnits),
+                enemyAttackingUnits,
                 defenders,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
@@ -1489,9 +1489,9 @@ class ProPurchaseAi {
             neighbor.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player)));
       }
       int unusedCarrierCapacity =
-          Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<>()));
+          Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, List.of()));
       int unusedLocalCarrierCapacity =
-          ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<>());
+          ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, List.of());
       ProLogger.trace(
           String.format(
               "%s, unusedCarrierCapacity=%s, unusedLocalCarrierCapacity=%s",
@@ -1512,21 +1512,15 @@ class ProPurchaseAi {
             String.format(
                 "%s, needDestroyer=%s, checking defense since has enemy attackers: %s",
                 t, needDestroyer, attackers));
-        final List<Unit> initialDefendingUnits =
-            new ArrayList<>(placeTerritory.getDefendingUnits());
-        initialDefendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
+        List<Unit> defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
+        defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
         ProBattleResult result =
             calc.calculateBattleResults(
                 proData,
                 t,
                 attackers,
-                initialDefendingUnits,
+                defendingUnits,
                 maxEnemyAttackTerritory.getMaxBombardUnits());
-        boolean hasOnlyRetreatingSubs =
-            Properties.getSubRetreatBeforeBattle(data.getProperties())
-                && !initialDefendingUnits.isEmpty()
-                && initialDefendingUnits.stream().allMatch(Matches.unitCanEvade())
-                && attackers.stream().noneMatch(Matches.unitIsDestroyer());
         final List<Unit> unitsToPlace = new ArrayList<>();
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
           // Check remaining production
@@ -1552,6 +1546,11 @@ class ProPurchaseAi {
 
           // Purchase enough sea defenders to hold territory
           while (true) {
+            final boolean hasOnlyRetreatingSubs =
+                Properties.getSubRetreatBeforeBattle(data.getProperties())
+                    && !defendingUnits.isEmpty()
+                    && defendingUnits.stream().allMatch(Matches.unitCanEvade())
+                    && attackers.stream().noneMatch(Matches.unitIsDestroyer());
             // If it can be held then break
             if (!hasOnlyRetreatingSubs
                 && (result.getTuvSwing() < -1
@@ -1617,7 +1616,7 @@ class ProPurchaseAi {
                     + unusedLocalCarrierCapacity);
 
             // Find current battle result
-            final List<Unit> defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
+            defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
             defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
             defendingUnits.addAll(unitsToPlace);
             result =
@@ -1627,12 +1626,6 @@ class ProPurchaseAi {
                     maxEnemyAttackTerritory.getMaxUnits(),
                     defendingUnits,
                     maxEnemyAttackTerritory.getMaxBombardUnits());
-            hasOnlyRetreatingSubs =
-                Properties.getSubRetreatBeforeBattle(data.getProperties())
-                    && !defendingUnits.isEmpty()
-                    && defendingUnits.stream().allMatch(Matches.unitCanEvade())
-                    && maxEnemyAttackTerritory.getMaxUnits().stream()
-                        .noneMatch(Matches.unitIsDestroyer());
           }
         }
 
@@ -1651,12 +1644,13 @@ class ProPurchaseAi {
           ProLogger.trace(
               String.format(
                   "%s, can't defend TUVSwing=%s, win%%=%s, tried to placeDefenders=%s, "
-                      + "enemyAttackers=%s",
+                      + "enemyAttackers=%s, defendingUnits=%s",
                   t,
                   result.getTuvSwing(),
                   result.getWinPercentage(),
                   unitsToPlace,
-                  enemyAttackOptions.getMax(t).getMaxUnits()));
+                  attackers,
+                  defendingUnits));
           continue;
         }
       }
@@ -2423,7 +2417,7 @@ class ProPurchaseAi {
             calc.calculateBattleResults(
                 proData,
                 t,
-                new ArrayList<>(enemyAttackingUnits),
+                enemyAttackingUnits,
                 defenders,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
