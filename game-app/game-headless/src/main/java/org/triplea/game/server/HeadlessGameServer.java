@@ -68,7 +68,7 @@ public class HeadlessGameServer {
     } else {
       log.info(
           String.format(
-              "Did NOT change game map to: %s, " + "game == null ? %s, " + "have game? %s",
+              "Did NOT change game map to: %s, game == null ? %s, have game? %s",
               gameName, game == null, availableGames.hasGame(gameName)));
     }
   }
