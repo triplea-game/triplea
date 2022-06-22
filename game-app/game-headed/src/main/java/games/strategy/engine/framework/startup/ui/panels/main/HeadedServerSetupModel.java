@@ -28,7 +28,6 @@ import java.awt.Dimension;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
@@ -36,19 +35,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.client.HeadedGameRunner;
-import org.triplea.game.startup.ServerSetupModel;
-import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
-public class HeadedServerSetupModel implements ServerSetupModel {
+public class HeadedServerSetupModel {
   @Getter protected final GameSelectorModel gameSelectorModel;
   protected SetupPanel panel = null;
 
   @Setter private Consumer<SetupPanel> panelChangeListener;
   @Setter private JFrame ui;
 
-  @Override
   public void showSelectType() {
     setGameTypePanel(new MetaSetupPanel(this));
   }
@@ -70,12 +66,13 @@ public class HeadedServerSetupModel implements ServerSetupModel {
    * clients.
    */
   public ServerModel showServer() {
-    return new ServerModel(gameSelectorModel, this, new HeadedLaunchAction(ui));
+    final ServerModel serverModel = new ServerModel(gameSelectorModel, new HeadedLaunchAction(ui));
+    serverModel.initialize();
+    onServerMessengerCreated(serverModel);
+    return serverModel;
   }
 
-  @Override
-  public void onServerMessengerCreated(
-      final ServerModel serverModel, @Nullable final GameHostingResponse gameHostingResponse) {
+  private void onServerMessengerCreated(final ServerModel serverModel) {
 
     final ClientLoginValidator clientLoginValidator =
         new ClientLoginValidator(ProductVersionReader.getCurrentVersion());
@@ -105,7 +102,7 @@ public class HeadedServerSetupModel implements ServerSetupModel {
     final ClientModel model =
         new ClientModel(
             gameSelectorModel,
-            this,
+            this::showSelectType,
             new HeadedLaunchAction(ui),
             HeadedGameRunner::showMainFrame,
             HeadedGameRunner::clientLeftGame,

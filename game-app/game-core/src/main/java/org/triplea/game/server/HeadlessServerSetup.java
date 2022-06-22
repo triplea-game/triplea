@@ -4,7 +4,6 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
-import java.util.Map;
 import java.util.Optional;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
@@ -28,15 +27,7 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
 
   @Override
   public boolean canGameStart() {
-    if (gameSelectorModel.getGameData() == null || model == null) {
-      return false;
-    }
-    final Map<String, String> players = model.getPlayersToNodeListing();
-    if (players == null || players.isEmpty() || players.containsValue(null)) {
-      return false;
-    }
-    // make sure at least 1 player is enabled
-    return model.getPlayersEnabledListing().containsValue(Boolean.TRUE);
+    return SetupModel.staticCanGameStart(gameSelectorModel, model);
   }
 
   @Override
