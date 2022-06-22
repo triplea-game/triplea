@@ -61,7 +61,7 @@ public class TransportUtilsTest {
       throws MutableProperty.InvalidValueException {
     // Create a dummy unit that was "unloaded".
     final Unit dummyUnit = infantry(transport.getData()).create(transport.getOwner());
-    transport.setUnloaded(List.of(dummyUnit));
+    transport.setUnloadedUnits(List.of(dummyUnit));
     dummyUnit.getPropertyOrThrow(Unit.UNLOADED_TO).setValue(t);
     assertThat(dummyUnit.getUnloadedTo(), equalTo(t));
   }

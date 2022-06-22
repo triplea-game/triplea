@@ -84,7 +84,7 @@ public class TransportTracker {
 
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
     final Collection<Unit> units = new ArrayList<>(transport.getTransporting());
-    units.addAll(transport.getUnloaded());
+    units.addAll(transport.getUnloadedUnits());
     return units;
   }
 
@@ -100,7 +100,7 @@ public class TransportTracker {
       throw new IllegalStateException(
           "Not being carried, unit:" + unit + " transport:" + transport);
     }
-    final List<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
+    final List<Unit> newUnloaded = new ArrayList<>(transport.getUnloadedUnits());
     newUnloaded.add(unit);
     change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
@@ -151,7 +151,7 @@ public class TransportTracker {
         CollectionUtils.getMatches(units, Matches.unitCanTransport());
     // Put units back on their transports
     for (final Unit transport : transports) {
-      for (final Unit load : transport.getUnloaded()) {
+      for (final Unit load : transport.getUnloadedUnits()) {
         final Change loadChange = TransportTracker.loadTransportChange(transport, load);
         change.add(loadChange);
       }
@@ -189,7 +189,7 @@ public class TransportTracker {
     }
     final int capacity = ua.getTransportCapacity();
     final int used = TransportUtils.getTransportCost(unit.getTransporting());
-    final int unloaded = TransportUtils.getTransportCost(unit.getUnloaded());
+    final int unloaded = TransportUtils.getTransportCost(unit.getUnloadedUnits());
     return capacity - used - unloaded;
   }
 
@@ -214,7 +214,7 @@ public class TransportTracker {
   /** Detects if a unit has unloaded units in a previous game phase. */
   public static boolean hasTransportUnloadedInPreviousPhase(final Unit transport) {
     return GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
-        && transport.getUnloaded().stream().anyMatch(Unit::getWasUnloadedInCombatPhase);
+        && transport.getUnloadedUnits().stream().anyMatch(Unit::getWasUnloadedInCombatPhase);
   }
 
   /**
@@ -224,7 +224,7 @@ public class TransportTracker {
    */
   public static boolean isTransportUnloadRestrictedToAnotherTerritory(
       final Unit transport, final Territory territory) {
-    final Collection<Unit> unloaded = transport.getUnloaded();
+    final Collection<Unit> unloaded = transport.getUnloadedUnits();
     if (unloaded.isEmpty()) {
       return false;
     }
@@ -255,7 +255,7 @@ public class TransportTracker {
    * we only need to return one territory, not multiple territories.
    */
   public static Territory getTerritoryTransportHasUnloadedTo(final Unit transport) {
-    final Collection<Unit> unloaded = transport.getUnloaded();
+    final Collection<Unit> unloaded = transport.getUnloadedUnits();
     if (unloaded.isEmpty()) {
       return null;
     }

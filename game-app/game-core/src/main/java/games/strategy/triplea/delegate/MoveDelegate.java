@@ -309,10 +309,10 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (unit.getAirborne()) {
         change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.AIRBORNE));
       }
-      if (unit.getLaunched() != 0) {
+      if (unit.getIsLaunched() != 0) {
         change.add(ChangeFactory.unitPropertyChange(unit, 0, Unit.LAUNCHED));
       }
-      if (!unit.getUnloaded().isEmpty()) {
+      if (!unit.getUnloadedUnits().isEmpty()) {
         change.add(ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, Unit.UNLOADED));
       }
       if (unit.getWasLoadedThisTurn()) {

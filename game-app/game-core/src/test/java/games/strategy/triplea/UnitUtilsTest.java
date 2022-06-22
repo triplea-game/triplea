@@ -135,13 +135,13 @@ class UnitUtilsTest {
       final Unit newTransport = transport.create(1, player).get(0);
 
       final List<Unit> unloadedInfantry = infantry.create(1, player);
-      oldTransport.setUnloaded(unloadedInfantry);
+      oldTransport.setUnloadedUnits(unloadedInfantry);
 
       final Change changes =
           UnitUtils.translateAttributesToOtherUnits(oldTransport, List.of(newTransport), seaZone);
       gameData.performChange(changes);
 
-      assertThat(newTransport.getUnloaded(), is(unloadedInfantry));
+      assertThat(newTransport.getUnloadedUnits(), is(unloadedInfantry));
     }
 
     @Test
@@ -151,7 +151,7 @@ class UnitUtilsTest {
       final Unit newTransport2 = transport.create(1, player).get(0);
 
       final List<Unit> unloadedInfantry = infantry.create(2, player);
-      oldTransport.setUnloaded(unloadedInfantry);
+      oldTransport.setUnloadedUnits(unloadedInfantry);
 
       final Change changes =
           UnitUtils.translateAttributesToOtherUnits(
@@ -162,12 +162,12 @@ class UnitUtilsTest {
           "Units can only be unloaded by one unit at a time. So the unloaded unit "
               + "should be transferred to one of the new units. Since the new units is a list, the "
               + "first one will be selected and the first one is 'newTransport1'",
-          newTransport1.getUnloaded(),
+          newTransport1.getUnloadedUnits(),
           is(unloadedInfantry));
       assertThat(
           "newTransport2 should have no unloaded units because all of the units were assigned to "
               + "newTransport1",
-          newTransport2.getUnloaded(),
+          newTransport2.getUnloadedUnits(),
           is(empty()));
     }
 
@@ -177,7 +177,7 @@ class UnitUtilsTest {
       final Unit newTransport = transport.create(1, player).get(0);
 
       final List<Unit> unloadedInfantry = infantry.create(5, player);
-      oldTransport.setUnloaded(unloadedInfantry);
+      oldTransport.setUnloadedUnits(unloadedInfantry);
 
       final Change changes =
           UnitUtils.translateAttributesToOtherUnits(oldTransport, List.of(newTransport), seaZone);
@@ -185,7 +185,7 @@ class UnitUtilsTest {
 
       assertThat(
           "All unloaded infantry should be translated to the new transport",
-          newTransport.getUnloaded(),
+          newTransport.getUnloadedUnits(),
           is(unloadedInfantry));
     }
 

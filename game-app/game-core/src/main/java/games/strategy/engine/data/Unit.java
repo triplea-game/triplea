@@ -62,7 +62,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   // the transport that is currently transporting us
   private Unit transportedBy = null;
   // the units we have unloaded this turn
-  private List<Unit> unloaded = List.of();
+  private List<Unit> unloadedUnits = List.of();
   // was this unit loaded this turn?
   private boolean wasLoadedThisTurn = false;
   // the territory this unit was unloaded to this turn
@@ -76,7 +76,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   // amount of damage unit has sustained
   private int unitDamage = 0;
   // is this submarine submerged
-  private boolean submerged = false;
+  private boolean isSubmerged = false;
   // original owner of this unit
   private GamePlayer originalOwner = null;
   // Was this unit in combat
@@ -90,9 +90,9 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private boolean wasInAirBattle = false;
   private boolean disabled = false;
   // the number of airborne units launched by this unit this turn
-  private int launched = 0;
+  private int isLaunched = 0;
   // was this unit airborne and launched this turn
-  private boolean airborne = false;
+  private boolean isAirborne = false;
   // was charged flat fuel cost already this turn
   private boolean chargedFlatFuelCost = false;
 
@@ -233,7 +233,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         .put(
             "transportedBy",
             MutableProperty.ofSimple(this::setTransportedBy, this::getTransportedBy))
-        .put("unloaded", MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded))
+        .put("unloaded", MutableProperty.ofSimple(this::setUnloadedUnits, this::getUnloadedUnits))
         .put(
             "wasLoadedThisTurn",
             MutableProperty.ofSimple(this::setWasLoadedThisTurn, this::getWasLoadedThisTurn))
@@ -269,7 +269,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
             "wasInAirBattle",
             MutableProperty.ofSimple(this::setWasInAirBattle, this::getWasInAirBattle))
         .put("disabled", MutableProperty.ofSimple(this::setDisabled, this::getDisabled))
-        .put("launched", MutableProperty.ofSimple(this::setLaunched, this::getLaunched))
+        .put("launched", MutableProperty.ofSimple(this::setIsLaunched, this::getIsLaunched))
         .put("airborne", MutableProperty.ofSimple(this::setAirborne, this::getAirborne))
         .put(
             "chargedFlatFuelCost",
@@ -286,11 +286,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   public boolean getSubmerged() {
-    return submerged;
+    return isSubmerged;
   }
 
   public void setSubmerged(final boolean submerged) {
-    this.submerged = submerged;
+    this.isSubmerged = submerged;
   }
 
   public GamePlayer getOriginalOwner() {
@@ -325,20 +325,20 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     maxScrambleCount = value;
   }
 
-  public int getLaunched() {
-    return launched;
+  public int getIsLaunched() {
+    return isLaunched;
   }
 
-  private void setLaunched(final int value) {
-    launched = value;
+  private void setIsLaunched(final int value) {
+    isLaunched = value;
   }
 
   public boolean getAirborne() {
-    return airborne;
+    return isAirborne;
   }
 
   private void setAirborne(final boolean value) {
-    airborne = value;
+    isAirborne = value;
   }
 
   public boolean getChargedFlatFuelCost() {
@@ -395,6 +395,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
    * @return Unmodifiable collection of units that this unit is transporting in the same territory
    *     it is located in
    */
+  @Deprecated
   public List<Unit> getTransporting() {
     if (Matches.unitCanTransport().test(this) || Matches.unitIsCarrier().test(this)) {
       // we don't store the units we are transporting
@@ -426,16 +427,16 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         CollectionUtils.getMatches(transportedUnitsPossible, o -> equals(o.getTransportedBy())));
   }
 
-  public List<Unit> getUnloaded() {
-    return unloaded;
+  public List<Unit> getUnloadedUnits() {
+    return unloadedUnits;
   }
 
   @VisibleForTesting
-  public void setUnloaded(final List<Unit> unloaded) {
-    if (unloaded == null || unloaded.isEmpty()) {
-      this.unloaded = List.of();
+  public void setUnloadedUnits(final List<Unit> unloadedUnits) {
+    if (unloadedUnits == null || unloadedUnits.isEmpty()) {
+      this.unloadedUnits = List.of();
     } else {
-      this.unloaded = ImmutableList.copyOf(unloaded);
+      this.unloadedUnits = ImmutableList.copyOf(unloadedUnits);
     }
   }
 
@@ -523,10 +524,15 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
    * optimize this to halt on the first territory we have found with a transporting unit, or
    * otherwise optimize this to not check every territory.
    *
-   * @deprecated Avoid callling this method, it is slow, needs optimization.
+   * @deprecated Avoid callling this method, it calls {@link #getTransporting()} which is slow and
+   *     needs optimization.
    */
   @Deprecated
   public boolean isTransporting() {
     return !getTransporting().isEmpty();
+  }
+
+  public boolean isTransporting(final Territory territory) {
+    return !getTransporting(territory).isEmpty();
   }
 }
