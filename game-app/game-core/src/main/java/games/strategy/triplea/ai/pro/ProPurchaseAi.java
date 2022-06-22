@@ -1606,6 +1606,7 @@ class ProPurchaseAi {
                   purchaseTerritory.getTerritory(),
                   isBid);
           seaPurchaseOptionsForTerritory.addAll(purchaseOptions.getAirOptions());
+
           // Purchase enough sea defenders to hold territory
           while (true) {
             final boolean hasOnlyRetreatingSubs =
