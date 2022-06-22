@@ -50,7 +50,7 @@ public interface SetupModel {
   }
 
   /** Helper method to be used by implementations to avoid duplicated code. */
-  static boolean canGameStartHelper(GameSelectorModel gameSelectorModel, ServerModel model) {
+  static boolean staticCanGameStart(GameSelectorModel gameSelectorModel, ServerModel model) {
     if (gameSelectorModel.getGameData() == null) {
       return false;
     }

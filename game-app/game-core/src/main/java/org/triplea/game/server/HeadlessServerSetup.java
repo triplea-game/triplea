@@ -27,7 +27,7 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
 
   @Override
   public boolean canGameStart() {
-    return SetupModel.canGameStartHelper(gameSelectorModel, model);
+    return SetupModel.staticCanGameStart(gameSelectorModel, model);
   }
 
   @Override

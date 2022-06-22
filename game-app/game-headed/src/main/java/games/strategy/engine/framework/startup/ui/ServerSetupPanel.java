@@ -304,7 +304,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public boolean canGameStart() {
-    return SetupModel.canGameStartHelper(gameSelectorModel, model);
+    return SetupModel.staticCanGameStart(gameSelectorModel, model);
   }
 
   @Override
