@@ -16,7 +16,6 @@ dependencies {
     implementation "org.knowm.xchart:xchart:$xchartVersion"
     implementation project(":game-app:domain-data")
     implementation project(":game-app:map-data")
-    implementation project(":http-clients:feign-common")
     implementation project(":http-clients:lobby-client")
     implementation project(":lib:java-extras")
     implementation project(":lib:swing-lib")

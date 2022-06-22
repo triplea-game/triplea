@@ -37,13 +37,18 @@ import org.triplea.java.collections.CollectionUtils;
 @UtilityClass
 @Slf4j
 public class GameTestUtils {
+  private static Path tempHome;
+  private static final Map<URI, Path> downloadedMaps = new HashMap<>();
+
   public static void setUp() throws IOException {
     if (ProductVersionReader.getCurrentVersionOptional().isEmpty()) {
       ProductVersionReader.init();
     }
     // Use a temp dir for downloaded maps to not interfere with the real downloadedMaps folder.
-    Path tempHome = FileUtils.newTempFolder();
-    System.setProperty("user.home", tempHome.toString());
+    if (tempHome == null) {
+      tempHome = FileUtils.newTempFolder();
+      System.setProperty("user.home", tempHome.toString());
+    }
     ClientSetting.initialize();
     assertTrue(ClientFileSystemHelper.getUserMapsFolder().startsWith(tempHome.toAbsolutePath()));
     ClientSetting.aiMovePauseDuration.setValue(0);
@@ -59,17 +64,25 @@ public class GameTestUtils {
   public static GameSelectorModel loadGameFromURI(String mapName, String mapXmlPath)
       throws Exception {
     GameSelectorModel gameSelector = new GameSelectorModel();
-    gameSelector.load(downloadMap(getMapDownloadURI(mapName)).resolve(mapXmlPath));
+    gameSelector.load(downloadMap(getMapDownloadURI(mapName), mapName).resolve(mapXmlPath));
     return gameSelector;
   }
 
-  private static Path downloadMap(URI uri) throws IOException {
-    Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve("map.zip");
-    log.info("Downloading from: " + uri);
-    try (ContentDownloader downloader = new ContentDownloader(uri)) {
-      Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
-    }
-    return ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo).orElseThrow();
+  private static Path downloadMap(URI uri, String mapName) {
+    return downloadedMaps.computeIfAbsent(
+        uri,
+        key -> {
+          Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve(mapName + ".zip");
+          log.info("Downloading from: " + uri);
+          try {
+            try (ContentDownloader downloader = new ContentDownloader(uri)) {
+              Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
+            }
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+          return ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo).orElseThrow();
+        });
   }
 
   private static URI getMapDownloadURI(String mapName) throws URISyntaxException {

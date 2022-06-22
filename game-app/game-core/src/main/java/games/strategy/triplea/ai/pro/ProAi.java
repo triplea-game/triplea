@@ -19,6 +19,7 @@ public class ProAi extends AbstractProAi {
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
     concurrentCalc.cancel();
+    concurrentCalc.setGameData(null);
   }
 
   @Override

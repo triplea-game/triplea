@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -55,7 +56,7 @@ public class ServerLauncher implements ILauncher {
   // lost
   private final List<INode> observersThatTriedToJoinDuringStartup =
       Collections.synchronizedList(new ArrayList<>());
-  private InGameLobbyWatcherWrapper inGameLobbyWatcher;
+  @Nullable private final InGameLobbyWatcherWrapper inGameLobbyWatcher;
 
   public ServerLauncher(
       final int clientCount,
@@ -64,7 +65,8 @@ public class ServerLauncher implements ILauncher {
       final PlayerListing playerListing,
       final Map<String, INode> remotePlayers,
       final ServerModel serverModel,
-      final LaunchAction launchAction) {
+      final LaunchAction launchAction,
+      @Nullable final InGameLobbyWatcherWrapper inGameLobbyWatcher) {
     this.gameSelectorModel = gameSelectorModel;
     this.launchAction = launchAction;
     this.clientCount = clientCount;
@@ -73,10 +75,7 @@ public class ServerLauncher implements ILauncher {
     this.remotePlayers = remotePlayers;
     this.serverModel = serverModel;
     this.gameData = gameSelectorModel.getGameData();
-  }
-
-  public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper watcher) {
-    inGameLobbyWatcher = watcher;
+    this.inGameLobbyWatcher = inGameLobbyWatcher;
   }
 
   private boolean testShouldWeAbort() {
@@ -136,8 +135,8 @@ public class ServerLauncher implements ILauncher {
               remotePlayers,
               messengers,
               clientNetworkBridge,
-              launchAction);
-      serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
+              launchAction,
+              inGameLobbyWatcher);
       launchAction.onLaunch(serverGame);
       // tell the clients to start, later we will wait for them to all signal that they are ready.
       ((IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME))
