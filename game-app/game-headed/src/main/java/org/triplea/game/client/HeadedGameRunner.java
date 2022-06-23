@@ -4,7 +4,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.ClientFileSystemHelper;
@@ -141,6 +144,14 @@ public final class HeadedGameRunner {
         });
 
     UpdateChecks.launch();
+  }
+
+  public static void showMainFrameClient(String host, int port, String name) {
+    System.setProperty(TRIPLEA_CLIENT, "true");
+    System.setProperty(TRIPLEA_HOST, host);
+    System.setProperty(TRIPLEA_PORT, String.valueOf(port));
+    System.setProperty(TRIPLEA_NAME, name);
+    showMainFrame();
   }
 
   /**

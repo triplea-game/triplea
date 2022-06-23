@@ -21,6 +21,8 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import org.triplea.game.client.HeadedGameRunner;
+import org.triplea.java.ThreadRunner;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.MouseListenerBuilder;
 import org.triplea.swing.SwingAction;
@@ -190,7 +192,16 @@ class LobbyGamePanel extends JPanel {
     // we sort the table, so get the correct index
     final GameDescription description =
         gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
-    GameProcess.joinGame(description, lobbyClient.getUserName());
+    final GameDescription.GameStatus status = description.getStatus();
+    if (GameDescription.GameStatus.LAUNCHING == status) {
+      return;
+    }
+    ThreadRunner.runInNewThread(
+        () ->
+            HeadedGameRunner.showMainFrameClient(
+                description.getHostedBy().getAddress().getHostAddress(),
+                description.getHostedBy().getPort(),
+                lobbyClient.getUserName().getValue()));
   }
 
   private void hostGame(final URI lobbyUri) {
