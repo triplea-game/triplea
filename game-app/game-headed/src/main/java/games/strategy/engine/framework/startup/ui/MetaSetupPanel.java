@@ -74,7 +74,7 @@ public class MetaSetupPanel extends SetupPanel {
                 HtmlUtils.getHtml(
                     bundle.getText(
                         "startup.SetupPanelModel.btn.PlayOnline.ConnectToNetworkedGame.Tltp")))
-            .actionListener(() -> new Thread(model::showClient).start())
+            .actionListener(() -> new Thread(() -> model.showClient(null)).start())
             .build();
     final JButton enginePreferences =
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.EnginePreferences.Lbl"))

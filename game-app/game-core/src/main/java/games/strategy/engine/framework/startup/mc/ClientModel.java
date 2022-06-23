@@ -1,10 +1,5 @@
 package games.strategy.engine.framework.startup.mc;
 
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
-
 import com.google.common.base.Preconditions;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPanel;
@@ -13,7 +8,6 @@ import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.network.ui.ChangeGameOptionsClientAction;
@@ -51,6 +45,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -166,16 +161,6 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private static ClientProps getProps(final Component ui) {
-    if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true") && GameState.notStarted()) {
-      final ClientProps props =
-          ClientProps.builder()
-              .host(System.getProperty(TRIPLEA_HOST))
-              .name(System.getProperty(TRIPLEA_NAME))
-              .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
-              .build();
-      GameState.setStarted();
-      return props;
-    }
     // load in the saved name!
     final String playername = ClientSetting.playerName.getValueOrThrow();
     final Interruptibles.Result<ClientProps> result =
@@ -208,12 +193,12 @@ public class ClientModel implements IMessengerErrorListener {
    * connected (user messaging will be handled by this method). Method returns true if successfully
    * connected.
    */
-  public boolean createClientMessenger(final Component ui) {
+  public boolean createClientMessenger(final Component ui, @Nullable ClientProps clientProps) {
     this.ui = JOptionPane.getFrameForComponent(ui);
     gameDataOnStartup = gameSelectorModel.getGameData();
     gameSelectorModel.setCanSelect(false);
     // load in the saved name!
-    final ClientProps props = getProps(this.ui);
+    final ClientProps props = clientProps == null ? getProps(this.ui) : clientProps;
     if (props == null) {
       return false;
     }
