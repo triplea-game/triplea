@@ -2,12 +2,8 @@ package org.triplea.game.client;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.ClientFileSystemHelper;
@@ -17,6 +13,7 @@ import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
+import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
@@ -148,11 +145,9 @@ public final class HeadedGameRunner {
   }
 
   public static void showMainFrameClient(String host, int port, String name) {
-    System.setProperty(TRIPLEA_CLIENT, "true");
-    System.setProperty(TRIPLEA_HOST, host);
-    System.setProperty(TRIPLEA_PORT, String.valueOf(port));
-    System.setProperty(TRIPLEA_NAME, name);
-    showMainFrame();
+    MainFrame.show();
+    headedServerSetupModel.showClient(
+        ClientModel.ClientProps.builder().host(host).name(name).port(port).build());
   }
 
   /**
@@ -168,10 +163,6 @@ public final class HeadedGameRunner {
       final ServerModel serverModel = headedServerSetupModel.showServer();
       MainFrame.addQuitAction(serverModel::cancel);
       System.clearProperty(TRIPLEA_SERVER);
-    } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
-      MainFrame.show();
-      headedServerSetupModel.showClient();
-      System.clearProperty(TRIPLEA_CLIENT);
     } else {
       final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
       if (!saveGameFileName.isEmpty()) {

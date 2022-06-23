@@ -4,8 +4,6 @@ package games.strategy.engine.framework;
 public class CliProperties {
   public static final String TRIPLEA_GAME = "triplea.game";
   public static final String TRIPLEA_SERVER = "triplea.server";
-  public static final String TRIPLEA_CLIENT = "triplea.client";
-  public static final String TRIPLEA_HOST = "triplea.host";
   public static final String TRIPLEA_PORT = "triplea.port";
   public static final String TRIPLEA_NAME = "triplea.name";
   public static final String SERVER_PASSWORD = "triplea.server.password";

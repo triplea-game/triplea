@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
@@ -97,7 +98,7 @@ public class HeadedServerSetupModel {
    * A method that establishes a connection to a remote game and displays the game start screen
    * afterwards if the connection was successfully established.
    */
-  public void showClient() {
+  public void showClient(@Nullable ClientModel.ClientProps clientProps) {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
     final ClientModel model =
         new ClientModel(
@@ -107,7 +108,7 @@ public class HeadedServerSetupModel {
             HeadedGameRunner::showMainFrame,
             HeadedGameRunner::clientLeftGame,
             HeadedPlayerTypes.CLIENT_PLAYER);
-    if (model.createClientMessenger(ui)) {
+    if (model.createClientMessenger(ui, clientProps)) {
       SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
     } else {
       model.cancel();
