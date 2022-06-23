@@ -358,6 +358,15 @@ public class GameData implements Serializable, GameState {
 
   public void resetHistory() {
     gameHistory = new History(this);
+    GameStep step = getSequence().getStep();
+    // Put the history in a round and step, so that child nodes can be added without errors.
+    gameHistory
+        .getHistoryWriter()
+        .startNextStep(
+            step.getName(),
+            step.getDelegate().getName(),
+            step.getPlayerId(),
+            step.getDisplayName());
   }
 
   /** Not to be called by mere mortals. */
