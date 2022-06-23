@@ -73,7 +73,7 @@ public class RemoveUnitsHistoryChange implements HistoryChange {
     // any unit that was unloaded during combat phase needs to be removed but it needs to be removed
     // from the territory it unloaded to
     killedUnits.stream()
-        .map(Unit::getUnloadedUnits)
+        .map(Unit::getUnloaded)
         .flatMap(Collection::stream)
         .forEach(
             unloadedUnit -> {

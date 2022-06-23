@@ -62,7 +62,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   // the transport that is currently transporting us
   private Unit transportedBy = null;
   // the units we have unloaded this turn
-  private List<Unit> unloadedUnits = List.of();
+  private List<Unit> unloaded = List.of();
   // was this unit loaded this turn?
   private boolean wasLoadedThisTurn = false;
   // the territory this unit was unloaded to this turn
@@ -76,7 +76,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   // amount of damage unit has sustained
   private int unitDamage = 0;
   // is this submarine submerged
-  private boolean isSubmerged = false;
+  private boolean submerged = false;
   // original owner of this unit
   private GamePlayer originalOwner = null;
   // Was this unit in combat
@@ -90,9 +90,9 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private boolean wasInAirBattle = false;
   private boolean disabled = false;
   // the number of airborne units launched by this unit this turn
-  private int isLaunched = 0;
+  private int launched = 0;
   // was this unit airborne and launched this turn
-  private boolean isAirborne = false;
+  private boolean airborne = false;
   // was charged flat fuel cost already this turn
   private boolean chargedFlatFuelCost = false;
 
@@ -233,7 +233,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         .put(
             "transportedBy",
             MutableProperty.ofSimple(this::setTransportedBy, this::getTransportedBy))
-        .put("unloaded", MutableProperty.ofSimple(this::setUnloadedUnits, this::getUnloadedUnits))
+        .put("unloaded", MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded))
         .put(
             "wasLoadedThisTurn",
             MutableProperty.ofSimple(this::setWasLoadedThisTurn, this::getWasLoadedThisTurn))
@@ -269,7 +269,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
             "wasInAirBattle",
             MutableProperty.ofSimple(this::setWasInAirBattle, this::getWasInAirBattle))
         .put("disabled", MutableProperty.ofSimple(this::setDisabled, this::getDisabled))
-        .put("launched", MutableProperty.ofSimple(this::setIsLaunched, this::getIsLaunched))
+        .put("launched", MutableProperty.ofSimple(this::setLaunched, this::getLaunched))
         .put("airborne", MutableProperty.ofSimple(this::setAirborne, this::getAirborne))
         .put(
             "chargedFlatFuelCost",
@@ -286,11 +286,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   public boolean getSubmerged() {
-    return isSubmerged;
+    return submerged;
   }
 
   public void setSubmerged(final boolean submerged) {
-    this.isSubmerged = submerged;
+    this.submerged = submerged;
   }
 
   public GamePlayer getOriginalOwner() {
@@ -325,20 +325,20 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     maxScrambleCount = value;
   }
 
-  public int getIsLaunched() {
-    return isLaunched;
+  public int getLaunched() {
+    return launched;
   }
 
-  private void setIsLaunched(final int value) {
-    isLaunched = value;
+  private void setLaunched(final int value) {
+    launched = value;
   }
 
   public boolean getAirborne() {
-    return isAirborne;
+    return airborne;
   }
 
   private void setAirborne(final boolean value) {
-    isAirborne = value;
+    airborne = value;
   }
 
   public boolean getChargedFlatFuelCost() {
@@ -427,16 +427,16 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         CollectionUtils.getMatches(transportedUnitsPossible, o -> equals(o.getTransportedBy())));
   }
 
-  public List<Unit> getUnloadedUnits() {
-    return unloadedUnits;
+  public List<Unit> getUnloaded() {
+    return unloaded;
   }
 
   @VisibleForTesting
-  public void setUnloadedUnits(final List<Unit> unloadedUnits) {
-    if (unloadedUnits == null || unloadedUnits.isEmpty()) {
-      this.unloadedUnits = List.of();
+  public void setUnloaded(final List<Unit> unloaded) {
+    if (unloaded == null || unloaded.isEmpty()) {
+      this.unloaded = List.of();
     } else {
-      this.unloadedUnits = ImmutableList.copyOf(unloadedUnits);
+      this.unloaded = ImmutableList.copyOf(unloaded);
     }
   }
 

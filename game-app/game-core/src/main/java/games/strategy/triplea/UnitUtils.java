@@ -200,7 +200,7 @@ public class UnitUtils {
   private static CompositeChange translateDependentUnitsToOtherUnit(
       final Unit unitGivingAttributes, final Unit receivingUnit) {
     final CompositeChange unitChange = new CompositeChange();
-    final List<Unit> unloaded = unitGivingAttributes.getUnloadedUnits();
+    final List<Unit> unloaded = unitGivingAttributes.getUnloaded();
     if (!unloaded.isEmpty()) {
       unitChange.add(ChangeFactory.unitPropertyChange(receivingUnit, unloaded, Unit.UNLOADED));
     }

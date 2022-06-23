@@ -499,7 +499,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     final IntegerMap<UnitType> capacityMap = getAirborneCapacity(techAdvances);
     int airborneCapacity = 0;
     for (final Unit u : units) {
-      airborneCapacity += Math.max(0, (capacityMap.getInt(u.getType()) - u.getIsLaunched()));
+      airborneCapacity += Math.max(0, (capacityMap.getInt(u.getType()) - u.getLaunched()));
     }
     return airborneCapacity;
   }

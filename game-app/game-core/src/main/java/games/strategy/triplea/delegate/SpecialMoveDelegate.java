@@ -181,7 +181,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       if (newNumberLaunched <= 0) {
         break;
       }
-      final int numberLaunchedAlready = u.getIsLaunched();
+      final int numberLaunchedAlready = u.getLaunched();
       final int capacity = capacityMap.getInt(u.getType());
       final int toAdd = Math.min(newNumberLaunched, capacity - numberLaunchedAlready);
       if (toAdd <= 0) {
