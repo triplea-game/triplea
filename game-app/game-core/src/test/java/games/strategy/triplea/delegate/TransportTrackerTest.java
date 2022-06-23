@@ -14,6 +14,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class TransportTrackerTest {
@@ -22,14 +23,28 @@ class TransportTrackerTest {
   private final Unit transport = transport(gameData).create(americans(gameData));
   private final Unit tank = armour(gameData).create(americans(gameData));
 
-  @Test
-  void testIsTransporting() {
+  @BeforeEach
+  void setUp() {
     addTo(sz18, List.of(transport));
-    assertThat(transport.isTransporting(), is(false));
+  }
 
+  void loadTankToTransport() {
     addTo(sz18, List.of(tank));
     final Change change = TransportTracker.loadTransportChange(transport, tank);
     gameData.performChange(change);
+  }
+
+  @Test
+  void testIsTransporting() {
+    assertThat(transport.isTransporting(), is(false));
+    loadTankToTransport();
     assertThat(transport.isTransporting(), is(true));
+  }
+
+  @Test
+  void testIsTransportingWithTerritory() {
+    assertThat(transport.isTransporting(sz18), is(false));
+    loadTankToTransport();
+    assertThat(transport.isTransporting(sz18), is(true));
   }
 }

@@ -881,7 +881,7 @@ class ProNonCombatMoveAi {
         for (final Unit transport : transportDefendOptions.keySet()) {
           // Find current naval defense that needs transport if it isn't transporting units
           for (final Territory t : transportDefendOptions.get(transport)) {
-            if (!transport.isTransporting()) {
+            if (!transport.isTransporting(proData.getUnitTerritory(transport))) {
               final ProTerritory proTerritory = moveMap.get(t);
               proTerritory.setBattleResultIfNull(
                   () ->
@@ -1261,6 +1261,7 @@ class ProNonCombatMoveAi {
                 ProTransportUtils.getUnitsToTransportThatCantMoveToHigherValue(
                     player,
                     transport,
+                    proData,
                     territoriesCanLoadFrom,
                     alreadyMovedUnits,
                     moveMap,
@@ -1331,6 +1332,7 @@ class ProNonCombatMoveAi {
                 ProTransportUtils.getUnitsToTransportThatCantMoveToHigherValue(
                     player,
                     transport,
+                    proData,
                     territoriesCanLoadFrom,
                     alreadyMovedUnits,
                     moveMap,
@@ -1402,7 +1404,7 @@ class ProNonCombatMoveAi {
         final Unit transport = it.next();
         final Territory currentTerritory = unitTerritoryMap.get(transport);
         final int moves = transport.getMovementLeft().intValue();
-        if (transport.isTransporting() || moves <= 0) {
+        if (transport.isTransporting(currentTerritory) || moves <= 0) {
           continue;
         }
         final List<ProTerritory> priorizitedLoadTerritories = new ArrayList<>();

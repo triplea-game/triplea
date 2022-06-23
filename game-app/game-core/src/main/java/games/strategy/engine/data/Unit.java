@@ -395,6 +395,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
    * @return Unmodifiable collection of units that this unit is transporting in the same territory
    *     it is located in
    */
+  @Deprecated
   public List<Unit> getTransporting() {
     if (Matches.unitCanTransport().test(this) || Matches.unitIsCarrier().test(this)) {
       // we don't store the units we are transporting
@@ -523,10 +524,15 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
    * optimize this to halt on the first territory we have found with a transporting unit, or
    * otherwise optimize this to not check every territory.
    *
-   * @deprecated Avoid callling this method, it is slow, needs optimization.
+   * @deprecated Avoid callling this method, it calls {@link #getTransporting()} which is slow and
+   *     needs optimization.
    */
   @Deprecated
   public boolean isTransporting() {
     return !getTransporting().isEmpty();
+  }
+
+  public boolean isTransporting(final Territory territory) {
+    return !getTransporting(territory).isEmpty();
   }
 }

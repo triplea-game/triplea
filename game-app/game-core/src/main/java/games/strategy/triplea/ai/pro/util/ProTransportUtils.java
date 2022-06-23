@@ -53,13 +53,14 @@ public final class ProTransportUtils {
   public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(
       final GamePlayer player,
       final Unit transport,
+      final ProData proData,
       final Set<Territory> territoriesToLoadFrom,
       final Collection<Unit> unitsToIgnore,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<>(unitsToIgnore);
-    if (!transport.isTransporting()) {
+    if (!transport.isTransporting(proData.getUnitTerritory(transport))) {
       // Get all units that can be transported
       Predicate<Unit> canBeLoaded =
           ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true);
