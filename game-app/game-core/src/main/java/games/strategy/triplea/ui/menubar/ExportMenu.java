@@ -162,14 +162,14 @@ final class ExportMenu extends JMenu {
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
+    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+    final GameData clone = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
+    if (clone == null) {
+      return;
+    }
     try (PrintWriter writer =
             new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8.toString());
         GameData.Unlocker ignored = gameData.acquireReadLock()) {
-      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-      final GameData clone = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
-      if (clone == null) {
-        return;
-      }
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
       writer.append(ProductVersionReader.getCurrentVersion().toString()).println(',');
@@ -388,13 +388,11 @@ final class ExportMenu extends JMenu {
   private void exportSetupCharts() {
     final JFrame frame = new JFrame("Export Setup Charts");
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    final GameData clonedGameData;
-    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-      clonedGameData = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
-      if (clonedGameData == null) {
-        return;
-      }
+    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+    final GameData clonedGameData =
+        GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
+    if (clonedGameData == null) {
+      return;
     }
     final JComponent newContentPane = new SetupFrame(clonedGameData);
     // content panes must be opaque

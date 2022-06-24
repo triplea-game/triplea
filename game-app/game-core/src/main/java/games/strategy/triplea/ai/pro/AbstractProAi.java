@@ -275,10 +275,7 @@ public abstract class AbstractProAi extends AbstractAi {
   private GameData copyData(GameData data) {
     Version engineVersion = ProductVersionReader.getCurrentVersion();
     GameDataManager.Options options = GameDataManager.Options.builder().withDelegates(true).build();
-    GameData dataCopy;
-    try (GameData.Unlocker ignored = data.acquireWriteLock()) {
-      dataCopy = GameDataUtils.cloneGameData(data, options, engineVersion).orElse(null);
-    }
+    GameData dataCopy = GameDataUtils.cloneGameData(data, options, engineVersion).orElse(null);
     Optional.ofNullable(dataCopy).ifPresent(this::prepareData);
     return dataCopy;
   }
