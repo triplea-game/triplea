@@ -1744,7 +1744,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     inGame.set(false);
     setWidgetActivation();
     final GameData clonedGameData;
-    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+    try (GameData.Unlocker ignored = data.acquireWriteLock()) {
       // we want to use a clone of the data, so we can make changes to it as we walk up and down the
       // history
       final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
@@ -1853,65 +1853,63 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                           + "save at a point in history such as a move or battle phase.",
                       "Save Game from History",
                       JOptionPane.INFORMATION_MESSAGE);
-                  try (GameData.Unlocker ignored = data.acquireReadLock()) {
-                    final Optional<Path> f =
-                        GameFileSelector.getSaveGameLocation(TripleAFrame.this, data);
-                    if (f.isPresent()) {
-                      try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
-                        final GameData datacopy =
-                            GameDataUtils.cloneGameData(
-                                    data,
-                                    GameDataManager.Options.withEverything(),
-                                    ProductVersionReader.getCurrentVersion())
-                                .orElse(null);
-                        if (datacopy != null) {
-                          datacopy
-                              .getHistory()
-                              .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
-                          // TODO: the saved current delegate is still the current delegate,
-                          // rather than the delegate at that history popup node
-                          // TODO: it still shows the current round number, rather than the round at
-                          // the history popup node
-                          // TODO: this could be solved easily if rounds/steps were changes,
-                          // but that could greatly increase the file size :(
-                          // TODO: this also does not undo the runcount of each delegate step
-                          final Enumeration<?> enumeration =
-                              ((DefaultMutableTreeNode) datacopy.getHistory().getRoot())
-                                  .preorderEnumeration();
-                          enumeration.nextElement();
-                          int round = 0;
-                          String stepDisplayName =
-                              datacopy.getSequence().getStep(0).getDisplayName();
-                          GamePlayer currentPlayer =
-                              datacopy.getSequence().getStep(0).getPlayerId();
-                          int roundOffset = datacopy.getSequence().getRoundOffset();
-                          while (enumeration.hasMoreElements()) {
-                            final HistoryNode node = (HistoryNode) enumeration.nextElement();
-                            if (node instanceof Round) {
-                              round = Math.max(0, ((Round) node).getRoundNo() - roundOffset);
-                              currentPlayer = null;
-                              stepDisplayName = node.getTitle();
-                            } else if (node instanceof Step) {
-                              currentPlayer = ((Step) node).getPlayerId();
-                              stepDisplayName = node.getTitle();
-                            }
+
+                  final Optional<Path> f =
+                      GameFileSelector.getSaveGameLocation(TripleAFrame.this, data);
+                  if (f.isPresent()) {
+                    try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
+                      final GameData datacopy =
+                          GameDataUtils.cloneGameData(
+                                  data,
+                                  GameDataManager.Options.withEverything(),
+                                  ProductVersionReader.getCurrentVersion())
+                              .orElse(null);
+                      if (datacopy != null) {
+                        datacopy
+                            .getHistory()
+                            .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
+                        // TODO: the saved current delegate is still the current delegate,
+                        // rather than the delegate at that history popup node
+                        // TODO: it still shows the current round number, rather than the round at
+                        // the history popup node
+                        // TODO: this could be solved easily if rounds/steps were changes,
+                        // but that could greatly increase the file size :(
+                        // TODO: this also does not undo the runcount of each delegate step
+                        final Enumeration<?> enumeration =
+                            ((DefaultMutableTreeNode) datacopy.getHistory().getRoot())
+                                .preorderEnumeration();
+                        enumeration.nextElement();
+                        int round = 0;
+                        String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
+                        GamePlayer currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
+                        int roundOffset = datacopy.getSequence().getRoundOffset();
+                        while (enumeration.hasMoreElements()) {
+                          final HistoryNode node = (HistoryNode) enumeration.nextElement();
+                          if (node instanceof Round) {
+                            round = Math.max(0, ((Round) node).getRoundNo() - roundOffset);
+                            currentPlayer = null;
+                            stepDisplayName = node.getTitle();
+                          } else if (node instanceof Step) {
+                            currentPlayer = ((Step) node).getPlayerId();
+                            stepDisplayName = node.getTitle();
                           }
-                          datacopy
-                              .getSequence()
-                              .setRoundAndStep(round, stepDisplayName, currentPlayer);
-                          GameDataManager.saveGame(
-                              fileOutputStream, datacopy, ProductVersionReader.getCurrentVersion());
-                          JOptionPane.showMessageDialog(
-                              TripleAFrame.this,
-                              "Game Saved",
-                              "Game Saved",
-                              JOptionPane.INFORMATION_MESSAGE);
                         }
-                      } catch (final IOException e) {
-                        log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
+                        datacopy
+                            .getSequence()
+                            .setRoundAndStep(round, stepDisplayName, currentPlayer);
+                        GameDataManager.saveGame(
+                            fileOutputStream, datacopy, ProductVersionReader.getCurrentVersion());
+                        JOptionPane.showMessageDialog(
+                            TripleAFrame.this,
+                            "Game Saved",
+                            "Game Saved",
+                            JOptionPane.INFORMATION_MESSAGE);
                       }
+                    } catch (final IOException e) {
+                      log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                     }
                   }
+
                   historyPanel.clearCurrentPopupNode();
                 }
               });
