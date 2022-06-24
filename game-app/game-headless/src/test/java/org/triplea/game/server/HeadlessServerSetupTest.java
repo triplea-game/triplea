@@ -104,4 +104,13 @@ public class HeadlessServerSetupTest {
     thread.get().interrupt();
     assertThat(future.get(1, TimeUnit.SECONDS), is(false));
   }
+
+  @Test
+  void verifyCancelOperationIsFinal() throws Exception {
+    headlessServerSetup.cancel();
+    headlessServerSetup.playersTakenChanged();
+    headlessServerSetup.playerListChanged();
+    final var future = CompletableFuture.supplyAsync(headlessServerSetup::waitUntilStart);
+    assertThat(future.get(1, TimeUnit.SECONDS), is(false));
+  }
 }

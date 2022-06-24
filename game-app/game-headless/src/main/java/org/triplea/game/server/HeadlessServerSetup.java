@@ -18,7 +18,7 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   private final ReentrantLock lock;
   private final Condition playersUpdated;
 
-  private boolean isRunning = true;
+  private boolean cancelled = false;
 
   HeadlessServerSetup(final ServerModel model, final GameSelectorModel gameSelectorModel) {
     this.model = model;
@@ -30,7 +30,7 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
 
   @Override
   public void cancel() {
-    signalPotentialStart(false);
+    signalPotentialStart(true);
     model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
     model.cancel();
   }
@@ -42,12 +42,12 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
 
   @Override
   public void playerListChanged() {
-    signalPotentialStart(true);
+    signalPotentialStart(false);
   }
 
   @Override
   public void playersTakenChanged() {
-    signalPotentialStart(true);
+    signalPotentialStart(false);
   }
 
   @Override
@@ -69,10 +69,10 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
     SetupModel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 
-  private void signalPotentialStart(boolean isRunning) {
+  private void signalPotentialStart(boolean cancel) {
     lock.lock();
     try {
-      this.isRunning = isRunning;
+      this.cancelled |= cancel;
       playersUpdated.signal();
     } finally {
       lock.unlock();
@@ -82,12 +82,12 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   public boolean waitUntilStart() {
     lock.lock();
     try {
-      while (!canGameStart() && isRunning) {
+      while (!canGameStart() && !cancelled) {
         if (!Interruptibles.await(playersUpdated::await)) {
           return false;
         }
       }
-      return isRunning;
+      return !cancelled;
     } finally {
       lock.unlock();
     }
