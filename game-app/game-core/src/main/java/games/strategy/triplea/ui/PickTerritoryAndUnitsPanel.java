@@ -259,6 +259,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         () -> {
           if (!isActive()) {
             // current turn belongs to remote player or AI player
+            actionLabel.setText("Waiting for other players...");
             doneButton.setEnabled(false);
             selectUnitsAction.setEnabled(false);
             selectTerritoryAction.setEnabled(false);
