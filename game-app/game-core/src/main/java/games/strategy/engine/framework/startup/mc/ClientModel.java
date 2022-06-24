@@ -473,8 +473,14 @@ public class ClientModel implements IMessengerErrorListener {
     return hostIsHeadlessBot;
   }
 
-  public Action getHostBotSetMapClientAction(final Component parent) {
-    return new SetMapClientAction(parent, getServerStartup(), getAvailableServerGames());
+  public void setMap(final Component parent) {
+    // don't block the UI thread
+    ThreadRunner.runInNewThread(
+        () -> {
+          final var action =
+              new SetMapClientAction(parent, getServerStartup(), getAvailableServerGames());
+          SwingUtilities.invokeLater(action::run);
+        });
   }
 
   public Action getHostBotChangeGameOptionsClientAction(final Component parent) {
