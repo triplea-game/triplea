@@ -52,7 +52,8 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     final Chat chat = new Chat(chatTransmitter);
     final ChatMessagePanel chatMessagePanel =
         new ChatMessagePanel(chat, ChatSoundProfile.LOBBY, new ClipPlayer());
-    Optional.ofNullable(lobbyClient.getLobbyMessage()).ifPresent(chatMessagePanel::addServerMessage);
+    Optional.ofNullable(lobbyClient.getLobbyMessage())
+        .ifPresent(chatMessagePanel::addServerMessage);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::lobbyPlayerRightClickMenuActions);
