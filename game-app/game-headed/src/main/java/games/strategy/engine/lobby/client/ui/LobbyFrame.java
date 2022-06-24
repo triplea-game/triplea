@@ -20,6 +20,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -51,7 +52,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     final Chat chat = new Chat(chatTransmitter);
     final ChatMessagePanel chatMessagePanel =
         new ChatMessagePanel(chat, ChatSoundProfile.LOBBY, new ClipPlayer());
-    chatMessagePanel.addServerMessage(lobbyClient.getLobbyMessage());
+    Optional.ofNullable(lobbyClient.getLobbyMessage()).ifPresent(chatMessagePanel::addServerMessage);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::lobbyPlayerRightClickMenuActions);
