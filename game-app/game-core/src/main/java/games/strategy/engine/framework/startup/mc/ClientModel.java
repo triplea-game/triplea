@@ -483,8 +483,15 @@ public class ClientModel implements IMessengerErrorListener {
         });
   }
 
-  public Action getHostBotChangeGameOptionsClientAction(final Component parent) {
-    return new ChangeGameOptionsClientAction(parent, getServerStartup());
+  public void changeGameOptions(final Component parent) {
+    // don't block the UI thread
+    ThreadRunner.runInNewThread(
+        () -> {
+          final IServerStartupRemote startupRemote = getServerStartup();
+          final byte[] oldBytes = startupRemote.getGameOptions();
+          SwingUtilities.invokeLater(
+              () -> ChangeGameOptionsClientAction.run(parent, oldBytes, startupRemote));
+        });
   }
 
   public Action getHostBotChangeGameToSaveGameClientAction(final Frame owner) {

@@ -219,9 +219,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           } else if (canChangeHostBotGameData()) {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
-              clientModelForHostBots
-                  .getHostBotChangeGameOptionsClientAction(this)
-                  .actionPerformed(e);
+              clientModelForHostBots.changeGameOptions(this);
             }
           }
         });
