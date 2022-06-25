@@ -261,14 +261,13 @@ public class ProTerritory {
   }
 
   public void putAllAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap) {
-    for (final Unit u : amphibAttackMap.keySet()) {
-      putAmphibAttackMap(u, amphibAttackMap.get(u));
-    }
+    amphibAttackMap.forEach((unit, amphibUnits) -> putAmphibAttackMap(unit, amphibUnits));
   }
 
   public void putAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits) {
     this.amphibAttackMap.put(transport, amphibUnits);
-    this.isTransportingMap.put(transport, transport.isTransporting());
+    this.isTransportingMap.put(
+        transport, transport.isTransporting(proData.getUnitTerritory(transport)));
   }
 
   public void setCanAttack(final boolean canAttack) {

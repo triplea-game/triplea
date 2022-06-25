@@ -1912,14 +1912,17 @@
 - mapName: Europe
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/europe/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/europe/master/preview.png
   description: |
     <br>
     <br>Original Europe Edition.
     <br>
     <br>Includes default version following original europe rules (similar to ww2v2 but not exact), and a version following ww2v3 type rules
-    <br>
+    <br>Has now added
+    <br>Europe - Beta: A few more of the original rules implemented
+    <br>Europe - Beta-Buildcaps: Limits unit productions
+    <br>Europe - Beta-Upkeeps: Adds 10% per turn upkeep Cost
     <br><i>Credits: Triple_Elk (base-line), iron__cross (integration), Adam (convoy center code), and the rest of the team...
     <br>Converted to TripleA 1.2.x.x, and additional rules properties and fixes by Veqryn</i>
 - mapName: Zombieland
@@ -2034,7 +2037,7 @@
 - mapName: Global 40 House Rules
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_house_rules/archive/master.zip
-  version: 15
+  version: 16
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
   description:
     <br>

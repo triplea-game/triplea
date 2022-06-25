@@ -17,7 +17,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 
 /** A way of hosting a game, but headless. */
@@ -27,7 +26,6 @@ public class HeadlessGameServer {
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   @Nonnull private final HeadlessServerSetup headlessServerSetup;
   @Nullable private ServerGame game = null;
-  private boolean shutDown = false;
 
   private HeadlessGameServer() {
     headlessServerSetup =
@@ -47,7 +45,6 @@ public class HeadlessGameServer {
             new Thread(
                 () -> {
                   log.info("Running ShutdownHook.");
-                  shutDown = true;
                   Optional.ofNullable(game).ifPresent(ServerGame::stopGame);
                   headlessServerSetup.cancel();
                 }));
@@ -148,44 +145,30 @@ public class HeadlessGameServer {
     log.info("Waiting for users to connect.");
     setServerGame(null);
 
-    while (!shutDown) {
-      if (!Interruptibles.sleep(8000)) {
-        shutDown = true;
-        break;
-      }
-      if (headlessServerSetup.canGameStart()) {
-        final boolean started = startHeadlessGame();
-        if (!started) {
-          log.warn("Error in launcher, going back to waiting.");
-        } else {
-          // TODO: need a latch instead?
-          break;
-        }
-      }
+    while (headlessServerSetup.waitUntilStart() && !startHeadlessGame()) {
+      log.warn("Error in launcher, going back to waiting.");
     }
   }
 
-  private synchronized boolean startHeadlessGame() {
+  private boolean startHeadlessGame() {
     try {
-      if (headlessServerSetup.canGameStart()) {
-        log.info(
-            "Starting Game: "
-                + gameSelectorModel.getGameData().getGameName()
-                + ", Round: "
-                + gameSelectorModel.getGameData().getSequence().getRound());
+      log.info(
+          "Starting Game: "
+              + gameSelectorModel.getGameData().getGameName()
+              + ", Round: "
+              + gameSelectorModel.getGameData().getSequence().getRound());
 
-        final boolean launched =
-            headlessServerSetup
-                .getLauncher()
-                .map(
-                    launcher -> {
-                      ThreadRunner.runInNewThread(launcher::launch);
-                      return true;
-                    })
-                .orElse(false);
-        headlessServerSetup.postStartGame();
-        return launched;
-      }
+      final boolean launched =
+          headlessServerSetup
+              .getLauncher()
+              .map(
+                  launcher -> {
+                    ThreadRunner.runInNewThread(launcher::launch);
+                    return true;
+                  })
+              .orElse(false);
+      headlessServerSetup.postStartGame();
+      return launched;
     } catch (final Exception e) {
       log.error("Failed to start headless game", e);
       // if we do not do this, we can get into an infinite loop of launching a game, then crashing

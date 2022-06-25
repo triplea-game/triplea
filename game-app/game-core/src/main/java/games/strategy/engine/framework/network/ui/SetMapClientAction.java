@@ -1,19 +1,19 @@
 package games.strategy.engine.framework.network.ui;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import org.triplea.java.ThreadRunner;
 
-/** An action for changing the map across all network nodes from a client node. */
-public class SetMapClientAction extends AbstractAction {
-  private static final long serialVersionUID = -9156920997678163614L;
+/** A class for changing the map across all network nodes from a client node. */
+public class SetMapClientAction {
 
   final List<String> availableGames;
   private final Component parent;
@@ -23,14 +23,13 @@ public class SetMapClientAction extends AbstractAction {
       final Component parent,
       final IServerStartupRemote serverStartupRemote,
       final Collection<String> games) {
-    super("Change Game To");
     this.parent = JOptionPane.getFrameForComponent(parent);
     this.serverStartupRemote = serverStartupRemote;
     this.availableGames = games.stream().sorted().collect(Collectors.toList());
   }
 
-  @Override
-  public void actionPerformed(final ActionEvent e) {
+  public void run() {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
     if (availableGames.isEmpty()) {
       JOptionPane.showMessageDialog(
           parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
@@ -50,6 +49,7 @@ public class SetMapClientAction extends AbstractAction {
     if (name == null || name.length() <= 1) {
       return;
     }
-    serverStartupRemote.changeServerGameTo(name);
+    // don't block UI thread
+    ThreadRunner.runInNewThread(() -> serverStartupRemote.changeServerGameTo(name));
   }
 }

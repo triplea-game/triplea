@@ -10,17 +10,12 @@
       - certbot
       - python3-certbot-nginx
 
-- name: look for certbot generated key file
-  stat:
-    path: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
-  register: has_certbot_pem
-
-- name: run certbot
+- name: run certbot to get certs
   command: |
-     certbot --nginx -n \
+     certbot certonly \
+         --nginx -n \
          -m tripleabuilderbot@gmail.com \
          -d {{ inventory_hostname }} \
          --agree-tos \
          --rsa-key-size 4096
-  when: has_certbot_pem.stat.exists == false
-
+  creates: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem

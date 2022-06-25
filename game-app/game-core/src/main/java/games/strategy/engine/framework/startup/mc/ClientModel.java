@@ -473,12 +473,25 @@ public class ClientModel implements IMessengerErrorListener {
     return hostIsHeadlessBot;
   }
 
-  public Action getHostBotSetMapClientAction(final Component parent) {
-    return new SetMapClientAction(parent, getServerStartup(), getAvailableServerGames());
+  public void setMap(final Component parent) {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
+    ThreadRunner.runInNewThread(
+        () -> {
+          final var action =
+              new SetMapClientAction(parent, getServerStartup(), getAvailableServerGames());
+          SwingUtilities.invokeLater(action::run);
+        });
   }
 
-  public Action getHostBotChangeGameOptionsClientAction(final Component parent) {
-    return new ChangeGameOptionsClientAction(parent, getServerStartup());
+  public void changeGameOptions(final Component parent) {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
+    ThreadRunner.runInNewThread(
+        () -> {
+          final IServerStartupRemote startupRemote = getServerStartup();
+          final byte[] oldBytes = startupRemote.getGameOptions();
+          SwingUtilities.invokeLater(
+              () -> ChangeGameOptionsClientAction.run(parent, oldBytes, startupRemote));
+        });
   }
 
   public Action getHostBotChangeGameToSaveGameClientAction(final Frame owner) {
