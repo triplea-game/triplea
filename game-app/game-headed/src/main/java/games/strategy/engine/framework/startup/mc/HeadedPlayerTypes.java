@@ -58,8 +58,9 @@ public class HeadedPlayerTypes {
 
   public static Collection<PlayerTypes.Type> getPlayerTypes() {
     return Stream.of(
+            List.of(HUMAN_PLAYER),
             PlayerTypes.getBuiltInPlayerTypes(),
-            List.of(HUMAN_PLAYER, CLIENT_PLAYER, getDoesNothingType(), getFlowFieldType()))
+            List.of(CLIENT_PLAYER, getDoesNothingType(), getFlowFieldType()))
         .flatMap(Collection::stream)
         .filter(HeadedPlayerTypes::filterBetaPlayerType)
         .collect(Collectors.toList());
