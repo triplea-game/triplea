@@ -12,21 +12,24 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
+scriptDir="$(dirname "$0")"
+
 function main() {
   buildArtifacts
 }
 
 function buildArtifacts() {
   (
-    cd ..
+    cd "$scriptDir"/../.. || exit 1
     ./gradlew \
         :spitfire-server:dropwizard-server:release \
         :game-app:game-headless:release \
         :spitfire-server:database:release
+        set +x
   )
-  copyBuildArtifact "../spitfire-server/database/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
-  copyBuildArtifact "../spitfire-server/dropwizard-server/build/artifacts/triplea-dropwizard-server-$VERSION.zip" "ansible/roles/lobby_server/files/"
-  copyBuildArtifact "../game-app/game-headless/build/artifacts/triplea-game-headless-$VERSION.zip" "ansible/roles/bot/files/"
+  copyBuildArtifact "$scriptDir/../../spitfire-server/database/build/artifacts/migrations.zip" "$scriptDir/../ansible/roles/database/flyway/files/"
+  copyBuildArtifact "$scriptDir/../../spitfire-server/dropwizard-server/build/artifacts/triplea-dropwizard-server-$VERSION.zip" "$scriptDir/../ansible/roles/lobby_server/files/"
+  copyBuildArtifact "$scriptDir/../../game-app/game-headless/build/artifacts/triplea-game-headless-$VERSION.zip" "$scriptDir/../ansible/roles/bot/files/"
 }
 
 function copyBuildArtifact() {
