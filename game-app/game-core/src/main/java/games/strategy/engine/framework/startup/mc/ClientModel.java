@@ -49,8 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.swing.Action;
@@ -100,13 +98,7 @@ public class ClientModel implements IMessengerErrorListener {
         public void joinGame(final byte[] gameData, final Map<String, INode> players) {
           messengers.unregisterRemote(
               ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
-          final CountDownLatch latch = new CountDownLatch(1);
-          startGame(gameData, players, latch, true);
-          try {
-            latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
-          } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-          }
+          startGame(gameData, players, true);
         }
 
         @Override
@@ -137,13 +129,7 @@ public class ClientModel implements IMessengerErrorListener {
 
         @Override
         public void doneSelectingPlayers(final byte[] gameData, final Map<String, INode> players) {
-          final CountDownLatch latch = new CountDownLatch(1);
-          startGame(gameData, players, latch, false);
-          try {
-            latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
-          } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-          }
+          startGame(gameData, players, false);
         }
       };
 
@@ -323,10 +309,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private void startGame(
-      final byte[] gameData,
-      final Map<String, INode> players,
-      final CountDownLatch onDone,
-      final boolean gameRunning) {
+      final byte[] gameData, final Map<String, INode> players, final boolean gameRunning) {
     SwingUtilities.invokeLater(
         () -> {
           gameLoadingWindow.setVisible(true);
@@ -338,10 +321,6 @@ public class ClientModel implements IMessengerErrorListener {
     } catch (final RuntimeException e) {
       gameLoadingWindow.doneWait();
       throw e;
-    } finally {
-      if (onDone != null) {
-        onDone.countDown();
-      }
     }
   }
 
