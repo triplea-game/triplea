@@ -2,8 +2,9 @@
 
 set -eu
 
-ENVIRONMENT_VAGRANT=vagrant
-ENVIRONMENT_PRODUCTION=production
+scriptDir="$(dirname "$0")"
+readonly ENVIRONMENT_VAGRANT=vagrant
+readonly ENVIRONMENT_PRODUCTION=production
 
 # This script orchestrates deployments via ansible. If a prerelease deployment is done then
 # fresh artifacts are built and deployed.
@@ -13,30 +14,42 @@ function usage() {
   echo ""
   echo "Examples:"
   echo "$0 --environment $ENVIRONMENT_VAGRANT"
+  echo "$0 --environment $ENVIRONMENT_VAGRANT --diff --dry-run --verbose"
   echo ""
   echo "[options]"
-  echo "  --environment [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRODUCTION]"
+  echo "  --environment, -env [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRODUCTION]"
   echo "      The target environment for the deployment."
   echo "         $ENVIRONMENT_VAGRANT is an environment that can be launched locally via a VM"
-  echo "  --tags [ansible tags]"
+  echo "  --tags, -t [ansible tags]"
   echo "      Defaults to the empty set"
   echo "      Any tags that should be passed to ansible"
+  echo "  --diff, -d"
+  echo "      Ansible reports line-diffs of what has changed"
+  echo "  --dry-run"
+  echo "      Sets ansible to 'check' mode, no actual changes are made. Useful with '--diff'"
+  echo "      This option can cause false positive failures if one action depends on a previous"
+  echo "  --verbose, -v"
+  echo "      Shows ansible verbose output, gives more detail about what has changed."
   exit 1
 }
 
-ENVIRONMENT=""
-TAGS=""
 
 if [[ $# -eq 0 ]]; then
   usage
 fi
 
 
-while [[ $# -gt 1 ]]; do
+DIFF_ARG=""
+DRY_RUN_ARG=""
+ENVIRONMENT=""
+TAGS_ARG=""
+VERBOSE_ARG=""
+
+while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
-    --environment)
+    --env|--environment)
       ENVIRONMENT="$2"
       if [[ "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" \
          && "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]]; then
@@ -46,15 +59,22 @@ while [[ $# -gt 1 ]]; do
       shift # past argument
       shift # past value
       ;;
-    --tags)
-      TAGS="$2"
-      if [[ "$TAGS" =~ " " ]]; then
-        echo "Error, invalid value for --tags:  TAGS"
-        echo "Tags must not contain spaces, use comma to delimit tags"
-        exit 1
-      fi
+    --tags|-t)
+      TAGS_ARG="--tags $2"
       shift # past argument
       shift # past value
+      ;;
+    --diff|-d|--d)
+      DIFF_ARG="--diff"
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN_ARG="--check"
+      shift
+      ;;
+    --verbose|-v)
+      VERBOSE_ARG="-v"
+      shift
       ;;
     *)
       echo "Error, unknown option: $1"
@@ -68,23 +88,17 @@ if [ -z "$ENVIRONMENT" ]; then
   usage
 fi
 
-ANSIBLE_ARG_TAGS=""
-if [[ -n "${TAGS:-}" ]]; then
-  ANSIBLE_ARG_TAGS="--tags $TAGS"
-fi
-
 # If we are deploying to non-vagrant environment then we will need
 # an ansible vault passphrase value to decrypt secrets.
-ANSIBLE_ARG_VAULT_PASSWORD=""
-if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
-  VAULT_PASSWORD_FILE="vault_password"
+VAULT_PASSWORD_FILE_ARG=""
+if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
   if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
-    echo "Error: file: $VAULT_PASSWORD_FILE must exist"
+    echo "Deployments to production environment requires vault password file: $VAULT_PASSWORD_FILE"
     exit 1
   fi
 
-  ANSIBLE_ARG_VAULT_PASSWORD="--vault-password-file $VAULT_PASSWORD_FILE"
-
+  VAULT_PASSWORD_FILE_ARG="--vault-password-file $VAULT_PASSWORD_FILE"
+  readonly VAULT_PASSWORD_FILE_ARG
   # Decrypt SSH key and add it to ssh agent
   # Once available to SSH agent, when making SSH connections
   # this key will be offered by SSH for authentication.
@@ -97,20 +111,20 @@ if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
   | ssh-add -
 fi
 
-# Parse version number from product.properties
+# Parse version number from product.properties, eg: "version = 2.5.234" -> "2.5.234"
 VERSION=$(sed 's/.*=\s*//' "$(find .. -path "*/src/main/*" -name "product.properties")")
-
-.include/build_latest_artifacts "$VERSION"
+"$scriptDir/.include/build_latest_artifacts" "$VERSION"
+export ANSIBLE_CFG="$scriptDir/ansible.cfg"
 
 # Run deployment
 ansible-playbook \
   --extra-vars "version=$VERSION" \
-   --inventory ansible/inventory/$ENVIRONMENT \
-   $ANSIBLE_ARG_VAULT_PASSWORD $ANSIBLE_ARG_TAGS ansible/site.yml
+   --inventory "$scriptDir/ansible/inventory/$ENVIRONMENT" $DRY_RUN_ARG \
+   $VAULT_PASSWORD_FILE_ARG $TAGS_ARG $DIFF_ARG $VERBOSE_ARG "$scriptDir/ansible/site.yml"
 
 # Do Cleanup
 if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
   echo "Cleanup, removing old kernel patches.."
-  ansible -i ansible/inventory/$ENVIRONMENT all --become-user=root -m shell -a \
+  ansible -i "$scriptDir/ansible/inventory/$ENVIRONMENT" all --become-user=root -m shell -a \
     "sudo apt autoremove -y"
 fi
