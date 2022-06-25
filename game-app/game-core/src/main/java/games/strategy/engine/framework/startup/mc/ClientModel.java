@@ -474,7 +474,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public void setMap(final Component parent) {
-    // don't block the UI thread
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
     ThreadRunner.runInNewThread(
         () -> {
           final var action =
@@ -484,7 +484,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public void changeGameOptions(final Component parent) {
-    // don't block the UI thread
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
     ThreadRunner.runInNewThread(
         () -> {
           final IServerStartupRemote startupRemote = getServerStartup();

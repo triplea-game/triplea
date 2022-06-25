@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.network.ui;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
@@ -10,6 +11,7 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ThreadRunner;
 
@@ -19,6 +21,7 @@ public class ChangeGameOptionsClientAction {
 
   public static void run(
       final Component parent, final byte[] oldBytes, final IServerStartupRemote serverRemote) {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
     if (oldBytes.length == 0) {
       return;
     }
