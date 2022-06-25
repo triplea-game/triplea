@@ -360,13 +360,13 @@ public class GameData implements Serializable, GameState {
     gameHistory = new History(this);
     GameStep step = getSequence().getStep();
     // Put the history in a round and step, so that child nodes can be added without errors.
+    final boolean oldForceInSwingEventThread = forceInSwingEventThread;
+    forceInSwingEventThread = false;
     gameHistory
         .getHistoryWriter()
         .startNextStep(
-            step.getName(),
-            step.getDelegate().getName(),
-            step.getPlayerId(),
-            step.getDisplayName());
+            step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
+    forceInSwingEventThread = oldForceInSwingEventThread;
   }
 
   /** Not to be called by mere mortals. */
