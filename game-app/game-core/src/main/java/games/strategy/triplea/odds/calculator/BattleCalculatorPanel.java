@@ -1074,7 +1074,7 @@ class BattleCalculatorPanel extends JPanel {
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         AttackerAndDefenderSelector.builder()
             .players(data.getPlayerList().getPlayers())
-            .currentPlayer(data.getSequence().getStep().getPlayerId())
+            .currentPlayer(data.getHistory().getCurrentPlayer())
             .relationshipTracker(data.getRelationshipTracker())
             .territory(location)
             .build()
