@@ -3,7 +3,6 @@
     - system/apt_common_tools
     - system/hostname
     - system/firewall
-    - system/security
     - system/journald
     - system/admin_user
 
