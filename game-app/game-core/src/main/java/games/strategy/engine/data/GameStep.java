@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import javax.annotation.Nullable;
+import lombok.Getter;
 
 /**
  * A single step in a game.
@@ -18,7 +19,7 @@ public class GameStep extends GameDataComponent {
   @Nullable private final String name;
   @Nullable private final String displayName;
   @Nullable private final GamePlayer player;
-  private final String delegateName;
+  @Getter private final String delegateName;
   private int runCount = 0;
   private int maxRunCount = -1;
   private final Properties properties;

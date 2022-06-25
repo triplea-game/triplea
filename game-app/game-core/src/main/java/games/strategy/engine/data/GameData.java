@@ -364,7 +364,7 @@ public class GameData implements Serializable, GameState {
         .getHistoryWriter()
         .startNextStep(
             step.getName(),
-            step.getDelegate().getName(),
+            step.getDelegateName(),
             step.getPlayerId(),
             step.getDisplayName());
   }
