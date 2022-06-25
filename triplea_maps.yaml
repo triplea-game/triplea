@@ -2679,3 +2679,12 @@
   img: https://raw.githubusercontent.com/triplea-maps/Belgium/master/preview.png
   description: |
    <br>Conflict on a map of Belgium
+- mapName: Darkest Hour
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Darkest_hour/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Darkest_hour/master/preview.png
+  description: |
+   <br>In this hypothetical scenario, Germany has conquered the British Isles while Russia has remained neutral
+   <br>The time of neutrality has ended with the Americans (including remnants of the British Empire) and the Russians taking on the Axis
+   <br>Uses the classic map and rules (with some rules changes)
