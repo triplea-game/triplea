@@ -118,7 +118,8 @@ public class GameStep extends GameDataComponent {
 
   public String getDisplayName() {
     if (displayName == null) {
-      return getDelegate().getDisplayName();
+      IDelegate delegate = getDelegate();
+      return delegate != null ? delegate.getDisplayName() : delegateName;
     }
     return displayName;
   }
