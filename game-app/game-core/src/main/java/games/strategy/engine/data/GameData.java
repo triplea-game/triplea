@@ -365,10 +365,7 @@ public class GameData implements Serializable, GameState {
     gameHistory
         .getHistoryWriter()
         .startNextStep(
-            step.getName(),
-            step.getDelegateName(),
-            step.getPlayerId(),
-            step.getDisplayName());
+            step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
     forceInSwingEventThread = oldForceInSwingEventThread;
   }
 
