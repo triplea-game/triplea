@@ -30,11 +30,6 @@
   tags: lobby
   roles:
     - certbot
-    # Re-run nginx role to fix configuration and do final restart.
-    # Modifications to /etc/nginx/sites-enabled/default triggers a NGINX restart.
-    # Certbot role adds a new line to /etc/nginx/sites-enabled/default
-    # every time it runs and makes changes.
-    - nginx
 
 - hosts: botHosts
   tags: [bot, bots]
