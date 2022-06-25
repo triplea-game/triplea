@@ -174,8 +174,7 @@ public class History extends DefaultTreeModel {
    */
   public @Nullable GamePlayer getCurrentPlayer() {
     GamePlayer player = null;
-    final Enumeration<?> enumeration =
-        ((DefaultMutableTreeNode) getRoot()).preorderEnumeration();
+    final Enumeration<?> enumeration = ((DefaultMutableTreeNode) getRoot()).preorderEnumeration();
     while (enumeration.hasMoreElements()) {
       final HistoryNode node = (HistoryNode) enumeration.nextElement();
       if (node instanceof Step) {
