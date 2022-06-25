@@ -166,9 +166,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           } else if (canChangeHostBotGameData()) {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
-              clientModelForHostBots
-                  .getHostBotSetMapClientAction(GameSelectorPanel.this)
-                  .actionPerformed(e);
+              clientModelForHostBots.setMap(this);
             }
           }
         });
@@ -221,9 +219,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           } else if (canChangeHostBotGameData()) {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
-              clientModelForHostBots
-                  .getHostBotChangeGameOptionsClientAction(GameSelectorPanel.this)
-                  .actionPerformed(e);
+              clientModelForHostBots.changeGameOptions(this);
             }
           }
         });
