@@ -1,15 +1,13 @@
 package games.strategy.triplea.ai.pro.logging;
 
 import games.strategy.engine.framework.GameShutdownRegistry;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.DebugMenu;
+import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
+import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import games.strategy.ui.Util;
 import java.awt.event.KeyEvent;
-import java.util.Collection;
 import java.util.List;
-import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
-import org.triplea.swing.SwingAction;
 
 /** Class to manage log window display. */
 public final class ProLogUi {
@@ -22,23 +20,27 @@ public final class ProLogUi {
 
   public static void registerDebugMenu() {
     if (!registered) {
-      DebugMenu.registerMenuCallback("Hard AI", ProLogUi::initialize);
+      DebugMenu.registerDebugOptions("Hard AI", ProLogUi.buildDebugOptions());
+      DebugMenu.registerFrameFactory(
+          tripleAFrame -> {
+            Util.ensureOnEventDispatchThread();
+            if (settingsWindow == null) {
+              settingsWindow = new ProLogWindow(tripleAFrame);
+              GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);
+            }
+          });
       registered = true;
     }
   }
 
-  private static Collection<JMenuItem> initialize(final TripleAFrame frame) {
-    Util.ensureOnEventDispatchThread();
-    if (settingsWindow == null) {
-      settingsWindow = new ProLogWindow(frame);
-      GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);
-    }
-
+  private static List<AiPlayerDebugOption> buildDebugOptions() {
     ProLogger.info("Initialized Hard AI");
-    final JMenuItem logMenuItem =
-        new JMenuItem(SwingAction.of("Show Logs", ProLogUi::showSettingsWindow));
-    logMenuItem.setMnemonic(KeyEvent.VK_X);
-    return List.of(logMenuItem);
+    return List.of(
+        AiPlayerDebugOption.builder()
+            .title("Show Logs")
+            .actionListener(ProLogUi::showSettingsWindow)
+            .mnemonic(KeyEvent.VK_X)
+            .build());
   }
 
   public static void clearCachedInstances() {
@@ -49,7 +51,7 @@ public final class ProLogUi {
     settingsWindow = null;
   }
 
-  public static void showSettingsWindow() {
+  public static void showSettingsWindow(AiPlayerDebugAction aiPlayerDebugAction) {
     if (settingsWindow == null) {
       return;
     }

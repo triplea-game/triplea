@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui.menubar.debug;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -49,7 +50,10 @@ public class AiPlayerDebugOption {
   @Builder.Default
   Consumer<AiPlayerDebugAction> actionListener = AiPlayerDebugOption::actionListener;
 
+  @Builder.Default int mnemonic = KeyEvent.VK_UNDEFINED;
+
   /** This exists solely to be a default actionListener. It should not do anything. */
-  @SuppressWarnings("unused")
-  private static void actionListener(final AiPlayerDebugAction action) {}
+  private static void actionListener(final AiPlayerDebugAction action) {
+    /* default: nothing to do */
+  }
 }
