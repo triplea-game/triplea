@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 /**
@@ -36,6 +37,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
   protected static final String AND = "AND";
   protected static final String OR = "OR";
+  private static final Pattern CONDITION_REGEX = Pattern.compile("AND|OR|\\d+(?:-\\d+)?");
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
   private static final long serialVersionUID = -9008441256118867078L;
@@ -110,7 +112,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   @VisibleForTesting
   void setConditionType(final String value) throws GameParseException {
     final String uppercaseValue = value.toUpperCase();
-    if (uppercaseValue.matches("AND|OR|\\d+(?:-\\d+)?")) {
+    if (CONDITION_REGEX.matcher(uppercaseValue).matches()) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
         conditionType = uppercaseValue.intern();
