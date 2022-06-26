@@ -44,16 +44,8 @@ public class AiPlayerDebugOption {
    * The action to occur when the user clicks on the option.
    *
    * <p>Not used if subOptions is non-empty
-   *
-   * <p>Can't use a lambda "(action) -> {}" because Error Prone fails while parsing
    */
-  @Builder.Default
-  Consumer<AiPlayerDebugAction> actionListener = AiPlayerDebugOption::actionListener;
+  @Builder.Default Consumer<AiPlayerDebugAction> actionListener = aiPlayerDebugAction -> {};
 
   @Builder.Default int mnemonic = KeyEvent.VK_UNDEFINED;
-
-  /** This exists solely to be a default actionListener. It should not do anything. */
-  private static void actionListener(final AiPlayerDebugAction action) {
-    /* default: nothing to do */
-  }
 }
