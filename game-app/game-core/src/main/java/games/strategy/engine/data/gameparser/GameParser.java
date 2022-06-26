@@ -10,7 +10,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
-import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
@@ -873,7 +872,6 @@ public final class GameParser {
       final Map<String, String> foreach)
       throws GameParseException {
     final List<Tuple<String, String>> results = new ArrayList<>();
-    final Map<String, MutableProperty<?>> propertyMap = attachment.getPropertyMap();
     for (final AttachmentList.Attachment.Option option : options) {
       final String optionName = option.getName();
       final String value = option.getValue();
@@ -900,7 +898,8 @@ public final class GameParser {
       final String finalValue =
           LegacyPropertyMapper.mapLegacyOptionValue(name, interpolatedValue).intern();
       try {
-        Optional.ofNullable(propertyMap.get(name))
+        attachment
+            .getProperty(name)
             .orElseThrow(
                 () ->
                     new GameParseException(
