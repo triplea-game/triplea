@@ -194,6 +194,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     }
   }
 
+  @Override
   public MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "relationshipChange":
@@ -203,7 +204,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
             this::getRelationshipChange,
             this::resetRelationshipChange);
       default:
-        return getPropertyMap().get(propertyName);
+        return super.getPropertyOrNull(propertyName);
     }
   }
 

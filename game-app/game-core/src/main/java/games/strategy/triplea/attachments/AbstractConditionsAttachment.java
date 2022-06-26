@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -376,43 +375,34 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
   }
 
+  @Override
   public MutableProperty<?> getPropertyOrNull(String propertyName) {
-    return getPropertyMap().get(propertyName);
-  }
-
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put(
-            "conditions",
-            MutableProperty.of(
-                this::setConditions,
-                this::setConditions,
-                this::getConditions,
-                this::resetConditions))
-        .put(
-            "conditionType",
-            MutableProperty.ofString(
-                this::setConditionType, this::getConditionType, this::resetConditionType))
-        .put(
-            "invert",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false))
-        .put(
-            "chance", MutableProperty.ofString(this::setChance, this::getChance, this::resetChance))
-        .put(
-            "chanceIncrementOnFailure",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setChanceIncrementOnFailure,
-                this::getChanceIncrementOnFailure,
-                () -> 0))
-        .put(
-            "chanceDecrementOnSuccess",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setChanceDecrementOnSuccess,
-                this::getChanceDecrementOnSuccess,
-                () -> 0))
-        .build();
+    switch (propertyName) {
+      case "conditions":
+        return MutableProperty.of(
+            this::setConditions, this::setConditions, this::getConditions, this::resetConditions);
+      case "conditionType":
+        return MutableProperty.ofString(
+            this::setConditionType, this::getConditionType, this::resetConditionType);
+      case "invert":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false);
+      case "chance":
+        return MutableProperty.ofString(this::setChance, this::getChance, this::resetChance);
+      case "chanceIncrementOnFailure":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt,
+            this::setChanceIncrementOnFailure,
+            this::getChanceIncrementOnFailure,
+            () -> 0);
+      case "chanceDecrementOnSuccess":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt,
+            this::setChanceDecrementOnSuccess,
+            this::getChanceDecrementOnSuccess,
+            () -> 0);
+      default:
+        return null;
+    }
   }
 }

@@ -10,13 +10,12 @@ import java.util.Optional;
  */
 public interface DynamicallyModifiable {
   /**
-   * Gets a map of all properties supported by this object.
+   * Gets the property with the specified name or null.
    *
    * <p><b>NOTE:</b> Clients probably shouldn't call this method directly. Consider calling {@link
    * #getProperty(String)} or {@link #getPropertyOrThrow(String)} instead.
    *
-   * @return A map of all properties supported by this object. The key is the property name. The
-   *     value is the property.
+   * @return The property with the specified name or null if the property doesn't exist.
    */
   MutableProperty<?> getPropertyOrNull(String name);
 

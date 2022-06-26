@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.DefaultNamed;
@@ -3538,699 +3537,580 @@ public class UnitAttachment extends DefaultAttachment {
         .collect(Collectors.joining(" or "));
   }
 
+  @Override
   public MutableProperty<?> getPropertyOrNull(String propertyName) {
-    return getPropertyMap().get(propertyName);
-  }
-
-  private Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put(
-            "isAir",
-            MutableProperty.of(this::setIsAir, this::setIsAir, this::getIsAir, this::resetIsAir))
-        .put(
-            IS_SEA,
-            MutableProperty.of(this::setIsSea, this::setIsSea, this::getIsSea, this::resetIsSea))
-        .put(
-            "movement",
-            MutableProperty.of(
-                this::setMovement, this::setMovement, this::getMovement, this::resetMovement))
-        .put(
-            "canBlitz",
-            MutableProperty.of(
-                this::setCanBlitz, this::setCanBlitz, this::getCanBlitz, this::resetCanBlitz))
-        .put(
-            "isKamikaze",
-            MutableProperty.of(
-                this::setIsKamikaze,
-                this::setIsKamikaze,
-                this::getIsKamikaze,
-                this::resetIsKamikaze))
-        .put(
-            "canInvadeOnlyFrom",
-            MutableProperty.of(
-                this::setCanInvadeOnlyFrom,
-                this::setCanInvadeOnlyFrom,
-                this::getCanInvadeOnlyFrom,
-                this::resetCanInvadeOnlyFrom))
-        .put(
-            "fuelCost",
-            MutableProperty.of(
-                this::setFuelCost, this::setFuelCost, this::getFuelCost, this::resetFuelCost))
-        .put(
-            "fuelFlatCost",
-            MutableProperty.of(
-                this::setFuelFlatCost,
-                this::setFuelFlatCost,
-                this::getFuelFlatCost,
-                this::resetFuelFlatCost))
-        .put(
-            "canNotMoveDuringCombatMove",
-            MutableProperty.of(
-                this::setCanNotMoveDuringCombatMove,
-                this::setCanNotMoveDuringCombatMove,
-                this::getCanNotMoveDuringCombatMove,
-                this::resetCanNotMoveDuringCombatMove))
-        .put(
-            "movementLimit",
-            MutableProperty.of(
-                this::setMovementLimit,
-                this::setMovementLimit,
-                this::getMovementLimit,
-                this::resetMovementLimit))
-        .put(
-            ATTACK_STRENGTH,
-            MutableProperty.of(
-                this::setAttack, this::setAttack, this::getAttack, this::resetAttack))
-        .put(
-            DEFENSE_STRENGTH,
-            MutableProperty.of(
-                this::setDefense, this::setDefense, this::getDefense, this::resetDefense))
-        .put(
-            "isInfrastructure",
-            MutableProperty.of(
-                this::setIsInfrastructure,
-                this::setIsInfrastructure,
-                this::getIsInfrastructure,
-                this::resetIsInfrastructure))
-        .put(
-            "canBombard",
-            MutableProperty.of(
-                this::setCanBombard,
-                this::setCanBombard,
-                this::getCanBombard,
-                this::resetCanBombard))
-        .put(
-            BOMBARD,
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt, this::setBombard, this::getBombard, () -> -1))
-        .put("isSub", MutableProperty.<Boolean>ofWriteOnly(this::setIsSub, this::setIsSub))
-        .put(
-            "canEvade",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool, this::setCanEvade, this::getCanEvade, () -> false))
-        .put(
-            "isFirstStrike",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool,
-                this::setIsFirstStrike,
-                this::getIsFirstStrike,
-                () -> false))
-        .put(
-            "canNotTarget",
-            MutableProperty.of(
-                this::setCanNotTarget,
-                this::setCanNotTarget,
-                this::getCanNotTarget,
-                this::resetCanNotTarget))
-        .put(
-            "canNotBeTargetedBy",
-            MutableProperty.of(
-                this::setCanNotBeTargetedBy,
-                this::setCanNotBeTargetedBy,
-                this::getCanNotBeTargetedBy,
-                this::resetCanNotBeTargetedBy))
-        .put(
-            "canMoveThroughEnemies",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool,
-                this::setCanMoveThroughEnemies,
-                this::getCanMoveThroughEnemies,
-                () -> false))
-        .put(
-            "canBeMovedThroughByEnemies",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool,
-                this::setCanBeMovedThroughByEnemies,
-                this::getCanBeMovedThroughByEnemies,
-                () -> false))
-        .put(
-            "isDestroyer",
-            MutableProperty.of(
-                this::setIsDestroyer,
-                this::setIsDestroyer,
-                this::getIsDestroyer,
-                this::resetIsDestroyer))
-        .put(
-            "artillery",
-            MutableProperty.of(
-                this::setArtillery, this::setArtillery, this::getArtillery, this::resetArtillery))
-        .put(
-            "artillerySupportable",
-            MutableProperty.of(
-                this::setArtillerySupportable,
-                this::setArtillerySupportable,
-                this::getArtillerySupportable,
-                this::resetArtillerySupportable))
-        .put(
-            "unitSupportCount",
-            MutableProperty.of(
-                this::setUnitSupportCount,
-                this::setUnitSupportCount,
-                this::getUnitSupportCount,
-                this::resetUnitSupportCount))
-        .put(
-            IS_MARINE,
-            MutableProperty.of(
-                this::setIsMarine, this::setIsMarine, this::getIsMarine, this::resetIsMarine))
-        .put(
-            "isSuicide",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool, this::setIsSuicide, this::getIsSuicide, () -> false))
-        .put(
-            "isSuicideOnAttack",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool,
-                this::setIsSuicideOnAttack,
-                this::getIsSuicideOnAttack,
-                () -> false))
-        .put(
-            "isSuicideOnDefense",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool,
-                this::setIsSuicideOnDefense,
-                this::getIsSuicideOnDefense,
-                () -> false))
-        .put(
-            "isSuicideOnHit",
-            MutableProperty.of(
-                this::setIsSuicideOnHit,
-                this::setIsSuicideOnHit,
-                this::getIsSuicideOnHit,
-                this::resetIsSuicideOnHit))
-        .put(
-            "attackingLimit",
-            MutableProperty.of(
-                this::setAttackingLimit,
-                this::setAttackingLimit,
-                this::getAttackingLimit,
-                this::resetAttackingLimit))
-        .put(
-            ATTACK_ROLL,
-            MutableProperty.of(
-                this::setAttackRolls,
-                this::setAttackRolls,
-                this::getAttackRolls,
-                this::resetAttackRolls))
-        .put(
-            DEFENSE_ROLL,
-            MutableProperty.of(
-                this::setDefenseRolls,
-                this::setDefenseRolls,
-                this::getDefenseRolls,
-                this::resetDefenseRolls))
-        .put(
-            CHOOSE_BEST_ROLL,
-            MutableProperty.of(
-                this::setChooseBestRoll,
-                this::setChooseBestRoll,
-                this::getChooseBestRoll,
-                this::resetChooseBestRoll))
-        .put(
-            "isCombatTransport",
-            MutableProperty.of(
-                this::setIsCombatTransport,
-                this::setIsCombatTransport,
-                this::getIsCombatTransport,
-                this::resetIsCombatTransport))
-        .put(
-            "transportCapacity",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setTransportCapacity,
-                this::getTransportCapacity,
-                () -> -1))
-        .put(
-            "transportCost",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setTransportCost,
-                this::getTransportCost,
-                () -> -1))
-        .put(
-            "carrierCapacity",
-            MutableProperty.of(
-                this::setCarrierCapacity,
-                this::setCarrierCapacity,
-                this::getCarrierCapacity,
-                this::resetCarrierCapacity))
-        .put(
-            "carrierCost",
-            MutableProperty.of(
-                this::setCarrierCost,
-                this::setCarrierCost,
-                this::getCarrierCost,
-                this::resetCarrierCost))
-        .put(
-            "isAirTransport",
-            MutableProperty.of(
-                this::setIsAirTransport,
-                this::setIsAirTransport,
-                this::getIsAirTransport,
-                this::resetIsAirTransport))
-        .put(
-            "isAirTransportable",
-            MutableProperty.of(
-                this::setIsAirTransportable,
-                this::setIsAirTransportable,
-                this::getIsAirTransportable,
-                this::resetIsAirTransportable))
-        .put(
-            "isLandTransport",
-            MutableProperty.of(
-                this::setIsLandTransport,
-                this::setIsLandTransport,
-                this::getIsLandTransport,
-                this::resetIsLandTransport))
-        .put(
-            "isLandTransportable",
-            MutableProperty.of(
-                this::setIsLandTransportable,
-                this::setIsLandTransportable,
-                this::getIsLandTransportable,
-                this::resetIsLandTransportable))
-        .put(
-            "isAAforCombatOnly",
-            MutableProperty.of(
-                this::setIsAaForCombatOnly,
-                this::setIsAaForCombatOnly,
-                this::getIsAaForCombatOnly,
-                this::resetIsAaForCombatOnly))
-        .put(
-            "isAAforBombingThisUnitOnly",
-            MutableProperty.of(
-                this::setIsAaForBombingThisUnitOnly,
-                this::setIsAaForBombingThisUnitOnly,
-                this::getIsAaForBombingThisUnitOnly,
-                this::resetIsAaForBombingThisUnitOnly))
-        .put(
-            "isAAforFlyOverOnly",
-            MutableProperty.of(
-                this::setIsAaForFlyOverOnly,
-                this::setIsAaForFlyOverOnly,
-                this::getIsAaForFlyOverOnly,
-                this::resetIsAaForFlyOverOnly))
-        .put(
-            "isRocket",
-            MutableProperty.of(
-                this::setIsRocket, this::setIsRocket, this::getIsRocket, this::resetIsRocket))
-        .put(
-            ATTACK_AA,
-            MutableProperty.of(
-                this::setAttackAa, this::setAttackAa, this::getAttackAa, this::resetAttackAa))
-        .put(
-            OFFENSIVE_ATTACK_AA,
-            MutableProperty.of(
-                this::setOffensiveAttackAa,
-                this::setOffensiveAttackAa,
-                this::getOffensiveAttackAa,
-                this::resetOffensiveAttackAa))
-        .put(
-            ATTACK_AA_MAX_DIE_SIDES,
-            MutableProperty.of(
-                this::setAttackAaMaxDieSides,
-                this::setAttackAaMaxDieSides,
-                this::getAttackAaMaxDieSides,
-                this::resetAttackAaMaxDieSides))
-        .put(
-            OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES,
-            MutableProperty.of(
-                this::setOffensiveAttackAaMaxDieSides,
-                this::setOffensiveAttackAaMaxDieSides,
-                this::getOffensiveAttackAaMaxDieSides,
-                this::resetOffensiveAttackAaMaxDieSides))
-        .put(
-            MAX_AA_ATTACKS,
-            MutableProperty.of(
-                this::setMaxAaAttacks,
-                this::setMaxAaAttacks,
-                this::getMaxAaAttacks,
-                this::resetMaxAaAttacks))
-        .put(
-            "maxRoundsAA",
-            MutableProperty.of(
-                this::setMaxRoundsAa,
-                this::setMaxRoundsAa,
-                this::getMaxRoundsAa,
-                this::resetMaxRoundsAa))
-        .put(
-            "typeAA", MutableProperty.ofString(this::setTypeAa, this::getTypeAa, this::resetTypeAa))
-        .put(
-            "targetsAA",
-            MutableProperty.of(
-                this::setTargetsAa, this::setTargetsAa, this::getTargetsAa, this::resetTargetsAa))
-        .put(
-            MAY_OVERSTACK_AA,
-            MutableProperty.of(
-                this::setMayOverStackAa,
-                this::setMayOverStackAa,
-                this::getMayOverStackAa,
-                this::resetMayOverStackAa))
-        .put(
-            "damageableAA",
-            MutableProperty.of(
-                this::setDamageableAa,
-                this::setDamageableAa,
-                this::getDamageableAa,
-                this::resetDamageableAa))
-        .put(
-            "willNotFireIfPresent",
-            MutableProperty.of(
-                this::setWillNotFireIfPresent,
-                this::setWillNotFireIfPresent,
-                this::getWillNotFireIfPresent,
-                this::resetWillNotFireIfPresent))
-        .put(
-            "isStrategicBomber",
-            MutableProperty.of(
-                this::setIsStrategicBomber,
-                this::setIsStrategicBomber,
-                this::getIsStrategicBomber,
-                this::resetIsStrategicBomber))
-        .put(
-            "bombingMaxDieSides",
-            MutableProperty.of(
-                this::setBombingMaxDieSides,
-                this::setBombingMaxDieSides,
-                this::getBombingMaxDieSides,
-                this::resetBombingMaxDieSides))
-        .put(
-            "bombingBonus",
-            MutableProperty.of(
-                this::setBombingBonus,
-                this::setBombingBonus,
-                this::getBombingBonus,
-                this::resetBombingBonus))
-        .put(
-            "canIntercept",
-            MutableProperty.of(
-                this::setCanIntercept,
-                this::setCanIntercept,
-                this::getCanIntercept,
-                this::resetCanIntercept))
-        .put(
-            "requiresAirbaseToIntercept",
-            MutableProperty.of(
-                this::setRequiresAirBaseToIntercept,
-                this::setRequiresAirBaseToIntercept,
-                this::getRequiresAirBaseToIntercept,
-                this::resetRequiresAirBaseToIntercept))
-        .put(
-            "canEscort",
-            MutableProperty.of(
-                this::setCanEscort, this::setCanEscort, this::getCanEscort, this::resetCanEscort))
-        .put(
-            "canAirBattle",
-            MutableProperty.of(
-                this::setCanAirBattle,
-                this::setCanAirBattle,
-                this::getCanAirBattle,
-                this::resetCanAirBattle))
-        .put(
-            "airDefense",
-            MutableProperty.of(
-                this::setAirDefense,
-                this::setAirDefense,
-                this::getAirDefense,
-                this::resetAirDefense))
-        .put(
-            "airAttack",
-            MutableProperty.of(
-                this::setAirAttack, this::setAirAttack, this::getAirAttack, this::resetAirAttack))
-        .put(
-            "bombingTargets",
-            MutableProperty.of(
-                this::setBombingTargets,
-                this::setBombingTargets,
-                this::getBombingTargets,
-                this::resetBombingTargets))
-        .put(
-            "canProduceUnits",
-            MutableProperty.of(
-                this::setCanProduceUnits,
-                this::setCanProduceUnits,
-                this::getCanProduceUnits,
-                this::resetCanProduceUnits))
-        .put(
-            "canProduceXUnits",
-            MutableProperty.of(
-                this::setCanProduceXUnits,
-                this::setCanProduceXUnits,
-                this::getCanProduceXUnits,
-                this::resetCanProduceXUnits))
-        .put(
-            "createsUnitsList",
-            MutableProperty.of(
-                this::setCreatesUnitsList,
-                this::setCreatesUnitsList,
-                this::getCreatesUnitsList,
-                this::resetCreatesUnitsList))
-        .put(
-            "createsResourcesList",
-            MutableProperty.of(
-                this::setCreatesResourcesList,
-                this::setCreatesResourcesList,
-                this::getCreatesResourcesList,
-                this::resetCreatesResourcesList))
-        .put(
-            "hitPoints",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt, this::setHitPoints, this::getHitPoints, () -> 1))
-        .put(
-            "canBeDamaged",
-            MutableProperty.of(
-                this::setCanBeDamaged,
-                this::setCanBeDamaged,
-                this::getCanBeDamaged,
-                this::resetCanBeDamaged))
-        .put(
-            "maxDamage",
-            MutableProperty.of(
-                this::setMaxDamage, this::setMaxDamage, this::getMaxDamage, this::resetMaxDamage))
-        .put(
-            "maxOperationalDamage",
-            MutableProperty.of(
-                this::setMaxOperationalDamage,
-                this::setMaxOperationalDamage,
-                this::getMaxOperationalDamage,
-                this::resetMaxOperationalDamage))
-        .put(
-            "canDieFromReachingMaxDamage",
-            MutableProperty.of(
-                this::setCanDieFromReachingMaxDamage,
-                this::setCanDieFromReachingMaxDamage,
-                this::getCanDieFromReachingMaxDamage,
-                this::resetCanDieFromReachingMaxDamage))
-        .put(
-            "isConstruction",
-            MutableProperty.of(
-                this::setIsConstruction,
-                this::setIsConstruction,
-                this::getIsConstruction,
-                this::resetIsConstruction))
-        .put(
-            "constructionType",
-            MutableProperty.ofString(
-                this::setConstructionType, this::getConstructionType, this::resetConstructionType))
-        .put(
-            "constructionsPerTerrPerTypePerTurn",
-            MutableProperty.of(
-                this::setConstructionsPerTerrPerTypePerTurn,
-                this::setConstructionsPerTerrPerTypePerTurn,
-                this::getConstructionsPerTerrPerTypePerTurn,
-                this::resetConstructionsPerTerrPerTypePerTurn))
-        .put(
-            "maxConstructionsPerTypePerTerr",
-            MutableProperty.of(
-                this::setMaxConstructionsPerTypePerTerr,
-                this::setMaxConstructionsPerTypePerTerr,
-                this::getMaxConstructionsPerTypePerTerr,
-                this::resetMaxConstructionsPerTypePerTerr))
-        .put(
-            "canOnlyBePlacedInTerritoryValuedAtX",
-            MutableProperty.of(
-                this::setCanOnlyBePlacedInTerritoryValuedAtX,
-                this::setCanOnlyBePlacedInTerritoryValuedAtX,
-                this::getCanOnlyBePlacedInTerritoryValuedAtX,
-                this::resetCanOnlyBePlacedInTerritoryValuedAtX))
-        .put(
-            "requiresUnits",
-            MutableProperty.of(
-                this::setRequiresUnits,
-                this::setRequiresUnits,
-                this::getRequiresUnits,
-                this::resetRequiresUnits))
-        .put(
-            "consumesUnits",
-            MutableProperty.of(
-                this::setConsumesUnits,
-                this::setConsumesUnits,
-                this::getConsumesUnits,
-                this::resetConsumesUnits))
-        .put(
-            "requiresUnitsToMove",
-            MutableProperty.of(
-                this::setRequiresUnitsToMove,
-                this::setRequiresUnitsToMove,
-                this::getRequiresUnitsToMove,
-                this::resetRequiresUnitsToMove))
-        .put(
-            "unitPlacementRestrictions",
-            MutableProperty.of(
-                this::setUnitPlacementRestrictions,
-                this::setUnitPlacementRestrictions,
-                this::getUnitPlacementRestrictions,
-                this::resetUnitPlacementRestrictions))
-        .put(
-            "maxBuiltPerPlayer",
-            MutableProperty.of(
-                this::setMaxBuiltPerPlayer,
-                this::setMaxBuiltPerPlayer,
-                this::getMaxBuiltPerPlayer,
-                this::resetMaxBuiltPerPlayer))
-        .put(
-            "placementLimit",
-            MutableProperty.of(
-                this::setPlacementLimit,
-                this::setPlacementLimit,
-                this::getPlacementLimit,
-                this::resetPlacementLimit))
-        .put(
-            "canScramble",
-            MutableProperty.of(
-                this::setCanScramble,
-                this::setCanScramble,
-                this::getCanScramble,
-                this::resetCanScramble))
-        .put(
-            "isAirBase",
-            MutableProperty.of(
-                this::setIsAirBase, this::setIsAirBase, this::getIsAirBase, this::resetIsAirBase))
-        .put(
-            "maxScrambleDistance",
-            MutableProperty.of(
-                this::setMaxScrambleDistance,
-                this::setMaxScrambleDistance,
-                this::getMaxScrambleDistance,
-                this::resetMaxScrambleDistance))
-        .put(
-            "maxScrambleCount",
-            MutableProperty.of(
-                this::setMaxScrambleCount,
-                this::setMaxScrambleCount,
-                this::getMaxScrambleCount,
-                this::resetMaxScrambleCount))
-        .put(
-            "maxInterceptCount",
-            MutableProperty.of(
-                this::setMaxInterceptCount,
-                this::setMaxInterceptCount,
-                this::getMaxInterceptCount,
-                this::resetMaxInterceptCount))
-        .put(
-            "blockade",
-            MutableProperty.of(
-                this::setBlockade, this::setBlockade, this::getBlockade, this::resetBlockade))
-        .put(
-            "repairsUnits",
-            MutableProperty.of(
-                this::setRepairsUnits,
-                this::setRepairsUnits,
-                this::getRepairsUnits,
-                this::resetRepairsUnits))
-        .put(
-            "givesMovement",
-            MutableProperty.of(
-                this::setGivesMovement,
-                this::setGivesMovement,
-                this::getGivesMovement,
-                this::resetGivesMovement))
-        .put(
-            "destroyedWhenCapturedBy",
-            MutableProperty.of(
-                this::setDestroyedWhenCapturedBy,
-                this::setDestroyedWhenCapturedBy,
-                this::getDestroyedWhenCapturedBy,
-                this::resetDestroyedWhenCapturedBy))
-        .put(
-            "whenHitPointsDamagedChangesInto",
-            MutableProperty.of(
-                this::setWhenHitPointsDamagedChangesInto,
-                this::setWhenHitPointsDamagedChangesInto,
-                this::getWhenHitPointsDamagedChangesInto,
-                this::resetWhenHitPointsDamagedChangesInto))
-        .put(
-            "whenHitPointsRepairedChangesInto",
-            MutableProperty.of(
-                this::setWhenHitPointsRepairedChangesInto,
-                this::setWhenHitPointsRepairedChangesInto,
-                this::getWhenHitPointsRepairedChangesInto,
-                this::resetWhenHitPointsRepairedChangesInto))
-        .put(
-            "whenCapturedChangesInto",
-            MutableProperty.of(
-                this::setWhenCapturedChangesInto,
-                this::setWhenCapturedChangesInto,
-                this::getWhenCapturedChangesInto,
-                this::resetWhenCapturedChangesInto))
-        .put(
-            "whenCapturedSustainsDamage",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setWhenCapturedSustainsDamage,
-                this::getWhenCapturedSustainsDamage,
-                () -> 0))
-        .put(
-            "canBeCapturedOnEnteringBy",
-            MutableProperty.of(
-                this::setCanBeCapturedOnEnteringBy,
-                this::setCanBeCapturedOnEnteringBy,
-                this::getCanBeCapturedOnEnteringBy,
-                this::resetCanBeCapturedOnEnteringBy))
-        .put(
-            "canBeGivenByTerritoryTo",
-            MutableProperty.of(
-                this::setCanBeGivenByTerritoryTo,
-                this::setCanBeGivenByTerritoryTo,
-                this::getCanBeGivenByTerritoryTo,
-                this::resetCanBeGivenByTerritoryTo))
-        .put(
-            "whenCombatDamaged",
-            MutableProperty.of(
-                this::setWhenCombatDamaged,
-                this::setWhenCombatDamaged,
-                this::getWhenCombatDamaged,
-                this::resetWhenCombatDamaged))
-        .put(
-            "receivesAbilityWhenWith",
-            MutableProperty.of(
-                this::setReceivesAbilityWhenWith,
-                this::setReceivesAbilityWhenWith,
-                this::getReceivesAbilityWhenWith,
-                this::resetReceivesAbilityWhenWith))
-        .put(
-            "special",
-            MutableProperty.of(
-                this::setSpecial, this::setSpecial, this::getSpecial, this::resetSpecial))
-        .put("tuv", MutableProperty.of(this::setTuv, this::setTuv, this::getTuv, this::resetTuv))
-        .put(
-            "isFactory",
-            MutableProperty.<Boolean>ofWriteOnly(this::setIsFactory, this::setIsFactory))
-        .put("isAA", MutableProperty.<Boolean>ofWriteOnly(this::setIsAa, this::setIsAa))
-        .put(
-            "destroyedWhenCapturedFrom",
-            MutableProperty.ofWriteOnlyString(this::setDestroyedWhenCapturedFrom))
-        .put(
-            "unitPlacementOnlyAllowedIn",
-            MutableProperty.ofWriteOnlyString(this::setUnitPlacementOnlyAllowedIn))
-        .put(
-            "isAAmovement",
-            MutableProperty.<Boolean>ofWriteOnly(this::setIsAaMovement, this::setIsAaMovement))
-        .put("isTwoHit", MutableProperty.<Boolean>ofWriteOnly(this::setIsTwoHit, this::setIsTwoHit))
-        .put(
-            "canRetreatOnStalemate",
-            MutableProperty.of(
-                this::setCanRetreatOnStalemate, this::setCanRetreatOnStalemate,
-                this::getCanRetreatOnStalemate, this::resetCanRetreatOnStalemate))
-        .build();
+    switch (propertyName) {
+      case "isAir":
+        return MutableProperty.of(this::setIsAir, this::setIsAir, this::getIsAir, this::resetIsAir);
+      case IS_SEA:
+        return MutableProperty.of(this::setIsSea, this::setIsSea, this::getIsSea, this::resetIsSea);
+      case "movement":
+        return MutableProperty.of(
+            this::setMovement, this::setMovement, this::getMovement, this::resetMovement);
+      case "canBlitz":
+        return MutableProperty.of(
+            this::setCanBlitz, this::setCanBlitz, this::getCanBlitz, this::resetCanBlitz);
+      case "isKamikaze":
+        return MutableProperty.of(
+            this::setIsKamikaze, this::setIsKamikaze, this::getIsKamikaze, this::resetIsKamikaze);
+      case "canInvadeOnlyFrom":
+        return MutableProperty.of(
+            this::setCanInvadeOnlyFrom,
+            this::setCanInvadeOnlyFrom,
+            this::getCanInvadeOnlyFrom,
+            this::resetCanInvadeOnlyFrom);
+      case "fuelCost":
+        return MutableProperty.of(
+            this::setFuelCost, this::setFuelCost, this::getFuelCost, this::resetFuelCost);
+      case "fuelFlatCost":
+        return MutableProperty.of(
+            this::setFuelFlatCost,
+            this::setFuelFlatCost,
+            this::getFuelFlatCost,
+            this::resetFuelFlatCost);
+      case "canNotMoveDuringCombatMove":
+        return MutableProperty.of(
+            this::setCanNotMoveDuringCombatMove,
+            this::setCanNotMoveDuringCombatMove,
+            this::getCanNotMoveDuringCombatMove,
+            this::resetCanNotMoveDuringCombatMove);
+      case "movementLimit":
+        return MutableProperty.of(
+            this::setMovementLimit,
+            this::setMovementLimit,
+            this::getMovementLimit,
+            this::resetMovementLimit);
+      case ATTACK_STRENGTH:
+        return MutableProperty.of(
+            this::setAttack, this::setAttack, this::getAttack, this::resetAttack);
+      case DEFENSE_STRENGTH:
+        return MutableProperty.of(
+            this::setDefense, this::setDefense, this::getDefense, this::resetDefense);
+      case "isInfrastructure":
+        return MutableProperty.of(
+            this::setIsInfrastructure,
+            this::setIsInfrastructure,
+            this::getIsInfrastructure,
+            this::resetIsInfrastructure);
+      case "canBombard":
+        return MutableProperty.of(
+            this::setCanBombard, this::setCanBombard, this::getCanBombard, this::resetCanBombard);
+      case BOMBARD:
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt, this::setBombard, this::getBombard, () -> -1);
+      case "isSub":
+        return MutableProperty.<Boolean>ofWriteOnly(this::setIsSub, this::setIsSub);
+      case "canEvade":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool, this::setCanEvade, this::getCanEvade, () -> false);
+      case "isFirstStrike":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool,
+            this::setIsFirstStrike,
+            this::getIsFirstStrike,
+            () -> false);
+      case "canNotTarget":
+        return MutableProperty.of(
+            this::setCanNotTarget,
+            this::setCanNotTarget,
+            this::getCanNotTarget,
+            this::resetCanNotTarget);
+      case "canNotBeTargetedBy":
+        return MutableProperty.of(
+            this::setCanNotBeTargetedBy,
+            this::setCanNotBeTargetedBy,
+            this::getCanNotBeTargetedBy,
+            this::resetCanNotBeTargetedBy);
+      case "canMoveThroughEnemies":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool,
+            this::setCanMoveThroughEnemies,
+            this::getCanMoveThroughEnemies,
+            () -> false);
+      case "canBeMovedThroughByEnemies":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool,
+            this::setCanBeMovedThroughByEnemies,
+            this::getCanBeMovedThroughByEnemies,
+            () -> false);
+      case "isDestroyer":
+        return MutableProperty.of(
+            this::setIsDestroyer,
+            this::setIsDestroyer,
+            this::getIsDestroyer,
+            this::resetIsDestroyer);
+      case "artillery":
+        return MutableProperty.of(
+            this::setArtillery, this::setArtillery, this::getArtillery, this::resetArtillery);
+      case "artillerySupportable":
+        return MutableProperty.of(
+            this::setArtillerySupportable,
+            this::setArtillerySupportable,
+            this::getArtillerySupportable,
+            this::resetArtillerySupportable);
+      case "unitSupportCount":
+        return MutableProperty.of(
+            this::setUnitSupportCount,
+            this::setUnitSupportCount,
+            this::getUnitSupportCount,
+            this::resetUnitSupportCount);
+      case IS_MARINE:
+        return MutableProperty.of(
+            this::setIsMarine, this::setIsMarine, this::getIsMarine, this::resetIsMarine);
+      case "isSuicide":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool, this::setIsSuicide, this::getIsSuicide, () -> false);
+      case "isSuicideOnAttack":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool,
+            this::setIsSuicideOnAttack,
+            this::getIsSuicideOnAttack,
+            () -> false);
+      case "isSuicideOnDefense":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool,
+            this::setIsSuicideOnDefense,
+            this::getIsSuicideOnDefense,
+            () -> false);
+      case "isSuicideOnHit":
+        return MutableProperty.of(
+            this::setIsSuicideOnHit,
+            this::setIsSuicideOnHit,
+            this::getIsSuicideOnHit,
+            this::resetIsSuicideOnHit);
+      case "attackingLimit":
+        return MutableProperty.of(
+            this::setAttackingLimit,
+            this::setAttackingLimit,
+            this::getAttackingLimit,
+            this::resetAttackingLimit);
+      case ATTACK_ROLL:
+        return MutableProperty.of(
+            this::setAttackRolls,
+            this::setAttackRolls,
+            this::getAttackRolls,
+            this::resetAttackRolls);
+      case DEFENSE_ROLL:
+        return MutableProperty.of(
+            this::setDefenseRolls,
+            this::setDefenseRolls,
+            this::getDefenseRolls,
+            this::resetDefenseRolls);
+      case CHOOSE_BEST_ROLL:
+        return MutableProperty.of(
+            this::setChooseBestRoll,
+            this::setChooseBestRoll,
+            this::getChooseBestRoll,
+            this::resetChooseBestRoll);
+      case "isCombatTransport":
+        return MutableProperty.of(
+            this::setIsCombatTransport,
+            this::setIsCombatTransport,
+            this::getIsCombatTransport,
+            this::resetIsCombatTransport);
+      case "transportCapacity":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt,
+            this::setTransportCapacity,
+            this::getTransportCapacity,
+            () -> -1);
+      case "transportCost":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt, this::setTransportCost, this::getTransportCost, () -> -1);
+      case "carrierCapacity":
+        return MutableProperty.of(
+            this::setCarrierCapacity,
+            this::setCarrierCapacity,
+            this::getCarrierCapacity,
+            this::resetCarrierCapacity);
+      case "carrierCost":
+        return MutableProperty.of(
+            this::setCarrierCost,
+            this::setCarrierCost,
+            this::getCarrierCost,
+            this::resetCarrierCost);
+      case "isAirTransport":
+        return MutableProperty.of(
+            this::setIsAirTransport,
+            this::setIsAirTransport,
+            this::getIsAirTransport,
+            this::resetIsAirTransport);
+      case "isAirTransportable":
+        return MutableProperty.of(
+            this::setIsAirTransportable,
+            this::setIsAirTransportable,
+            this::getIsAirTransportable,
+            this::resetIsAirTransportable);
+      case "isLandTransport":
+        return MutableProperty.of(
+            this::setIsLandTransport,
+            this::setIsLandTransport,
+            this::getIsLandTransport,
+            this::resetIsLandTransport);
+      case "isLandTransportable":
+        return MutableProperty.of(
+            this::setIsLandTransportable,
+            this::setIsLandTransportable,
+            this::getIsLandTransportable,
+            this::resetIsLandTransportable);
+      case "isAAforCombatOnly":
+        return MutableProperty.of(
+            this::setIsAaForCombatOnly,
+            this::setIsAaForCombatOnly,
+            this::getIsAaForCombatOnly,
+            this::resetIsAaForCombatOnly);
+      case "isAAforBombingThisUnitOnly":
+        return MutableProperty.of(
+            this::setIsAaForBombingThisUnitOnly,
+            this::setIsAaForBombingThisUnitOnly,
+            this::getIsAaForBombingThisUnitOnly,
+            this::resetIsAaForBombingThisUnitOnly);
+      case "isAAforFlyOverOnly":
+        return MutableProperty.of(
+            this::setIsAaForFlyOverOnly,
+            this::setIsAaForFlyOverOnly,
+            this::getIsAaForFlyOverOnly,
+            this::resetIsAaForFlyOverOnly);
+      case "isRocket":
+        return MutableProperty.of(
+            this::setIsRocket, this::setIsRocket, this::getIsRocket, this::resetIsRocket);
+      case ATTACK_AA:
+        return MutableProperty.of(
+            this::setAttackAa, this::setAttackAa, this::getAttackAa, this::resetAttackAa);
+      case OFFENSIVE_ATTACK_AA:
+        return MutableProperty.of(
+            this::setOffensiveAttackAa,
+            this::setOffensiveAttackAa,
+            this::getOffensiveAttackAa,
+            this::resetOffensiveAttackAa);
+      case ATTACK_AA_MAX_DIE_SIDES:
+        return MutableProperty.of(
+            this::setAttackAaMaxDieSides,
+            this::setAttackAaMaxDieSides,
+            this::getAttackAaMaxDieSides,
+            this::resetAttackAaMaxDieSides);
+      case OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES:
+        return MutableProperty.of(
+            this::setOffensiveAttackAaMaxDieSides,
+            this::setOffensiveAttackAaMaxDieSides,
+            this::getOffensiveAttackAaMaxDieSides,
+            this::resetOffensiveAttackAaMaxDieSides);
+      case MAX_AA_ATTACKS:
+        return MutableProperty.of(
+            this::setMaxAaAttacks,
+            this::setMaxAaAttacks,
+            this::getMaxAaAttacks,
+            this::resetMaxAaAttacks);
+      case "maxRoundsAA":
+        return MutableProperty.of(
+            this::setMaxRoundsAa,
+            this::setMaxRoundsAa,
+            this::getMaxRoundsAa,
+            this::resetMaxRoundsAa);
+      case "typeAA":
+        return MutableProperty.ofString(this::setTypeAa, this::getTypeAa, this::resetTypeAa);
+      case "targetsAA":
+        return MutableProperty.of(
+            this::setTargetsAa, this::setTargetsAa, this::getTargetsAa, this::resetTargetsAa);
+      case MAY_OVERSTACK_AA:
+        return MutableProperty.of(
+            this::setMayOverStackAa,
+            this::setMayOverStackAa,
+            this::getMayOverStackAa,
+            this::resetMayOverStackAa);
+      case "damageableAA":
+        return MutableProperty.of(
+            this::setDamageableAa,
+            this::setDamageableAa,
+            this::getDamageableAa,
+            this::resetDamageableAa);
+      case "willNotFireIfPresent":
+        return MutableProperty.of(
+            this::setWillNotFireIfPresent,
+            this::setWillNotFireIfPresent,
+            this::getWillNotFireIfPresent,
+            this::resetWillNotFireIfPresent);
+      case "isStrategicBomber":
+        return MutableProperty.of(
+            this::setIsStrategicBomber,
+            this::setIsStrategicBomber,
+            this::getIsStrategicBomber,
+            this::resetIsStrategicBomber);
+      case "bombingMaxDieSides":
+        return MutableProperty.of(
+            this::setBombingMaxDieSides,
+            this::setBombingMaxDieSides,
+            this::getBombingMaxDieSides,
+            this::resetBombingMaxDieSides);
+      case "bombingBonus":
+        return MutableProperty.of(
+            this::setBombingBonus,
+            this::setBombingBonus,
+            this::getBombingBonus,
+            this::resetBombingBonus);
+      case "canIntercept":
+        return MutableProperty.of(
+            this::setCanIntercept,
+            this::setCanIntercept,
+            this::getCanIntercept,
+            this::resetCanIntercept);
+      case "requiresAirbaseToIntercept":
+        return MutableProperty.of(
+            this::setRequiresAirBaseToIntercept,
+            this::setRequiresAirBaseToIntercept,
+            this::getRequiresAirBaseToIntercept,
+            this::resetRequiresAirBaseToIntercept);
+      case "canEscort":
+        return MutableProperty.of(
+            this::setCanEscort, this::setCanEscort, this::getCanEscort, this::resetCanEscort);
+      case "canAirBattle":
+        return MutableProperty.of(
+            this::setCanAirBattle,
+            this::setCanAirBattle,
+            this::getCanAirBattle,
+            this::resetCanAirBattle);
+      case "airDefense":
+        return MutableProperty.of(
+            this::setAirDefense, this::setAirDefense, this::getAirDefense, this::resetAirDefense);
+      case "airAttack":
+        return MutableProperty.of(
+            this::setAirAttack, this::setAirAttack, this::getAirAttack, this::resetAirAttack);
+      case "bombingTargets":
+        return MutableProperty.of(
+            this::setBombingTargets,
+            this::setBombingTargets,
+            this::getBombingTargets,
+            this::resetBombingTargets);
+      case "canProduceUnits":
+        return MutableProperty.of(
+            this::setCanProduceUnits,
+            this::setCanProduceUnits,
+            this::getCanProduceUnits,
+            this::resetCanProduceUnits);
+      case "canProduceXUnits":
+        return MutableProperty.of(
+            this::setCanProduceXUnits,
+            this::setCanProduceXUnits,
+            this::getCanProduceXUnits,
+            this::resetCanProduceXUnits);
+      case "createsUnitsList":
+        return MutableProperty.of(
+            this::setCreatesUnitsList,
+            this::setCreatesUnitsList,
+            this::getCreatesUnitsList,
+            this::resetCreatesUnitsList);
+      case "createsResourcesList":
+        return MutableProperty.of(
+            this::setCreatesResourcesList,
+            this::setCreatesResourcesList,
+            this::getCreatesResourcesList,
+            this::resetCreatesResourcesList);
+      case "hitPoints":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt, this::setHitPoints, this::getHitPoints, () -> 1);
+      case "canBeDamaged":
+        return MutableProperty.of(
+            this::setCanBeDamaged,
+            this::setCanBeDamaged,
+            this::getCanBeDamaged,
+            this::resetCanBeDamaged);
+      case "maxDamage":
+        return MutableProperty.of(
+            this::setMaxDamage, this::setMaxDamage, this::getMaxDamage, this::resetMaxDamage);
+      case "maxOperationalDamage":
+        return MutableProperty.of(
+            this::setMaxOperationalDamage,
+            this::setMaxOperationalDamage,
+            this::getMaxOperationalDamage,
+            this::resetMaxOperationalDamage);
+      case "canDieFromReachingMaxDamage":
+        return MutableProperty.of(
+            this::setCanDieFromReachingMaxDamage,
+            this::setCanDieFromReachingMaxDamage,
+            this::getCanDieFromReachingMaxDamage,
+            this::resetCanDieFromReachingMaxDamage);
+      case "isConstruction":
+        return MutableProperty.of(
+            this::setIsConstruction,
+            this::setIsConstruction,
+            this::getIsConstruction,
+            this::resetIsConstruction);
+      case "constructionType":
+        return MutableProperty.ofString(
+            this::setConstructionType, this::getConstructionType, this::resetConstructionType);
+      case "constructionsPerTerrPerTypePerTurn":
+        return MutableProperty.of(
+            this::setConstructionsPerTerrPerTypePerTurn,
+            this::setConstructionsPerTerrPerTypePerTurn,
+            this::getConstructionsPerTerrPerTypePerTurn,
+            this::resetConstructionsPerTerrPerTypePerTurn);
+      case "maxConstructionsPerTypePerTerr":
+        return MutableProperty.of(
+            this::setMaxConstructionsPerTypePerTerr,
+            this::setMaxConstructionsPerTypePerTerr,
+            this::getMaxConstructionsPerTypePerTerr,
+            this::resetMaxConstructionsPerTypePerTerr);
+      case "canOnlyBePlacedInTerritoryValuedAtX":
+        return MutableProperty.of(
+            this::setCanOnlyBePlacedInTerritoryValuedAtX,
+            this::setCanOnlyBePlacedInTerritoryValuedAtX,
+            this::getCanOnlyBePlacedInTerritoryValuedAtX,
+            this::resetCanOnlyBePlacedInTerritoryValuedAtX);
+      case "requiresUnits":
+        return MutableProperty.of(
+            this::setRequiresUnits,
+            this::setRequiresUnits,
+            this::getRequiresUnits,
+            this::resetRequiresUnits);
+      case "consumesUnits":
+        return MutableProperty.of(
+            this::setConsumesUnits,
+            this::setConsumesUnits,
+            this::getConsumesUnits,
+            this::resetConsumesUnits);
+      case "requiresUnitsToMove":
+        return MutableProperty.of(
+            this::setRequiresUnitsToMove,
+            this::setRequiresUnitsToMove,
+            this::getRequiresUnitsToMove,
+            this::resetRequiresUnitsToMove);
+      case "unitPlacementRestrictions":
+        return MutableProperty.of(
+            this::setUnitPlacementRestrictions,
+            this::setUnitPlacementRestrictions,
+            this::getUnitPlacementRestrictions,
+            this::resetUnitPlacementRestrictions);
+      case "maxBuiltPerPlayer":
+        return MutableProperty.of(
+            this::setMaxBuiltPerPlayer,
+            this::setMaxBuiltPerPlayer,
+            this::getMaxBuiltPerPlayer,
+            this::resetMaxBuiltPerPlayer);
+      case "placementLimit":
+        return MutableProperty.of(
+            this::setPlacementLimit,
+            this::setPlacementLimit,
+            this::getPlacementLimit,
+            this::resetPlacementLimit);
+      case "canScramble":
+        return MutableProperty.of(
+            this::setCanScramble,
+            this::setCanScramble,
+            this::getCanScramble,
+            this::resetCanScramble);
+      case "isAirBase":
+        return MutableProperty.of(
+            this::setIsAirBase, this::setIsAirBase, this::getIsAirBase, this::resetIsAirBase);
+      case "maxScrambleDistance":
+        return MutableProperty.of(
+            this::setMaxScrambleDistance,
+            this::setMaxScrambleDistance,
+            this::getMaxScrambleDistance,
+            this::resetMaxScrambleDistance);
+      case "maxScrambleCount":
+        return MutableProperty.of(
+            this::setMaxScrambleCount,
+            this::setMaxScrambleCount,
+            this::getMaxScrambleCount,
+            this::resetMaxScrambleCount);
+      case "maxInterceptCount":
+        return MutableProperty.of(
+            this::setMaxInterceptCount,
+            this::setMaxInterceptCount,
+            this::getMaxInterceptCount,
+            this::resetMaxInterceptCount);
+      case "blockade":
+        return MutableProperty.of(
+            this::setBlockade, this::setBlockade, this::getBlockade, this::resetBlockade);
+      case "repairsUnits":
+        return MutableProperty.of(
+            this::setRepairsUnits,
+            this::setRepairsUnits,
+            this::getRepairsUnits,
+            this::resetRepairsUnits);
+      case "givesMovement":
+        return MutableProperty.of(
+            this::setGivesMovement,
+            this::setGivesMovement,
+            this::getGivesMovement,
+            this::resetGivesMovement);
+      case "destroyedWhenCapturedBy":
+        return MutableProperty.of(
+            this::setDestroyedWhenCapturedBy,
+            this::setDestroyedWhenCapturedBy,
+            this::getDestroyedWhenCapturedBy,
+            this::resetDestroyedWhenCapturedBy);
+      case "whenHitPointsDamagedChangesInto":
+        return MutableProperty.of(
+            this::setWhenHitPointsDamagedChangesInto,
+            this::setWhenHitPointsDamagedChangesInto,
+            this::getWhenHitPointsDamagedChangesInto,
+            this::resetWhenHitPointsDamagedChangesInto);
+      case "whenHitPointsRepairedChangesInto":
+        return MutableProperty.of(
+            this::setWhenHitPointsRepairedChangesInto,
+            this::setWhenHitPointsRepairedChangesInto,
+            this::getWhenHitPointsRepairedChangesInto,
+            this::resetWhenHitPointsRepairedChangesInto);
+      case "whenCapturedChangesInto":
+        return MutableProperty.of(
+            this::setWhenCapturedChangesInto,
+            this::setWhenCapturedChangesInto,
+            this::getWhenCapturedChangesInto,
+            this::resetWhenCapturedChangesInto);
+      case "whenCapturedSustainsDamage":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt,
+            this::setWhenCapturedSustainsDamage,
+            this::getWhenCapturedSustainsDamage,
+            () -> 0);
+      case "canBeCapturedOnEnteringBy":
+        return MutableProperty.of(
+            this::setCanBeCapturedOnEnteringBy,
+            this::setCanBeCapturedOnEnteringBy,
+            this::getCanBeCapturedOnEnteringBy,
+            this::resetCanBeCapturedOnEnteringBy);
+      case "canBeGivenByTerritoryTo":
+        return MutableProperty.of(
+            this::setCanBeGivenByTerritoryTo,
+            this::setCanBeGivenByTerritoryTo,
+            this::getCanBeGivenByTerritoryTo,
+            this::resetCanBeGivenByTerritoryTo);
+      case "whenCombatDamaged":
+        return MutableProperty.of(
+            this::setWhenCombatDamaged,
+            this::setWhenCombatDamaged,
+            this::getWhenCombatDamaged,
+            this::resetWhenCombatDamaged);
+      case "receivesAbilityWhenWith":
+        return MutableProperty.of(
+            this::setReceivesAbilityWhenWith,
+            this::setReceivesAbilityWhenWith,
+            this::getReceivesAbilityWhenWith,
+            this::resetReceivesAbilityWhenWith);
+      case "special":
+        return MutableProperty.of(
+            this::setSpecial, this::setSpecial, this::getSpecial, this::resetSpecial);
+      case "tuv":
+        return MutableProperty.of(this::setTuv, this::setTuv, this::getTuv, this::resetTuv);
+      case "isFactory":
+        return MutableProperty.<Boolean>ofWriteOnly(this::setIsFactory, this::setIsFactory);
+      case "isAA":
+        return MutableProperty.<Boolean>ofWriteOnly(this::setIsAa, this::setIsAa);
+      case "destroyedWhenCapturedFrom":
+        return MutableProperty.ofWriteOnlyString(this::setDestroyedWhenCapturedFrom);
+      case "unitPlacementOnlyAllowedIn":
+        return MutableProperty.ofWriteOnlyString(this::setUnitPlacementOnlyAllowedIn);
+      case "isAAmovement":
+        return MutableProperty.<Boolean>ofWriteOnly(this::setIsAaMovement, this::setIsAaMovement);
+      case "isTwoHit":
+        return MutableProperty.<Boolean>ofWriteOnly(this::setIsTwoHit, this::setIsTwoHit);
+      case "canRetreatOnStalemate":
+        return MutableProperty.of(
+            this::setCanRetreatOnStalemate, this::setCanRetreatOnStalemate,
+            this::getCanRetreatOnStalemate, this::resetCanRetreatOnStalemate);
+      default:
+        return null;
+    }
   }
 }

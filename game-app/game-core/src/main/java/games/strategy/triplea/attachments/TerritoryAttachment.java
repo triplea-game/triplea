@@ -3,7 +3,6 @@ package games.strategy.triplea.attachments;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -741,124 +739,100 @@ public class TerritoryAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameState data) {}
 
+  @Override
   public MutableProperty<?> getPropertyOrNull(String propertyName) {
-    return getPropertyMap().get(propertyName);
-  }
-
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put(
-            "capital",
-            MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital))
-        .put(
-            "originalFactory",
-            MutableProperty.of(
-                this::setOriginalFactory,
-                this::setOriginalFactory,
-                this::getOriginalFactory,
-                this::resetOriginalFactory))
-        .put(
-            "production",
-            MutableProperty.of(
-                this::setProduction,
-                this::setProduction,
-                this::getProduction,
-                this::resetProduction))
-        .put("productionOnly", MutableProperty.ofWriteOnlyString(this::setProductionOnly))
-        .put(
-            "victoryCity",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt, this::setVictoryCity, this::getVictoryCity, () -> 0))
-        .put(
-            "isImpassable",
-            MutableProperty.of(
-                this::setIsImpassable,
-                this::setIsImpassable,
-                this::getIsImpassable,
-                this::resetIsImpassable))
-        .put(
-            "originalOwner",
-            MutableProperty.of(
-                this::setOriginalOwner,
-                this::setOriginalOwner,
-                this::getOriginalOwner,
-                this::resetOriginalOwner))
-        .put(
-            "convoyRoute",
-            MutableProperty.of(
-                this::setConvoyRoute,
-                this::setConvoyRoute,
-                this::getConvoyRoute,
-                this::resetConvoyRoute))
-        .put(
-            "convoyAttached",
-            MutableProperty.of(
-                this::setConvoyAttached,
-                this::setConvoyAttached,
-                this::getConvoyAttached,
-                this::resetConvoyAttached))
-        .put(
-            "changeUnitOwners",
-            MutableProperty.of(
-                this::setChangeUnitOwners,
-                this::setChangeUnitOwners,
-                this::getChangeUnitOwners,
-                this::resetChangeUnitOwners))
-        .put(
-            "captureUnitOnEnteringBy",
-            MutableProperty.of(
-                this::setCaptureUnitOnEnteringBy,
-                this::setCaptureUnitOnEnteringBy,
-                this::getCaptureUnitOnEnteringBy,
-                this::resetCaptureUnitOnEnteringBy))
-        .put(
-            "navalBase",
-            MutableProperty.of(
-                this::setNavalBase, this::setNavalBase, this::getNavalBase, this::resetNavalBase))
-        .put(
-            "airBase",
-            MutableProperty.of(
-                this::setAirBase, this::setAirBase, this::getAirBase, this::resetAirBase))
-        .put(
-            "kamikazeZone",
-            MutableProperty.of(
-                this::setKamikazeZone,
-                this::setKamikazeZone,
-                this::getKamikazeZone,
-                this::resetKamikazeZone))
-        .put(
-            "unitProduction",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setUnitProduction,
-                this::getUnitProduction,
-                () -> 0))
-        .put(
-            "blockadeZone",
-            MutableProperty.of(
-                this::setBlockadeZone,
-                this::setBlockadeZone,
-                this::getBlockadeZone,
-                this::resetBlockadeZone))
-        .put(
-            "territoryEffect",
-            MutableProperty.of(
-                this::setTerritoryEffect,
-                this::setTerritoryEffect,
-                this::getTerritoryEffect,
-                this::resetTerritoryEffect))
-        .put(
-            "whenCapturedByGoesTo",
-            MutableProperty.of(
-                this::setWhenCapturedByGoesTo,
-                this::setWhenCapturedByGoesTo,
-                this::getWhenCapturedByGoesTo,
-                this::resetWhenCapturedByGoesTo))
-        .put(
-            "resources",
-            MutableProperty.of(
-                this::setResources, this::setResources, this::getResources, this::resetResources))
-        .build();
+    switch (propertyName) {
+      case "capital":
+        return MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital);
+      case "originalFactory":
+        return MutableProperty.of(
+            this::setOriginalFactory,
+            this::setOriginalFactory,
+            this::getOriginalFactory,
+            this::resetOriginalFactory);
+      case "production":
+        return MutableProperty.of(
+            this::setProduction, this::setProduction, this::getProduction, this::resetProduction);
+      case "productionOnly":
+        return MutableProperty.ofWriteOnlyString(this::setProductionOnly);
+      case "victoryCity":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt, this::setVictoryCity, this::getVictoryCity, () -> 0);
+      case "isImpassable":
+        return MutableProperty.of(
+            this::setIsImpassable,
+            this::setIsImpassable,
+            this::getIsImpassable,
+            this::resetIsImpassable);
+      case "originalOwner":
+        return MutableProperty.of(
+            this::setOriginalOwner,
+            this::setOriginalOwner,
+            this::getOriginalOwner,
+            this::resetOriginalOwner);
+      case "convoyRoute":
+        return MutableProperty.of(
+            this::setConvoyRoute,
+            this::setConvoyRoute,
+            this::getConvoyRoute,
+            this::resetConvoyRoute);
+      case "convoyAttached":
+        return MutableProperty.of(
+            this::setConvoyAttached,
+            this::setConvoyAttached,
+            this::getConvoyAttached,
+            this::resetConvoyAttached);
+      case "changeUnitOwners":
+        return MutableProperty.of(
+            this::setChangeUnitOwners,
+            this::setChangeUnitOwners,
+            this::getChangeUnitOwners,
+            this::resetChangeUnitOwners);
+      case "captureUnitOnEnteringBy":
+        return MutableProperty.of(
+            this::setCaptureUnitOnEnteringBy,
+            this::setCaptureUnitOnEnteringBy,
+            this::getCaptureUnitOnEnteringBy,
+            this::resetCaptureUnitOnEnteringBy);
+      case "navalBase":
+        return MutableProperty.of(
+            this::setNavalBase, this::setNavalBase, this::getNavalBase, this::resetNavalBase);
+      case "airBase":
+        return MutableProperty.of(
+            this::setAirBase, this::setAirBase, this::getAirBase, this::resetAirBase);
+      case "kamikazeZone":
+        return MutableProperty.of(
+            this::setKamikazeZone,
+            this::setKamikazeZone,
+            this::getKamikazeZone,
+            this::resetKamikazeZone);
+      case "unitProduction":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt, this::setUnitProduction, this::getUnitProduction, () -> 0);
+      case "blockadeZone":
+        return MutableProperty.of(
+            this::setBlockadeZone,
+            this::setBlockadeZone,
+            this::getBlockadeZone,
+            this::resetBlockadeZone);
+      case "territoryEffect":
+        return MutableProperty.of(
+            this::setTerritoryEffect,
+            this::setTerritoryEffect,
+            this::getTerritoryEffect,
+            this::resetTerritoryEffect);
+      case "whenCapturedByGoesTo":
+        return MutableProperty.of(
+            this::setWhenCapturedByGoesTo,
+            this::setWhenCapturedByGoesTo,
+            this::getWhenCapturedByGoesTo,
+            this::resetWhenCapturedByGoesTo);
+      case "resources":
+        return MutableProperty.of(
+            this::setResources, this::setResources, this::getResources, this::resetResources);
+      default:
+        return null;
+    }
   }
 
   /**

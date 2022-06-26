@@ -1,6 +1,5 @@
 package games.strategy.triplea.attachments;
 
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
@@ -13,7 +12,6 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -178,36 +176,32 @@ public class CanalAttachment extends DefaultAttachment {
     }
   }
 
+  @Override
   public MutableProperty<?> getPropertyOrNull(String propertyName) {
-    return getPropertyMap().get(propertyName);
-  }
-
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put(
-            "canalName",
-            MutableProperty.ofString(this::setCanalName, this::getCanalName, this::resetCanalName))
-        .put(
-            "landTerritories",
-            MutableProperty.of(
-                this::setLandTerritories,
-                this::setLandTerritories,
-                this::getLandTerritories,
-                this::resetLandTerritories))
-        .put(
-            "excludedUnits",
-            MutableProperty.of(
-                this::setExcludedUnits,
-                this::setExcludedUnits,
-                this::getExcludedUnits,
-                this::resetExcludedUnits))
-        .put(
-            "canNotMoveThroughDuringCombatMove",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool,
-                this::setCanNotMoveThroughDuringCombatMove,
-                this::getCanNotMoveThroughDuringCombatMove,
-                () -> false))
-        .build();
+    switch (propertyName) {
+      case "canalName":
+        return MutableProperty.ofString(
+            this::setCanalName, this::getCanalName, this::resetCanalName);
+      case "landTerritories":
+        return MutableProperty.of(
+            this::setLandTerritories,
+            this::setLandTerritories,
+            this::getLandTerritories,
+            this::resetLandTerritories);
+      case "excludedUnits":
+        return MutableProperty.of(
+            this::setExcludedUnits,
+            this::setExcludedUnits,
+            this::getExcludedUnits,
+            this::resetExcludedUnits);
+      case "canNotMoveThroughDuringCombatMove":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool,
+            this::setCanNotMoveThroughDuringCombatMove,
+            this::getCanNotMoveThroughDuringCombatMove,
+            () -> false);
+      default:
+        return null;
+    }
   }
 }

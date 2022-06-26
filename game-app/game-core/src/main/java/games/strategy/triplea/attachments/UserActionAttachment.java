@@ -171,6 +171,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
         Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions));
   }
 
+  @Override
   public MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "activateTrigger":
@@ -180,7 +181,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
             this::getActivateTrigger,
             this::resetActivateTrigger);
       default:
-        return getPropertyMap().get(propertyName);
+        return super.getPropertyOrNull(propertyName);
     }
   }
 }
