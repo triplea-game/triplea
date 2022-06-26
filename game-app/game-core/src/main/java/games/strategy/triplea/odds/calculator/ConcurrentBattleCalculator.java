@@ -10,13 +10,14 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
-import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
 import org.triplea.util.Version;
 
@@ -37,9 +38,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   // do not let calcing happen while we are setting game data
   private final CountUpAndDownLatch latchSetData = new CountUpAndDownLatch();
   // do not let setting of game data happen multiple times while we offload creating workers and
-  // copying data to a
-  // different thread
-  private final CountUpAndDownLatch latchWorkerThreadsCreation = new CountUpAndDownLatch();
+  // copying data to a different thread
+  private CompletableFuture<?> latchWorkerThreadsCreation = CompletableFuture.completedFuture(null);
 
   // do not let setting of game data happen at same time
   private final Object mutexSetGameData = new Object();
@@ -65,10 +65,14 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     synchronized (mutexSetGameData) {
       try {
         // since setting data takes place on a different thread, this is our token. wait on it since
-        latchWorkerThreadsCreation.await();
         // we could have exited the synchronized block already.
+        latchWorkerThreadsCreation.get();
+        // clear reference, might not be necessary depending on implementation of CompletableFuture
+        latchWorkerThreadsCreation = CompletableFuture.completedFuture(null);
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
+      } catch (ExecutionException e) {
+        throw new IllegalStateException("Future should handle all exceptions already");
       }
       cancel();
       isDataSet = false;
@@ -79,12 +83,15 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         latchSetData.countDown();
       } else {
         cancelCurrentOperation.incrementAndGet();
-        // increment our token, so that we can set the data in a different thread and return from
-        // this one
-        latchWorkerThreadsCreation.increment();
-        AsyncRunner.runAsync(() -> createWorkers(data))
-            .exceptionally(
-                throwable -> log.error("Error when trying to create Workers", throwable));
+        // assign the future,
+        // so that we can set the data in a different thread wait for its completion
+        latchWorkerThreadsCreation =
+            CompletableFuture.runAsync(() -> createWorkers(data))
+                .exceptionally(
+                    throwable -> {
+                      log.error("Error when trying to create Workers", throwable);
+                      return null;
+                    });
       }
     }
   }
@@ -159,7 +166,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       dataLoadedAction.run();
     }
     // allow setting new data to take place if it is waiting on us
-    latchWorkerThreadsCreation.countDown();
     // allow calcing and other stuff to go ahead
     latchSetData.countDown();
   }
