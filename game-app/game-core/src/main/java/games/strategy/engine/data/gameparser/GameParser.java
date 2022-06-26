@@ -2,6 +2,7 @@ package games.strategy.engine.data.gameparser;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.EngineVersionException;
@@ -874,28 +875,30 @@ public final class GameParser {
     final List<Tuple<String, String>> results = new ArrayList<>();
     final Map<String, MutableProperty<?>> propertyMap = attachment.getPropertyMap();
     for (final AttachmentList.Attachment.Option option : options) {
-      if (option.getName() == null || option.getValue() == null) {
+      final String optionName = option.getName();
+      final String value = option.getValue();
+      if (optionName == null || value == null) {
         continue;
       }
       // decapitalize the property name for backwards compatibility
-      final String name = LegacyPropertyMapper.mapLegacyOptionName(decapitalize(option.getName()));
-
+      final String name =
+          LegacyPropertyMapper.mapLegacyOptionName(decapitalize(optionName)).intern();
       if (name.isEmpty()) {
         throw new GameParseException(
             "Option name with zero length for attachment: " + attachment.getName());
       }
-      final String value = option.getValue();
-      final String count = option.getCount();
       if (LegacyPropertyMapper.ignoreOptionName(name, value)) {
         continue;
       }
-      final String countAndValue = (count != null && !count.isEmpty() ? count + ":" : "") + value;
+      final String count = option.getCount();
+      final String countAndValue = Strings.isNullOrEmpty(count) ? value : (count + ":" + value);
       if (containsEmptyForeachVariable(countAndValue, foreach)) {
         continue; // Skip adding option if contains empty foreach variable
       }
       final String valueWithForeach = variables.replaceForeachVariables(countAndValue, foreach);
       final String interpolatedValue = variables.replaceVariables(valueWithForeach);
-      final String finalValue = LegacyPropertyMapper.mapLegacyOptionValue(name, interpolatedValue);
+      final String finalValue =
+          LegacyPropertyMapper.mapLegacyOptionValue(name, interpolatedValue).intern();
       try {
         Optional.ofNullable(propertyMap.get(name))
             .orElseThrow(
@@ -914,7 +917,7 @@ public final class GameParser {
                 xmlUri, attachment, e.getMessage()),
             e);
       }
-      results.add(Tuple.of(name.intern(), finalValue.intern()));
+      results.add(Tuple.of(name, finalValue));
     }
     return results;
   }

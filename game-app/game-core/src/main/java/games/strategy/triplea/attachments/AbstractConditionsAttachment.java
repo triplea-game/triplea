@@ -9,14 +9,12 @@ import com.google.common.collect.Iterables;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -66,13 +64,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (this.conditions == null) {
       this.conditions = new ArrayList<>();
     }
-    final Collection<GamePlayer> gamePlayers = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
       if (subString.isBlank()) {
         continue;
       }
       this.conditions.add(
-          gamePlayers.stream()
+          getData().getPlayerList().stream()
               .map(p -> p.getAttachment(subString))
               .map(RulesAttachment.class::cast)
               .filter(Objects::nonNull)
