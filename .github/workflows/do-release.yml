@@ -48,9 +48,8 @@ jobs:
           pip install ansible==2.9.13
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          # TODO: deploy to production temporarily disabled, need to be sure this is 'safe'
-          # and won't disconnect users or otherwise cause problems
-          echo "Deploy to production temporarily disabled"
-          echo ./run_ansible --environment production
+          # TODO: temporily running prod deployment in dry run mode until we can avoid
+          # players being disconnected (need to avoid restarts)
+          ./run_ansible --dry-run --environment production
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
