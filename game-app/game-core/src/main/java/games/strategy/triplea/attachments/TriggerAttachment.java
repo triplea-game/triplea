@@ -2896,8 +2896,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               this::setTerritoryEffectProperty,
               this::getTerritoryEffectProperty,
               this::resetTerritoryEffectProperty);
+        default:
+          return getPropertyMapFunction().apply(propertyName);
       }
-      return getPropertyMapFunction().apply(propertyName);
     };
   }
 }
