@@ -181,7 +181,7 @@ public class History extends DefaultTreeModel {
         player = ((Step) node).getPlayerId();
       }
       int nodeChangeIndex = getNextChange(node);
-      if (nodeChangeIndex > nextChangeIndex) {
+      if (seekingEnabled && nodeChangeIndex > nextChangeIndex) {
         break;
       }
     }
