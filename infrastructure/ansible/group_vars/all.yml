@@ -2,8 +2,6 @@
 # Other than these variables, roles should be fully self-contained.
 
 ansible_connection: ssh
-lobby_db_name: lobby_db
-lobby_db_user: lobby_user
 admin_user: "admin"
 admin_home: "/home/{{ admin_user }}"
 ansible_python_interpreter: /usr/bin/python3

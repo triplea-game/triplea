@@ -1,0 +1,2 @@
+dhparams_pem_file: /etc/nginx/dhparam.pem
+nginx_generate_dhparam: true

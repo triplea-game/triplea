@@ -1,9 +1,11 @@
 - name: install software properties common
+  when: use_certbot
   apt:
     state: present
     name: software-properties-common
 
 - name: install certbot and python for certbot on nginx
+  when: use_certbot
   apt:
     state: present
     name:
@@ -11,6 +13,7 @@
       - python3-certbot-nginx
 
 - name: run certbot to get certs
+  when: use_certbot
   shell:
     cmd: |
        certbot certonly \
