@@ -18,6 +18,5 @@ public final class UrlConstants {
   public static final String TRIPLEA_FORUM = "https://forums.triplea-game.org/";
   public static final String USER_GUIDE = "https://triplea-game.org/user-guide/";
   public static final String MARTI_REGISTRATION = "https://dice.marti.triplea-game.org/";
-  public static final String PRERELEASE_LOBBY = "https://prerelease.triplea-game.org";
   public static final String PROD_LOBBY = "https://prod2-lobby.triplea-game.org";
 }

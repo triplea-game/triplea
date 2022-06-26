@@ -6,8 +6,7 @@ scriptDir="$(dirname "$0")"
 readonly ENVIRONMENT_VAGRANT=vagrant
 readonly ENVIRONMENT_PRODUCTION=production
 
-# This script orchestrates deployments via ansible. If a prerelease deployment is done then
-# fresh artifacts are built and deployed.
+# This script orchestrates deployments via ansible. Fresh artifacts are always built and then deployed.
 
 function usage() {
   echo "usage: $0 [options]"
