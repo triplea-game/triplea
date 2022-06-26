@@ -118,7 +118,7 @@ export ANSIBLE_CFG="$scriptDir/ansible.cfg"
 
 # Run deployment
 ansible-playbook \
-  --extra-vars "version=$VERSION" \
+  --extra-vars "build_version=$VERSION" \
    --inventory "$scriptDir/ansible/inventory/$ENVIRONMENT" $DRY_RUN_ARG \
    $VAULT_PASSWORD_FILE_ARG $TAGS_ARG $DIFF_ARG $VERBOSE_ARG "$scriptDir/ansible/site.yml"
 
