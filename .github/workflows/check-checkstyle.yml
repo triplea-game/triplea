@@ -1,4 +1,4 @@
-name: Checkstyle
+name: Checkstyle and Formatting
 on: pull_request
 jobs:
   build:
@@ -10,6 +10,5 @@ jobs:
       with:
         distribution: temurin
         java-version: 11
-    - name: Run Checkstyle
-      run: ./gradlew checkstyleMain checkstyleTest
-
+    - name: Check Formatting and Checkstyle
+      run: ./gradlew spotlessCheck checkstyleMain checkstyleTest
