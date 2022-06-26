@@ -157,8 +157,8 @@ class TriggerAttachmentTest {
       productionFrontierList.addProductionFrontier(
           new ProductionFrontier("frontier", gameData, List.of(productionRule2)));
 
-      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      final MutableProperty<?> productionRuleProperty = propertyMap.get("productionRule");
+      final MutableProperty<?> productionRuleProperty =
+          triggerAttachment.getPropertyOrThrow("productionRule");
       productionRuleProperty.setValue("frontier:rule1");
       productionRuleProperty.setValue("frontier:-rule2");
       productionRuleProperty.setValue("frontier:rule3");
@@ -187,11 +187,14 @@ class TriggerAttachmentTest {
       gamePlayer.addAttachment("rulesAttachment", new RulesAttachment(null, null, gameData));
       gameData.getPlayerList().addPlayerId(gamePlayer);
 
-      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      propertyMap.get("playerAttachmentName").setValue("rulesAttachment:RulesAttachment");
+      triggerAttachment
+          .getPropertyOrThrow("playerAttachmentName")
+          .setValue("rulesAttachment:RulesAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      propertyMap.get("playerProperty").setValue("someNewValue:productionPerXTerritories");
-      propertyMap.get("players").setValue("somePlayer");
+      triggerAttachment
+          .getPropertyOrThrow("playerProperty")
+          .setValue("someNewValue:productionPerXTerritories");
+      triggerAttachment.getPropertyOrThrow("players").setValue("somePlayer");
 
       TriggerAttachment.triggerPlayerPropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -211,13 +214,14 @@ class TriggerAttachmentTest {
           "relationshipTypeAttachment", new RelationshipTypeAttachment(null, null, gameData));
       gameData.getRelationshipTypeList().addRelationshipType(relationshipType);
 
-      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      propertyMap
-          .get("relationshipTypeAttachmentName")
+      triggerAttachment
+          .getPropertyOrThrow("relationshipTypeAttachmentName")
           .setValue("relationshipTypeAttachment:RelationshipTypeAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      propertyMap.get("relationshipTypeProperty").setValue("true:canMoveLandUnitsOverOwnedLand");
-      propertyMap.get("relationshipTypes").setValue("someRelationshipType");
+      triggerAttachment
+          .getPropertyOrThrow("relationshipTypeProperty")
+          .setValue("true:canMoveLandUnitsOverOwnedLand");
+      triggerAttachment.getPropertyOrThrow("relationshipTypes").setValue("someRelationshipType");
 
       TriggerAttachment.triggerRelationshipTypePropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -236,13 +240,12 @@ class TriggerAttachmentTest {
       territory.addAttachment("territoryAttachment", new TerritoryAttachment(null, null, gameData));
       gameData.getMap().addTerritory(territory);
 
-      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      propertyMap
-          .get("territoryAttachmentName")
+      triggerAttachment
+          .getPropertyOrThrow("territoryAttachmentName")
           .setValue("territoryAttachment:TerritoryAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      propertyMap.get("territoryProperty").setValue("true:kamikazeZone");
-      propertyMap.get("territories").setValue(territoryName);
+      triggerAttachment.getPropertyOrThrow("territoryProperty").setValue("true:kamikazeZone");
+      triggerAttachment.getPropertyOrThrow("territories").setValue(territoryName);
 
       TriggerAttachment.triggerTerritoryPropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -262,15 +265,14 @@ class TriggerAttachmentTest {
           "territoryEffectAttachment", new TerritoryEffectAttachment(null, null, gameData));
       gameData.getTerritoryEffectList().put(territoryEffectName, territoryEffect);
 
-      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      propertyMap
-          .get("territoryEffectAttachmentName")
+      triggerAttachment
+          .getPropertyOrThrow("territoryEffectAttachmentName")
           .setValue("territoryEffectAttachment:TerritoryEffectAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      propertyMap
-          .get("territoryEffectProperty")
+      triggerAttachment
+          .getPropertyOrThrow("territoryEffectProperty")
           .setValue("conscript:veteran:champion:unitsNotAllowed");
-      propertyMap.get("territoryEffects").setValue("someTerritoryEffect");
+      triggerAttachment.getPropertyOrThrow("territoryEffects").setValue("someTerritoryEffect");
 
       TriggerAttachment.triggerTerritoryEffectPropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -288,11 +290,12 @@ class TriggerAttachmentTest {
       gameData.getUnitTypeList().addUnitType(unitType);
       unitType.addAttachment("unitAttachment", new UnitAttachment(null, null, gameData));
 
-      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      propertyMap.get("unitAttachmentName").setValue("unitAttachment:UnitAttachment");
+      triggerAttachment
+          .getPropertyOrThrow("unitAttachmentName")
+          .setValue("unitAttachment:UnitAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      propertyMap.get("unitProperty").setValue("4:movement");
-      propertyMap.get("unitType").setValue("someUnit");
+      triggerAttachment.getPropertyOrThrow("unitProperty").setValue("4:movement");
+      triggerAttachment.getPropertyOrThrow("unitType").setValue("someUnit");
 
       TriggerAttachment.triggerUnitPropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
