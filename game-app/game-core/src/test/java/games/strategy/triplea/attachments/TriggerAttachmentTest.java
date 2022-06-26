@@ -128,7 +128,7 @@ class TriggerAttachmentTest {
       final NotificationMessages notificationMessages = mock(NotificationMessages.class);
       when(notificationMessages.getMessage(notificationMessageKey)).thenReturn(notificationMessage);
 
-      triggerAttachment.getPropertyOrThrow("notification").setValue(notificationMessageKey);
+      triggerAttachment.setPropertyOrThrow("notification", notificationMessageKey);
 
       TriggerAttachment.triggerNotifications(
           satisfiedTriggers, bridge, defaultFireTriggerParams, notificationMessages);
@@ -187,14 +187,12 @@ class TriggerAttachmentTest {
       gamePlayer.addAttachment("rulesAttachment", new RulesAttachment(null, null, gameData));
       gameData.getPlayerList().addPlayerId(gamePlayer);
 
-      triggerAttachment
-          .getPropertyOrThrow("playerAttachmentName")
-          .setValue("rulesAttachment:RulesAttachment");
+      triggerAttachment.setPropertyOrThrow(
+          "playerAttachmentName", "rulesAttachment:RulesAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      triggerAttachment
-          .getPropertyOrThrow("playerProperty")
-          .setValue("someNewValue:productionPerXTerritories");
-      triggerAttachment.getPropertyOrThrow("players").setValue("somePlayer");
+      triggerAttachment.setPropertyOrThrow(
+          "playerProperty", "someNewValue:productionPerXTerritories");
+      triggerAttachment.setPropertyOrThrow("players", "somePlayer");
 
       TriggerAttachment.triggerPlayerPropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -214,14 +212,13 @@ class TriggerAttachmentTest {
           "relationshipTypeAttachment", new RelationshipTypeAttachment(null, null, gameData));
       gameData.getRelationshipTypeList().addRelationshipType(relationshipType);
 
-      triggerAttachment
-          .getPropertyOrThrow("relationshipTypeAttachmentName")
-          .setValue("relationshipTypeAttachment:RelationshipTypeAttachment");
+      triggerAttachment.setPropertyOrThrow(
+          "relationshipTypeAttachmentName",
+          "relationshipTypeAttachment:RelationshipTypeAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      triggerAttachment
-          .getPropertyOrThrow("relationshipTypeProperty")
-          .setValue("true:canMoveLandUnitsOverOwnedLand");
-      triggerAttachment.getPropertyOrThrow("relationshipTypes").setValue("someRelationshipType");
+      triggerAttachment.setPropertyOrThrow(
+          "relationshipTypeProperty", "true:canMoveLandUnitsOverOwnedLand");
+      triggerAttachment.setPropertyOrThrow("relationshipTypes", "someRelationshipType");
 
       TriggerAttachment.triggerRelationshipTypePropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -240,12 +237,11 @@ class TriggerAttachmentTest {
       territory.addAttachment("territoryAttachment", new TerritoryAttachment(null, null, gameData));
       gameData.getMap().addTerritory(territory);
 
-      triggerAttachment
-          .getPropertyOrThrow("territoryAttachmentName")
-          .setValue("territoryAttachment:TerritoryAttachment");
+      triggerAttachment.setPropertyOrThrow(
+          "territoryAttachmentName", "territoryAttachment:TerritoryAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      triggerAttachment.getPropertyOrThrow("territoryProperty").setValue("true:kamikazeZone");
-      triggerAttachment.getPropertyOrThrow("territories").setValue(territoryName);
+      triggerAttachment.setPropertyOrThrow("territoryProperty", "true:kamikazeZone");
+      triggerAttachment.setPropertyOrThrow("territories", territoryName);
 
       TriggerAttachment.triggerTerritoryPropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -265,14 +261,12 @@ class TriggerAttachmentTest {
           "territoryEffectAttachment", new TerritoryEffectAttachment(null, null, gameData));
       gameData.getTerritoryEffectList().put(territoryEffectName, territoryEffect);
 
-      triggerAttachment
-          .getPropertyOrThrow("territoryEffectAttachmentName")
-          .setValue("territoryEffectAttachment:TerritoryEffectAttachment");
+      triggerAttachment.setPropertyOrThrow(
+          "territoryEffectAttachmentName", "territoryEffectAttachment:TerritoryEffectAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      triggerAttachment
-          .getPropertyOrThrow("territoryEffectProperty")
-          .setValue("conscript:veteran:champion:unitsNotAllowed");
-      triggerAttachment.getPropertyOrThrow("territoryEffects").setValue("someTerritoryEffect");
+      triggerAttachment.setPropertyOrThrow(
+          "territoryEffectProperty", "conscript:veteran:champion:unitsNotAllowed");
+      triggerAttachment.setPropertyOrThrow("territoryEffects", "someTerritoryEffect");
 
       TriggerAttachment.triggerTerritoryEffectPropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -290,12 +284,10 @@ class TriggerAttachmentTest {
       gameData.getUnitTypeList().addUnitType(unitType);
       unitType.addAttachment("unitAttachment", new UnitAttachment(null, null, gameData));
 
-      triggerAttachment
-          .getPropertyOrThrow("unitAttachmentName")
-          .setValue("unitAttachment:UnitAttachment");
+      triggerAttachment.setPropertyOrThrow("unitAttachmentName", "unitAttachment:UnitAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      triggerAttachment.getPropertyOrThrow("unitProperty").setValue("4:movement");
-      triggerAttachment.getPropertyOrThrow("unitType").setValue("someUnit");
+      triggerAttachment.setPropertyOrThrow("unitProperty", "4:movement");
+      triggerAttachment.setPropertyOrThrow("unitType", "someUnit");
 
       TriggerAttachment.triggerUnitPropertyChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -329,9 +321,7 @@ class TriggerAttachmentTest {
       final BattleTracker battleTracker = mock(BattleTracker.class);
       when(battleDelegate.getBattleTracker()).thenReturn(battleTracker);
 
-      triggerAttachment
-          .getPropertyOrThrow("relationshipChange")
-          .setValue("Keoland:Furyondy:any:allied");
+      triggerAttachment.setPropertyOrThrow("relationshipChange", "Keoland:Furyondy:any:allied");
 
       TriggerAttachment.triggerRelationshipChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -359,9 +349,8 @@ class TriggerAttachmentTest {
       gameTechnologyFrontier.addAdvance(
           TechAdvance.findDefinedAdvanceAndCreateAdvance("heavyBomber", gameData));
 
-      triggerAttachment
-          .getPropertyOrThrow("availableTech")
-          .setValue("airCategory:longRangeAir:jetPower:heavyBomber");
+      triggerAttachment.setPropertyOrThrow(
+          "availableTech", "airCategory:longRangeAir:jetPower:heavyBomber");
 
       TriggerAttachment.triggerAvailableTechChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -386,7 +375,7 @@ class TriggerAttachmentTest {
       gameTechnologyFrontier.addAdvance(
           TechAdvance.findDefinedAdvanceAndCreateAdvance("heavyBomber", gameData));
 
-      triggerAttachment.getPropertyOrThrow("tech").setValue("longRangeAir:heavyBomber");
+      triggerAttachment.setPropertyOrThrow("tech", "longRangeAir:heavyBomber");
 
       TriggerAttachment.triggerTechChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
@@ -410,9 +399,7 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", gamePlayer, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
-      triggerAttachment
-          .getPropertyOrThrow("frontier")
-          .setValue("Americans_Super_Carrier_production");
+      triggerAttachment.setPropertyOrThrow("frontier", "Americans_Super_Carrier_production");
 
       TriggerAttachment.triggerProductionChange(
           satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -435,9 +422,7 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", gamePlayer, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
-      triggerAttachment
-          .getPropertyOrThrow("support")
-          .setValue("supportAttachmentBattlefleet_Support");
+      triggerAttachment.setPropertyOrThrow("support", "supportAttachmentBattlefleet_Support");
 
       TriggerAttachment.triggerSupportChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
@@ -586,8 +571,8 @@ class TriggerAttachmentTest {
 
       gameData.getResourceList().addResource(new Resource(Constants.PUS, gameData));
 
-      triggerAttachment.getPropertyOrThrow("resource").setValue(Constants.PUS);
-      triggerAttachment.getPropertyOrThrow("resourceCount").setValue("23");
+      triggerAttachment.setPropertyOrThrow("resource").setValue(Constants.PUS);
+      triggerAttachment.setPropertyOrThrow("resourceCount").setValue("23");
 
       TriggerAttachment.triggerResourceChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(1)).addChange(not(argThat(Change::isEmpty)));
@@ -618,20 +603,17 @@ class TriggerAttachmentTest {
         gameTechnologyFrontier.addAdvance(
             TechAdvance.findDefinedAdvanceAndCreateAdvance("heavyBomber", gameData));
 
-        triggerToBeFiredTriggerAttachment
-            .getPropertyOrThrow("tech")
-            .setValue("longRangeAir:heavyBomber");
+        triggerToBeFiredTriggerAttachment.setPropertyOrThrow("tech", "longRangeAir:heavyBomber");
       }
 
       final TriggerAttachment activateTriggerTriggerAttachment =
           new TriggerAttachment("activateTrigger", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(activateTriggerTriggerAttachment);
 
-      activateTriggerTriggerAttachment
-          .getPropertyOrThrow("activateTrigger")
-          .setValue(
-              String.format(
-                  "%s:1:false:false:false:false", triggerToBeFiredTriggerAttachment.getName()));
+      activateTriggerTriggerAttachment.setPropertyOrThrow(
+          "activateTrigger",
+          String.format(
+              "%s:1:false:false:false:false", triggerToBeFiredTriggerAttachment.getName()));
 
       TriggerAttachment.triggerActivateTriggerOther(
           Map.of(), satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -650,7 +632,7 @@ class TriggerAttachmentTest {
       final String notificationMessageKey = "IndomitableCenterVictory";
       final String notificationMessage =
           "<body><h2>Victory!<br>The Indomitable Center Has Conquered!</h2>...</body>";
-      triggerAttachment.getPropertyOrThrow("victory").setValue(notificationMessageKey);
+      triggerAttachment.setPropertyOrThrow("victory", notificationMessageKey);
 
       final EndRoundDelegate endRoundDelegate = mock(EndRoundDelegate.class);
       when(endRoundDelegate.getName()).thenReturn("endRound");

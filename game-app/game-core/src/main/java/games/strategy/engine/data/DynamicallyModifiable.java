@@ -45,4 +45,9 @@ public interface DynamicallyModifiable {
     return getProperty(name)
         .orElseThrow(() -> new IllegalArgumentException("unknown property named '" + name + "'"));
   }
+
+  default void setPropertyOrThrow(String name, String value)
+      throws MutableProperty.InvalidValueException {
+    getPropertyOrThrow(name).setValue(value);
+  }
 }
