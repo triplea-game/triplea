@@ -43,6 +43,7 @@ final class DefaultAttachmentTest {
       @Override
       public void validate(final GameState data) {}
 
+      @Override
       public MutableProperty<?> getPropertyOrNull(String propertyName) {
         return null;
       }

@@ -63,6 +63,7 @@ public final class FakeAttachment implements IAttachment {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "name":
