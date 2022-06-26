@@ -571,8 +571,8 @@ class TriggerAttachmentTest {
 
       gameData.getResourceList().addResource(new Resource(Constants.PUS, gameData));
 
-      triggerAttachment.setPropertyOrThrow("resource").setValue(Constants.PUS);
-      triggerAttachment.setPropertyOrThrow("resourceCount").setValue("23");
+      triggerAttachment.setPropertyOrThrow("resource", Constants.PUS);
+      triggerAttachment.setPropertyOrThrow("resourceCount", "23");
 
       TriggerAttachment.triggerResourceChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(1)).addChange(not(argThat(Change::isEmpty)));
