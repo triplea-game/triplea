@@ -32,7 +32,7 @@ public interface DynamicallyModifiable {
   default Optional<MutableProperty<?>> getProperty(final String name) {
     checkNotNull(name);
 
-    return Optional.ofNullable(((TriggerAttachment) this).getPropertyMapFunction().apply(name));
+    return Optional.ofNullable(getPropertyMapFunction().apply(name));
   }
 
   default Function<String, MutableProperty<?>> getPropertyMapFunction() {
