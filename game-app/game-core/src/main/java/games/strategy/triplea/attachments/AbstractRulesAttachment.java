@@ -2,6 +2,7 @@ package games.strategy.triplea.attachments;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Ints;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -363,20 +364,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     boolean haveSetCount = false;
     for (int i = 0; i < list.length; i++) {
       final String name = list[i];
-      if (testFirstItemForCount && i == 0) {
-        // See if the first entry contains the number of territories needed to meet the criteria
-        try {
-          // check if this is an integer, and if so set territory count
-          final int territoryCount = Integer.parseInt(name);
-          if (mustSetTerritoryCount) {
-            haveSetCount = true;
-            setTerritoryCount(territoryCount);
-          }
-          continue;
-        } catch (final NumberFormatException e) {
-          // territory name is not an integer; fall through
-        }
-      }
       if (name.equals("each")) {
         countEach = true;
         if (mustSetTerritoryCount) {
@@ -394,6 +381,19 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           || name.equals("map")
           || name.equals("enemy")) {
         break;
+      }
+      if (testFirstItemForCount && i == 0) {
+        // See if the first entry contains the number of territories needed to meet the criteria
+        // check if this is an integer, and if so set territory count
+        final Integer territoryCount = Ints.tryParse(name);
+        if (territoryCount != null) {
+          if (mustSetTerritoryCount) {
+            haveSetCount = true;
+            setTerritoryCount(territoryCount);
+          }
+          continue;
+        }
+        // territory name is not an integer; fall through
       }
       // Validate all territories exist
       final Territory territory = getData().getMap().getTerritory(name);

@@ -11,19 +11,15 @@
   roles:
     - nginx_forums_conf
 
-- hosts: database
-  tags: [database, postgres]
-  roles:
-    - database/postgres
-    - {name: database/flyway, tags: flyway}
-
 - hosts: lobbyServer
   tags: [lobby, lobby_server]
   roles:
     - java
-    - lobby_server
-    - nginx
+    - {name: database/postgres, tags: database}
+    - {name: database/flyway, tags: flyway}
+    - {name: nginx, tags: nginx}
     - postfix
+    - lobby_server
 
 - hosts: letsEncrypt
   tags: lobby

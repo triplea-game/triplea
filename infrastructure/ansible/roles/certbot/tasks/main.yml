@@ -11,11 +11,12 @@
       - python3-certbot-nginx
 
 - name: run certbot to get certs
-  command: |
-     certbot certonly \
+  shell:
+    cmd: |
+       certbot certonly \
          --nginx -n \
          -m tripleabuilderbot@gmail.com \
          -d {{ inventory_hostname }} \
          --agree-tos \
          --rsa-key-size 4096
-  creates: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
+    creates: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
