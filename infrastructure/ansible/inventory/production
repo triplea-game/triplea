@@ -4,13 +4,6 @@ forums.triplea-game.org
 [lobbyServer]
 prod2-lobby.triplea-game.org
 
-[lobbyServer:vars]
-lobby_version=2.4.22192
-lobby_restart_on_new_deployment=false
-
-[letsEncrypt:children]
-lobbyServer
-
 [botHosts]
 prod2-bot01.triplea-game.org  bot_prefix=1 bot_name=Dallas
 prod2-bot02.triplea-game.org  bot_prefix=2 bot_name=Atlanta
@@ -20,16 +13,7 @@ prod2-bot07.triplea-game.org  bot_prefix=7 bot_name=Jersey
 prod2-bot08.triplea-game.org  bot_prefix=8 bot_name=London
 prod2-bot09.triplea-game.org  bot_prefix=9 bot_name=Frankfurt
 
-[botHosts:vars]
-bot_version="2.5.22294"
-
-[prod2:children]
+[prod:children]
 postgresHosts
 lobbyServer
 botHosts
-
-[prod2:vars]
-lobby_uri="https://prod2-lobby.triplea-game.org"
-
-[vault:children]
-prod2

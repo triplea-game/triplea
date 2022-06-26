@@ -1,4 +1,9 @@
+bot_version: "2.5.22294"
+bot_numbers: ["01", "02" ]
+lobby_version: 2.4.22192
+lobby_restart_on_new_deployment: false
 lobby_uri: "http://localhost:8080"
-lobby_db_password: "lobby"
-bot_numbers: ["01", "02"]
 nginx_generate_dhparam: false
+
+lobby_db_password: "lobby"
+github_api_token: "test"
