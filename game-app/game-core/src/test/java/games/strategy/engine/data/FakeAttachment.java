@@ -65,7 +65,10 @@ public final class FakeAttachment implements IAttachment {
     throw new UnsupportedOperationException();
   }
 
-  @Override
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    return getPropertyMap().get(propertyName);
+  }
+
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("name", MutableProperty.ofString(this::setName, this::getName, Runnables.doNothing()))

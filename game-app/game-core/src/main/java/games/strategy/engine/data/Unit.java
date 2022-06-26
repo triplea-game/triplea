@@ -223,8 +223,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     }
   }
 
-  @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    return getPropertyMap().get(propertyName);
+  }
+
+  private Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("owner", MutableProperty.ofSimple(this::setOwner, this::getOwner))
         .put("uid", MutableProperty.ofReadOnlySimple(this::getId))

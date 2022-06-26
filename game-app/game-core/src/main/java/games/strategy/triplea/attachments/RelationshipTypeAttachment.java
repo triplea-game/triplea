@@ -437,7 +437,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameState data) {}
 
-  @Override
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    return getPropertyMap().get(propertyName);
+  }
+
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put(

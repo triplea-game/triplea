@@ -2,10 +2,7 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.triplea.attachments.TriggerAttachment;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * An interface to implement by objects that are dynamically being modified. This will most likely
@@ -21,7 +18,7 @@ public interface DynamicallyModifiable {
    * @return A map of all properties supported by this object. The key is the property name. The
    *     value is the property.
    */
-  Map<String, MutableProperty<?>> getPropertyMap();
+  MutableProperty<?> getPropertyOrNull(String name);
 
   /**
    * Gets the property with the specified name.
@@ -32,11 +29,7 @@ public interface DynamicallyModifiable {
   default Optional<MutableProperty<?>> getProperty(final String name) {
     checkNotNull(name);
 
-    return Optional.ofNullable(getPropertyMapFunction().apply(name));
-  }
-
-  default Function<String, MutableProperty<?>> getPropertyMapFunction() {
-    return (propertyName) -> getPropertyMap().get(propertyName);
+    return Optional.ofNullable(getPropertyOrNull(name));
   }
 
   /**

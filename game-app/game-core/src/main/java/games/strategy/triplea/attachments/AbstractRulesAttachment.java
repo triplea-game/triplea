@@ -409,7 +409,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return territories;
   }
 
-  @Override
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    return getPropertyMap().get(propertyName);
+  }
+
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())

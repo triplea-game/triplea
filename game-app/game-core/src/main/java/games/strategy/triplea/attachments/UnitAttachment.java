@@ -3538,7 +3538,10 @@ public class UnitAttachment extends DefaultAttachment {
         .collect(Collectors.joining(" or "));
   }
 
-  @Override
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    return getPropertyMap().get(propertyName);
+  }
+
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put(

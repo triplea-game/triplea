@@ -44,7 +44,10 @@ public class TestAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameState data) {}
 
-  @Override
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    return getPropertyMap().get(propertyName);
+  }
+
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("value", MutableProperty.ofString(this::setValue, this::getValue, this::resetValue))
