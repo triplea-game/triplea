@@ -1,14 +1,13 @@
-name: Deploy Artifacts to Github Releases
+name: Master Branch Release
 on:
   push:
     branches:
       - master
-      - release/*
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build:
-    name: Build and upload installers
+    name: Master Branch Release Actions
     runs-on: Ubuntu-20.04
     steps:
       - name: Checkout code
@@ -39,4 +38,19 @@ jobs:
           prerelease: ${{ env.is_prerelease }}
           commit: ${{ github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Update maps on website
+        run: .build/update-maps-on-website/run
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+          PUSH_TO_WEBSITE_TOKEN: ${{ secrets.PUSH_TO_WEBSITE_TOKEN }}
+      - name: Run Ansible to Deploy
+        run: |
+          pip install ansible==2.9.13
+          cd infrastructure
+          echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+          # TODO: deploy to production temporarily disabled, need to be sure this is 'safe'
+          # and won't disconnect users or otherwise cause problems
+          echo "Deploy to production temporarily disabled"
+          echo ./run_ansible --environment production
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}

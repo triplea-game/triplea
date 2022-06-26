@@ -24,6 +24,8 @@ jobs:
       with:
         distribution: temurin
         java-version: 11
+    - name: Run Tests
+      run: ./gradlew :smoke-testing:test
     - name: Run Smoke Tests
       run: .build/smoke-testing/run
 
