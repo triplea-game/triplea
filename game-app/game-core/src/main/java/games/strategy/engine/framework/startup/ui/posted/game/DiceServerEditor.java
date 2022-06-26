@@ -26,8 +26,6 @@ import org.triplea.swing.SwingComponents;
 /** A class to configure a Dice Server for the game. */
 public class DiceServerEditor extends JPanel {
   public static final URI PRODUCTION_URI = URI.create("https://dice.marti.triplea-game.org");
-  public static final URI PRE_RELEASE_URI =
-      URI.create("https://prerelease.dice.marti.triplea-game.org");
 
   private static final long serialVersionUID = -451810815037661114L;
   private final JButton registerButton =

@@ -54,10 +54,9 @@ role from below and find out what you can do to help.
 - Check the forum ([Development](https://forums.triplea-game.org/category/60/development)) whether release testing
   is ongoing
 - Download & install the [latest release](https://github.com/triplea-game/triplea/releases)
-- Once the game is launched, select 'settings > testing' and select the 'prerelease' lobby (note, your lobby account 
-  is not shared between 'prod' and 'prerelease')
 - Test: We generally need every aspect of the game tested, i.e. every button, every menu, every setting,
   every game rule, etc.
+- Report any issues found to the [issue tracker](https://github.com/triplea-game/triplea/issues)
 
 ### :moneybag: Donor
 

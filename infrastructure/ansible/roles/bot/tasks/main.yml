@@ -75,14 +75,6 @@
   systemd:
     daemon_reload: yes
 
-- name: restart bots (prerelease build only)
-  tags: [prerelease]
-  service:
-    name: "bot@{{ item }}"
-    state: restarted
-    enabled: yes
-  with_items: "{{ bot_numbers }}"
-
 - name: enable and ensure bots are started
   service:
     name: "bot@{{ item }}"
