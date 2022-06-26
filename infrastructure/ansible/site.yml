@@ -15,16 +15,12 @@
   tags: [lobby, lobby_server]
   roles:
     - java
-    - {name: database/postgres, tags: database}
-    - {name: database/flyway, tags: flyway}
-    - {name: nginx, tags: nginx}
     - postfix
+    - database/postgres/install
+    - database/flyway/install
+    - nginx/install
     - lobby_server
-
-- hosts: letsEncrypt
-  tags: lobby
-  roles:
-    - certbot
+    - nginx/run_certbot
 
 - hosts: botHosts
   tags: [bot, bots]

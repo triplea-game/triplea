@@ -27,7 +27,7 @@ function buildArtifacts() {
         :spitfire-server:database:release
         set +x
   )
-  copyBuildArtifact "$scriptDir/../../spitfire-server/database/build/artifacts/migrations.zip" "$scriptDir/../ansible/roles/database/flyway/files/"
+  copyBuildArtifact "$scriptDir/../../spitfire-server/database/build/artifacts/migrations.zip" "$scriptDir/../ansible/roles/lobby_server/files/"
   copyBuildArtifact "$scriptDir/../../spitfire-server/dropwizard-server/build/artifacts/triplea-dropwizard-server-$VERSION.zip" "$scriptDir/../ansible/roles/lobby_server/files/"
   copyBuildArtifact "$scriptDir/../../game-app/game-headless/build/artifacts/triplea-game-headless-$VERSION.zip" "$scriptDir/../ansible/roles/bot/files/"
 }
