@@ -441,7 +441,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return getPropertyMap().get(propertyName);
   }
 
-  public Map<String, MutableProperty<?>> getPropertyMap() {
+  private Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put(
             "archeType",
