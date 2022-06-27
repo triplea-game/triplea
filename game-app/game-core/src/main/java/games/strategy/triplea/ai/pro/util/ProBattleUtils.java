@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.ProData;
+import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI battle utilities. */
@@ -288,6 +290,7 @@ public final class ProBattleUtils {
    */
   public static boolean territoryHasLocalNavalSuperiority(
       final ProData proData,
+      final ProOddsCalculator calc,
       final Territory t,
       final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
@@ -314,10 +317,11 @@ public final class ProBattleUtils {
       enemyUnitsInLandTerritories.addAll(
           nearbyLandTerritory.getUnitCollection().getMatches(ProMatches.unitIsEnemyAir(player)));
     }
+    final Predicate<Unit> enemyNonLandUnit = ProMatches.unitIsEnemyNotLand(player);
     final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
     for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories) {
       final List<Unit> enemySeaUnits =
-          nearbySeaTerritory.getUnitCollection().getMatches(ProMatches.unitIsEnemyNotLand(player));
+          nearbySeaTerritory.getUnitCollection().getMatches(enemyNonLandUnit);
       if (enemySeaUnits.isEmpty()) {
         continue;
       }
@@ -393,8 +397,26 @@ public final class ProBattleUtils {
             + myUnits.size()
             + ", enemySize="
             + enemyUnitsInSeaTerritories.size());
+    boolean negativeAttackTuv = false;
+    if (attackStrengthDifference > 50) {
+      // To really have naval attack superiority, ensure there's also a positive attack TUV for
+      // all nearby territories. Otherwise, prioritizeAttackOptions() will exclude such attacks,
+      // thus coming short of actually having naval superiority.
+      for (final Territory nearby : nearbyEnemySeaTerritories) {
+        final List<Unit> enemySeaUnits = nearby.getUnitCollection().getMatches(enemyNonLandUnit);
+        if (enemySeaUnits.isEmpty()) {
+          continue;
+        }
+        ProBattleResult result =
+            calc.estimateAttackBattleResults(proData, t, myUnits, enemySeaUnits, List.of());
+        if (result.getTuvSwing() < 0) {
+          negativeAttackTuv = true;
+          break;
+        }
+      }
+    }
 
     // If I have naval attack/defense superiority then break
-    return (defenseStrengthDifference < 50 && attackStrengthDifference > 50);
+    return (defenseStrengthDifference < 50 && attackStrengthDifference > 50 && !negativeAttackTuv);
   }
 }
