@@ -16,18 +16,10 @@ jobs:
         run: |
           BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }})
           echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
-
-          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-              echo "is_prerelease=true" | tee -a $GITHUB_ENV
-              echo "release_name=$(date +%Y-%B-%d) - Prerelease - $BUILD_NUMBER" | tee -a $GITHUB_ENV
-          else
-              echo "is_prerelease=false" | tee -a $GITHUB_ENV
-              echo "release_name=$(date +%Y-%B) - Release - $BUILD_NUMBER" | tee -a $GITHUB_ENV
-          fi
+          echo "release_name=$(date +%Y-%B-%d) - $BUILD_NUMBER" | tee -a $GITHUB_ENV
       - name: Build Installers
         run: .build/build-installer
         env:
-          BUILD_NUMBER: ${{ github.run_number }}
           INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
       - name: Create Github Release
         uses: ncipollo/release-action@v1
@@ -35,7 +27,7 @@ jobs:
           artifacts: build/artifacts/*
           tag: ${{ env.product_version }} 
           name: ${{ env.release_name }}
-          prerelease: ${{ env.is_prerelease }}
+          prerelease: true
           commit: ${{ github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Update maps on website
@@ -48,9 +40,8 @@ jobs:
           pip install ansible==2.9.13
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          # TODO: deploy to production temporarily disabled, need to be sure this is 'safe'
-          # and won't disconnect users or otherwise cause problems
-          echo "Deploy to production temporarily disabled"
-          echo ./run_ansible --environment production
+          # TODO: temporily running prod deployment in dry run mode until we can avoid
+          # players being disconnected (need to avoid restarts)
+          ./run_ansible --dry-run --environment production
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}

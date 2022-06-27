@@ -1,6 +1,6 @@
 bot_user: "bot"
 bot_folder: "/home/{{ bot_user }}"
-bot_version: "{{ version }}"
+bot_version: "{{ build_version }}"
 
 # The location where we will install the bot binaries
 bot_install_home: "{{ bot_folder }}/{{ bot_version }}"
