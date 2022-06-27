@@ -1,6 +1,4 @@
-bot_version: "2.6"
 bot_numbers: ["01", "02" ]
-lobby_version: "2.6"
 lobby_restart_on_new_deployment: false
 lobby_uri: "http://localhost:8080"
 nginx_generate_dhparam: false

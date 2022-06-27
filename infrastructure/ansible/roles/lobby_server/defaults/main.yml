@@ -1,8 +1,16 @@
 lobby_server_user: lobby_server
-lobby_name: lobby_default
 lobby_version: "{{ build_version }}"
-lobby_http_port: 8080
-lobby_server_home_folder: "/home/{{ lobby_server_user }}/{{ lobby_version }}"
+lobby_product_version: "{{ product_version }}"
+lobby_name: "lobby_server_{{ lobby_version }}"
+lobby_server_home_folder: "/home/{{ lobby_server_user }}/{{ build_version }}"
+
+lobby_ports:
+  "default": "8080"
+  "2.5": "8080"
+  "2.6": "9026"
+
+lobby_http_port: "{{ lobby_ports[lobby_product_version] }}"
+
 lobby_db_host: "localhost"
 lobby_db_port: "5432"
 lobby_db_name: lobby_db
@@ -29,7 +37,5 @@ reverse_proxy_server_name: "localhost"
 lobby_public_cert_folder: /etc/nginx/certs
 lobby_public_cert_file: "{{ lobby_public_cert_folder }}/cert.crt"
 lobby_private_key_file: "{{ lobby_public_cert_folder }}//cert.key"
-
-lobby_proxy_pass:  "proxy_pass          http://localhost:{{ lobby_26_port }};"
 
 lobby_dhparam_file: "/etc/nginx/dhparam.pem"

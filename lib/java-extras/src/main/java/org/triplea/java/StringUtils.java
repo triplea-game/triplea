@@ -77,6 +77,15 @@ public final class StringUtils {
         : stringToTruncate;
   }
 
+  public static String truncateFrom(final String stringToTruncate, final String truncationToken) {
+    Preconditions.checkArgument(
+        !truncationToken.isEmpty(),
+        "Illegal empty ending to truncate requested on string: " + stringToTruncate);
+    return stringToTruncate.contains(truncationToken)
+        ? stringToTruncate.substring(0, stringToTruncate.indexOf(truncationToken))
+        : stringToTruncate;
+  }
+
   /**
    * Reads the entire contents of an inputStream into a string. The inputStream is *not* closed by
    * this method, the caller is responsible for closing the input stream.

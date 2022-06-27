@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Prints the current build version, this is the product version plus current git SHA
+# Example output: 2.6+e448c5f73b
+
+set -eu
+
+scriptDir=$(dirname "$0")
+
+echo -n "$($scriptDir/get-product-version)+"
+
+# finish printing with  git SHA
+(
+  cd $scriptDir || exit 1
+  git rev-parse --short HEAD
+)

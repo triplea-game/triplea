@@ -58,7 +58,12 @@ subprojects {
     group = 'triplea'
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-    version = getProductVersion()
+
+    // The value of 'version' is used by 'shadowJar' to set 'archiveName'
+    // and adds version number to packaged jar files.
+    // ie:  [module-name]-[build-version].jar,
+    // eg:  lobby-server-2.6+50370c.jar
+    version = getProductVersion() + "+" + getGitHash()
 
     ext {
         apacheHttpComponentsVersion = '4.5.13'

@@ -69,14 +69,15 @@ public final class GameDataManager {
 
   public static Optional<GameData> loadGameUncompressed(final InputStream is) {
     try (ObjectInputStream input = new ObjectInputStream(is)) {
-      // read Version (unused)
+      // read Version object (unused)
       input.readObject();
       final GameData data = (GameData) input.readObject();
       data.postDeSerialize();
       loadDelegates(input, data);
       return Optional.of(data);
     } catch (final Throwable e) {
-      log.warn("Error loading game save, possible version incompatibility: " + e.getMessage(), e);
+      log.warn(
+          "Error loading save game, saved version might not be compatible with current engine.", e);
       return Optional.empty();
     }
   }

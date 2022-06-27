@@ -1,11 +1,12 @@
 ext.getProductVersion = {
-    def props = new Properties()
-    def productPropertiesFile = project(':game-app:game-core').file('src/main/resources/META-INF/triplea/product.properties')
-    productPropertiesFile.withInputStream { props.load(it) }
-    def productVersion = props.getProperty('version')
-    if (!productVersion) {
-        throw new GradleException('"version" property missing from the "product.properties" resource')
-    }
+    return project(':game-app').file("../.build/product-version.txt").text.trim();
+}
 
-    return productVersion;
+ext.getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
 }
