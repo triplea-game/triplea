@@ -80,64 +80,13 @@ public final class GameDataManager {
       final Version ourVersion, final InputStream is) {
     try (ObjectInputStream input = new ObjectInputStream(is)) {
       final Object version = input.readObject();
-
-      if (isCompatibleVersion(ourVersion, version)
-          || !ClientSetting.saveGameCompatibilityCheck.getSetting()) {
-        final GameData data = (GameData) input.readObject();
-        data.postDeSerialize();
-        loadDelegates(input, data);
-        return Optional.of(data);
-      } else {
-        return Optional.empty();
-      }
+      final GameData data = (GameData) input.readObject();
+      data.postDeSerialize();
+      loadDelegates(input, data);
+      return Optional.of(data);
     } catch (final Throwable e) {
-      log.error("Error loading game data", e);
+      log.warn("Error loading game save, possible version incompatibility: " + e.getMessage(), e);
       return Optional.empty();
-    }
-  }
-
-  @SuppressWarnings("deprecation")
-  private static boolean isCompatibleVersion(final Version ourVersion, final Object version) {
-    if (version instanceof games.strategy.util.Version) {
-      log.warn(
-          String.format(
-              "Incompatible engine versions. We are: %s<br>"
-                  + "Trying to load incompatible save game version: %s<br>"
-                  + "To download an older version of TripleA,<br>"
-                  + "please visit: <a href=\"%s\">%s</a>",
-              ProductVersionReader.getCurrentVersion(),
-              ((games.strategy.util.Version) version).getExactVersion(),
-              UrlConstants.RELEASE_NOTES,
-              UrlConstants.RELEASE_NOTES));
-      return false;
-    } else if (!(version instanceof Version)) {
-      log.warn(
-          "Incompatible engine version with save game, "
-              + "unable to determine version of the save game");
-      return false;
-    } else if (ourVersion.getMajor() != ((Version) version).getMajor()) {
-      log.warn(
-          String.format(
-              "Incompatible engine versions. We are: %s<br>"
-                  + "Trying to load game created with: %s<br>"
-                  + "To download the latest version of TripleA,<br>"
-                  + "please visit: <a href=\"%s\">%s</a>",
-              ProductVersionReader.getCurrentVersion(),
-              version,
-              UrlConstants.DOWNLOAD_WEBSITE,
-              UrlConstants.DOWNLOAD_WEBSITE));
-      return false;
-    } else if (!GameRunner.headless() && ((Version) version).getMinor() > ourVersion.getMinor()) {
-      // Prompt the user to upgrade
-      log.warn(
-          "This save was made by a newer version of TripleA.<br>"
-              + "To load this save, download the latest version of TripleA: "
-              + "<a href=\"{}\">{}</a>",
-          UrlConstants.DOWNLOAD_WEBSITE,
-          UrlConstants.DOWNLOAD_WEBSITE);
-      return false;
-    } else {
-      return true;
     }
   }
 
