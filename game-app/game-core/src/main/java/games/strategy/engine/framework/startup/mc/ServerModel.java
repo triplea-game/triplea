@@ -591,8 +591,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     @Override
     public byte[] getSaveGame() {
       try {
-        return IoUtils.writeToMemory(
-            os -> GameDataManager.saveGame(os, data, ProductVersionReader.getCurrentVersion()));
+        return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
       } catch (final IOException e) {
         throw new IllegalStateException(e);
       }

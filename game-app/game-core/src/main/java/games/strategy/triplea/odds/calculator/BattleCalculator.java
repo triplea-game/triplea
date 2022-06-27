@@ -20,9 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import lombok.Setter;
-import org.triplea.util.Version;
 
 class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
@@ -37,19 +35,14 @@ class BattleCalculator implements IBattleCalculator {
   private volatile boolean cancelled = false;
   private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-  private BattleCalculator(@Nullable GameData data) {
-    gameData = Preconditions.checkNotNull(data, "Error cloning game data (low memory?)");
+  BattleCalculator(GameData data) {
+    gameData =
+        GameDataUtils.cloneGameData(data, GameDataManager.Options.forBattleCalculator())
+            .orElseThrow();
   }
 
-  BattleCalculator(GameData data, Version engineVersion) {
-    this(
-        GameDataUtils.cloneGameData(
-                data, GameDataManager.Options.forBattleCalculator(), engineVersion)
-            .orElse(null));
-  }
-
-  BattleCalculator(byte[] data, Version engineVersion) {
-    this(GameDataUtils.createGameDataFromBytes(data, engineVersion).orElse(null));
+  BattleCalculator(byte[] data) {
+    gameData = GameDataUtils.createGameDataFromBytes(data).orElseThrow();
   }
 
   @Override

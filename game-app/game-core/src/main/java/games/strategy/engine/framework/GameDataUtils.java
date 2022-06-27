@@ -8,48 +8,37 @@ import java.io.ObjectOutputStream;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.io.IoUtils;
-import org.triplea.util.Version;
 
 /** A collection of useful methods for working with instances of {@link GameData}. */
 @Slf4j
 @UtilityClass
 public final class GameDataUtils {
-  public static Optional<GameData> cloneGameData(GameData data, GameDataManager.Options options) {
-    return cloneGameData(data, options, ProductVersionReader.getCurrentVersion());
-  }
-
   /**
    * Create a deep copy of GameData. <strong>You should have the game data's read or write lock
    * before calling this method</strong>
    */
-  public static Optional<GameData> cloneGameData(
-      GameData data, GameDataManager.Options options, Version engineVersion) {
-    final byte[] bytes = gameDataToBytes(data, options, engineVersion).orElse(null);
+  public static Optional<GameData> cloneGameData(GameData data, GameDataManager.Options options) {
+    final byte[] bytes = gameDataToBytes(data, options).orElse(null);
     if (bytes != null) {
-      return createGameDataFromBytes(bytes, engineVersion);
+      return createGameDataFromBytes(bytes);
     }
     return Optional.empty();
   }
 
-  public static Optional<byte[]> gameDataToBytes(
-      GameData data, GameDataManager.Options options, Version engineVersion) {
+  public static Optional<byte[]> gameDataToBytes(GameData data, GameDataManager.Options options) {
     try {
       return Optional.of(
-          IoUtils.writeToMemory(
-              os -> GameDataManager.saveGameUncompressed(os, data, options, engineVersion)));
+          IoUtils.writeToMemory(os -> GameDataManager.saveGameUncompressed(os, data, options)));
     } catch (final IOException e) {
       log.error("Failed to clone game data", e);
       return Optional.empty();
     }
   }
 
-  public static Optional<GameData> createGameDataFromBytes(
-      final byte[] bytes, final Version engineVersion) {
+  public static Optional<GameData> createGameDataFromBytes(final byte[] bytes) {
     try {
-      return IoUtils.readFromMemory(
-          bytes, inputStream -> GameDataManager.loadGameUncompressed(engineVersion, inputStream));
+      return IoUtils.readFromMemory(bytes, GameDataManager::loadGameUncompressed);
     } catch (final IOException e) {
       log.error("Failed to clone game data", e);
       return Optional.empty();

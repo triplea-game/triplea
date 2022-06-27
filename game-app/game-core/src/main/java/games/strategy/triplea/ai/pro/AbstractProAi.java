@@ -48,10 +48,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
-import org.triplea.util.Version;
 
 /** Pro AI. */
 public abstract class AbstractProAi extends AbstractAi {
@@ -273,9 +271,8 @@ public abstract class AbstractProAi extends AbstractAi {
   }
 
   private GameData copyData(GameData data) {
-    Version engineVersion = ProductVersionReader.getCurrentVersion();
     GameDataManager.Options options = GameDataManager.Options.builder().withDelegates(true).build();
-    GameData dataCopy = GameDataUtils.cloneGameData(data, options, engineVersion).orElse(null);
+    GameData dataCopy = GameDataUtils.cloneGameData(data, options).orElse(null);
     Optional.ofNullable(dataCopy).ifPresent(this::prepareData);
     return dataCopy;
   }
