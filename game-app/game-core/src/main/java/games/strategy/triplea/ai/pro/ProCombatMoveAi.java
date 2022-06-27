@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
+import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -554,7 +556,7 @@ public class ProCombatMoveAi {
             "Removing convoy zone that can't be held: "
                 + t.getName()
                 + ", enemyAttackers="
-                + enemyAttackOptions.getMax(t).getMaxUnits());
+                + summarizeUnits(enemyAttackOptions.getMax(t).getMaxUnits()));
         it.remove();
         continue;
       }
@@ -573,9 +575,9 @@ public class ProCombatMoveAi {
               "Removing neutral territory that can't be held: "
                   + t.getName()
                   + ", enemyAttackers="
-                  + enemyAttackOptions.getMax(t).getMaxUnits()
+                  + summarizeUnits(enemyAttackOptions.getMax(t).getMaxUnits())
                   + ", enemyAmphibAttackers="
-                  + enemyAttackOptions.getMax(t).getMaxAmphibUnits()
+                  + summarizeUnits(enemyAttackOptions.getMax(t).getMaxAmphibUnits())
                   + ", strengthDifference="
                   + strengthDifference);
           it.remove();
@@ -587,9 +589,9 @@ public class ProCombatMoveAi {
               "Removing low value amphib territory that can't be held: "
                   + t.getName()
                   + ", enemyAttackers="
-                  + enemyAttackOptions.getMax(t).getMaxUnits()
+                  + summarizeUnits(enemyAttackOptions.getMax(t).getMaxUnits())
                   + ", enemyAmphibAttackers="
-                  + enemyAttackOptions.getMax(t).getMaxAmphibUnits());
+                  + summarizeUnits(enemyAttackOptions.getMax(t).getMaxAmphibUnits()));
           it.remove();
           continue;
         }

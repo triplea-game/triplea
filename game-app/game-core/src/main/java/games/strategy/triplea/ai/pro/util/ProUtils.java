@@ -9,21 +9,24 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /** Pro AI utilities (these are very general and maybe should be moved into delegate or engine). */
+@UtilityClass
 public final class ProUtils {
-  private ProUtils() {}
-
   /** Returns a list of all players in turn order excluding {@code player}. */
   public static List<GamePlayer> getOtherPlayersInTurnOrder(final GamePlayer player) {
     final List<GamePlayer> players = new ArrayList<>();
@@ -269,5 +272,15 @@ public final class ProUtils {
     return Streams.stream(player.getData().getSequence())
         .filter(s -> player.equals(s.getPlayerId()))
         .noneMatch(s -> GameStep.isCombatMoveStep(s.getName()));
+  }
+
+  public static String summarizeUnits(Collection<Unit> units) {
+    IntegerMap<String> counts = new IntegerMap<>();
+    for (Unit u : units) {
+      counts.add(u.toString(), 1);
+    }
+    return counts.entrySet().stream()
+        .map(e -> e.getValue() == 1 ? e.getKey() : (e.getValue() + " " + e.getKey()))
+        .collect(Collectors.joining(", ", "[", "]"));
   }
 }
