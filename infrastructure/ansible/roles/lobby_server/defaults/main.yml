@@ -1,6 +1,6 @@
 lobby_server_user: lobby_server
 lobby_name: lobby_default
-lobby_version: "{{ version }}"
+lobby_version: "{{ build_version }}"
 lobby_http_port: 8080
 lobby_server_home_folder: "/home/{{ lobby_server_user }}/{{ lobby_version }}"
 lobby_db_host: "localhost"

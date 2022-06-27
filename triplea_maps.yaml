@@ -2679,3 +2679,11 @@
   img: https://raw.githubusercontent.com/triplea-maps/Belgium/master/preview.png
   description: |
    <br>Conflict on a map of Belgium
+- mapName: Darkest Hour
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Darkest_hour/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Darkest_hour/master/preview.png
+  description: |
+   <br>In this hypothetical scenario, the Germans have successfully executed Operation Sea Lion, while Russia remained neutral.
+   <br>The time of neutrality has now ended, with remnants of British Empire joining up with the United States and Russia is ready to fight

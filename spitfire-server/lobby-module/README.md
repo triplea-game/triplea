@@ -11,23 +11,19 @@ the same database as the lobby.
 
 ## Starting the server
 Execute the main method in `ServerApplication`. If no args are provided then
-defaults suitable for a prerelease/development are used.
+defaults suitable for a development environment are used.
 
 ### Environment Variables
 
 For full functionality, secrets are provided via environment variables and need
-to be set prior to launching the server. See the `configuration-prerelease.yml`
-for those environment variable names. By default the server should be launchable
+to be set prior to launching the server. By default the server should be launchable
 without any additional configuration, but some elements of the system may not function
 without valid values.
 
 ## Configuration
 
 Application configuration is obtained from `AppConfig.java` which is wired
-from a YML file that is specified at startup. The prerelease and production
-YML files may differ in the values of configuration properties, but otherwise
-should have the same number of configuration properties, the same keys
-and the same environment variables.
+from a YML file that is specified at startup.
 
 Of note, a reference to `AppConfig` is passed to the main server application
 `ServerApplication` which can then wire those properties to any endpoint
