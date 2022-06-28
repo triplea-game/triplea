@@ -462,7 +462,6 @@ public final class ProTerritoryValueUtils {
               }
 
               public boolean shouldContinueSearch() {
-                // we continue until
                 return currentDistance < MIN_FACTORY_CHECK_DISTANCE || found.isEmpty();
               }
             });
