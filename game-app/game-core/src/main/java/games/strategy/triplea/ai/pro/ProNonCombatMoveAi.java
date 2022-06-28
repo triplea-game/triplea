@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro;
 
+import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
 import static java.util.function.Predicate.not;
 
 import com.google.common.base.Preconditions;
@@ -1792,8 +1793,8 @@ class ProNonCombatMoveAi {
                   t,
                   holdValue,
                   minResult.getTuvSwing(),
-                  defendingUnits,
-                  proTerritory.getMaxEnemyUnits()));
+                  summarizeUnits(defendingUnits),
+                  summarizeUnits(proTerritory.getMaxEnemyUnits())));
         }
         ProLogger.trace(
             String.format(

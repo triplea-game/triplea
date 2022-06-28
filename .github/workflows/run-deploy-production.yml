@@ -8,6 +8,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Load SSH private key into ssh-agent
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
       - name: Run Ansible to Deploy
         run: |
           pip install ansible==2.9.13

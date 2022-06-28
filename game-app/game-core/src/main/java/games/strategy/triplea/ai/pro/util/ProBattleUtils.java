@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -354,11 +356,11 @@ public final class ProBattleUtils {
             + ", alliedDistance="
             + alliedDistance
             + ", enemyAirUnits="
-            + enemyUnitsInLandTerritories
+            + summarizeUnits(enemyUnitsInLandTerritories)
             + ", enemySeaUnits="
-            + enemyUnitsInSeaTerritories
+            + summarizeUnits(enemyUnitsInSeaTerritories)
             + ", mySeaUnits="
-            + myUnitsInSeaTerritories);
+            + summarizeUnits(myUnitsInSeaTerritories));
 
     // Find current naval defense strength
     final List<Unit> myUnits = new ArrayList<>(myUnitsInSeaTerritories);

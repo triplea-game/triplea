@@ -148,11 +148,11 @@ public class ProPurchaseOption {
         + " | quantity="
         + quantity
         + " | hitPointEfficiency="
-        + hitPointEfficiency
+        + String.format("%.3f", hitPointEfficiency)
         + " | attackEfficiency="
-        + attackEfficiency
+        + String.format("%.3f", attackEfficiency)
         + " | defenseEfficiency="
-        + defenseEfficiency
+        + String.format("%.3f", defenseEfficiency)
         + " | isSub="
         + isSub
         + " | isTransport="
