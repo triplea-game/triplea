@@ -1214,20 +1214,18 @@ public class ProCombatMoveAi {
         int neededDamageUnits = 0;
         int sameTargetBombersCount = 0;
         final List<Unit> existingAttackingBombers = attackMap.get(t).getBombers();
-        if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
-          sameTargetBombersCount = existingAttackingBombers.size();
-        } else {
-          final List<Unit> sameTargetBombers = new ArrayList<>();
+        if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
+          final Set<Unit> sameTargetBombers = new HashSet<>();
           for (final Unit target : targetUnits) {
             neededDamageUnits += target.getHowMuchMoreDamageCanThisUnitTake(t);
-            for (final Unit existingBomber : existingAttackingBombers) {
-              if (!sameTargetBombers.contains(existingBomber)
-                  && Matches.unitIsLegalBombingTargetBy(existingBomber).test(target)) {
-                sameTargetBombers.add(existingBomber);
-              }
-            }
+            final Predicate<Unit> canBombTarget =
+                u -> Matches.unitIsLegalBombingTargetBy(u).test(target);
+            sameTargetBombers.addAll(
+                CollectionUtils.getMatches(existingAttackingBombers, canBombTarget));
           }
           sameTargetBombersCount = sameTargetBombers.size();
+        } else {
+          sameTargetBombersCount = existingAttackingBombers.size();
         }
         // assume each other bomber causes a damage of 3
         final int remainingDamagePotential =
