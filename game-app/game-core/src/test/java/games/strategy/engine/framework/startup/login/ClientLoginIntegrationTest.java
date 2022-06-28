@@ -39,11 +39,10 @@ final class ClientLoginIntegrationTest {
   }
 
   private static ILoginValidator newLoginValidator(final IServerMessenger serverMessenger) {
-    final ClientLoginValidator clientLoginValidator =
-        new ClientLoginValidator(new Version("2.0.00"));
-    clientLoginValidator.setServerMessenger(serverMessenger);
-    clientLoginValidator.setGamePassword(PASSWORD);
-    return clientLoginValidator;
+    return ClientLoginValidator.builder()
+        .serverMessenger(serverMessenger)
+        .password(PASSWORD)
+        .build();
   }
 
   @AfterEach

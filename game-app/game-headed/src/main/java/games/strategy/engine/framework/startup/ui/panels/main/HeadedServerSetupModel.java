@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 
 import com.google.common.base.Preconditions;
@@ -33,7 +32,6 @@ import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.client.HeadedGameRunner;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
@@ -74,11 +72,13 @@ public class HeadedServerSetupModel {
 
   private void onServerMessengerCreated(final ServerModel serverModel) {
 
-    final ClientLoginValidator clientLoginValidator =
-        new ClientLoginValidator(ProductVersionReader.getCurrentVersion());
-    clientLoginValidator.setGamePassword(System.getProperty(SERVER_PASSWORD));
-    clientLoginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
-    serverModel.getMessenger().setLoginValidator(clientLoginValidator);
+    serverModel
+        .getMessenger()
+        .setLoginValidator(
+            ClientLoginValidator.builder()
+                .password(System.getProperty(SERVER_PASSWORD))
+                .serverMessenger(serverModel.getMessenger())
+                .build());
 
     SwingUtilities.invokeLater(
         () -> {

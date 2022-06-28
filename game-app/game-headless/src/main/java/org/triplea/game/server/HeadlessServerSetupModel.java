@@ -10,7 +10,6 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 
 /** Setup panel model for headless server. */
@@ -31,10 +30,10 @@ public class HeadlessServerSetupModel {
     checkNotNull(gameHostingResponse, "hosting response is null, did the bot connect to lobby?");
     checkNotNull(System.getProperty(LOBBY_URI));
 
-    final ClientLoginValidator loginValidator =
-        new ClientLoginValidator(ProductVersionReader.getCurrentVersion());
-    loginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
-    serverModel.getMessenger().setLoginValidator(loginValidator);
+    serverModel
+        .getMessenger()
+        .setLoginValidator(
+            ClientLoginValidator.builder().serverMessenger(serverModel.getMessenger()).build());
     Optional.ofNullable(serverModel.getLobbyWatcherThread())
         .map(LobbyWatcherThread::getLobbyWatcher)
         .ifPresent(lobbyWatcher -> lobbyWatcher.setGameSelectorModel(gameSelectorModel));
