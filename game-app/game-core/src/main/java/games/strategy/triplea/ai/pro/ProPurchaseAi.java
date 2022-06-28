@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
+import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -639,9 +641,9 @@ class ProPurchaseAi {
                 + ", holdValue="
                 + holdValue
                 + ", enemyAttackers="
-                + enemyAttackingUnits
+                + summarizeUnits(enemyAttackingUnits)
                 + ", defenders="
-                + placeTerritory.getDefendingUnits());
+                + summarizeUnits(placeTerritory.getDefendingUnits()));
 
         // If it can't currently be held then add to list
         final boolean isLandAndCanOnlyBeAttackedByAir =
@@ -732,11 +734,11 @@ class ProPurchaseAi {
           "Purchasing defenders for "
               + t.getName()
               + ", enemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxUnits()
+              + summarizeUnits(enemyAttackOptions.getMax(t).getMaxUnits())
               + ", amphibEnemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxAmphibUnits()
+              + summarizeUnits(enemyAttackOptions.getMax(t).getMaxAmphibUnits())
               + ", defenders="
-              + placeTerritory.getDefendingUnits());
+              + summarizeUnits(placeTerritory.getDefendingUnits()));
 
       // Find local owned units
       final List<Unit> ownedLocalUnits =
@@ -1712,9 +1714,9 @@ class ProPurchaseAi {
                   t,
                   result.getTuvSwing(),
                   result.getWinPercentage(),
-                  unitsToPlace,
-                  attackers,
-                  defendingUnits));
+                  summarizeUnits(unitsToPlace),
+                  summarizeUnits(attackers),
+                  summarizeUnits(defendingUnits)));
           wantedToBuyUnitsButCouldNotDefendThem = true;
           continue;
         }
@@ -1794,11 +1796,11 @@ class ProPurchaseAi {
               + ", alliedDistance="
               + alliedDistance
               + ", enemyAirUnits="
-              + enemyUnitsInLandTerritories
+              + summarizeUnits(enemyUnitsInLandTerritories)
               + ", enemySeaUnits="
-              + enemyUnitsInSeaTerritories
+              + summarizeUnits(enemyUnitsInSeaTerritories)
               + ", mySeaUnits="
-              + myUnitsInSeaTerritories
+              + summarizeUnits(myUnitsInSeaTerritories)
               + ", needDestroyer="
               + needDestroyer);
 
@@ -1984,7 +1986,7 @@ class ProPurchaseAi {
         ProLogger.trace(
             String.format(
                 "%s, potentialUnitsToLoad=%s,  transportsThatNeedUnits=%s",
-                t, potentialUnitsToLoad, transportsThatNeedUnits));
+                t, summarizeUnits(potentialUnitsToLoad), summarizeUnits(transportsThatNeedUnits)));
 
         // Purchase transports and amphib units
         final List<Unit> amphibUnitsToPlace = new ArrayList<>();
@@ -2453,11 +2455,11 @@ class ProPurchaseAi {
           "Placing defenders for "
               + t.getName()
               + ", enemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxUnits()
+              + summarizeUnits(enemyAttackOptions.getMax(t).getMaxUnits())
               + ", amphibEnemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxAmphibUnits()
+              + summarizeUnits(enemyAttackOptions.getMax(t).getMaxAmphibUnits())
               + ", defenders="
-              + placeTerritory.getDefendingUnits());
+              + summarizeUnits(placeTerritory.getDefendingUnits()));
 
       // Check if any units can be placed
       final PlaceableUnits placeableUnits =
