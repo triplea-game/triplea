@@ -2,7 +2,6 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -11,15 +10,14 @@ import java.util.Optional;
  */
 public interface DynamicallyModifiable {
   /**
-   * Gets a map of all properties supported by this object.
+   * Gets the property with the specified name or null.
    *
    * <p><b>NOTE:</b> Clients probably shouldn't call this method directly. Consider calling {@link
    * #getProperty(String)} or {@link #getPropertyOrThrow(String)} instead.
    *
-   * @return A map of all properties supported by this object. The key is the property name. The
-   *     value is the property.
+   * @return The property with the specified name or null if the property doesn't exist.
    */
-  Map<String, MutableProperty<?>> getPropertyMap();
+  MutableProperty<?> getPropertyOrNull(String name);
 
   /**
    * Gets the property with the specified name.
@@ -30,7 +28,7 @@ public interface DynamicallyModifiable {
   default Optional<MutableProperty<?>> getProperty(final String name) {
     checkNotNull(name);
 
-    return Optional.ofNullable(getPropertyMap().get(name));
+    return Optional.ofNullable(getPropertyOrNull(name));
   }
 
   /**

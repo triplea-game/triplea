@@ -1,6 +1,5 @@
 package games.strategy.triplea.attachments;
 
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.DefaultAttachment;
@@ -279,36 +278,32 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   public void validate(final GameState data) {}
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .putAll(super.getPropertyMap())
-        .put(
-            "uses",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt, this::setUses, this::getUses, () -> -1))
-        .put(
-            "usedThisRound",
-            MutableProperty.of(
-                this::setUsedThisRound,
-                this::setUsedThisRound,
-                this::getUsedThisRound,
-                this::resetUsedThisRound))
-        .put(
-            "notification",
-            MutableProperty.ofString(
-                this::setNotification, this::getNotification, this::resetNotification))
-        .put(
-            "when",
-            MutableProperty.of(this::setWhen, this::setWhen, this::getWhen, this::resetWhen))
-        .put(
-            "trigger",
-            MutableProperty.of(
-                l -> {
-                  throw new IllegalStateException("Can't set trigger directly");
-                },
-                this::setTrigger,
-                this::getTrigger,
-                this::resetTrigger))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "uses":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt, this::setUses, this::getUses, () -> -1);
+      case "usedThisRound":
+        return MutableProperty.of(
+            this::setUsedThisRound,
+            this::setUsedThisRound,
+            this::getUsedThisRound,
+            this::resetUsedThisRound);
+      case "notification":
+        return MutableProperty.ofString(
+            this::setNotification, this::getNotification, this::resetNotification);
+      case "when":
+        return MutableProperty.of(this::setWhen, this::setWhen, this::getWhen, this::resetWhen);
+      case "trigger":
+        return MutableProperty.of(
+            l -> {
+              throw new IllegalStateException("Can't set trigger directly");
+            },
+            this::setTrigger,
+            this::getTrigger,
+            this::resetTrigger);
+      default:
+        return super.getPropertyOrNull(propertyName);
+    }
   }
 }

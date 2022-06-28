@@ -1,8 +1,5 @@
 package games.strategy.engine.data;
 
-import com.google.common.collect.ImmutableMap;
-import java.util.Map;
-
 /** Fake attachment used for testing. */
 public class TestAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 4886924951201479496L;
@@ -45,9 +42,12 @@ public class TestAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("value", MutableProperty.ofString(this::setValue, this::getValue, this::resetValue))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "value":
+        return MutableProperty.ofString(this::setValue, this::getValue, this::resetValue);
+      default:
+        return null;
+    }
   }
 }

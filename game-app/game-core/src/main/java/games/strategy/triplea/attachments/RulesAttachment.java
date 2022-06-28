@@ -3,7 +3,6 @@ package games.strategy.triplea.attachments;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
@@ -1046,106 +1045,94 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .putAll(super.getPropertyMap())
-        .put(
-            "techs",
-            MutableProperty.of(this::setTechs, this::setTechs, this::getTechs, this::resetTechs))
-        .put("techCount", MutableProperty.ofReadOnly(this::getTechCount))
-        .put(
-            "relationship",
-            MutableProperty.of(
-                this::setRelationship,
-                this::setRelationship,
-                this::getRelationship,
-                this::resetRelationship))
-        .put(
-            "atWarPlayers",
-            MutableProperty.of(
-                this::setAtWarPlayers,
-                this::setAtWarPlayers,
-                this::getAtWarPlayers,
-                this::resetAtWarPlayers))
-        .put("atWarCount", MutableProperty.ofReadOnly(this::getAtWarCount))
-        .put(
-            "destroyedTUV",
-            MutableProperty.ofString(
-                this::setDestroyedTuv, this::getDestroyedTuv, this::resetDestroyedTuv))
-        .put(
-            "battle",
-            MutableProperty.of(
-                this::setBattle, this::setBattle, this::getBattle, this::resetBattle))
-        .put(
-            "alliedOwnershipTerritories",
-            MutableProperty.of(
-                this::setAlliedOwnershipTerritories,
-                this::setAlliedOwnershipTerritories,
-                this::getAlliedOwnershipTerritories,
-                this::resetAlliedOwnershipTerritories))
-        .put(
-            "directOwnershipTerritories",
-            MutableProperty.of(
-                this::setDirectOwnershipTerritories,
-                this::setDirectOwnershipTerritories,
-                this::getDirectOwnershipTerritories,
-                this::resetDirectOwnershipTerritories))
-        .put(
-            "alliedExclusionTerritories",
-            MutableProperty.of(
-                this::setAlliedExclusionTerritories,
-                this::setAlliedExclusionTerritories,
-                this::getAlliedExclusionTerritories,
-                this::resetAlliedExclusionTerritories))
-        .put(
-            "directExclusionTerritories",
-            MutableProperty.of(
-                this::setDirectExclusionTerritories,
-                this::setDirectExclusionTerritories,
-                this::getDirectExclusionTerritories,
-                this::resetDirectExclusionTerritories))
-        .put(
-            "enemyExclusionTerritories",
-            MutableProperty.of(
-                this::setEnemyExclusionTerritories,
-                this::setEnemyExclusionTerritories,
-                this::getEnemyExclusionTerritories,
-                this::resetEnemyExclusionTerritories))
-        .put(
-            "enemySurfaceExclusionTerritories",
-            MutableProperty.of(
-                this::setEnemySurfaceExclusionTerritories,
-                this::setEnemySurfaceExclusionTerritories,
-                this::getEnemySurfaceExclusionTerritories,
-                this::resetEnemySurfaceExclusionTerritories))
-        .put(
-            "directPresenceTerritories",
-            MutableProperty.of(
-                this::setDirectPresenceTerritories,
-                this::setDirectPresenceTerritories,
-                this::getDirectPresenceTerritories,
-                this::resetDirectPresenceTerritories))
-        .put(
-            "alliedPresenceTerritories",
-            MutableProperty.of(
-                this::setAlliedPresenceTerritories,
-                this::setAlliedPresenceTerritories,
-                this::getAlliedPresenceTerritories,
-                this::resetAlliedPresenceTerritories))
-        .put(
-            "enemyPresenceTerritories",
-            MutableProperty.of(
-                this::setEnemyPresenceTerritories,
-                this::setEnemyPresenceTerritories,
-                this::getEnemyPresenceTerritories,
-                this::resetEnemyPresenceTerritories))
-        .put(
-            "unitPresence",
-            MutableProperty.of(
-                this::setUnitPresence,
-                this::setUnitPresence,
-                this::getUnitPresence,
-                this::resetUnitPresence))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "techs":
+        return MutableProperty.of(this::setTechs, this::setTechs, this::getTechs, this::resetTechs);
+      case "techCount":
+        return MutableProperty.ofReadOnly(this::getTechCount);
+      case "relationship":
+        return MutableProperty.of(
+            this::setRelationship,
+            this::setRelationship,
+            this::getRelationship,
+            this::resetRelationship);
+      case "atWarPlayers":
+        return MutableProperty.of(
+            this::setAtWarPlayers,
+            this::setAtWarPlayers,
+            this::getAtWarPlayers,
+            this::resetAtWarPlayers);
+      case "atWarCount":
+        return MutableProperty.ofReadOnly(this::getAtWarCount);
+      case "destroyedTUV":
+        return MutableProperty.ofString(
+            this::setDestroyedTuv, this::getDestroyedTuv, this::resetDestroyedTuv);
+      case "battle":
+        return MutableProperty.of(
+            this::setBattle, this::setBattle, this::getBattle, this::resetBattle);
+      case "alliedOwnershipTerritories":
+        return MutableProperty.of(
+            this::setAlliedOwnershipTerritories,
+            this::setAlliedOwnershipTerritories,
+            this::getAlliedOwnershipTerritories,
+            this::resetAlliedOwnershipTerritories);
+      case "directOwnershipTerritories":
+        return MutableProperty.of(
+            this::setDirectOwnershipTerritories,
+            this::setDirectOwnershipTerritories,
+            this::getDirectOwnershipTerritories,
+            this::resetDirectOwnershipTerritories);
+      case "alliedExclusionTerritories":
+        return MutableProperty.of(
+            this::setAlliedExclusionTerritories,
+            this::setAlliedExclusionTerritories,
+            this::getAlliedExclusionTerritories,
+            this::resetAlliedExclusionTerritories);
+      case "directExclusionTerritories":
+        return MutableProperty.of(
+            this::setDirectExclusionTerritories,
+            this::setDirectExclusionTerritories,
+            this::getDirectExclusionTerritories,
+            this::resetDirectExclusionTerritories);
+      case "enemyExclusionTerritories":
+        return MutableProperty.of(
+            this::setEnemyExclusionTerritories,
+            this::setEnemyExclusionTerritories,
+            this::getEnemyExclusionTerritories,
+            this::resetEnemyExclusionTerritories);
+      case "enemySurfaceExclusionTerritories":
+        return MutableProperty.of(
+            this::setEnemySurfaceExclusionTerritories,
+            this::setEnemySurfaceExclusionTerritories,
+            this::getEnemySurfaceExclusionTerritories,
+            this::resetEnemySurfaceExclusionTerritories);
+      case "directPresenceTerritories":
+        return MutableProperty.of(
+            this::setDirectPresenceTerritories,
+            this::setDirectPresenceTerritories,
+            this::getDirectPresenceTerritories,
+            this::resetDirectPresenceTerritories);
+      case "alliedPresenceTerritories":
+        return MutableProperty.of(
+            this::setAlliedPresenceTerritories,
+            this::setAlliedPresenceTerritories,
+            this::getAlliedPresenceTerritories,
+            this::resetAlliedPresenceTerritories);
+      case "enemyPresenceTerritories":
+        return MutableProperty.of(
+            this::setEnemyPresenceTerritories,
+            this::setEnemyPresenceTerritories,
+            this::getEnemyPresenceTerritories,
+            this::resetEnemyPresenceTerritories);
+      case "unitPresence":
+        return MutableProperty.of(
+            this::setUnitPresence,
+            this::setUnitPresence,
+            this::getUnitPresence,
+            this::resetUnitPresence);
+      default:
+        return super.getPropertyOrNull(propertyName);
+    }
   }
 }
