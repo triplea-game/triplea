@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.ProData;
+import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI battle utilities. */
@@ -288,6 +290,7 @@ public final class ProBattleUtils {
    */
   public static boolean territoryHasLocalNavalSuperiority(
       final ProData proData,
+      final ProOddsCalculator calc,
       final Territory t,
       final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
@@ -309,15 +312,29 @@ public final class ProBattleUtils {
     final Set<Territory> nearbyAlliedSeaTerritories =
         data.getMap().getNeighbors(t, alliedDistance, Matches.territoryIsWater());
     nearbyAlliedSeaTerritories.add(t);
+
+    final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<>();
+    final List<Unit> myUnits = new ArrayList<>(unitsToPlace);
+    for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories) {
+      final var units = nearbySeaTerritory.getUnitCollection();
+      myUnits.addAll(units.getMatches(ProMatches.unitIsOwnedNotLand(player)));
+      myUnits.addAll(ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
+      alliedUnitsInSeaTerritories.addAll(units.getMatches(ProMatches.unitIsAlliedNotOwned(player)));
+    }
+    myUnits.addAll(alliedUnitsInSeaTerritories);
+
     final List<Unit> enemyUnitsInLandTerritories = new ArrayList<>();
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
       enemyUnitsInLandTerritories.addAll(
           nearbyLandTerritory.getUnitCollection().getMatches(ProMatches.unitIsEnemyAir(player)));
     }
+    final Predicate<Unit> enemyNonLandUnit = ProMatches.unitIsEnemyNotLand(player);
     final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
+    List<Unit> strongestEnemyDefenseFleet = null;
+    double strongestEnemyDefenseFleetStrength = -1;
     for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories) {
       final List<Unit> enemySeaUnits =
-          nearbySeaTerritory.getUnitCollection().getMatches(ProMatches.unitIsEnemyNotLand(player));
+          nearbySeaTerritory.getUnitCollection().getMatches(enemyNonLandUnit);
       if (enemySeaUnits.isEmpty()) {
         continue;
       }
@@ -334,21 +351,15 @@ public final class ProBattleUtils {
       }
       final int routeLength = route.numberOfSteps();
       if (routeLength <= enemyDistance) {
+        final double strength = estimateStrength(t, myUnits, enemySeaUnits, false);
+        if (strength > strongestEnemyDefenseFleetStrength) {
+          strongestEnemyDefenseFleet = enemySeaUnits;
+          strongestEnemyDefenseFleetStrength = strength;
+        }
         enemyUnitsInSeaTerritories.addAll(enemySeaUnits);
       }
     }
-    final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<>();
-    final List<Unit> myUnitsInSeaTerritories = new ArrayList<>();
-    for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories) {
-      myUnitsInSeaTerritories.addAll(
-          nearbySeaTerritory.getUnitCollection().getMatches(ProMatches.unitIsOwnedNotLand(player)));
-      myUnitsInSeaTerritories.addAll(
-          ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
-      alliedUnitsInSeaTerritories.addAll(
-          nearbySeaTerritory
-              .getUnitCollection()
-              .getMatches(ProMatches.unitIsAlliedNotOwned(player)));
-    }
+
     ProLogger.trace(
         t
             + ", enemyDistance="
@@ -359,16 +370,14 @@ public final class ProBattleUtils {
             + summarizeUnits(enemyUnitsInLandTerritories)
             + ", enemySeaUnits="
             + summarizeUnits(enemyUnitsInSeaTerritories)
-            + ", mySeaUnits="
-            + summarizeUnits(myUnitsInSeaTerritories));
+            + ", myUnits="
+            + summarizeUnits(myUnits));
 
     // Find current naval defense strength
-    final List<Unit> myUnits = new ArrayList<>(myUnitsInSeaTerritories);
-    myUnits.addAll(unitsToPlace);
-    myUnits.addAll(alliedUnitsInSeaTerritories);
     final List<Unit> enemyAttackers = new ArrayList<>(enemyUnitsInSeaTerritories);
     enemyAttackers.addAll(enemyUnitsInLandTerritories);
     final double defenseStrengthDifference = estimateStrengthDifference(t, enemyAttackers, myUnits);
+    boolean hasSuperiority = (defenseStrengthDifference < 50);
     ProLogger.trace(
         t
             + ", current enemy naval attack strengthDifference="
@@ -376,7 +385,12 @@ public final class ProBattleUtils {
             + ", enemySize="
             + enemyAttackers.size()
             + ", alliedSize="
-            + myUnits.size());
+            + myUnits.size()
+            + ", hasSuperiority="
+            + hasSuperiority);
+    if (!hasSuperiority) {
+      return false;
+    }
 
     // Find current naval attack strength
     double attackStrengthDifference =
@@ -385,6 +399,7 @@ public final class ProBattleUtils {
         0.5
             * estimateStrengthDifference(
                 t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
+    hasSuperiority = (attackStrengthDifference > 50);
     ProLogger.trace(
         t
             + ", current allied naval attack strengthDifference="
@@ -392,9 +407,31 @@ public final class ProBattleUtils {
             + ", alliedSize="
             + myUnits.size()
             + ", enemySize="
-            + enemyUnitsInSeaTerritories.size());
+            + enemyUnitsInSeaTerritories.size()
+            + ", hasSuperiority="
+            + hasSuperiority);
+    if (!hasSuperiority) {
+      return false;
+    }
 
-    // If I have naval attack/defense superiority then break
-    return (defenseStrengthDifference < 50 && attackStrengthDifference > 50);
+    if (strongestEnemyDefenseFleet != null) {
+      // To really have naval attack superiority, ensure there's also a positive attack TUV against
+      // the strongest enemy fleet. Otherwise, prioritizeAttackOptions() will exclude such attacks,
+      // thus coming short of actually having naval superiority.
+      ProBattleResult result =
+          calc.estimateAttackBattleResults(
+              proData, t, myUnits, strongestEnemyDefenseFleet, List.of());
+      hasSuperiority = (result.getTuvSwing() > 0);
+      ProLogger.trace(
+          String.format(
+              "%s, TUVSwing=%s, myUnits=%s, strongestEnemyDefenseFleet=%s, hasSuperiority=%s",
+              t,
+              result.getTuvSwing(),
+              summarizeUnits(myUnits),
+              summarizeUnits(strongestEnemyDefenseFleet),
+              hasSuperiority));
+    }
+
+    return hasSuperiority;
   }
 }
