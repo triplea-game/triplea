@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
@@ -207,40 +206,37 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put(
-            COMBAT_DEFENSE_EFFECT,
-            MutableProperty.of(
-                this::setCombatDefenseEffect,
-                this::setCombatDefenseEffect,
-                this::getCombatDefenseEffect,
-                this::resetCombatDefenseEffect))
-        .put(
-            COMBAT_OFFENSE_EFFECT,
-            MutableProperty.of(
-                this::setCombatOffenseEffect,
-                this::setCombatOffenseEffect,
-                this::getCombatOffenseEffect,
-                this::resetCombatOffenseEffect))
-        .put(
-            "movementCostModifier",
-            MutableProperty.of(
-                this::setMovementCostModifier,
-                this::setMovementCostModifier,
-                this::getMovementCostModifier,
-                this::resetMovementCostModifier))
-        .put(
-            "noBlitz",
-            MutableProperty.of(
-                this::setNoBlitz, this::setNoBlitz, this::getNoBlitz, this::resetNoBlitz))
-        .put(
-            "unitsNotAllowed",
-            MutableProperty.of(
-                this::setUnitsNotAllowed,
-                this::setUnitsNotAllowed,
-                this::getUnitsNotAllowed,
-                this::resetUnitsNotAllowed))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case COMBAT_DEFENSE_EFFECT:
+        return MutableProperty.of(
+            this::setCombatDefenseEffect,
+            this::setCombatDefenseEffect,
+            this::getCombatDefenseEffect,
+            this::resetCombatDefenseEffect);
+      case COMBAT_OFFENSE_EFFECT:
+        return MutableProperty.of(
+            this::setCombatOffenseEffect,
+            this::setCombatOffenseEffect,
+            this::getCombatOffenseEffect,
+            this::resetCombatOffenseEffect);
+      case "movementCostModifier":
+        return MutableProperty.of(
+            this::setMovementCostModifier,
+            this::setMovementCostModifier,
+            this::getMovementCostModifier,
+            this::resetMovementCostModifier);
+      case "noBlitz":
+        return MutableProperty.of(
+            this::setNoBlitz, this::setNoBlitz, this::getNoBlitz, this::resetNoBlitz);
+      case "unitsNotAllowed":
+        return MutableProperty.of(
+            this::setUnitsNotAllowed,
+            this::setUnitsNotAllowed,
+            this::getUnitsNotAllowed,
+            this::resetUnitsNotAllowed);
+      default:
+        return null;
+    }
   }
 }

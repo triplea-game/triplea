@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
@@ -887,176 +886,151 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put(
-            "attackBonus",
-            MutableProperty.of(
-                this::setAttackBonus,
-                this::setAttackBonus,
-                this::getAttackBonus,
-                this::resetAttackBonus))
-        .put(
-            "defenseBonus",
-            MutableProperty.of(
-                this::setDefenseBonus,
-                this::setDefenseBonus,
-                this::getDefenseBonus,
-                this::resetDefenseBonus))
-        .put(
-            "movementBonus",
-            MutableProperty.of(
-                this::setMovementBonus,
-                this::setMovementBonus,
-                this::getMovementBonus,
-                this::resetMovementBonus))
-        .put(
-            "radarBonus",
-            MutableProperty.of(
-                this::setRadarBonus,
-                this::setRadarBonus,
-                this::getRadarBonus,
-                this::resetRadarBonus))
-        .put(
-            "airAttackBonus",
-            MutableProperty.of(
-                this::setAirAttackBonus,
-                this::setAirAttackBonus,
-                this::getAirAttackBonus,
-                this::resetAirAttackBonus))
-        .put(
-            "airDefenseBonus",
-            MutableProperty.of(
-                this::setAirDefenseBonus,
-                this::setAirDefenseBonus,
-                this::getAirDefenseBonus,
-                this::resetAirDefenseBonus))
-        .put(
-            "productionBonus",
-            MutableProperty.of(
-                this::setProductionBonus,
-                this::setProductionBonus,
-                this::getProductionBonus,
-                this::resetProductionBonus))
-        .put(
-            "minimumTerritoryValueForProductionBonus",
-            MutableProperty.of(
-                this::setMinimumTerritoryValueForProductionBonus,
-                this::setMinimumTerritoryValueForProductionBonus,
-                this::getMinimumTerritoryValueForProductionBonus,
-                this::resetMinimumTerritoryValueForProductionBonus))
-        .put(
-            "repairDiscount",
-            MutableProperty.of(
-                this::setRepairDiscount,
-                this::setRepairDiscount,
-                this::getRepairDiscount,
-                this::resetRepairDiscount))
-        .put(
-            "warBondDiceSides",
-            MutableProperty.of(
-                this::setWarBondDiceSides,
-                this::setWarBondDiceSides,
-                this::getWarBondDiceSides,
-                this::resetWarBondDiceSides))
-        .put(
-            "warBondDiceNumber",
-            MutableProperty.of(
-                this::setWarBondDiceNumber,
-                this::setWarBondDiceNumber,
-                this::getWarBondDiceNumber,
-                this::resetWarBondDiceNumber))
-        .put(
-            "rocketDiceNumber",
-            MutableProperty.of(
-                this::setRocketDiceNumber,
-                this::setRocketDiceNumber,
-                this::getRocketDiceNumber,
-                this::resetRocketDiceNumber))
-        .put(
-            "rocketDistance",
-            MutableProperty.of(
-                this::setRocketDistance,
-                this::setRocketDistance,
-                this::getRocketDistance,
-                this::resetRocketDistance))
-        .put(
-            "rocketNumberPerTerritory",
-            MutableProperty.of(
-                this::setRocketNumberPerTerritory,
-                this::setRocketNumberPerTerritory,
-                this::getRocketNumberPerTerritory,
-                this::resetRocketNumberPerTerritory))
-        .put(
-            "unitAbilitiesGained",
-            MutableProperty.of(
-                this::setUnitAbilitiesGained,
-                this::setUnitAbilitiesGained,
-                this::getUnitAbilitiesGained,
-                this::resetUnitAbilitiesGained))
-        .put(
-            "airborneForces",
-            MutableProperty.of(
-                this::setAirborneForces,
-                this::setAirborneForces,
-                this::getAirborneForces,
-                this::resetAirborneForces))
-        .put(
-            "airborneCapacity",
-            MutableProperty.of(
-                this::setAirborneCapacity,
-                this::setAirborneCapacity,
-                this::getAirborneCapacity,
-                this::resetAirborneCapacity))
-        .put(
-            "airborneTypes",
-            MutableProperty.of(
-                this::setAirborneTypes,
-                this::setAirborneTypes,
-                this::getAirborneTypes,
-                this::resetAirborneTypes))
-        .put(
-            "airborneDistance",
-            MutableProperty.of(
-                this::setAirborneDistance,
-                this::setAirborneDistance,
-                this::getAirborneDistance,
-                this::resetAirborneDistance))
-        .put(
-            "airborneBases",
-            MutableProperty.of(
-                this::setAirborneBases,
-                this::setAirborneBases,
-                this::getAirborneBases,
-                this::resetAirborneBases))
-        .put(
-            "airborneTargettedByAA",
-            MutableProperty.of(
-                this::setAirborneTargettedByAa,
-                this::setAirborneTargettedByAa,
-                this::getAirborneTargettedByAa,
-                this::resetAirborneTargettedByAa))
-        .put(
-            "attackRollsBonus",
-            MutableProperty.of(
-                this::setAttackRollsBonus,
-                this::setAttackRollsBonus,
-                this::getAttackRollsBonus,
-                this::resetAttackRollsBonus))
-        .put(
-            "defenseRollsBonus",
-            MutableProperty.of(
-                this::setDefenseRollsBonus,
-                this::setDefenseRollsBonus,
-                this::getDefenseRollsBonus,
-                this::resetDefenseRollsBonus))
-        .put(
-            "bombingBonus",
-            MutableProperty.of(
-                this::setBombingBonus,
-                this::setBombingBonus,
-                this::getBombingBonus,
-                this::resetBombingBonus))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "attackBonus":
+        return MutableProperty.of(
+            this::setAttackBonus,
+            this::setAttackBonus,
+            this::getAttackBonus,
+            this::resetAttackBonus);
+      case "defenseBonus":
+        return MutableProperty.of(
+            this::setDefenseBonus,
+            this::setDefenseBonus,
+            this::getDefenseBonus,
+            this::resetDefenseBonus);
+      case "movementBonus":
+        return MutableProperty.of(
+            this::setMovementBonus,
+            this::setMovementBonus,
+            this::getMovementBonus,
+            this::resetMovementBonus);
+      case "radarBonus":
+        return MutableProperty.of(
+            this::setRadarBonus, this::setRadarBonus, this::getRadarBonus, this::resetRadarBonus);
+      case "airAttackBonus":
+        return MutableProperty.of(
+            this::setAirAttackBonus,
+            this::setAirAttackBonus,
+            this::getAirAttackBonus,
+            this::resetAirAttackBonus);
+      case "airDefenseBonus":
+        return MutableProperty.of(
+            this::setAirDefenseBonus,
+            this::setAirDefenseBonus,
+            this::getAirDefenseBonus,
+            this::resetAirDefenseBonus);
+      case "productionBonus":
+        return MutableProperty.of(
+            this::setProductionBonus,
+            this::setProductionBonus,
+            this::getProductionBonus,
+            this::resetProductionBonus);
+      case "minimumTerritoryValueForProductionBonus":
+        return MutableProperty.of(
+            this::setMinimumTerritoryValueForProductionBonus,
+            this::setMinimumTerritoryValueForProductionBonus,
+            this::getMinimumTerritoryValueForProductionBonus,
+            this::resetMinimumTerritoryValueForProductionBonus);
+      case "repairDiscount":
+        return MutableProperty.of(
+            this::setRepairDiscount,
+            this::setRepairDiscount,
+            this::getRepairDiscount,
+            this::resetRepairDiscount);
+      case "warBondDiceSides":
+        return MutableProperty.of(
+            this::setWarBondDiceSides,
+            this::setWarBondDiceSides,
+            this::getWarBondDiceSides,
+            this::resetWarBondDiceSides);
+      case "warBondDiceNumber":
+        return MutableProperty.of(
+            this::setWarBondDiceNumber,
+            this::setWarBondDiceNumber,
+            this::getWarBondDiceNumber,
+            this::resetWarBondDiceNumber);
+      case "rocketDiceNumber":
+        return MutableProperty.of(
+            this::setRocketDiceNumber,
+            this::setRocketDiceNumber,
+            this::getRocketDiceNumber,
+            this::resetRocketDiceNumber);
+      case "rocketDistance":
+        return MutableProperty.of(
+            this::setRocketDistance,
+            this::setRocketDistance,
+            this::getRocketDistance,
+            this::resetRocketDistance);
+      case "rocketNumberPerTerritory":
+        return MutableProperty.of(
+            this::setRocketNumberPerTerritory,
+            this::setRocketNumberPerTerritory,
+            this::getRocketNumberPerTerritory,
+            this::resetRocketNumberPerTerritory);
+      case "unitAbilitiesGained":
+        return MutableProperty.of(
+            this::setUnitAbilitiesGained,
+            this::setUnitAbilitiesGained,
+            this::getUnitAbilitiesGained,
+            this::resetUnitAbilitiesGained);
+      case "airborneForces":
+        return MutableProperty.of(
+            this::setAirborneForces,
+            this::setAirborneForces,
+            this::getAirborneForces,
+            this::resetAirborneForces);
+      case "airborneCapacity":
+        return MutableProperty.of(
+            this::setAirborneCapacity,
+            this::setAirborneCapacity,
+            this::getAirborneCapacity,
+            this::resetAirborneCapacity);
+      case "airborneTypes":
+        return MutableProperty.of(
+            this::setAirborneTypes,
+            this::setAirborneTypes,
+            this::getAirborneTypes,
+            this::resetAirborneTypes);
+      case "airborneDistance":
+        return MutableProperty.of(
+            this::setAirborneDistance,
+            this::setAirborneDistance,
+            this::getAirborneDistance,
+            this::resetAirborneDistance);
+      case "airborneBases":
+        return MutableProperty.of(
+            this::setAirborneBases,
+            this::setAirborneBases,
+            this::getAirborneBases,
+            this::resetAirborneBases);
+      case "airborneTargettedByAA":
+        return MutableProperty.of(
+            this::setAirborneTargettedByAa,
+            this::setAirborneTargettedByAa,
+            this::getAirborneTargettedByAa,
+            this::resetAirborneTargettedByAa);
+      case "attackRollsBonus":
+        return MutableProperty.of(
+            this::setAttackRollsBonus,
+            this::setAttackRollsBonus,
+            this::getAttackRollsBonus,
+            this::resetAttackRollsBonus);
+      case "defenseRollsBonus":
+        return MutableProperty.of(
+            this::setDefenseRollsBonus,
+            this::setDefenseRollsBonus,
+            this::getDefenseRollsBonus,
+            this::resetDefenseRollsBonus);
+      case "bombingBonus":
+        return MutableProperty.of(
+            this::setBombingBonus,
+            this::setBombingBonus,
+            this::getBombingBonus,
+            this::resetBombingBonus);
+      default:
+        return null;
+    }
   }
 }

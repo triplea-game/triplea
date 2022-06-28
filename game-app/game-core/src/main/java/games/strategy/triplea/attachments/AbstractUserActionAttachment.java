@@ -1,6 +1,5 @@
 package games.strategy.triplea.attachments;
 
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -210,42 +209,39 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .putAll(super.getPropertyMap())
-        .put("text", MutableProperty.ofString(this::setText, this::getText, this::resetText))
-        .put(
-            "costPU",
-            MutableProperty.of(
-                this::setCostPu, this::setCostPu, this::getCostPu, this::resetCostPu))
-        .put(
-            "costResources",
-            MutableProperty.of(
-                this::setCostResources,
-                this::setCostResources,
-                this::getCostResources,
-                this::resetCostResources))
-        .put(
-            "attemptsPerTurn",
-            MutableProperty.of(
-                this::setAttemptsPerTurn,
-                this::setAttemptsPerTurn,
-                this::getAttemptsPerTurn,
-                this::resetAttemptsPerTurn))
-        .put(
-            "attemptsLeftThisTurn",
-            MutableProperty.of(
-                this::setAttemptsLeftThisTurn,
-                this::setAttemptsLeftThisTurn,
-                this::getAttemptsLeftThisTurn,
-                this::resetAttemptsLeftThisTurn))
-        .put(
-            "actionAccept",
-            MutableProperty.of(
-                this::setActionAccept,
-                this::setActionAccept,
-                this::getActionAccept,
-                this::resetActionAccept))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "text":
+        return MutableProperty.ofString(this::setText, this::getText, this::resetText);
+      case "costPU":
+        return MutableProperty.of(
+            this::setCostPu, this::setCostPu, this::getCostPu, this::resetCostPu);
+      case "costResources":
+        return MutableProperty.of(
+            this::setCostResources,
+            this::setCostResources,
+            this::getCostResources,
+            this::resetCostResources);
+      case "attemptsPerTurn":
+        return MutableProperty.of(
+            this::setAttemptsPerTurn,
+            this::setAttemptsPerTurn,
+            this::getAttemptsPerTurn,
+            this::resetAttemptsPerTurn);
+      case "attemptsLeftThisTurn":
+        return MutableProperty.of(
+            this::setAttemptsLeftThisTurn,
+            this::setAttemptsLeftThisTurn,
+            this::getAttemptsLeftThisTurn,
+            this::resetAttemptsLeftThisTurn);
+      case "actionAccept":
+        return MutableProperty.of(
+            this::setActionAccept,
+            this::setActionAccept,
+            this::getActionAccept,
+            this::resetActionAccept);
+      default:
+        return super.getPropertyOrNull(propertyName);
+    }
   }
 }
