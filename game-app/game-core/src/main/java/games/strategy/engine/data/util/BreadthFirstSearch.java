@@ -8,13 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Implements Breadth First Search (BFS) to traverse / find territories. Since the search criteria
- * varies depending on the use case, the class is designed to take a Visitor object with methods
- * visit() and shouldContinueSearch() for customizing the behavior.
+ * varies depending on the use case, the class is designed to take a Visitor object for customizing
+ * the behavior.
  */
 public final class BreadthFirstSearch {
   private final GameMap map;
@@ -27,19 +28,10 @@ public final class BreadthFirstSearch {
      * Called when a new territory is encountered.
      *
      * @param territory The new territory.
-     */
-    public abstract void visit(Territory territory);
-
-    /**
-     * Called after all territories within the specified distance have been searched. Can be
-     * overridden to terminate the search.
-     *
-     * @param distanceSearched The current distance searched
+     * @param distance The distance to the territory.
      * @return Whether the search should continue.
      */
-    public boolean shouldContinueSearch(final int distanceSearched) {
-      return true;
-    }
+    public abstract boolean visit(Territory territory, int distance);
   }
 
   /**
@@ -64,8 +56,8 @@ public final class BreadthFirstSearch {
   }
 
   /**
-   * Performs the search. It will end when either all territories have been visited or
-   * shouldContinueSearch() returns false.
+   * Performs the search. It will end when either all territories have been visited or visit()
+   * returns false.
    *
    * @param visitor The visitor object to customize the search.
    */
@@ -76,27 +68,32 @@ public final class BreadthFirstSearch {
     int currentDistance = 0;
     Territory lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
     while (!territoriesToCheck.isEmpty()) {
-      final Territory territory = checkNextTerritory(visitor);
+      final Territory territory = checkNextTerritory(visitor, currentDistance);
+      if (territory == null) {
+        return;
+      }
 
       // If we just processed the last territory at the current distance, increment the distance
       // and set the territory at which we need to update it again to be the last one added.
       if (ObjectUtils.referenceEquals(territory, lastTerritoryAtCurrentDistance)) {
         currentDistance++;
-        if (!visitor.shouldContinueSearch(currentDistance)) {
-          return;
-        }
         lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
       }
     }
   }
 
-  private Territory checkNextTerritory(final Visitor visitor) {
+  private @Nullable Territory checkNextTerritory(Visitor visitor, int currentDistance) {
     final Territory territory = territoriesToCheck.removeFirst();
     // Note: The condition isn't passed to getNeighbors() because that implementation is very slow.
     for (final Territory neighbor : map.getNeighbors(territory)) {
-      if (neighborCondition.test(neighbor) && visited.add(neighbor)) {
+      if (!visited.contains(neighbor) && neighborCondition.test(neighbor)) {
+        visited.add(neighbor);
         territoriesToCheck.add(neighbor);
-        visitor.visit(neighbor);
+
+        final boolean shouldContinueSearch = visitor.visit(neighbor, currentDistance);
+        if (!shouldContinueSearch) {
+          return null;
+        }
       }
     }
     return territory;

@@ -1314,14 +1314,12 @@ public class ProTerritoryManager {
     bfs.traverse(
         new BreadthFirstSearch.Visitor() {
           @Override
-          public void visit(final Territory territory) {
-            if (destination.getValue() == null && isDestination.test(territory)) {
+          public boolean visit(Territory territory, int distance) {
+            if (isDestination.test(territory)) {
               destination.setValue(territory);
+              return false;
             }
-          }
-
-          public boolean shouldContinueSearch(final int distanceSearched) {
-            return destination.getValue() == null;
+            return true;
           }
         });
     return Optional.ofNullable(destination.getValue());
