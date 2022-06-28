@@ -1169,17 +1169,15 @@ public class ProCombatMoveAi {
       if (alreadyAttackedWithUnits.contains(bomber)) {
         return; // already attacked bombers cannot move
       }
-      // Avoid air battles in the target territory
-      final Collection<Territory> bomberTargetTerritories;
+      Collection<Territory> bomberTargetTerritories = bomberEntry.getValue();
       if (raidsMayBePrecededByAirBattles) {
+        // Avoid territories with the potential of air battles
         bomberTargetTerritories =
             CollectionUtils.getMatches(
-                bomberEntry.getValue(),
+                bomberTargetTerritories,
                 terr ->
                     !AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
                         terr, player, data, true));
-      } else {
-        bomberTargetTerritories = bomberEntry.getValue();
       }
       determineBestBombingAttackForBomber(
           attackMap, sortedUnitAttackOptions, bomberTargetTerritories, bomber);
