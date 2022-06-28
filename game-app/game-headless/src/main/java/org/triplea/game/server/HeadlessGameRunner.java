@@ -28,7 +28,6 @@ public final class HeadlessGameRunner {
    * shut down via administrative command.
    */
   public static void main(final String[] args) {
-    ProductVersionReader.init();
     ClientSetting.initialize();
     System.setProperty(LOBBY_GAME_COMMENTS, GameRunner.BOT_GAME_HOST_COMMENT);
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");

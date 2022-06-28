@@ -41,9 +41,6 @@ public class GameTestUtils {
   private static final Map<URI, Path> downloadedMaps = new HashMap<>();
 
   public static void setUp() throws IOException {
-    if (ProductVersionReader.getCurrentVersionOptional().isEmpty()) {
-      ProductVersionReader.init();
-    }
     // Use a temp dir for downloaded maps to not interfere with the real downloadedMaps folder.
     if (tempHome == null) {
       tempHome = FileUtils.newTempFolder();

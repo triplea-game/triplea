@@ -23,7 +23,7 @@ class GameSaveCompatibilityTest {
     final GameData gameData;
     try (InputStream inputStream = Files.newInputStream(saveGame)) {
       gameData =
-          GameDataManager.loadGame(new ProductVersionReader().getVersion(), inputStream)
+          GameDataManager.loadGame(new ProductVersionReader().getCurrentVersion(), inputStream)
               .orElseThrow();
     }
 
