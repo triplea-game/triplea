@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Load SSH private key into ssh-agent
+        uses: webfactory/ssh-agent@v0.5.4
+          with:
+            ssh-private-key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
       - name: set build version variables
         run: |
           BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }})
