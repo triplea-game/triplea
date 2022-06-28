@@ -279,7 +279,9 @@ public final class ProUtils {
     for (Unit u : units) {
       counts.add(u.toString(), 1);
     }
+    // Prefix with the count, e.g. "9 infantry owned by Germans", if more than one.
     return counts.entrySet().stream()
+        .sorted(Map.Entry.comparingByKey())
         .map(e -> e.getValue() == 1 ? e.getKey() : (e.getValue() + " " + e.getKey()))
         .collect(Collectors.joining(", ", "[", "]"));
   }
