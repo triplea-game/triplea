@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -69,10 +68,6 @@ public final class BreadthFirstSearch {
     Territory lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
     while (!territoriesToCheck.isEmpty()) {
       final Territory territory = checkNextTerritory(visitor, currentDistance);
-      if (territory == null) {
-        return;
-      }
-
       // If we just processed the last territory at the current distance, increment the distance
       // and set the territory at which we need to update it again to be the last one added.
       if (ObjectUtils.referenceEquals(territory, lastTerritoryAtCurrentDistance)) {
@@ -82,18 +77,19 @@ public final class BreadthFirstSearch {
     }
   }
 
-  private @Nullable Territory checkNextTerritory(Visitor visitor, int currentDistance) {
+  private Territory checkNextTerritory(Visitor visitor, int currentDistance) {
     final Territory territory = territoriesToCheck.removeFirst();
     // Note: The condition isn't passed to getNeighbors() because that implementation is very slow.
     for (final Territory neighbor : map.getNeighbors(territory)) {
       if (!visited.contains(neighbor) && neighborCondition.test(neighbor)) {
         visited.add(neighbor);
-        territoriesToCheck.add(neighbor);
 
         final boolean shouldContinueSearch = visitor.visit(neighbor, currentDistance);
         if (!shouldContinueSearch) {
-          return null;
+          territoriesToCheck.clear();
+          break;
         }
+        territoriesToCheck.add(neighbor);
       }
     }
     return territory;
