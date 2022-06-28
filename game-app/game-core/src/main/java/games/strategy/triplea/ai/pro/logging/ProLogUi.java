@@ -21,7 +21,7 @@ public final class ProLogUi {
   public static void registerDebugMenu() {
     if (!registered) {
       DebugMenu.registerDebugOptions("Hard AI", ProLogUi.buildDebugOptions());
-      DebugMenu.registerFrameFactory(
+      DebugMenu.registerFrameVisitor(
           tripleAFrame -> {
             Util.ensureOnEventDispatchThread();
             if (settingsWindow == null) {

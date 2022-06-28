@@ -25,7 +25,7 @@ import org.triplea.swing.SwingAction;
 public final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;
 
-  private static final List<Consumer<TripleAFrame>> frameFactories = new ArrayList<>();
+  private static final List<Consumer<TripleAFrame>> frameVisitors = new ArrayList<>();
 
   private static final List<DebugOption> debugOptions = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public final class DebugMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_D);
 
-    frameFactories.forEach(tripleAFrameConsumer -> tripleAFrameConsumer.accept(frame));
+    frameVisitors.forEach(tripleAFrameConsumer -> tripleAFrameConsumer.accept(frame));
 
     debugOptions.stream()
         .sorted()
@@ -47,7 +47,7 @@ public final class DebugMenu extends JMenu {
               add(playerDebugMenu);
               renderDebugOption(option.getOptions()).forEach(playerDebugMenu::add);
             });
-    if (frameFactories.isEmpty() && debugOptions.isEmpty()) {
+    if (frameVisitors.isEmpty() && debugOptions.isEmpty()) {
       setVisible(false);
     }
   }
@@ -62,8 +62,8 @@ public final class DebugMenu extends JMenu {
     debugOptions.add(new DebugOption(playerName, options));
   }
 
-  public static void registerFrameFactory(final Consumer<TripleAFrame> factory) {
-    frameFactories.add(factory);
+  public static void registerFrameVisitor(final Consumer<TripleAFrame> visitor) {
+    frameVisitors.add(visitor);
   }
 
   private JMenu renderSubMenuDebugOption(final AiPlayerDebugOption option) {
