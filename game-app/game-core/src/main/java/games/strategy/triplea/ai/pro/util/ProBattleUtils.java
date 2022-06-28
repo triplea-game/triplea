@@ -377,6 +377,7 @@ public final class ProBattleUtils {
     final List<Unit> enemyAttackers = new ArrayList<>(enemyUnitsInSeaTerritories);
     enemyAttackers.addAll(enemyUnitsInLandTerritories);
     final double defenseStrengthDifference = estimateStrengthDifference(t, enemyAttackers, myUnits);
+    boolean hasSuperiority = (defenseStrengthDifference < 50);
     ProLogger.trace(
         t
             + ", current enemy naval attack strengthDifference="
@@ -384,7 +385,10 @@ public final class ProBattleUtils {
             + ", enemySize="
             + enemyAttackers.size()
             + ", alliedSize="
-            + myUnits.size());
+            + myUnits.size()
+            + ", hasSuperiority="
+            + hasSuperiority);
+    if (!hasSuperiority) return false;
 
     // Find current naval attack strength
     double attackStrengthDifference =
@@ -393,6 +397,7 @@ public final class ProBattleUtils {
         0.5
             * estimateStrengthDifference(
                 t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
+    hasSuperiority = (attackStrengthDifference > 50);
     ProLogger.trace(
         t
             + ", current allied naval attack strengthDifference="
@@ -400,19 +405,29 @@ public final class ProBattleUtils {
             + ", alliedSize="
             + myUnits.size()
             + ", enemySize="
-            + enemyUnitsInSeaTerritories.size());
-    boolean negativeAttackTuv = false;
-    if (attackStrengthDifference > 50 && strongestEnemyDefenseFleet != null) {
+            + enemyUnitsInSeaTerritories.size()
+            + ", hasSuperiority="
+            + hasSuperiority);
+    if (!hasSuperiority) return false;
+
+    if (strongestEnemyDefenseFleet != null) {
       // To really have naval attack superiority, ensure there's also a positive attack TUV against
       // the strongest enemy fleet. Otherwise, prioritizeAttackOptions() will exclude such attacks,
       // thus coming short of actually having naval superiority.
       ProBattleResult result =
           calc.estimateAttackBattleResults(
               proData, t, myUnits, strongestEnemyDefenseFleet, List.of());
-      negativeAttackTuv = (result.getTuvSwing() < 0);
+      hasSuperiority = (result.getTuvSwing() > 0);
+      ProLogger.trace(
+          String.format(
+              "%s, TUVSwing=%s, myUnits=%s, strongestEnemyDefenseFleet=%s, hasSuperiority=%s",
+              t,
+              result.getTuvSwing(),
+              summarizeUnits(myUnits),
+              summarizeUnits(strongestEnemyDefenseFleet),
+              hasSuperiority));
     }
 
-    // If I have naval attack/defense superiority then break
-    return (defenseStrengthDifference < 50 && attackStrengthDifference > 50 && !negativeAttackTuv);
+    return hasSuperiority;
   }
 }
