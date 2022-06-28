@@ -388,7 +388,9 @@ public final class ProBattleUtils {
             + myUnits.size()
             + ", hasSuperiority="
             + hasSuperiority);
-    if (!hasSuperiority) return false;
+    if (!hasSuperiority) {
+      return false;
+    }
 
     // Find current naval attack strength
     double attackStrengthDifference =
@@ -408,7 +410,9 @@ public final class ProBattleUtils {
             + enemyUnitsInSeaTerritories.size()
             + ", hasSuperiority="
             + hasSuperiority);
-    if (!hasSuperiority) return false;
+    if (!hasSuperiority) {
+      return false;
+    }
 
     if (strongestEnemyDefenseFleet != null) {
       // To really have naval attack superiority, ensure there's also a positive attack TUV against
