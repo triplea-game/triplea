@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -13,7 +12,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -224,57 +222,63 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("owner", MutableProperty.ofSimple(this::setOwner, this::getOwner))
-        .put("uid", MutableProperty.ofReadOnlySimple(this::getId))
-        .put("hits", MutableProperty.ofSimple(this::setHits, this::getHits))
-        .put("type", MutableProperty.ofReadOnlySimple(this::getType))
-        .put(
-            "transportedBy",
-            MutableProperty.ofSimple(this::setTransportedBy, this::getTransportedBy))
-        .put("unloaded", MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded))
-        .put(
-            "wasLoadedThisTurn",
-            MutableProperty.ofSimple(this::setWasLoadedThisTurn, this::getWasLoadedThisTurn))
-        .put("unloadedTo", MutableProperty.ofSimple(this::setUnloadedTo, this::getUnloadedTo))
-        .put(
-            "wasUnloadedInCombatPhase",
-            MutableProperty.ofSimple(
-                this::setWasUnloadedInCombatPhase, this::getWasUnloadedInCombatPhase))
-        .put("alreadyMoved", MutableProperty.ofSimple(this::setAlreadyMoved, this::getAlreadyMoved))
-        .put(
-            "bonusMovement",
-            MutableProperty.ofSimple(this::setBonusMovement, this::getBonusMovement))
-        .put("unitDamage", MutableProperty.ofSimple(this::setUnitDamage, this::getUnitDamage))
-        .put("submerged", MutableProperty.ofSimple(this::setSubmerged, this::getSubmerged))
-        .put(
-            "originalOwner",
-            MutableProperty.ofSimple(this::setOriginalOwner, this::getOriginalOwner))
-        .put("wasInCombat", MutableProperty.ofSimple(this::setWasInCombat, this::getWasInCombat))
-        .put(
-            "wasLoadedAfterCombat",
-            MutableProperty.ofSimple(this::setWasLoadedAfterCombat, this::getWasLoadedAfterCombat))
-        .put(
-            "wasAmphibious",
-            MutableProperty.ofSimple(this::setWasAmphibious, this::getWasAmphibious))
-        .put(
-            "originatedFrom",
-            MutableProperty.ofSimple(this::setOriginatedFrom, this::getOriginatedFrom))
-        .put("wasScrambled", MutableProperty.ofSimple(this::setWasScrambled, this::getWasScrambled))
-        .put(
-            "maxScrambleCount",
-            MutableProperty.ofSimple(this::setMaxScrambleCount, this::getMaxScrambleCount))
-        .put(
-            "wasInAirBattle",
-            MutableProperty.ofSimple(this::setWasInAirBattle, this::getWasInAirBattle))
-        .put("disabled", MutableProperty.ofSimple(this::setDisabled, this::getDisabled))
-        .put("launched", MutableProperty.ofSimple(this::setLaunched, this::getLaunched))
-        .put("airborne", MutableProperty.ofSimple(this::setAirborne, this::getAirborne))
-        .put(
-            "chargedFlatFuelCost",
-            MutableProperty.ofSimple(this::setChargedFlatFuelCost, this::getChargedFlatFuelCost))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "owner":
+        return MutableProperty.ofSimple(this::setOwner, this::getOwner);
+      case "uid":
+        return MutableProperty.ofReadOnlySimple(this::getId);
+      case "hits":
+        return MutableProperty.ofSimple(this::setHits, this::getHits);
+      case "type":
+        return MutableProperty.ofReadOnlySimple(this::getType);
+      case "transportedBy":
+        return MutableProperty.ofSimple(this::setTransportedBy, this::getTransportedBy);
+      case "unloaded":
+        return MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded);
+      case "wasLoadedThisTurn":
+        return MutableProperty.ofSimple(this::setWasLoadedThisTurn, this::getWasLoadedThisTurn);
+      case "unloadedTo":
+        return MutableProperty.ofSimple(this::setUnloadedTo, this::getUnloadedTo);
+      case "wasUnloadedInCombatPhase":
+        return MutableProperty.ofSimple(
+            this::setWasUnloadedInCombatPhase, this::getWasUnloadedInCombatPhase);
+      case "alreadyMoved":
+        return MutableProperty.ofSimple(this::setAlreadyMoved, this::getAlreadyMoved);
+      case "bonusMovement":
+        return MutableProperty.ofSimple(this::setBonusMovement, this::getBonusMovement);
+      case "unitDamage":
+        return MutableProperty.ofSimple(this::setUnitDamage, this::getUnitDamage);
+      case "submerged":
+        return MutableProperty.ofSimple(this::setSubmerged, this::getSubmerged);
+      case "originalOwner":
+        return MutableProperty.ofSimple(this::setOriginalOwner, this::getOriginalOwner);
+      case "wasInCombat":
+        return MutableProperty.ofSimple(this::setWasInCombat, this::getWasInCombat);
+      case "wasLoadedAfterCombat":
+        return MutableProperty.ofSimple(
+            this::setWasLoadedAfterCombat, this::getWasLoadedAfterCombat);
+      case "wasAmphibious":
+        return MutableProperty.ofSimple(this::setWasAmphibious, this::getWasAmphibious);
+      case "originatedFrom":
+        return MutableProperty.ofSimple(this::setOriginatedFrom, this::getOriginatedFrom);
+      case "wasScrambled":
+        return MutableProperty.ofSimple(this::setWasScrambled, this::getWasScrambled);
+      case "maxScrambleCount":
+        return MutableProperty.ofSimple(this::setMaxScrambleCount, this::getMaxScrambleCount);
+      case "wasInAirBattle":
+        return MutableProperty.ofSimple(this::setWasInAirBattle, this::getWasInAirBattle);
+      case "disabled":
+        return MutableProperty.ofSimple(this::setDisabled, this::getDisabled);
+      case "launched":
+        return MutableProperty.ofSimple(this::setLaunched, this::getLaunched);
+      case "airborne":
+        return MutableProperty.ofSimple(this::setAirborne, this::getAirborne);
+      case "chargedFlatFuelCost":
+        return MutableProperty.ofSimple(this::setChargedFlatFuelCost, this::getChargedFlatFuelCost);
+      default:
+        return null;
+    }
   }
 
   public int getUnitDamage() {

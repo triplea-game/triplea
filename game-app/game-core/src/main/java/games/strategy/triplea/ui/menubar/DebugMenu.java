@@ -11,8 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.Function;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -26,9 +25,7 @@ import org.triplea.swing.SwingAction;
 public final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;
 
-  /** Maps the debug menu title to the function that will create the sub menu items */
-  private static final Map<String, Function<TripleAFrame, Collection<JMenuItem>>>
-      menuItemsAndFactories = new TreeMap<>();
+  private static final List<Consumer<TripleAFrame>> frameVisitors = new ArrayList<>();
 
   private static final List<DebugOption> debugOptions = new ArrayList<>();
 
@@ -40,12 +37,7 @@ public final class DebugMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_D);
 
-    menuItemsAndFactories.forEach(
-        (name, factory) -> {
-          final JMenu playerDebugMenu = new JMenu(name);
-          add(playerDebugMenu);
-          factory.apply(frame).forEach(playerDebugMenu::add);
-        });
+    frameVisitors.forEach(tripleAFrameConsumer -> tripleAFrameConsumer.accept(frame));
 
     debugOptions.stream()
         .sorted()
@@ -55,8 +47,47 @@ public final class DebugMenu extends JMenu {
               add(playerDebugMenu);
               renderDebugOption(option.getOptions()).forEach(playerDebugMenu::add);
             });
-    if (menuItemsAndFactories.isEmpty() && debugOptions.isEmpty()) {
+    if (frameVisitors.isEmpty() && debugOptions.isEmpty()) {
       setVisible(false);
+    }
+  }
+
+  public static void registerDebugOptions(
+      final Player player, final List<AiPlayerDebugOption> options) {
+    registerDebugOptions(player.getName(), options);
+  }
+
+  public static void registerDebugOptions(
+      final String playerName, final List<AiPlayerDebugOption> options) {
+    debugOptions.add(new DebugOption(playerName, options));
+  }
+
+  public static void registerFrameVisitor(final Consumer<TripleAFrame> visitor) {
+    frameVisitors.add(visitor);
+  }
+
+  private JMenu renderSubMenuDebugOption(final AiPlayerDebugOption option) {
+    final JMenu subMenu = new JMenu(option.getTitle());
+    renderDebugOption(option.getSubOptions()).forEach(subMenu::add);
+    return subMenu;
+  }
+
+  private AiPlayerDebugAction buildDebugAction() {
+    return new AiPlayerDebugAction(frame.getMapPanel(), frame.getTerritoryDetails());
+  }
+
+  private JMenuItem renderItemDebugOption(
+      final AiPlayerDebugOption option, final AiPlayerDebugAction action) {
+    final Action swingAction =
+        SwingAction.of(option.getTitle(), evt -> option.getActionListener().accept(action));
+    switch (option.getOptionType()) {
+      case ON_OFF:
+        return new JCheckBoxMenuItem(swingAction);
+      case ON_OFF_EXCLUSIVE:
+        return new JRadioButtonMenuItem(swingAction);
+      case NORMAL:
+      default:
+        return new JMenuItem(swingAction);
     }
   }
 
@@ -85,6 +116,8 @@ public final class DebugMenu extends JMenu {
                 final AiPlayerDebugAction debugAction = buildDebugAction();
                 final JMenuItem menuItem = renderItemDebugOption(option, debugAction);
 
+                final int mnemonic = option.getMnemonic();
+                menuItem.setMnemonic(mnemonic);
                 if (option.getOptionType() == AiPlayerDebugOption.OptionType.ON_OFF) {
                   menuItem.addItemListener(
                       e -> {
@@ -117,43 +150,6 @@ public final class DebugMenu extends JMenu {
               }
             })
         .collect(Collectors.toList());
-  }
-
-  private JMenu renderSubMenuDebugOption(final AiPlayerDebugOption option) {
-    final JMenu subMenu = new JMenu(option.getTitle());
-    renderDebugOption(option.getSubOptions()).forEach(subMenu::add);
-    return subMenu;
-  }
-
-  private AiPlayerDebugAction buildDebugAction() {
-    return new AiPlayerDebugAction(frame.getMapPanel(), frame.getTerritoryDetails());
-  }
-
-  private JMenuItem renderItemDebugOption(
-      final AiPlayerDebugOption option, final AiPlayerDebugAction action) {
-    final Action swingAction =
-        SwingAction.of(option.getTitle(), (evt) -> option.getActionListener().accept(action));
-    switch (option.getOptionType()) {
-      case NORMAL:
-      default:
-        return new JMenuItem(swingAction);
-      case ON_OFF:
-        return new JCheckBoxMenuItem(swingAction);
-      case ON_OFF_EXCLUSIVE:
-        return new JRadioButtonMenuItem(swingAction);
-    }
-  }
-
-  /** Use registerDebugOptions instead of this. */
-  @Deprecated
-  public static void registerMenuCallback(
-      final String name, final Function<TripleAFrame, Collection<JMenuItem>> factory) {
-    menuItemsAndFactories.put(name, factory);
-  }
-
-  public static void registerDebugOptions(
-      final Player player, final List<AiPlayerDebugOption> options) {
-    debugOptions.add(new DebugOption(player.getName(), options));
   }
 
   @Value

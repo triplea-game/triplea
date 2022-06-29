@@ -1,7 +1,6 @@
 package org.triplea.config.product;
 
 import org.triplea.config.ResourcePropertyReader;
-import org.triplea.java.Postconditions;
 import org.triplea.util.Version;
 
 /**
@@ -11,18 +10,11 @@ import org.triplea.util.Version;
 public final class ProductVersionReader {
   private static Version currentVersion;
 
-  private Version getVersion() {
-    var propertyReader = new ResourcePropertyReader("META-INF/triplea/product.properties");
-    String versionRead = propertyReader.readProperty("version");
-    Postconditions.assertState(
-        !versionRead.isBlank(),
-        "Failed to read version value from file: META-INF/triplea/product.properties ");
-    return new Version((versionRead));
-  }
-
   public static Version getCurrentVersion() {
     if (currentVersion == null) {
-      currentVersion = new ProductVersionReader().getVersion();
+      var resourcePropertyReader =
+          new ResourcePropertyReader("META-INF/triplea/product.properties");
+      currentVersion = new Version(resourcePropertyReader.readProperty("version"));
     }
     return currentVersion;
   }

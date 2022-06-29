@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -410,37 +409,34 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .putAll(super.getPropertyMap())
-        .put("countEach", MutableProperty.ofReadOnly(this::getCountEach))
-        .put("eachMultiple", MutableProperty.ofReadOnly(this::getEachMultiple))
-        .put(
-            "players",
-            MutableProperty.of(
-                this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers))
-        .put(
-            "objectiveValue",
-            MutableProperty.of(
-                this::setObjectiveValue,
-                this::setObjectiveValue,
-                this::getObjectiveValue,
-                this::resetObjectiveValue))
-        .put(
-            "uses",
-            MutableProperty.of(this::setUses, this::setUses, this::getUses, this::resetUses))
-        .put(
-            "rounds",
-            MutableProperty.of(
-                this::setRounds, this::setRounds, this::getRounds, this::resetRounds))
-        .put(
-            "switch",
-            MutableProperty.of(
-                this::setSwitch, this::setSwitch, this::getSwitch, this::resetSwitch))
-        .put(
-            "gameProperty",
-            MutableProperty.ofString(
-                this::setGameProperty, this::getGameProperty, this::resetGameProperty))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "countEach":
+        return MutableProperty.ofReadOnly(this::getCountEach);
+      case "eachMultiple":
+        return MutableProperty.ofReadOnly(this::getEachMultiple);
+      case "players":
+        return MutableProperty.of(
+            this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers);
+      case "objectiveValue":
+        return MutableProperty.of(
+            this::setObjectiveValue,
+            this::setObjectiveValue,
+            this::getObjectiveValue,
+            this::resetObjectiveValue);
+      case "uses":
+        return MutableProperty.of(this::setUses, this::setUses, this::getUses, this::resetUses);
+      case "rounds":
+        return MutableProperty.of(
+            this::setRounds, this::setRounds, this::getRounds, this::resetRounds);
+      case "switch":
+        return MutableProperty.of(
+            this::setSwitch, this::setSwitch, this::getSwitch, this::resetSwitch);
+      case "gameProperty":
+        return MutableProperty.ofString(
+            this::setGameProperty, this::getGameProperty, this::resetGameProperty);
+      default:
+        return super.getPropertyOrNull(propertyName);
+    }
   }
 }

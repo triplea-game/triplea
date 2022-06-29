@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -196,17 +195,17 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .putAll(super.getPropertyMap())
-        .put(
-            "relationshipChange",
-            MutableProperty.of(
-                this::setRelationshipChange,
-                this::setRelationshipChange,
-                this::getRelationshipChange,
-                this::resetRelationshipChange))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "relationshipChange":
+        return MutableProperty.of(
+            this::setRelationshipChange,
+            this::setRelationshipChange,
+            this::getRelationshipChange,
+            this::resetRelationshipChange);
+      default:
+        return super.getPropertyOrNull(propertyName);
+    }
   }
 
   /**

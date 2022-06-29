@@ -100,16 +100,6 @@ if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
 
   VAULT_PASSWORD_FILE_ARG="--vault-password-file $VAULT_PASSWORD_FILE"
   readonly VAULT_PASSWORD_FILE_ARG
-  # Decrypt SSH key and add it to ssh agent
-  # Once available to SSH agent, when making SSH connections
-  # this key will be offered by SSH for authentication.
-  # This allows ansible to SSH to target servers and run
-  # deployment commands. We assume servers have been created
-  # with the corresponding public key already installed.
-  ansible-vault view \
-    --vault-password-file="$VAULT_PASSWORD_FILE" \
-    ansible_ssh_key.ed25519 \
-  | ssh-add -
 fi
 
 "$scriptDir/.include/build_latest_artifacts"
