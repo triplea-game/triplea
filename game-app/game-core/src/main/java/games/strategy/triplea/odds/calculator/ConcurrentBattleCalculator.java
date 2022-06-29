@@ -17,9 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
-import org.triplea.util.Version;
 
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up
@@ -129,14 +127,12 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final long startTime = System.currentTimeMillis();
       final long startMemory =
           Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-      final Version engineVersion = ProductVersionReader.getCurrentVersion();
       final byte[] serializedData;
       try (GameData.Unlocker ignored = data.acquireWriteLock()) {
         // Serialize the data, then release lock on it so game can continue (ie: we don't want to
         // lock on it while we copy it 16 times).
         serializedData =
-            GameDataUtils.gameDataToBytes(
-                    data, GameDataManager.Options.forBattleCalculator(), engineVersion)
+            GameDataUtils.gameDataToBytes(data, GameDataManager.Options.forBattleCalculator())
                 .orElse(null);
         if (serializedData == null) {
           return;
@@ -144,14 +140,14 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       }
       if (cancelCurrentOperation.get() >= 0) {
         // Create the first battle calc on the current thread to measure the end-to-end copy time.
-        workers.add(new BattleCalculator(serializedData, engineVersion));
+        workers.add(new BattleCalculator(serializedData));
         int threadsToUse = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
         // Now, create the remaining ones in parallel.
         workers.addAll(
             IntStream.range(1, threadsToUse)
                 .parallel()
                 .filter(j -> cancelCurrentOperation.get() >= 0)
-                .mapToObj(j -> new BattleCalculator(serializedData, engineVersion))
+                .mapToObj(j -> new BattleCalculator(serializedData))
                 .collect(Collectors.toList()));
       }
     }

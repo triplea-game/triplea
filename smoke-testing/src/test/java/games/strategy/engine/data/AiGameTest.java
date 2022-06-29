@@ -64,8 +64,12 @@ public class AiGameTest {
       while (!game.isGameOver() && game.getData().getSequence().getRound() < 2) {
         game.runNextStep();
       }
-      log.info(i + " first round stats: " + getResourceSummary(game.getData()));
-      assertThat(game.isGameOver(), is(false));
+      log.debug(i + " first round stats: " + getResourceSummary(game.getData()));
+      assertThat(
+          "Expecting first round game to not be over so early: "
+              + getResourceSummary(game.getData()),
+          game.isGameOver(),
+          is(false));
       // Need to call stopGame() to ensure ProAI resets its static ConcurrentBattleCalculator, else
       // the next test will use the wrong GameData for simulation.
       game.stopGame();

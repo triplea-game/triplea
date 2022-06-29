@@ -102,15 +102,17 @@ if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
   readonly VAULT_PASSWORD_FILE_ARG
 fi
 
-# Parse version number from product.properties, eg: "version = 2.5.234" -> "2.5.234"
-VERSION=$(sed 's/.*=\s*//' "$(find "$rootDir" -path "*/src/main/*" -name "product.properties")")
-"$scriptDir/.include/build_latest_artifacts" "$VERSION"
+"$scriptDir/.include/build_latest_artifacts"
 export ANSIBLE_CFG="$scriptDir/ansible.cfg"
+
+BUILD_VERSION=$("$rootDir/.build/get-build-version")
+PRODUCT_VERSION=$("$rootDir/.build/get-product-version")
 
 # Run deployment
 set -x
 ansible-playbook \
-  --extra-vars "build_version=$VERSION" \
+  --extra-vars "build_version=$BUILD_VERSION" \
+  --extra-vars "product_version=$PRODUCT_VERSION" \
    --inventory "$scriptDir/ansible/inventory/$ENVIRONMENT" $DRY_RUN_ARG \
    $VAULT_PASSWORD_FILE_ARG $TAGS_ARG $DIFF_ARG $VERBOSE_ARG "$scriptDir/ansible/site.yml"
 set +x

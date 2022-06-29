@@ -37,7 +37,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import lombok.Getter;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
 import org.triplea.java.ObjectUtils;
@@ -127,8 +126,7 @@ public class GameData implements Serializable, GameState {
    */
   public byte[] toBytes() {
     try {
-      return IoUtils.writeToMemory(
-          os -> GameDataManager.saveGame(os, this, ProductVersionReader.getCurrentVersion()));
+      return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, this));
     } catch (final IOException e) {
       throw new RuntimeException("Failed to write game data to bytes", e);
     }

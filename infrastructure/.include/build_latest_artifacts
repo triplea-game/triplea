@@ -4,32 +4,25 @@
 # those artifacts to ansible 'file' locations where they are then
 # available to ansible.
 
-VERSION="${1-}"
-
-if [ -z "$VERSION" ]; then
-  echo "Error, missing 'version' argument"
-  echo "Usage: $0 [version]"
-  exit 1
-fi
-
 scriptDir="$(dirname "$0")"
-
+rootDir="$scriptDir/../../"
 function main() {
   buildArtifacts
 }
 
 function buildArtifacts() {
   (
-    cd "$scriptDir"/../.. || exit 1
+    cd "$rootDir" || exit 1
     ./gradlew \
         :spitfire-server:dropwizard-server:release \
         :game-app:game-headless:release \
         :spitfire-server:database:release
         set +x
   )
-  copyBuildArtifact "$scriptDir/../../spitfire-server/database/build/artifacts/migrations.zip" "$scriptDir/../ansible/roles/lobby_server/files/"
-  copyBuildArtifact "$scriptDir/../../spitfire-server/dropwizard-server/build/artifacts/triplea-dropwizard-server-$VERSION.zip" "$scriptDir/../ansible/roles/lobby_server/files/"
-  copyBuildArtifact "$scriptDir/../../game-app/game-headless/build/artifacts/triplea-game-headless-$VERSION.zip" "$scriptDir/../ansible/roles/bot/files/"
+  BUILD_VERSION=$("$rootDir/.build/get-build-version")
+  copyBuildArtifact "$rootDir/spitfire-server/database/build/artifacts/migrations.zip" "$scriptDir/../ansible/roles/lobby_server/files/"
+  copyBuildArtifact "$rootDir/spitfire-server/dropwizard-server/build/artifacts/triplea-dropwizard-server-$BUILD_VERSION.zip" "$scriptDir/../ansible/roles/lobby_server/files/"
+  copyBuildArtifact "$rootDir/game-app/game-headless/build/artifacts/triplea-game-headless-$BUILD_VERSION.zip" "$scriptDir/../ansible/roles/bot/files/"
 }
 
 function copyBuildArtifact() {

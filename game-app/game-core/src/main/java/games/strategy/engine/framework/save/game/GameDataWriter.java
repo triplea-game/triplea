@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.io.IoUtils;
 
 /** Responsible to write game data to a file or output bytes. */
@@ -64,7 +63,7 @@ public class GameDataWriter {
     }
 
     try {
-      GameDataManager.saveGame(out, gameData, ProductVersionReader.getCurrentVersion());
+      GameDataManager.saveGame(out, gameData);
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
     }
