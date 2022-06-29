@@ -16,20 +16,20 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
-      - name: set build version variables
-        run: |
-          BUILD_NUMBER=$(.build/set-game-headed-build-number)
-          echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
-          echo "release_name=$(date +%Y-%B-%d) - $BUILD_NUMBER" | tee -a $GITHUB_ENV
       - name: Build Installers
         run: .build/build-installer
         env:
           INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
+      - name: set build version variables
+        run: |
+          BUILD_VERSION=$(.build/get-build-version)
+          echo "build_version=$BUILD_VERSION" | tee -a $GITHUB_ENV
+          echo "release_name=$(date +%Y-%B-%d) - $BUILD_VERSION" | tee -a $GITHUB_ENV
       - name: Create Github Release
         uses: ncipollo/release-action@v1
         with:        
           artifacts: build/artifacts/*
-          tag: ${{ env.product_version }} 
+          tag: ${{ env.build_version }}
           name: ${{ env.release_name }}
           prerelease: true
           commit: ${{ github.sha }}

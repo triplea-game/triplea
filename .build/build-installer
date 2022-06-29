@@ -6,6 +6,7 @@
 
 ## install install4j
 set -x
+scriptDir=$(dirname "$0")
 
 function main() {
   install_install4j
@@ -29,6 +30,8 @@ function install_install4j() {
 
 ## Runs gradle command that creates the installer executables, uses intall4j
 function build_installers() {
+  ## Set the build number in 'product.properties' before we build the game-headed release
+  $scriptDir/set-game-headed-build-number
   JAVA_OPTS=-Xmx4G ./gradlew \
       --no-daemon \
       --parallel \
