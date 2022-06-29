@@ -239,12 +239,6 @@ public final class UnitChooser extends JPanel {
                       unit.getOwner() != null,
                       "Contract problem: All units in UnitChooser are expected to have an owner,"
                           + " but now one appeared to have none.");
-
-                  Postconditions.assertState(
-                      unit.getOwner().getData() != null,
-                      "All units owners are expected to relate to a gameData object,"
-                          + " but now one appeared to have none.");
-
                   return Properties.getPartialAmphibiousRetreat(
                           unit.getOwner().getData().getProperties())
                       && unit.getWasAmphibious();
@@ -521,10 +515,6 @@ public final class UnitChooser extends JPanel {
       hitTexts.get(0).setValue(hitTexts.get(0).getMax());
     }
 
-    void selectNone() {
-      hitTexts.get(0).setValue(0);
-    }
-
     void setLeftToSelect(final int leftToSelect) {
       this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
       updateLeftToSelect();
@@ -687,7 +677,7 @@ public final class UnitChooser extends JPanel {
 
       final Graphics2D g2d = unitImageWithNonWithdrawableImage.createGraphics();
 
-      drawNonWithrawableImage(g2d);
+      drawNonWithdrawableImage(g2d);
       g2d.drawImage(undecoratedImage, 0, 0, null);
 
       g2d.dispose();
@@ -729,7 +719,7 @@ public final class UnitChooser extends JPanel {
       // The relation is controlled by getNonWithdrawableImageHeight. By the time of writing
       // this, getNonWithdrawableImageHeight makes the non-withdrawable image half as high as
       // the unit images.
-      // At the time of writing this, there are two variants of the non-whithdrawable image
+      // At the time of writing this, there are two variants of the non-withdrawable image
       // being 24 pixels resp. 32 pixels high.
       // So the unit image will be either 48 pixels or 32 pixels high.
 
@@ -737,7 +727,7 @@ public final class UnitChooser extends JPanel {
 
       double expectedHeight =
           getNonWithdrawableImageHeight(unitImageFactoryForDecoratedImages.getUnitImageHeight());
-      if (nonWithdrawableImage.getHeight() != expectedHeight) {
+      if (Math.abs(nonWithdrawableImage.getHeight() - expectedHeight) >= 2) {
         // Don't use Postconditions.assertState() as that turns a UI glitch into a game hang.
         log.warn(
             "Unexpected nonWithdrawableImage height {} != {}",
@@ -767,7 +757,7 @@ public final class UnitChooser extends JPanel {
       }
     }
 
-    private void drawNonWithrawableImage(final Graphics2D g2d) {
+    private void drawNonWithdrawableImage(final Graphics2D g2d) {
       g2d.drawImage(
           getNonWithdrawableImage(),
           getXofNonWithdrawableImage(),
