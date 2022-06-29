@@ -1,8 +1,5 @@
 name: Master Branch Release
-on:
-  push:
-    branches:
-      - master
+on: pull_request
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
@@ -19,33 +16,9 @@ jobs:
       - name: set build version variables
         run: |
           BUILD_NUMBER=$(.build/set-game-headed-build-number)
-          echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
-          echo "release_name=$(date +%Y-%B-%d) - $BUILD_NUMBER" | tee -a $GITHUB_ENV
-      - name: Build Installers
-        run: .build/build-installer
-        env:
-          INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
+          echo "product_version=$BUILD_NUMBER"  >> $GITHUB_ENV
+          echo "release_name=$(date +%Y-%B-%d) - $BUILD_NUMBER" >> $GITHUB_ENV
+          
       - name: Create Github Release
-        uses: ncipollo/release-action@v1
-        with:        
-          artifacts: build/artifacts/*
-          tag: ${{ env.product_version }} 
-          name: ${{ env.release_name }}
-          prerelease: true
-          commit: ${{ github.sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update maps on website
-        run: .build/update-maps-on-website/run
-        env:
-          BUILD_NUMBER: ${{ github.run_number }}
-          PUSH_TO_WEBSITE_TOKEN: ${{ secrets.PUSH_TO_WEBSITE_TOKEN }}
-      - name: Run Ansible to Deploy
         run: |
-          pip install ansible==2.9.13
-          cd infrastructure
-          echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          # TODO: temporily running prod deployment in dry run mode until we can avoid
-          # players being disconnected (need to avoid restarts)
-          ./run_ansible --dry-run --environment production
-        env:
-          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+          echo "product_version = $product_version"
