@@ -4,7 +4,6 @@ TripleA is a free to play, volunteer run, 100% open source gaming community.
   - ***[Forums: Discussion, Questions & Help](https://forums.triplea-game.org/category/10/help-questions)***
   - ***[Bug Tracker](https://github.com/triplea-game/triplea/issues/new)***
   - ***[Developer Setup Guide](/docs/development/README.md)***
-    - [![Maintainability](https://api.codeclimate.com/v1/badges/fa814ed45202485a92bf/maintainability)](https://codeclimate.com/github/triplea-game/triplea/maintainability)
 
 ![Game Board Screenshot](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
 
@@ -22,7 +21,7 @@ pieces around, roll dice and conquer the lands of your enemy, you will be able t
 ![europe](https://user-images.githubusercontent.com/12397753/132109225-71e6c02d-425e-4b8d-9537-7ac66baebbfd.jpeg)
 ![middle-earth](https://user-images.githubusercontent.com/12397753/132109223-14a0aa2e-a950-4a5e-9937-3c4b52211cd9.jpeg)
 
-## License [![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
+## License<span>&nbsp;</span>[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
 
 This project is licensed under the terms of the
 [GNU General Public License v3.0 with additional permissions](/LICENSE).
