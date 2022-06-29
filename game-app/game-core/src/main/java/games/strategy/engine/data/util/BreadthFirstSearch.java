@@ -22,7 +22,8 @@ public final class BreadthFirstSearch {
   private final ArrayDeque<Territory> territoriesToCheck;
   private final Predicate<Territory> neighborCondition;
 
-  public abstract static class Visitor {
+  @FunctionalInterface
+  public interface Visitor {
     /**
      * Called when a new territory is encountered.
      *
@@ -30,7 +31,7 @@ public final class BreadthFirstSearch {
      * @param distance The distance to the territory.
      * @return Whether the search should continue.
      */
-    public abstract boolean visit(Territory territory, int distance);
+    boolean visit(Territory territory, int distance);
   }
 
   /**
