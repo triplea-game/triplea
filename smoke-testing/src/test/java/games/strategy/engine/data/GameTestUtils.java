@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessLaunchAction;
 import org.triplea.io.ContentDownloader;

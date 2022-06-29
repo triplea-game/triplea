@@ -14,7 +14,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.util.ExitStatus;
 
 /** Runs a headless game server. */
