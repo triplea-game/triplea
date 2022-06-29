@@ -11,8 +11,6 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -131,48 +129,23 @@ class TabbedProductionPanel extends ProductionPanel {
         || properties.getRows() * properties.getColumns() < largestList) {
       final int maxColumns;
       if (largestList <= 36) {
-        maxColumns =
-            Math.max(
-                8,
-                Math.min(
-                    12,
-                    new BigDecimal(largestList)
-                        .divide(new BigDecimal(3), RoundingMode.UP)
-                        .intValue()));
+        maxColumns = Math.max(8, Math.min(12, divideRoundUp(largestList, 3)));
       } else if (largestList <= 64) {
-        maxColumns =
-            Math.max(
-                8,
-                Math.min(
-                    16,
-                    new BigDecimal(largestList)
-                        .divide(new BigDecimal(4), RoundingMode.UP)
-                        .intValue()));
+        maxColumns = Math.max(8, Math.min(16, divideRoundUp(largestList, 4)));
       } else {
-        maxColumns =
-            Math.max(
-                8,
-                Math.min(
-                    16,
-                    new BigDecimal(largestList)
-                        .divide(new BigDecimal(5), RoundingMode.UP)
-                        .intValue()));
+        maxColumns = Math.max(8, Math.min(16, divideRoundUp(largestList, 5)));
       }
-      rows =
-          Math.max(
-              2,
-              new BigDecimal(largestList)
-                  .divide(new BigDecimal(maxColumns), RoundingMode.UP)
-                  .intValue());
-      columns =
-          Math.max(
-              3,
-              new BigDecimal(largestList).divide(new BigDecimal(rows), RoundingMode.UP).intValue());
+      rows = Math.max(2, divideRoundUp(largestList, maxColumns));
+      columns = Math.max(3, divideRoundUp(largestList, rows));
     } else {
       rows = Math.max(2, properties.getRows());
       // There are small display problems if the size is less than 2x3 cells.
       columns = Math.max(3, properties.getColumns());
     }
+  }
+
+  private static int divideRoundUp(int numerator, int denominator) {
+    return (int) Math.ceil((double) numerator / denominator);
   }
 
   private static int largestList(final List<Tuple<String, List<Rule>>> ruleLists) {

@@ -69,7 +69,7 @@ public class BottomBar extends JPanel implements TerritoryListener {
     final JPanel centerPanel = new JPanel();
     centerPanel.setLayout(new GridBagLayout());
     final var gridBuilder =
-        new GridBagConstraintsBuilder(0, 0).weightY(1).fill(GridBagConstraintsFill.BOTH);
+        new GridBagConstraintsBuilder().weightY(1).fill(GridBagConstraintsFill.BOTH);
 
     centerPanel.add(
         resourceBar, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.WEST).build());
@@ -91,7 +91,7 @@ public class BottomBar extends JPanel implements TerritoryListener {
   private JPanel createStepPanel(boolean usingDiceServer) {
     final JPanel stepPanel = new JPanel();
     stepPanel.setLayout(new GridBagLayout());
-    final var gridBuilder = new GridBagConstraintsBuilder(0, 0).fill(GridBagConstraintsFill.BOTH);
+    final var gridBuilder = new GridBagConstraintsBuilder().fill(GridBagConstraintsFill.BOTH);
     stepPanel.add(playerLabel, gridBuilder.gridX(0).build());
     stepPanel.add(stepLabel, gridBuilder.gridX(1).build());
     stepPanel.add(roundLabel, gridBuilder.gridX(2).build());
