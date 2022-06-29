@@ -18,7 +18,7 @@ jobs:
           ssh-private-key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
       - name: set build version variables
         run: |
-          BUILD_NUMBER=$(.build/set-build-number ${{ github.run_number }})
+          BUILD_NUMBER=$(.build/set-game-headed-build-number ${{ github.run_number }})
           echo "product_version=$BUILD_NUMBER" | tee -a $GITHUB_ENV
           echo "release_name=$(date +%Y-%B-%d) - $BUILD_NUMBER" | tee -a $GITHUB_ENV
       - name: Build Installers
