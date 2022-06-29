@@ -91,7 +91,6 @@ public final class HeadedGameRunner {
             + "prohibited by design to avoid UI rendering errors in the headless environment.");
 
     initializeClientSettingAndLogging();
-    ProductVersionReader.init();
     initializeLookAndFeel();
 
     initializeDesktopIntegrations(args);
