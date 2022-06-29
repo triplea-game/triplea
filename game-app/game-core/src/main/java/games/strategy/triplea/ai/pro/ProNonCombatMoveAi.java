@@ -2407,22 +2407,20 @@ class ProNonCombatMoveAi {
     bfs.traverse(
         new BreadthFirstSearch.Visitor() {
           @Override
-          public void visit(final Territory t) {
+          public boolean visit(Territory t, int distance) {
             // If it's a desired final destination, see if we can move towards it.
-            if (destination.getValue() == null && finalDestinationTest.test(t)) {
+            if (finalDestinationTest.test(t)) {
               Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
               while (r != null && r.hasSteps()) {
                 if (moveMap.get(r.getEnd()).isCanHold() && validateMove.test(r)) {
                   destination.setValue(r.getEnd());
-                  break;
+                  // End the search.
+                  return false;
                 }
                 r = new Route(from, r.getMiddleSteps());
               }
             }
-          }
-
-          public boolean shouldContinueSearch(final int distanceSearched) {
-            return destination.getValue() == null;
+            return true;
           }
         });
     // If nothing chosen and we can't hold the current territory, try to move somewhere safe.
