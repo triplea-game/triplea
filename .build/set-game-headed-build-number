@@ -6,5 +6,7 @@ scriptDir=$(dirname "$0")
 rootDir="$scriptDir/.."
 buildVersion=$($scriptDir/get-build-version)
 
+set -x
+
 echo "version = $buildVersion" > \
   "$rootDir/game-app/game-core/src/main/resources/META-INF/triplea/product.properties"
