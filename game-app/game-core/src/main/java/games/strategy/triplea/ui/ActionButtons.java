@@ -7,7 +7,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.player.DefaultPlayerBridge;
 import games.strategy.engine.posted.game.EndTurnPanel;
 import games.strategy.engine.posted.game.MoveForumPosterPanel;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -227,7 +227,7 @@ public class ActionButtons extends JPanel {
    *
    * @return null if no move was made.
    */
-  public MoveDescription waitForMove(final IPlayerBridge bridge) {
+  public MoveDescription waitForMove(final DefaultPlayerBridge bridge) {
     if (movePanel == null) {
       return null;
     }
@@ -277,7 +277,7 @@ public class ActionButtons extends JPanel {
    *
    * @return null if no placement was made.
    */
-  public PlaceData waitForPlace(final boolean bid, final IPlayerBridge bridge) {
+  public PlaceData waitForPlace(final boolean bid, final DefaultPlayerBridge bridge) {
     if (placePanel == null) {
       return null;
     }
@@ -285,13 +285,14 @@ public class ActionButtons extends JPanel {
   }
 
   /** Blocks until the user selects an end-of-turn action. */
-  public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge) {
+  public void waitForEndTurn(final TripleAFrame frame, final DefaultPlayerBridge bridge) {
     if (endTurnPanel != null) {
       endTurnPanel.waitForDone(frame, bridge);
     }
   }
 
-  public void waitForMoveForumPosterPanel(final TripleAFrame frame, final IPlayerBridge bridge) {
+  public void waitForMoveForumPosterPanel(
+      final TripleAFrame frame, final DefaultPlayerBridge bridge) {
     if (moveForumPosterPanel != null) {
       moveForumPosterPanel.waitForDone(frame, bridge);
     }

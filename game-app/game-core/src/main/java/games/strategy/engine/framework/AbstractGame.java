@@ -8,7 +8,6 @@ import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.player.DefaultPlayerBridge;
-import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
@@ -88,7 +87,7 @@ public abstract class AbstractGame implements IGame {
     for (final Player gp : localPlayers) {
       final GamePlayer player = playerList.getPlayerId(gp.getName());
       gamePlayers.put(player, gp);
-      final IPlayerBridge bridge = new DefaultPlayerBridge(this);
+      final DefaultPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
       final RemoteName descriptor = ServerGame.getRemoteName(gp.getGamePlayer());
       messengers.registerRemote(gp, descriptor);

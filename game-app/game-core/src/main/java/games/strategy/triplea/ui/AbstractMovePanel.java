@@ -5,7 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.player.DefaultPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 import games.strategy.triplea.ui.panels.map.MapPanel;
@@ -41,7 +41,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   private List<UndoableMove> undoableMoves;
 
   @Getter(AccessLevel.PACKAGE)
-  private IPlayerBridge playerBridge;
+  private DefaultPlayerBridge playerBridge;
 
   private final JButton cancelMoveButton =
       new JButtonBuilder().title("Cancel").actionListener(this::cancelMove).build();
@@ -284,7 +284,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return movedUnitsPanel;
   }
 
-  protected final void setUp(final IPlayerBridge bridge) {
+  protected final void setUp(final DefaultPlayerBridge bridge) {
     SwingUtilities.invokeLater(
         () -> {
           setUpSpecific();
@@ -307,7 +307,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
    */
   protected abstract void setUpSpecific();
 
-  public final MoveDescription waitForMove(final IPlayerBridge bridge) {
+  public final MoveDescription waitForMove(final DefaultPlayerBridge bridge) {
     setUp(bridge);
     waitForRelease();
     cleanUp();

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -32,8 +33,7 @@ public interface Player extends IRemote {
   GamePlayer getGamePlayer();
 
   /** Called before the game starts. */
-  @RemoteActionCode(9)
-  void initialize(IPlayerBridge bridge, GamePlayer gamePlayer);
+  void initialize(DefaultPlayerBridge bridge, GamePlayer gamePlayer);
 
   /** Returns the nation name. */
   @RemoteActionCode(6)
@@ -112,7 +112,6 @@ public interface Player extends IRemote {
   @RemoteActionCode(20)
   int[] selectFixedDice(int numDice, int hitAt, String title, int diceSides);
 
-  // TODO: Remove noneAvailable as it is always passed as 'true'
   /**
    * Select the territory to bombard with the bombarding capable unit (eg battleship).
    *
@@ -121,6 +120,7 @@ public interface Player extends IRemote {
    * @param territories - territories where the unit can bombard
    * @return the Territory to bombard in, null if the unit should not bombard
    */
+  @ChangeOnNextMajorRelease("Remove noneAvailable as it is always passed as 'true'")
   @RemoteActionCode(18)
   Territory selectBombardingTerritory(
       Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable);
