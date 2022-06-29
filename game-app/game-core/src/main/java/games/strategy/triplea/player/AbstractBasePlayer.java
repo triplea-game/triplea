@@ -2,8 +2,8 @@ package games.strategy.triplea.player;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.player.DefaultPlayerBridge;
 import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerBridge;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public abstract class AbstractBasePlayer implements Player {
   @Getter(onMethod_ = {@Override})
   private GamePlayer gamePlayer;
 
-  @Getter private DefaultPlayerBridge playerBridge;
+  @Getter private PlayerBridge playerBridge;
 
   public AbstractBasePlayer(final String name, final String playerLabel) {
     this.name = name;
@@ -34,7 +34,7 @@ public abstract class AbstractBasePlayer implements Player {
 
   /** Anything that overrides this MUST call super.initialize(playerBridge, playerId); */
   @Override
-  public void initialize(final DefaultPlayerBridge playerBridge, final GamePlayer gamePlayer) {
+  public void initialize(final PlayerBridge playerBridge, final GamePlayer gamePlayer) {
     this.playerBridge = playerBridge;
     this.gamePlayer = gamePlayer;
   }

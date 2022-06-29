@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
  * transparent.
  */
 @Slf4j
-public class DefaultPlayerBridge {
+public class PlayerBridge {
   private final IGame game;
 
   /** The name of the current step being executed. */
@@ -32,8 +32,8 @@ public class DefaultPlayerBridge {
 
   private String currentDelegate;
 
-  /** Creates new DefaultPlayerBridge. */
-  public DefaultPlayerBridge(final IGame game) {
+  /** Creates new PlayerBridge. */
+  public PlayerBridge(final IGame game) {
     this.game = game;
     game.getData()
         .addGameDataEventListener(
@@ -69,7 +69,7 @@ public class DefaultPlayerBridge {
         // depend on the illegal state exception type in a catch block.
         Preconditions.checkState(
             delegate != null,
-            "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. CurrentStep: "
+            "IDelegate in PlayerBridge.getRemote() cannot be null. CurrentStep: "
                 + stepName
                 + ", and CurrentDelegate: "
                 + currentDelegate);
@@ -113,7 +113,7 @@ public class DefaultPlayerBridge {
         final IDelegate delegate = game.getData().getDelegate(name);
         if (delegate == null) {
           final String errorMessage =
-              "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. "
+              "IDelegate in PlayerBridge.getRemote() cannot be null. "
                   + "Looking for delegate named: "
                   + name;
           throw new IllegalStateException(errorMessage);

@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.player.DefaultPlayerBridge;
+import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -38,7 +38,7 @@ public class FlowFieldAi extends AbstractAi {
   }
 
   @Override
-  public void initialize(final DefaultPlayerBridge playerBridge, final GamePlayer gamePlayer) {
+  public void initialize(final PlayerBridge playerBridge, final GamePlayer gamePlayer) {
     super.initialize(playerBridge, gamePlayer);
     setupDiffusionMaps();
     DebugMenu.registerDebugOptions(this, buildDebugOptions());

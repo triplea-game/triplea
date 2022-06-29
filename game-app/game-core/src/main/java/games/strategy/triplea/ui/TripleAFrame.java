@@ -36,7 +36,7 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
-import games.strategy.engine.player.DefaultPlayerBridge;
+import games.strategy.engine.player.PlayerBridge;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.Properties;
@@ -624,7 +624,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   public MoveDescription getMove(
       final GamePlayer player,
-      final DefaultPlayerBridge bridge,
+      final PlayerBridge bridge,
       final boolean nonCombat,
       final String stepName) {
     messageAndDialogThreadPool.waitForAll();
@@ -647,13 +647,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   public PlaceData waitForPlace(
-      final GamePlayer player, final boolean bid, final DefaultPlayerBridge bridge) {
+      final GamePlayer player, final boolean bid, final PlayerBridge bridge) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToPlace(player);
     return actionButtons.waitForPlace(bid, bridge);
   }
 
-  public void waitForMoveForumPoster(final GamePlayer player, final DefaultPlayerBridge bridge) {
+  public void waitForMoveForumPoster(final GamePlayer player, final PlayerBridge bridge) {
     if (actionButtons == null) {
       return;
     }
@@ -661,7 +661,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     actionButtons.waitForMoveForumPosterPanel(this, bridge);
   }
 
-  public void waitForEndTurn(final GamePlayer player, final DefaultPlayerBridge bridge) {
+  public void waitForEndTurn(final GamePlayer player, final PlayerBridge bridge) {
     if (actionButtons == null) {
       return;
     }

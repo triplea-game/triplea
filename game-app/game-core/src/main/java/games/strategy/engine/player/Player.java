@@ -33,7 +33,7 @@ public interface Player extends IRemote {
   GamePlayer getGamePlayer();
 
   /** Called before the game starts. */
-  void initialize(DefaultPlayerBridge bridge, GamePlayer gamePlayer);
+  void initialize(PlayerBridge bridge, GamePlayer gamePlayer);
 
   /** Returns the nation name. */
   @RemoteActionCode(6)
@@ -157,8 +157,6 @@ public interface Player extends IRemote {
   @RemoteActionCode(22)
   boolean selectShoreBombard(Territory unitTerritory);
 
-  // TODO: this is only called from BattleCalculator.selectCasualties() and should probably be
-  // removed
   /**
    * Report an error to the user.
    *
