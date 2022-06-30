@@ -3363,10 +3363,10 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
 
-    if (getConsumesUnits() != null && getConsumesUnits().totalValues() == 1) {
+    if (getConsumesUnits().totalValues() == 1) {
       formatter.append(
           "Unit is an Upgrade Of", CollectionUtils.getAny(getConsumesUnits().keySet()).getName());
-    } else if (getConsumesUnits() != null && getConsumesUnits().totalValues() > 0) {
+    } else if (getConsumesUnits().totalValues() > 0) {
       if (getConsumesUnits().size() <= 4) {
         formatter.append(
             "Unit Consumes on Placement",

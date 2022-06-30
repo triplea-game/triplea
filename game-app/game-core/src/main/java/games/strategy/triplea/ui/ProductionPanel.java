@@ -22,7 +22,6 @@ import java.awt.Toolkit;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,13 +58,13 @@ class ProductionPanel extends JPanel {
   protected GamePlayer gamePlayer;
   protected GameData data;
 
-  private JDialog dialog;
+  protected JDialog dialog;
   private boolean bid;
   final Action doneAction = SwingAction.of("Done", () -> dialog.setVisible(false));
 
   ProductionPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
-  }
+   }
 
   private IntegerMap<ProductionRule> getProduction() {
     final IntegerMap<ProductionRule> prod = new IntegerMap<>();
@@ -86,7 +85,7 @@ class ProductionPanel extends JPanel {
       final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     dialog = new JDialog(parent, bid ? "Produce (bid)" : "Produce", true);
-    dialog.getContentPane().add(this);
+    dialog.setContentPane(this);
 
     SwingKeyBinding.addKeyBinding(
         dialog,
@@ -96,12 +95,15 @@ class ProductionPanel extends JPanel {
 
     this.bid = bid;
     this.data = data;
+    done = new JButton(doneAction);
+    done.setToolTipText(
+        "Click this button or press 'ctrl+enter' to confirm purchase and close this window");
+    SwingUtilities.invokeLater(() -> done.requestFocusInWindow());
     this.initRules(gamePlayer, initialPurchase);
     this.initLayout();
     this.calculateLimits();
     dialog.pack();
     dialog.setLocationRelativeTo(parent);
-    SwingUtilities.invokeLater(() -> done.requestFocusInWindow());
     // making the dialog visible will block until it is closed
     dialog.setVisible(true);
     dialog.dispose();
@@ -202,9 +204,6 @@ class ProductionPanel extends JPanel {
             new Insets(8, 8, 0, 12),
             0,
             0));
-    done = new JButton(doneAction);
-    done.setToolTipText(
-        "Click this button or press 'ctrl+enter' to confirm purchase and close this window");
     this.add(
         done,
         new GridBagConstraints(
@@ -320,9 +319,10 @@ class ProductionPanel extends JPanel {
       ImageIcon icon = null;
       final StringBuilder tooltip = new StringBuilder();
       final Set<NamedAttachable> results = new HashSet<>(rule.getResults().keySet());
-      final Iterator<NamedAttachable> iter = results.iterator();
-      while (iter.hasNext()) {
-        final NamedAttachable resourceOrUnit = iter.next();
+      for (NamedAttachable resourceOrUnit : results) {
+        if (tooltip.length() > 0) {
+          tooltip.append("<br /><br /><br /><br />");
+        }
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
           icon =
@@ -339,10 +339,9 @@ class ProductionPanel extends JPanel {
               .append(": ")
               .append(TooltipProperties.getInstance(uiContext).getTooltip(type, player));
           name.setText(type.getName());
-          if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
+          if (attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);
-          } else if (attach.getConsumesUnits() != null
-              && attach.getConsumesUnits().totalValues() > 1) {
+          } else if (attach.getConsumesUnits().totalValues() > 1) {
             name.setForeground(Color.BLUE);
           } else {
             name.setForeground(defaultForegroundLabelColor);
@@ -354,9 +353,6 @@ class ProductionPanel extends JPanel {
           tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());
           name.setForeground(Color.GREEN);
-        }
-        if (iter.hasNext()) {
-          tooltip.append("<br /><br /><br /><br />");
         }
       }
 

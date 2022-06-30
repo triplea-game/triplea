@@ -7,18 +7,26 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ScrollPaneConstants;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Tuple;
@@ -27,6 +35,8 @@ class TabbedProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 3481282212500641144L;
   private int rows;
   private int columns;
+  private final Map<Rule, JPanel> rulesComponents = new HashMap<>();
+  private Dimension cellSize;
 
   protected TabbedProductionPanel(final UiContext uiContext) {
     super(uiContext);
@@ -46,88 +56,54 @@ class TabbedProductionPanel extends ProductionPanel {
   @Override
   protected void initLayout() {
     this.removeAll();
-    this.setLayout(new GridBagLayout());
-    add(
-        new JLabel("Attack | Defense | Movement"),
-        new GridBagConstraints(
-            0,
-            0,
-            1,
-            1,
-            1,
-            1,
-            GridBagConstraints.EAST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(8, 8, 8, 0),
-            0,
-            0));
+    this.setLayout(new BorderLayout());
     final JTabbedPane tabs = new JTabbedPane();
-    add(
-        tabs,
-        new GridBagConstraints(
-            0,
-            1,
-            1,
-            1,
-            100,
-            100,
-            GridBagConstraints.EAST,
-            GridBagConstraints.BOTH,
-            new Insets(8, 8, 8, 8),
-            0,
-            0));
+    add(tabs, BorderLayout.CENTER);
     final ProductionTabsProperties properties =
-        ProductionTabsProperties.getInstance(gamePlayer, rules, uiContext.getResourceLoader());
+        new ProductionTabsProperties(gamePlayer, rules, uiContext.getResourceLoader());
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
-    calculateRowsAndColumns(properties, largestList(ruleLists));
-    for (final Tuple<String, List<Rule>> ruleList : ruleLists) {
-      if (!ruleList.getSecond().isEmpty()) {
-        tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
-      }
+    ruleLists.removeIf(entry -> entry.getSecond().isEmpty());
+    cellSize = new Dimension();
+    for (Rule rule : rules) {
+      JPanel component = rule.getPanelComponent();
+      rulesComponents.put(rule, component);
+      cellSize.width = Math.max(cellSize.width, component.getPreferredSize().width);
+      cellSize.height = Math.max(cellSize.height, component.getPreferredSize().height);
     }
+    calculateRowsAndColumns(properties, largestList(ruleLists));
+
+    for (final Tuple<String, List<Rule>> ruleList : ruleLists) {
+      JScrollPane scrollPane = new JScrollPane();
+      scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+      scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+      tabs.addTab(ruleList.getFirst(), scrollPane);
+    }
+    updateTabContent(tabs, ruleLists);
+    tabs.addChangeListener(e -> updateTabContent(tabs, ruleLists));
+
     final JPanel totals = new JPanel();
     totals.add(left);
     totals.add(remainingResources);
-    add(
-        totals,
-        new GridBagConstraints(
-            0,
-            2,
-            1,
-            1,
-            1,
-            1,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(8, 8, 0, 12),
-            0,
-            0));
-    done = new JButton(doneAction);
-    add(
-        done,
-        new GridBagConstraints(
-            0,
-            3,
-            2,
-            1,
-            1,
-            1,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 8, 0),
-            0,
-            0));
-    tabs.validate();
-    this.validate();
+
+    final JPanel bottom = new JPanel();
+    bottom.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 12));
+    bottom.setLayout(new BorderLayout());
+    bottom.add(totals, BorderLayout.WEST);
+    bottom.add(new JLabel("Attack | Defense | Movement"), BorderLayout.EAST);
+    JPanel donePanel = new JPanel();
+    donePanel.add(Box.createHorizontalGlue());
+    donePanel.add(done);
+    donePanel.add(Box.createHorizontalGlue());
+    bottom.add(donePanel, BorderLayout.CENTER);
+    add(bottom, BorderLayout.SOUTH);
   }
 
   private void calculateRowsAndColumns(
       final ProductionTabsProperties properties, final int largestList) {
-    if (properties == null
-        || properties.getRows() == 0
+    if (properties.getRows() == 0
         || properties.getColumns() == 0
         || properties.getRows() * properties.getColumns() < largestList) {
-      final int maxColumns;
+      int maxColumns;
       if (largestList <= 36) {
         maxColumns = Math.max(8, Math.min(12, divideRoundUp(largestList, 3)));
       } else if (largestList <= 64) {
@@ -135,6 +111,9 @@ class TabbedProductionPanel extends ProductionPanel {
       } else {
         maxColumns = Math.max(8, Math.min(16, divideRoundUp(largestList, 5)));
       }
+      // Limit number of columns to the available width. Reserve 64px for borders & scroll bar.
+      final int availableWidth = Util.getScreenSize(dialog).width - 64;
+      maxColumns = Math.min(maxColumns, availableWidth / cellSize.width);
       rows = Math.max(2, divideRoundUp(largestList, maxColumns));
       columns = Math.max(3, divideRoundUp(largestList, rows));
     } else {
@@ -172,7 +151,7 @@ class TabbedProductionPanel extends ProductionPanel {
   }
 
   private List<Tuple<String, List<Rule>>> getRuleLists(final ProductionTabsProperties properties) {
-    if (properties != null && !properties.useDefaultTabs()) {
+    if (!properties.useDefaultTabs()) {
       final List<Tuple<String, List<Rule>>> ruleLists = properties.getRuleLists();
       checkLists(ruleLists);
       return ruleLists;
@@ -195,12 +174,11 @@ class TabbedProductionPanel extends ProductionPanel {
       if (resourceOrUnit instanceof UnitType) {
         final UnitType type = (UnitType) resourceOrUnit;
         final UnitAttachment attach = type.getUnitAttachment();
-        if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1) {
+        if (attach.getConsumesUnits().totalValues() >= 1) {
           upgradeConsumesRules.add(rule);
         }
         // canProduceUnits isn't checked on purpose, since this category is for units that can be
-        // placed
-        // anywhere (placed without needing a factory).
+        // placed anywhere (placed without needing a factory).
         if (attach.getIsConstruction()) {
           constructRules.add(rule);
         } else if (attach.getIsSea()) {
@@ -224,21 +202,23 @@ class TabbedProductionPanel extends ProductionPanel {
     return ruleLists;
   }
 
-  private JPanel getRulesPanel(final List<Rule> rules) {
-    final JPanel panel = new JPanelBuilder().gridLayout(rows, columns).build();
+  private JPanel createRulesGrid(List<Rule> rules) {
+    final JPanel panel = new JPanelBuilder().gridLayout(0, columns).build();
+    for (Rule rule : rules) {
+      JPanel cell = rulesComponents.get(rule);
+      cell.setPreferredSize(cellSize);
+      panel.add(cell);
+    }
+    // Add the panel to an outer panel to absorb any extra height if there's too few cells.
+    panel.setOpaque(false);
+    JPanel outer = new JPanel();
+    outer.add(panel);
+    return outer;
+  }
 
-    final JPanel[][] panelHolder = new JPanel[rows][columns];
-    for (int m = 0; m < rows; m++) {
-      for (int n = 0; n < columns; n++) {
-        panelHolder[m][n] = new JPanel(new BorderLayout());
-        panel.add(panelHolder[m][n]);
-      }
-    }
-    for (int x = 0; x < columns * rows; x++) {
-      if (x < rules.size()) {
-        panelHolder[(x % rows)][(x / rows)].add(rules.get(x).getPanelComponent());
-      }
-    }
-    return panel;
+  private void updateTabContent(JTabbedPane tabs, List<Tuple<String, List<Rule>>> ruleLists) {
+    final List<Rule> rules = ruleLists.get(tabs.getSelectedIndex()).getSecond();
+    final JScrollPane scrollPane = (JScrollPane) tabs.getSelectedComponent();
+    scrollPane.setViewportView(createRulesGrid(rules));
   }
 }
