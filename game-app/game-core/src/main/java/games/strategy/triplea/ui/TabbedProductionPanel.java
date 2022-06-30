@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -59,11 +60,11 @@ class TabbedProductionPanel extends ProductionPanel {
     final ProductionTabsProperties properties =
         new ProductionTabsProperties(gamePlayer, rules, uiContext.getResourceLoader());
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
-    ruleLists.removeIf(entry -> entry.getSecond().isEmpty());
     cellSize = new Dimension();
     for (Rule rule : rules) {
       JPanel component = rule.getPanelComponent();
       rulesComponents.put(rule, component);
+      // Use the same size for all cells by getting the max size for both dimensions.
       cellSize.width = Math.max(cellSize.width, component.getPreferredSize().width);
       cellSize.height = Math.max(cellSize.height, component.getPreferredSize().height);
     }
@@ -102,17 +103,17 @@ class TabbedProductionPanel extends ProductionPanel {
     if (properties.getRows() == 0
         || properties.getColumns() == 0
         || properties.getRows() * properties.getColumns() < largestList) {
-      int maxColumns;
+      final int desiredColumns;
       if (largestList <= 36) {
-        maxColumns = Math.max(8, Math.min(12, divideRoundUp(largestList, 3)));
+        desiredColumns = Math.max(8, Math.min(12, divideRoundUp(largestList, 3)));
       } else if (largestList <= 64) {
-        maxColumns = Math.max(8, Math.min(16, divideRoundUp(largestList, 4)));
+        desiredColumns = Math.max(8, Math.min(16, divideRoundUp(largestList, 4)));
       } else {
-        maxColumns = Math.max(8, Math.min(16, divideRoundUp(largestList, 5)));
+        desiredColumns = Math.max(8, Math.min(16, divideRoundUp(largestList, 5)));
       }
       // Limit number of columns to the available width. Reserve 64px for borders & scroll bar.
-      final int availableWidth = Util.getScreenSize(dialog).width - 64;
-      maxColumns = Math.min(maxColumns, availableWidth / cellSize.width);
+      final int availableScreenWidth = Util.getScreenSize(dialog).width - 64;
+      final int maxColumns = Math.min(desiredColumns, availableScreenWidth / cellSize.width);
       rows = Math.max(2, divideRoundUp(largestList, maxColumns));
       columns = Math.max(3, divideRoundUp(largestList, rows));
     } else {
@@ -150,12 +151,15 @@ class TabbedProductionPanel extends ProductionPanel {
   }
 
   private List<Tuple<String, List<Rule>>> getRuleLists(final ProductionTabsProperties properties) {
-    if (!properties.useDefaultTabs()) {
-      final List<Tuple<String, List<Rule>>> ruleLists = properties.getRuleLists();
+    final List<Tuple<String, List<Rule>>> ruleLists;
+    if (properties.useDefaultTabs()) {
+      ruleLists = getDefaultRuleLists();
+    } else {
+      ruleLists = properties.getRuleLists();
       checkLists(ruleLists);
-      return ruleLists;
     }
-    return getDefaultRuleLists();
+    // Return only non-empty rule lists.
+    return ruleLists.stream().filter(e -> e.getSecond().isEmpty()).collect(Collectors.toList());
   }
 
   private List<Tuple<String, List<Rule>>> getDefaultRuleLists() {
