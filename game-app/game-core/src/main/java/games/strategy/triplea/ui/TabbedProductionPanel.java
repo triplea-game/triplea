@@ -9,6 +9,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,6 +91,7 @@ class TabbedProductionPanel extends ProductionPanel {
     donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
     donePanel.add(Box.createVerticalGlue());
     donePanel.add(done);
+    done.setAlignmentX(Component.CENTER_ALIGNMENT);
     donePanel.add(Box.createVerticalGlue());
     bottom.add(donePanel, BorderLayout.CENTER);
     add(bottom, BorderLayout.SOUTH);
