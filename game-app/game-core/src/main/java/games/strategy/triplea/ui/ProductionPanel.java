@@ -64,7 +64,7 @@ class ProductionPanel extends JPanel {
 
   ProductionPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
-   }
+  }
 
   private IntegerMap<ProductionRule> getProduction() {
     final IntegerMap<ProductionRule> prod = new IntegerMap<>();
