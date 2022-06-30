@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -86,9 +87,10 @@ class TabbedProductionPanel extends ProductionPanel {
     bottom.add(totals, BorderLayout.WEST);
     bottom.add(new JLabel("Attack | Defense | Movement"), BorderLayout.EAST);
     JPanel donePanel = new JPanel();
-    donePanel.add(Box.createHorizontalGlue());
+    donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
+    donePanel.add(Box.createVerticalGlue());
     donePanel.add(done);
-    donePanel.add(Box.createHorizontalGlue());
+    donePanel.add(Box.createVerticalGlue());
     bottom.add(donePanel, BorderLayout.CENTER);
     add(bottom, BorderLayout.SOUTH);
   }
