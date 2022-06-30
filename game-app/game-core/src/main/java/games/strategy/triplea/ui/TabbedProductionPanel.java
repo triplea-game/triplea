@@ -159,7 +159,7 @@ class TabbedProductionPanel extends ProductionPanel {
       checkLists(ruleLists);
     }
     // Return only non-empty rule lists.
-    return ruleLists.stream().filter(e -> e.getSecond().isEmpty()).collect(Collectors.toList());
+    return ruleLists.stream().filter(e -> !e.getSecond().isEmpty()).collect(Collectors.toList());
   }
 
   private List<Tuple<String, List<Rule>>> getDefaultRuleLists() {
