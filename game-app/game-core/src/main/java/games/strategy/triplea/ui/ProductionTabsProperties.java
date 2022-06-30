@@ -43,11 +43,6 @@ class ProductionTabsProperties {
     properties.putAll(loader.loadAsResource(PROPERTY_FILE + ".properties"));
   }
 
-  static ProductionTabsProperties getInstance(
-      final GamePlayer gamePlayer, final List<Rule> rules, final ResourceLoader resourceLoader) {
-    return new ProductionTabsProperties(gamePlayer, rules, resourceLoader);
-  }
-
   List<Tuple<String, List<Rule>>> getRuleLists() {
     if (ruleLists != null) {
       return ruleLists;
