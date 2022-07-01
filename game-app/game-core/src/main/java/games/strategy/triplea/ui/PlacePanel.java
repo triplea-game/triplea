@@ -8,7 +8,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
@@ -190,7 +190,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
   }
 
-  PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
+  PlaceData waitForPlace(final boolean bid, final PlayerBridge playerBridge) {
     setUp(playerBridge);
     // workaround: meant to be in setUpSpecific, but it requires a variable
     refreshActionLabelText(bid);

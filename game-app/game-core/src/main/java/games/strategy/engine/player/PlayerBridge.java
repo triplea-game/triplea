@@ -19,18 +19,21 @@ import java.lang.reflect.Proxy;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-/** Default implementation of PlayerBridge. */
+/**
+ * Communication with the GamePlayer goes through the PlayerBridge to make the game network
+ * transparent.
+ */
 @Slf4j
-public class DefaultPlayerBridge implements IPlayerBridge {
+public class PlayerBridge {
   private final IGame game;
 
-  @Getter(onMethod_ = {@Override})
-  private String stepName;
+  /** The name of the current step being executed. */
+  @Getter private String stepName;
 
   private String currentDelegate;
 
-  /** Creates new DefaultPlayerBridge. */
-  public DefaultPlayerBridge(final IGame game) {
+  /** Creates new PlayerBridge. */
+  public PlayerBridge(final IGame game) {
     this.game = game;
     game.getData()
         .addGameDataEventListener(
@@ -41,17 +44,20 @@ public class DefaultPlayerBridge implements IPlayerBridge {
             });
   }
 
-  @Override
+  /** Indicates the game is over. */
   public boolean isGameOver() {
     return game.isGameOver();
   }
 
-  @Override
+  /** Return the game data. */
   public GameData getGameData() {
     return game.getData();
   }
 
-  @Override
+  /**
+   * Get a remote reference to the current delegate, the type of the reference is declared by the
+   * delegates getRemoteType() method.
+   */
   public IRemote getRemoteDelegate() {
     if (game.isGameOver()) {
       throw new GameOverException("Game Over");
@@ -63,7 +69,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         // depend on the illegal state exception type in a catch block.
         Preconditions.checkState(
             delegate != null,
-            "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. CurrentStep: "
+            "IDelegate in PlayerBridge.getRemote() cannot be null. CurrentStep: "
                 + stepName
                 + ", and CurrentDelegate: "
                 + currentDelegate);
@@ -94,7 +100,10 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     }
   }
 
-  @Override
+  /**
+   * Get a remote reference to the named delegate, the type of the reference is declared by the
+   * delegates getRemoteType() method.
+   */
   public IRemote getRemotePersistentDelegate(final String name) {
     if (game.isGameOver()) {
       throw new GameOverException("Game Over");
@@ -104,7 +113,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         final IDelegate delegate = game.getData().getDelegate(name);
         if (delegate == null) {
           final String errorMessage =
-              "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. "
+              "IDelegate in PlayerBridge.getRemote() cannot be null. "
                   + "Looking for delegate named: "
                   + name;
           throw new IllegalStateException(errorMessage);

@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
-import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.player.PlayerBridge;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
@@ -16,7 +16,7 @@ import javax.swing.SwingUtilities;
 abstract class AbstractForumPosterPanel extends ActionPanel {
   private static final long serialVersionUID = -5084680807785728744L;
 
-  IPlayerBridge playerBridge;
+  PlayerBridge playerBridge;
   PbemMessagePoster pbemMessagePoster;
   final ForumPosterComponent forumPosterComponent;
   private TripleAFrame tripleAFrame;
@@ -53,7 +53,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
 
   protected abstract String getTitle();
 
-  public void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge) {
+  public void waitForDone(final TripleAFrame frame, final PlayerBridge bridge) {
     tripleAFrame = frame;
     playerBridge = bridge;
     // Nothing to do if there are no PBEM messengers

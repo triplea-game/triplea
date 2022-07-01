@@ -50,7 +50,6 @@
 3,games.strategy.engine.framework.startup.mc.IServerStartupRemote,changeToLatestAutosave,games.strategy.engine.framework.HeadlessAutoSaveType
 8,games.strategy.engine.framework.startup.mc.IServerStartupRemote,getIsServerHeadless
 6,games.strategy.engine.player.Player,getName
-9,games.strategy.engine.player.Player,initialize,games.strategy.engine.player.IPlayerBridge,games.strategy.engine.data.GamePlayer
 26,games.strategy.engine.player.Player,start,java.lang.String
 11,games.strategy.engine.player.Player,reportError,java.lang.String
 27,games.strategy.engine.player.Player,stopGame
