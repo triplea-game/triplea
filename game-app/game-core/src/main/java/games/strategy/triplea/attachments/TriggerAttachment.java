@@ -1492,11 +1492,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     // 'NotificationMessages.getInstance()') is
     // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(notificationMatch())) {
-      triggerNotifications(
-          satisfiedTriggers,
-          bridge,
-          fireTriggerParams,
-          NotificationMessages.getInstance(bridge.getResourceLoader()));
+      bridge
+          .getResourceLoader()
+          .ifPresent(
+              resourceLoader ->
+                  triggerNotifications(
+                      satisfiedTriggers,
+                      bridge,
+                      fireTriggerParams,
+                      NotificationMessages.getInstance(resourceLoader)));
     }
   }
 
@@ -2425,11 +2429,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     // 'NotificationMessages.getInstance()') is
     // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(victoryMatch())) {
-      triggerVictory(
-          satisfiedTriggers,
-          bridge,
-          fireTriggerParams,
-          NotificationMessages.getInstance(bridge.getResourceLoader()));
+      bridge
+          .getResourceLoader()
+          .ifPresent(
+              resourceLoader ->
+                  triggerVictory(
+                      satisfiedTriggers,
+                      bridge,
+                      fireTriggerParams,
+                      NotificationMessages.getInstance(resourceLoader)));
     }
   }
 

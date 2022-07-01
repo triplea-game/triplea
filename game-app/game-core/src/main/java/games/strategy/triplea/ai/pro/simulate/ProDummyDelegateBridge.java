@@ -14,6 +14,7 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
+import java.util.Optional;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
@@ -48,9 +49,8 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   public void sendMessage(final WebSocketMessage webSocketMessage) {}
 
   @Override
-  public ResourceLoader getResourceLoader() {
-    throw new UnsupportedOperationException(
-        "ProDummyDelegateBridge does not have a resource loader");
+  public Optional<ResourceLoader> getResourceLoader() {
+    return Optional.empty();
   }
 
   @Override

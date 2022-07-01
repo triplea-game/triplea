@@ -16,6 +16,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.ResourceLoader;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.ISound;
@@ -143,7 +144,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public ResourceLoader getResourceLoader() {
-    return game.getResourceLoader();
+  public Optional<ResourceLoader> getResourceLoader() {
+    return Optional.of(game.getResourceLoader());
   }
 }

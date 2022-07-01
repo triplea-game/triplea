@@ -10,6 +10,7 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.util.TuvCostsCalculator;
+import java.util.Optional;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.ISound;
@@ -92,7 +93,11 @@ public interface IDelegateBridge {
 
   void sendMessage(WebSocketMessage webSocketMessage);
 
-  ResourceLoader getResourceLoader();
+  /**
+   * Allow delegate code to access a {@link ResourceLoader}. Implementations may choose to return an
+   * empty optional to prevent messaging in simulation scenarios.
+   */
+  Optional<ResourceLoader> getResourceLoader();
 
   default IntegerMap<UnitType> getCostsForTuv(final GamePlayer player) {
     return new TuvCostsCalculator().getCostsForTuv(player);
