@@ -10,7 +10,6 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.util.TuvCostsCalculator;
-import java.util.Properties;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.ISound;
@@ -33,9 +32,6 @@ public interface IDelegateBridge {
   Player getRemotePlayer(GamePlayer gamePlayer);
 
   GamePlayer getGamePlayer();
-
-  /** Returns the current step name. */
-  String getStepName();
 
   /**
    * Add a change to game data. Use this rather than changing gameData directly since this method
@@ -79,9 +75,6 @@ public interface IDelegateBridge {
    * including those on remote machines
    */
   ISound getSoundChannelBroadcaster();
-
-  /** Returns the properties for this step. */
-  Properties getStepProperties();
 
   /**
    * After this step finishes executing, the next delegate will not be called.

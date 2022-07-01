@@ -19,7 +19,6 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.List;
-import java.util.Properties;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.HeadlessSoundChannel;
@@ -92,16 +91,6 @@ public class DummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void leaveDelegateExecution() {}
-
-  @Override
-  public Properties getStepProperties() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public String getStepName() {
-    throw new UnsupportedOperationException();
-  }
 
   @Override
   public Player getRemotePlayer(final GamePlayer gamePlayer) {

@@ -16,7 +16,6 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.ResourceLoader;
-import java.util.Properties;
 import lombok.RequiredArgsConstructor;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.ISound;
@@ -81,11 +80,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public String getStepName() {
-    return gameData.getSequence().getStep().getName();
-  }
-
-  @Override
   public IDelegateHistoryWriter getHistoryWriter() {
     return historyWriter;
   }
@@ -126,11 +120,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
     final Object implementor =
         game.getMessengers().getChannelBroadcaster(AbstractGame.getSoundChannel());
     return (ISound) getOutbound(implementor);
-  }
-
-  @Override
-  public Properties getStepProperties() {
-    return gameData.getSequence().getStep().getProperties();
   }
 
   @Override
