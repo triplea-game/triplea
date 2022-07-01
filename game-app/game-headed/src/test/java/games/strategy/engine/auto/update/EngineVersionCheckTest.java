@@ -3,14 +3,26 @@ package games.strategy.engine.auto.update;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 
-final class EngineVersionCheckTest extends AbstractClientSettingTestCase {
+final class EngineVersionCheckTest {
+
+  @BeforeEach
+  void setUp() {
+    ClientSetting.setPreferences(new MemoryPreferences());
+  }
+
+  @AfterEach
+  void tearDown() {
+    ClientSetting.resetPreferences();
+  }
 
   @DisplayName("If there is no last updated engine check set, then we need to check")
   @Test
