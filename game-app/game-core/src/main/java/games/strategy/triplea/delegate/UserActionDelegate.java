@@ -12,6 +12,7 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.ui.PoliticsText;
 import games.strategy.triplea.ui.UserActionText;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -185,13 +186,15 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * @param userActionAttachment the UserActionAttachment that should be accepted
    */
   private boolean actionIsAccepted(final UserActionAttachment userActionAttachment) {
+    final String acceptanceQuestion =
+        bridge
+            .getResourceLoader()
+            .map(PoliticsText::getInstance)
+            .map(politicsText -> politicsText.getAcceptanceQuestion(userActionAttachment.getText()))
+            // String is ignored if getResourceLoader() returns empty Optional.
+            .orElse("");
     for (final GamePlayer player : userActionAttachment.getActionAccept()) {
-      if (!getRemotePlayer(player)
-          .acceptAction(
-              this.player,
-              UserActionText.getInstance(bridge.getResourceLoader())
-                  .getAcceptanceQuestion(userActionAttachment.getText()),
-              false)) {
+      if (!getRemotePlayer(player).acceptAction(this.player, acceptanceQuestion, false)) {
         return false;
       }
     }
@@ -259,13 +262,18 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     bridge
         .getSoundChannelBroadcaster()
         .playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
-    final UserActionText uat = UserActionText.getInstance(bridge.getResourceLoader());
-    final String text = userActionAttachment.getText();
-    sendNotification(uat.getNotificationSuccess(text));
-    notifyOtherPlayers(
-        userActionAttachment,
-        uat.getNotificationSuccessOthers(text),
-        uat.getNotificationSuccessTarget(text));
+    bridge
+        .getResourceLoader()
+        .ifPresent(
+            resourceLoader -> {
+              final UserActionText uat = UserActionText.getInstance(resourceLoader);
+              final String text = userActionAttachment.getText();
+              sendNotification(uat.getNotificationSuccess(text));
+              notifyOtherPlayers(
+                  userActionAttachment,
+                  uat.getNotificationSuccessOthers(text),
+                  uat.getNotificationSuccessTarget(text));
+            });
   }
 
   /**
@@ -281,13 +289,18 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
             + " fails on action: "
             + MyFormatter.attachmentNameToText(userActionAttachment.getName());
     bridge.getHistoryWriter().addChildToEvent(transcriptText);
-    final UserActionText uat = UserActionText.getInstance(bridge.getResourceLoader());
-    final String text = userActionAttachment.getText();
-    sendNotification(uat.getNotificationFailure(text));
-    notifyOtherPlayers(
-        userActionAttachment,
-        uat.getNotificationFailureOthers(text),
-        uat.getNotificationFailureTarget(text));
+    bridge
+        .getResourceLoader()
+        .ifPresent(
+            resourceLoader -> {
+              final UserActionText uat = UserActionText.getInstance(resourceLoader);
+              final String text = userActionAttachment.getText();
+              sendNotification(uat.getNotificationFailure(text));
+              notifyOtherPlayers(
+                  userActionAttachment,
+                  uat.getNotificationFailureOthers(text),
+                  uat.getNotificationFailureTarget(text));
+            });
   }
 
   /**

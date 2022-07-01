@@ -24,7 +24,7 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Optional;
 import java.util.UUID;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.HeadlessSoundChannel;
@@ -53,23 +53,13 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   public void sendMessage(final WebSocketMessage webSocketMessage) {}
 
   @Override
-  public ResourceLoader getResourceLoader() {
+  public Optional<ResourceLoader> getResourceLoader() {
     throw new UnsupportedOperationException(
-        "ObjectiveDummyDelegateBridge does not provide a ResourceLoader!");
+        "ObjectiveDummyDelegateBridge#getResourceLoader() should never be called");
   }
 
   @Override
   public void leaveDelegateExecution() {}
-
-  @Override
-  public Properties getStepProperties() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public String getStepName() {
-    throw new UnsupportedOperationException();
-  }
 
   @Override
   public Player getRemotePlayer(final GamePlayer gamePlayer) {
