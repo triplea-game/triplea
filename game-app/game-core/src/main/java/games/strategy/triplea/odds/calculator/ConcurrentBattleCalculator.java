@@ -49,15 +49,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     // cancel any existing calcing (it won't stop immediately, just quicker)
     cancel();
     synchronized (mutexSetGameData) {
-      try {
-        // since setting data takes place on a different thread, this is our token. wait on it since
-        // we could have exited the synchronized block already.
-        latchWorkerThreadsCreation.get();
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      } catch (ExecutionException e) {
-        throw new IllegalStateException("CompletableFuture should handle all exceptions", e);
-      }
+      waitForGameDataReadyInternal();
       latchWorkerThreadsCreation =
           CompletableFuture.supplyAsync(() -> setGameDataInternal(data))
               .exceptionally(
@@ -75,6 +67,24 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       cancelCurrentOperation.incrementAndGet();
       isDataSet = createWorkers(data);
       return isDataSet;
+    }
+  }
+
+  private void waitForGameDataReadyInternal() {
+    try {
+      // since setting data takes place on a different thread, this is our token. wait on it since
+      // we could have exited the synchronized block already.
+      latchWorkerThreadsCreation.get();
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } catch (ExecutionException e) {
+      throw new IllegalStateException("CompletableFuture should handle all exceptions", e);
+    }
+  }
+
+  private void waitForGameDataReady() {
+    synchronized (mutexSetGameData) {
+      waitForGameDataReadyInternal();
     }
   }
 
@@ -162,6 +172,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final boolean retreatWhenOnlyAirLeft,
       final int runCount)
       throws IllegalStateException {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       final long start = System.currentTimeMillis();
       if (!isDataSet) {
@@ -194,6 +205,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setKeepOneAttackingLandUnit(final boolean bool) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       for (final BattleCalculator worker : workers) {
         worker.setKeepOneAttackingLandUnit(bool);
@@ -202,6 +214,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setAmphibious(final boolean bool) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       for (final BattleCalculator worker : workers) {
         worker.setAmphibious(bool);
@@ -210,6 +223,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setRetreatAfterRound(final int value) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       for (final BattleCalculator worker : workers) {
         worker.setRetreatAfterRound(value);
@@ -218,6 +232,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setRetreatAfterXUnitsLeft(final int value) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       for (final BattleCalculator worker : workers) {
         worker.setRetreatAfterXUnitsLeft(value);
@@ -226,6 +241,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       for (final BattleCalculator worker : workers) {
         worker.setAttackerOrderOfLosses(attackerOrderOfLosses);
@@ -234,6 +250,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       for (final BattleCalculator worker : workers) {
         worker.setDefenderOrderOfLosses(defenderOrderOfLosses);
