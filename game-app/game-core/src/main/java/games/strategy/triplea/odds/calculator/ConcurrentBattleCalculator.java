@@ -64,7 +64,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (ExecutionException e) {
-        throw new IllegalStateException("Future should handle all exceptions already");
+        throw new IllegalStateException("CompletableFuture should handle all exceptions already", e);
       }
       latchWorkerThreadsCreation =
           CompletableFuture.runAsync(() -> setGameDataInternal(data))
@@ -81,8 +81,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       cancel();
       isDataSet = false;
       cancelCurrentOperation.incrementAndGet();
-      // assign the future,
-      // so that we can set the data in a different thread wait for its completion
       createWorkers(data);
     }
   }
