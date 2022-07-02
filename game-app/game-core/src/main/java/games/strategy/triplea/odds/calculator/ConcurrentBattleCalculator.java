@@ -70,7 +70,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
           CompletableFuture.runAsync(() -> setGameDataInternal(data))
               .exceptionally(
                   throwable -> {
-                    log.error("Error while trying to set game data Workers", throwable);
+                    log.error("Error while trying to set game data", throwable);
                     return null;
                   });
     }
