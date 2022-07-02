@@ -104,7 +104,7 @@ class BattleCalculatorPanel extends JPanel {
   private String defenderOrderOfLosses = null;
   private final Territory location;
   private final JList<String> territoryEffectsJList;
-  private TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+  private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
 
   BattleCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location) {
     this.data = data;
@@ -1053,19 +1053,24 @@ class BattleCalculatorPanel extends JPanel {
     }
     setupAttackerAndDefender();
 
-    final Instant t = Instant.now();
-    calculator =
-        new ConcurrentBattleCalculator(
-            () ->
+    final Instant start = Instant.now();
+    calculator = new ConcurrentBattleCalculator();
+
+    calculator
+        .setGameData(data)
+        .thenAccept(
+            bool -> {
+              if (bool) {
                 SwingUtilities.invokeLater(
                     () -> {
-                      log.debug("Battle Calculator ready in " + Duration.between(t, Instant.now()));
+                      log.debug(
+                          "Battle Calculator ready in " + Duration.between(start, Instant.now()));
                       calculateButton.setText("Calculate Odds");
                       calculateButton.setEnabled(true);
                       calculateButton.requestFocusInWindow();
-                    }));
-
-    calculator.setGameData(data);
+                    });
+              }
+            });
     setWidgetActivation();
     revalidate();
   }

@@ -1,6 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import com.google.common.util.concurrent.Runnables;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -35,23 +34,16 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private final AtomicInteger cancelCurrentOperation = new AtomicInteger(0);
   // do not let setting of game data happen multiple times while we offload creating workers and
   // copying data to a different thread
-  private CompletableFuture<?> latchWorkerThreadsCreation = CompletableFuture.completedFuture(null);
+  private CompletableFuture<Boolean> latchWorkerThreadsCreation =
+      CompletableFuture.completedFuture(false);
 
   // do not let setting of game data happen at same time
   private final Object mutexSetGameData = new Object();
   // do not let multiple calculations or setting calc data happen at same time
   private final Object mutexCalcIsRunning = new Object();
-  private final Runnable dataLoadedAction;
 
-  public ConcurrentBattleCalculator() {
-    this(Runnables.doNothing());
-  }
-
-  ConcurrentBattleCalculator(final Runnable dataLoadedAction) {
-    this.dataLoadedAction = dataLoadedAction;
-  }
-
-  public void setGameData(@Nullable final GameData data) {
+  /** Return value may be ignored. Exceptions are being handled properly. */
+  public CompletableFuture<Boolean> setGameData(@Nullable final GameData data) {
     // cancel any current setting of data
     cancelCurrentOperation.decrementAndGet();
     // cancel any existing calcing (it won't stop immediately, just quicker)
@@ -64,24 +56,25 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (ExecutionException e) {
-        throw new IllegalStateException("CompletableFuture should handle all exceptions already", e);
+        throw new IllegalStateException("CompletableFuture should handle all exceptions", e);
       }
       latchWorkerThreadsCreation =
-          CompletableFuture.runAsync(() -> setGameDataInternal(data))
+          CompletableFuture.supplyAsync(() -> setGameDataInternal(data))
               .exceptionally(
                   throwable -> {
-                    log.error("Error while trying to set game data", throwable);
-                    return null;
+                    log.error("Error while trying to set GameData", throwable);
+                    return false;
                   });
+      return latchWorkerThreadsCreation;
     }
   }
 
-  private void setGameDataInternal(@Nullable final GameData data) {
+  private boolean setGameDataInternal(@Nullable final GameData data) {
     synchronized (mutexCalcIsRunning) {
       cancel();
-      isDataSet = false;
       cancelCurrentOperation.incrementAndGet();
-      createWorkers(data);
+      isDataSet = createWorkers(data);
+      return isDataSet;
     }
   }
 
@@ -111,7 +104,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     return Math.min(numberOfTimesWeCanCopyMax, MAX_THREADS);
   }
 
-  private void createWorkers(@Nullable final GameData data) {
+  private boolean createWorkers(@Nullable final GameData data) {
     workers.clear();
     if (data != null && cancelCurrentOperation.get() >= 0) {
       // see how long 1 copy takes (some games can get REALLY big)
@@ -126,7 +119,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
             GameDataUtils.gameDataToBytes(data, GameDataManager.Options.forBattleCalculator())
                 .orElse(null);
         if (serializedData == null) {
-          return;
+          return false;
         }
       }
       if (cancelCurrentOperation.get() >= 0) {
@@ -145,12 +138,11 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     if (cancelCurrentOperation.get() < 0 || data == null) {
       // we could have cancelled while setting data, so clear the workers again if so
       workers.clear();
-      isDataSet = false;
+      return false;
     } else {
       // should make sure that all workers have their game data set before
       // we can call calculate and other things
-      isDataSet = true;
-      dataLoadedAction.run();
+      return true;
     }
   }
 
