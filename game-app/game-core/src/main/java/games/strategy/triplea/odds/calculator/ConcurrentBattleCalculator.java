@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -50,7 +51,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     this.dataLoadedAction = dataLoadedAction;
   }
 
-  public void setGameData(final GameData data) {
+  public void setGameData(@Nullable final GameData data) {
     // cancel any current setting of data
     cancelCurrentOperation.decrementAndGet();
     // cancel any existing calcing (it won't stop immediately, just quicker)
@@ -60,8 +61,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         // since setting data takes place on a different thread, this is our token. wait on it since
         // we could have exited the synchronized block already.
         latchWorkerThreadsCreation.get();
-        // clear reference, might not be necessary depending on implementation of CompletableFuture
-        latchWorkerThreadsCreation = CompletableFuture.completedFuture(null);
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (ExecutionException e) {
@@ -77,19 +76,14 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     }
   }
 
-  private void setGameDataInternal(final GameData data) {
+  private void setGameDataInternal(@Nullable final GameData data) {
     synchronized (mutexCalcIsRunning) {
       cancel();
       isDataSet = false;
-      if (data == null) {
-        workers.clear();
-        cancelCurrentOperation.incrementAndGet();
-      } else {
-        cancelCurrentOperation.incrementAndGet();
-        // assign the future,
-        // so that we can set the data in a different thread wait for its completion
-        createWorkers(data);
-      }
+      cancelCurrentOperation.incrementAndGet();
+      // assign the future,
+      // so that we can set the data in a different thread wait for its completion
+      createWorkers(data);
     }
   }
 
@@ -119,7 +113,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     return Math.min(numberOfTimesWeCanCopyMax, MAX_THREADS);
   }
 
-  private void createWorkers(final GameData data) {
+  private void createWorkers(@Nullable final GameData data) {
     workers.clear();
     if (data != null && cancelCurrentOperation.get() >= 0) {
       // see how long 1 copy takes (some games can get REALLY big)
