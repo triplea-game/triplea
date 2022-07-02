@@ -1061,10 +1061,10 @@ class BattleCalculatorPanel extends JPanel {
         .thenAccept(
             bool -> {
               if (bool) {
+                long millis = Duration.between(start, Instant.now()).toMillis();
                 SwingUtilities.invokeLater(
                     () -> {
-                      log.debug(
-                          "Battle Calculator ready in " + Duration.between(start, Instant.now()));
+                      log.debug("Battle Calculator ready in {}ms", millis);
                       calculateButton.setText("Calculate Odds");
                       calculateButton.setEnabled(true);
                       calculateButton.requestFocusInWindow();
