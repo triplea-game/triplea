@@ -258,7 +258,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       SettingType.TESTING,
       "Toggles whether to use the new serialization mechanisms. This mechanism is still "
           + "under development and potentially may break saved games and network games.\n"
-          + " All players in the same game must have it set to the same value."
+          + "All players in the same game must have it set to the same value. "
           + "Restart to fully activate") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
