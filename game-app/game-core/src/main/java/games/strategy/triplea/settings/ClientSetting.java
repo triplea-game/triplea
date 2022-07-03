@@ -5,7 +5,6 @@ import static java.util.function.Predicate.not;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
@@ -16,7 +15,6 @@ import java.awt.Frame;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -229,10 +227,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    * result in an {@code IllegalStateException} being thrown by methods of this class.
    */
   public static void initialize() {
-    final Locale defaultLocale = Locale.getDefault();
-    if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
-      Locale.setDefault(Locale.US);
-    }
     setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
   }
 

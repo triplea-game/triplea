@@ -125,10 +125,7 @@ public final class ClientFileSystemHelper {
     }
 
     final Path mapsFolder =
-        ClientSetting.mapFolderOverride
-            .getValue()
-            .orElseGet(() -> userHomeRootFolderSupplier.get().resolve(MapsClient.MAPS_FOLDER_NAME));
-
+        ClientSetting.mapFolderOverride.getValue().orElse(defaultDownloadedMapsFolder);
     if (!Files.exists(mapsFolder)) {
       try {
         Files.createDirectories(mapsFolder);

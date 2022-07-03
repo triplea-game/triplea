@@ -11,8 +11,10 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.triplea.settings.ClientSetting;
+import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.ExitStatus;
 
@@ -27,6 +29,10 @@ public final class HeadlessGameRunner {
    * shut down via administrative command.
    */
   public static void main(final String[] args) {
+    final Locale defaultLocale = Locale.getDefault();
+    if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
+      Locale.setDefault(Locale.US);
+    }
     ClientSetting.initialize();
     System.setProperty(LOBBY_GAME_COMMENTS, GameRunner.BOT_GAME_HOST_COMMENT);
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");

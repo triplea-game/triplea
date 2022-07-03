@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessLaunchAction;
 import org.triplea.io.ContentDownloader;
@@ -45,7 +46,7 @@ public class GameTestUtils {
       tempHome = FileUtils.newTempFolder();
       System.setProperty("user.home", tempHome.toString());
     }
-    ClientSetting.initialize();
+    ClientSetting.setPreferences(new MemoryPreferences());
     assertTrue(ClientFileSystemHelper.getUserMapsFolder().startsWith(tempHome.toAbsolutePath()));
     ClientSetting.aiMovePauseDuration.setValue(0);
     ClientSetting.aiCombatStepPauseDuration.setValue(0);

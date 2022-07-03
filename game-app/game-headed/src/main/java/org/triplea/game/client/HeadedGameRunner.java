@@ -11,6 +11,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameShutdownRegistry;
+import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
@@ -32,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Locale;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
@@ -53,7 +55,10 @@ public final class HeadedGameRunner {
 
   public static void initializeClientSettingAndLogging() {
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e.getLocalizedMessage(), e));
-
+    final Locale defaultLocale = Locale.getDefault();
+    if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
+      Locale.setDefault(Locale.US);
+    }
     ClientSetting.initialize();
   }
 
