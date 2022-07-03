@@ -56,6 +56,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -561,7 +563,8 @@ public class MovePanel extends AbstractMovePanel {
         }
 
         private boolean confirmEndPoint(final Territory territory) {
-          if (!ClientSetting.showBetaFeatures.getValueOrThrow() || !willStartBattle(territory)) {
+          if (!ClientSetting.showPotentialScrambleWarning.getValueOrThrow()
+              || !willStartBattle(territory)) {
             return true;
           }
           if (!Properties.getScrambleRulesInEffect(getData().getProperties())) {
@@ -600,13 +603,20 @@ public class MovePanel extends AbstractMovePanel {
           // multiple units present. Without it, an extra row is added based on a too narrow
           // width initially.
           panel.setSize(new Dimension(400, 100));
+          JCheckBox dontWarnAgain = new JCheckBox("Don't show this warning again");
+          dontWarnAgain.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+          JPanel outer =
+              new JPanelBuilder().borderLayout().addCenter(panel).addSouth(dontWarnAgain).build();
           final int option =
               JOptionPane.showConfirmDialog(
                   JOptionPane.getFrameForComponent(MovePanel.this),
-                  panel,
+                  outer,
                   "Scramble Warning",
                   JOptionPane.OK_CANCEL_OPTION,
                   JOptionPane.WARNING_MESSAGE);
+          if (dontWarnAgain.isSelected()) {
+            ClientSetting.showPotentialScrambleWarning.setValue(false);
+          }
           return option == JOptionPane.OK_OPTION;
         }
       };

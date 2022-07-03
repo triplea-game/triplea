@@ -48,6 +48,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import javax.swing.ButtonModel;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +58,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.sound.SoundPath;
+import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Tuple;
 
 /**
@@ -706,18 +710,32 @@ public class TripleAPlayer extends AbstractBasePlayer {
 
   @Override
   public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
-    final String question =
+    if (!ClientSetting.showAaFlyoverWarning.getValueOrThrow()) {
+      return true;
+    }
+    String question =
         "Your units will be fired on in: "
             + MyFormatter.defaultNamedToTextList(aaFiringTerritories)
             + ".  Do you still want to move?";
-    return ui.getOk(question);
+    JCheckBox dontWarnAgain = new JCheckBox("Don't show this warning again");
+    JPanel panel =
+        new JPanelBuilder()
+            .borderLayout()
+            .addCenter(new JLabel(question))
+            .addSouth(dontWarnAgain)
+            .build();
+    boolean result = ui.getOk(panel, question);
+    if (dontWarnAgain.isSelected()) {
+      ClientSetting.showAaFlyoverWarning.setValue(false);
+    }
+    return result;
   }
 
   @Override
   public boolean confirmMoveKamikaze() {
     final String question =
         "Not all air units in destination territory can land, do you still want to move?";
-    return ui.getOk(question);
+    return ui.getOk(question, question);
   }
 
   @Override
