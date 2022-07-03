@@ -2360,13 +2360,16 @@
   img: https://raw.githubusercontent.com/triplea-maps/Cold_War_1950_4th_edition/master/preview.png
   description: |
     <br>A hypothetical World War 3 starting in 1950 using the Pact of Steel map
-- mapName: Pacific-Beta
+- mapName: Pacific_Beta
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Pacific_Beta/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/Pacific_Beta/master/preview.png
   description: |
     <br>The Pacific War. Based on the Axis & Allies: Pacific game.
+    <br>Pacific_beta is the base scenario
+    <br>Pacific_beta_buildcaps adds buildcaps
+    <br>Pacific_beta_upkeep has 10%/turn in upkeep and victory city based victory
 - mapName: World War II Global 1940 Ryuzaki Setup
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2global40_ryuzaki/archive/master.zip
