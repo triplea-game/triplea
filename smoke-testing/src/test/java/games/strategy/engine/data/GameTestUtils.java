@@ -46,8 +46,8 @@ public class GameTestUtils {
       tempHome = FileUtils.newTempFolder();
       System.setProperty("user.home", tempHome.toString());
     }
-    ClientSetting.setPreferences(new MemoryPreferences());
     ClientSetting.initialize();
+    ClientSetting.setPreferences(new MemoryPreferences());
     assertTrue(ClientFileSystemHelper.getUserMapsFolder().startsWith(tempHome.toAbsolutePath()));
     ClientSetting.aiMovePauseDuration.setValue(0);
     ClientSetting.aiCombatStepPauseDuration.setValue(0);
