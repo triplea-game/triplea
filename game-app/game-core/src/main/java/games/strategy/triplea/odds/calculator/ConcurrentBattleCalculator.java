@@ -49,7 +49,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     // cancel any existing calcing (it won't stop immediately, just quicker)
     cancel();
     synchronized (mutexSetGameData) {
-      waitForGameDataReadyInternal();
+      waitForGameDataReady();
       latchWorkerThreadsCreation =
           CompletableFuture.supplyAsync(() -> setGameDataInternal(data))
               .exceptionally(
@@ -70,21 +70,17 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     }
   }
 
-  private void waitForGameDataReadyInternal() {
-    try {
-      // since setting data takes place on a different thread, this is our token. wait on it since
-      // we could have exited the synchronized block already.
-      latchWorkerThreadsCreation.get();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    } catch (ExecutionException e) {
-      throw new IllegalStateException("CompletableFuture should handle all exceptions", e);
-    }
-  }
-
   private void waitForGameDataReady() {
     synchronized (mutexSetGameData) {
-      waitForGameDataReadyInternal();
+      try {
+        // since setting data takes place on a different thread, this is our token. wait on it since
+        // we could have exited the synchronized block already.
+        latchWorkerThreadsCreation.get();
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } catch (ExecutionException e) {
+        throw new IllegalStateException("CompletableFuture should handle all exceptions", e);
+      }
     }
   }
 
@@ -149,11 +145,10 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       // we could have cancelled while setting data, so clear the workers again if so
       workers.clear();
       return false;
-    } else {
-      // should make sure that all workers have their game data set before
-      // we can call calculate and other things
-      return true;
     }
+    // should make sure that all workers have their game data set before
+    // we can call calculate and other things
+    return true;
   }
 
   /**
