@@ -75,6 +75,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
   public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
       new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
+  public static final ClientSetting<Boolean> showAaFlyoverWarning =
+      new BooleanClientSetting("SHOW_AA_FLYOVER_WARNING", true);
+  public static final ClientSetting<Boolean> showPotentialScrambleWarning =
+      new BooleanClientSetting("SHOW_POTENTIAL_SCRAMBLE_WARNING", true);
 
   /** URI of the lobby, can be toggled in settings to switch to a different lobby. */
   public static final ClientSetting<URI> lobbyUri =

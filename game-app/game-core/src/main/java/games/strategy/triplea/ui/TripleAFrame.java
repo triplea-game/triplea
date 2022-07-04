@@ -846,10 +846,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         ConfirmDialogType.YES_NO);
   }
 
-  public boolean getOk(final String message) {
+  public boolean getOk(final Object message, final String title) {
     messageAndDialogThreadPool.waitForAll();
     return EventThreadJOptionPane.showConfirmDialog(
-        this, message, message, ConfirmDialogType.OK_CANCEL);
+        this, message, title, ConfirmDialogType.OK_CANCEL);
   }
 
   /** Displays a message to the user informing them of the results of rolling for technologies. */

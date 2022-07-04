@@ -115,13 +115,33 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   },
 
   SPACE_BAR_CONFIRMS_CASUALTIES_BINDING(
-      "Space bar confirms Casualties",
+      "Space bar confirms casualties",
       SettingType.COMBAT,
       "When set to true casualty confirmation can be accepted by pressing space bar.\n"
           + "When set to false, the confirm casualty button has to always be clicked.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.spaceBarConfirmsCasualties);
+    }
+  },
+
+  SHOW_AA_FLYOVER_WARNING(
+      "AA flyover warning",
+      SettingType.COMBAT,
+      "Warn about AA firing when moving over territories with AA defense") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.showAaFlyoverWarning);
+    }
+  },
+
+  SHOW_POTENTIAL_SCRAMBLE_WARNING(
+      "Scramble warning",
+      SettingType.COMBAT,
+      "Warn about potential scrambling planes when you attack a territory") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.showPotentialScrambleWarning);
     }
   },
 
@@ -238,7 +258,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       SettingType.TESTING,
       "Toggles whether to use the new serialization mechanisms. This mechanism is still "
           + "under development and potentially may break saved games and network games.\n"
-          + " All players in the same game must have it set to the same value."
+          + "All players in the same game must have it set to the same value. "
           + "Restart to fully activate") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
