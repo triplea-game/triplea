@@ -2690,3 +2690,10 @@
   description: |
    <br>In this hypothetical scenario, the Germans have successfully executed Operation Sea Lion, while Russia remained neutral.
    <br>The time of neutrality has now ended, with remnants of British Empire joining up with the United States and Russia is ready to fight
+- mapName: 1939 Pact of Steel Big World
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/1939_Pact_of_Steel_Big_World/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/1939_Pact_of_Steel_Big_World/master/preview.png
+  description: |
+   <br>1939 on the Big World Map with 7 powers
