@@ -17,7 +17,7 @@ public class UserActionText extends PropertyFile {
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
   private UserActionText(final ResourceLoader resourceLoader) {
-    super(PROPERTY_FILE, resourceLoader);
+    super(resourceLoader.loadPropertyFile(PROPERTY_FILE));
   }
 
   public static UserActionText getInstance(final ResourceLoader resourceLoader) {

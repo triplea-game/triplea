@@ -9,7 +9,7 @@ public class NotificationMessages extends PropertyFile {
   private static final String SOUND_CLIP_SUFFIX = "_sounds";
 
   protected NotificationMessages(final ResourceLoader resourceLoader) {
-    super(PROPERTY_FILE, resourceLoader);
+    super(resourceLoader.loadPropertyFile(PROPERTY_FILE));
   }
 
   public static NotificationMessages getInstance(final ResourceLoader resourceLoader) {

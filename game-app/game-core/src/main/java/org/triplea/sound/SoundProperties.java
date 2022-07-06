@@ -11,7 +11,7 @@ class SoundProperties extends PropertyFile {
   private static final String DEFAULT_ERA_FOLDER = "ww2";
 
   SoundProperties(final ResourceLoader loader) {
-    super(PROPERTY_FILE, loader);
+    super(loader.loadPropertyFile(PROPERTY_FILE));
   }
 
   static SoundProperties getInstance(final ResourceLoader loader) {

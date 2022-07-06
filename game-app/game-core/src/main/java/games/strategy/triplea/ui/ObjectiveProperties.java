@@ -11,7 +11,7 @@ public class ObjectiveProperties extends PropertyFile {
   private static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
 
   protected ObjectiveProperties(final ResourceLoader resourceLoader) {
-    super(PROPERTY_FILE, resourceLoader);
+    super(resourceLoader.loadPropertyFile(PROPERTY_FILE));
   }
 
   public static ObjectiveProperties getInstance(final ResourceLoader resourceLoader) {

@@ -2,10 +2,8 @@ package games.strategy.triplea.ui;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import games.strategy.triplea.ResourceLoader;
-import java.util.Properties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,14 +14,6 @@ class PropertyFileTest {
   @BeforeEach
   void setup() {
     PropertyFile.cache.invalidateAll();
-  }
-
-  @Test
-  void testConstructor() {
-    final Properties properties = new Properties();
-    when(mock.loadAsResource(RESOURCE)).thenReturn(properties);
-    final PropertyFile instance = new PropertyFile(RESOURCE, mock) {};
-    assertSame(properties, instance.properties);
   }
 
   @Test
@@ -41,7 +31,7 @@ class PropertyFileTest {
 
   private static class DummyPropertyFile extends PropertyFile {
     DummyPropertyFile(final String path, final ResourceLoader loader) {
-      super(path, loader);
+      super(loader.loadPropertyFile(path));
     }
   }
 }

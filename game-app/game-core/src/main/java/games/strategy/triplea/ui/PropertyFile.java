@@ -1,9 +1,7 @@
 package games.strategy.triplea.ui;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import games.strategy.triplea.ResourceLoader;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -17,11 +15,6 @@ public abstract class PropertyFile {
 
   protected final Properties properties;
 
-  protected PropertyFile(final String fileName, final ResourceLoader loader) {
-    this(loader.loadAsResource(fileName));
-  }
-
-  @VisibleForTesting
   protected PropertyFile(final Properties properties) {
     this.properties = properties;
   }

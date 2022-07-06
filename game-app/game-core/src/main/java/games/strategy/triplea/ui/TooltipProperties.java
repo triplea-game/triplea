@@ -12,7 +12,7 @@ public final class TooltipProperties extends PropertyFile {
   private final UiContext uiContext;
 
   private TooltipProperties(final UiContext uiContext) {
-    super(PROPERTY_FILE, uiContext.getResourceLoader());
+    super(uiContext.getResourceLoader().loadPropertyFile(PROPERTY_FILE));
     this.uiContext = uiContext;
   }
 

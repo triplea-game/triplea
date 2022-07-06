@@ -15,7 +15,7 @@ public class PoliticsText extends PropertyFile {
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
   private PoliticsText(final ResourceLoader resourceLoader) {
-    super(PROPERTY_FILE, resourceLoader);
+    super(resourceLoader.loadPropertyFile(PROPERTY_FILE));
   }
 
   public static PoliticsText getInstance(final ResourceLoader resourceLoader) {
