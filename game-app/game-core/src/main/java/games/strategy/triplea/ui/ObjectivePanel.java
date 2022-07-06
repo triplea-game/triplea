@@ -71,11 +71,6 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
     gameData.addDataChangeListener(this);
   }
 
-  @Override
-  public String getName() {
-    return ObjectiveProperties.getInstance(resourceLoader).getName();
-  }
-
   public boolean isEmpty() {
     return statsObjective.isEmpty();
   }
