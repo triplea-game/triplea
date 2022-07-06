@@ -386,8 +386,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
     } else {
-      String objectivePanelName =
-          ObjectiveProperties.getInstance(uiContext.getResourceLoader()).getName();
+      String objectivePanelName = new ObjectiveProperties(uiContext.getResourceLoader()).getName();
       addTab(objectivePanelName, objectivePanel, KeyCode.O);
     }
     territoryDetails = new TerritoryDetailPanel(mapPanel, data, uiContext, this);

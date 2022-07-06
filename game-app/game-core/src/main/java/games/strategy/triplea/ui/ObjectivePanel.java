@@ -122,7 +122,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
 
     private void setObjectiveStats() {
       statsObjective = new LinkedHashMap<>();
-      final ObjectiveProperties op = ObjectiveProperties.getInstance(resourceLoader);
+      final ObjectiveProperties objectiveProperties = new ObjectiveProperties(resourceLoader);
       final String gameName =
           FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_')
               .replaceAll(" ", "_")
@@ -130,7 +130,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final Set<String> sectionsSorters = new TreeSet<>();
       // do sections first
-      for (final Entry<Object, Object> entry : op.entrySet()) {
+      for (final Entry<Object, Object> entry : objectiveProperties.entrySet()) {
         final String fileKey = (String) entry.getKey();
         if (!fileKey.startsWith(gameName)) {
           continue;
@@ -167,7 +167,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
         statsObjectiveUnsorted.put(key, new HashMap<>());
       }
       // now do the stuff in the sections
-      for (final Entry<Object, Object> entry : op.entrySet()) {
+      for (final Entry<Object, Object> entry : objectiveProperties.entrySet()) {
         final String fileKey = (String) entry.getKey();
         if (!fileKey.startsWith(gameName)) {
           continue;

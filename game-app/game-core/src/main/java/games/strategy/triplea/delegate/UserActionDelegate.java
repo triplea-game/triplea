@@ -189,7 +189,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     final String acceptanceQuestion =
         bridge
             .getResourceLoader()
-            .map(PoliticsText::getInstance)
+            .map(PoliticsText::new)
             .map(politicsText -> politicsText.getAcceptanceQuestion(userActionAttachment.getText()))
             // String is ignored if getResourceLoader() returns empty Optional.
             .orElse("");
@@ -266,7 +266,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
         .getResourceLoader()
         .ifPresent(
             resourceLoader -> {
-              final UserActionText uat = UserActionText.getInstance(resourceLoader);
+              final UserActionText uat = new UserActionText(resourceLoader);
               final String text = userActionAttachment.getText();
               sendNotification(uat.getNotificationSuccess(text));
               notifyOtherPlayers(
@@ -293,7 +293,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
         .getResourceLoader()
         .ifPresent(
             resourceLoader -> {
-              final UserActionText uat = UserActionText.getInstance(resourceLoader);
+              final UserActionText uat = new UserActionText(resourceLoader);
               final String text = userActionAttachment.getText();
               sendNotification(uat.getNotificationFailure(text));
               notifyOtherPlayers(

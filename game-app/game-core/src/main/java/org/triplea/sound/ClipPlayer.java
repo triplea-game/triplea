@@ -277,12 +277,11 @@ public class ClipPlayer {
    */
   private List<URL> parseClipPaths(final String pathName) {
     // Check if there is a sound.properties path override for this resource
-    String resourcePath = SoundProperties.getInstance(resourceLoader).getProperty(pathName);
-    if (resourcePath == null) {
-      resourcePath =
-          SoundProperties.getInstance(resourceLoader).getDefaultEraFolder() + "/" + pathName;
-    }
-    resourcePath = resourcePath.replace('\\', '/');
+    String resourcePath =
+        Optional.ofNullable(new SoundProperties(resourceLoader).getProperty(pathName))
+            .orElseGet(
+                () -> new SoundProperties(resourceLoader).getDefaultEraFolder() + "/" + pathName)
+            .replace('\\', '/');
     final List<URL> availableSounds = new ArrayList<>();
     if ("NONE".equals(resourcePath)) {
       return availableSounds;
