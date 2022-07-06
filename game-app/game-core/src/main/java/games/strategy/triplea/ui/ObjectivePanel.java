@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.Change;
@@ -66,14 +67,10 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
   ObjectivePanel(final GameData data, final UiContext uiContext) {
     gameData = data;
     dummyDelegate = new ObjectiveDummyDelegateBridge(data);
-    resourceLoader = uiContext.getResourceLoader();
+    Preconditions.checkNotNull(uiContext);
+    resourceLoader = Preconditions.checkNotNull(uiContext.getResourceLoader());
     initLayout();
     gameData.addDataChangeListener(this);
-  }
-
-  @Override
-  public String getName() {
-    return ObjectiveProperties.getInstance(resourceLoader).getName();
   }
 
   public boolean isEmpty() {
