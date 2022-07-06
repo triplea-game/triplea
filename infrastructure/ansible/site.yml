@@ -1,10 +1,11 @@
-#- hosts: all
-#  roles:
-#    - system/apt_common_tools
-#    - system/hostname
-#    - system/firewall
-#    - system/journald
-#    - system/admin_user
+- hosts: all
+  tags: common
+  roles:
+    - system/apt_common_tools
+    - system/hostname
+    - system/firewall
+    - system/journald
+    - system/admin_user
 
 - hosts: forums
   tags: forums
@@ -14,13 +15,13 @@
 - hosts: lobbyServer
   tags: [lobby, lobby_server]
   roles:
-#    - java
-#    - postfix
-#    - database/postgres/install
-#    - database/flyway/install
-#    - nginx/install
-    - lobby_server
-    - nginx/run_certbot
+    - {name: java, tags: java}
+    - {name: postfix, tags: postfix}
+    - {name: database/postgres/install, tags: postgres}
+    - {name: database/flyway/install, tags: flyway}
+    - {name: nginx/install, tags: nginx}
+    - {name: lobby_server, tags: lobby}
+    - {name: nginx/run_certbot, tags: nginx}
 
 - hosts: botHosts
   tags: [bot, bots]
