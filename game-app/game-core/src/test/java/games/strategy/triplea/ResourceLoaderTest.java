@@ -90,7 +90,7 @@ final class ResourceLoaderTest {
       Files.write(dummyPath, List.of("abc=def", "123: 456"));
 
       final ResourceLoader resourceLoader = new ResourceLoader(loader);
-      final Properties properties = resourceLoader.loadAsResource(RESOURCE);
+      final Properties properties = resourceLoader.loadPropertyFile(RESOURCE);
 
       assertEquals("def", properties.getProperty("abc"));
       assertEquals("456", properties.getProperty("123"));

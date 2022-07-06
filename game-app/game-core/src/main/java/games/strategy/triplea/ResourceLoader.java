@@ -216,7 +216,7 @@ public class ResourceLoader implements Closeable {
     }
   }
 
-  public Properties loadAsResource(final String fileName) {
+  public Properties loadPropertyFile(final String fileName) {
     final Properties properties = new OrderedProperties();
     final URL url = getResource(fileName);
     if (url != null) {

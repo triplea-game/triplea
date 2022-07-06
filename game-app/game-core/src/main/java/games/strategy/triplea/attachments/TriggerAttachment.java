@@ -1489,7 +1489,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final FireTriggerParams fireTriggerParams) {
 
     // NOTE: The check is needed to ensure that UI-related code (namely
-    // 'NotificationMessages.getInstance()') is
+    // 'new NotificationMessages(..)') is
     // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(notificationMatch())) {
       bridge
@@ -1500,7 +1500,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                       satisfiedTriggers,
                       bridge,
                       fireTriggerParams,
-                      NotificationMessages.getInstance(resourceLoader)));
+                      new NotificationMessages(resourceLoader)));
     }
   }
 
@@ -2426,7 +2426,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final FireTriggerParams fireTriggerParams) {
 
     // NOTE: The check is needed to ensure that UI-related code (namely
-    // 'NotificationMessages.getInstance()') is
+    // 'new NotificationMessages(...)') is
     // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(victoryMatch())) {
       bridge
@@ -2437,7 +2437,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                       satisfiedTriggers,
                       bridge,
                       fireTriggerParams,
-                      NotificationMessages.getInstance(resourceLoader)));
+                      new NotificationMessages(resourceLoader)));
     }
   }
 

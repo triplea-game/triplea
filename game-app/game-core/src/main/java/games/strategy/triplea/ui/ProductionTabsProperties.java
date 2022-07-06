@@ -38,9 +38,10 @@ class ProductionTabsProperties {
   protected ProductionTabsProperties(
       final GamePlayer gamePlayer, final List<Rule> rules, final ResourceLoader loader) {
     this.rules = rules;
-    properties = loader.loadAsResource(PROPERTY_FILE + "." + gamePlayer.getName() + ".properties");
+    properties =
+        loader.loadPropertyFile(PROPERTY_FILE + "." + gamePlayer.getName() + ".properties");
     // no production_tabs.france.properties check for production_tabs.properties
-    properties.putAll(loader.loadAsResource(PROPERTY_FILE + ".properties"));
+    properties.putAll(loader.loadPropertyFile(PROPERTY_FILE + ".properties"));
   }
 
   List<Tuple<String, List<Rule>>> getRuleLists() {

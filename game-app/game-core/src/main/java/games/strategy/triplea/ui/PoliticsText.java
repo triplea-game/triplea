@@ -1,9 +1,10 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.triplea.ResourceLoader;
+import java.util.Properties;
 
 /** Returns a bunch of messages from politicstext.properties */
-public class PoliticsText extends PropertyFile {
+public class PoliticsText {
 
   private static final String PROPERTY_FILE = "politicstext.properties";
   private static final String BUTTON = "BUTTON";
@@ -13,13 +14,10 @@ public class PoliticsText extends PropertyFile {
   private static final String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
+  private final Properties properties;
 
-  private PoliticsText(final ResourceLoader resourceLoader) {
-    super(PROPERTY_FILE, resourceLoader);
-  }
-
-  public static PoliticsText getInstance(final ResourceLoader resourceLoader) {
-    return PropertyFile.getInstance(PoliticsText.class, () -> new PoliticsText(resourceLoader));
+  public PoliticsText(final ResourceLoader resourceLoader) {
+    properties = resourceLoader.loadPropertyFile(PROPERTY_FILE);
   }
 
   String getButtonText(final String politicsKey) {
