@@ -169,8 +169,8 @@ public class SimpleUnitPanel extends JPanel {
     if (scaleFactor == 1.0) {
       return icon;
     }
-    int width = (int) (icon.getIconWidth() * scaleFactor);
-    int height = (int) (icon.getIconHeight() * scaleFactor);
+    int width = Math.max(1, (int) (icon.getIconWidth() * scaleFactor));
+    int height = Math.max(1, (int) (icon.getIconHeight() * scaleFactor));
     return new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
   }
 }
