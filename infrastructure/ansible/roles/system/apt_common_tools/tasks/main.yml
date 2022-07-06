@@ -7,6 +7,7 @@
 - name: apt install standard utilities and packages
   apt:
     state: present
+    autoremove: true
     name:
       # acl installed to help with: "Failed to set permissions on the temporary files
       # Ansible needs to create when becoming an unprivileged user"
