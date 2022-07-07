@@ -116,9 +116,9 @@ final class ViewMenu extends JMenu {
             e -> {
               final SpinnerNumberModel model = new SpinnerNumberModel();
               model.setMaximum(UiContext.MAP_SCALE_MAX_VALUE * 100);
-              model.setMinimum((int) Math.ceil(frame.getMapPanel().getMinScale() * 100));
+              model.setMinimum(Math.ceil(frame.getMapPanel().getMinScale() * 100));
               model.setStepSize(1);
-              model.setValue((int) Math.round(frame.getMapPanel().getScale() * 100));
+              model.setValue((double) Math.round(frame.getMapPanel().getScale() * 100));
               final JSpinner spinner = new JSpinner(model);
               final JPanel panel = new JPanel();
               panel.setLayout(new BorderLayout());
