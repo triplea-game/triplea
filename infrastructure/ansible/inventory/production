@@ -2,7 +2,7 @@
 forums.triplea-game.org
 
 [lobbyServer]
-prod2-lobby.triplea-game.org
+prod.triplea-game.org
 
 [botHosts]
 prod2-bot01.triplea-game.org  bot_prefix=1 bot_name=Dallas
