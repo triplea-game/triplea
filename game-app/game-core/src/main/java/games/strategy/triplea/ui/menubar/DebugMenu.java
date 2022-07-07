@@ -8,6 +8,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public final class DebugMenu extends JMenu {
     frameVisitors.forEach(tripleAFrameConsumer -> tripleAFrameConsumer.accept(frame));
 
     debugOptions.stream()
-        .sorted()
+        .sorted(Comparator.comparing(DebugOption::getName))
         .forEach(
             option -> {
               final JMenu playerDebugMenu = new JMenu(option.getName());
