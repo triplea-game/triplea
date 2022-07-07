@@ -21,7 +21,7 @@
     - {name: database/flyway/install, tags: flyway}
     - {name: nginx/install, tags: nginx}
     - {name: lobby_server, tags: lobby}
-    - {name: nginx/run_certbot, tags: nginx}
+    - {name: nginx/run_certbot, tags: certbot}
 
 - hosts: botHosts
   tags: [bot, bots]
