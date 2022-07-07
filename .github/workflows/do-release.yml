@@ -39,8 +39,6 @@ jobs:
           pip install ansible==2.9.13
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          # TODO: temporily running prod deployment in dry run mode until we can avoid
-          # players being disconnected (need to avoid restarts)
-          ./run_ansible --dry-run --environment production
+          ./run_ansible --environment production --tags common,java,postfix,postgres,flyway
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
