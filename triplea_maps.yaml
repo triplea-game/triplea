@@ -2467,7 +2467,7 @@
 - mapName: WW2v5 Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v5_variants/archive/master.zip
-  version: 4
+  version: 5
   img: https://raw.githubusercontent.com/triplea-maps/ww2v5_variants/master/preview.png
   description: |
    <br>Variants for WW2v5
