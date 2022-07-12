@@ -2,10 +2,12 @@
 TripleA is a free to play, volunteer run, 100% open source gaming community.
 
   - ***[Forums: Discussion, Questions & Help](https://forums.triplea-game.org/category/10/help-questions)***
+  - ***[How to Contribute](/docs/contribute.md)***
   - ***[Bug Tracker](https://github.com/triplea-game/triplea/issues/new)***
   - ***[Developer Setup Guide](/docs/development/README.md)***
 
 ![Game Board Screenshot](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
+
 
 ## About TripleA
 
