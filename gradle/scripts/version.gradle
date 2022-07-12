@@ -5,7 +5,7 @@ ext.getProductVersion = {
 ext.getCommitNumber = { ->
     def stdout = new ByteArrayOutputStream()
     exec {
-        commandLine 'git', 'rev-list', '--count', 'master'
+        commandLine 'git', 'rev-list', '--count', 'HEAD'
         standardOutput = stdout
     }
     return stdout.toString().trim()

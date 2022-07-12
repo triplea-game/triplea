@@ -12,5 +12,5 @@ echo -n "$($scriptDir/get-product-version)+"
 # finish printing with commit number
 (
   cd $scriptDir || exit 1
-  git rev-list --count master
+  git rev-list --count HEAD
 )
