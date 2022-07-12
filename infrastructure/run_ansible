@@ -17,7 +17,7 @@ function usage() {
   echo "$0 --environment $ENVIRONMENT_VAGRANT --diff --dry-run --verbose"
   echo ""
   echo "[options]"
-  echo "  --environment, -env [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRODUCTION]"
+  echo "  --environment, --env [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRODUCTION]"
   echo "      The target environment for the deployment."
   echo "         $ENVIRONMENT_VAGRANT is an environment that can be launched locally via a VM"
   echo "  --tags, -t [ansible tags]"
@@ -49,7 +49,7 @@ while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
-    --env|--environment)
+    -env|--env|--environment)
       ENVIRONMENT="$2"
       if [[ "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" \
          && "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]]; then
@@ -103,22 +103,14 @@ if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
 fi
 
 "$scriptDir/.include/build_latest_artifacts"
-export ANSIBLE_CFG="$scriptDir/ansible.cfg"
-
 BUILD_VERSION=$("$rootDir/.build/get-build-version")
 PRODUCT_VERSION=$("$rootDir/.build/get-product-version")
 
 # Run deployment
 set -x
-ansible-playbook \
+ANSIBLE_CONFIG="$scriptDir/ansible.cfg" ansible-playbook \
   --extra-vars "build_version=$BUILD_VERSION" \
   --extra-vars "product_version=$PRODUCT_VERSION" \
    --inventory "$scriptDir/ansible/inventory/$ENVIRONMENT" $DRY_RUN_ARG \
    $VAULT_PASSWORD_FILE_ARG $TAGS_ARG $DIFF_ARG $VERBOSE_ARG "$scriptDir/ansible/site.yml"
 set +x
-# Do Cleanup
-if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
-  echo "Cleanup, removing old kernel patches.."
-  ansible -i "$scriptDir/ansible/inventory/$ENVIRONMENT" all --become-user=root -m shell -a \
-    "sudo apt autoremove -y"
-fi
