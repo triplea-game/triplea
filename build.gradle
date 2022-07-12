@@ -63,7 +63,7 @@ subprojects {
     // and adds version number to packaged jar files.
     // ie:  [module-name]-[build-version].jar,
     // eg:  lobby-server-2.6+50370c.jar
-    version = getProductVersion() + "+" + getGitHash()
+    version = getProductVersion() + "+" + getCommitNumber()
 
     ext {
         apacheHttpComponentsVersion = '4.5.13'
