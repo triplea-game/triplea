@@ -6,7 +6,7 @@ bot_version: "{{ build_version | default('0.0') }}"
 bot_install_home: "{{ bot_folder }}/{{ bot_version }}"
 
 # The location of the jar executable that we will run to launch the bot server.
-bot_jar: "{{ bot_install_home }}/bin/triplea-game-headless-{{ bot_version }}.jar"
+bot_jar: "{{ bot_install_home }}/bin/triplea-game-headless.jar"
 
 # A folder where the bot server will find maps.
 bot_maps_folder: "{{ bot_folder }}/maps"
