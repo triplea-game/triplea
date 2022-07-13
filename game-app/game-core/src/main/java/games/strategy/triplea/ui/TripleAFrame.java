@@ -161,7 +161,7 @@ import org.triplea.util.Tuple;
 
 /** Main frame for the triple a game. */
 @Slf4j
-public final class TripleAFrame extends JFrame implements QuitHandler {
+public final class TripleAFrame extends JFrame implements QuitHandler, ITripleAFrame {
   private static final long serialVersionUID = 7640069668264418976L;
 
   private final LocalPlayers localPlayers;
