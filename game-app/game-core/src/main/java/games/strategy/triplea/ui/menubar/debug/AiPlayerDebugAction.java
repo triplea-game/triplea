@@ -23,14 +23,9 @@ public class AiPlayerDebugAction {
 
   /** Gives the debug option methods to draw on the rendered map */
   public class DebugMapRenderer {
-    public void colorOnTerritory(
-        final Territory territory, final Color color, final double transparency) {
-      mapPanel.setTerritoryOverlayForTile(territory, color, 100);
+    public void colorOnTerritory(final Territory territory, final Color color, final int alpha) {
+      mapPanel.setTerritoryOverlayForTile(territory, color, alpha);
       territoriesRendered.add(territory);
-    }
-
-    public void clearTerritory(final Territory territory) {
-      mapPanel.clearTerritoryOverlay(territory);
     }
   }
 
