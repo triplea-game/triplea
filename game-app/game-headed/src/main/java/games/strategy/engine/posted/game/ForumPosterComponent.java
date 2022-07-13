@@ -76,6 +76,7 @@ public final class ForumPosterComponent extends JPanel {
         includeSavegameCheckBox.isSelected(),
         forumPosterDelegate,
         frame,
+        frame.getGame(),
         postButton);
     repostTurnSummaryCheckBox.setSelected(false);
   }

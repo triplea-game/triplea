@@ -161,7 +161,7 @@ import org.triplea.util.Tuple;
 
 /** Main frame for the triple a game. */
 @Slf4j
-public final class TripleAFrame extends JFrame implements QuitHandler, ITripleAFrame {
+public final class TripleAFrame extends JFrame implements QuitHandler {
   private static final long serialVersionUID = 7640069668264418976L;
 
   private final LocalPlayers localPlayers;
@@ -2087,7 +2087,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler, ITripleAF
     mapPanel.resetMap();
   }
 
-  @Override
   public IGame getGame() {
     return game;
   }
@@ -2100,10 +2099,5 @@ public final class TripleAFrame extends JFrame implements QuitHandler, ITripleAF
 
   public boolean hasChat() {
     return chatPanel != null;
-  }
-
-  @Override
-  public JFrame getFrame() {
-    return this;
   }
 }
