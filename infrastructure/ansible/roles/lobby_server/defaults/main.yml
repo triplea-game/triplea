@@ -1,11 +1,11 @@
-lobby_server_user: lobby_server
+lobby_user: lobby
 # Full version includes the build number, eg: 2.6+153432
 lobby_full_version: "{{ build_version }}"
 
 # product version is just the major.minor, eg: 2.6
 lobby_product_version: "{{ product_version }}"
-lobby_name: "lobby_server_{{ lobby_product_version }}"
-lobby_server_home_folder: "/opt/lobby/{{ lobby_product_version }}"
+lobby_name: "lobby_{{ lobby_product_version }}"
+lobby_home_folder: "/opt/lobby/{{ lobby_product_version }}"
 
 lobby_ports:
   "default": "8080"
