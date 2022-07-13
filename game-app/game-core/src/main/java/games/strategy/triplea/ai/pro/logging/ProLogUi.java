@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.logging;
 
 import games.strategy.engine.framework.GameShutdownRegistry;
-import games.strategy.triplea.ui.menubar.DebugMenu;
+import games.strategy.triplea.ui.menubar.DebugMenuInfo;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import games.strategy.ui.Util;
@@ -20,12 +20,12 @@ public final class ProLogUi {
 
   public static void registerDebugMenu() {
     if (!registered) {
-      DebugMenu.registerDebugOptions("Hard AI", ProLogUi.buildDebugOptions());
-      DebugMenu.registerFrameVisitor(
-          tripleAFrame -> {
+      DebugMenuInfo.registerDebugOptions("Hard AI", ProLogUi.buildDebugOptions());
+      DebugMenuInfo.registerFrameVisitor(
+          frame -> {
             Util.ensureOnEventDispatchThread();
             if (settingsWindow == null) {
-              settingsWindow = new ProLogWindow(tripleAFrame);
+              settingsWindow = new ProLogWindow(frame);
               GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);
             }
           });

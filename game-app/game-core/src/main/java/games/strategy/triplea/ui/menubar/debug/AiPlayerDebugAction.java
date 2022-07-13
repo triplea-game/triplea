@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.menubar.debug;
 
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.TerritoryDetailPanel;
+import games.strategy.triplea.ui.AdditionalTerritoryDetails;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import lombok.Value;
 public class AiPlayerDebugAction {
 
   MapPanel mapPanel;
-  TerritoryDetailPanel territoryDetails;
+  AdditionalTerritoryDetails additionalTerritoryDetails;
   Collection<Territory> territoriesRendered = new ArrayList<>();
   Collection<Function<Territory, String>> territoryDetailsRendered = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class AiPlayerDebugAction {
    * @param territoryDetailsGetter Takes a territory and returns the additional text for the panel
    */
   public void renderInTerritoryDetails(final Function<Territory, String> territoryDetailsGetter) {
-    territoryDetails.addAdditionalTerritoryDetailsFunction(territoryDetailsGetter);
+    additionalTerritoryDetails.addAdditionalTerritoryDetailsFunction(territoryDetailsGetter);
     territoryDetailsRendered.add(territoryDetailsGetter);
   }
 
@@ -61,7 +61,8 @@ public class AiPlayerDebugAction {
    */
   public void deselect() {
     territoriesRendered.forEach(mapPanel::clearTerritoryOverlay);
-    territoryDetailsRendered.forEach(territoryDetails::removeAdditionalTerritoryDetailsFunction);
+    territoryDetailsRendered.forEach(
+        additionalTerritoryDetails::removeAdditionalTerritoryDetailsFunction);
     mapPanel.repaint();
   }
 }

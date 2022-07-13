@@ -11,10 +11,7 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -45,8 +42,6 @@ public class TerritoryDetailPanel extends JPanel {
   private final JScrollPane units = new JScrollPane();
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
-  private final List<Function<Territory, String>> additionalTerritoryDetailFunctions =
-      new ArrayList<>();
 
   TerritoryDetailPanel(
       final MapPanel mapPanel,
@@ -136,14 +131,6 @@ public class TerritoryDetailPanel extends JPanel {
     territoryChanged(null);
   }
 
-  public void addAdditionalTerritoryDetailsFunction(final Function<Territory, String> method) {
-    this.additionalTerritoryDetailFunctions.add(method);
-  }
-
-  public void removeAdditionalTerritoryDetailsFunction(final Function<Territory, String> method) {
-    this.additionalTerritoryDetailFunctions.remove(method);
-  }
-
   private void territoryChanged(final @Nullable Territory territory) {
     currentTerritory = territory;
     if (territory == null) {
@@ -154,9 +141,7 @@ public class TerritoryDetailPanel extends JPanel {
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;
     final String additionalText =
-        this.additionalTerritoryDetailFunctions.stream()
-            .map(method -> method.apply(territory))
-            .collect(Collectors.joining("<br />"));
+        frame.getAdditionalTerritoryDetails().computeAdditionalText(territory);
     if (ta == null) {
       labelText =
           "<html>"

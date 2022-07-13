@@ -10,7 +10,7 @@ import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster.SaveGameParameter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
-import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.ITripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -212,7 +212,7 @@ public class PbemMessagePoster implements Serializable {
       final HistoryLog historyLog,
       final boolean includeSaveGame,
       final IAbstractForumPosterDelegate postingDelegate,
-      final TripleAFrame frame,
+      final ITripleAFrame frame,
       final JComponent postButton) {
     String message = "";
     final String displayName = gameProperties.get(IForumPoster.NAME, "");
@@ -231,7 +231,7 @@ public class PbemMessagePoster implements Serializable {
     message = sb.toString();
     final int choice =
         JOptionPane.showConfirmDialog(
-            frame,
+            frame.getFrame(),
             message,
             "Post " + title + "?",
             JOptionPane.OK_CANCEL_OPTION,
@@ -241,7 +241,8 @@ public class PbemMessagePoster implements Serializable {
       if (postButton != null) {
         postButton.setEnabled(false);
       }
-      final ProgressWindow progressWindow = new ProgressWindow(frame, "Posting " + title + "...");
+      final ProgressWindow progressWindow =
+          new ProgressWindow(frame.getFrame(), "Posting " + title + "...");
       progressWindow.setVisible(true);
       // start a new thread for posting the summary.
       ThreadRunner.runInNewThread(
@@ -308,7 +309,7 @@ public class PbemMessagePoster implements Serializable {
                     postButton.setEnabled(!finalPostOk);
                   }
                   JOptionPane.showMessageDialog(
-                      frame,
+                      frame.getFrame(),
                       finalMessage,
                       title + " Posted",
                       finalPostOk ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);

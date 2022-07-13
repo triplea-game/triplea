@@ -13,7 +13,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.menubar.DebugMenu;
+import games.strategy.triplea.ui.menubar.DebugMenuInfo;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +41,7 @@ public class FlowFieldAi extends AbstractAi {
   public void initialize(final PlayerBridge playerBridge, final GamePlayer gamePlayer) {
     super.initialize(playerBridge, gamePlayer);
     setupDiffusionMaps();
-    DebugMenu.registerDebugOptions(this, buildDebugOptions());
+    DebugMenuInfo.registerDebugOptions(this, buildDebugOptions());
   }
 
   private List<AiPlayerDebugOption> buildDebugOptions() {

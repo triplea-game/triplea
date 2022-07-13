@@ -247,6 +247,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler, ITripleAF
         }
       };
 
+  @Getter
+  private final AdditionalTerritoryDetails additionalTerritoryDetails =
+      new AdditionalTerritoryDetails();
+
   private TripleAFrame(
       final IGame game,
       final LocalPlayers players,
@@ -2083,6 +2087,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler, ITripleAF
     mapPanel.resetMap();
   }
 
+  @Override
   public IGame getGame() {
     return game;
   }
@@ -2095,5 +2100,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler, ITripleAF
 
   public boolean hasChat() {
     return chatPanel != null;
+  }
+
+  @Override
+  public JFrame getFrame() {
+    return this;
   }
 }
