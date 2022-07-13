@@ -45,30 +45,30 @@
 
 - name: create lobby service user group
   group:
-    name: "{{ lobby_server_user }}"
+    name: "{{ lobby_user }}"
 
 - name: create service user
   user:
-    name: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
+    name: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
     create_home: no
     system: yes
 
 - name: ensure deployment folder exists
   file:
     state: directory
-    path: "{{ lobby_server_home_folder }}"
+    path: "{{ lobby_home_folder }}"
     mode: "0755"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
+    owner: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
 
 - name: extract lobby_server zip file
   register: deploy_artifact
   unarchive:
     src: "{{ lobby_artifact }}"
-    dest: "{{ lobby_server_home_folder }}/"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
+    dest: "{{ lobby_home_folder }}/"
+    owner: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
 
 - name: install systemd service script
   register: service_script
@@ -88,7 +88,7 @@
 - name: drop a version file in lobby home
   template:
     src: version.txt
-    dest: "{{ lobby_server_home_folder }}/version.txt"
+    dest: "{{ lobby_home_folder }}/version.txt"
     mode: "0644"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
+    owner: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
