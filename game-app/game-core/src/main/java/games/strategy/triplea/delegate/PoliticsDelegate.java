@@ -314,10 +314,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         .getResourceLoader()
         .ifPresent(
             resourceLoader -> {
-              String notificationFailure =
-                  new PoliticsText(resourceLoader).getNotificationFailure(paa.getText());
-              sendNotification(notificationFailure);
-              notifyOtherPlayers(notificationFailure);
+              PoliticsText politicsText = new PoliticsText(resourceLoader);
+              sendNotification(politicsText.getNotificationFailure(paa.getText()));
+              notifyOtherPlayers(politicsText.getNotificationFailureOthers(paa.getText()));
             });
   }
 
@@ -334,10 +333,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         .getResourceLoader()
         .ifPresent(
             resourceLoader -> {
-              String notificationSuccess =
-                  new PoliticsText(resourceLoader).getNotificationSuccess(paa.getText());
-              sendNotification(notificationSuccess);
-              notifyOtherPlayers(notificationSuccess);
+              PoliticsText politicsText = new PoliticsText(resourceLoader);
+              sendNotification(politicsText.getNotificationSuccess(paa.getText()));
+              notifyOtherPlayers(politicsText.getNotificationSuccessOthers(paa.getText()));
             });
   }
 
