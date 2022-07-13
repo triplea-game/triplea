@@ -2701,7 +2701,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/argomidweight/archive/master.zip
   img: https://github.com/triplea-maps/argomidweight/raw/master/preview.png
-  version: 0.4
+  version: 1
   description: |
     <br>* A medium-weight global WWII map set in 1939 or 1942
     <br>* Multiple plausible factory sites let players hold chokepoints with infantry, not fighter planes.
