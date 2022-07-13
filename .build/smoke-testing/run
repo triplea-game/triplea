@@ -17,10 +17,9 @@ scriptDir=$(dirname "$0")
 rootDir="$scriptDir/../.."
 "$rootDir/.build/setup-database"
 
-readonly VERSION=$("$rootDir/.build/get-build-version")
-readonly LOBBY_SERVER_JAR_PATH="$rootDir/spitfire-server/dropwizard-server/build/libs/triplea-dropwizard-server-${VERSION}.jar"
-readonly BOT_JAR_PATH="$rootDir/game-app/game-headless/build/libs/triplea-game-headless-${VERSION}.jar"
-readonly SMOKE_TEST_JAR_PATH="$rootDir/smoke-testing/build/libs/triplea-smoke-testing-${VERSION}.jar"
+readonly LOBBY_SERVER_JAR_PATH="$rootDir/spitfire-server/dropwizard-server/build/libs/triplea-dropwizard-server.jar"
+readonly BOT_JAR_PATH="$rootDir/game-app/game-headless/build/libs/triplea-game-headless.jar"
+readonly SMOKE_TEST_JAR_PATH="$rootDir/smoke-testing/build/libs/triplea-smoke-testing.jar"
 
 readonly LOBBY_SERVER_OUTPUT="server-output"
 readonly BOT_OUTPUT="bot-output"

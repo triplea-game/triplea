@@ -84,3 +84,11 @@
     state: restarted
     enabled: yes
     daemon_reload: true
+
+- name: drop a version file in lobby home
+  template:
+    src: version.txt
+    dest: "{{ lobby_server_home_folder }}/version.txt"
+    mode: "0644"
+    owner: "{{ lobby_server_user }}"
+    group: "{{ lobby_server_user }}"

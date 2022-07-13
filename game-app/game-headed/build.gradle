@@ -114,5 +114,8 @@ task release(group: 'release', dependsOn: [portableInstaller, platformInstallers
 }
 
 shadowJar {
+    // 'archiveVersion' sets the version number on packaged jar files
+    // eg: "2.6+105234" in "lobby-server-2.6+50370c.jar"
+    archiveVersion = getProductVersion() + "+" + getGitHash()
     archiveClassifier.set ''
 }

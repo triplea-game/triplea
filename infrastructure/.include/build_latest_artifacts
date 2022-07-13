@@ -7,10 +7,9 @@
 scriptDir="$(dirname "$0")"
 rootDir="$scriptDir/../.."
 
-BUILD_VERSION=$("$rootDir/.build/get-build-version")
 MIGRATIONS_ZIP="$rootDir/spitfire-server/database/build/artifacts/migrations.zip"
-LOBBY_SERVER_ZIP="$rootDir/spitfire-server/dropwizard-server/build/artifacts/triplea-dropwizard-server-$BUILD_VERSION.zip"
-BOT_ZIP="$rootDir/game-app/game-headless/build/artifacts/triplea-game-headless-$BUILD_VERSION.zip"
+LOBBY_SERVER_ZIP="$rootDir/spitfire-server/dropwizard-server/build/artifacts/triplea-dropwizard-server.zip"
+BOT_ZIP="$rootDir/game-app/game-headless/build/artifacts/triplea-game-headless.zip"
 
 
 function main() {
@@ -22,18 +21,6 @@ function buildArtifacts() {
   (
     cd "$rootDir" || exit 1
 
-    # Run a clean if artifacts do not exist. We may have already built the artifact
-    # but with a different  SHA, in which case gradle will not generate them.
-    if [ ! -f "$MIGRATIONS_ZIP" ]; then
-      ./gradlew :spitfire-server:database:clean
-    fi
-    if [ ! -f "$LOBBY_SERVER_ZIP" ]; then
-      ./gradlew :spitfire-server:dropwizard-server:clean
-    fi
-    if [ ! -f "$BOT_ZIP" ]; then
-      ./gradlew :game-app:game-headless:clean
-    fi
-
     ./gradlew \
         :spitfire-server:dropwizard-server:release \
         :game-app:game-headless:release \
@@ -43,7 +30,6 @@ function buildArtifacts() {
 }
 
 function copyBuildArtifacts() {
-  BUILD_VERSION=$("$rootDir/.build/get-build-version")
   copyBuildArtifact "$MIGRATIONS_ZIP" "$scriptDir/../ansible/roles/lobby_server/files/"
   copyBuildArtifact "$LOBBY_SERVER_ZIP" "$scriptDir/../ansible/roles/lobby_server/files/"
   copyBuildArtifact "$BOT_ZIP" "$scriptDir/../ansible/roles/bot/files/"
