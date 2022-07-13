@@ -125,8 +125,7 @@ public abstract class ActionPanel extends JPanel {
     return new JButtonBuilder()
         .title("Done")
         .actionListener(this::performDone)
-        // FIXME Use ActionButtons.DONE_BUTTON_TOOLTIP
-        .toolTip("Press ctrl+enter or click this button to end the current turn phase")
+        .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
         .build();
   }
 
