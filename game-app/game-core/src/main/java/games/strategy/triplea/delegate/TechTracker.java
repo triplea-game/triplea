@@ -261,7 +261,7 @@ public class TechTracker {
     final TechAttachment attachment = player.getTechAttachment();
     if (advance instanceof GenericTechAdvance
         && ((GenericTechAdvance) advance).getAdvance() == null) {
-      return ChangeFactory.genericTechChange(attachment, false, advance.getProperty());
+      return ChangeFactory.genericTechChange(attachment, value, advance.getProperty());
     }
     return ChangeFactory.attachmentPropertyChange(
         attachment, String.valueOf(value), advance.getProperty());
