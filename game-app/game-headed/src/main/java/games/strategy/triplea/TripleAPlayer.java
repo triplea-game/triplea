@@ -1,5 +1,6 @@
 package games.strategy.triplea;
 
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
@@ -188,6 +189,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
   private void enableEditModeMenu() {
     try {
       ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
+    } catch (final GameOverException e) {
+      return;
     } catch (final Exception e) {
       log.error("Failed to set edit delegate", e);
     }
