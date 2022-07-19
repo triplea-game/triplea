@@ -33,6 +33,8 @@ class AvailableSupports {
 
   final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
 
+  // Wrapped over IntegerMap<Unit> that keeps track of the total, instead of recomputing it
+  // repeatedly which can be very slow with lots of support units.
   static class SupportDetails {
     IntegerMap<Unit> supportUnits;
     int totalSupport;
