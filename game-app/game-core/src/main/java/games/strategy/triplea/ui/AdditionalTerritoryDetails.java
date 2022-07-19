@@ -7,19 +7,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AdditionalTerritoryDetails {
-  private final List<Function<Territory, String>> additionalTerritoryDetailFunctions =
-      new ArrayList<>();
+  private final List<Function<Territory, String>> detailProviders = new ArrayList<>();
 
   public void addAdditionalTerritoryDetailsFunction(final Function<Territory, String> method) {
-    this.additionalTerritoryDetailFunctions.add(method);
+    this.detailProviders.add(method);
   }
 
   public void removeAdditionalTerritoryDetailsFunction(final Function<Territory, String> method) {
-    this.additionalTerritoryDetailFunctions.remove(method);
+    this.detailProviders.remove(method);
   }
 
   public String computeAdditionalText(Territory territory) {
-    return this.additionalTerritoryDetailFunctions.stream()
+    return this.detailProviders.stream()
         .map(method -> method.apply(territory))
         .collect(Collectors.joining("<br />"));
   }
