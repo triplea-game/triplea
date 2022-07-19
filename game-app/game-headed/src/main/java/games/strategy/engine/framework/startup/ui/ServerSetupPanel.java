@@ -21,14 +21,15 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Vector;
+import javax.annotation.Nullable;
 import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -40,6 +41,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -334,19 +336,50 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
     final Map<String, String> reloadSelections =
         GamePlayer.currentPlayers(gameSelectorModel.getGameData());
+    final List<PlayerTypes.Type> visiblePlayerTypes =
+        CollectionUtils.getMatches(HeadedPlayerTypes.getPlayerTypes(), PlayerTypes.Type::isVisible);
     for (final Map.Entry<String, Collection<String>> entry :
         model.getPlayerNamesAndAlliancesInTurnOrder().entrySet()) {
-      final PlayerRow newPlayerRow =
-          new PlayerRow(
-              entry.getKey(),
-              reloadSelections,
-              entry.getValue(),
-              new PlayerTypes(HeadedPlayerTypes.getPlayerTypes()));
-      playerRows.add(newPlayerRow);
-      newPlayerRow.update(players, playersEnabled);
+      final String playerName = entry.getKey();
+      GamePlayer player = null;
+      if (gameSelectorModel.getGameData() != null) {
+        player = gameSelectorModel.getGameData().getPlayerList().getPlayerId(playerName);
+      }
+      PlayerTypes.Type playerType =
+          determinePlayerType(playerName, player, reloadSelections, visiblePlayerTypes);
+      PlayerRow row = new PlayerRow(playerName, playerType, visiblePlayerTypes, entry.getValue());
+      row.update(players, playersEnabled);
+      playerRows.add(row);
     }
     layoutPlayers();
     internalPlayersTakenChanged();
+  }
+
+  private PlayerTypes.Type determinePlayerType(
+      String playerName,
+      @Nullable GamePlayer player,
+      Map<String, String> reloadSelections,
+      List<PlayerTypes.Type> visiblePlayerTypes) {
+    final String previousSelection = reloadSelections.get(playerName);
+    if (previousSelection != null && previousSelection.equalsIgnoreCase("Client")) {
+      return HeadedPlayerTypes.HUMAN_PLAYER;
+    } else if (previousSelection != null && !previousSelection.equals("no_one")) {
+      Optional<PlayerTypes.Type> type =
+          visiblePlayerTypes.stream().filter(t -> t.getLabel().equals(previousSelection)).findAny();
+      if (type.isPresent()) {
+        return type.get();
+      }
+    }
+
+    if (player != null && player.isDefaultTypeAi()) {
+      return PlayerTypes.PRO_AI;
+    } else if (player != null && player.isDefaultTypeDoesNothing()) {
+      return HeadedPlayerTypes.DOES_NOTHING_PLAYER;
+    } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
+      return PlayerTypes.PRO_AI;
+    } else {
+      return HeadedPlayerTypes.HUMAN_PLAYER;
+    }
   }
 
   class PlayerRow {
@@ -354,24 +387,33 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private final JLabel playerLabel;
     private final JCheckBox localCheckBox;
     private final JCheckBox enabledCheckBox;
-    private final JComboBox<String> type;
+    private final JComboBox<PlayerTypes.Type> type;
     private final JButton alliance;
-    private final ActionListener localPlayerActionListener =
-        new ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
+
+    PlayerRow(
+        final String playerName,
+        final PlayerTypes.Type playerType,
+        final Collection<PlayerTypes.Type> playerTypes,
+        final Collection<String> playerAlliances) {
+      nameLabel = new JLabel(playerName);
+      playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
+      type = new JComboBox<>(new DefaultComboBoxModel<>(new Vector<>(playerTypes)));
+      type.setSelectedItem(playerType);
+      model.setLocalPlayerType(nameLabel.getText(), playerType);
+      localCheckBox = new JCheckBox();
+      localCheckBox.addActionListener(
+          e -> {
             if (localCheckBox.isSelected()) {
               model.takePlayer(nameLabel.getText());
             } else {
               model.releasePlayer(nameLabel.getText());
             }
             setWidgetActivation();
-          }
-        };
-    private final ActionListener disablePlayerActionListener =
-        new ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
+          });
+      localCheckBox.setSelected(true);
+      enabledCheckBox = new JCheckBox();
+      enabledCheckBox.addActionListener(
+          e -> {
             if (enabledCheckBox.isSelected()) {
               model.enablePlayer(nameLabel.getText());
               type.setSelectedItem(HeadedPlayerTypes.HUMAN_PLAYER);
@@ -380,50 +422,20 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
               type.setSelectedItem(PlayerTypes.WEAK_AI);
             }
             setWidgetActivation();
-          }
-        };
-
-    PlayerRow(
-        final String playerName,
-        final Map<String, String> reloadSelections,
-        final Collection<String> playerAlliances,
-        final PlayerTypes playerTypesProvider) {
-      nameLabel = new JLabel(playerName);
-      playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
-      localCheckBox = new JCheckBox();
-      localCheckBox.addActionListener(localPlayerActionListener);
-      localCheckBox.setSelected(true);
-      enabledCheckBox = new JCheckBox();
-      enabledCheckBox.addActionListener(disablePlayerActionListener);
+          });
       // this gets updated later
       enabledCheckBox.setSelected(true);
-      final String[] playerTypes = playerTypesProvider.getAvailablePlayerLabels();
-      type = new JComboBox<>(playerTypes);
-      String previousSelection = reloadSelections.get(playerName);
-      if (previousSelection.equalsIgnoreCase("Client")) {
-        previousSelection = playerTypes[0];
-      }
-      if (!previousSelection.equals("no_one") && List.of(playerTypes).contains(previousSelection)) {
-        type.setSelectedItem(previousSelection);
-        model.setLocalPlayerType(
-            nameLabel.getText(), playerTypesProvider.fromLabel((String) type.getSelectedItem()));
-      } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
-        // the 4th in the list should be Pro AI (Hard AI)
-        type.setSelectedItem(PlayerTypes.PRO_AI.getLabel());
-        model.setLocalPlayerType(nameLabel.getText(), PlayerTypes.PRO_AI);
-      }
       if (playerAlliances.contains(playerName)) {
         alliance = new JButton();
         alliance.setVisible(false);
       } else {
         alliance = new JButton(playerAlliances.toString());
-        alliance.setToolTipText("Click to play " + playerAlliances.toString());
+        alliance.setToolTipText("Click to play " + playerAlliances);
       }
       type.addActionListener(
           e ->
               model.setLocalPlayerType(
-                  nameLabel.getText(),
-                  playerTypesProvider.fromLabel((String) type.getSelectedItem())));
+                  nameLabel.getText(), (PlayerTypes.Type) type.getSelectedItem()));
     }
 
     public void takePlayerAction() {
@@ -438,7 +450,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       setWidgetActivation();
     }
 
-    public JComboBox<String> getType() {
+    public JComboBox<PlayerTypes.Type> getType() {
       return type;
     }
 

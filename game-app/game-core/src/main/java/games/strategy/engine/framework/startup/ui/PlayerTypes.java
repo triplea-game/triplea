@@ -92,5 +92,10 @@ public class PlayerTypes {
      * method will create the corresponding {@code IRemotePlayer} instance.
      */
     public abstract Player newPlayerWithName(String name);
+
+    @Override
+    public String toString() {
+      return label;
+    }
   }
 }
