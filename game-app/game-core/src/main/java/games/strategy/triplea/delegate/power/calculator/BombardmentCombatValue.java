@@ -111,7 +111,7 @@ public class BombardmentCombatValue implements CombatValue {
   static class BombardmentStrength implements StrengthCalculator {
 
     int gameDiceSides;
-    Collection<TerritoryEffect> territoryEffects;
+    @Nonnull Collection<TerritoryEffect> territoryEffects;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
 
