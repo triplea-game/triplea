@@ -31,20 +31,19 @@ public class HeadedPlayerTypes {
         }
       };
 
+  public static final PlayerTypes.Type DOES_NOTHING_PLAYER =
+      new PlayerTypes.Type(PlayerTypes.DOES_NOTHING_PLAYER_LABEL) {
+        @Override
+        public Player newPlayerWithName(String name) {
+          return new DoesNothingAi(name, getLabel());
+        }
+      };
+
   private static boolean filterBetaPlayerType(final PlayerTypes.Type playerType) {
     if (playerType.getLabel().equals(FLOW_FIELD_LABEL)) {
       return ClientSetting.showBetaFeatures.getValue().orElse(false);
     }
     return true;
-  }
-
-  private static PlayerTypes.Type getDoesNothingType() {
-    return new PlayerTypes.Type(PlayerTypes.DOES_NOTHING_PLAYER_LABEL) {
-      @Override
-      public Player newPlayerWithName(String name) {
-        return new DoesNothingAi(name, getLabel());
-      }
-    };
   }
 
   private static PlayerTypes.Type getFlowFieldType() {
@@ -61,7 +60,7 @@ public class HeadedPlayerTypes {
             // The first item in this list will be the default when hosting
             List.of(HUMAN_PLAYER),
             PlayerTypes.getBuiltInPlayerTypes(),
-            List.of(CLIENT_PLAYER, getDoesNothingType(), getFlowFieldType()))
+            List.of(CLIENT_PLAYER, DOES_NOTHING_PLAYER, getFlowFieldType()))
         .flatMap(Collection::stream)
         .filter(HeadedPlayerTypes::filterBetaPlayerType)
         .collect(Collectors.toList());
