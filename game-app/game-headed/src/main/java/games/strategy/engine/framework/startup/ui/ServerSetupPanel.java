@@ -26,10 +26,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Vector;
 import javax.annotation.Nullable;
 import javax.swing.Action;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -42,6 +40,7 @@ import javax.swing.SwingUtilities;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.SwingComponents;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -364,6 +363,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     if (previousSelection != null && previousSelection.equalsIgnoreCase("Client")) {
       return HeadedPlayerTypes.HUMAN_PLAYER;
     } else if (previousSelection != null && !previousSelection.equals("no_one")) {
+      // Note: "no_one" comes from `whoAmI` in GamePlayer.java.
       Optional<PlayerTypes.Type> type =
           visiblePlayerTypes.stream().filter(t -> t.getLabel().equals(previousSelection)).findAny();
       if (type.isPresent()) {
@@ -397,7 +397,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         final Collection<String> playerAlliances) {
       nameLabel = new JLabel(playerName);
       playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
-      type = new JComboBox<>(new DefaultComboBoxModel<>(new Vector<>(playerTypes)));
+      type = new JComboBox<>(SwingComponents.newComboBoxModel(playerTypes));
       type.setSelectedItem(playerType);
       model.setLocalPlayerType(nameLabel.getText(), playerType);
       localCheckBox = new JCheckBox();
