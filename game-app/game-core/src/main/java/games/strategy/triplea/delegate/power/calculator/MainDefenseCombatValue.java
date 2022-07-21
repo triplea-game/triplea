@@ -137,7 +137,7 @@ class MainDefenseCombatValue implements CombatValue {
 
     GameSequence gameSequence;
     int gameDiceSides;
-    Collection<TerritoryEffect> territoryEffects;
+    @Nonnull Collection<TerritoryEffect> territoryEffects;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
 

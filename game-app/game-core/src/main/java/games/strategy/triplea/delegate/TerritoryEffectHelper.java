@@ -26,9 +26,6 @@ public final class TerritoryEffectHelper {
 
   public static int getTerritoryCombatBonus(
       final UnitType type, final Collection<TerritoryEffect> effects, final boolean defending) {
-    if (type == null || effects == null || effects.isEmpty()) {
-      return 0;
-    }
     int combatBonus = 0;
     for (final TerritoryEffect effect : effects) {
       combatBonus += TerritoryEffectAttachment.get(effect).getCombatEffect(type, defending);

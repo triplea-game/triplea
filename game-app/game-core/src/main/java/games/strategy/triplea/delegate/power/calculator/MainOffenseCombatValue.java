@@ -134,7 +134,7 @@ class MainOffenseCombatValue implements CombatValue {
   static class MainOffenseStrength implements StrengthCalculator {
 
     int gameDiceSides;
-    Collection<TerritoryEffect> territoryEffects;
+    @Nonnull Collection<TerritoryEffect> territoryEffects;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
 

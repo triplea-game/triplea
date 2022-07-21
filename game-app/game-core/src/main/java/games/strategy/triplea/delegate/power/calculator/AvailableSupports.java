@@ -5,7 +5,6 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -33,7 +32,25 @@ class AvailableSupports {
           .build();
 
   final Map<UnitSupportAttachment.BonusType, List<UnitSupportAttachment>> supportRules;
-  final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits;
+
+  // Wrapper over IntegerMap<Unit> that keeps track of the total, instead of recomputing it
+  // repeatedly which can be very slow with lots of support units.
+  static class SupportDetails {
+    IntegerMap<Unit> supportUnits;
+    int totalSupport;
+
+    public SupportDetails(IntegerMap<Unit> supportUnits) {
+      this.supportUnits = supportUnits;
+      this.totalSupport = supportUnits.totalValues();
+    }
+
+    public SupportDetails(SupportDetails other) {
+      this.supportUnits = new IntegerMap<>(other.supportUnits);
+      this.totalSupport = other.totalSupport;
+    }
+  }
+
+  final Map<UnitSupportAttachment, SupportDetails> supportUnits;
 
   /**
    * Keeps track of the units that have provided support in {@link
@@ -59,9 +76,12 @@ class AvailableSupports {
   }
 
   static AvailableSupports getSupport(final SupportCalculator supportCalculator) {
+    Map<UnitSupportAttachment, SupportDetails> transformedSupportUnits =
+        supportCalculator.getSupportUnits().entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> new SupportDetails(e.getValue())));
     return builder()
         .supportRules(supportCalculator.getSupportRules())
-        .supportUnits(supportCalculator.getSupportUnits())
+        .supportUnits(transformedSupportUnits)
         .build();
   }
 
@@ -84,18 +104,14 @@ class AvailableSupports {
       }
     }
 
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnits = new HashMap<>();
+    final Map<UnitSupportAttachment, SupportDetails> supportUnits = new HashMap<>();
     for (final UnitSupportAttachment usa : this.supportUnits.keySet()) {
       if (ruleFilter.test(usa)) {
-        supportUnits.put(usa, new IntegerMap<>(this.supportUnits.get(usa)));
+        supportUnits.put(usa, new SupportDetails(this.supportUnits.get(usa)));
       }
     }
 
     return builder().supportRules(supportRules).supportUnits(supportUnits).build();
-  }
-
-  int getSupportLeft(final UnitSupportAttachment support) {
-    return supportUnits.getOrDefault(support, new IntegerMap<>()).totalValues();
   }
 
   /**
@@ -134,11 +150,12 @@ class AvailableSupports {
   }
 
   private int getSupportAvailable(final UnitSupportAttachment support) {
-    return Math.max(
-        0,
-        Math.min(
-            support.getBonusType().getCount(),
-            supportUnits.getOrDefault(support, new IntegerMap<>()).totalValues()));
+    return Math.max(0, Math.min(support.getBonusType().getCount(), getSupportLeft(support)));
+  }
+
+  int getSupportLeft(final UnitSupportAttachment support) {
+    SupportDetails details = supportUnits.get(support);
+    return details != null ? details.totalSupport : 0;
   }
 
   /**
@@ -148,11 +165,13 @@ class AvailableSupports {
    * unit can give.
    */
   private Unit getNextAvailableSupporter(final UnitSupportAttachment support) {
-    final Set<Unit> supporters = supportUnits.get(support).keySet();
-    final Unit u = CollectionUtils.getAny(supporters);
-    supportUnits.get(support).add(u, -1);
-    if (supportUnits.get(support).getInt(u) <= 0) {
-      supportUnits.get(support).removeKey(u);
+    final SupportDetails details = supportUnits.get(support);
+    final IntegerMap<Unit> intMap = details.supportUnits;
+    final Unit u = CollectionUtils.getAny(intMap.keySet());
+    intMap.add(u, -1);
+    details.totalSupport -= 1;
+    if (intMap.getInt(u) <= 0) {
+      intMap.removeKey(u);
     }
     return u;
   }
