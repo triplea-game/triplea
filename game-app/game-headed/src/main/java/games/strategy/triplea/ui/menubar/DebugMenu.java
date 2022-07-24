@@ -30,8 +30,11 @@ public final class DebugMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_D);
 
-    if (frame.getLocalPlayers().getLocalPlayers().stream()
-        .anyMatch(AbstractProAi.class::isInstance)) {
+    boolean hasProAi =
+        frame.getLocalPlayers().getLocalPlayers().stream()
+            .anyMatch(AbstractProAi.class::isInstance);
+
+    if (hasProAi) {
       ProLogUi.initializeSettingsWindow(frame);
     }
 
@@ -41,7 +44,7 @@ public final class DebugMenu extends JMenu {
           add(playerDebugMenu);
           renderDebugOption(options).forEach(playerDebugMenu::add);
         });
-    if (DebugMenuInfo.isEmpty()) {
+    if (!hasProAi && DebugMenuInfo.isEmpty()) {
       setVisible(false);
     }
   }
