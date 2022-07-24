@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
+import games.strategy.triplea.ai.pro.AbstractProAi;
+import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
@@ -28,7 +30,10 @@ public final class DebugMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_D);
 
-    DebugMenuInfo.visit(frame);
+    if (frame.getLocalPlayers().getLocalPlayers().stream()
+        .anyMatch(AbstractProAi.class::isInstance)) {
+      ProLogUi.initializeSettingsWindow(frame);
+    }
 
     DebugMenuInfo.runForOption(
         (name, options) -> {
