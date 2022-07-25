@@ -81,7 +81,7 @@ public interface BattleStep extends IExecutable {
   }
 
   /**
-   * @return a list of names that will be shown in {@link games.strategy.triplea.ui.BattlePanel}
+   * @return a list of names that will be shown in the UI.
    */
   List<String> getNames();
 

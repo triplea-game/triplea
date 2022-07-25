@@ -1,18 +1,15 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.engine.player.Player;
+import games.strategy.triplea.ai.pro.AbstractProAi;
+import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -20,15 +17,10 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
-import lombok.Value;
 import org.triplea.swing.SwingAction;
 
 public final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;
-
-  private static final List<Consumer<TripleAFrame>> frameVisitors = new ArrayList<>();
-
-  private static final List<DebugOption> debugOptions = new ArrayList<>();
 
   private final TripleAFrame frame;
 
@@ -38,33 +30,23 @@ public final class DebugMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_D);
 
-    frameVisitors.forEach(tripleAFrameConsumer -> tripleAFrameConsumer.accept(frame));
+    boolean hasProAi =
+        frame.getLocalPlayers().getLocalPlayers().stream()
+            .anyMatch(AbstractProAi.class::isInstance);
 
-    debugOptions.stream()
-        .sorted(Comparator.comparing(DebugOption::getName))
-        .forEach(
-            option -> {
-              final JMenu playerDebugMenu = new JMenu(option.getName());
-              add(playerDebugMenu);
-              renderDebugOption(option.getOptions()).forEach(playerDebugMenu::add);
-            });
-    if (frameVisitors.isEmpty() && debugOptions.isEmpty()) {
+    if (hasProAi) {
+      ProLogUi.initializeSettingsWindow(frame);
+    }
+
+    DebugMenuInfo.runForOption(
+        (name, options) -> {
+          final JMenu playerDebugMenu = new JMenu(name);
+          add(playerDebugMenu);
+          renderDebugOption(options).forEach(playerDebugMenu::add);
+        });
+    if (!hasProAi && DebugMenuInfo.isEmpty()) {
       setVisible(false);
     }
-  }
-
-  public static void registerDebugOptions(
-      final Player player, final List<AiPlayerDebugOption> options) {
-    registerDebugOptions(player.getName(), options);
-  }
-
-  public static void registerDebugOptions(
-      final String playerName, final List<AiPlayerDebugOption> options) {
-    debugOptions.add(new DebugOption(playerName, options));
-  }
-
-  public static void registerFrameVisitor(final Consumer<TripleAFrame> visitor) {
-    frameVisitors.add(visitor);
   }
 
   private JMenu renderSubMenuDebugOption(final AiPlayerDebugOption option) {
@@ -74,7 +56,7 @@ public final class DebugMenu extends JMenu {
   }
 
   private AiPlayerDebugAction buildDebugAction() {
-    return new AiPlayerDebugAction(frame.getMapPanel(), frame.getTerritoryDetails());
+    return new AiPlayerDebugAction(frame.getMapPanel(), frame.getAdditionalTerritoryDetails());
   }
 
   private JMenuItem renderItemDebugOption(
@@ -151,11 +133,5 @@ public final class DebugMenu extends JMenu {
               }
             })
         .collect(Collectors.toList());
-  }
-
-  @Value
-  private static class DebugOption {
-    String name;
-    List<AiPlayerDebugOption> options;
   }
 }

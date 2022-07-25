@@ -1,9 +1,9 @@
 package games.strategy.triplea.ai.pro.logging;
 
-import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -44,7 +44,7 @@ class ProLogWindow extends JDialog {
   private final JTabbedPane logHolderTabbedPane = new JTabbedPane();
   private final JTabbedPane tabPaneMain = new JTabbedPane();
 
-  ProLogWindow(final TripleAFrame frame) {
+  ProLogWindow(final Frame frame) {
     super(frame);
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

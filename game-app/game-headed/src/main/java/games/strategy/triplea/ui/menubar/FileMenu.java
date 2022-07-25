@@ -85,7 +85,7 @@ final class FileMenu extends JMenu {
                     gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
                 final PbemMessagePoster poster =
                     new PbemMessagePoster(gameData, currentPlayer, round, title);
-                poster.postTurn(title, historyLog, true, null, frame, null);
+                poster.postTurn(title, historyLog, true, null, frame, frame.getGame(), null);
               }
             })
         .build();

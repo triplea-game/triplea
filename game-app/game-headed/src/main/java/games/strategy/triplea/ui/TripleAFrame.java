@@ -247,6 +247,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         }
       };
 
+  @Getter
+  private final AdditionalTerritoryDetails additionalTerritoryDetails =
+      new AdditionalTerritoryDetails();
+
   private TripleAFrame(
       final IGame game,
       final LocalPlayers players,
