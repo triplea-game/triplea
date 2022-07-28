@@ -91,8 +91,6 @@ public abstract class AbstractProAi extends AbstractAi {
     storedPurchaseTerritories = null;
     storedPoliticalActions = null;
     storedStrafingTerritories = new ArrayList<>();
-
-    ProLogUi.registerDebugMenu();
   }
 
   @Override

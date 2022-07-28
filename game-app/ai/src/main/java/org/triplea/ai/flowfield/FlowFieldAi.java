@@ -13,20 +13,15 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.menubar.DebugMenuInfo;
-import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.triplea.ai.flowfield.influence.InfluenceMap;
 import org.triplea.ai.flowfield.influence.InfluenceMapBuilder;
-import org.triplea.ai.flowfield.influence.TerritoryDebugAction;
 import org.triplea.ai.flowfield.neighbors.MapWithNeighbors;
 import org.triplea.ai.flowfield.neighbors.NeighborGetter;
-import org.triplea.ai.flowfield.odds.LanchesterDebugAction;
 
 public class FlowFieldAi extends AbstractAi {
 
@@ -41,41 +36,6 @@ public class FlowFieldAi extends AbstractAi {
   public void initialize(final PlayerBridge playerBridge, final GamePlayer gamePlayer) {
     super.initialize(playerBridge, gamePlayer);
     setupDiffusionMaps();
-    DebugMenuInfo.registerDebugOptions(this, buildDebugOptions());
-  }
-
-  private List<AiPlayerDebugOption> buildDebugOptions() {
-    return List.of(
-        AiPlayerDebugOption.builder().title("HeatMap").subOptions(buildHeatmapOptions()).build(),
-        AiPlayerDebugOption.builder()
-            .title("Calculate Attrition Factor")
-            .actionListener(new LanchesterDebugAction(this, getGameData().getRelationshipTracker()))
-            .build());
-  }
-
-  private List<AiPlayerDebugOption> buildHeatmapOptions() {
-    final List<AiPlayerDebugOption> options = new ArrayList<>();
-
-    options.add(
-        AiPlayerDebugOption.builder()
-            .title("None")
-            .optionType(AiPlayerDebugOption.OptionType.ON_OFF_EXCLUSIVE)
-            .exclusiveGroup("heatmap")
-            .build());
-
-    options.addAll(
-        diffusions.stream()
-            .map(
-                diffusion ->
-                    AiPlayerDebugOption.builder()
-                        .title(diffusion.getName())
-                        .optionType(AiPlayerDebugOption.OptionType.ON_OFF_EXCLUSIVE)
-                        .exclusiveGroup("heatmap")
-                        .actionListener(new TerritoryDebugAction(diffusion, getGameData().getMap()))
-                        .build())
-            .collect(Collectors.toList()));
-
-    return options;
   }
 
   @Override

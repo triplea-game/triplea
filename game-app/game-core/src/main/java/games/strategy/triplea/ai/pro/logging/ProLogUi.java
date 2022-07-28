@@ -1,7 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
 import games.strategy.engine.framework.GameShutdownRegistry;
-import games.strategy.triplea.ui.menubar.DebugMenuInfo;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import games.strategy.ui.Util;
@@ -9,32 +8,21 @@ import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.SwingUtilities;
+import lombok.experimental.UtilityClass;
 
 /** Class to manage log window display. */
+@UtilityClass
 public final class ProLogUi {
-  private static boolean registered = false;
   private static ProLogWindow settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;
 
-  private ProLogUi() {}
-
-  public static void initializeSettingsWindow(final Frame frame) {
+  public static List<AiPlayerDebugOption> buildDebugOptions(final Frame frame) {
     Util.ensureOnEventDispatchThread();
     if (settingsWindow == null) {
       settingsWindow = new ProLogWindow(frame);
       GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);
     }
-  }
-
-  public static void registerDebugMenu() {
-    if (!registered) {
-      DebugMenuInfo.registerDebugOptions("Hard AI", ProLogUi.buildDebugOptions());
-      registered = true;
-    }
-  }
-
-  private static List<AiPlayerDebugOption> buildDebugOptions() {
     ProLogger.info("Initialized Hard AI");
     return List.of(
         AiPlayerDebugOption.builder()
@@ -48,7 +36,6 @@ public final class ProLogUi {
     if (settingsWindow != null) {
       settingsWindow.dispose();
     }
-    registered = false;
     settingsWindow = null;
   }
 

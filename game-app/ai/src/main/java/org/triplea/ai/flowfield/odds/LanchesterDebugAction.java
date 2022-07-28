@@ -18,6 +18,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
+import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,12 +30,49 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.triplea.ai.flowfield.FlowFieldAi;
+import org.triplea.ai.flowfield.influence.TerritoryDebugAction;
 
 @RequiredArgsConstructor
 public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
 
   private final FlowFieldAi ai;
   private final RelationshipTracker relationshipTracker;
+
+  public static List<AiPlayerDebugOption> buildDebugOptions(FlowFieldAi ai) {
+    return List.of(
+        AiPlayerDebugOption.builder().title("HeatMap").subOptions(buildHeatmapOptions(ai)).build(),
+        AiPlayerDebugOption.builder()
+            .title("Calculate Attrition Factor")
+            .actionListener(
+                new LanchesterDebugAction(ai, ai.getGameData().getRelationshipTracker()))
+            .build());
+  }
+
+  private static List<AiPlayerDebugOption> buildHeatmapOptions(FlowFieldAi ai) {
+    final List<AiPlayerDebugOption> options = new ArrayList<>();
+
+    options.add(
+        AiPlayerDebugOption.builder()
+            .title("None")
+            .optionType(AiPlayerDebugOption.OptionType.ON_OFF_EXCLUSIVE)
+            .exclusiveGroup("heatmap")
+            .build());
+
+    options.addAll(
+        ai.getDiffusions().stream()
+            .map(
+                diffusion ->
+                    AiPlayerDebugOption.builder()
+                        .title(diffusion.getName())
+                        .optionType(AiPlayerDebugOption.OptionType.ON_OFF_EXCLUSIVE)
+                        .exclusiveGroup("heatmap")
+                        .actionListener(
+                            new TerritoryDebugAction(diffusion, ai.getGameData().getMap()))
+                        .build())
+            .collect(Collectors.toList()));
+
+    return options;
+  }
 
   @Override
   public void accept(final AiPlayerDebugAction aiPlayerDebugAction) {
