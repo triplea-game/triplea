@@ -163,7 +163,8 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
   @DisplayName("Ensure fields are not valid if forum selection or topic id are not valid")
   @ParameterizedTest
   @MethodSource("invalidForumSettings")
-  void verifyInvalidForumSettings(final String topicId, final String username, final char[] password) {
+  void verifyInvalidForumSettings(
+      final String topicId, final String username, final char[] password) {
     final ForumPosterEditorViewModel viewModel =
         givenViewModelWithInvalidFieldSettings(topicId, username, password);
 
