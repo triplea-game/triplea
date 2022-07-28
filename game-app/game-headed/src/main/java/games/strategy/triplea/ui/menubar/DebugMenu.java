@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import com.google.common.base.Preconditions;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ai.pro.logging.ProLogUi;
