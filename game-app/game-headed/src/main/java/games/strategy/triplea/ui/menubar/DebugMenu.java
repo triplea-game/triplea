@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -7,8 +8,11 @@ import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.Action;
@@ -17,6 +21,8 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import org.triplea.ai.flowfield.FlowFieldAi;
+import org.triplea.ai.flowfield.odds.LanchesterDebugAction;
 import org.triplea.swing.SwingAction;
 
 public final class DebugMenu extends JMenu {
@@ -24,28 +30,32 @@ public final class DebugMenu extends JMenu {
 
   private final TripleAFrame frame;
 
-  DebugMenu(final TripleAFrame frame) {
+  DebugMenu(TripleAFrame frame) {
     super("Debug");
     this.frame = frame;
 
     setMnemonic(KeyEvent.VK_D);
 
-    boolean hasProAi =
-        frame.getLocalPlayers().getLocalPlayers().stream()
-            .anyMatch(AbstractProAi.class::isInstance);
-
-    if (hasProAi) {
-      ProLogUi.initializeSettingsWindow(frame);
+    List<JMenu> subMenus = new ArrayList<>();
+    boolean addedProAiOption = false;
+    for (Player player : frame.getLocalPlayers().getLocalPlayers()) {
+      if (player instanceof FlowFieldAi) {
+        FlowFieldAi ai = (FlowFieldAi) player;
+        JMenu menu = new JMenu(ai.getName());
+        renderDebugOption(LanchesterDebugAction.buildDebugOptions(ai)).forEach(menu::add);
+        subMenus.add(menu);
+      } else if (!addedProAiOption && player instanceof AbstractProAi) {
+        JMenu menu = new JMenu("Hard AI");
+        renderDebugOption(ProLogUi.buildDebugOptions(frame)).forEach(menu::add);
+        subMenus.add(menu);
+        addedProAiOption = true;
+      }
     }
 
-    DebugMenuInfo.runForOption(
-        (name, options) -> {
-          final JMenu playerDebugMenu = new JMenu(name);
-          add(playerDebugMenu);
-          renderDebugOption(options).forEach(playerDebugMenu::add);
-        });
-    if (!hasProAi && DebugMenuInfo.isEmpty()) {
+    if (subMenus.isEmpty()) {
       setVisible(false);
+    } else {
+      subMenus.stream().sorted(Comparator.comparing(JMenu::getText)).forEach(this::add);
     }
   }
 
