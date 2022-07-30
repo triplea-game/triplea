@@ -2721,3 +2721,10 @@
    <br>WW2 Pacific 1940-Fixed DOW: Declarations of War occur at fixed, historical turns
    <br>WW2 Pacific 1940-Build Caps: Maximum number of units of each type is enforced
    <br>WW2 Pacific 1940-Upkeep: 10%/turn upkeep cost is charged
+- mapName: Sengoku Jidai
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/sengokuJidai/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/sengokuJidai/master/preview.png
+  description: |
+   <br>Japan in 1600
