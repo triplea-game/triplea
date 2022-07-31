@@ -2570,7 +2570,7 @@
 - mapName: New World Order Variants-Neutrals
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/New_World_Order_Variants/archive/master.zip
-  version: 1
+  version: 2
   img: https://github.com/triplea-maps/New_World_Order_Variants/blob/master/preview.png
   description: |
    <br>3 Variants on the New World Order Map that handle smaller neutral nations differently
