@@ -2728,3 +2728,22 @@
   img: https://raw.githubusercontent.com/triplea-maps/sengokuJidai/master/preview.png
   description: |
    <br>Japan in 1600
+- mapName: Modern Warfare
+  mapCategory: GOOD
+  url: https://github.com/Cestmoi02/modern_warfare
+  version: 1
+  img: https://github.com/Cestmoi02/modern_warfare/blob/master/preview.png
+  description: |
+   <br>As Russia masses troops at the border with the Ukraine, the West slowly begins mobilization preparations. Russia, believing the only way to successfully contain NATO is to launch a surprise strike on the entire eastern flank of the NATO alliance, launches a full-scale invasion of Europe. As NATO troops scramble to defend its members, there are worries that the war might escalate to a true global war, with actors such as China and the Arab League overtly supporing the Russian invasion. Other smaller actors are also expected to join a side sooner or later, bringing war to the world on a scale never seen before. Will NATO regain its strength, bolstered by the US Rapid Deployment Force combined with the massive mobilization of EU reserves and contain the Russian advance, or will the unlikely allies of Russia save the day by diverting enough resources from the allied response to make it possible to Russia to quickly take over Europe?
+   <br>
+   <br>A Modern Warfare Scenario based on Global 1940 with some twists: 
+   <br>
+   <br>Rockets fired by Missile, Submarine and Cruiser units
+   <br>1 Round Combats with an added Air Supremacy Step (Air Battle Before Combat)
+   <br>Airbases become important as they allow scramble in any region adjacent to it
+   <br>Stealth Planes, which are immune to AA Guns, making them well suited for attacks deep inside enemy territory
+   <br>Diplomacy Points, which make it possible for countries to draw more countries into the conflict
+   <br>AI Triggers which ensure that the AI can "execute" User Actions via triggers (see Game Map Options)
+   <br>For a more detailed description of game features, see Game Notes, which include tables and a sum-up of differences compared to Global 40
+   <br>
+   <br>I also recommand to play the module with Flag Icons on, as currently all factions' ships look the same.
