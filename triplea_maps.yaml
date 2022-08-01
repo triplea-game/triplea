@@ -2728,3 +2728,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/sengokuJidai/master/preview.png
   description: |
    <br>Japan in 1600
+- mapName: Modern Warfare
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Cestmoi02/modern_warfare/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Cestmoi02/modern_warfareThe/master/preview.png
+  description: |
+   <br>The Russian Invasion of the Ukraine triggers world war
