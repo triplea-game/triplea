@@ -227,8 +227,10 @@ public class UnitImageFactory {
                           // time in doing the scaling.
                           // Image observer is null, since the image should have been guaranteed to
                           // be loaded.
-                          final int width = (int) (baseImage.getWidth(null) * scaleFactor);
-                          final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+                          final int baseWidth = baseImage.getWidth(null);
+                          final int baseHeight = baseImage.getHeight(null);
+                          final int width = Math.max(1, (int) (baseWidth * scaleFactor));
+                          final int height = Math.max(1, (int) (baseHeight * scaleFactor));
                           final Image scaledImage =
                               baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
                           // Ensure the scaling is completed.
