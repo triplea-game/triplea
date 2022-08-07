@@ -142,9 +142,12 @@ class TechPanel extends ActionPanel {
             final Collection<GamePlayer> helpPay;
             final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
             if (pa != null) {
-              helpPay = pa.getHelpPayTechCost();
+              helpPay =
+                  pa.getHelpPayTechCost().stream()
+                      .filter(p -> !p.equals(currentPlayer))
+                      .collect(Collectors.toList());
             } else {
-              helpPay = null;
+              helpPay = List.of();
             }
             final TechTokenPanel techTokenPanel =
                 new TechTokenPanel(pus, currTokens, currentPlayer, helpPay);
@@ -394,11 +397,8 @@ class TechPanel extends ActionPanel {
         final Collection<GamePlayer> helpPay) {
       playerPus = pus;
       totalPus = pus;
-      if (helpPay != null && !helpPay.isEmpty()) {
-        helpPay.remove(player);
-        for (final GamePlayer p : helpPay) {
-          totalPus += p.getResources().getQuantity(Constants.PUS);
-        }
+      for (final GamePlayer p : helpPay) {
+        totalPus += p.getResources().getQuantity(Constants.PUS);
       }
       playerPuField = new ScrollableTextField(0, totalPus);
       playerPuField.setEnabled(false);
@@ -502,8 +502,7 @@ class TechPanel extends ActionPanel {
               new Insets(10, 5, space, space),
               0,
               0));
-      if (helpPay != null && !helpPay.isEmpty()) {
-        helpPay.remove(player);
+      if (!helpPay.isEmpty()) {
         int row = 4;
         add(
             new JLabel("Nations Paying How Much:"),
