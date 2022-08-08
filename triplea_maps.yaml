@@ -2728,3 +2728,11 @@
   img: https://raw.githubusercontent.com/triplea-maps/sengokuJidai/master/preview.png
   description: |
    <br>Japan in 1600
+- mapName: Russian Civil War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Russian_Civil_War/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Russian_Civil_War/master/preview.png
+  description: |
+   <br>The Russian Civil War with 2, 3 or 6 player scenarios
+   
