@@ -2735,3 +2735,11 @@
   img: https://raw.githubusercontent.com/triplea-maps/Russian_Civil_War/master/preview.png
   description: |
    <br>The Russian Civil War with scenarios for 2, 3 and 6 players
+- mapName: Arena of Death2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/arena_of_death2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/arena_of_death2/master/preview.png
+  description: |
+   <br>Arena of Death2 is a gladiator style skirmish map, with 4-6 units a side
+   
