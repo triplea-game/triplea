@@ -2742,3 +2742,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/modern_warfare/master/preview.png
   description: |
    <br>In this hypothetical, Russia decides to attack Europe instead of only Ukraine, with rest of the world soon dragged in.
+- mapName: Arena of Death
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/TheDog-GH/arena_of_death.git
+  version: 1
+  img: https://github.com/TheDog-GH/arena_of_death/blob/master/preview.png
+  description: |
+   <br>Arena of Death is a gladiator style skirmish map, with 4-6 units a side.
