@@ -2735,3 +2735,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Russian_Civil_War/master/preview.png
   description: |
    <br>The Russian Civil War with scenarios for 2, 3 and 6 players
+- mapName: Modern Warfare
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/modern_warfare/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/modern_warfare/master/preview.png
+  description: |
+   <br>In this hypothetical, Russia decides to attack Europe instead of only Ukraine, with rest of the world soon dragged in.
