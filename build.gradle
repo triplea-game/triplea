@@ -59,6 +59,12 @@ subprojects {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
+    // The value of 'version' is used by 'shadowJar' to set 'archiveName'
+    // and adds version number to packaged jar files.
+    // ie:  [module-name]-[build-version].jar,
+    // eg:  lobby-server-2.6+50370c.jar
+    version = getProductVersion() + "+" + getCommitNumber()
+
     ext {
         apacheHttpComponentsVersion = '4.5.13'
         awaitilityVersion = '4.2.0'
