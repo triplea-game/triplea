@@ -5,13 +5,14 @@
 ## sub-project and copied into: './build/artifacts'
 
 ## install install4j
-set -x
 scriptDir=$(dirname "$0")
 
 if [ -z "$INSTALL4J_LICENSE" ]; then
   echo "Environment variable 'INSTALL4J_LICENSE' must be set"
   exit 1
 fi
+
+set -x
 
 function main() {
   install_install4j
