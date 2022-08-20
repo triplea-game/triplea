@@ -2,7 +2,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'com.install4j.gradle' version '10.0'
-    id 'de.undercouch.download' version '5.1.0'
+    id 'de.undercouch.download' version '5.1.1'
 }
 
 archivesBaseName = "$group-$name"
@@ -10,6 +10,7 @@ mainClassName = 'org.triplea.game.client.HeadedGameRunner'
 
 ext {
     releasesDir = file("$buildDir/releases")
+    releaseVersion = getProductVersion() + "+" + getCommitNumber()
 }
 
 dependencies {
@@ -78,11 +79,11 @@ task downloadPlatformInstallerAssets(group: 'release', dependsOn: downloadAssets
 }
 
 task platformInstallers(
-        type: com.install4j.gradle.Install4jTask,
-        group: 'release',
-        dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
+    type: com.install4j.gradle.Install4jTask,
+    group: 'release',
+    dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
     projectFile = file('build.install4j')
-    release = version
+    release = releaseVersion
 
     doLast {
         ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
@@ -105,10 +106,10 @@ task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
 task release(group: 'release', dependsOn: [portableInstaller, platformInstallers]) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files + [
-            file("$releasesDir/TripleA_${version}_macos.dmg"),
-            file("$releasesDir/TripleA_${version}_unix.sh"),
-            file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
-            file("$releasesDir/TripleA_${version}_windows-64bit.exe")
+            file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
+            file("$releasesDir/TripleA_${releaseVersion}_unix.sh"),
+            file("$releasesDir/TripleA_${releaseVersion}_windows-32bit.exe"),
+            file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
         ])
     }
 }
@@ -116,6 +117,6 @@ task release(group: 'release', dependsOn: [portableInstaller, platformInstallers
 shadowJar {
     // 'archiveVersion' sets the version number on packaged jar files
     // eg: "2.6+105234" in "lobby-server-2.6+50370c.jar"
-    archiveVersion = getProductVersion() + "+" + getGitHash()
+    archiveVersion = releaseVersion
     archiveClassifier.set ''
 }
