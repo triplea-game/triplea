@@ -1,4 +1,5 @@
-name: Master Branch Release
+# Builds installers and uploads to a new github release
+name: Deploy Installers to Github Releases
 on:
   push:
     branches:
@@ -7,17 +8,13 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build:
-    name: Master Branch Release Actions
+    name: Deploy Installers to Github Releases
     runs-on: Ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: '0'
-      - name: Load SSH private key into ssh-agent
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
       - name: Build Installers
         run: .build/build-installer
         env:
@@ -36,11 +33,4 @@ jobs:
           prerelease: true
           commit: ${{ github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run Ansible to Deploy
-        run: |
-          pip install ansible==2.9.13
-          cd infrastructure
-          echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          ./run_ansible --environment production --tags common,java,postfix,postgres,flyway
-        env:
-          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
