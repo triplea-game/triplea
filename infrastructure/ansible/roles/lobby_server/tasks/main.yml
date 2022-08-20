@@ -32,6 +32,14 @@
     group: root
     mode: "0644"
 
+- name: Nginx config - deploy 2.5 lobby nginx config
+  template:
+    src: 2-5_lobby.conf
+    dest: /etc/nginx/sites-enabled/lobby-2-5.conf
+    owner: root
+    group: root
+    mode: "0644"
+
 - name: Nginx config - generate self signed cert
   when: nginx_generate_self_signed_cert
   include_role:
