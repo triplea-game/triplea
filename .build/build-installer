@@ -8,6 +8,11 @@
 set -x
 scriptDir=$(dirname "$0")
 
+if [ -z "$INSTALL4J_LICENSE" ]; then
+  echo "Environment variable 'INSTALL4J_LICENSE' must be set"
+  exit 1
+fi
+
 function main() {
   install_install4j
   build_installers
