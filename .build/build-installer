@@ -12,7 +12,7 @@ if [ -z "$INSTALL4J_LICENSE" ]; then
   exit 1
 fi
 
-set -x
+set -ex
 
 function main() {
   install_install4j
@@ -23,7 +23,7 @@ function main() {
 # Installs install4j, the license key is injected into install4j during this step.
 function install_install4j() {
   INSTALL4J_HOME=/tmp/install4j
-  mkdir $INSTALL4J_HOME
+  mkdir -p $INSTALL4J_HOME
 
   echo "Downloading and installing install4j to '$INSTALL4J_HOME'"
   wget --no-verbose -O install4j_unix.sh \
