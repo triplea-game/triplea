@@ -75,3 +75,19 @@ vagrant halt
 cd ~/triplea/infrastructure/vagrant
 vagrant destroy -f
 ```
+
+## Troubleshooting
+
+### VM Won't Start
+
+- Open VirtualBox, the VM should be listed there and you can open a console to 
+  the VM from VirtualBox which will show you the latest console output from
+  the VM. This console output may give an indication of what is happening
+- Sometimes bringing the VM down and recreating it is the way to go:
+
+```bash
+cd triplea/infrastructure/vagrant/
+vagrant halt
+vagrant destroy
+vagrant up
+```
