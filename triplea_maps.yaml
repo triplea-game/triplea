@@ -2749,3 +2749,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/arena_of_death/master/preview.png
   description: |
    <br>Arena of Death is a gladiator style skirmish map, with 4-6 units a side.
+- mapName: Middle Earth 2 - Tofumod
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/MiddleEarth2-Tofumod/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/MiddleEarth2-Tofumod/master/preview.png
+  description: |
+   <br>The War of the Ring with only a few powers
