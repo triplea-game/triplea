@@ -2,7 +2,6 @@ bot_numbers: ["01", "02" ]
 lobby_restart_on_new_deployment: false
 lobby_uri: "http://localhost:8080"
 nginx_generate_dhparam: false
-use_certbot: false
 nginx_generate_self_signed_cert: true
 
 lobby_cert_folder: /etc/nginx/certs
