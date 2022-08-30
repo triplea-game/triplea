@@ -2,7 +2,7 @@
 forums.triplea-game.org
 
 [lobbyServer]
-prod.triplea-game.org
+prod.triplea-game.org reverse_proxy_server_name=prod.triplea-game.org
 
 [botHosts]
 # Disabled deployment to prod2-bot01, consistently unreachable during deployment
