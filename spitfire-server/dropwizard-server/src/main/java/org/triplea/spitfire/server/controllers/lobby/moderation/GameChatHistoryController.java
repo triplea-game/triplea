@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.client.lobby.moderator.ChatHistoryMessage;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
+import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
 import org.triplea.modules.moderation.chat.history.FetchGameChatHistoryModule;
 import org.triplea.spitfire.server.HttpController;
 
@@ -25,7 +25,7 @@ public class GameChatHistoryController extends HttpController {
   }
 
   @POST
-  @Path(ModeratorChatClient.FETCH_GAME_CHAT_HISTORY)
+  @Path(ModeratorLobbyClient.FETCH_GAME_CHAT_HISTORY)
   public List<ChatHistoryMessage> fetchGameChatHistory(final String gameId) {
     return fetchChatHistoryAction.apply(gameId);
   }

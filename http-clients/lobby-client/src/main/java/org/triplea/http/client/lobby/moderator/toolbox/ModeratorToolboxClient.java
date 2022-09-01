@@ -13,7 +13,7 @@ import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.http.client.maps.tag.admin.MapTagAdminClient;
 
 @Getter
-public class HttpModeratorToolboxClient {
+public class ModeratorToolboxClient {
 
   private final ToolboxAccessLogClient toolboxAccessLogClient;
   private final ToolboxUserBanClient toolboxUserBanClient;
@@ -24,7 +24,7 @@ public class HttpModeratorToolboxClient {
   private final MapsClient mapsClient;
   private final MapTagAdminClient mapTagAdminClient;
 
-  private HttpModeratorToolboxClient(final URI lobbyUri, final ApiKey apiKey) {
+  private ModeratorToolboxClient(final URI lobbyUri, final ApiKey apiKey) {
     toolboxAccessLogClient = ToolboxAccessLogClient.newClient(lobbyUri, apiKey);
     toolboxUserBanClient = ToolboxUserBanClient.newClient(lobbyUri, apiKey);
     toolboxUsernameBanClient = ToolboxUsernameBanClient.newClient(lobbyUri, apiKey);
@@ -35,7 +35,7 @@ public class HttpModeratorToolboxClient {
     mapTagAdminClient = MapTagAdminClient.newClient(lobbyUri, apiKey);
   }
 
-  public static HttpModeratorToolboxClient newClient(final URI lobbyUri, final ApiKey apiKey) {
-    return new HttpModeratorToolboxClient(lobbyUri, apiKey);
+  public static ModeratorToolboxClient newClient(final URI lobbyUri, final ApiKey apiKey) {
+    return new ModeratorToolboxClient(lobbyUri, apiKey);
   }
 }

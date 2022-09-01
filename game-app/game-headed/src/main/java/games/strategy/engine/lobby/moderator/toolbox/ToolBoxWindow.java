@@ -4,7 +4,7 @@ import games.strategy.engine.lobby.moderator.toolbox.tabs.TabFactory;
 import games.strategy.triplea.EngineImageLoader;
 import java.awt.Component;
 import lombok.experimental.UtilityClass;
-import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
+import org.triplea.http.client.lobby.moderator.toolbox.ModeratorToolboxClient;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.JPanelBuilder;
@@ -18,7 +18,7 @@ public final class ToolBoxWindow {
 
   /** Shows the moderator toolbox UI window. */
   public static void showWindow(
-      final Component parent, final HttpModeratorToolboxClient httpModeratorToolboxClient) {
+      final Component parent, final ModeratorToolboxClient moderatorToolboxClient) {
     SwingAction.invokeNowOrLater(
         () ->
             JFrameBuilder.builder()
@@ -35,7 +35,7 @@ public final class ToolBoxWindow {
                             .addCenter(
                                 TabFactory.builder()
                                     .frame(frame)
-                                    .httpModeratorToolboxClient(httpModeratorToolboxClient)
+                                    .moderatorToolboxClient(moderatorToolboxClient)
                                     .build()
                                     .buildTabs())
                             .build())

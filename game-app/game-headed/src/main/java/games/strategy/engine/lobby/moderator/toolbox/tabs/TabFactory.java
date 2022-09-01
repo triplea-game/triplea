@@ -13,14 +13,14 @@ import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import lombok.Builder;
-import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
+import org.triplea.http.client.lobby.moderator.toolbox.ModeratorToolboxClient;
 import org.triplea.swing.JTabbedPaneBuilder;
 
 /** Factory class to construct the 'tabs' that go in the moderator toolbox tabbed window. */
 @Builder
 public final class TabFactory {
   @Nonnull private final JFrame frame;
-  @Nonnull private final HttpModeratorToolboxClient httpModeratorToolboxClient;
+  @Nonnull private final ModeratorToolboxClient moderatorToolboxClient;
 
   public JTabbedPane buildTabs() {
     return JTabbedPaneBuilder.builder()
@@ -37,28 +37,27 @@ public final class TabFactory {
   private Component buildAccessLogTab() {
     return new AccessLogTab(
             frame,
-            httpModeratorToolboxClient.getToolboxAccessLogClient(),
-            httpModeratorToolboxClient.getToolboxUserBanClient(),
-            httpModeratorToolboxClient.getToolboxUsernameBanClient())
+            moderatorToolboxClient.getToolboxAccessLogClient(),
+            moderatorToolboxClient.getToolboxUserBanClient(),
+            moderatorToolboxClient.getToolboxUsernameBanClient())
         .get();
   }
 
   private Component buildBadWordsTab() {
-    return new BadWordsTab(frame, httpModeratorToolboxClient.getToolboxBadWordsClient()).get();
+    return new BadWordsTab(frame, moderatorToolboxClient.getToolboxBadWordsClient()).get();
   }
 
   private Component buildBannedUsernamesTab() {
-    return new BannedUsernamesTab(frame, httpModeratorToolboxClient.getToolboxUsernameBanClient())
+    return new BannedUsernamesTab(frame, moderatorToolboxClient.getToolboxUsernameBanClient())
         .get();
   }
 
   private Component buildBannedUsersTab() {
-    return new BannedUsersTab(frame, httpModeratorToolboxClient.getToolboxUserBanClient()).get();
+    return new BannedUsersTab(frame, moderatorToolboxClient.getToolboxUserBanClient()).get();
   }
 
   private Component buildModeratorsTab() {
-    return new ModeratorsTab(
-            frame, httpModeratorToolboxClient.getToolboxModeratorManagementClient())
+    return new ModeratorsTab(frame, moderatorToolboxClient.getToolboxModeratorManagementClient())
         .get();
   }
 
@@ -72,12 +71,12 @@ public final class TabFactory {
 
   private MapsTabModel buildMapsTabModel() {
     return MapsTabModel.builder()
-        .mapsClient(httpModeratorToolboxClient.getMapsClient())
-        .mapTagAdminClient(httpModeratorToolboxClient.getMapTagAdminClient())
+        .mapsClient(moderatorToolboxClient.getMapsClient())
+        .mapTagAdminClient(moderatorToolboxClient.getMapTagAdminClient())
         .build();
   }
 
   private Component buildEventLogTab() {
-    return new EventLogTab(httpModeratorToolboxClient.getToolboxEventLogClient()).get();
+    return new EventLogTab(moderatorToolboxClient.getToolboxEventLogClient()).get();
   }
 }
