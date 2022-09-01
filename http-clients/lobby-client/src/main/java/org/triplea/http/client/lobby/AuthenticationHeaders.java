@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.LobbyHttpClientConfig;
 
 /** Small class to encapsulate api key and create http Authorization header. */
 @AllArgsConstructor
@@ -25,6 +25,9 @@ public class AuthenticationHeaders {
 
   /** Creates headers containing 'System-Id' only. */
   public static Map<String, String> systemIdHeaders() {
-    return Map.of(SYSTEM_ID_HEADER, SystemIdLoader.load().getValue());
+    final Map<String, String> headerMap = new HashMap<>();
+    headerMap.put("Triplea-Version", LobbyHttpClientConfig.getConfig().getClientVersion());
+    headerMap.put(SYSTEM_ID_HEADER, LobbyHttpClientConfig.getConfig().getSystemId());
+    return headerMap;
   }
 }
