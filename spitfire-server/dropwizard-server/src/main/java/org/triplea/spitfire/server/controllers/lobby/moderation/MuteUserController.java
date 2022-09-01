@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
+import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
 import org.triplea.http.client.lobby.moderator.MuteUserRequest;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.spitfire.server.HttpController;
@@ -26,7 +26,7 @@ public class MuteUserController extends HttpController {
   }
 
   @POST
-  @Path(ModeratorChatClient.MUTE_USER)
+  @Path(ModeratorLobbyClient.MUTE_USER)
   public Response muteUser(final MuteUserRequest muteUserRequest) {
     Preconditions.checkArgument(muteUserRequest != null);
     Preconditions.checkArgument(muteUserRequest.getPlayerChatId() != null);

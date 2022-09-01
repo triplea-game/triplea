@@ -16,7 +16,7 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.test.common.JsonUtil;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
-class ModeratorChatClientTest extends WireMockTest {
+class ModeratorLobbyClientTest extends WireMockTest {
   private static final BanPlayerRequest BAN_PLAYER_REQUEST =
       BanPlayerRequest.builder()
           .playerChatId(PlayerChatId.of("chat-id").getValue())
@@ -31,14 +31,14 @@ class ModeratorChatClientTest extends WireMockTest {
           .epochMilliDate(6000)
           .build();
 
-  private static ModeratorChatClient newClient(final WireMockServer wireMockServer) {
-    return newClient(wireMockServer, ModeratorChatClient::newClient);
+  private static ModeratorLobbyClient newClient(final WireMockServer wireMockServer) {
+    return newClient(wireMockServer, ModeratorLobbyClient::newClient);
   }
 
   @Test
   void banPlayer(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
-        WireMock.post(ModeratorChatClient.BAN_PLAYER_PATH)
+        WireMock.post(ModeratorLobbyClient.BAN_PLAYER_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalToJson(JsonUtil.toJson(BAN_PLAYER_REQUEST)))
             .willReturn(WireMock.aResponse().withStatus(200)));
@@ -49,7 +49,7 @@ class ModeratorChatClientTest extends WireMockTest {
   @Test
   void muteUser(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
-        WireMock.post(ModeratorChatClient.MUTE_USER)
+        WireMock.post(ModeratorLobbyClient.MUTE_USER)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(
                 equalToJson(
@@ -66,7 +66,7 @@ class ModeratorChatClientTest extends WireMockTest {
   @Test
   void disconnectPlayer(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
-        WireMock.post(ModeratorChatClient.DISCONNECT_PLAYER_PATH)
+        WireMock.post(ModeratorLobbyClient.DISCONNECT_PLAYER_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalTo(PLAYER_CHAT_ID.getValue()))
             .willReturn(WireMock.aResponse().withStatus(200)));
@@ -77,7 +77,7 @@ class ModeratorChatClientTest extends WireMockTest {
   @Test
   void fetchGameChatHistory(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
-        WireMock.post(ModeratorChatClient.FETCH_GAME_CHAT_HISTORY)
+        WireMock.post(ModeratorLobbyClient.FETCH_GAME_CHAT_HISTORY)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalTo("game-id"))
             .willReturn(

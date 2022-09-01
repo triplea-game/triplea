@@ -17,7 +17,7 @@ import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.ChatHistoryMessage;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
-import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
+import org.triplea.http.client.lobby.moderator.toolbox.ModeratorToolboxClient;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.WebSocket;
 import org.triplea.http.client.web.socket.WebsocketPaths;
@@ -121,8 +121,8 @@ public class PlayerToLobbyConnection {
     httpLobbyClient.getUserAccountClient().changeEmail(newEmail);
   }
 
-  public HttpModeratorToolboxClient getHttpModeratorToolboxClient() {
-    return httpLobbyClient.getHttpModeratorToolboxClient();
+  public ModeratorToolboxClient getHttpModeratorToolboxClient() {
+    return httpLobbyClient.getModeratorToolboxClient();
   }
 
   public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {

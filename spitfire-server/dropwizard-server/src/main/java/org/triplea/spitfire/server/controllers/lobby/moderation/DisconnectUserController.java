@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
+import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.moderation.disconnect.user.DisconnectUserAction;
 import org.triplea.spitfire.server.HttpController;
@@ -31,7 +31,7 @@ public class DisconnectUserController extends HttpController {
   }
 
   @POST
-  @Path(ModeratorChatClient.DISCONNECT_PLAYER_PATH)
+  @Path(ModeratorLobbyClient.DISCONNECT_PLAYER_PATH)
   public Response disconnectPlayer(
       @Auth final AuthenticatedUser authenticatedUser, final String playerIdToBan) {
     Preconditions.checkNotNull(playerIdToBan);

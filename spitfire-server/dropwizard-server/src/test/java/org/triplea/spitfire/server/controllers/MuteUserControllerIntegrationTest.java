@@ -3,15 +3,15 @@ package org.triplea.spitfire.server.controllers;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
+import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
 @SuppressWarnings("UnmatchedTest")
 class MuteUserControllerIntegrationTest extends ControllerIntegrationTest {
-  private final ModeratorChatClient client;
+  private final ModeratorLobbyClient client;
 
   MuteUserControllerIntegrationTest(final URI localhost) {
-    this.client = ModeratorChatClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
+    this.client = ModeratorLobbyClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
   }
 
   @Test
