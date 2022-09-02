@@ -48,6 +48,14 @@ public final class StringUtils {
     return intValue != null && intValue > 0;
   }
 
+  public static boolean isNullOrEmpty(final String value) {
+    return Strings.isNullOrEmpty(value);
+  }
+
+  public static boolean isNullOrBlank(final String value) {
+    return value == null || value.isBlank();
+  }
+
   public static String truncate(final String stringToTruncate, final int maxLength) {
     return Ascii.truncate(Strings.nullToEmpty(stringToTruncate), maxLength, "...");
   }
