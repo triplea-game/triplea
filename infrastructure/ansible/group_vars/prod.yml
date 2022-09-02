@@ -8,7 +8,6 @@ lobby_private_key_file: "{{ lobby_cert_folder }}/privkey.pem"
 
 nginx_generate_dhparam: true
 nginx_generate_self_signed_cert: false
-use_certbot: true
 
 lobby_db_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256

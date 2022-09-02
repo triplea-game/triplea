@@ -20,8 +20,7 @@
     - {name: database/postgres/install, tags: postgres}
     - {name: database/flyway/install, tags: flyway}
     - {name: nginx/install, tags: nginx}
-    - {name: lobby_server, tags: lobby}
-    - {name: nginx/run_certbot, tags: certbot}
+    - {name: lobby_server, tags: lobby_app}
 
 - hosts: botHosts
   tags: [bot, bots]
