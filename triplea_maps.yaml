@@ -2756,3 +2756,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/MiddleEarth2-Tofumod/master/preview.png
   description: |
    <br>The War of the Ring with only a few powers
+- mapName: Britannia: Roman Invasion
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Roman_Invasion/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Roman_Invasion/master/preview.png
+  description: |
+   <br>The Roman Invasion of Britain in 43 BC
