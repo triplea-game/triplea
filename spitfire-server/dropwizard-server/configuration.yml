@@ -88,3 +88,4 @@ server:
       # for all other environments that do have a NGINX server, the value should be
       # set to true.
       useForwardedHeaders: ${USE_FORWARDED_HEADERS:-false}
+  adminConnectors: []
