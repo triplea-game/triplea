@@ -11,7 +11,6 @@ import org.triplea.http.client.LobbyHttpClientConfig;
 public class AuthenticationHeaders {
   public static final String API_KEY_HEADER = "Authorization";
   public static final String KEY_BEARER_PREFIX = "Bearer";
-  public static final String SYSTEM_ID_HEADER = "System-Id-Header";
 
   private final ApiKey apiKey;
 
@@ -26,8 +25,10 @@ public class AuthenticationHeaders {
   /** Creates headers containing 'System-Id' only. */
   public static Map<String, String> systemIdHeaders() {
     final Map<String, String> headerMap = new HashMap<>();
-    headerMap.put("Triplea-Version", LobbyHttpClientConfig.getConfig().getClientVersion());
-    headerMap.put(SYSTEM_ID_HEADER, LobbyHttpClientConfig.getConfig().getSystemId());
+    headerMap.put(
+        LobbyHttpClientConfig.VERSION_HEADER, LobbyHttpClientConfig.getConfig().getClientVersion());
+    headerMap.put(
+        LobbyHttpClientConfig.SYSTEM_ID_HEADER, LobbyHttpClientConfig.getConfig().getSystemId());
     return headerMap;
   }
 }

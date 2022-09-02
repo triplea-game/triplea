@@ -9,6 +9,9 @@ import com.google.common.base.Preconditions;
 public abstract class LobbyHttpClientConfig {
   private static LobbyHttpClientConfig lobbyHttpClientConfig;
 
+  public static String VERSION_HEADER = "Triplea-Version";
+  public static final String SYSTEM_ID_HEADER = "System-Id-Header";
+
   /**
    * Sets the config, should only be invoked once. We expect this to be invoked (initialized) as
    * early as possible in the life cycle of a game-client.
