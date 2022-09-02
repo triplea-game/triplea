@@ -42,3 +42,8 @@ lobby_public_cert_file: "{{ lobby_public_cert_folder }}/cert.crt"
 lobby_private_key_file: "{{ lobby_public_cert_folder }}//cert.key"
 
 lobby_dhparam_file: "/etc/nginx/dhparam.pem"
+
+# Whether we should generate self signed SSL certs, suitable
+# for a dev environment where we are not using letsencrypt to
+# obtain certs.
+nginx_generate_self_signed_cert: false

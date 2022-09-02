@@ -1,4 +1,3 @@
-nginx_generate_self_signed_cert: true
 ssl_cert_folder: ""
 ssl_cert_key: ""
 ssl_cert: ""

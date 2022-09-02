@@ -14,7 +14,6 @@
     mode: "0770"
 
 - name: create SSL keys if needed
-  when: nginx_generate_self_signed_cert
   command: |
     openssl req -x509 -nodes -days 365 \
        -newkey rsa:4096 -keyout {{ ssl_cert_key }} -out {{ ssl_cert }} \
