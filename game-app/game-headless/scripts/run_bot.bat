@@ -67,7 +67,7 @@ REM
 REM The default value is the hostname for the TripleA community's public lobby.
 REM Under normal circumstances, you will not have to change this variable.
 REM
-SET LOBBY_URI=https://prod2-lobby.triplea-game.org
+SET LOBBY_URI=https://prod.triplea-game.org
 
 REM ###########################################################################
 REM VARIABLES THAT YOU MAY CUSTOMIZE END HERE
