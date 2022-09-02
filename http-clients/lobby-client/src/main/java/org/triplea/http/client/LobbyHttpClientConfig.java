@@ -28,7 +28,6 @@ public class LobbyHttpClientConfig {
    * early as possible in the life cycle of a game-client.
    */
   public static void setConfig(LobbyHttpClientConfig config) {
-    Preconditions.checkState(lobbyHttpClientConfig == null);
     lobbyHttpClientConfig = config;
   }
 

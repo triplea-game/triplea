@@ -9,6 +9,7 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
@@ -52,6 +53,6 @@ class BannedPlayerFilterIntegrationTest extends ControllerIntegrationTest {
 
   @SuppressWarnings("SameParameterValue")
   private static Map<String, String> headersWithSystemId(final String systemId) {
-    return Map.of(AuthenticationHeaders.SYSTEM_ID_HEADER, systemId);
+    return Map.of(LobbyHttpClientConfig.SYSTEM_ID_HEADER, systemId);
   }
 }

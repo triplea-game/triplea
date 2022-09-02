@@ -90,8 +90,7 @@ class GameListingWebsocketIntegrationTest extends ControllerIntegrationTest {
             ControllerIntegrationTest.PLAYER,
             error -> {
               throw new AssertionError(error);
-            },
-            "2.6");
+            });
     playerToLobbyConnection.addMessageListener(
         LobbyGameUpdatedMessage.TYPE,
         messageContext -> gameUpdatedListener.accept(messageContext.getLobbyGameListing()));
