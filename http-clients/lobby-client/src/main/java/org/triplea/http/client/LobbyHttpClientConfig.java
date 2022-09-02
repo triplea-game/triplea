@@ -17,7 +17,6 @@ public class LobbyHttpClientConfig {
   public static String VERSION_HEADER = "Triplea-Version";
   public static final String SYSTEM_ID_HEADER = "System-Id-Header";
 
-
   /** The "major.minor" version of the client using the http-client (EG: "3.6") */
   @Nonnull private final String clientVersion;
   /** The system-id of the client using the http-client. */

@@ -11,7 +11,6 @@ import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.domain.data.LobbyConstants;
 import org.triplea.http.client.LobbyHttpClientConfig;
-import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;

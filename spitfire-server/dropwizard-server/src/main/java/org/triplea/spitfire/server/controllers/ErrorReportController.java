@@ -16,7 +16,6 @@ import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.GithubApiClient;
-import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.modules.LobbyModuleConfig;
 import org.triplea.modules.error.reporting.CanUploadErrorReportStrategy;
 import org.triplea.modules.error.reporting.CreateIssueParams;

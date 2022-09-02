@@ -27,7 +27,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.http.client.LobbyHttpClientConfig;
-import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 @SuppressWarnings("SameParameterValue")
 @ExtendWith(MockitoExtension.class)

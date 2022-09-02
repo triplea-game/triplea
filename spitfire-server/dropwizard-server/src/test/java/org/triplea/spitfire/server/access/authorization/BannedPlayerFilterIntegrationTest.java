@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.LobbyHttpClientConfig;
-import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
