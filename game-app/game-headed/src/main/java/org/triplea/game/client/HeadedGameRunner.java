@@ -101,19 +101,13 @@ public final class HeadedGameRunner {
     initializeLookAndFeel();
 
     LobbyHttpClientConfig.setConfig(
-        new LobbyHttpClientConfig() {
-          @Override
-          public String getClientVersion() {
-            return ProductVersionReader.getCurrentVersion().getMajor()
-                + "."
-                + ProductVersionReader.getCurrentVersion().getMinor();
-          }
-
-          @Override
-          public String getSystemId() {
-            return SystemIdLoader.load().getValue();
-          }
-        });
+        LobbyHttpClientConfig.builder()
+            .clientVersion(
+                ProductVersionReader.getCurrentVersion().getMajor()
+                    + "."
+                    + ProductVersionReader.getCurrentVersion().getMinor())
+            .systemId(SystemIdLoader.load().getValue())
+            .build());
 
     initializeDesktopIntegrations(args);
     SwingUtilities.invokeLater(ErrorMessage::initialize);

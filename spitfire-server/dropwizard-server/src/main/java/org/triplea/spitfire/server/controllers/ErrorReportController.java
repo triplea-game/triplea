@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.error.report.CanUploadErrorReportResponse;
 import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
@@ -84,7 +85,7 @@ public class ErrorReportController extends HttpController {
     return errorReportIngestion.apply(
         CreateIssueParams.builder()
             .ip(request.getRemoteAddr())
-            .systemId(request.getHeader(AuthenticationHeaders.SYSTEM_ID_HEADER))
+            .systemId(request.getHeader(LobbyHttpClientConfig.SYSTEM_ID_HEADER))
             .errorReportRequest(errorReport)
             .build());
   }
