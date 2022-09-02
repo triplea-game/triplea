@@ -78,18 +78,19 @@
     owner: "{{ lobby_user }}"
     group: "{{ lobby_user }}"
 
-- name: install systemd service script
+- name: install systemd service file
   register: service_script
   template:
     src: lobby_server.service.j2
     dest: /lib/systemd/system/{{ lobby_name }}.service
     mode: "644"
 
-- name: restart service if new artifact was deployed
-  when: (lobby_restart_on_new_deployment) and ((deploy_artifact.changed) or (service_script.changed))
+# Ideally we would restart the lobby if we update it to run the new version.
+# We do not want to disconnect users, so we do not restart the lobby.
+- name: ensure lobby is started
   systemd:
     name: "{{ lobby_name }}"
-    state: restarted
+    state: started
     enabled: yes
     daemon_reload: true
 
