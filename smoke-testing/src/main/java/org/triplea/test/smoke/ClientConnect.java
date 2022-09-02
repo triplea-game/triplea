@@ -9,6 +9,8 @@ import java.net.URI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.util.Version;
@@ -28,6 +30,11 @@ public final class ClientConnect {
   private static void connectToLobby() {
     log.info("Connecting to lobby...");
 
+    LobbyHttpClientConfig.setConfig(
+        LobbyHttpClientConfig.builder()
+            .clientVersion("1.0")
+            .systemId(SystemIdLoader.load().getValue())
+            .build());
     final LobbyLoginClient lobbyLoginClient =
         LobbyLoginClient.newClient(URI.create("http://localhost:8080"));
 
