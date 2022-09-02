@@ -51,7 +51,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
@@ -231,11 +230,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 gameSelectorModel, serverMessenger, launchAction.createThreadMessaging());
 
         gameToLobbyConnection =
-            new GameToLobbyConnection(
-                lobbyUri,
-                gameHostingResponse,
-                launchAction::handleError,
-                ProductVersionReader.getCurrentVersion().toString());
+            new GameToLobbyConnection(lobbyUri, gameHostingResponse, launchAction::handleError);
 
         serverMessenger.setGameToLobbyConnection(gameToLobbyConnection);
 

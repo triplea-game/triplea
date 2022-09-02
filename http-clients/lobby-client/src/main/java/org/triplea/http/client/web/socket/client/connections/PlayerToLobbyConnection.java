@@ -3,6 +3,7 @@ package org.triplea.http.client.web.socket.client.connections;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.ClientVersionHeader;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
@@ -42,14 +43,18 @@ public class PlayerToLobbyConnection {
   public PlayerToLobbyConnection(
       @Nonnull final URI lobbyUri,
       @Nonnull final ApiKey apiKey,
-      @Nonnull final Consumer<String> errorHandler,
-      @Nonnull final String version) {
+      @Nonnull final Consumer<String> errorHandler) {
     httpLobbyClient = HttpLobbyClient.newClient(lobbyUri, apiKey);
     webSocket =
         GenericWebSocketClient.builder()
             .errorHandler(errorHandler)
             .websocketUri(URI.create(lobbyUri + WebsocketPaths.PLAYER_CONNECTIONS))
-            .headers(ClientVersionHeader.buildHeader(version))
+            .headers(
+                Map.of(
+                    LobbyHttpClientConfig.VERSION_HEADER,
+                    LobbyHttpClientConfig.getConfig().getClientVersion(),
+                    LobbyHttpClientConfig.SYSTEM_ID_HEADER,
+                    LobbyHttpClientConfig.getConfig().getSystemId()))
             .build();
     webSocket.connect();
     gameListingClient = httpLobbyClient.newGameListingClient();

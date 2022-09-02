@@ -12,14 +12,32 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.LobbyHttpClientConfig;
 
 @ExtendWith(SpitfireServerTestExtension.class)
 @ExtendWith(SpitfireDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
 @DataSet(value = ControllerIntegrationTest.DATA_SETS, useSequenceFiltering = false)
 public abstract class ControllerIntegrationTest {
+
+  @BeforeAll
+  static void setup() {
+    LobbyHttpClientConfig.setConfig(
+        LobbyHttpClientConfig.builder()
+            .clientVersion("1.0")
+            .systemId(SystemIdLoader.load().getValue())
+            .build());
+  }
+
+  @AfterAll
+  static void tearDown() {
+    LobbyHttpClientConfig.setConfig(null);
+  }
 
   /**
    * All data sets used for controller integration tests. Note, we include all data even that which

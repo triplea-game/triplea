@@ -5,7 +5,6 @@ import java.net.URI;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Getter;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.swing.SwingComponents;
@@ -27,8 +26,7 @@ public class LobbyClient {
             new PlayerToLobbyConnection(
                 lobbyUri,
                 loginResult.getApiKey(),
-                error -> SwingComponents.showError(null, "Error communicating with lobby", error),
-                ProductVersionReader.getCurrentVersion().toString()))
+                error -> SwingComponents.showError(null, "Error communicating with lobby", error)))
         .anonymousLogin(loginResult.isAnonymousLogin())
         .moderator(loginResult.isModerator())
         .userName(loginResult.getUsername())

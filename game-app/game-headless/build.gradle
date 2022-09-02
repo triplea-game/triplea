@@ -12,6 +12,7 @@ mainClassName = 'org.triplea.game.server.HeadlessGameRunner'
 dependencies {
     implementation project(':http-clients:lobby-client')
     implementation project(":game-app:ai")
+    implementation project(':game-app:domain-data')
     implementation project(':game-app:game-core')
     implementation project(':lib:java-extras')
 }

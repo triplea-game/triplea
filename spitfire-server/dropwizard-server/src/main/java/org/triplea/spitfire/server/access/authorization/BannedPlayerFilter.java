@@ -19,7 +19,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanDao;
-import org.triplea.http.client.lobby.AuthenticationHeaders;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.spitfire.server.ResponseStatus;
 
@@ -40,7 +40,7 @@ public class BannedPlayerFilter implements ContainerRequestFilter {
 
   @Override
   public void filter(final ContainerRequestContext requestContext) {
-    if (Strings.emptyToNull(request.getHeader(AuthenticationHeaders.SYSTEM_ID_HEADER)) == null) {
+    if (Strings.emptyToNull(request.getHeader(LobbyHttpClientConfig.SYSTEM_ID_HEADER)) == null) {
       // missing system id header, abort the request
       requestContext.abortWith(
           Response.status(Status.UNAUTHORIZED).entity("Invalid request").build());
@@ -49,7 +49,7 @@ public class BannedPlayerFilter implements ContainerRequestFilter {
       // check if user is banned, if so abort the request
       userBanDao
           .lookupBan(
-              request.getRemoteAddr(), request.getHeader(AuthenticationHeaders.SYSTEM_ID_HEADER))
+              request.getRemoteAddr(), request.getHeader(LobbyHttpClientConfig.SYSTEM_ID_HEADER))
           .map(this::formatBanMessage)
           .ifPresent(
               banMessage ->

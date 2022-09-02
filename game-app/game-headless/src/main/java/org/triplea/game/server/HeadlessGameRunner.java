@@ -16,6 +16,9 @@ import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtracto
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.config.product.ProductVersionReader;
+import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.util.ExitStatus;
 
 /** Runs a headless game server. */
@@ -37,6 +40,15 @@ public final class HeadlessGameRunner {
     System.setProperty(LOBBY_GAME_COMMENTS, GameRunner.BOT_GAME_HOST_COMMENT);
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     System.setProperty(TRIPLEA_SERVER, "true");
+
+    LobbyHttpClientConfig.setConfig(
+        LobbyHttpClientConfig.builder()
+            .systemId(SystemIdLoader.load().getValue())
+            .clientVersion(
+                ProductVersionReader.getCurrentVersion().getMajor()
+                    + "."
+                    + ProductVersionReader.getCurrentVersion().getMinor())
+            .build());
 
     ArgParser.handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
