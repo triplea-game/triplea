@@ -3,7 +3,6 @@ package org.triplea.modules.forgot.password;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.function.BiConsumer;
@@ -13,6 +12,7 @@ import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.temp.password.TempPasswordHistoryDao;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
+import org.triplea.java.StringUtils;
 
 /**
  * Module to orchestrate generating a temporary password for a user, storing that password in the
@@ -66,14 +66,14 @@ public class ForgotPasswordModule implements BiFunction<String, ForgotPasswordRe
 
   private static void checkArgs(
       final String inetAddress, final ForgotPasswordRequest forgotPasswordRequest) {
-    checkArgument(!Strings.nullToEmpty(inetAddress).trim().isEmpty());
+    checkArgument(!StringUtils.isNullOrBlank(inetAddress));
     try {
       //noinspection ResultOfMethodCallIgnored
       InetAddress.getAllByName(inetAddress);
     } catch (final UnknownHostException e) {
       throw new IllegalArgumentException("Invalid IP address: " + inetAddress);
     }
-    checkArgument(!Strings.nullToEmpty(forgotPasswordRequest.getEmail()).trim().isEmpty());
-    checkArgument(!Strings.nullToEmpty(forgotPasswordRequest.getUsername()).trim().isEmpty());
+    checkArgument(!StringUtils.isNullOrBlank(forgotPasswordRequest.getEmail()));
+    checkArgument(!StringUtils.isNullOrBlank(forgotPasswordRequest.getUsername()));
   }
 }

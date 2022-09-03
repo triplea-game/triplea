@@ -15,6 +15,6 @@ public class CreateAccountResponse {
   String errorMessage;
 
   public boolean isSuccess() {
-    return Strings.nullToEmpty(errorMessage).isEmpty();
+    return Strings.isNullOrEmpty(errorMessage);
   }
 }

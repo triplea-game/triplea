@@ -100,7 +100,7 @@ public class LobbyLogin {
       if (loginResponse.getFailReason() == null) {
         return Optional.of(
             LoginResult.builder()
-                .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
+                .anonymousLogin(Strings.isNullOrEmpty(panel.getPassword()))
                 .username(UserName.of(panel.getUserName()))
                 .apiKey(ApiKey.of(loginResponse.getApiKey()))
                 .moderator(loginResponse.isModerator())

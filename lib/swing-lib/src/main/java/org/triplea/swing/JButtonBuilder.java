@@ -73,7 +73,7 @@ public class JButtonBuilder {
 
   /** required - The text that will be on the button. */
   public JButtonBuilder title(final String title) {
-    checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
+    checkArgument(title != null && !title.isBlank());
     this.title = title;
     return this;
   }

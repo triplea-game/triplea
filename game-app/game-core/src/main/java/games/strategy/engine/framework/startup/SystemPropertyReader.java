@@ -14,7 +14,7 @@ import lombok.experimental.UtilityClass;
 public final class SystemPropertyReader {
 
   public static boolean serverIsPassworded() {
-    return !Strings.nullToEmpty(System.getProperty(SERVER_PASSWORD)).isEmpty();
+    return !Strings.isNullOrEmpty(System.getProperty(SERVER_PASSWORD));
   }
 
   public static Optional<InetAddress> customHost() {

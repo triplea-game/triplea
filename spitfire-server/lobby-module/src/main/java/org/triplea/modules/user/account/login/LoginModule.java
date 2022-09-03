@@ -52,8 +52,7 @@ public class LoginModule {
       return LobbyLoginResponse.builder().failReason(nameValidationError.get()).build();
     }
 
-    if (Strings.nullToEmpty(loginRequest.getName()).isEmpty()
-        || Strings.nullToEmpty(systemId).isEmpty()) {
+    if (Strings.isNullOrEmpty(loginRequest.getName()) || Strings.isNullOrEmpty(systemId)) {
       return LobbyLoginResponse.builder().failReason("Invalid login request").build();
     }
 
