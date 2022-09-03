@@ -27,6 +27,9 @@ public class GameNotes {
     final String notesFileName = createExpectedNotesFileName(xmlGameFile);
     final Path notesFile = xmlGameFile.resolveSibling(notesFileName);
 
+    if (!Files.exists(notesFile)) {
+      GameNotesMigrator.extractGameNotes(xmlGameFile);
+    }
     return Files.exists(notesFile) ? FileUtils.readContents(notesFile).orElse("") : "";
   }
 
