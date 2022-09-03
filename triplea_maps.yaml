@@ -2745,7 +2745,7 @@
 - mapName: Arena of Death
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/arena_of_death/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/arena_of_death/master/preview.png
   description: |
    <br>Arena of Death is a gladiator style skirmish map, with 4-6 units a side.
