@@ -19,6 +19,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanDao;
+import org.triplea.dropwizard.common.IpAddressExtractor;
 import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.spitfire.server.ResponseStatus;
@@ -49,7 +50,8 @@ public class BannedPlayerFilter implements ContainerRequestFilter {
       // check if user is banned, if so abort the request
       userBanDao
           .lookupBan(
-              request.getRemoteAddr(), request.getHeader(LobbyHttpClientConfig.SYSTEM_ID_HEADER))
+              IpAddressExtractor.extractIpAddress(request),
+              request.getHeader(LobbyHttpClientConfig.SYSTEM_ID_HEADER))
           .map(this::formatBanMessage)
           .ifPresent(
               banMessage ->

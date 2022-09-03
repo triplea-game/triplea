@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
+import org.triplea.dropwizard.common.IpAddressExtractor;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.forgot.password.ForgotPasswordResponse;
@@ -46,7 +47,9 @@ public class ForgotPasswordController extends HttpController {
     }
 
     return ForgotPasswordResponse.builder()
-        .responseMessage(forgotPasswordModule.apply(request.getRemoteAddr(), forgotPasswordRequest))
+        .responseMessage(
+            forgotPasswordModule.apply(
+                IpAddressExtractor.extractIpAddress(request), forgotPasswordRequest))
         .build();
   }
 }
