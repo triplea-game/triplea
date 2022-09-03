@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.domain.data.LobbyConstants;
+import org.triplea.dropwizard.common.IpAddressExtractor;
 import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
@@ -43,6 +44,6 @@ public class LoginController extends HttpController {
     return loginModule.doLogin(
         loginRequest,
         request.getHeader(LobbyHttpClientConfig.SYSTEM_ID_HEADER),
-        request.getRemoteAddr());
+        IpAddressExtractor.extractIpAddress(request));
   }
 }
