@@ -57,8 +57,8 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
-   * Indicates this version (major.minor) is greater than the specified version. Ignores
-   * build number in comparison.
+   * Indicates this version (major.minor) is greater than the specified version. Ignores build
+   * number in comparison.
    *
    * @param other The version to compare.
    * @return {@code true} if this version is greater than the specified version; otherwise {@code
