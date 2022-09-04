@@ -56,8 +56,8 @@ public class AiGameTest {
     "map_making_tutorial,map/games/Test1.xml",
   })
   void testFirstRoundFiftyTimes(String mapName, String mapXmlPath) throws Exception {
-    // Run the first round of all-AI game 50 times. Ensure no errors and no winner so early.
-    for (int i = 0; i < 50; i++) {
+    // Run the first round of all-AI game several times. Ensure no errors and no winner so early.
+    for (int i = 0; i < 10; i++) {
       GameSelectorModel gameSelector = GameTestUtils.loadGameFromURI(mapName, mapXmlPath);
       ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
       game.setStopGameOnDelegateExecutionStop(true);

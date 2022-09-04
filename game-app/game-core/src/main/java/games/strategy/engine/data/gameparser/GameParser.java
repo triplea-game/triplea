@@ -78,13 +78,13 @@ public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
   @Nonnull private final GameData data;
-  private final String xmlUri;
+  private final Path xmlUri;
   private final XmlGameElementMapper xmlGameElementMapper;
   private GameDataVariables variables;
   private final Version engineVersion;
 
   private GameParser(
-      final String xmlUri,
+      final Path xmlUri,
       final XmlGameElementMapper xmlGameElementMapper,
       final Version engineVersion) {
     data = new GameData();
@@ -130,7 +130,7 @@ public final class GameParser {
         xmlFile.toUri(),
         inputStream -> {
           try {
-            return new GameParser(xmlFile.toString(), xmlGameElementMapper, engineVersion)
+            return new GameParser(xmlFile, xmlGameElementMapper, engineVersion)
                 .parse(xmlFile, inputStream);
           } catch (final EngineVersionException e) {
             log.warn("Game engine not compatible with: " + xmlFile, e);
