@@ -2770,3 +2770,11 @@
   img: https://raw.githubusercontent.com/triplea-maps/the_shogun/master/preview.png
   description: |
    <br>Japanese warfare in the Sengoku Jidai Warring States period.
+- mapName: Feudal Japan 2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/FeudalJapan2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/FeudalJapan2/master/preview.png
+  description: |
+   <br>Japan, in the 16th century, faced one of the longest and bloodiest civil wars in history, called the Sengoku Era or Warring States period.
+   <br>In this game (inspired by the Shogun/Samurai Swords board game) you control one of 18 historical clans struggling for the domination of Japan.
