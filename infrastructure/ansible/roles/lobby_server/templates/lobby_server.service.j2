@@ -21,5 +21,8 @@ User={{ lobby_user }}
 Group={{ lobby_user }}
 ExecStart=java -jar bin/{{ lobby_jar_file }}
 
+StandardOutput=append:/var/log/{{ lobby_name }}.log
+StandardError=append:/var/log/{{ lobby_name }}.log
+
 [Install]
 WantedBy=multi-user.target
