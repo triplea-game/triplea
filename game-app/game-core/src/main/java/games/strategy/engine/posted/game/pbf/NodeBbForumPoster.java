@@ -156,6 +156,13 @@ public class NodeBbForumPoster {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
         final String json = EntityUtils.toString(response.getEntity());
+        System.out.println();
+        System.out.println("-----------------------------------");
+        System.out.println();
+        System.out.println(json);
+        System.out.println();
+        System.out.println("-----------------------------------");
+        System.out.println();
         try {
           final String url = (String) YamlReader.readMap(json).get("url");
           return "\n[Savegame](" + url + ")";
