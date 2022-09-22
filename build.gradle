@@ -93,7 +93,7 @@ subprojects {
         jetbrainsAnnotationsVersion = '23.0.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.9.1'
-        junitPlatformLauncherVersion = '1.9.0'
+        junitPlatformLauncherVersion = '1.9.1'
         logbackClassicVersion = '1.2.11'
         mockitoVersion = '4.8.0'
         openFeignVersion = '11.10'
