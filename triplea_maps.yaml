@@ -2778,3 +2778,11 @@
   description: |
    <br>Japan, in the 16th century, faced one of the longest and bloodiest civil wars in history, called the Sengoku Era or Warring States period.
    <br>In this game (inspired by the Shogun/Samurai Swords board game) you control one of 18 historical clans struggling for the domination of Japan.
+- mapName: V3 VC Factories
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/v3_VC_Factories/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/v3_VC_Factories/master/preview.png
+  description: |
+   <br>Modifies V3 to put factories at all victory cities
+   <br>Includes a scenario to combine United States & China
