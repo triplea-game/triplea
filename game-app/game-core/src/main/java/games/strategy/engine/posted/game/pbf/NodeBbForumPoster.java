@@ -1,5 +1,6 @@
 package games.strategy.engine.posted.game.pbf;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.UrlConstants;
@@ -9,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -109,6 +111,14 @@ public class NodeBbForumPoster {
     }
   }
 
+  private static String appendOptionalSaveGameLink(
+      final String text, @Nullable final String saveGameUrl) {
+    if (saveGameUrl == null) {
+      return text;
+    }
+    return text + "\n[Savegame](" + saveGameUrl + ")";
+  }
+
   private void post(
       final CloseableHttpClient client,
       final String token,
@@ -122,7 +132,8 @@ public class NodeBbForumPoster {
             List.of(
                 new BasicNameValuePair(
                     "content",
-                    text + ((saveGame != null) ? uploadSaveGame(client, token, saveGame) : ""))),
+                    appendOptionalSaveGameLink(
+                        text, saveGame != null ? uploadSaveGame(client, token, saveGame) : null))),
             StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
@@ -157,12 +168,18 @@ public class NodeBbForumPoster {
       if (status == HttpURLConnection.HTTP_OK) {
         final String json = EntityUtils.toString(response.getEntity());
         try {
-          final String url = (String) YamlReader.readMap(json).get("url");
-          return "\n[Savegame](" + url + ")";
+          final Map<String, Object> jsonObject = YamlReader.readMap(json);
+          final Map<?, ?> responseObject = (Map<?, ?>) jsonObject.get("response");
+          // This is a temporary hack to handle old versions of nodeBB forum json
+          if (responseObject == null) {
+            return (String) jsonObject.get("url");
+          }
+          final List<?> images = (List<?>) Preconditions.checkNotNull(responseObject.get("images"));
+          final Map<?, ?> imageObject = (Map<?, ?>) images.get(0);
+          return (String) Preconditions.checkNotNull(imageObject.get("url"));
         } catch (final Exception e) {
           // This is a temporary hack to handle old versions of nodeBB forum json
-          final String url = (String) YamlReader.readList(json).get(0).get("url");
-          return "\n[Savegame](" + url + ")";
+          return (String) Preconditions.checkNotNull(YamlReader.readList(json).get(0).get("url"));
         }
       }
       throw new IllegalStateException(
