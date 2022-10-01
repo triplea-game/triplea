@@ -8,6 +8,7 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.net.IServerMessenger;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
@@ -19,7 +20,7 @@ public class LobbyWatcherThread {
   @Nonnull private final IServerMessenger serverMessenger;
   @Nonnull private final WatcherThreadMessaging watcherThreadMessaging;
 
-  public Optional<String> getGameId() {
+  @Nullable public Optional<String> getGameId() {
     return lobbyWatcher.getGameId();
   }
 
