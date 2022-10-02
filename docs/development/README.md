@@ -12,7 +12,7 @@
 
 - Fork: <https://github.com/triplea-game/triplea>
 - Using your favorite git-client, clone the newly forked repository 
-- Setup IDE: [/docs/development/how-to/ide-setup](../how-to/ide-setup>)
+- Setup IDE: [/docs/development/how-to/ide-setup](how-to/ide-setup)
 - Use a feature-branch workflow, see: [typical git workflow](reference/typical-git-workflow.md))
 - Submit pull request, see: [pull requests process](../project/pull-requests.md).
 
