@@ -2786,10 +2786,3 @@
   description: |
    <br>Modifies V3 to put factories at all victory cities
    <br>Includes a scenario to combine United States & China
-- mapName: Lord of The Rings - War of the Ring
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/lord_of_the_rings_war_of_the_ring/archive/master.zip
-  version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/lord_of_the_rings_war_of_the_ring/master/preview.png
-  description: |
-   <br>The War of the Ring in Tolkien's Middle Earth
