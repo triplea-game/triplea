@@ -169,6 +169,7 @@ public class NodeBbForumPoster {
     try (CloseableHttpResponse response = client.execute(fileUpload)) {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
+        final String missingKeyTemplate = "Missing '%s' key for JSON '%s'";
         final String json = EntityUtils.toString(response.getEntity());
         try {
           final Map<String, Object> jsonObject = YamlReader.readMap(json);
@@ -177,12 +178,19 @@ public class NodeBbForumPoster {
           if (responseObject == null) {
             return (String) jsonObject.get("url");
           }
-          final List<?> images = (List<?>) Preconditions.checkNotNull(responseObject.get("images"));
+          final List<?> images =
+              (List<?>)
+                  Preconditions.checkNotNull(
+                      responseObject.get("images"), missingKeyTemplate, "images", json);
+          Preconditions.checkState(!images.isEmpty(), "Empty 'images' list for JSON '%s'", json);
           final Map<?, ?> imageObject = (Map<?, ?>) images.get(0);
-          return (String) Preconditions.checkNotNull(imageObject.get("url"));
+          return (String)
+              Preconditions.checkNotNull(imageObject.get("url"), missingKeyTemplate, "url", json);
         } catch (final Exception e) {
           // This is a temporary hack to handle old versions of nodeBB forum json
-          return (String) Preconditions.checkNotNull(YamlReader.readList(json).get(0).get("url"));
+          return (String)
+              Preconditions.checkNotNull(
+                  YamlReader.readList(json).get(0).get("url"), missingKeyTemplate, "url", json);
         }
       }
       throw new IllegalStateException(
