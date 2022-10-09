@@ -111,11 +111,16 @@ public class NodeBbForumPoster {
     }
   }
 
-  private static String appendOptionalSaveGameLink(
-      final String text, @Nullable final String saveGameUrl) {
-    if (saveGameUrl == null) {
+  private String appendOptionalSaveGameLink(
+      final String text,
+      final CloseableHttpClient client,
+      final String token,
+      @Nullable final SaveGameParameter saveGame)
+      throws IOException {
+    if (saveGame == null) {
       return text;
     }
+    final String saveGameUrl = uploadSaveGame(client, token, saveGame);
     return text + "\n[Savegame](" + saveGameUrl + ")";
   }
 
@@ -131,9 +136,7 @@ public class NodeBbForumPoster {
         new UrlEncodedFormEntity(
             List.of(
                 new BasicNameValuePair(
-                    "content",
-                    appendOptionalSaveGameLink(
-                        text, saveGame != null ? uploadSaveGame(client, token, saveGame) : null))),
+                    "content", appendOptionalSaveGameLink(text, client, token, saveGame))),
             StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
