@@ -111,19 +111,6 @@ public class NodeBbForumPoster {
     }
   }
 
-  private String appendOptionalSaveGameLink(
-      final String text,
-      final CloseableHttpClient client,
-      final String token,
-      @Nullable final SaveGameParameter saveGame)
-      throws IOException {
-    if (saveGame == null) {
-      return text;
-    }
-    final String saveGameUrl = uploadSaveGame(client, token, saveGame);
-    return text + "\n[Savegame](" + saveGameUrl + ")";
-  }
-
   private void post(
       final CloseableHttpClient client,
       final String token,
@@ -150,6 +137,19 @@ public class NodeBbForumPoster {
             String.format("Forum responded with code %s%s", code, message));
       }
     }
+  }
+
+  private String appendOptionalSaveGameLink(
+      final String text,
+      final CloseableHttpClient client,
+      final String token,
+      @Nullable final SaveGameParameter saveGame)
+      throws IOException {
+    if (saveGame == null) {
+      return text;
+    }
+    final String saveGameUrl = uploadSaveGame(client, token, saveGame);
+    return text + "\n[Savegame](" + saveGameUrl + ")";
   }
 
   private String uploadSaveGame(
