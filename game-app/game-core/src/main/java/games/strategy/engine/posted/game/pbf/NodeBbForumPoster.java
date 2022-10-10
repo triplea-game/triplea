@@ -38,7 +38,7 @@ public class NodeBbForumPoster {
 
   public static final String AXIS_AND_ALLIES_ORG_DISPLAY_NAME = "www.axisandallies.org/forums/";
   public static final String TRIPLEA_FORUM_DISPLAY_NAME = "forums.triplea-game.org";
-  private static final String missingKeyTemplate = "Missing '%s' key for JSON '%s'";
+  private static final String MISSING_KEY_TEMPLATE = "Missing '%s' key for JSON '%s'";
 
   private final int topicId;
   private final String token;
@@ -184,16 +184,16 @@ public class NodeBbForumPoster {
       final List<?> images =
           (List<?>)
               Preconditions.checkNotNull(
-                  responseObject.get("images"), missingKeyTemplate, "images", json);
+                  responseObject.get("images"), MISSING_KEY_TEMPLATE, "images", json);
       Preconditions.checkState(!images.isEmpty(), "Empty 'images' list for JSON '%s'", json);
       final Map<?, ?> imageObject = (Map<?, ?>) images.get(0);
       return (String)
-          Preconditions.checkNotNull(imageObject.get("url"), missingKeyTemplate, "url", json);
+          Preconditions.checkNotNull(imageObject.get("url"), MISSING_KEY_TEMPLATE, "url", json);
     } catch (final Exception e) {
       // This is a temporary hack to handle old versions of nodeBB forum json
       return (String)
           Preconditions.checkNotNull(
-              YamlReader.readList(json).get(0).get("url"), missingKeyTemplate, "url", json);
+              YamlReader.readList(json).get(0).get("url"), MISSING_KEY_TEMPLATE, "url", json);
     }
   }
 
