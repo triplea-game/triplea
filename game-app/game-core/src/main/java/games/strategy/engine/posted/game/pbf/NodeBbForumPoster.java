@@ -1,6 +1,6 @@
 package games.strategy.engine.posted.game.pbf;
 
-import com.google.common.base.Preconditions;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.UrlConstants;
@@ -114,17 +114,20 @@ public class NodeBbForumPoster {
   private void post(
       final CloseableHttpClient client,
       final String token,
-      final String text,
+      String turnSummaryText,
       @Nullable final SaveGameParameter saveGame)
       throws IOException {
     final HttpPost post = new HttpPost(forumUrl + "/api/v2/topics/" + topicId);
     addTokenHeader(post, token);
+
+    if (saveGame != null) {
+      final String saveGameUrl = uploadSaveGame(client, token, saveGame);
+      turnSummaryText += "\n[Savegame](" + saveGameUrl + ")";
+    }
+
     post.setEntity(
         new UrlEncodedFormEntity(
-            List.of(
-                new BasicNameValuePair(
-                    "content", appendOptionalSaveGameLink(text, client, token, saveGame))),
-            StandardCharsets.UTF_8));
+            List.of(new BasicNameValuePair("content", turnSummaryText)), StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final int code = response.getStatusLine().getStatusCode();
@@ -137,19 +140,6 @@ public class NodeBbForumPoster {
             String.format("Forum responded with code %s%s", code, message));
       }
     }
-  }
-
-  private String appendOptionalSaveGameLink(
-      final String text,
-      final CloseableHttpClient client,
-      final String token,
-      @Nullable final SaveGameParameter saveGame)
-      throws IOException {
-    if (saveGame == null) {
-      return text;
-    }
-    final String saveGameUrl = uploadSaveGame(client, token, saveGame);
-    return text + "\n[Savegame](" + saveGameUrl + ")";
   }
 
   private String uploadSaveGame(
@@ -169,35 +159,49 @@ public class NodeBbForumPoster {
     try (CloseableHttpResponse response = client.execute(fileUpload)) {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
-        final String missingKeyTemplate = "Missing '%s' key for JSON '%s'";
         final String json = EntityUtils.toString(response.getEntity());
-        try {
-          final Map<String, Object> jsonObject = YamlReader.readMap(json);
-          final Map<?, ?> responseObject = (Map<?, ?>) jsonObject.get("response");
-          // This is a temporary hack to handle old versions of nodeBB forum json
-          if (responseObject == null) {
-            return (String) jsonObject.get("url");
-          }
-          final List<?> images =
-              (List<?>)
-                  Preconditions.checkNotNull(
-                      responseObject.get("images"), missingKeyTemplate, "images", json);
-          Preconditions.checkState(!images.isEmpty(), "Empty 'images' list for JSON '%s'", json);
-          final Map<?, ?> imageObject = (Map<?, ?>) images.get(0);
-          return (String)
-              Preconditions.checkNotNull(imageObject.get("url"), missingKeyTemplate, "url", json);
-        } catch (final Exception e) {
-          // This is a temporary hack to handle old versions of nodeBB forum json
-          return (String)
-              Preconditions.checkNotNull(
-                  YamlReader.readList(json).get(0).get("url"), missingKeyTemplate, "url", json);
-        }
+        return parseSaveGameUrlFromJsonResponse(json);
       }
       throw new IllegalStateException(
           "Failed to upload savegame, server returned Error Code "
               + status
               + "\nMessage:\n"
               + EntityUtils.toString(response.getEntity()));
+    }
+  }
+
+  @VisibleForTesting
+  static String parseSaveGameUrlFromJsonResponse(String json) {
+    try {
+      return ((Map<String, List<Map<String, String>>>)
+              YamlReader.readMap(json).get("response")) // first get response element
+          .get("images") // get images element of the response
+          .get(0) // get first element of the images list (we expect only one)
+          .get("url");
+    } catch(NullPointerException e) {
+      throw new UnableToParseResponseException(json, e);
+    } catch (YamlReader.InvalidYamlFormatException ignored) {
+      // This is expected for older forum versions that return a list as top level item
+    }
+
+    try {
+      Map<String, Object> responsePayload = YamlReader.readList(json).get(0);
+      return (String) responsePayload.get("url");
+    } catch (YamlReader.InvalidYamlFormatException | NullPointerException e) {
+      throw new UnableToParseResponseException(json, e);
+    }
+  }
+
+  private static class UnableToParseResponseException extends IllegalStateException {
+    private static final long serialVersionUID = -4435748866723675027L;
+
+    UnableToParseResponseException(String json, Exception cause) {
+      super("Unexpected forum response when uploading save game.\n"
+          + "Please report this to TripleA.\n"
+          + "Unable to properly attach save-game to forum post.\n"
+          + "You will need to manually attach a save-game to the latest forum post.\n"
+          + "Forums response was: "
+          + json, cause);
     }
   }
 
