@@ -171,14 +171,19 @@ public class NodeBbForumPoster {
   }
 
   @VisibleForTesting
+  @SuppressWarnings("unchecked")
   static String parseSaveGameUrlFromJsonResponse(String json) {
     try {
+      // unchecked casts are fine here because we "consume" the types immediately, so
+      // we will get a ClassCastException when the format is unexpected on an inner level.
+      // (top level mismatches i.e. list instead of map will throw an exception in the YamlReader
+      // class)
       return ((Map<String, List<Map<String, String>>>)
               YamlReader.readMap(json).get("response")) // first get response element
           .get("images") // get images element of the response
           .get(0) // get first element of the images list (we expect only one)
           .get("url");
-    } catch (NullPointerException e) {
+    } catch (NullPointerException | IndexOutOfBoundsException | ClassCastException e) {
       throw new UnableToParseResponseException(json, e);
     } catch (YamlReader.InvalidYamlFormatException ignored) {
       // This is expected for older forum versions that return a list as top level item
@@ -187,7 +192,10 @@ public class NodeBbForumPoster {
     try {
       Map<String, Object> responsePayload = YamlReader.readList(json).get(0);
       return (String) responsePayload.get("url");
-    } catch (YamlReader.InvalidYamlFormatException | NullPointerException e) {
+    } catch (YamlReader.InvalidYamlFormatException
+        | NullPointerException
+        | IndexOutOfBoundsException
+        | ClassCastException e) {
       throw new UnableToParseResponseException(json, e);
     }
   }
