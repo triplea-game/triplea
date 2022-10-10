@@ -1,5 +1,6 @@
 package games.strategy.engine.posted.game.pbf;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import games.strategy.engine.framework.system.HttpProxy;
@@ -37,6 +38,7 @@ public class NodeBbForumPoster {
 
   public static final String AXIS_AND_ALLIES_ORG_DISPLAY_NAME = "www.axisandallies.org/forums/";
   public static final String TRIPLEA_FORUM_DISPLAY_NAME = "forums.triplea-game.org";
+  private static final String missingKeyTemplate = "Missing '%s' key for JSON '%s'";
 
   private final int topicId;
   private final String token;
@@ -159,35 +161,39 @@ public class NodeBbForumPoster {
     try (CloseableHttpResponse response = client.execute(fileUpload)) {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
-        final String missingKeyTemplate = "Missing '%s' key for JSON '%s'";
         final String json = EntityUtils.toString(response.getEntity());
-        try {
-          final Map<String, Object> jsonObject = YamlReader.readMap(json);
-          final Map<?, ?> responseObject = (Map<?, ?>) jsonObject.get("response");
-          // This is a temporary hack to handle old versions of nodeBB forum json
-          if (responseObject == null) {
-            return (String) jsonObject.get("url");
-          }
-          final List<?> images =
-              (List<?>)
-                  Preconditions.checkNotNull(
-                      responseObject.get("images"), missingKeyTemplate, "images", json);
-          Preconditions.checkState(!images.isEmpty(), "Empty 'images' list for JSON '%s'", json);
-          final Map<?, ?> imageObject = (Map<?, ?>) images.get(0);
-          return (String)
-              Preconditions.checkNotNull(imageObject.get("url"), missingKeyTemplate, "url", json);
-        } catch (final Exception e) {
-          // This is a temporary hack to handle old versions of nodeBB forum json
-          return (String)
-              Preconditions.checkNotNull(
-                  YamlReader.readList(json).get(0).get("url"), missingKeyTemplate, "url", json);
-        }
+        return parseSaveGameUrlFromJsonResponse(json);
       }
       throw new IllegalStateException(
           "Failed to upload savegame, server returned Error Code "
               + status
               + "\nMessage:\n"
               + EntityUtils.toString(response.getEntity()));
+    }
+  }
+
+  @VisibleForTesting
+  static String parseSaveGameUrlFromJsonResponse(String json) {
+    try {
+      final Map<String, Object> jsonObject = YamlReader.readMap(json);
+      final Map<?, ?> responseObject = (Map<?, ?>) jsonObject.get("response");
+      // This is a temporary hack to handle old versions of nodeBB forum json
+      if (responseObject == null) {
+        return (String) jsonObject.get("url");
+      }
+      final List<?> images =
+          (List<?>)
+              Preconditions.checkNotNull(
+                  responseObject.get("images"), missingKeyTemplate, "images", json);
+      Preconditions.checkState(!images.isEmpty(), "Empty 'images' list for JSON '%s'", json);
+      final Map<?, ?> imageObject = (Map<?, ?>) images.get(0);
+      return (String)
+          Preconditions.checkNotNull(imageObject.get("url"), missingKeyTemplate, "url", json);
+    } catch (final Exception e) {
+      // This is a temporary hack to handle old versions of nodeBB forum json
+      return (String)
+          Preconditions.checkNotNull(
+              YamlReader.readList(json).get(0).get("url"), missingKeyTemplate, "url", json);
     }
   }
 
