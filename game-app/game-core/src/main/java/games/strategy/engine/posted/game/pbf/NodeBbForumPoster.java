@@ -178,7 +178,7 @@ public class NodeBbForumPoster {
           .get("images") // get images element of the response
           .get(0) // get first element of the images list (we expect only one)
           .get("url");
-    } catch(NullPointerException e) {
+    } catch (NullPointerException e) {
       throw new UnableToParseResponseException(json, e);
     } catch (YamlReader.InvalidYamlFormatException ignored) {
       // This is expected for older forum versions that return a list as top level item
@@ -196,12 +196,14 @@ public class NodeBbForumPoster {
     private static final long serialVersionUID = -4435748866723675027L;
 
     UnableToParseResponseException(String json, Exception cause) {
-      super("Unexpected forum response when uploading save game.\n"
-          + "Please report this to TripleA.\n"
-          + "Unable to properly attach save-game to forum post.\n"
-          + "You will need to manually attach a save-game to the latest forum post.\n"
-          + "Forums response was: "
-          + json, cause);
+      super(
+          "Unexpected forum response when uploading save game.\n"
+              + "Please report this to TripleA.\n"
+              + "Unable to properly attach save-game to forum post.\n"
+              + "You will need to manually attach a save-game to the latest forum post.\n"
+              + "Forums response was: "
+              + json,
+          cause);
     }
   }
 
