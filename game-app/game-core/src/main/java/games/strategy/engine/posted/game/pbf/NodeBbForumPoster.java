@@ -114,7 +114,7 @@ public class NodeBbForumPoster {
   private void post(
       final CloseableHttpClient client,
       final String token,
-      final String text,
+      final String turnSummaryText,
       @Nullable final SaveGameParameter saveGame)
       throws IOException {
     final HttpPost post = new HttpPost(forumUrl + "/api/v2/topics/" + topicId);
@@ -123,7 +123,7 @@ public class NodeBbForumPoster {
         new UrlEncodedFormEntity(
             List.of(
                 new BasicNameValuePair(
-                    "content", appendOptionalSaveGameLink(text, client, token, saveGame))),
+                    "content", appendOptionalSaveGameLink(turnSummaryText, client, token, saveGame))),
             StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
@@ -140,16 +140,16 @@ public class NodeBbForumPoster {
   }
 
   private String appendOptionalSaveGameLink(
-      final String text,
+      final String turnSummaryText,
       final CloseableHttpClient client,
       final String token,
       @Nullable final SaveGameParameter saveGame)
       throws IOException {
     if (saveGame == null) {
-      return text;
+      return turnSummaryText;
     }
     final String saveGameUrl = uploadSaveGame(client, token, saveGame);
-    return text + "\n[Savegame](" + saveGameUrl + ")";
+    return turnSummaryText + "\n[Savegame](" + saveGameUrl + ")";
   }
 
   private String uploadSaveGame(
