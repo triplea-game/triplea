@@ -2793,3 +2793,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/lord_of_the_rings_war_of_the_ring/master/preview.png
   description: |
    <br>The War of the Ring in Tolkien's Middle Earth
+- mapName: Adam Met de Bois
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/adam_met_de_bois/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/adam_met_de_bois/master/preview.png
+  description: |
+   <br>Free for all fight the city of Amsterdam
