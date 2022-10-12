@@ -1,11 +1,13 @@
 package games.strategy.triplea.delegate;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -16,6 +18,7 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -303,12 +306,22 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       final String title =
           "Victory Achieved"
               + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners));
-      // we send the bridge, because we can call this method from outside this delegate, which
-      // means our local copy of playerBridge could be null.
-      bridge
-          .getDisplayChannelBroadcaster()
-          .reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
-      bridge.stopGameSequence(status, title);
+
+      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+        Preconditions.checkNotNull(clientNetworkBridge);
+        clientNetworkBridge.sendMessage(
+            IDisplay.BroadcastMessageMessage.builder()
+                .message("<html>" + status + "</html>")
+                .title(title)
+                .build());
+      } else {
+        // we send the bridge, because we can call this method from outside this delegate, which
+        // means our local copy of playerBridge could be null.
+        bridge
+            .getDisplayChannelBroadcaster()
+            .reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
+        bridge.stopGameSequence(status, title);
+      }
     }
   }
 

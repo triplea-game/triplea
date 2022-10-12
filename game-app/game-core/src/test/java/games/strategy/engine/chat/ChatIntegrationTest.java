@@ -12,6 +12,7 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.TestServerMessenger;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -132,7 +133,8 @@ final class ChatIntegrationTest {
   }
 
   private static Chat newChat(final Messengers messengers) {
-    return new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers));
+    return new Chat(
+        new MessengersChatTransmitter(CHAT_NAME, messengers, ClientNetworkBridge.NO_OP_SENDER));
   }
 
   private static void waitFor(final Runnable assertion) throws InterruptedException {
