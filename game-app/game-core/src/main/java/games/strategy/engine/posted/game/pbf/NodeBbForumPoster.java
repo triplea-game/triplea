@@ -1,5 +1,6 @@
 package games.strategy.engine.posted.game.pbf;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.UrlConstants;
@@ -9,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -112,18 +114,20 @@ public class NodeBbForumPoster {
   private void post(
       final CloseableHttpClient client,
       final String token,
-      final String text,
+      String turnSummaryText,
       @Nullable final SaveGameParameter saveGame)
       throws IOException {
     final HttpPost post = new HttpPost(forumUrl + "/api/v2/topics/" + topicId);
     addTokenHeader(post, token);
+
+    if (saveGame != null) {
+      final String saveGameUrl = uploadSaveGame(client, token, saveGame);
+      turnSummaryText += "\n[Savegame](" + saveGameUrl + ")";
+    }
+
     post.setEntity(
         new UrlEncodedFormEntity(
-            List.of(
-                new BasicNameValuePair(
-                    "content",
-                    text + ((saveGame != null) ? uploadSaveGame(client, token, saveGame) : ""))),
-            StandardCharsets.UTF_8));
+            List.of(new BasicNameValuePair("content", turnSummaryText)), StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final int code = response.getStatusLine().getStatusCode();
@@ -156,20 +160,58 @@ public class NodeBbForumPoster {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
         final String json = EntityUtils.toString(response.getEntity());
-        try {
-          final String url = (String) YamlReader.readMap(json).get("url");
-          return "\n[Savegame](" + url + ")";
-        } catch (final Exception e) {
-          // This is a temporary hack to handle old versions of nodeBB forum json
-          final String url = (String) YamlReader.readList(json).get(0).get("url");
-          return "\n[Savegame](" + url + ")";
-        }
+        return parseSaveGameUrlFromJsonResponse(json);
       }
       throw new IllegalStateException(
           "Failed to upload savegame, server returned Error Code "
               + status
               + "\nMessage:\n"
               + EntityUtils.toString(response.getEntity()));
+    }
+  }
+
+  @VisibleForTesting
+  @SuppressWarnings("unchecked")
+  static String parseSaveGameUrlFromJsonResponse(String json) {
+    try {
+      // unchecked casts are fine here because we "consume" the types immediately, so
+      // we will get a ClassCastException when the format is unexpected on an inner level.
+      // (top level mismatches i.e. list instead of map will throw an exception in the YamlReader
+      // class)
+      return ((Map<String, List<Map<String, String>>>)
+              YamlReader.readMap(json).get("response")) // first get response element
+          .get("images") // get images element of the response
+          .get(0) // get first element of the images list (we expect only one)
+          .get("url");
+    } catch (NullPointerException | IndexOutOfBoundsException | ClassCastException e) {
+      throw new UnableToParseResponseException(json, e);
+    } catch (YamlReader.InvalidYamlFormatException ignored) {
+      // This is expected for older forum versions that return a list as top level item
+    }
+
+    try {
+      Map<String, Object> responsePayload = YamlReader.readList(json).get(0);
+      return (String) responsePayload.get("url");
+    } catch (YamlReader.InvalidYamlFormatException
+        | NullPointerException
+        | IndexOutOfBoundsException
+        | ClassCastException e) {
+      throw new UnableToParseResponseException(json, e);
+    }
+  }
+
+  private static class UnableToParseResponseException extends IllegalStateException {
+    private static final long serialVersionUID = -4435748866723675027L;
+
+    UnableToParseResponseException(String json, Exception cause) {
+      super(
+          "Unexpected forum response when uploading save game.\n"
+              + "Please report this to TripleA.\n"
+              + "Unable to properly attach save-game to forum post.\n"
+              + "You will need to manually attach a save-game to the latest forum post.\n"
+              + "Forums response was: "
+              + json,
+          cause);
     }
   }
 
