@@ -42,14 +42,11 @@ class ErrorReportModuleTest {
   void setup() {
     errorReportModule =
         ErrorReportModule.builder()
-            .githubOrg("org")
-            .githubRepo("repo")
             .githubApiClient(githubApiClient)
             .errorReportingDao(errorReportingDao)
             .build();
 
-    when(githubApiClient.newIssue(any(), any(), any()))
-        .thenReturn(new CreateIssueResponse(GITHUB_ISSUE_URL));
+    when(githubApiClient.newIssue(any())).thenReturn(new CreateIssueResponse(GITHUB_ISSUE_URL));
   }
 
   @Test

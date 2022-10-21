@@ -38,9 +38,11 @@ class GithubApiClientTest {
 
     final Collection<MapRepoListing> repos =
         GithubApiClient.builder()
+            .org("example-org")
+            .repo("map-repo")
             .uri(URI.create(server.baseUrl()))
             .build()
-            .listRepositories("example-org");
+            .listRepositories();
 
     assertThat(repos, hasSize(3));
     assertThat(
@@ -87,9 +89,11 @@ class GithubApiClientTest {
     final BranchInfoResponse branchInfoResponse =
         GithubApiClient.builder()
             .authToken("test-token")
+            .org("example-org")
+            .repo("map-repo")
             .uri(URI.create(server.baseUrl()))
             .build()
-            .fetchBranchInfo("example-org", "map-repo", "master");
+            .fetchBranchInfo("master");
 
     final Instant expectedLastCommitDate =
         LocalDateTime.of(2021, 2, 4, 19, 30, 32).atOffset(ZoneOffset.UTC).toInstant();
@@ -108,9 +112,11 @@ class GithubApiClientTest {
     final String latestVersion =
         GithubApiClient.builder()
             .authToken("test-token")
+            .org("example-org")
+            .repo("map-repo")
             .uri(URI.create(server.baseUrl()))
             .build()
-            .fetchLatestVersion("example-org", "map-repo")
+            .fetchLatestVersion()
             .orElseThrow();
 
     assertThat(latestVersion, is("2.5.22294"));

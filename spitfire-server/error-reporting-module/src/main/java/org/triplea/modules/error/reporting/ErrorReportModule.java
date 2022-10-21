@@ -16,17 +16,9 @@ import org.triplea.modules.error.reporting.db.InsertHistoryRecordParams;
 public class ErrorReportModule {
   @Nonnull private final GithubApiClient githubApiClient;
   @Nonnull private final ErrorReportingDao errorReportingDao;
-  @Nonnull private final String githubOrg;
-  @Nonnull private final String githubRepo;
 
-  public static ErrorReportModule build(
-      final String githubOrg,
-      final String githubRepo,
-      final GithubApiClient githubApiClient,
-      final Jdbi jdbi) {
+  public static ErrorReportModule build(final GithubApiClient githubApiClient, final Jdbi jdbi) {
     return ErrorReportModule.builder()
-        .githubOrg(githubOrg)
-        .githubRepo(githubRepo)
         .githubApiClient(githubApiClient)
         .errorReportingDao(jdbi.onDemand(ErrorReportingDao.class))
         .build();
@@ -41,8 +33,6 @@ public class ErrorReportModule {
 
     var githubCreateIssueResponse =
         githubApiClient.newIssue(
-            githubOrg,
-            githubRepo,
             CreateIssueRequest.builder()
                 .title(errorReportRequest.getGameVersion() + ": " + errorReportRequest.getTitle())
                 .body(errorReportRequest.getBody())

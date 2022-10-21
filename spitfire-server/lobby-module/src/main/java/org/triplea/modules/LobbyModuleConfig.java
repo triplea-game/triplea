@@ -1,6 +1,6 @@
 package org.triplea.modules;
 
-import javax.annotation.Nullable;
+import org.triplea.http.client.github.GithubApiClient;
 
 /**
  * Interface for configuration parameters, typically these values will come from the servers
@@ -14,20 +14,5 @@ public interface LobbyModuleConfig {
    */
   boolean isGameHostConnectivityCheckEnabled();
 
-  /** If enabled, we will send real API requests to github to create error reports. */
-  boolean isErrorReportToGithubEnabled();
-
-  /**
-   * Auth token that will be sent to Github for webservice calls. Can be empty, but if specified
-   * must be valid (no auth token still works, but rate limits will be more restrictive).
-   */
-  @Nullable
-  String getGithubApiToken();
-
-  /** Github API webserivce URL. */
-  String getGithubWebServiceUrl();
-
-  String getGithubOrgForErrorReports();
-
-  String getGithubRepoForErrorReports();
+  GithubApiClient createGamesRepoGithubApiClient();
 }

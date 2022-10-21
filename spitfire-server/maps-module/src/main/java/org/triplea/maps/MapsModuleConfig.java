@@ -1,11 +1,9 @@
 package org.triplea.maps;
 
+import org.triplea.http.client.github.GithubApiClient;
+
 public interface MapsModuleConfig {
-  String getGithubMapsOrgName();
-
-  String getGithubApiToken();
-
-  String getGithubWebServiceUrl();
+  GithubApiClient createMapsRepoGithubApiClient();
 
   int getMapIndexingPeriodMinutes();
 

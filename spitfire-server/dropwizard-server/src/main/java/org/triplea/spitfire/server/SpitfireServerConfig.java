@@ -3,10 +3,12 @@ package org.triplea.spitfire.server;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
+import java.net.URI;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.triplea.http.client.github.GithubApiClient;
 import org.triplea.maps.MapsModuleConfig;
 import org.triplea.modules.LobbyModuleConfig;
 import org.triplea.modules.latest.version.LatestVersionModuleConfig;
@@ -37,24 +39,16 @@ public class SpitfireServerConfig extends Configuration
   @Valid @NotNull @JsonProperty @Getter
   private final DataSourceFactory database = new DataSourceFactory();
 
-  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private String githubWebServiceUrl;
 
   /** Webservice token, should be an API token for the TripleA builder bot account. */
-  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private String githubApiToken;
 
-  @Getter(onMethod_ = {@JsonProperty, @Override})
-  @Setter(onMethod_ = {@JsonProperty})
-  private String githubOrgForErrorReports;
-
-  @Getter(onMethod_ = {@JsonProperty, @Override})
-  @Setter(onMethod_ = {@JsonProperty})
-  private String githubRepoForErrorReports;
-
-  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private String githubMapsOrgName;
 
@@ -70,19 +64,40 @@ public class SpitfireServerConfig extends Configuration
   @Setter(onMethod_ = {@JsonProperty})
   private int indexingTaskDelaySeconds;
 
-  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private boolean errorReportToGithubEnabled;
 
-  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
-  private String githubOrg;
+  private String githubGameOrg;
 
-  @Getter(onMethod_ = {@JsonProperty, @Override})
+  @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
-  private String githubRepo;
+  private String githubGameRepo;
 
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private boolean latestVersionFetcherEnabled;
+
+  @Override
+  public GithubApiClient createGamesRepoGithubApiClient() {
+    return GithubApiClient.builder()
+        .stubbingModeEnabled(!errorReportToGithubEnabled)
+        .authToken(githubApiToken)
+        .uri(URI.create(githubWebServiceUrl))
+        .org(githubGameOrg)
+        .repo(githubGameRepo)
+        .build();
+  }
+
+  @Override
+  public GithubApiClient createMapsRepoGithubApiClient() {
+    return GithubApiClient.builder()
+        .stubbingModeEnabled(!errorReportToGithubEnabled)
+        .authToken(githubApiToken)
+        .uri(URI.create(githubWebServiceUrl))
+        .org(githubMapsOrgName)
+        .build();
+  }
 }

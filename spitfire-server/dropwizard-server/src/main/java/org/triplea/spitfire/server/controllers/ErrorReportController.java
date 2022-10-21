@@ -1,6 +1,5 @@
 package org.triplea.spitfire.server.controllers;
 
-import java.net.URI;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
@@ -33,22 +32,10 @@ public class ErrorReportController extends HttpController {
   public static ErrorReportController build(
       final LobbyModuleConfig configuration, final Jdbi jdbi) {
 
-    final boolean errorReportStubbingMode = !configuration.isErrorReportToGithubEnabled();
-
-    final GithubApiClient githubApiClient =
-        GithubApiClient.builder()
-            .uri(URI.create(configuration.getGithubWebServiceUrl()))
-            .authToken(configuration.getGithubApiToken())
-            .stubbingModeEnabled(errorReportStubbingMode)
-            .build();
+    final GithubApiClient githubApiClient = configuration.createGamesRepoGithubApiClient();
 
     return ErrorReportController.builder()
-        .errorReportIngestion(
-            ErrorReportModule.build(
-                configuration.getGithubOrgForErrorReports(),
-                configuration.getGithubRepoForErrorReports(),
-                githubApiClient,
-                jdbi))
+        .errorReportIngestion(ErrorReportModule.build(githubApiClient, jdbi))
         .canReportModule(CanUploadErrorReportStrategy.build(jdbi))
         .build();
   }
