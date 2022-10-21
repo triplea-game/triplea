@@ -14,7 +14,7 @@
 - name: create service user to run the app
   user:
     name: "{{ bot_user }}"
-    create_home: yes
+    create_home: no
     system: yes
 
 - name: deploy scripts to admin home
