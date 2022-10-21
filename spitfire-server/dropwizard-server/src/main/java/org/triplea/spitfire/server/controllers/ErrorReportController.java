@@ -20,13 +20,13 @@ import org.triplea.http.client.github.GithubApiClient;
 import org.triplea.modules.LobbyModuleConfig;
 import org.triplea.modules.error.reporting.CanUploadErrorReportStrategy;
 import org.triplea.modules.error.reporting.CreateIssueParams;
-import org.triplea.modules.error.reporting.CreateIssueStrategy;
+import org.triplea.modules.error.reporting.ErrorReportModule;
 import org.triplea.spitfire.server.HttpController;
 
 /** Http controller that binds the error upload endpoint with the error report upload handler. */
 @Builder
 public class ErrorReportController extends HttpController {
-  @Nonnull private final CreateIssueStrategy errorReportIngestion;
+  @Nonnull private final ErrorReportModule errorReportIngestion;
   @Nonnull private final Function<CanUploadRequest, CanUploadErrorReportResponse> canReportModule;
 
   /** Factory method. */
@@ -44,7 +44,7 @@ public class ErrorReportController extends HttpController {
 
     return ErrorReportController.builder()
         .errorReportIngestion(
-            CreateIssueStrategy.build(
+            ErrorReportModule.build(
                 configuration.getGithubOrgForErrorReports(),
                 configuration.getGithubRepoForErrorReports(),
                 githubApiClient,
@@ -82,7 +82,7 @@ public class ErrorReportController extends HttpController {
       throw new IllegalArgumentException("Missing attribute, body, title, or game version");
     }
 
-    return errorReportIngestion.createGithubIssue(
+    return errorReportIngestion.createErrorReport(
         CreateIssueParams.builder()
             .ip(IpAddressExtractor.extractIpAddress(request))
             .systemId(request.getHeader(LobbyHttpClientConfig.SYSTEM_ID_HEADER))

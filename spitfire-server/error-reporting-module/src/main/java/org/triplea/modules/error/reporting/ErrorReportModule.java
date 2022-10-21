@@ -13,18 +13,18 @@ import org.triplea.modules.error.reporting.db.InsertHistoryRecordParams;
 
 /** Performs the steps for uploading an error report from the point of view of the server. */
 @Builder
-public class CreateIssueStrategy {
+public class ErrorReportModule {
   @Nonnull private final GithubApiClient githubApiClient;
   @Nonnull private final ErrorReportingDao errorReportingDao;
   @Nonnull private final String githubOrg;
   @Nonnull private final String githubRepo;
 
-  public static CreateIssueStrategy build(
+  public static ErrorReportModule build(
       final String githubOrg,
       final String githubRepo,
       final GithubApiClient githubApiClient,
       final Jdbi jdbi) {
-    return CreateIssueStrategy.builder()
+    return ErrorReportModule.builder()
         .githubOrg(githubOrg)
         .githubRepo(githubRepo)
         .githubApiClient(githubApiClient)
@@ -32,7 +32,11 @@ public class CreateIssueStrategy {
         .build();
   }
 
-  public ErrorReportResponse createGithubIssue(final CreateIssueParams createIssueParams) {
+  /**
+   * Creates an error report (a github issue), records in database the created issue, and purges
+   * very old error reports from database.
+   */
+  public ErrorReportResponse createErrorReport(final CreateIssueParams createIssueParams) {
     var errorReportRequest = createIssueParams.getErrorReportRequest();
 
     var githubCreateIssueResponse =

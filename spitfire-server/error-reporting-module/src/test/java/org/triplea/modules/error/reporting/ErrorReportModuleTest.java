@@ -20,7 +20,7 @@ import org.triplea.modules.error.reporting.db.ErrorReportingDao;
 import org.triplea.modules.error.reporting.db.InsertHistoryRecordParams;
 
 @ExtendWith(MockitoExtension.class)
-class CreateIssueStrategyTest {
+class ErrorReportModuleTest {
 
   private static final ErrorReportRequest ERROR_REPORT_REQUEST =
       ErrorReportRequest.builder().body("body").title("title").gameVersion("version").build();
@@ -30,12 +30,12 @@ class CreateIssueStrategyTest {
   @Mock private GithubApiClient githubApiClient;
   @Mock private ErrorReportingDao errorReportingDao;
 
-  private CreateIssueStrategy createIssueStrategy;
+  private ErrorReportModule createIssueStrategy;
 
   @BeforeEach
   void setup() {
     createIssueStrategy =
-        CreateIssueStrategy.builder()
+        ErrorReportModule.builder()
             .githubOrg("org")
             .githubRepo("repo")
             .githubApiClient(githubApiClient)
@@ -50,7 +50,7 @@ class CreateIssueStrategyTest {
         new CreateIssueResponse("created-issue-link"));
 
     final ErrorReportResponse response =
-        createIssueStrategy.createGithubIssue(
+        createIssueStrategy.createErrorReport(
             CreateIssueParams.builder()
                 .ip(IP)
                 .systemId(SYSTEM_ID)
