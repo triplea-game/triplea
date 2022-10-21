@@ -26,7 +26,7 @@ import org.triplea.spitfire.server.HttpController;
 /** Http controller that binds the error upload endpoint with the error report upload handler. */
 @Builder
 public class ErrorReportController extends HttpController {
-  @Nonnull private final Function<CreateIssueParams, ErrorReportResponse> errorReportIngestion;
+  @Nonnull private final CreateIssueStrategy errorReportIngestion;
   @Nonnull private final Function<CanUploadRequest, CanUploadErrorReportResponse> canReportModule;
 
   /** Factory method. */
@@ -82,7 +82,7 @@ public class ErrorReportController extends HttpController {
       throw new IllegalArgumentException("Missing attribute, body, title, or game version");
     }
 
-    return errorReportIngestion.apply(
+    return errorReportIngestion.createGithubIssue(
         CreateIssueParams.builder()
             .ip(IpAddressExtractor.extractIpAddress(request))
             .systemId(request.getHeader(LobbyHttpClientConfig.SYSTEM_ID_HEADER))

@@ -50,7 +50,7 @@ class CreateIssueStrategyTest {
         new CreateIssueResponse("created-issue-link"));
 
     final ErrorReportResponse response =
-        createIssueStrategy.apply(
+        createIssueStrategy.createGithubIssue(
             CreateIssueParams.builder()
                 .ip(IP)
                 .systemId(SYSTEM_ID)
