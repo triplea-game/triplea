@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -26,13 +27,14 @@ class CreateIssueStrategyTest {
   private static final String IP = "127.0.1.10";
   private static final String SYSTEM_ID = "system-id";
 
-  private static final CreateIssueResponse CREATE_ISSUE_RESPONSE = new CreateIssueResponse("created-issue-link");
   @Mock private GithubApiClient githubApiClient;
   @Mock private ErrorReportingDao errorReportingDao;
 
-  @Test
-  void verifyFlow() {
-    final CreateIssueStrategy createIssueStrategy =
+  private CreateIssueStrategy createIssueStrategy;
+
+  @BeforeEach
+  void setup() {
+    createIssueStrategy =
         CreateIssueStrategy.builder()
             .githubOrg("org")
             .githubRepo("repo")
@@ -40,7 +42,12 @@ class CreateIssueStrategyTest {
             .errorReportingDao(errorReportingDao)
             .build();
 
-    when(githubApiClient.newIssue(eq("org"), eq("repo"), any())).thenReturn(CREATE_ISSUE_RESPONSE);
+  }
+
+  @Test
+  void newIssueLinkIsReturnedToClient() {
+    when(githubApiClient.newIssue(eq("org"), eq("repo"), any())).thenReturn(
+        new CreateIssueResponse("created-issue-link"));
 
     final ErrorReportResponse response =
         createIssueStrategy.apply(
@@ -50,14 +57,14 @@ class CreateIssueStrategyTest {
                 .errorReportRequest(ERROR_REPORT_REQUEST)
                 .build());
 
-    assertThat(response.getGithubIssueLink(), is(CREATE_ISSUE_RESPONSE.getHtmlUrl()));
+    assertThat(response.getGithubIssueLink(), is("created-issue-link"));
 
     verify(errorReportingDao)
         .insertHistoryRecord(
             InsertHistoryRecordParams.builder()
                 .title(ERROR_REPORT_REQUEST.getTitle())
                 .gameVersion(ERROR_REPORT_REQUEST.getGameVersion())
-                .githubIssueLink(CREATE_ISSUE_RESPONSE.getHtmlUrl())
+                .githubIssueLink("created-issue-link")
                 .systemId(SYSTEM_ID)
                 .ip(IP)
                 .build());
