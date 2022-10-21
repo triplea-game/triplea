@@ -1,13 +1,12 @@
 package org.triplea.modules.error.reporting;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsSame.sameInstance;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -27,10 +26,8 @@ class CreateIssueStrategyTest {
   private static final String IP = "127.0.1.10";
   private static final String SYSTEM_ID = "system-id";
 
+  private static final CreateIssueResponse CREATE_ISSUE_RESPONSE = new CreateIssueResponse("created-issue-link");
   @Mock private GithubApiClient githubApiClient;
-  @Mock private ErrorReportResponse errorReportResponse;
-  @Mock private CreateIssueResponse createIssueResponse;
-  @Mock private Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
   @Mock private ErrorReportingDao errorReportingDao;
 
   @Test
@@ -40,12 +37,10 @@ class CreateIssueStrategyTest {
             .githubOrg("org")
             .githubRepo("repo")
             .githubApiClient(githubApiClient)
-            .responseAdapter(responseAdapter)
             .errorReportingDao(errorReportingDao)
             .build();
 
-    when(githubApiClient.newIssue(eq("org"), eq("repo"), any())).thenReturn(createIssueResponse);
-    when(responseAdapter.apply(createIssueResponse)).thenReturn(errorReportResponse);
+    when(githubApiClient.newIssue(eq("org"), eq("repo"), any())).thenReturn(CREATE_ISSUE_RESPONSE);
 
     final ErrorReportResponse response =
         createIssueStrategy.apply(
@@ -55,14 +50,14 @@ class CreateIssueStrategyTest {
                 .errorReportRequest(ERROR_REPORT_REQUEST)
                 .build());
 
-    assertThat(response, sameInstance(errorReportResponse));
+    assertThat(response.getGithubIssueLink(), is(CREATE_ISSUE_RESPONSE.getHtmlUrl()));
 
     verify(errorReportingDao)
         .insertHistoryRecord(
             InsertHistoryRecordParams.builder()
                 .title(ERROR_REPORT_REQUEST.getTitle())
                 .gameVersion(ERROR_REPORT_REQUEST.getGameVersion())
-                .githubIssueLink(errorReportResponse.getGithubIssueLink())
+                .githubIssueLink(CREATE_ISSUE_RESPONSE.getHtmlUrl())
                 .systemId(SYSTEM_ID)
                 .ip(IP)
                 .build());
