@@ -61,7 +61,6 @@ https://raw.githubusercontent.com/triplea-maps/conquest_of_the_world/master/map/
 https://raw.githubusercontent.com/triplea-maps/crazygs_ww1/master/map/games/crazygs_ww1.xml
 https://raw.githubusercontent.com/triplea-maps/cybertank/master/map/games/Cybertank.xml
 https://raw.githubusercontent.com/triplea-maps/d-day2/master/map/games/D-Day_2.xml
-https://raw.githubusercontent.com/triplea-maps/d-day/master/map/games/D-Day_2.xml
 https://raw.githubusercontent.com/triplea-maps/d-day/master/map/games/D-Day.xml
 https://raw.githubusercontent.com/triplea-maps/diplomacy/master/map/games/DiplomacyGreatWar.xml
 https://raw.githubusercontent.com/triplea-maps/diplomacy/master/map/games/DiplomacyV3rules.xml
