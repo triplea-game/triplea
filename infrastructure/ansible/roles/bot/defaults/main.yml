@@ -19,23 +19,11 @@ bot_max_memory: "196m"
 # Each bot number matches a bot instance that will be deployed and started.
 bot_numbers: ["01", "02", "03", "04" ]
 
-# Bot prefix we expect to be overriden in inventory.
-# We deploy bots to multiple server, to keep the host numbers unique, there is a prefix.
-# The bot prefix should be unique across all bot hosts.
-# EG: with bot_prefix = 1, and bot_number=01, the bot number in the bot name will be '101'.
-bot_prefix: ""
+# The location of the server, should be a city name
+bot_location_city_name: ""
 
-# Name of the bot server, this will typically be overriden in inventory. The final name of the bot host is
-# concatenation of the "Bot" the "bot name", and the "bot number" with prefix.
-bot_name: "Server"
-
-# Arguments when running bot servers. Each of the key value pairs will be added as a '-p{key}={value}' argument
-# passed to the JVM when running the bot.
-bot_run_args:
-  triplea.port: "${BOT_PORT}"
-  triplea.name: "Bot{{ bot_prefix }}${BOT_NUMBER}_{{ bot_name }}"
-  triplea.lobby.uri: "{{ bot_lobby_uri }}"
-  triplea.map.folder: "{{ bot_maps_folder }}"
+# The number of the bot server, should be globally unique
+bot_number: 0
 
 # When set to true, all maps on the bot server will be updated (overwritten).
 update_maps: false

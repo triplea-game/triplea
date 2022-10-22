@@ -1,39 +1,57 @@
 # Java Conventions
-- Follow: [Google java style](http://google.github.io/styleguide/javaguide.html)
+- Follow: [Google java style](https://google.github.io/styleguide/javaguide.html)
+- Generally follow: [Effective Java](http://thefinestartist.com/effective-java)
 - Install and use IDE checkstyle and formatting, see the IDE setup notes in wiki.
 
-## `null` handling
-
-### Prefer Optional Return Values
-
-Avoid returning `null` values. Prefer returning `Optional`
+## Avoid returning 'null', prefer returning an Optional value
 
 **Good**
 ```
 Optional<Value> method() {
+  return Optional.empty();
+}
 ```
 
 **Avoid**
 ```
 Value method() {
+  return null;
+}
 ```
 
-### As boolean parameters - Prefer Multiple Method Signatures
+## Avoid boolean method parameters
 
-Avoid passing `null` values as parameters to public APIs. Prefer method overloads so the parameter does not need to be specified at all
+Avoid passing `boolean` values as parameters to public APIs. Instead create
+overloaded methods, or use factory methods, or an enum parameter instead.
+
 
 **Good**
 ```
+// create method overloads instead of having a boolean parameter
 void goodMethod() { }
 void badMethod() { }
+
+// Use an enum parameter
+public int doComputation(CombatMode.ATTACK);
+public int doComputation(CombatMode.RETREAT);
+
+// Use a factory method rather than a constructor with a boolean param
+MyObject.newValidating();
+MyObject.newNonValidating();
 ```
 
 **Avoid**
 ```
 void method(boolean isGood) { }
+public int doComputation(boolean isAttack);
+
+void foo() {
+  boolean validating = true;
+  new MyObject(validating);
+}
 ```
 
-### Avoid optional parameters
+## Avoid Optional method parameters
 - Avoid `Optional` parameters, prefer method overloads that omit parameters
 
 **Good**
@@ -47,24 +65,37 @@ void goodMethod(int value) { }
 void method(Optional<Integer> value) { }
 ```
 
-### Annotate methods returning null with `@Nullable`
+## Annotate methods returning null with `@Nullable`
 
 - If `null` is unavoidable, annotate nullable values with `@Nullable`
 
 **Good**
 ```
-@Nullable Value method() { }
+@Nullable Value method() {
+  return null;
+}
 ```
 
 **Avoid**
 ```
-Value method() { }
+Value method() {
+  return null;
+}
 ```
 
 ## Depth first method ordering
-For full details, please see *Chapter 5 'Formatting'* in [Clean Code](http://ricardogeek.com/docs/clean_code.html)
 
-Example:
+AKA: "step-down-order"
+
+> A caller function should always reside above the callee function...
+> 
+> The Stepdown Rule tells us that we should organize our code so that we can read the code top-to-bottom"
+
+For more details:
+- https://dzone.com/articles/the-stepdown-rule
+- [Clean Code: Chapter 5 'Formatting'](http://ricardogeek.com/docs/clean_code.html)
+
+**Good**
 ```java
 
 public void firstPublicMethod() {
@@ -73,27 +104,107 @@ public void firstPublicMethod() {
 }
 
 private void firstPrivateMethodInvoked() { }
-private void secondPrivateMethodInvoked() { }
 
-public void secondPublicMethod() { }
+public void secondPublicMethod() {
+  secondPrivateMethodInvoked();
+}
+
+private void secondPrivateMethodInvoked() { }
+```
+
+**Avoid**
+```java
+
+public void firstPublicMethod() {
+  firstPrivateMethodInvoked();
+  secondPrivateMethodInvoked();
+}
+
+public void secondPublicMethod() {
+  secondPrivateMethodInvoked();
+}
+
+// all private methods at bottom (bad!)
+private void firstPrivateMethodInvoked() { }
+
+private void secondPrivateMethodInvoked() { }
+```
+
+
+**Avoid**
+```java
+
+// method defined above where it is used (bad!)
+private void someMethod() { }
+
+public void publicMethod() {
+  someMethod();
+}
 ```
 
 Note:
- - goal is to keep vertical distance between first usage and declaration reasonably short / minimized.
- - to the extent possible, allow a reader to read code in a single vertical pass from top to bottom
-   without having to jump around to find method definitions.
  - checkstyle will require method overloads to be declared next to each other
 
-## Variables
+## Define Variables Close to their usage
+
 Define variables as close to their usage as possible.
 
+**Good**
+```
+void method() {
+  int a = 123;
+  functionCall(a);
+  int b = 999;
+  functionCall(b);  
+}
+```
+
+**Avoid**
+```
+void method() {
+  int a = 123;
+  int b = 999;
+  functionCall(a);
+  functionCall(b);  
+}
+```
+
 ## Favor constructor injection, avoid setters [#5489](https://github.com/triplea-game/triplea/issues/5489)
+**Good**
+```
+class Foo {
+  private final int a;
+  
+  Foo(int a) {
+    this.a = a;
+  }
+}
+```
+
+**Avoid**
+```
+class Foo {
+  private int a;
+  
+  Foo() { }
+  
+  void setA(int a) {
+    this.a = a;
+  }
+}
+```
 
 ## Avoid Mutability
 
-Try to make all variables final and immutable.
+Avoid mutating variables whenever possible.
 
-Instead of:
+**Good**
+```
+int value = condition ? 3 : 2;
+```
+
+**Avoid**
+
 ```
 int value = 2;
 if(condition) {
@@ -101,35 +212,31 @@ if(condition) {
 }
 ```
 
-Prefer:
-```
-final int value = condition ? 3 : 2;
-```
-
 ## Do not mutate parameters, avoid "out" and avoid "in/out" parameters [#5489](https://github.com/triplea-game/triplea/issues/5489)
 
-Instead of:
-```
-void processCollection(Collection<String> input) {
-  input.add("new value");
-}
-```
-
-Favor:
+**Good**
 ```
 Collection<String> processCollection(Collection<String> input) {
   Collection<String> copy = new ArrayList<>(input);
   copy.add("new value");
   return copy;
 }
-
 ```
+
+**Avoid**
+```
+void processCollection(Collection<String> input) {
+  input.add("new value");
+}
+```
+
 
 ## TODO comments: attach a tracking 'token' [#5249](https://github.com/triplea-game/triplea/issues/5249)
 
-Attach a 'tracking token', or a 'grep token' to TODO comments so that they can all be found as part of larger piece of work. Favor TODO statements that are a clear in terms of what needs to be done.
+Attach a 'tracking token', or a 'grep token' to TODO comments so that they can all be found as part of larger piece of
+work. Favor TODO statements that are a clear in terms of what needs to be done.
 
-EG:
+**Good**
 ```
 TODO: Project#12 ... this relates to a github project
 TODO: Issue#5312 ... this relates to an initiative discussed in github issues
@@ -138,61 +245,34 @@ TODO: Topic#1183 ... this relates to a forum discussion
 
 ## Import inner classes
 
-Instead of:
-```
-someClass.innerClass.methodCall();
-```
-Favor:
 
+**Good**
 ```
 import someClass.innerClass;
 
 innerClass.methodCall();
 ```
 
+**Avoid**
+```
+someClass.innerClass.methodCall();
+```
+
+
 ## Refer to objects by their interfaces [#5489](https://github.com/triplea-game/triplea/issues/5489)
 
-Effective Java Item 52: http://thefinestartist.com/effective-java/52
+Effective Java Item 52: <http://thefinestartist.com/effective-java/52>
 
-Instead of:
-```
-ArrayList<String> strings = new ArrayList<>();
-```
-Favor:
+**Good**
 ```
 Collection<String> strings = new ArrayList<>();
 ```
 
-## Avoid boolean parameters on public methods [#5489](https://github.com/triplea-game/triplea/issues/5489)
-
-Prefer APIs that do not accept a boolean parameter, use factory methods, enums, or break up such an API to have the 'true'/'false' variants.
-
-Instead of:
+**Avoid**
 ```
-public int doComputation(boolean isAttack);
+ArrayList<String> strings = new ArrayList<>();
 ```
 
-Prefer:
-```
-
-```
-Or Prefer:
-```
-public int doComputation(CombatMode.ATTACK);
-public int doComputation(CombatMode.RETREAT);
-```
-
-Instead of:
-```
-boolean validating = true;
-new MyObject(true);
-```
-
-Prefer:
-```
-MyObject.newValidating();
-MyObject.newNonValidating();
-```
 
 ##  Use most restrictive scope possible [#5489](https://github.com/triplea-game/triplea/issues/5489)
 
@@ -207,56 +287,52 @@ Use the most restrictive modifier available that still allows the code to compil
 
 This helps mostly for reading comprehension and to highlight static dependency anti-pattern, eg:
 
-Instead of:
-```
-private void thisDoesNotUseClassState(NoCompilerGuarantee arg) { }
-```
-Prefer:
+**Good**
 ```
 private static void thisDoesNotUseClassState(GuaranteedByTheCompiler arg) {}
 ```
 
+**Avoid**
+```
+private void thisDoesNotUseClassState(NoCompilerGuarantee arg) { }
+```
+
+
 ##  Avoid 'static coupling' [#5489](https://github.com/triplea-game/triplea/issues/5489)
 
 The idea is to avoid using static dependencies. A common way to avoid static dependencies is to use interfaces.
-Instead of:
-```
-public constructor() {
-  myVar = StaticCall.compute();
-}
-```
-Prefer:
+
+**Good**
 ```
 public constructor(Supplier<Integer> compute) {
   myVar = compute.get();
 }
 ```
 
+**Avoid**
+```
+public constructor() {
+  myVar = StaticCall.compute();
+}
+```
+
+
 ### Avoid boolean property values [#5489](https://github.com/triplea-game/triplea/issues/5489)
 
+**Avoid**
 Instead of:
 ```
-visible: true
 visible: false
-```
-
-Favor:
-```
-visibility: visible
-visibility: hidden
-```
-
-Instead of:
-```
 isAttack: false
 ```
 
-Favor:
+**Good**
 ```
-combat: attack
+visibility: visible
+combatType: attack
 ```
 
-### Favor `List.of` [#5524](https://github.com/triplea-game/triplea/issues/5524)
+### Favor using `List.of()` for empty lists [#5524](https://github.com/triplea-game/triplea/issues/5524)
 
 Prefer to use `List.of` over:
 ```
@@ -270,22 +346,26 @@ Same with `Map.of` and `Set.of`
 
 ### Guidelines for `var` usage (https://github.com/triplea-game/triplea/issues/6290)
 
-The following is a really good guide: https://openjdk.java.net/projects/amber/LVTIstyle.html
+The following is a good guide: <https://openjdk.java.net/projects/amber/LVTIstyle.html>
 
-> Omitting an explicit type can reduce clutter, but only if its omission doesn't impair understandability. The type isn't the only way to convey information to the reader. Other means include the variable's name and the initializer expression. We should take all the available channels into account when determining whether it's OK to mute one of these channels.
+> Omitting an explicit type can reduce clutter, but only if its omission doesn't impair understandability.
+> The type isn't the only way to convey information to the reader. Other means include the variable's name and the
+> initializer expression. We should take all the available channels into account when determining whether it's OK to
+> mute one of these channels.
 
 In short, recommending we favor `var` when:
 - variable is partially or fully redundant to the type
-- hiding ugly nested generic types (which perhaps are better created into a data type object, though var is a potential tool in our toolbet)
+- hiding ugly nested generic types (which perhaps are better created into a data type object, though var is a potential
+  tool in our toolbelt)
 
-#### Good
+**Good**
 ```
 var diceRoll = new DiceRoll(..)
 var territoryImage = new Image(...)
 var unitCount = unitsLeft() - unitsHit();
 ```
 
-#### Avoid
+**Avoid**
 ```
 var hits = new DiceRoll(...)
 var power = new  HashMap<Unit, Integer>();
@@ -299,7 +379,8 @@ Plural names on collections can be fine. EG:
 var units = new ArrayList<Unit>();
 ```
 
-If the underlying 'non-var' version is clearly a collection already, the var variant is likely okay. Map types should be considered a bit more as often maps need to be carefully named. For example:
+If the underlying 'non-var' version is clearly a collection already, the var variant is likely okay. Map types should be
+considered a bit more as often maps need to be carefully named. For example:
 
 ```
 var units = new HashMap<unit, Integer>();  // << not well named

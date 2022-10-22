@@ -1,3 +1,9 @@
+- name: assert vars are set
+  assert:
+    that:
+      - bot_number > 0
+      - bot_location_city_name != ""
+
 - name: allow ports
   ufw:
     rule: allow
@@ -57,21 +63,15 @@
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
 
-- name: deploy run_server script
-  template:
-    src: run_server.j2
-    dest: "{{ bot_install_home }}/run_server"
-    mode: "755"
-    owner: "{{ bot_user }}"
-    group: "{{ bot_user }}"
-
 - name: install systemd service script
+  register: bot_service
   template:
     src: bot.service.j2
     dest: /lib/systemd/system/bot@.service
     mode: "644"
 
-- name: reload systemd
+- name: reload systemd configurations
+  when: bot_service.changed
   systemd:
     daemon_reload: yes
 
