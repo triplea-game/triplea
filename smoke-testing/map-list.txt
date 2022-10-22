@@ -223,10 +223,8 @@ https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/map/g
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/map/games/lhtr.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/map/games/ww2v2.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/barbarossa.xml
-https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/lhtr.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/six_army_free_for_all.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/ww2v2_7p.xml
-https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/ww2v2.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/map/games/WW2v3-1941.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/map/games/WW2v3-1942.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_v4/master/map/games/WW2v4_Six_Army_Free_For_All_v2.xml
