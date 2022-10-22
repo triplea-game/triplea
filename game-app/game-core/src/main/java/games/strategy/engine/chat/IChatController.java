@@ -28,10 +28,10 @@ public interface IChatController extends IRemote {
 
   @AllArgsConstructor
   class SetChatStatusMessage implements WebSocketMessage {
-    public static final MessageType<SetChatStatusMessage> TYPE = MessageType.of(SetChatStatusMessage.class);
+    public static final MessageType<SetChatStatusMessage> TYPE =
+        MessageType.of(SetChatStatusMessage.class);
 
-    @Nonnull
-    private final String status;
+    @Nonnull private final String status;
 
     @Override
     public MessageEnvelope toEnvelope() {

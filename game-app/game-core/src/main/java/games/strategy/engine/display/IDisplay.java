@@ -44,7 +44,8 @@ public interface IDisplay extends IChannelSubscriber {
   @Builder
   @AllArgsConstructor
   class BroadcastMessageMessage implements WebSocketMessage {
-    public static final MessageType<BroadcastMessageMessage> TYPE = MessageType.of(BroadcastMessageMessage.class);
+    public static final MessageType<BroadcastMessageMessage> TYPE =
+        MessageType.of(BroadcastMessageMessage.class);
 
     @Nonnull private final String message;
     @Nonnull private final String title;
@@ -58,7 +59,6 @@ public interface IDisplay extends IChannelSubscriber {
       iDisplay.reportMessageToAll(message, title, true, false, true);
     }
   }
-
 
   /**
    * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the
@@ -248,7 +248,8 @@ public interface IDisplay extends IChannelSubscriber {
     private final double diceRollExpectedHits;
     private final String playerName;
 
-    public NotifyDiceMessage(final DiceRoll diceRoll, final String stepName, final String playerName) {
+    public NotifyDiceMessage(
+        final DiceRoll diceRoll, final String stepName, final String playerName) {
       this.stepName = stepName;
       diceRollExpectedHits = diceRoll.getExpectedHits();
       diceRollHits = diceRoll.getHits();

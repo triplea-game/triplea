@@ -125,10 +125,9 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public ChatModel createChatModel(String chatName, Messengers messengers) {
-    Chat chat =
-        new Chat(
-            new MessengersChatTransmitter(chatName, messengers, ClientNetworkBridge.NO_OP_SENDER));
+  public ChatModel createChatModel(
+      String chatName, Messengers messengers, ClientNetworkBridge clientNetworkBridge) {
+    Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers, clientNetworkBridge));
     registerChatAppender(chat);
     return new HeadlessChat(chat);
   }
