@@ -1,6 +1,7 @@
 package org.triplea.http.client.error.report;
 
 import javax.annotation.Nonnull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @EqualsAndHashCode
+@AllArgsConstructor
 public class ErrorReportResponse {
   /**
    * A link to the github issue created (empty if there were problems creating the link). Server

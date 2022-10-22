@@ -1,13 +1,12 @@
 package org.triplea.modules.error.reporting;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsSame.sameInstance;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.function.Function;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -20,52 +19,62 @@ import org.triplea.modules.error.reporting.db.ErrorReportingDao;
 import org.triplea.modules.error.reporting.db.InsertHistoryRecordParams;
 
 @ExtendWith(MockitoExtension.class)
-class CreateIssueStrategyTest {
+class ErrorReportModuleTest {
 
   private static final ErrorReportRequest ERROR_REPORT_REQUEST =
       ErrorReportRequest.builder().body("body").title("title").gameVersion("version").build();
-  private static final String IP = "127.0.1.10";
-  private static final String SYSTEM_ID = "system-id";
+
+  private static final String GITHUB_ISSUE_URL = "example-url-value";
+
+  private static final CreateIssueParams createIssueParams =
+      CreateIssueParams.builder()
+          .ip("127.0.1.10")
+          .systemId("system-id")
+          .errorReportRequest(ERROR_REPORT_REQUEST)
+          .build();
 
   @Mock private GithubApiClient githubApiClient;
-  @Mock private ErrorReportResponse errorReportResponse;
-  @Mock private CreateIssueResponse createIssueResponse;
-  @Mock private Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
   @Mock private ErrorReportingDao errorReportingDao;
 
-  @Test
-  void verifyFlow() {
-    final CreateIssueStrategy createIssueStrategy =
-        CreateIssueStrategy.builder()
-            .githubOrg("org")
-            .githubRepo("repo")
+  private ErrorReportModule errorReportModule;
+
+  @BeforeEach
+  void setup() {
+    errorReportModule =
+        ErrorReportModule.builder()
             .githubApiClient(githubApiClient)
-            .responseAdapter(responseAdapter)
             .errorReportingDao(errorReportingDao)
             .build();
 
-    when(githubApiClient.newIssue(eq("org"), eq("repo"), any())).thenReturn(createIssueResponse);
-    when(responseAdapter.apply(createIssueResponse)).thenReturn(errorReportResponse);
+    when(githubApiClient.newIssue(any())).thenReturn(new CreateIssueResponse(GITHUB_ISSUE_URL));
+  }
 
-    final ErrorReportResponse response =
-        createIssueStrategy.apply(
-            CreateIssueParams.builder()
-                .ip(IP)
-                .systemId(SYSTEM_ID)
-                .errorReportRequest(ERROR_REPORT_REQUEST)
-                .build());
+  @Test
+  void newIssueLinkIsReturnedToClient() {
+    final ErrorReportResponse response = errorReportModule.createErrorReport(createIssueParams);
 
-    assertThat(response, sameInstance(errorReportResponse));
+    assertThat(response.getGithubIssueLink(), is(GITHUB_ISSUE_URL));
+  }
+
+  @Test
+  void errorReportIsLoggedToDatabase() {
+    errorReportModule.createErrorReport(createIssueParams);
 
     verify(errorReportingDao)
         .insertHistoryRecord(
             InsertHistoryRecordParams.builder()
                 .title(ERROR_REPORT_REQUEST.getTitle())
                 .gameVersion(ERROR_REPORT_REQUEST.getGameVersion())
-                .githubIssueLink(errorReportResponse.getGithubIssueLink())
-                .systemId(SYSTEM_ID)
-                .ip(IP)
+                .githubIssueLink(GITHUB_ISSUE_URL)
+                .systemId(createIssueParams.getSystemId())
+                .ip(createIssueParams.getIp())
                 .build());
+  }
+
+  @Test
+  void oldErrorReportsArePurged() {
+    errorReportModule.createErrorReport(createIssueParams);
+
     verify(errorReportingDao).purgeOld(any());
   }
 }

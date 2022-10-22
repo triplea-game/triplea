@@ -50,7 +50,7 @@ class MapIndexingTaskRunner implements Runnable {
 
     // get list of maps
     final Collection<MapRepoListing> mapUris =
-        githubApiClient.listRepositories(githubOrgName).stream()
+        githubApiClient.listRepositories().stream()
             .sorted(Comparator.comparing(MapRepoListing::getName))
             .collect(Collectors.toList());
 

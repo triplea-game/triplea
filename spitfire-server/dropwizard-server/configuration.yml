@@ -1,14 +1,10 @@
 githubApiToken: ${GITHUB_API_TOKEN:-}
 githubWebServiceUrl: https://api.github.com
-githubOrg: triplea-game
-githubRepo: triplea
-githubOrgForErrorReports: triplea-game
-githubRepoForErrorReports: ${ERROR_REPORT_GITHUB_REPO:-test}
+githubGameOrg: triplea-game
+githubGameRepo: triplea
 githubMapsOrgName: triplea-maps
 
-
 latestVersionFetcherEnabled: ${LATEST_VERSION_FETCHER_ENABLED:-true}
-
 
 # If map indexing is enabled, it will begin shortly after server startup.
 # If disabled no map indexing will occur.

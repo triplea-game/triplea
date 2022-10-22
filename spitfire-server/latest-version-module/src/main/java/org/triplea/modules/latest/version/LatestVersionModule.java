@@ -1,7 +1,6 @@
 package org.triplea.modules.latest.version;
 
 import io.dropwizard.lifecycle.Managed;
-import java.net.URI;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -36,17 +35,10 @@ public class LatestVersionModule {
       final LatestVersionModuleConfig configuration,
       final RefreshConfiguration refreshConfiguration) {
 
-    final GithubApiClient githubApiClient =
-        GithubApiClient.builder()
-            .uri(URI.create(configuration.getGithubWebServiceUrl()))
-            .authToken(configuration.getGithubApiToken())
-            .stubbingModeEnabled(false)
-            .build();
+    final GithubApiClient githubApiClient = configuration.createGamesRepoGithubApiClient();
 
     final Supplier<Optional<String>> githubLatestVersionFetcher =
-        () ->
-            githubApiClient.fetchLatestVersion(
-                configuration.getGithubOrg(), configuration.getGithubRepo());
+        githubApiClient::fetchLatestVersion;
 
     return ScheduledTask.builder()
         .taskName("Latest-Engine-Version-Fetcher")

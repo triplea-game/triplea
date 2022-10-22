@@ -18,15 +18,12 @@ import org.triplea.http.client.github.MapRepoListing;
 public class CommitDateFetcher implements Function<MapRepoListing, Optional<Instant>> {
 
   @Nonnull private final GithubApiClient githubApiClient;
-  @Nonnull private final String githubOrgName;
 
   @Override
   public Optional<Instant> apply(final MapRepoListing mapRepoListing) {
     try {
       return Optional.of(
-          githubApiClient
-              .fetchBranchInfo(githubOrgName, mapRepoListing.getName(), "master")
-              .getLastCommitDate());
+          githubApiClient.fetchBranchInfo(mapRepoListing.getName(), "master").getLastCommitDate());
     } catch (final Exception e) {
       log.error(
           "Could not index map: {}, unable to fetch last commit date. Either the last commit"
