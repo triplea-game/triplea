@@ -267,7 +267,9 @@ public class ClientModel implements IMessengerErrorListener {
     this.messengers = new Messengers(messenger);
     messengers.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
 
-    chatPanel = ChatPanel.newChatPanel(messengers, ServerModel.CHAT_NAME, ChatSoundProfile.GAME);
+    chatPanel =
+        ChatPanel.newChatPanel(
+            messengers, ServerModel.CHAT_NAME, ChatSoundProfile.GAME, clientNetworkBridge);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);
       chatPanel

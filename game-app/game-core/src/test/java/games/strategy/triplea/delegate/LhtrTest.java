@@ -26,12 +26,13 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-class LhtrTest {
+class LhtrTest extends AbstractClientSettingTestCase {
   private final GameData gameData = TestMapGameData.LHTR.getGameData();
 
   private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(

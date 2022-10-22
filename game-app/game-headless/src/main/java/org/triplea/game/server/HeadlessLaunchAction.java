@@ -22,6 +22,7 @@ import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.nio.file.Files;
@@ -124,8 +125,9 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public ChatModel createChatModel(String chatName, Messengers messengers) {
-    Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers));
+  public ChatModel createChatModel(
+      String chatName, Messengers messengers, ClientNetworkBridge clientNetworkBridge) {
+    Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers, clientNetworkBridge));
     registerChatAppender(chat);
     return new HeadlessChat(chat);
   }

@@ -25,10 +25,15 @@ public interface ClientNetworkBridge {
         @Override
         public <T extends WebSocketMessage> void addListener(
             final MessageType<T> messageType, final Consumer<T> messageConsumer) {}
+
+        @Override
+        public void disconnect() {}
       };
 
   void sendMessage(WebSocketMessage webSocketMessage);
 
   <T extends WebSocketMessage> void addListener(
       MessageType<T> messageType, Consumer<T> messageConsumer);
+
+  void disconnect();
 }

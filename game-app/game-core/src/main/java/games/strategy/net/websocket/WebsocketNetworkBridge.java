@@ -26,6 +26,11 @@ public class WebsocketNetworkBridge implements ClientNetworkBridge {
   }
 
   @Override
+  public void disconnect() {
+    genericWebSocketClient.close();
+  }
+
+  @Override
   public void sendMessage(final WebSocketMessage webSocketMessage) {
     if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
       genericWebSocketClient.sendMessage(webSocketMessage);

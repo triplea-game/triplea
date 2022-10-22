@@ -534,7 +534,7 @@ public class ServerGame extends AbstractGame {
               delegateRandomSource);
       delegateExecutionManager.enterDelegateExecution();
       try {
-        delegate.setDelegateBridgeAndPlayer(bridge);
+        delegate.setDelegateBridgeAndPlayer(bridge, clientNetworkBridge);
         delegate.start();
       } finally {
         delegateExecutionManager.leaveDelegateExecution();
@@ -571,7 +571,7 @@ public class ServerGame extends AbstractGame {
     delegateExecutionManager.enterDelegateExecution();
     try {
       final IDelegate delegate = getCurrentStep().getDelegate();
-      delegate.setDelegateBridgeAndPlayer(bridge);
+      delegate.setDelegateBridgeAndPlayer(bridge, clientNetworkBridge);
       delegate.start();
     } finally {
       delegateExecutionManager.leaveDelegateExecution();

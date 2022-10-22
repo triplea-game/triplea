@@ -89,6 +89,7 @@ import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,7 +105,7 @@ import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
-class WW2V3Year41Test {
+class WW2V3Year41Test extends AbstractClientSettingTestCase {
   private final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
 
   private Territory getTerritory(final String territoryName) {

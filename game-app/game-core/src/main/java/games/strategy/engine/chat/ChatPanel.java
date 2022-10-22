@@ -2,6 +2,7 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.DefaultListCellRenderer;
@@ -47,8 +48,12 @@ public class ChatPanel extends JPanel implements ChatModel {
    * the UI might freeze for a long time.
    */
   public static ChatPanel newChatPanel(
-      final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers));
+      final Messengers messengers,
+      final String chatName,
+      final ChatSoundProfile chatSoundProfile,
+      final ClientNetworkBridge clientNetworkBridge) {
+    final Chat chat =
+        new Chat(new MessengersChatTransmitter(chatName, messengers, clientNetworkBridge));
     final ClipPlayer clipPlayer = new ClipPlayer();
     return Interruptibles.awaitResult(
             () ->

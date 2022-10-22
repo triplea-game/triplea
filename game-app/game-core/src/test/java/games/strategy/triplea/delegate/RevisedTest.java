@@ -76,6 +76,7 @@ import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
 
-class RevisedTest {
+class RevisedTest extends AbstractClientSettingTestCase {
   private final GameData gameData = TestMapGameData.REVISED.getGameData();
 
   private static void givenRemotePlayerWillSelectDefaultCasualties(
