@@ -13,6 +13,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.TestServerMessenger;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,7 +27,7 @@ import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.ThreadRunner;
 
-final class ChatIntegrationTest {
+final class ChatIntegrationTest extends AbstractClientSettingTestCase {
   private static final String CHAT_NAME = TestServerMessenger.CHAT_CHANNEL_NAME;
   private static final int MESSAGE_COUNT = 50;
   private static final int NODE_COUNT = 3;

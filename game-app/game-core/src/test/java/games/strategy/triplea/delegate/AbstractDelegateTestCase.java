@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
  * <p>Pre-loads the {@link TestMapGameData#DELEGATE_TEST} save game and provides fields for the
  * most-commonly-accessed players, territories, and unit types.
  */
-public abstract class AbstractDelegateTestCase {
+public abstract class AbstractDelegateTestCase extends AbstractClientSettingTestCase {
   protected GameData gameData = TestMapGameData.DELEGATE_TEST.getGameData();
   protected GamePlayer british = GameDataTestUtil.british(gameData);
   protected GamePlayer japanese = GameDataTestUtil.japanese(gameData);

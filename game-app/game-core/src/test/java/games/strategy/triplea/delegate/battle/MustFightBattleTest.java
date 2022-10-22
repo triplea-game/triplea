@@ -34,13 +34,14 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.GameDataTestUtil;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-class MustFightBattleTest {
+class MustFightBattleTest extends AbstractClientSettingTestCase {
   @Test
   void testFightWithIsSuicideOnHit() {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();

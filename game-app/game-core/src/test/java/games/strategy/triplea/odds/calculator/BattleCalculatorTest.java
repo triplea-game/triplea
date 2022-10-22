@@ -18,13 +18,14 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class BattleCalculatorTest {
+class BattleCalculatorTest extends AbstractClientSettingTestCase {
   @Test
   void testUnbalancedFight() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();

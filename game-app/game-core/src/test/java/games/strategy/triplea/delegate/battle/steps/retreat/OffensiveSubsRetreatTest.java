@@ -34,6 +34,7 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.MockGameData;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -46,7 +47,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.sound.ISound;
 
 @ExtendWith(MockitoExtension.class)
-public class OffensiveSubsRetreatTest {
+public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;

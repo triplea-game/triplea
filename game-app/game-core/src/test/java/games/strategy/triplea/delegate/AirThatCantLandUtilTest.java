@@ -18,13 +18,14 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import org.junit.jupiter.api.Test;
 
-class AirThatCantLandUtilTest {
+class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
   private GameData gameData = TestMapGameData.REVISED.getGameData();
   private GamePlayer americansPlayer = GameDataTestUtil.americans(gameData);
   private UnitType fighterType = GameDataTestUtil.fighter(gameData);
