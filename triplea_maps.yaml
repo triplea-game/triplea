@@ -2792,7 +2792,7 @@
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/lord_of_the_rings_war_of_the_ring/master/preview.png
   description: |
-   <br>The War of the Ring from Tolkien's Lord of the Rings Trilogy   
+   <br>The War of the Ring from Tolkien's Lord of the Rings Trilogy
 - mapName: Adam Met de Bois
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/adam_met_de_bois/archive/master.zip
