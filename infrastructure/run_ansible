@@ -30,6 +30,9 @@ function usage() {
   echo "      This option can cause false positive failures if one action depends on a previous"
   echo "  --verbose, -v"
   echo "      Shows ansible verbose output, gives more detail about what has changed."
+  echo "  --limit, -l"
+  echo "      Limits which servers we deploy to, only these servers will be updated."
+  echo "      Specify server hostnames, and/or hostgroup names"
   exit 1
 }
 
@@ -44,6 +47,7 @@ DRY_RUN_ARG=""
 ENVIRONMENT=""
 TAGS_ARG=""
 VERBOSE_ARG=""
+LIMIT_ARG=""
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -74,6 +78,11 @@ while [[ $# -gt 0 ]]; do
       ;;
     --verbose|-v)
       VERBOSE_ARG="-v"
+      shift
+      ;;
+    --limit|-l)
+      LIMIT_ARG="--limit $2"
+      shift
       shift
       ;;
     *)
@@ -111,6 +120,6 @@ set -x
 ANSIBLE_CONFIG="$scriptDir/ansible.cfg" ansible-playbook \
   --extra-vars "build_version=$BUILD_VERSION" \
   --extra-vars "product_version=$PRODUCT_VERSION" \
-   --inventory "$scriptDir/ansible/inventory/$ENVIRONMENT" $DRY_RUN_ARG \
+   --inventory "$scriptDir/ansible/inventory/$ENVIRONMENT" $DRY_RUN_ARG $LIMIT_ARG \
    $VAULT_PASSWORD_FILE_ARG $TAGS_ARG $DIFF_ARG $VERBOSE_ARG "$scriptDir/ansible/site.yml"
 set +x

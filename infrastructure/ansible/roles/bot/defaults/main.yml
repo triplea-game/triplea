@@ -1,5 +1,5 @@
 bot_user: "bot"
-bot_folder: "/home/{{ bot_user }}"
+bot_folder: "/opt/bot"
 bot_version: "{{ product_version | default('0.0') }}"
 
 # The location where we will install the bot binaries
