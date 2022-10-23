@@ -20,11 +20,11 @@ public class PlayerBanRecord {
 
   @Builder
   public PlayerBanRecord(
-      @ColumnName("name") final String username,
+      @ColumnName("username") final String username,
       @ColumnName("ip") final String ip,
       @ColumnName("system_id") final String systemId,
-      @ColumnName("ban_start") final Instant banStart,
-      @ColumnName("ban_end") final Instant banEnd) {
+      @ColumnName("date_created") final Instant banStart,
+      @ColumnName("ban_expiry") final Instant banEnd) {
     this.username = username;
     this.ip = ip;
     this.systemId = systemId;
