@@ -16,7 +16,7 @@ public class PlayerIdentifiersByApiKeyLookup {
 
   @Builder
   public PlayerIdentifiersByApiKeyLookup(
-      @ColumnName("user_name") final String userName,
+      @ColumnName("username") final String userName,
       @ColumnName("system_id") final String systemId,
       @ColumnName("ip") final String ip) {
     this.userName = UserName.of(userName);

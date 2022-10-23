@@ -33,11 +33,11 @@ public interface PlayerInfoForModeratorDao {
 
   @SqlQuery(
       "select"
-          + "    username as name,"
-          + "    ip as ip,"
-          + "    system_id as systemId,"
-          + "    date_created as banStart,"
-          + "    ban_expiry as banEnd"
+          + "    username,"
+          + "    ip,"
+          + "    system_id,"
+          + "    date_created,"
+          + "    ban_expiry"
           + "  from banned_user"
           + "  where "
           + "    ip = :ip::inet"
