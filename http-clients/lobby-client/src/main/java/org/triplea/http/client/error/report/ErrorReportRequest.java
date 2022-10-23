@@ -13,7 +13,7 @@ import org.triplea.java.StringUtils;
 /** Represents data that would be uploaded to a server. */
 @ToString
 @EqualsAndHashCode
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorReportRequest {

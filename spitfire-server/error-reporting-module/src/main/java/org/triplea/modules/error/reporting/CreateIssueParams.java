@@ -6,7 +6,7 @@ import lombok.Value;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class CreateIssueParams {
   @Nonnull private final String ip;
   @Nonnull private final String systemId;
