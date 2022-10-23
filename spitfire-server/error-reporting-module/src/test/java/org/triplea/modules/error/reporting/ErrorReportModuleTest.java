@@ -73,8 +73,8 @@ class ErrorReportModuleTest {
         .newIssue(
             CreateIssueRequest.builder()
                 .body("body")
-                .title("version: title")
-                .labels(new String[] {"Error Report"})
+                .title("title")
+                .labels(new String[] {"Error Report", "version"})
                 .build());
   }
 
@@ -97,7 +97,7 @@ class ErrorReportModuleTest {
         .newIssue(
             CreateIssueRequest.builder()
                 .body("body")
-                .title(inputVersion + ": title")
+                .title("title")
                 .labels(expectedLabels)
                 .build());
   }
@@ -105,13 +105,13 @@ class ErrorReportModuleTest {
   @SuppressWarnings("unused")
   static Stream<Arguments> validateLabelsDataSentToGithub() {
     return Stream.of(
-        Arguments.of("version", new String[] {"Error Report"}),
-        Arguments.of("1.1", new String[] {"Error Report"}),
-        Arguments.of("2.1.1", new String[] {"Error Report"}),
-        Arguments.of("3.2.1.1", new String[] {"Error Report"}),
-        Arguments.of("4.0.1", new String[] {"Error Report"}),
-        Arguments.of("5.1+123", new String[] {"Error Report"}),
-        Arguments.of("6.0+abc", new String[] {"Error Report"}));
+        Arguments.of("version", new String[] {"Error Report", "version"}),
+        Arguments.of("1.1", new String[] {"Error Report", "1.1"}),
+        Arguments.of("2.1.1", new String[] {"Error Report", "2.1"}),
+        Arguments.of("3.2.1.1", new String[] {"Error Report", "3.2"}),
+        Arguments.of("4.0.1", new String[] {"Error Report", "4.0"}),
+        Arguments.of("5.1+123", new String[] {"Error Report", "5.1"}),
+        Arguments.of("6.0+abc", new String[] {"Error Report", "6.0"}));
   }
 
   @Test

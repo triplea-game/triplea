@@ -34,9 +34,9 @@ public class ErrorReportModule {
     var githubCreateIssueResponse =
         githubApiClient.newIssue(
             CreateIssueRequest.builder()
-                .title(errorReportRequest.getGameVersion() + ": " + errorReportRequest.getTitle())
+                .title(errorReportRequest.getTitle())
                 .body(errorReportRequest.getBody())
-                .labels(new String[] {"Error Report"})
+                .labels(new String[] {"Error Report", errorReportRequest.getSimpleGameVersion()})
                 .build());
 
     errorReportingDao.insertHistoryRecord(
