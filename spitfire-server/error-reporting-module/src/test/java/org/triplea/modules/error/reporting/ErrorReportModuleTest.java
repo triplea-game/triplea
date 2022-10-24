@@ -6,13 +6,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
+import org.triplea.http.client.github.CreateIssueRequest;
 import org.triplea.http.client.github.CreateIssueResponse;
 import org.triplea.http.client.github.GithubApiClient;
 import org.triplea.modules.error.reporting.db.ErrorReportingDao;
@@ -54,6 +59,59 @@ class ErrorReportModuleTest {
     final ErrorReportResponse response = errorReportModule.createErrorReport(createIssueParams);
 
     assertThat(response.getGithubIssueLink(), is(GITHUB_ISSUE_URL));
+  }
+
+  /**
+   * Given an input to create an error report, we validate the parameters we send to github to
+   * create an issue.
+   */
+  @Test
+  void validateDataSentToGithub() {
+    errorReportModule.createErrorReport(createIssueParams);
+
+    verify(githubApiClient)
+        .newIssue(
+            CreateIssueRequest.builder()
+                .body("body")
+                .title("title")
+                .labels(new String[] {"Error Report", "version"})
+                .build());
+  }
+
+  /**
+   * Given a variety of 'inputVersion' representing game versions, we validate the data we send to
+   * github (notably checking the labels that we send).
+   */
+  @ParameterizedTest
+  @MethodSource
+  void validateLabelsDataSentToGithub(String inputVersion, String[] expectedLabels) {
+    errorReportModule.createErrorReport(
+        createIssueParams.toBuilder()
+            .errorReportRequest(
+                createIssueParams.getErrorReportRequest().toBuilder()
+                    .gameVersion(inputVersion)
+                    .build())
+            .build());
+
+    verify(githubApiClient)
+        .newIssue(
+            CreateIssueRequest.builder()
+                .body("body")
+                .title("title")
+                .labels(expectedLabels)
+                .build());
+  }
+
+  @SuppressWarnings("unused")
+  static Stream<Arguments> validateLabelsDataSentToGithub() {
+    return Stream.of(
+        Arguments.of("version", new String[] {"Error Report", "version"}),
+        Arguments.of("1.1", new String[] {"Error Report", "1.1"}),
+        Arguments.of("2.1.1", new String[] {"Error Report", "2.1"}),
+        Arguments.of("3.2.1.1", new String[] {"Error Report", "3.2"}),
+        Arguments.of("4.0.1", new String[] {"Error Report", "4.0"}),
+        Arguments.of("5.1+123", new String[] {"Error Report", "5.1"}),
+        Arguments.of("6.0+abc", new String[] {"Error Report", "6.0"}));
   }
 
   @Test
