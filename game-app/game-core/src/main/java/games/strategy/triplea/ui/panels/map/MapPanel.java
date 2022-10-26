@@ -625,7 +625,12 @@ public class MapPanel extends ImageScrollerLargeView {
     gameData.addTerritoryListener(territoryListener);
     gameData.addDataChangeListener(dataChangeListener);
     clearPendingDrawOperations();
-    executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
+    // Try to mitigate race condition where game data is set after shutting down the executor
+    // technically there's no guarantee because the executor can be shut down after the if check
+    // and before the call to execute, but it should be good enough!
+    if (!executor.isTerminated()) {
+      executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
+    }
   }
 
   @Override
