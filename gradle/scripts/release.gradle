@@ -1,7 +1,7 @@
 ext.publishArtifacts = { artifacts ->
     artifacts.each {
         if (!it.exists()) {
-            throw new GradleException("artifact '$it' does not exist")
+            throw new GradleException("artifact '$it' does not exist.")
         }
     }
 
