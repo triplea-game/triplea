@@ -108,7 +108,7 @@ public final class SwingComponents {
    */
   public static void promptUser(
       final String title, final String message, final Runnable confirmedAction) {
-    if(!SwingUtilities.isEventDispatchThread()) {
+    if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(() -> promptUser(title, message, confirmedAction));
       return;
     }
