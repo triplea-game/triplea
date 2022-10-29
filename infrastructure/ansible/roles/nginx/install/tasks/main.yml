@@ -18,8 +18,8 @@
     port: "{{ item }}"
     proto: tcp
   with_items:
-    - 443
-    - 80
+    - "443"
+    - "80"
 
 - name: ensure nginx is started
   systemd:
