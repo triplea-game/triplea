@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
@@ -24,13 +25,14 @@ import org.triplea.modules.user.account.login.authorizer.temp.password.TempPassw
 
 @Builder
 public class LoginModule {
-  @Nonnull private Predicate<LoginRequest> registeredLogin;
-  @Nonnull private Predicate<LoginRequest> tempPasswordLogin;
-  @Nonnull private Function<UserName, Optional<String>> anonymousLogin;
-  @Nonnull private Consumer<LoginRecord> accessLogUpdater;
+  @Nonnull private final Predicate<LoginRequest> registeredLogin;
+  @Nonnull private final Predicate<LoginRequest> tempPasswordLogin;
+  @Nonnull private final Function<UserName, Optional<String>> anonymousLogin;
+  @Nonnull private final Consumer<LoginRecord> accessLogUpdater;
   @Nonnull private final Function<LoginRecord, ApiKey> apiKeyGenerator;
   @Nonnull private final UserJdbiDao userJdbiDao;
   @Nonnull private final Function<String, Optional<String>> nameValidation;
+  @Nonnull private final Supplier<String> lobbyLoginMessageDao;
 
   public static LoginModule build(final Jdbi jdbi, final Chatters chatters) {
     return LoginModule.builder()
@@ -41,6 +43,7 @@ public class LoginModule {
         .tempPasswordLogin(TempPasswordLogin.build(jdbi))
         .registeredLogin(PasswordCheck.build(jdbi))
         .nameValidation(NameValidation.build(jdbi))
+        .lobbyLoginMessageDao(LobbyLoginMessageDao.build(jdbi))
         .build();
   }
 
@@ -64,13 +67,16 @@ public class LoginModule {
 
     final boolean hasPassword = !Strings.nullToEmpty(loginRequest.getPassword()).isEmpty();
 
+    // successful login case
     if (hasPassword && registeredLogin.test(loginRequest)) {
       final ApiKey apiKey =
           recordLoginAndGenerateApiKey(loginRequest, playerSystemId, PlayerChatId.newId(), ip);
       return LobbyLoginResponse.builder()
           .apiKey(apiKey.getValue())
           .moderator(isModerator(loginRequest.getName()))
+          .lobbyMessage(lobbyLoginMessageDao.get())
           .build();
+      // successful login using a temp password
     } else if (hasPassword && tempPasswordLogin.test(loginRequest)) {
       final ApiKey apiKey =
           recordLoginAndGenerateApiKey(loginRequest, playerSystemId, PlayerChatId.newId(), ip);
@@ -78,12 +84,15 @@ public class LoginModule {
           .apiKey(apiKey.getValue())
           .passwordChangeRequired(true)
           .moderator(isModerator(loginRequest.getName()))
+          .lobbyMessage(lobbyLoginMessageDao.get())
           .build();
+      // bad password
     } else if (hasPassword) {
       return LobbyLoginResponse.builder()
           .failReason("Invalid username and password combination")
           .build();
-    } else { // anonymous login
+      // no password -> anonymous login
+    } else {
       final Optional<String> errorMessage =
           anonymousLogin.apply(UserName.of(loginRequest.getName()));
       if (errorMessage.isPresent()) {
@@ -91,7 +100,10 @@ public class LoginModule {
       } else {
         final ApiKey apiKey =
             recordLoginAndGenerateApiKey(loginRequest, playerSystemId, PlayerChatId.newId(), ip);
-        return LobbyLoginResponse.builder().apiKey(apiKey.getValue()).build();
+        return LobbyLoginResponse.builder()
+            .apiKey(apiKey.getValue())
+            .lobbyMessage(lobbyLoginMessageDao.get())
+            .build();
       }
     }
   }

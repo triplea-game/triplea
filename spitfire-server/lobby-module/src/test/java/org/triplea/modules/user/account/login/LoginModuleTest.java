@@ -47,6 +47,8 @@ class LoginModuleTest {
 
   private static final ApiKey API_KEY = ApiKey.of("api-key");
 
+  private static final String LOBBY_MESSAGE = "Example lobby message";
+
   @Mock private Predicate<LoginRequest> registeredLogin;
   @Mock private Predicate<LoginRequest> tempPasswordLogin;
   @Mock private Function<UserName, Optional<String>> anonymousLogin;
@@ -68,6 +70,7 @@ class LoginModuleTest {
             .accessLogUpdater(accessLogUpdater)
             .userJdbiDao(userJdbiDao)
             .nameValidation(nameValidation)
+            .lobbyLoginMessageDao(() -> LOBBY_MESSAGE)
             .build();
   }
 
@@ -100,6 +103,7 @@ class LoginModuleTest {
   private static void assertSuccessLogin(final LobbyLoginResponse result) {
     assertThat(result.getFailReason(), nullValue());
     assertThat(result.getApiKey(), is(API_KEY.getValue()));
+    assertThat(result.getLobbyMessage(), is(LOBBY_MESSAGE));
   }
 
   @Nested

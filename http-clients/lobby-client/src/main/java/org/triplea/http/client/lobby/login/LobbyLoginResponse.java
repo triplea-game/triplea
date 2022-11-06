@@ -25,6 +25,11 @@ public class LobbyLoginResponse {
    * password.
    */
   private final boolean passwordChangeRequired;
+  /**
+   * When users log in to lobby successfully, we optionally can optionally send them a banner
+   * message that is printed on the lobby screen.
+   */
+  private final String lobbyMessage;
 
   public boolean isSuccess() {
     return apiKey != null;
