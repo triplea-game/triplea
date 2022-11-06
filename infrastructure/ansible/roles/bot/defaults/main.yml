@@ -1,12 +1,14 @@
 bot_user: "bot"
 bot_folder: "/opt/bot"
-bot_version: "{{ product_version | default('0.0') }}"
+bot_version: "2.5"
+
+bot_zip_file_url: "https://github.com/triplea-game/triplea/releases/download/2.5.22294/triplea-game-headless-2.5.22294.zip"
 
 # The location where we will install the bot binaries
 bot_install_home: "{{ bot_folder }}/{{ bot_version }}"
 
 # The location of the jar executable that we will run to launch the bot server.
-bot_jar: "{{ bot_install_home }}/bin/triplea-game-headless.jar"
+bot_jar: "{{ bot_install_home }}/bin/triplea-game-headless-2.5.22294.jar"
 
 # A folder where the bot server will find maps.
 bot_maps_folder: "{{ bot_folder }}/maps"
