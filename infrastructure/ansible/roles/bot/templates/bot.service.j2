@@ -17,5 +17,10 @@ ExecStart=java -server \
   -Ptriplea.map.folder="{{ bot_maps_folder }}"
 Restart=always
 
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=bot%i
+
+
 [Install]
 WantedBy=multi-user.target
