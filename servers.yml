@@ -1,5 +1,5 @@
 # This file is read by game clients 2.2 through 2.5
-latest: 2.6+14208
+latest: 2.6.0
 servers:
   - version: "2.5.22294"
     inactive: true
