@@ -16,14 +16,14 @@ bots_2_5
 # that are not easy to resolve right now. It will be easier to move a full
 # to 2.6 wholesale and add cleanup tasks for 2.5 config than to get these
 # servers back under infrastructure control
-#prod2-bot07.triplea-game.org  bot_number=7 bot_location_city_name=Jersey
 #prod2-bot08.triplea-game.org  bot_number=8 bot_location_city_name=London
-#prod2-bot09.triplea-game.org  bot_number=9 bot_location_city_name=Frankfurt
 
 [bots_2_6]
 prod2-bot02.triplea-game.org  bot_number=2 bot_location_city_name=Atlanta
 prod2-bot04.triplea-game.org  bot_number=4 bot_location_city_name=Atlanta
 prod2-bot06.triplea-game.org  bot_number=6 bot_location_city_name=California
+prod2-bot07.triplea-game.org  bot_number=7 bot_location_city_name=Jersey
+prod2-bot09.triplea-game.org  bot_number=9 bot_location_city_name=Frankfurt
 
 [prod:children]
 lobbyServer
