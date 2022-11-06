@@ -1,8 +1,11 @@
 # This file is read by game clients 2.2 through 2.5
-latest: 2.6.0
+latest: 2.5.22294
 servers:
   - version: "2.5.22294"
-    inactive: true
+    lobby_uri: https://prod.triplea-game.org
+    message: |
+      Welcome to the TripleA lobby!
+      Please no politics, stay respectful, be welcoming, have fun.
   - version: "2.0.20057"
     inactive: true
   - version: "0.0"

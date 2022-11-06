@@ -8,8 +8,8 @@ lobby_name: "lobby_{{ lobby_product_version }}"
 lobby_home_folder: "/opt/lobby/{{ lobby_product_version }}"
 
 lobby_ports:
-  "default": "9026"
-  "2.5": "9026"
+  "default": "8080"
+  "2.5": "8080"
   "2.6": "9026"
 
 lobby_http_port: "{{ lobby_ports[lobby_product_version] }}"
