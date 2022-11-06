@@ -31,7 +31,6 @@ import org.triplea.java.timer.Timers;
 @Slf4j
 class MapIndexingTaskRunner implements Runnable {
 
-  @Nonnull private final String githubOrgName;
   @Nonnull private final MapIndexDao mapIndexDao;
   @Nonnull private final GithubApiClient githubApiClient;
   @Nonnull private final Function<MapRepoListing, Optional<MapIndexingResult>> mapIndexer;
@@ -44,7 +43,7 @@ class MapIndexingTaskRunner implements Runnable {
 
   @Override
   public void run() {
-    log.info("Map indexing started, github org: {}", githubOrgName);
+    log.info("Map indexing started, github org: {}", githubApiClient.getOrg());
 
     startTimeEpochMillis = System.currentTimeMillis();
 

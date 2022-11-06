@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import lombok.Getter;
 import org.slf4j.LoggerFactory;
 import org.triplea.http.client.HttpClient;
 
@@ -29,6 +30,7 @@ public class GithubApiClient {
    */
   private final boolean stubbingModeEnabled;
 
+  @Getter
   private final String org;
   private final String repo;
 
