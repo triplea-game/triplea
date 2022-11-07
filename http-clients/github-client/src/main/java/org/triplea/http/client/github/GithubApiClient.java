@@ -30,8 +30,7 @@ public class GithubApiClient {
    */
   private final boolean stubbingModeEnabled;
 
-  @Getter
-  private final String org;
+  @Getter private final String org;
   private final String repo;
 
   /**
