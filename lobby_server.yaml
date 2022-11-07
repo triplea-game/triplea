@@ -1,0 +1,11 @@
+# Obsolete file, delete this once 1.9.x has been closed
+# Instead see 'servers.yml'
+- version: 1.9.0.0
+  host: lobby.triplea-game.org
+  port: 3304
+  https_port: 5432
+  message: |
+    Triplea 2.2 is released  @  https://triplea-game.org/download/
+    Finish your 1.9 save games here, start new games in 2.2!
+    This lobby, the 1.9 lobby, is scheduled to be turned off in early September.
+  error_message:

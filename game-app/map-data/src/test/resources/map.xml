@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<game>
+    <map>
+        <territory name="Belgium"/>
+        <territory name="Sea" water="true"/>
+        <connection t1="start1" t2="end1"/>
+        <connection t1="start2" t2="end2"/>
+    </map>
+</game>

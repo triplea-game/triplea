@@ -1,0 +1,7 @@
+https://raw.githubusercontent.com/triplea-game/assets/master/test_data/save_games/2.x/civil_war_house_divided_during_union_actions_and_operations.tsvg
+https://raw.githubusercontent.com/triplea-game/assets/master/test_data/save_games/2.x/nwo_smalls_ai_game_during_combat.tsvg
+https://raw.githubusercontent.com/triplea-game/assets/master/test_data/save_games/2.x/revised_during_bombing_raid_after_aa_roll.tsvg
+https://raw.githubusercontent.com/triplea-game/assets/master/test_data/save_games/2.x/revised_during_casualty_selection.tsvg
+https://raw.githubusercontent.com/triplea-game/assets/master/test_data/save_games/2.x/revised_during_land_to_land_combat.tsvg
+https://raw.githubusercontent.com/triplea-game/assets/master/test_data/save_games/2.x/revisted_start_of_game.tsvg
+https://raw.githubusercontent.com/triplea-game/assets/master/test_data/save_games/2.x/wwii_global_2nd_edition_during_g1_politics.tsvg

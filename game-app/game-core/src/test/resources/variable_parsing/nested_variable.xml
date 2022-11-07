@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<xml>
+    <variableList>
+        <variable name="nested">
+            <element name="nested-value"/>
+        </variable>
+
+        <variable name="contains-nested">
+            <element name="$nested$"/>
+        </variable>
+
+        <variable name="many-nested">
+            <element name="$nested$"/>
+            <element name="$contains-nested$"/>
+        </variable>
+    </variableList>
+</xml>

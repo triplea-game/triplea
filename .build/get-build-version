@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Prints the current build version, this is the product version plus current commit number
+# Example output: 2.6+23400
+
+set -eu
+
+scriptDir=$(dirname "$0")
+
+echo -n "$($scriptDir/get-product-version)+"
+
+# finish printing with commit number
+(
+  cd $scriptDir || exit 1
+  git rev-list --count HEAD
+)

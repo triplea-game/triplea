@@ -1,0 +1,12 @@
+ext.getProductVersion = {
+    return project(':game-app').file("../.build/product-version.txt").text.trim();
+}
+
+ext.getCommitNumber = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-list', '--count', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}

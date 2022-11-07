@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Prints the current product version number. That value is found in the file: 'product_version.txt'.
+# Example output: 2.6
+
+scriptDir=$(dirname "$0")
+cat "$scriptDir/product-version.txt"

@@ -1,0 +1,77 @@
+package org.triplea.java.timer;
+
+import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * Class for creating a class to be executed periodically. Sample usage:
+ *
+ * <pre>{@code
+ * ScheduledTimer timer = Timers.newFixedRateTimer("thread-name")
+ *    .period(20, TimeUnit.SECONDS)
+ *    .delay(10, TimeUnit.SECONDS)
+ *    .task(() -> executeTask());
+ * timer.start();
+ * timer.cancel();
+ * }</pre>
+ *
+ * The scheduled timer can also be started at time of creation:
+ *
+ * <pre>{@code
+ * ScheduledTimer timer = Timers.fixedRateTimer("thread-name")
+ *    .period(20, TimeUnit.SECONDS)
+ *    .task(() -> executeTask())
+ *    .start();
+ * timer.cancel();
+ * }</pre>
+ */
+@Slf4j
+public class ScheduledTimer {
+  private final Runnable task;
+  private final long delayMillis;
+  private final long periodMillis;
+
+  private final Timer timer;
+  @Getter private boolean running;
+
+  ScheduledTimer(
+      final String threadName,
+      final Runnable task,
+      final long delayMillis,
+      final long periodMillis) {
+    timer = Optional.ofNullable(threadName).map(Timer::new).orElseGet(Timer::new);
+    this.task = task;
+    this.delayMillis = delayMillis;
+    this.periodMillis = periodMillis;
+  }
+
+  /**
+   * Starts the timer and returns the started instance. The timer task will execute after the
+   * configured delay period {@code delayMillis}.
+   */
+  public ScheduledTimer start() {
+    running = true;
+    timer.scheduleAtFixedRate(
+        new TimerTask() {
+          @Override
+          public void run() {
+            try {
+              task.run();
+            } catch (final Exception e) {
+              log.error("Scheduled task encountered an exception", e);
+            }
+          }
+        },
+        delayMillis,
+        periodMillis);
+    return this;
+  }
+
+  public void cancel() {
+    running = false;
+    timer.cancel();
+  }
+}
