@@ -1,2 +1,0 @@
-# Current version of lobby is:
-{{ lobby_full_version }}

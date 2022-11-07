@@ -1,5 +1,0 @@
-banned_user:
-  - public_id: public-id
-    username: username
-    system_id: system-id
-    ip: 127.0.0.3

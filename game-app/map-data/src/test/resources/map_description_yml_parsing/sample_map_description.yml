@@ -1,7 +1,0 @@
-map_name: MapName
-version: 10
-games:
-  - game_name: GameName0
-    file_name: XmlGameFile0.xml
-  - game_name: GameName1
-    file_name: XmlGameFile1.xml

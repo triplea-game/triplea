@@ -1,9 +1,0 @@
-map_tag_value:
-  - id: 3001
-    map_tag_id: 800
-    map_index_id: 10
-    map_tag_allowed_value_id: 6000
-  - id: 3002
-    map_tag_id: 800
-    map_index_id: 20
-    map_tag_allowed_value_id: 6000
