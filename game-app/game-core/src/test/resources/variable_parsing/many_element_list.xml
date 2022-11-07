@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<xml>
+    <variableList>
+        <variable name="key1">
+            <element name="value1"/>
+            <element name="value2"/>
+        </variable>
+        <variable name="key2">
+            <element name="value3"/>
+            <element name="value4"/>
+        </variable>
+        <variable name="empty-value">
+            <element name=""/>
+        </variable>
+        <variable name="no-values"/>
+    </variableList>
+</xml>

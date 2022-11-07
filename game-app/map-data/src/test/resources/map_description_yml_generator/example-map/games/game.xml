@@ -1,0 +1,7 @@
+<game>
+  <info name="example game"/>
+  <propertyList>
+    <property name="mapName" value="example map"/>
+  </propertyList>
+</game>
+

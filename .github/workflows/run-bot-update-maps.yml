@@ -1,0 +1,19 @@
+name: Run - Update Bot Maps
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    name: Run Bot Update Maps
+    runs-on: Ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run Ansible to Deploy
+        run: |
+          pip install ansible==2.9.13
+          cd infrastructure
+          echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+          ./run_ansible --tags update_maps --environment production
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+

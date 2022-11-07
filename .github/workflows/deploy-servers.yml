@@ -1,0 +1,28 @@
+# Builds and deploys latest to servers.
+name: Deploy to Servers
+on:
+  push:
+    branches:
+      - master
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  build:
+    name: Server Deployment
+    runs-on: Ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Load SSH private key into ssh-agent
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+      - name: Run Ansible to Deploy
+        run: |
+          pip install ansible==2.9.13
+          cd infrastructure
+          echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+          ./run_ansible --environment production
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
