@@ -1,5 +1,0 @@
-banned_username:
-  - username: USERNAME1
-    date_created: 2001-01-01 23:59:59
-  - username: USERNAME2
-    date_created: 2000-01-01 23:59:59

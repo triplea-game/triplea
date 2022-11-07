@@ -1,7 +1,0 @@
-#!/bin/bash
-
-sudo systemctl daemon-reload
-
-{% for item in bot_numbers %}
-sudo systemctl start bot@{{ item }}
-{% endfor %}

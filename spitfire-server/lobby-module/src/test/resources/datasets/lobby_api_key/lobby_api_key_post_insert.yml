@@ -1,8 +1,0 @@
-lobby_api_key:
-  - username: registered-user-name
-    lobby_user_id: 50
-    user_role_id: 1
-    player_chat_id: player-chat-id
-    key: registered-user-key
-    system_id: system-id
-    ip: 127.0.0.1

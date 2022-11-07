@@ -1,4 +1,0 @@
-game_chat_history:
-  - lobby_game_id: 100
-    username: "gameplayer"
-    message: "example message"

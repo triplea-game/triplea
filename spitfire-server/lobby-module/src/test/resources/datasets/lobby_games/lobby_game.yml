@@ -1,6 +1,0 @@
-lobby_game:
-  - id: 100
-    host_name: "hostname"
-    game_id: "gameid-100"
-    game_hosting_api_key_id: 600
-    date_created: 2000-01-01 23:59:20.0
