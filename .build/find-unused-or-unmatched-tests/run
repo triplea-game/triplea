@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -eEux
-
-script_dir=$(dirname "$0")
-"$script_dir/find-unused-dbunit-datasets"
-"$script_dir/find-orphaned-tests"
-
