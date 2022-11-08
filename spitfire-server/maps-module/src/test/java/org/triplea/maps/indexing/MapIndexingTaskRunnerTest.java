@@ -41,7 +41,6 @@ class MapIndexingTaskRunnerTest {
   void setup() {
     mapIndexingTaskRunner =
         MapIndexingTaskRunner.builder()
-            .githubOrgName("ORG_NAME")
             .mapIndexDao(mapIndexDao)
             .githubApiClient(githubApiClient)
             .mapIndexer(mapIndexer)
