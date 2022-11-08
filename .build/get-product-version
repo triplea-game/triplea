@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Prints the current product version number. That value is found in the file: 'product_version.txt'.
+# Reads and then prints the current product version ('major.minor') from file.
 # Example output: 2.6
 
 scriptDir=$(dirname "$0")
