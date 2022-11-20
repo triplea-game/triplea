@@ -18,7 +18,11 @@ public class ImageLoader {
    * @param path Location of the file to be read as an image.
    */
   public static Image getImage(final Path path) {
-    checkArgument(Files.exists(path), "File must exist at path: " + path.toAbsolutePath());
+    checkArgument(
+        Files.exists(path),
+        "File must exist at path: "
+            + path.toAbsolutePath()
+            + "You should build with the checked in launcher, or and run 'downloadAssets'.");
     checkArgument(!Files.isDirectory(path), "Must be a file: " + path.toAbsolutePath());
     try {
       return ImageIO.read(path.toFile());
