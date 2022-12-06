@@ -60,10 +60,13 @@ class ProductionPanel extends JPanel {
 
   protected JDialog dialog;
   private boolean bid;
+
+  private int lowestCost;
   final Action doneAction = SwingAction.of("Done", () -> dialog.setVisible(false));
 
   ProductionPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
+    lowestCost = 100000;
   }
 
   private IntegerMap<ProductionRule> getProduction() {
@@ -233,9 +236,9 @@ class ProductionPanel extends JPanel {
     return panel;
   }
 
-  private void setLeft(final ResourceCollection resourceCollection, final int totalUnits) {
+  private void setLeft(final ResourceCollection resourceCollection, final int totalUnits, final int maxUnits) {
     remainingResources.removeAll();
-    left.setText(String.format("%d total units purchased. Remaining resources: ", totalUnits));
+    left.setText(String.format("%d/%d total units purchased. Remaining resources: ", totalUnits, maxUnits));
     if (resourceCollection != null) {
       remainingResources.add(
           uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, gamePlayer));
@@ -252,7 +255,8 @@ class ProductionPanel extends JPanel {
       totalUnits += current.getQuantity() * current.getProductionRule().getResults().totalValues();
     }
     final ResourceCollection leftToSpend = resources.difference(spent);
-    setLeft(leftToSpend, totalUnits);
+    int maxUnits = resources.getQuantity("PUs") / lowestCost;
+    setLeft(leftToSpend, totalUnits, maxUnits);
     for (final Rule current : rules) {
       int max = leftToSpend.fitsHowOften(current.getCost());
       max += current.getQuantity();
@@ -333,7 +337,9 @@ class ProductionPanel extends JPanel {
           final int attack = attach.getAttack(player);
           final int movement = attach.getMovement(player);
           final int defense = attach.getDefense(player);
-          info.setText(attack + " | " + defense + " | " + movement);
+          final Resource currentResource = player.getData().getResourceList().getResource("PUs");
+          info.setText(attack + " | " + defense + " | " + movement + " ≤" + (player.getResources().getQuantity(currentResource) / cost.getInt(currentResource)));
+          if( cost.getInt(currentResource) < lowestCost) { lowestCost = cost.getInt(currentResource); }
           tooltip
               .append(type.getName())
               .append(": ")
