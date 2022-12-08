@@ -236,9 +236,11 @@ class ProductionPanel extends JPanel {
     return panel;
   }
 
-  private void setLeft(final ResourceCollection resourceCollection, final int totalUnits, final int maxUnits) {
+  private void setLeft(
+      final ResourceCollection resourceCollection, final int totalUnits, final int maxUnits) {
     remainingResources.removeAll();
-    left.setText(String.format("%d/%d total units purchased. Remaining resources: ", totalUnits, maxUnits));
+    left.setText(
+        String.format("%d/%d total units purchased. Remaining resources: ", totalUnits, maxUnits));
     if (resourceCollection != null) {
       remainingResources.add(
           uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, gamePlayer));
@@ -338,8 +340,18 @@ class ProductionPanel extends JPanel {
           final int movement = attach.getMovement(player);
           final int defense = attach.getDefense(player);
           final Resource currentResource = player.getData().getResourceList().getResource("PUs");
-          info.setText(attack + " | " + defense + " | " + movement + " ≤" + (player.getResources().getQuantity(currentResource) / cost.getInt(currentResource)));
-          if( cost.getInt(currentResource) < lowestCost) { lowestCost = cost.getInt(currentResource); }
+          info.setText(
+              attack
+                  + " | "
+                  + defense
+                  + " | "
+                  + movement
+                  + " ≤"
+                  + (player.getResources().getQuantity(currentResource)
+                      / cost.getInt(currentResource)));
+          if (cost.getInt(currentResource) < lowestCost) {
+            lowestCost = cost.getInt(currentResource);
+          }
           tooltip
               .append(type.getName())
               .append(": ")
