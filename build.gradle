@@ -74,7 +74,7 @@ subprojects {
         jaxbCoreVersion = '4.0.1'
         jaxbImplVersion = '4.0.1'
         jdbiVersion = '3.35.0'
-        jetbrainsAnnotationsVersion = '23.0.0'
+        jetbrainsAnnotationsVersion = '23.1.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.9.1'
         junitPlatformLauncherVersion = '1.9.1'
