@@ -18,6 +18,7 @@ import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -103,6 +104,7 @@ class BattleCalculatorPanel extends JPanel {
   private String defenderOrderOfLosses = null;
   private final Territory location;
   private final JList<String> territoryEffectsJList;
+  private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
 
   BattleCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location) {
     this.data = data;
@@ -1051,19 +1053,24 @@ class BattleCalculatorPanel extends JPanel {
     }
     setupAttackerAndDefender();
 
-    final Instant t = Instant.now();
-    calculator =
-        new ConcurrentBattleCalculator(
-            () ->
+    final Instant start = Instant.now();
+    calculator = new ConcurrentBattleCalculator();
+
+    calculator
+        .setGameData(data)
+        .thenAccept(
+            bool -> {
+              if (bool) {
+                long millis = Duration.between(start, Instant.now()).toMillis();
                 SwingUtilities.invokeLater(
                     () -> {
-                      log.debug("Battle Calculator ready in " + Duration.between(t, Instant.now()));
+                      log.debug("Battle Calculator ready in {}ms", millis);
                       calculateButton.setText("Calculate Odds");
                       calculateButton.setEnabled(true);
                       calculateButton.requestFocusInWindow();
-                    }));
-
-    calculator.setGameData(data);
+                    });
+              }
+            });
     setWidgetActivation();
     revalidate();
   }
@@ -1072,7 +1079,7 @@ class BattleCalculatorPanel extends JPanel {
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         AttackerAndDefenderSelector.builder()
             .players(data.getPlayerList().getPlayers())
-            .currentPlayer(data.getSequence().getStep().getPlayerId())
+            .currentPlayer(data.getHistory().getCurrentPlayer())
             .relationshipTracker(data.getRelationshipTracker())
             .territory(location)
             .build()
@@ -1337,11 +1344,11 @@ class BattleCalculatorPanel extends JPanel {
       attackerUnitsTotalTuv.setText(
           "TUV: "
               + TuvUtils.getTuv(
-                  attackers, getAttacker(), TuvUtils.getCostsForTuv(getAttacker(), data), data));
+                  attackers, getAttacker(), tuvCalculator.getCostsForTuv(getAttacker()), data));
       defenderUnitsTotalTuv.setText(
           "TUV: "
               + TuvUtils.getTuv(
-                  defenders, getDefender(), TuvUtils.getCostsForTuv(getDefender(), data), data));
+                  defenders, getDefender(), tuvCalculator.getCostsForTuv(getDefender()), data));
       final int attackHitPoints = CasualtyUtil.getTotalHitpointsLeft(attackers);
       final int defenseHitPoints = CasualtyUtil.getTotalHitpointsLeft(defenders);
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);

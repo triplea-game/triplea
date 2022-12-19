@@ -8,13 +8,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.IGameModifiedChannel;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -25,7 +24,7 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Optional;
 import java.util.UUID;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.HeadlessSoundChannel;
@@ -36,8 +35,7 @@ import org.triplea.util.Tuple;
 public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
-  private final DelegateHistoryWriter writer =
-      new DelegateHistoryWriter(new DummyGameModifiedChannel());
+  private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final GameData gameData;
   private final ObjectivePanelDummyPlayer dummyAi =
       new ObjectivePanelDummyPlayer("objective panel dummy");
@@ -55,17 +53,13 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   public void sendMessage(final WebSocketMessage webSocketMessage) {}
 
   @Override
+  public Optional<ResourceLoader> getResourceLoader() {
+    throw new UnsupportedOperationException(
+        "ObjectiveDummyDelegateBridge#getResourceLoader() should never be called");
+  }
+
+  @Override
   public void leaveDelegateExecution() {}
-
-  @Override
-  public Properties getStepProperties() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public String getStepName() {
-    throw new UnsupportedOperationException();
-  }
 
   @Override
   public Player getRemotePlayer(final GamePlayer gamePlayer) {
@@ -128,35 +122,9 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   @Override
   public void stopGameSequence(String status, String title) {}
 
-  static class DummyGameModifiedChannel implements IGameModifiedChannel {
-    @Override
-    public void addChildToEvent(final String text, final Object renderingData) {}
-
-    @Override
-    public void gameDataChanged(final Change change) {}
-
-    @Override
-    public void shutDown() {}
-
-    @Override
-    public void startHistoryEvent(final String event) {}
-
-    @Override
-    public void startHistoryEvent(final String event, final Object renderingData) {}
-
-    @Override
-    public void stepChanged(
-        final String stepName,
-        final String delegateName,
-        final GamePlayer player,
-        final int round,
-        final String displayName,
-        final boolean loadedFromSavedGame) {}
-  }
-
-  static class ObjectivePanelDummyPlayer extends AbstractBuiltInAi {
+  static class ObjectivePanelDummyPlayer extends AbstractAi {
     ObjectivePanelDummyPlayer(final String name) {
-      super(name);
+      super(name, "ObjectivePanelDummyPlayer");
     }
 
     @Override
@@ -265,11 +233,6 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
         final Collection<Unit> potentialTargets,
         final Collection<Unit> bombers) {
       throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public PlayerTypes.Type getPlayerType() {
-      return PlayerTypes.BATTLE_CALC_DUMMY;
     }
   }
 }

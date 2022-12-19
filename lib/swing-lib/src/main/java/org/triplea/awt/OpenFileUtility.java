@@ -18,7 +18,7 @@ public final class OpenFileUtility {
    * @param action What to do if the Desktop API is not supported.
    */
   public static void openUrl(final String url, final Runnable action) {
-    if (Desktop.isDesktopSupported()) {
+    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
       try {
         Desktop.getDesktop().browse(URI.create(url));
       } catch (final IOException e) {

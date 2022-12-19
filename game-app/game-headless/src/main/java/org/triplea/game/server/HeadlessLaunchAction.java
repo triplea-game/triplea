@@ -7,23 +7,27 @@ import ch.qos.logback.classic.filter.ThresholdFilter;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.MessengersChatTransmitter;
-import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.Messengers;
-import games.strategy.triplea.ui.UiContext;
+import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +36,6 @@ import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.debug.ChatAppender;
 import org.triplea.java.ThreadRunner;
 import org.triplea.sound.HeadlessSoundChannel;
-import org.triplea.sound.ISound;
 
 @Slf4j
 public class HeadlessLaunchAction implements LaunchAction {
@@ -71,19 +74,24 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public IDisplay startGame(
+  public Collection<PlayerTypes.Type> getPlayerTypes() {
+    return PlayerTypes.getBuiltInPlayerTypes();
+  }
+
+  @Override
+  public void startGame(
       final LocalPlayers localPlayers,
       final IGame game,
       final Set<Player> players,
       final Chat chat) {
-
-    UiContext.setResourceLoader(game.getData());
-    return new HeadlessDisplay();
-  }
-
-  @Override
-  public ISound getSoundChannel(final LocalPlayers localPlayers) {
-    return new HeadlessSoundChannel();
+    final GameData gameData = game.getData();
+    final Path mapPath =
+        InstalledMapsListing.searchAllMapsForMapName(gameData.getMapName())
+            .orElseThrow(
+                () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
+    game.setResourceLoader(new ResourceLoader(mapPath));
+    game.setDisplay(new HeadlessDisplay());
+    game.setSoundChannel(new HeadlessSoundChannel());
   }
 
   @Override
@@ -117,8 +125,9 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public ChatModel createChatModel(String chatName, Messengers messengers) {
-    Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers));
+  public ChatModel createChatModel(
+      String chatName, Messengers messengers, ClientNetworkBridge clientNetworkBridge) {
+    Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers, clientNetworkBridge));
     registerChatAppender(chat);
     return new HeadlessChat(chat);
   }
@@ -150,7 +159,12 @@ public class HeadlessLaunchAction implements LaunchAction {
   }
 
   @Override
-  public boolean promptGameStop(String status, String title) {
+  public boolean promptGameStop(String status, String title, Path mapLocation) {
     return true;
+  }
+
+  @Override
+  public PlayerTypes.Type getDefaultLocalPlayerType() {
+    return PlayerTypes.WEAK_AI;
   }
 }

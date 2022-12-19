@@ -22,7 +22,6 @@ import java.awt.Toolkit;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,6 +40,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
+import org.triplea.swing.jpanel.GridBagConstraintsFill;
 import org.triplea.swing.key.binding.ButtonDownMask;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.KeyCombination;
@@ -57,7 +58,7 @@ class ProductionPanel extends JPanel {
   protected GamePlayer gamePlayer;
   protected GameData data;
 
-  private JDialog dialog;
+  protected JDialog dialog;
   private boolean bid;
   final Action doneAction = SwingAction.of("Done", () -> dialog.setVisible(false));
 
@@ -84,7 +85,7 @@ class ProductionPanel extends JPanel {
       final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     dialog = new JDialog(parent, bid ? "Produce (bid)" : "Produce", true);
-    dialog.getContentPane().add(this);
+    dialog.setContentPane(this);
 
     SwingKeyBinding.addKeyBinding(
         dialog,
@@ -94,12 +95,15 @@ class ProductionPanel extends JPanel {
 
     this.bid = bid;
     this.data = data;
+    done = new JButton(doneAction);
+    done.setToolTipText(
+        "Click this button or press 'ctrl+enter' to confirm purchase and close this window");
+    SwingUtilities.invokeLater(() -> done.requestFocusInWindow());
     this.initRules(gamePlayer, initialPurchase);
     this.initLayout();
     this.calculateLimits();
     dialog.pack();
     dialog.setLocationRelativeTo(parent);
-    SwingUtilities.invokeLater(() -> done.requestFocusInWindow());
     // making the dialog visible will block until it is closed
     dialog.setVisible(true);
     dialog.dispose();
@@ -125,11 +129,8 @@ class ProductionPanel extends JPanel {
   }
 
   protected void initLayout() {
-    final Insets nullInsets = new Insets(0, 0, 0, 0);
     this.removeAll();
     this.setLayout(new GridBagLayout());
-    final JPanel panel = new JPanel();
-    panel.setLayout(new GridBagLayout());
     final JLabel legendLabel = new JLabel("Attack | Defense | Movement");
     this.add(
         legendLabel,
@@ -145,41 +146,22 @@ class ProductionPanel extends JPanel {
             new Insets(8, 8, 8, 0),
             0,
             0));
-    int rows = rules.size() / 7;
-    rows = Math.max(2, rows);
-    for (int x = 0; x < rules.size(); x++) {
-      panel.add(
-          rules.get(x).getPanelComponent(),
-          new GridBagConstraints(
-              x / rows,
-              (x % rows),
-              1,
-              1,
-              10,
-              10,
-              GridBagConstraints.EAST,
-              GridBagConstraints.BOTH,
-              nullInsets,
-              0,
-              0));
-    }
-    final JScrollPane scroll = new JScrollPane(panel);
+    final JScrollPane scroll = new JScrollPane(createUnitsPanel());
     scroll.setBorder(BorderFactory.createEmptyBorder());
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
     final int availHeight = screenResolution.height - 80;
     final int availWidth = screenResolution.width - 30;
     final int availWidthRules = availWidth - 16;
     final int availHeightRules = availHeight - 116;
+    final Dimension prefSize = scroll.getPreferredSize();
     scroll.setPreferredSize(
         new Dimension(
-            (scroll.getPreferredSize().width > availWidthRules
+            (prefSize.width > availWidthRules
                 ? availWidthRules
-                : scroll.getPreferredSize().width
-                    + (scroll.getPreferredSize().height > availHeightRules ? 25 : 0)),
-            (scroll.getPreferredSize().height > availHeightRules
+                : prefSize.width + (prefSize.height > availHeightRules ? 25 : 0)),
+            (prefSize.height > availHeightRules
                 ? availHeightRules
-                : scroll.getPreferredSize().height
-                    + (scroll.getPreferredSize().width > availWidthRules ? 25 : 0))));
+                : prefSize.height + (prefSize.width > availWidthRules ? 25 : 0))));
     this.add(
         scroll,
         new GridBagConstraints(
@@ -222,9 +204,6 @@ class ProductionPanel extends JPanel {
             new Insets(8, 8, 0, 12),
             0,
             0));
-    done = new JButton(doneAction);
-    done.setToolTipText(
-        "Click this button or press 'ctrl+enter' to confirm purchase and close this window");
     this.add(
         done,
         new GridBagConstraints(
@@ -240,6 +219,18 @@ class ProductionPanel extends JPanel {
             0,
             0));
     this.setMaximumSize(new Dimension(availWidth, availHeight));
+  }
+
+  private JPanel createUnitsPanel() {
+    final JPanel panel = new JPanel();
+    panel.setLayout(new GridBagLayout());
+    final GridBagConstraintsBuilder builder =
+        new GridBagConstraintsBuilder().weightX(10).weightY(10).fill(GridBagConstraintsFill.BOTH);
+    final int rows = Math.max(2, rules.size() / 7);
+    for (int i = 0; i < rules.size(); i++) {
+      panel.add(rules.get(i).getPanelComponent(), builder.gridX(i / rows).gridY(i % rows).build());
+    }
+    return panel;
   }
 
   private void setLeft(final ResourceCollection resourceCollection, final int totalUnits) {
@@ -328,9 +319,10 @@ class ProductionPanel extends JPanel {
       ImageIcon icon = null;
       final StringBuilder tooltip = new StringBuilder();
       final Set<NamedAttachable> results = new HashSet<>(rule.getResults().keySet());
-      final Iterator<NamedAttachable> iter = results.iterator();
-      while (iter.hasNext()) {
-        final NamedAttachable resourceOrUnit = iter.next();
+      for (NamedAttachable resourceOrUnit : results) {
+        if (tooltip.length() > 0) {
+          tooltip.append("<br /><br /><br /><br />");
+        }
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
           icon =
@@ -345,12 +337,11 @@ class ProductionPanel extends JPanel {
           tooltip
               .append(type.getName())
               .append(": ")
-              .append(TooltipProperties.getInstance().getTooltip(type, player));
+              .append(new TooltipProperties(uiContext).getTooltip(type, player));
           name.setText(type.getName());
-          if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
+          if (attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);
-          } else if (attach.getConsumesUnits() != null
-              && attach.getConsumesUnits().totalValues() > 1) {
+          } else if (attach.getConsumesUnits().totalValues() > 1) {
             name.setForeground(Color.BLUE);
           } else {
             name.setForeground(defaultForegroundLabelColor);
@@ -362,9 +353,6 @@ class ProductionPanel extends JPanel {
           tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());
           name.setForeground(Color.GREEN);
-        }
-        if (iter.hasNext()) {
-          tooltip.append("<br /><br /><br /><br />");
         }
       }
 

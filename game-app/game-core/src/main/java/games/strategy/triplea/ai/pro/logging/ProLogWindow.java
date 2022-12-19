@@ -1,9 +1,9 @@
 package games.strategy.triplea.ai.pro.logging;
 
-import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -26,10 +26,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.java.Interruptibles;
-import org.triplea.swing.SwingAction;
 
 /** GUI class used to display logging window and logging settings. */
 @Slf4j
@@ -45,7 +44,7 @@ class ProLogWindow extends JDialog {
   private final JTabbedPane logHolderTabbedPane = new JTabbedPane();
   private final JTabbedPane tabPaneMain = new JTabbedPane();
 
-  ProLogWindow(final TripleAFrame frame) {
+  ProLogWindow(final Frame frame) {
     super(frame);
 
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -386,31 +385,28 @@ class ProLogWindow extends JDialog {
   }
 
   void notifyNewRound(final int roundNumber, final String name) {
-    Interruptibles.await(
-        () ->
-            SwingAction.invokeAndWait(
-                () -> {
-                  final JPanel newPanel = new JPanel();
-                  final JScrollPane newScrollPane = new JScrollPane();
-                  final JTextArea newTextArea = new JTextArea();
-                  newTextArea.setColumns(20);
-                  newTextArea.setRows(5);
-                  newTextArea.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-                  newTextArea.setEditable(false);
-                  newScrollPane.getHorizontalScrollBar().setEnabled(true);
-                  newScrollPane.setViewportView(newTextArea);
-                  newPanel.setLayout(new GridLayout());
-                  newPanel.add(newScrollPane);
-                  logHolderTabbedPane.addTab(roundNumber + "-" + name, newPanel);
-                  currentLogTextArea = newTextArea;
-                }));
-    // Now remove round logging that has 'expired'.
-    // Note that this method will also trim all but the first and last log panels if logging is
-    // turned off
-    // (We always keep first round's log panel, and we keep last because the user might turn logging
-    // back on in the
-    // middle of the round)
-    trimLogRoundPanels();
+    SwingUtilities.invokeLater(
+        () -> {
+          final JPanel newPanel = new JPanel();
+          final JScrollPane newScrollPane = new JScrollPane();
+          final JTextArea newTextArea = new JTextArea();
+          newTextArea.setColumns(20);
+          newTextArea.setRows(5);
+          newTextArea.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+          newTextArea.setEditable(false);
+          newScrollPane.getHorizontalScrollBar().setEnabled(true);
+          newScrollPane.setViewportView(newTextArea);
+          newPanel.setLayout(new GridLayout());
+          newPanel.add(newScrollPane);
+          logHolderTabbedPane.addTab(roundNumber + "-" + name, newPanel);
+          currentLogTextArea = newTextArea;
+          // Now remove round logging that has 'expired'.
+          // Note that this method will also trim all but the first and last log panels if logging
+          // is turned off
+          // (We always keep first round's log panel, and we keep last because the user might turn
+          // logging back on in the middle of the round)
+          trimLogRoundPanels();
+        });
   }
 
   private void trimLogRoundPanels() {
@@ -423,21 +419,16 @@ class ProLogWindow extends JDialog {
       } else {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }
-      Interruptibles.await(
-          () ->
-              SwingAction.invokeAndWait(
-                  () -> {
-                    for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
-                      // Remember, we never remove last tab, in case user turns logging back on in
-                      // the middle of a round
-                      if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
-                        // Remove the tab and decrease i by one, so the next component will be
-                        // checked
-                        logHolderTabbedPane.removeTabAt(i);
-                        i--;
-                      }
-                    }
-                  }));
+
+      for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
+        // Remember, we never remove last tab, in case user turns logging back on in
+        // the middle of a round
+        if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
+          // Remove the tab and decrease i by one, so the next component will be checked
+          logHolderTabbedPane.removeTabAt(i);
+          i--;
+        }
+      }
     }
   }
 }

@@ -5,7 +5,6 @@ import static java.util.function.Predicate.not;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
@@ -16,7 +15,6 @@ import java.awt.Frame;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -77,6 +75,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
   public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
       new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
+  public static final ClientSetting<Boolean> showAaFlyoverWarning =
+      new BooleanClientSetting("SHOW_AA_FLYOVER_WARNING", true);
+  public static final ClientSetting<Boolean> showPotentialScrambleWarning =
+      new BooleanClientSetting("SHOW_POTENTIAL_SCRAMBLE_WARNING", true);
 
   /** URI of the lobby, can be toggled in settings to switch to a different lobby. */
   public static final ClientSetting<URI> lobbyUri =
@@ -112,8 +114,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("REMEMBER_EMAIL_PASSWORD", false);
   public static final BooleanClientSetting rememberForumPassword =
       new BooleanClientSetting("REMEMBER_FORUM_PASSWORD", false);
-  public static final BooleanClientSetting saveGameCompatibilityCheck =
-      new BooleanClientSetting("SAVE_GAME_COMPATIBILITY_CHECK", true);
   public static final ClientSetting<Path> saveGamesFolderPath =
       new PathClientSetting(
           "SAVE_GAMES_FOLDER_PATH",
@@ -231,16 +231,12 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    * result in an {@code IllegalStateException} being thrown by methods of this class.
    */
   public static void initialize() {
-    final Locale defaultLocale = Locale.getDefault();
-    if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
-      Locale.setDefault(Locale.US);
-    }
     setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
   }
 
   /** A method exposing internals for testing purposes. */
   @VisibleForTesting
-  static void resetPreferences() {
+  public static void resetPreferences() {
     preferencesRef.set(null);
   }
 

@@ -9,8 +9,10 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
@@ -27,6 +29,11 @@ class GameRelayServerTest {
   private static final int port = 6000 + ((int) (Math.random() * 1000));
   private static final URI SERVER_URI = URI.create("ws://localhost:" + port);
   private static final GameRelayServer gameRelayServer = new GameRelayServer(port);
+
+  @BeforeAll
+  static void startServer() {
+    gameRelayServer.start();
+  }
 
   @AfterAll
   static void stopServer() {
@@ -52,7 +59,7 @@ class GameRelayServerTest {
   private GenericWebSocketClient createClientWithReceivedMessageQueue(
       final Collection<SampleMessage> receivedMessageQueue) {
 
-    final GenericWebSocketClient webSocketClient = new GenericWebSocketClient(SERVER_URI);
+    final GenericWebSocketClient webSocketClient = new GenericWebSocketClient(SERVER_URI, Map.of());
     webSocketClient.addListener(SampleMessage.TYPE, receivedMessageQueue::add);
     webSocketClient.connect();
     return webSocketClient;

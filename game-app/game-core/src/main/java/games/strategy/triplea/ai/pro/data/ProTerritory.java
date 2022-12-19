@@ -26,7 +26,7 @@ public class ProTerritory {
 
   private final ProData proData;
   private final Territory territory;
-  private final List<Unit> maxUnits;
+  private final Set<Unit> maxUnits;
   private final List<Unit> units;
   private final List<Unit> bombers;
   private ProBattleResult maxBattleResult;
@@ -66,7 +66,7 @@ public class ProTerritory {
   public ProTerritory(final Territory territory, final ProData proData) {
     this.territory = territory;
     this.proData = proData;
-    maxUnits = new ArrayList<>();
+    maxUnits = new HashSet<>();
     units = new ArrayList<>();
     bombers = new ArrayList<>();
     maxBattleResult = new ProBattleResult();
@@ -103,7 +103,7 @@ public class ProTerritory {
   ProTerritory(final ProTerritory patd, final ProData proData) {
     this.territory = patd.getTerritory();
     this.proData = proData;
-    maxUnits = new ArrayList<>(patd.getMaxUnits());
+    maxUnits = new HashSet<>(patd.getMaxUnits());
     units = new ArrayList<>(patd.getUnits());
     bombers = new ArrayList<>(patd.getBombers());
     maxBattleResult = patd.getMaxBattleResult();
@@ -212,7 +212,7 @@ public class ProTerritory {
     return territory;
   }
 
-  public List<Unit> getMaxUnits() {
+  public Set<Unit> getMaxUnits() {
     return maxUnits;
   }
 
@@ -261,14 +261,13 @@ public class ProTerritory {
   }
 
   public void putAllAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap) {
-    for (final Unit u : amphibAttackMap.keySet()) {
-      putAmphibAttackMap(u, amphibAttackMap.get(u));
-    }
+    amphibAttackMap.forEach((unit, amphibUnits) -> putAmphibAttackMap(unit, amphibUnits));
   }
 
   public void putAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits) {
     this.amphibAttackMap.put(transport, amphibUnits);
-    this.isTransportingMap.put(transport, transport.isTransporting());
+    this.isTransportingMap.put(
+        transport, transport.isTransporting(proData.getUnitTerritory(transport)));
   }
 
   public void setCanAttack(final boolean canAttack) {

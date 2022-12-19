@@ -13,13 +13,13 @@
 
 set -eux
 
-.build/setup-database
+scriptDir=$(dirname "$0")
+rootDir="$scriptDir/../.."
+"$rootDir/.build/setup-database"
 
-readonly VERSION=$(sed 's/version\s*=\s*//' game-app/game-core/src/main/resources/META-INF/triplea/product.properties)
-
-readonly LOBBY_SERVER_JAR_PATH="spitfire-server/dropwizard-server/build/libs/triplea-dropwizard-server-${VERSION}.jar"
-readonly BOT_JAR_PATH="game-app/game-headless/build/libs/triplea-game-headless-${VERSION}.jar"
-readonly SMOKE_TEST_JAR_PATH="smoke-testing/build/libs/triplea-smoke-testing-${VERSION}.jar"
+readonly LOBBY_SERVER_JAR_PATH="$rootDir/spitfire-server/dropwizard-server/build/libs/triplea-dropwizard-server.jar"
+readonly BOT_JAR_PATH="$rootDir/game-app/game-headless/build/libs/triplea-game-headless.jar"
+readonly SMOKE_TEST_JAR_PATH="$rootDir/smoke-testing/build/libs/triplea-smoke-testing.jar"
 
 readonly LOBBY_SERVER_OUTPUT="server-output"
 readonly BOT_OUTPUT="bot-output"
@@ -58,7 +58,7 @@ function printLogs() {
 
 
 function buildJars() {
-  ./gradlew \
+  "$rootDir/gradlew" \
      :spitfire-server:dropwizard-server:shadowJar \
      :game-app:game-headless:shadowJar \
      :smoke-testing:shadowJar 
@@ -66,7 +66,7 @@ function buildJars() {
 
 function startLobby() {
   java -jar "$LOBBY_SERVER_JAR_PATH" \
-       server ./spitfire-server/dropwizard-server/configuration.yml \
+       server "$rootDir/spitfire-server/dropwizard-server/configuration.yml" \
        > "$LOBBY_SERVER_OUTPUT" 2>&1 &
   echo $!
 }

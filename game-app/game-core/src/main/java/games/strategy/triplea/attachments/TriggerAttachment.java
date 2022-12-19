@@ -1489,11 +1489,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final FireTriggerParams fireTriggerParams) {
 
     // NOTE: The check is needed to ensure that UI-related code (namely
-    // 'NotificationMessages.getInstance()') is
+    // 'new NotificationMessages(..)') is
     // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(notificationMatch())) {
-      triggerNotifications(
-          satisfiedTriggers, bridge, fireTriggerParams, NotificationMessages.getInstance());
+      bridge
+          .getResourceLoader()
+          .ifPresent(
+              resourceLoader ->
+                  triggerNotifications(
+                      satisfiedTriggers,
+                      bridge,
+                      fireTriggerParams,
+                      new NotificationMessages(resourceLoader)));
     }
   }
 
@@ -2419,11 +2426,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final FireTriggerParams fireTriggerParams) {
 
     // NOTE: The check is needed to ensure that UI-related code (namely
-    // 'NotificationMessages.getInstance()') is
+    // 'new NotificationMessages(...)') is
     // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(victoryMatch())) {
-      triggerVictory(
-          satisfiedTriggers, bridge, fireTriggerParams, NotificationMessages.getInstance());
+      bridge
+          .getResourceLoader()
+          .ifPresent(
+              resourceLoader ->
+                  triggerVictory(
+                      satisfiedTriggers,
+                      bridge,
+                      fireTriggerParams,
+                      new NotificationMessages(resourceLoader)));
     }
   }
 
@@ -2561,182 +2575,154 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .putAll(super.getPropertyMap())
-        .put(
-            "frontier",
-            MutableProperty.of(
-                this::setFrontier, this::setFrontier, this::getFrontier, this::resetFrontier))
-        .put(
-            "productionRule",
-            MutableProperty.of(
-                this::setProductionRule,
-                this::setProductionRule,
-                this::getProductionRule,
-                this::resetProductionRule))
-        .put(
-            "tech",
-            MutableProperty.of(this::setTech, this::setTech, this::getTech, this::resetTech))
-        .put(
-            "availableTech",
-            MutableProperty.of(
-                this::setAvailableTech,
-                this::setAvailableTech,
-                this::getAvailableTech,
-                this::resetAvailableTech))
-        .put(
-            "placement",
-            MutableProperty.of(
-                this::setPlacement, this::setPlacement, this::getPlacement, this::resetPlacement))
-        .put(
-            "removeUnits",
-            MutableProperty.of(
-                this::setRemoveUnits,
-                this::setRemoveUnits,
-                this::getRemoveUnits,
-                this::resetRemoveUnits))
-        .put(
-            "purchase",
-            MutableProperty.of(
-                this::setPurchase, this::setPurchase, this::getPurchase, this::resetPurchase))
-        .put(
-            "resource",
-            MutableProperty.ofString(this::setResource, this::getResource, this::resetResource))
-        .put(
-            "resourceCount",
-            MutableProperty.of(
-                this::setResourceCount,
-                this::setResourceCount,
-                this::getResourceCount,
-                this::resetResourceCount))
-        .put(
-            "support",
-            MutableProperty.of(
-                this::setSupport, this::setSupport, this::getSupport, this::resetSupport))
-        .put(
-            "relationshipChange",
-            MutableProperty.of(
-                this::setRelationshipChange,
-                this::setRelationshipChange,
-                this::getRelationshipChange,
-                this::resetRelationshipChange))
-        .put(
-            "victory",
-            MutableProperty.ofString(this::setVictory, this::getVictory, this::resetVictory))
-        .put(
-            "activateTrigger",
-            MutableProperty.of(
-                this::setActivateTrigger,
-                this::setActivateTrigger,
-                this::getActivateTrigger,
-                this::resetActivateTrigger))
-        .put(
-            "changeOwnership",
-            MutableProperty.of(
-                this::setChangeOwnership,
-                this::setChangeOwnership,
-                this::getChangeOwnership,
-                this::resetChangeOwnership))
-        .put(
-            "unitType",
-            MutableProperty.of(
-                this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType))
-        .put(
-            "unitAttachmentName",
-            MutableProperty.of(
-                this::setUnitAttachmentName,
-                this::setUnitAttachmentName,
-                this::getUnitAttachmentName,
-                this::resetUnitAttachmentName))
-        .put(
-            "unitProperty",
-            MutableProperty.of(
-                this::setUnitProperty,
-                this::setUnitProperty,
-                this::getUnitProperty,
-                this::resetUnitProperty))
-        .put(
-            "territories",
-            MutableProperty.of(
-                this::setTerritories,
-                this::setTerritories,
-                this::getTerritories,
-                this::resetTerritories))
-        .put(
-            "territoryAttachmentName",
-            MutableProperty.of(
-                this::setTerritoryAttachmentName,
-                this::setTerritoryAttachmentName,
-                this::getTerritoryAttachmentName,
-                this::resetTerritoryAttachmentName))
-        .put(
-            "territoryProperty",
-            MutableProperty.of(
-                this::setTerritoryProperty,
-                this::setTerritoryProperty,
-                this::getTerritoryProperty,
-                this::resetTerritoryProperty))
-        .put(
-            "players",
-            MutableProperty.of(
-                this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers))
-        .put(
-            "playerAttachmentName",
-            MutableProperty.of(
-                this::setPlayerAttachmentName,
-                this::setPlayerAttachmentName,
-                this::getPlayerAttachmentName,
-                this::resetPlayerAttachmentName))
-        .put(
-            "playerProperty",
-            MutableProperty.of(
-                this::setPlayerProperty,
-                this::setPlayerProperty,
-                this::getPlayerProperty,
-                this::resetPlayerProperty))
-        .put(
-            "relationshipTypes",
-            MutableProperty.of(
-                this::setRelationshipTypes,
-                this::setRelationshipTypes,
-                this::getRelationshipTypes,
-                this::resetRelationshipTypes))
-        .put(
-            "relationshipTypeAttachmentName",
-            MutableProperty.of(
-                this::setRelationshipTypeAttachmentName,
-                this::setRelationshipTypeAttachmentName,
-                this::getRelationshipTypeAttachmentName,
-                this::resetRelationshipTypeAttachmentName))
-        .put(
-            "relationshipTypeProperty",
-            MutableProperty.of(
-                this::setRelationshipTypeProperty,
-                this::setRelationshipTypeProperty,
-                this::getRelationshipTypeProperty,
-                this::resetRelationshipTypeProperty))
-        .put(
-            "territoryEffects",
-            MutableProperty.of(
-                this::setTerritoryEffects,
-                this::setTerritoryEffects,
-                this::getTerritoryEffects,
-                this::resetTerritoryEffects))
-        .put(
-            "territoryEffectAttachmentName",
-            MutableProperty.of(
-                this::setTerritoryEffectAttachmentName,
-                this::setTerritoryEffectAttachmentName,
-                this::getTerritoryEffectAttachmentName,
-                this::resetTerritoryEffectAttachmentName))
-        .put(
-            "territoryEffectProperty",
-            MutableProperty.of(
-                this::setTerritoryEffectProperty,
-                this::setTerritoryEffectProperty,
-                this::getTerritoryEffectProperty,
-                this::resetTerritoryEffectProperty))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "frontier":
+        return MutableProperty.of(
+            this::setFrontier, this::setFrontier, this::getFrontier, this::resetFrontier);
+      case "productionRule":
+        return MutableProperty.of(
+            this::setProductionRule,
+            this::setProductionRule,
+            this::getProductionRule,
+            this::resetProductionRule);
+      case "tech":
+        return MutableProperty.of(this::setTech, this::setTech, this::getTech, this::resetTech);
+      case "availableTech":
+        return MutableProperty.of(
+            this::setAvailableTech,
+            this::setAvailableTech,
+            this::getAvailableTech,
+            this::resetAvailableTech);
+      case "placement":
+        return MutableProperty.of(
+            this::setPlacement, this::setPlacement, this::getPlacement, this::resetPlacement);
+      case "removeUnits":
+        return MutableProperty.of(
+            this::setRemoveUnits,
+            this::setRemoveUnits,
+            this::getRemoveUnits,
+            this::resetRemoveUnits);
+      case "purchase":
+        return MutableProperty.of(
+            this::setPurchase, this::setPurchase, this::getPurchase, this::resetPurchase);
+      case "resource":
+        return MutableProperty.ofString(this::setResource, this::getResource, this::resetResource);
+      case "resourceCount":
+        return MutableProperty.of(
+            this::setResourceCount,
+            this::setResourceCount,
+            this::getResourceCount,
+            this::resetResourceCount);
+      case "support":
+        return MutableProperty.of(
+            this::setSupport, this::setSupport, this::getSupport, this::resetSupport);
+      case "relationshipChange":
+        return MutableProperty.of(
+            this::setRelationshipChange,
+            this::setRelationshipChange,
+            this::getRelationshipChange,
+            this::resetRelationshipChange);
+      case "victory":
+        return MutableProperty.ofString(this::setVictory, this::getVictory, this::resetVictory);
+      case "activateTrigger":
+        return MutableProperty.of(
+            this::setActivateTrigger,
+            this::setActivateTrigger,
+            this::getActivateTrigger,
+            this::resetActivateTrigger);
+      case "changeOwnership":
+        return MutableProperty.of(
+            this::setChangeOwnership,
+            this::setChangeOwnership,
+            this::getChangeOwnership,
+            this::resetChangeOwnership);
+      case "unitType":
+        return MutableProperty.of(
+            this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType);
+      case "unitAttachmentName":
+        return MutableProperty.of(
+            this::setUnitAttachmentName,
+            this::setUnitAttachmentName,
+            this::getUnitAttachmentName,
+            this::resetUnitAttachmentName);
+      case "unitProperty":
+        return MutableProperty.of(
+            this::setUnitProperty,
+            this::setUnitProperty,
+            this::getUnitProperty,
+            this::resetUnitProperty);
+      case "territories":
+        return MutableProperty.of(
+            this::setTerritories,
+            this::setTerritories,
+            this::getTerritories,
+            this::resetTerritories);
+      case "territoryAttachmentName":
+        return MutableProperty.of(
+            this::setTerritoryAttachmentName,
+            this::setTerritoryAttachmentName,
+            this::getTerritoryAttachmentName,
+            this::resetTerritoryAttachmentName);
+      case "territoryProperty":
+        return MutableProperty.of(
+            this::setTerritoryProperty,
+            this::setTerritoryProperty,
+            this::getTerritoryProperty,
+            this::resetTerritoryProperty);
+      case "players":
+        return MutableProperty.of(
+            this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers);
+      case "playerAttachmentName":
+        return MutableProperty.of(
+            this::setPlayerAttachmentName,
+            this::setPlayerAttachmentName,
+            this::getPlayerAttachmentName,
+            this::resetPlayerAttachmentName);
+      case "playerProperty":
+        return MutableProperty.of(
+            this::setPlayerProperty,
+            this::setPlayerProperty,
+            this::getPlayerProperty,
+            this::resetPlayerProperty);
+      case "relationshipTypes":
+        return MutableProperty.of(
+            this::setRelationshipTypes,
+            this::setRelationshipTypes,
+            this::getRelationshipTypes,
+            this::resetRelationshipTypes);
+      case "relationshipTypeAttachmentName":
+        return MutableProperty.of(
+            this::setRelationshipTypeAttachmentName,
+            this::setRelationshipTypeAttachmentName,
+            this::getRelationshipTypeAttachmentName,
+            this::resetRelationshipTypeAttachmentName);
+      case "relationshipTypeProperty":
+        return MutableProperty.of(
+            this::setRelationshipTypeProperty,
+            this::setRelationshipTypeProperty,
+            this::getRelationshipTypeProperty,
+            this::resetRelationshipTypeProperty);
+      case "territoryEffects":
+        return MutableProperty.of(
+            this::setTerritoryEffects,
+            this::setTerritoryEffects,
+            this::getTerritoryEffects,
+            this::resetTerritoryEffects);
+      case "territoryEffectAttachmentName":
+        return MutableProperty.of(
+            this::setTerritoryEffectAttachmentName,
+            this::setTerritoryEffectAttachmentName,
+            this::getTerritoryEffectAttachmentName,
+            this::resetTerritoryEffectAttachmentName);
+      case "territoryEffectProperty":
+        return MutableProperty.of(
+            this::setTerritoryEffectProperty,
+            this::setTerritoryEffectProperty,
+            this::getTerritoryEffectProperty,
+            this::resetTerritoryEffectProperty);
+      default:
+        return super.getPropertyOrNull(propertyName);
+    }
   }
 }

@@ -32,15 +32,13 @@ public class UnitDamageReceivedChange extends Change {
    */
   public UnitDamageReceivedChange(
       final IntegerMap<Unit> totalDamage, final Collection<Territory> territoriesToNotify) {
-    this.newTotalDamage = new HashMap<>();
-    this.oldTotalDamage = new HashMap<>();
-    totalDamage
-        .entrySet()
-        .forEach(
-            entry -> {
-              this.newTotalDamage.put(entry.getKey().getId().toString(), entry.getValue());
-              this.oldTotalDamage.put(entry.getKey().getId().toString(), entry.getKey().getHits());
-            });
+    this.newTotalDamage = new HashMap<>(totalDamage.size());
+    this.oldTotalDamage = new HashMap<>(totalDamage.size());
+    for (Map.Entry<Unit, Integer> entry : totalDamage.entrySet()) {
+      String key = entry.getKey().getId().toString();
+      newTotalDamage.put(key, entry.getValue());
+      oldTotalDamage.put(key, entry.getKey().getHits());
+    }
     this.territoriesToNotify =
         territoriesToNotify.stream().map(Territory::getName).collect(Collectors.toList());
   }

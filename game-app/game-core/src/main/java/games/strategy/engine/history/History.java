@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -166,6 +168,26 @@ public class History extends DefaultTreeModel {
     }
   }
 
+  /**
+   * Returns the current player, accounting for the fact that we may be looking at a previous node
+   * in history, unlike data.getSequence().getStep().getPlayerId().
+   */
+  public @Nullable GamePlayer getCurrentPlayer() {
+    GamePlayer player = null;
+    final Enumeration<?> enumeration = ((DefaultMutableTreeNode) getRoot()).preorderEnumeration();
+    while (enumeration.hasMoreElements()) {
+      final HistoryNode node = (HistoryNode) enumeration.nextElement();
+      if (node instanceof Step) {
+        player = ((Step) node).getPlayerId();
+      }
+      int nodeChangeIndex = getNextChange(node);
+      if (seekingEnabled && nodeChangeIndex > nextChangeIndex) {
+        break;
+      }
+    }
+    return player;
+  }
+
   public Optional<HistoryNode> getNearestLeafAtOrBefore(HistoryNode node) {
     if (node.isLeaf()) {
       return Optional.of(node);
@@ -175,7 +197,7 @@ public class History extends DefaultTreeModel {
 
   synchronized void changeAdded(final Change change) {
     changes.add(change);
-    if (seekingEnabled && nextChangeIndex == changes.size()) {
+    if (seekingEnabled && nextChangeIndex == changes.size() - 1) {
       gameData.performChange(change);
       nextChangeIndex = changes.size();
     }

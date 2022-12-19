@@ -1,16 +1,20 @@
 package games.strategy.triplea.ai.pro;
 
+import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProOtherMoveOptions;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
@@ -346,25 +350,27 @@ class ProPurchaseAi {
     // Prioritize sea place options and purchase units
     final List<ProPlaceTerritory> prioritizedSeaTerritories =
         prioritizeSeaTerritories(purchaseTerritories);
-    purchaseSeaAndAmphibUnits(purchaseTerritories, prioritizedSeaTerritories, purchaseOptions);
+    final boolean shouldSaveUpForAFleet =
+        purchaseSeaAndAmphibUnits(purchaseTerritories, prioritizedSeaTerritories, purchaseOptions);
 
-    // Try to use any remaining PUs on high value units
-    purchaseUnitsWithRemainingProduction(
-        purchaseTerritories, purchaseOptions.getLandOptions(), purchaseOptions.getAirOptions());
-    upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions);
+    // Try to use any remaining PUs on high value units, except if we need to save up for a fleet.
+    if (!shouldSaveUpForAFleet) {
+      purchaseUnitsWithRemainingProduction(
+          purchaseTerritories, purchaseOptions.getLandOptions(), purchaseOptions.getAirOptions());
 
-    // Try to purchase land/sea factory with extra PUs
-    purchaseFactory(
-        factoryPurchaseTerritories,
-        purchaseTerritories,
-        prioritizedLandTerritories,
-        purchaseOptions,
-        true);
+      upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions);
 
-    // Add factory purchase territory to list if not empty
-    if (!factoryPurchaseTerritories.isEmpty()) {
-      purchaseTerritories.putAll(factoryPurchaseTerritories);
+      // Try to purchase land/sea factory with extra PUs
+      purchaseFactory(
+          factoryPurchaseTerritories,
+          purchaseTerritories,
+          prioritizedLandTerritories,
+          purchaseOptions,
+          true);
     }
+
+    // Add factory purchase territory to list
+    purchaseTerritories.putAll(factoryPurchaseTerritories);
 
     // Determine final count of each production rule
     final IntegerMap<ProductionRule> purchaseMap =
@@ -378,6 +384,62 @@ class ProPurchaseAi {
 
     territoryManager = null;
     return purchaseTerritories;
+  }
+
+  private boolean shouldSaveUpForAFleet(
+      final ProPurchaseOptionMap purchaseOptions,
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+    if (resourceTracker.isEmpty()
+        || purchaseOptions.getSeaDefenseOptions().isEmpty()
+        || purchaseOptions.getSeaTransportOptions().isEmpty()) {
+      return false;
+    }
+    Optional<Territory> enemyTerritoryReachableByLand =
+        territoryManager.findClosestTerritory(
+            purchaseTerritories.keySet(),
+            ProMatches.territoryCanPotentiallyMoveLandUnits(player),
+            Matches.isTerritoryEnemy(player).and(Matches.territoryIsLand()));
+    if (enemyTerritoryReachableByLand.isPresent()) {
+      // An enemy territory is reachable by land, no need to save for a fleet.
+      return false;
+    }
+    // See if we can reach the enemy by sea from a sea placement territory.
+    var placeSeaTerritories = new HashSet<Territory>();
+    int maxSeaUnitsThatCanBePlaced = 0;
+    for (ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
+      boolean canProduceSeaUnits = false;
+      for (ProPlaceTerritory placeTerritory : purchaseTerritory.getCanPlaceTerritories()) {
+        if (placeTerritory.getTerritory().isWater()) {
+          placeSeaTerritories.add(placeTerritory.getTerritory());
+          canProduceSeaUnits = true;
+        }
+      }
+      if (canProduceSeaUnits) {
+        maxSeaUnitsThatCanBePlaced += purchaseTerritory.getUnitProduction();
+      }
+    }
+    Optional<Territory> enemyLandReachableBySea =
+        territoryManager.findClosestTerritory(
+            placeSeaTerritories,
+            ProMatches.territoryCanMoveSeaUnits(player, true),
+            Matches.isTerritoryEnemy(player).and(Matches.territoryIsLand()));
+    if (enemyLandReachableBySea.isEmpty()) {
+      return false;
+    }
+    // Don't save up more if we already have enough PUs to buy the biggest fleet we can.
+    IntegerMap<Resource> maxShipCost = IntegerMap.of();
+    Resource pus = player.getData().getResourceList().getResource(Constants.PUS);
+    for (ProPurchaseOption option : purchaseOptions.getSeaDefenseOptions()) {
+      if (option.getCost() > maxShipCost.getInt(pus)) {
+        maxShipCost = option.getCosts();
+      }
+    }
+    maxShipCost.multiplyAllValuesBy(maxSeaUnitsThatCanBePlaced);
+    if (resourceTracker.hasEnough(maxShipCost)) {
+      return false;
+    }
+    ProLogger.info("Saving up for a fleet, since enemy territories are only reachable by sea");
+    return true;
   }
 
   void place(
@@ -548,14 +610,14 @@ class ProPurchaseAi {
         }
 
         // Find current battle result
-        final Set<Unit> enemyAttackingUnits =
+        final Collection<Unit> enemyAttackingUnits =
             new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
         final ProBattleResult result =
             calc.calculateBattleResults(
                 proData,
                 t,
-                new ArrayList<>(enemyAttackingUnits),
+                enemyAttackingUnits,
                 placeTerritory.getDefendingUnits(),
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
         placeTerritory.setMinBattleResult(result);
@@ -579,9 +641,9 @@ class ProPurchaseAi {
                 + ", holdValue="
                 + holdValue
                 + ", enemyAttackers="
-                + enemyAttackingUnits
+                + summarizeUnits(enemyAttackingUnits)
                 + ", defenders="
-                + placeTerritory.getDefendingUnits());
+                + summarizeUnits(placeTerritory.getDefendingUnits()));
 
         // If it can't currently be held then add to list
         final boolean isLandAndCanOnlyBeAttackedByAir =
@@ -672,11 +734,11 @@ class ProPurchaseAi {
           "Purchasing defenders for "
               + t.getName()
               + ", enemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxUnits()
+              + summarizeUnits(enemyAttackOptions.getMax(t).getMaxUnits())
               + ", amphibEnemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxAmphibUnits()
+              + summarizeUnits(enemyAttackOptions.getMax(t).getMaxAmphibUnits())
               + ", defenders="
-              + placeTerritory.getDefendingUnits());
+              + summarizeUnits(placeTerritory.getDefendingUnits()));
 
       // Find local owned units
       final List<Unit> ownedLocalUnits =
@@ -805,7 +867,7 @@ class ProPurchaseAi {
               calc.calculateBattleResults(
                   proData,
                   t,
-                  new ArrayList<>(enemyAttackingUnits),
+                  enemyAttackingUnits,
                   defenders,
                   enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
@@ -1221,7 +1283,7 @@ class ProPurchaseAi {
             calc.estimateDefendBattleResults(
                 proData,
                 t,
-                new ArrayList<>(enemyAttackingUnits),
+                enemyAttackingUnits,
                 defenders,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
@@ -1423,7 +1485,8 @@ class ProPurchaseAi {
         }
       }
       final boolean hasLocalNavalSuperiority =
-          ProBattleUtils.territoryHasLocalNavalSuperiority(proData, t, player, Map.of(), List.of());
+          ProBattleUtils.territoryHasLocalNavalSuperiority(
+              proData, calc, t, player, Map.of(), List.of());
       if (!hasLocalNavalSuperiority) {
         needDefenders = 1;
       }
@@ -1459,18 +1522,21 @@ class ProPurchaseAi {
     return sortedTerritories;
   }
 
-  private void purchaseSeaAndAmphibUnits(
+  // Returns true if we should try to save up resources for a fleet next turn.
+  private boolean purchaseSeaAndAmphibUnits(
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final List<ProPlaceTerritory> prioritizedSeaTerritories,
       final ProPurchaseOptionMap purchaseOptions) {
-
     if (resourceTracker.isEmpty()) {
-      return;
+      return false;
     }
     ProLogger.info("Purchase sea and amphib units with resources: " + resourceTracker);
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    boolean boughtUnits = false;
+    boolean wantedToBuyUnitsButCouldNotDefendThem = false;
 
+    final Predicate<Territory> canMoveSea = ProMatches.territoryCanMoveSeaUnits(player, false);
     // Loop through prioritized territories and purchase sea units
     for (final ProPlaceTerritory placeTerritory : prioritizedSeaTerritories) {
       final Territory t = placeTerritory.getTerritory();
@@ -1481,8 +1547,7 @@ class ProPurchaseAi {
           getPurchaseTerritories(placeTerritory, purchaseTerritories);
 
       // Find local owned units
-      final Set<Territory> neighbors =
-          data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveSeaUnits(player, false));
+      final Set<Territory> neighbors = data.getMap().getNeighbors(t, 2, canMoveSea);
       neighbors.add(t);
       final List<Unit> ownedLocalUnits = new ArrayList<>();
       for (final Territory neighbor : neighbors) {
@@ -1490,59 +1555,46 @@ class ProPurchaseAi {
             neighbor.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player)));
       }
       int unusedCarrierCapacity =
-          Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<>()));
+          Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, List.of()));
       int unusedLocalCarrierCapacity =
-          ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<>());
+          ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, List.of());
       ProLogger.trace(
-          t
-              + ", unusedCarrierCapacity="
-              + unusedCarrierCapacity
-              + ", unusedLocalCarrierCapacity="
-              + unusedLocalCarrierCapacity);
+          String.format(
+              "%s, unusedCarrierCapacity=%s, unusedLocalCarrierCapacity=%s",
+              t, unusedCarrierCapacity, unusedLocalCarrierCapacity));
 
       // If any enemy attackers then purchase sea defenders until it can be held
       boolean needDestroyer = false;
       ProTerritory maxEnemyAttackTerritory = enemyAttackOptions.getMax(t);
       if (maxEnemyAttackTerritory != null) {
+        final Collection<Unit> attackers = maxEnemyAttackTerritory.getMaxUnits();
         // Determine if need destroyer
-        if (maxEnemyAttackTerritory.getMaxUnits().stream()
-                .anyMatch(Matches.unitHasSubBattleAbilities())
-            && t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player)).stream()
-                .noneMatch(Matches.unitIsDestroyer())) {
+        Predicate<Unit> ownDestroyer = Matches.unitIsOwnedBy(player).and(Matches.unitIsDestroyer());
+        if (attackers.stream().anyMatch(Matches.unitHasSubBattleAbilities())
+            && t.getUnits().stream().noneMatch(ownDestroyer)) {
           needDestroyer = true;
         }
         ProLogger.trace(
-            t
-                + ", needDestroyer="
-                + needDestroyer
-                + ", checking defense since has enemy attackers: "
-                + maxEnemyAttackTerritory.getMaxUnits());
-        final List<Unit> initialDefendingUnits =
-            new ArrayList<>(placeTerritory.getDefendingUnits());
-        initialDefendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
+            String.format(
+                "%s, needDestroyer=%s, checking defense since has enemy attackers: %s",
+                t, needDestroyer, attackers));
+        List<Unit> defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
+        defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
         ProBattleResult result =
             calc.calculateBattleResults(
                 proData,
                 t,
-                maxEnemyAttackTerritory.getMaxUnits(),
-                initialDefendingUnits,
+                attackers,
+                defendingUnits,
                 maxEnemyAttackTerritory.getMaxBombardUnits());
-        boolean hasOnlyRetreatingSubs =
-            Properties.getSubRetreatBeforeBattle(data.getProperties())
-                && !initialDefendingUnits.isEmpty()
-                && initialDefendingUnits.stream().allMatch(Matches.unitCanEvade())
-                && maxEnemyAttackTerritory.getMaxUnits().stream()
-                    .noneMatch(Matches.unitIsDestroyer());
         final List<Unit> unitsToPlace = new ArrayList<>();
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
           // Check remaining production
           int remainingUnitProduction = purchaseTerritory.getRemainingUnitProduction();
           ProLogger.trace(
-              t
-                  + ", purchaseTerritory="
-                  + purchaseTerritory.getTerritory()
-                  + ", remainingUnitProduction="
-                  + remainingUnitProduction);
+              String.format(
+                  "%s, purchaseTerritory=%s, remainingUnitProduction=%s",
+                  t, purchaseTerritory.getTerritory(), remainingUnitProduction));
           if (remainingUnitProduction <= 0) {
             continue;
           }
@@ -1560,6 +1612,11 @@ class ProPurchaseAi {
 
           // Purchase enough sea defenders to hold territory
           while (true) {
+            final boolean hasOnlyRetreatingSubs =
+                Properties.getSubRetreatBeforeBattle(data.getProperties())
+                    && !defendingUnits.isEmpty()
+                    && defendingUnits.stream().allMatch(Matches.unitCanEvade())
+                    && attackers.stream().noneMatch(Matches.unitIsDestroyer());
             // If it can be held then break
             if (!hasOnlyRetreatingSubs
                 && (result.getTuvSwing() < -1
@@ -1625,7 +1682,7 @@ class ProPurchaseAi {
                     + unusedLocalCarrierCapacity);
 
             // Find current battle result
-            final List<Unit> defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
+            defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
             defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
             defendingUnits.addAll(unitsToPlace);
             result =
@@ -1635,12 +1692,6 @@ class ProPurchaseAi {
                     maxEnemyAttackTerritory.getMaxUnits(),
                     defendingUnits,
                     maxEnemyAttackTerritory.getMaxBombardUnits());
-            hasOnlyRetreatingSubs =
-                Properties.getSubRetreatBeforeBattle(data.getProperties())
-                    && !defendingUnits.isEmpty()
-                    && defendingUnits.stream().allMatch(Matches.unitCanEvade())
-                    && maxEnemyAttackTerritory.getMaxUnits().stream()
-                        .noneMatch(Matches.unitIsDestroyer());
           }
         }
 
@@ -1649,27 +1700,25 @@ class ProPurchaseAi {
             || result.getWinPercentage() < (100.0 - proData.getWinPercentage())) {
           resourceTracker.confirmTempPurchases();
           ProLogger.trace(
-              t
-                  + ", placedUnits="
-                  + unitsToPlace
-                  + ", TUVSwing="
-                  + result.getTuvSwing()
-                  + ", win%="
-                  + result.getWinPercentage());
+              String.format(
+                  "%s, placedUnits=%s, TUVSwing=%s, win%%=%s",
+                  t, unitsToPlace, result.getTuvSwing(), result.getWinPercentage()));
           addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
+          boughtUnits = true;
         } else {
           resourceTracker.clearTempPurchases();
           setCantHoldPlaceTerritory(placeTerritory, purchaseTerritories);
           ProLogger.trace(
-              t
-                  + ", can't defend TUVSwing="
-                  + result.getTuvSwing()
-                  + ", win%="
-                  + result.getWinPercentage()
-                  + ", tried to placeDefenders="
-                  + unitsToPlace
-                  + ", enemyAttackers="
-                  + enemyAttackOptions.getMax(t).getMaxUnits());
+              String.format(
+                  "%s, can't defend TUVSwing=%s, win%%=%s, tried to placeDefenders=%s, "
+                      + "enemyAttackers=%s, defendingUnits=%s",
+                  t,
+                  result.getTuvSwing(),
+                  result.getWinPercentage(),
+                  summarizeUnits(unitsToPlace),
+                  summarizeUnits(attackers),
+                  summarizeUnits(defendingUnits)));
+          wantedToBuyUnitsButCouldNotDefendThem = true;
           continue;
         }
       }
@@ -1681,10 +1730,9 @@ class ProPurchaseAi {
         landDistance = 10;
       }
       final int enemyDistance = Math.max(3, (landDistance + 1));
+      Predicate<Territory> canMoveAir = ProMatches.territoryCanMoveAirUnits(data, player, false);
       final Set<Territory> nearbyTerritories =
-          data.getMap()
-              .getNeighbors(
-                  t, enemyDistance, ProMatches.territoryCanMoveAirUnits(data, player, false));
+          data.getMap().getNeighbors(t, enemyDistance, canMoveAir);
       final List<Territory> nearbyLandTerritories =
           CollectionUtils.getMatches(nearbyTerritories, Matches.territoryIsLand());
       final Set<Territory> nearbyEnemySeaTerritories =
@@ -1699,12 +1747,11 @@ class ProPurchaseAi {
         enemyUnitsInLandTerritories.addAll(
             nearbyLandTerritory.getUnitCollection().getMatches(ProMatches.unitIsEnemyAir(player)));
       }
+      final Predicate<Unit> enemyNonLandUnit = ProMatches.unitIsEnemyNotLand(player);
       final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
       for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories) {
         final List<Unit> enemySeaUnits =
-            nearbySeaTerritory
-                .getUnitCollection()
-                .getMatches(ProMatches.unitIsEnemyNotLand(player));
+            nearbySeaTerritory.getUnitCollection().getMatches(enemyNonLandUnit);
         if (enemySeaUnits.isEmpty()) {
           continue;
         }
@@ -1750,11 +1797,11 @@ class ProPurchaseAi {
               + ", alliedDistance="
               + alliedDistance
               + ", enemyAirUnits="
-              + enemyUnitsInLandTerritories
+              + summarizeUnits(enemyUnitsInLandTerritories)
               + ", enemySeaUnits="
-              + enemyUnitsInSeaTerritories
+              + summarizeUnits(enemyUnitsInSeaTerritories)
               + ", mySeaUnits="
-              + myUnitsInSeaTerritories
+              + summarizeUnits(myUnitsInSeaTerritories)
               + ", needDestroyer="
               + needDestroyer);
 
@@ -1788,7 +1835,7 @@ class ProPurchaseAi {
 
           // If I have naval attack/defense superiority then break
           if (ProBattleUtils.territoryHasLocalNavalSuperiority(
-              proData, t, player, purchaseTerritories, unitsToPlace)) {
+              proData, calc, t, player, purchaseTerritories, unitsToPlace)) {
             break;
           }
 
@@ -1837,18 +1884,21 @@ class ProPurchaseAi {
                 ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
           }
           ProLogger.trace(
-              t
-                  + ", added sea defender for naval superiority: "
-                  + selectedOption.getUnitType().getName()
-                  + ", unusedCarrierCapacity="
-                  + unusedCarrierCapacity
-                  + ", unusedLocalCarrierCapacity="
-                  + unusedLocalCarrierCapacity);
+              String.format(
+                  "%s, added sea defender for naval superiority: %s, "
+                      + "unusedCarrierCapacity=%s, unusedLocalCarrierCapacity=%s",
+                  t,
+                  selectedOption.getUnitType().getName(),
+                  unusedCarrierCapacity,
+                  unusedLocalCarrierCapacity));
         }
       }
 
       // Add sea defender units to place territory
-      addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
+      if (!unitsToPlace.isEmpty()) {
+        addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
+        boughtUnits = true;
+      }
 
       // Loop through adjacent purchase territories and purchase transport/amphib units
       final int distance =
@@ -1857,13 +1907,9 @@ class ProPurchaseAi {
       for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
         final Territory landTerritory = purchaseTerritory.getTerritory();
         final Set<Territory> seaTerritories =
-            data.getMap()
-                .getNeighbors(
-                    landTerritory, distance, ProMatches.territoryCanMoveSeaUnits(player, false));
+            data.getMap().getNeighbors(landTerritory, distance, canMoveSea);
         for (final Territory seaTerritory : seaTerritories) {
-          final Set<Territory> territoriesToLoadFrom =
-              new HashSet<>(data.getMap().getNeighbors(seaTerritory, distance));
-          territoriesToCheck.addAll(territoriesToLoadFrom);
+          territoriesToCheck.addAll(data.getMap().getNeighbors(seaTerritory, distance));
         }
         final Set<Territory> landNeighbors =
             data.getMap().getNeighbors(t, Matches.territoryIsLand());
@@ -1879,11 +1925,9 @@ class ProPurchaseAi {
         // Check if territory can produce units and has remaining production
         int remainingUnitProduction = purchaseTerritory.getRemainingUnitProduction();
         ProLogger.trace(
-            t
-                + ", purchaseTerritory="
-                + landTerritory
-                + ", remainingUnitProduction="
-                + remainingUnitProduction);
+            String.format(
+                "%s, purchaseTerritory=%s, remainingUnitProduction=%s",
+                t, landTerritory, remainingUnitProduction));
         if (remainingUnitProduction <= 0) {
           continue;
         }
@@ -1904,9 +1948,7 @@ class ProPurchaseAi {
         final List<Unit> transportsThatNeedUnits = new ArrayList<>();
         final Set<Unit> potentialUnitsToLoad = new HashSet<>();
         final Set<Territory> seaTerritories =
-            data.getMap()
-                .getNeighbors(
-                    landTerritory, distance, ProMatches.territoryCanMoveSeaUnits(player, false));
+            data.getMap().getNeighbors(landTerritory, distance, canMoveSea);
         for (final Territory seaTerritory : seaTerritories) {
           final List<Unit> unitsInTerritory =
               ProPurchaseUtils.getPlaceUnits(seaTerritory, purchaseTerritories);
@@ -1933,9 +1975,7 @@ class ProPurchaseAi {
         }
 
         // Determine whether transports, amphib units, or both are needed
-        final Set<Territory> landNeighbors =
-            data.getMap().getNeighbors(t, Matches.territoryIsLand());
-        for (final Territory neighbor : landNeighbors) {
+        for (final Territory neighbor : data.getMap().getNeighbors(t, Matches.territoryIsLand())) {
           if (territoryValueMap.get(neighbor) <= 0.25) {
             final List<Unit> unitsInTerritory = new ArrayList<>(neighbor.getUnits());
             unitsInTerritory.addAll(ProPurchaseUtils.getPlaceUnits(neighbor, purchaseTerritories));
@@ -1945,18 +1985,15 @@ class ProPurchaseAi {
           }
         }
         ProLogger.trace(
-            t
-                + ", potentialUnitsToLoad="
-                + potentialUnitsToLoad
-                + ", transportsThatNeedUnits="
-                + transportsThatNeedUnits);
+            String.format(
+                "%s, potentialUnitsToLoad=%s,  transportsThatNeedUnits=%s",
+                t, summarizeUnits(potentialUnitsToLoad), summarizeUnits(transportsThatNeedUnits)));
 
         // Purchase transports and amphib units
         final List<Unit> amphibUnitsToPlace = new ArrayList<>();
         final List<Unit> transportUnitsToPlace = new ArrayList<>();
         while (true) {
           if (!transportsThatNeedUnits.isEmpty()) {
-
             // Get next empty transport and find its capacity
             final Unit transport = transportsThatNeedUnits.get(0);
             int transportCapacity = transport.getUnitAttachment().getTransportCapacity();
@@ -2048,23 +2085,28 @@ class ProPurchaseAi {
         }
 
         // Add transport units to sea place territory and amphib units to land place territory
-        for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
-          if (landTerritory.equals(ppt.getTerritory())) {
-            addUnitsToPlace(ppt, amphibUnitsToPlace);
-          } else if (placeTerritory.equals(ppt)) {
-            addUnitsToPlace(ppt, transportUnitsToPlace);
+        if (!amphibUnitsToPlace.isEmpty() || !transportUnitsToPlace.isEmpty()) {
+          for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
+            if (landTerritory.equals(ppt.getTerritory())) {
+              addUnitsToPlace(ppt, amphibUnitsToPlace);
+            } else if (placeTerritory.equals(ppt)) {
+              addUnitsToPlace(ppt, transportUnitsToPlace);
+            }
           }
+          boughtUnits = true;
         }
         ProLogger.trace(
-            t
-                + ", purchaseTerritory="
-                + landTerritory
-                + ", transportUnitsToPlace="
-                + transportUnitsToPlace
-                + ", amphibUnitsToPlace="
-                + amphibUnitsToPlace);
+            String.format(
+                "%s, purchaseTerritory=%s, transportUnitsToPlace=%s, amphibUnitsToPlace=%s",
+                t, landTerritory, transportUnitsToPlace, amphibUnitsToPlace));
       }
     }
+
+    // If we wanted to buy a fleet, but didn't because it couldn't be defended, check if we should
+    // save up for one. If so, check if we should save up.
+    return !boughtUnits
+        && wantedToBuyUnitsButCouldNotDefendThem
+        && shouldSaveUpForAFleet(purchaseOptions, purchaseTerritories);
   }
 
   private void purchaseUnitsWithRemainingProduction(
@@ -2414,11 +2456,11 @@ class ProPurchaseAi {
           "Placing defenders for "
               + t.getName()
               + ", enemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxUnits()
+              + summarizeUnits(enemyAttackOptions.getMax(t).getMaxUnits())
               + ", amphibEnemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxAmphibUnits()
+              + summarizeUnits(enemyAttackOptions.getMax(t).getMaxAmphibUnits())
               + ", defenders="
-              + placeTerritory.getDefendingUnits());
+              + summarizeUnits(placeTerritory.getDefendingUnits()));
 
       // Check if any units can be placed
       final PlaceableUnits placeableUnits =
@@ -2455,7 +2497,7 @@ class ProPurchaseAi {
             calc.calculateBattleResults(
                 proData,
                 t,
-                new ArrayList<>(enemyAttackingUnits),
+                enemyAttackingUnits,
                 defenders,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
@@ -2611,6 +2653,6 @@ class ProPurchaseAi {
         ProLogger.warn("Attempt was at: " + t + " with: " + unit);
       }
     }
-    AbstractBuiltInAi.movePause();
+    AbstractAi.movePause();
   }
 }

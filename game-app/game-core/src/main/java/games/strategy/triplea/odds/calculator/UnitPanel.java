@@ -38,7 +38,7 @@ public class UnitPanel extends JPanel {
             + ":  "
             + costs.getInt(category.getType())
             + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; "
-            + TooltipProperties.getInstance().getTooltip(category.getType(), category.getOwner())
+            + new TooltipProperties(uiContext).getTooltip(category.getType(), category.getOwner())
             + "</html>";
     setCount(category.getUnits().size());
     setLayout(new GridBagLayout());

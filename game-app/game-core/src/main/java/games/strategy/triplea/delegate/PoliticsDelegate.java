@@ -178,14 +178,17 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
                     Matches.relationshipTypeIsAtWar(),
                     Matches.relationshipTypeIsAtWar().negate(),
                     data.getRelationshipTracker()));
+    final String acceptanceQuestion =
+        bridge
+            .getResourceLoader()
+            .map(PoliticsText::new)
+            .map(politicsText -> politicsText.getAcceptanceQuestion(paa.getText()))
+            // String is ignored if getResourceLoader() returns empty Optional.
+            .orElse("");
     if (!Properties.getAlliancesCanChainTogether(data.getProperties())
         || !intoAlliedChainOrIntoOrOutOfWar.test(paa)) {
       for (final GamePlayer player : paa.getActionAccept()) {
-        if (!getRemotePlayer(player)
-            .acceptAction(
-                this.player,
-                PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()),
-                true)) {
+        if (!getRemotePlayer(player).acceptAction(this.player, acceptanceQuestion, true)) {
           return false;
         }
       }
@@ -206,8 +209,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       }
       playersWhoNeedToAccept.removeAll(paa.getActionAccept());
       for (final GamePlayer player : playersWhoNeedToAccept) {
-        String actionText = PoliticsText.getInstance().getAcceptanceQuestion(paa.getText());
-        if (actionText.equals("NONE")) {
+        final String actionText;
+        if (acceptanceQuestion.equals("NONE")) {
           actionText =
               this.player.getName()
                   + " wants to take the following action: "
@@ -223,18 +226,14 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
                   + " will ask "
                   + MyFormatter.defaultNamedToTextList(paa.getActionAccept())
                   + ", the following question: \r\n "
-                  + actionText;
+                  + acceptanceQuestion;
         }
         if (!getRemotePlayer(player).acceptAction(this.player, actionText, true)) {
           return false;
         }
       }
       for (final GamePlayer player : paa.getActionAccept()) {
-        if (!getRemotePlayer(player)
-            .acceptAction(
-                this.player,
-                PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()),
-                true)) {
+        if (!getRemotePlayer(player).acceptAction(this.player, acceptanceQuestion, true)) {
           return false;
         }
       }
@@ -311,8 +310,14 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
             + " fails on action: "
             + MyFormatter.attachmentNameToText(paa.getName());
     bridge.getHistoryWriter().addChildToEvent(transcriptText);
-    sendNotification(PoliticsText.getInstance().getNotificationFailure(paa.getText()));
-    notifyOtherPlayers(PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
+    bridge
+        .getResourceLoader()
+        .ifPresent(
+            resourceLoader -> {
+              PoliticsText politicsText = new PoliticsText(resourceLoader);
+              sendNotification(politicsText.getNotificationFailure(paa.getText()));
+              notifyOtherPlayers(politicsText.getNotificationFailureOthers(paa.getText()));
+            });
   }
 
   /**
@@ -324,8 +329,14 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     bridge
         .getSoundChannelBroadcaster()
         .playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, player);
-    sendNotification(PoliticsText.getInstance().getNotificationSuccess(paa.getText()));
-    notifyOtherPlayers(PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
+    bridge
+        .getResourceLoader()
+        .ifPresent(
+            resourceLoader -> {
+              PoliticsText politicsText = new PoliticsText(resourceLoader);
+              sendNotification(politicsText.getNotificationSuccess(paa.getText()));
+              notifyOtherPlayers(politicsText.getNotificationSuccessOthers(paa.getText()));
+            });
   }
 
   /**

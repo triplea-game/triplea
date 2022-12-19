@@ -11,9 +11,10 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
-import java.util.Properties;
+import java.util.Optional;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
@@ -28,7 +29,7 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final GamePlayer player;
   private final AbstractProAi proAi;
-  private final DelegateHistoryWriter writer = DelegateHistoryWriter.NO_OP_INSTANCE;
+  private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final GameData gameData;
   private final CompositeChange allChanges = new CompositeChange();
 
@@ -48,17 +49,12 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   public void sendMessage(final WebSocketMessage webSocketMessage) {}
 
   @Override
+  public Optional<ResourceLoader> getResourceLoader() {
+    return Optional.empty();
+  }
+
+  @Override
   public void leaveDelegateExecution() {}
-
-  @Override
-  public Properties getStepProperties() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public String getStepName() {
-    throw new UnsupportedOperationException();
-  }
 
   @Override
   public Player getRemotePlayer(final GamePlayer gamePlayer) {

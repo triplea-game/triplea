@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -60,16 +61,14 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
   private GameData gameData;
   private IDelegateBridge dummyDelegate;
 
-  ObjectivePanel(final GameData data) {
+  private final ResourceLoader resourceLoader;
+
+  ObjectivePanel(final GameData data, final UiContext uiContext) {
     gameData = data;
     dummyDelegate = new ObjectiveDummyDelegateBridge(data);
+    resourceLoader = uiContext.getResourceLoader();
     initLayout();
     gameData.addDataChangeListener(this);
-  }
-
-  @Override
-  public String getName() {
-    return ObjectiveProperties.getInstance().getName();
   }
 
   public boolean isEmpty() {
@@ -123,7 +122,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
 
     private void setObjectiveStats() {
       statsObjective = new LinkedHashMap<>();
-      final ObjectiveProperties op = ObjectiveProperties.getInstance();
+      final ObjectiveProperties objectiveProperties = new ObjectiveProperties(resourceLoader);
       final String gameName =
           FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_')
               .replaceAll(" ", "_")
@@ -131,7 +130,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final Set<String> sectionsSorters = new TreeSet<>();
       // do sections first
-      for (final Entry<Object, Object> entry : op.entrySet()) {
+      for (final Entry<Object, Object> entry : objectiveProperties.entrySet()) {
         final String fileKey = (String) entry.getKey();
         if (!fileKey.startsWith(gameName)) {
           continue;
@@ -168,7 +167,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
         statsObjectiveUnsorted.put(key, new HashMap<>());
       }
       // now do the stuff in the sections
-      for (final Entry<Object, Object> entry : op.entrySet()) {
+      for (final Entry<Object, Object> entry : objectiveProperties.entrySet()) {
         final String fileKey = (String) entry.getKey();
         if (!fileKey.startsWith(gameName)) {
           continue;

@@ -17,7 +17,6 @@ import java.util.Collection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.test.common.TestDataFileReader;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
@@ -39,9 +38,11 @@ class GithubApiClientTest {
 
     final Collection<MapRepoListing> repos =
         GithubApiClient.builder()
+            .org("example-org")
+            .repo("map-repo")
             .uri(URI.create(server.baseUrl()))
             .build()
-            .listRepositories("example-org");
+            .listRepositories();
 
     assertThat(repos, hasSize(3));
     assertThat(
@@ -82,15 +83,17 @@ class GithubApiClientTest {
         TestDataFileReader.readContents("sample_responses/branch_listing_response.json");
     server.stubFor(
         get("/repos/example-org/map-repo/branches/master")
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo("token test-token"))
+            .withHeader("Authorization", equalTo("token test-token"))
             .willReturn(aResponse().withStatus(200).withBody(exampleResponse)));
 
     final BranchInfoResponse branchInfoResponse =
         GithubApiClient.builder()
             .authToken("test-token")
+            .org("example-org")
+            .repo("map-repo")
             .uri(URI.create(server.baseUrl()))
             .build()
-            .fetchBranchInfo("example-org", "map-repo", "master");
+            .fetchBranchInfo("master");
 
     final Instant expectedLastCommitDate =
         LocalDateTime.of(2021, 2, 4, 19, 30, 32).atOffset(ZoneOffset.UTC).toInstant();
@@ -103,15 +106,17 @@ class GithubApiClientTest {
         TestDataFileReader.readContents("sample_responses/latest_release_response.json");
     server.stubFor(
         get("/repos/example-org/map-repo/releases/latest")
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo("token test-token"))
+            .withHeader("Authorization", equalTo("token test-token"))
             .willReturn(aResponse().withStatus(200).withBody(exampleResponse)));
 
     final String latestVersion =
         GithubApiClient.builder()
             .authToken("test-token")
+            .org("example-org")
+            .repo("map-repo")
             .uri(URI.create(server.baseUrl()))
             .build()
-            .fetchLatestVersion("example-org", "map-repo")
+            .fetchLatestVersion()
             .orElseThrow();
 
     assertThat(latestVersion, is("2.5.22294"));

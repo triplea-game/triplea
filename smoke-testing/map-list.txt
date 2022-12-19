@@ -61,7 +61,6 @@ https://raw.githubusercontent.com/triplea-maps/conquest_of_the_world/master/map/
 https://raw.githubusercontent.com/triplea-maps/crazygs_ww1/master/map/games/crazygs_ww1.xml
 https://raw.githubusercontent.com/triplea-maps/cybertank/master/map/games/Cybertank.xml
 https://raw.githubusercontent.com/triplea-maps/d-day2/master/map/games/D-Day_2.xml
-https://raw.githubusercontent.com/triplea-maps/d-day/master/map/games/D-Day_2.xml
 https://raw.githubusercontent.com/triplea-maps/d-day/master/map/games/D-Day.xml
 https://raw.githubusercontent.com/triplea-maps/diplomacy/master/map/games/DiplomacyGreatWar.xml
 https://raw.githubusercontent.com/triplea-maps/diplomacy/master/map/games/DiplomacyV3rules.xml
@@ -224,10 +223,8 @@ https://raw.githubusercontent.com/triplea-maps/world_war_ii_pacific/master/map/g
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/map/games/lhtr.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised/master/map/games/ww2v2.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/barbarossa.xml
-https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/lhtr.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/six_army_free_for_all.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/ww2v2_7p.xml
-https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/map/games/ww2v2.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/map/games/WW2v3-1941.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_v3/master/map/games/WW2v3-1942.xml
 https://raw.githubusercontent.com/triplea-maps/world_war_ii_v4/master/map/games/WW2v4_Six_Army_Free_For_All_v2.xml

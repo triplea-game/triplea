@@ -2,55 +2,60 @@
 
 set -eu
 
-ENVIRONMENT_VAGRANT=vagrant
-ENVIRONMENT_PRERELEASE=prerelease
-ENVIRONMENT_PRODUCTION=production
+scriptDir="$(dirname "$0")"
+rootDir="$scriptDir/.."
+readonly ENVIRONMENT_VAGRANT=vagrant
+readonly ENVIRONMENT_PRODUCTION=production
 
-DEPLOY_TYPE_FULL=full
-DEPLOY_TYPE_MINIMAL=minimal
-
-
-# This script orchestrates deployments via ansible. If a prerelease deployment is done then
-# fresh artifacts are built and deployed.
+# This script orchestrates deployments via ansible. Fresh artifacts are always built and then deployed.
 
 function usage() {
   echo "usage: $0 [options]"
   echo ""
   echo "Examples:"
   echo "$0 --environment $ENVIRONMENT_VAGRANT"
-  echo "$0 --environment $ENVIRONMENT_PRERELEASE --deploy-type $DEPLOY_TYPE_MINIMAL"
+  echo "$0 --environment $ENVIRONMENT_VAGRANT --diff --dry-run --verbose"
   echo ""
   echo "[options]"
-  echo "  --environment [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRERELEASE|$ENVIRONMENT_PRODUCTION]"
+  echo "  --environment, --env [$ENVIRONMENT_VAGRANT|$ENVIRONMENT_PRODUCTION]"
   echo "      The target environment for the deployment."
   echo "         $ENVIRONMENT_VAGRANT is an environment that can be launched locally via a VM"
-  echo "  --deploy-type [$DEPLOY_TYPE_MINIMAL|$DEPLOY_TYPE_FULL]"
-  echo "      Defaults to '$DEPLOY_TYPE_FULL'"
-  echo "      $DEPLOY_TYPE_FULL: deployment will do the entire setup"
-  echo "      $DEPLOY_TYPE_MINIMAL: minimum deployment needed to deploy updated code and configs"
-  echo "  --tags [ansible tags]"
+  echo "  --tags, -t [ansible tags]"
   echo "      Defaults to the empty set"
   echo "      Any tags that should be passed to ansible"
+  echo "  --diff, -d"
+  echo "      Ansible reports line-diffs of what has changed"
+  echo "  --dry-run"
+  echo "      Sets ansible to 'check' mode, no actual changes are made. Useful with '--diff'"
+  echo "      This option can cause false positive failures if one action depends on a previous"
+  echo "  --verbose, -v"
+  echo "      Shows ansible verbose output, gives more detail about what has changed."
+  echo "  --limit, -l"
+  echo "      Limits which servers we deploy to, only these servers will be updated."
+  echo "      Specify server hostnames, and/or hostgroup names"
   exit 1
 }
 
-DEPLOY_TYPE="$DEPLOY_TYPE_FULL"
-ENVIRONMENT=""
-TAGS=""
 
 if [[ $# -eq 0 ]]; then
   usage
 fi
 
 
-while [[ $# -gt 1 ]]; do
+DIFF_ARG=""
+DRY_RUN_ARG=""
+ENVIRONMENT=""
+TAGS_ARG=""
+VERBOSE_ARG=""
+LIMIT_ARG=""
+
+while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
-    --environment)
+    -env|--env|--environment)
       ENVIRONMENT="$2"
-      if [[ "$ENVIRONMENT" != "$ENVIRONMENT_PRERELEASE" \
-         && "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" \
+      if [[ "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" \
          && "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]]; then
         echo "Error, invalid value for --environment:  $ENVIRONMENT"
         usage
@@ -58,25 +63,27 @@ while [[ $# -gt 1 ]]; do
       shift # past argument
       shift # past value
       ;;
-    --deploy-type)
-      DEPLOY_TYPE="$2"
-      if [[ "$DEPLOY_TYPE" != "$DEPLOY_TYPE_MINIMAL" \
-         && "$DEPLOY_TYPE" != "$DEPLOY_TYPE_FULL" ]]; then
-        echo "Error, invalid value for --deploy-type:  $DEPLOY_TYPE"
-        usage
-      fi
+    --tags|-t)
+      TAGS_ARG="--tags $2"
       shift # past argument
       shift # past value
       ;;
-    --tags)
-      TAGS="$2"
-      if [[ "$TAGS" =~ " " ]]; then
-        echo "Error, invalid value for --tags:  TAGS"
-        echo "Tags must not contain spaces, use comma to delimit tags"
-        exit 1
-      fi
-      shift # past argument
-      shift # past value
+    --diff|-d|--d)
+      DIFF_ARG="--diff"
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN_ARG="--check"
+      shift
+      ;;
+    --verbose|-v)
+      VERBOSE_ARG="-v"
+      shift
+      ;;
+    --limit|-l)
+      LIMIT_ARG="--limit $2"
+      shift
+      shift
       ;;
     *)
       echo "Error, unknown option: $1"
@@ -90,64 +97,29 @@ if [ -z "$ENVIRONMENT" ]; then
   usage
 fi
 
-ANSIBLE_ARG_TAGS=""
-if [[ "$DEPLOY_TYPE" == "$DEPLOY_TYPE_MINIMAL" && -n "${TAGS:-}" ]]; then
-  ANSIBLE_ARG_TAGS="--tags $TAGS,deploy"
-elif [[ -n "${TAGS:-}" ]]; then
-  ANSIBLE_ARG_TAGS="--tags $TAGS"
-fi
-
 # If we are deploying to non-vagrant environment then we will need
 # an ansible vault passphrase value to decrypt secrets.
-ANSIBLE_ARG_VAULT_PASSWORD=""
-if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
-  VAULT_PASSWORD_FILE="vault_password"
+VAULT_PASSWORD_FILE_ARG=""
+if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
+  VAULT_PASSWORD_FILE="$rootDir/infrastructure/vault_password"
   if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
-    echo "Error: file: $VAULT_PASSWORD_FILE must exist"
+    echo "Deployments to production environment requires vault password file: $VAULT_PASSWORD_FILE"
     exit 1
   fi
 
-  ANSIBLE_ARG_VAULT_PASSWORD="--vault-password-file $VAULT_PASSWORD_FILE"
-
-  # Decrypt SSH key and add it to ssh agent
-  # Once available to SSH agent, when making SSH connections
-  # this key will be offered by SSH for authentication.
-  # This allows ansible to SSH to target servers and run
-  # deployment commands. We assume servers have been created
-  # with the corresponding public key already installed.
-  ansible-vault view \
-    --vault-password-file="$VAULT_PASSWORD_FILE" \
-    ansible_ssh_key.ed25519 \
-  | ssh-add -
+  VAULT_PASSWORD_FILE_ARG="--vault-password-file $VAULT_PASSWORD_FILE"
+  readonly VAULT_PASSWORD_FILE_ARG
 fi
 
-# Parse version number from product.properties
-VERSION=$(sed 's/.*=\s*//' "$(find .. -path "*/src/main/*" -name "product.properties")")
-
-# If we are deploying to production then we will download artifacts by version number
-# Otherwise we need to build the artifacts that we will be deploying
-if [ "$ENVIRONMENT" != "$ENVIRONMENT_PRODUCTION" ]; then
-  .include/build_latest_artifacts "$VERSION"
-fi
-
-# Do not execute release tasks unless we are deploying to production.
-# For example a release task would be to download an artifact and
-# a prerelease task would be to upload an artifact
-SKIP_TAGS=release
-if [ "$ENVIRONMENT" == "$ENVIRONMENT_PRODUCTION" ]; then
-  SKIP_TAGS=prerelease
-fi
+"$scriptDir/.include/build_latest_artifacts"
+BUILD_VERSION=$("$rootDir/.build/get-build-version")
+PRODUCT_VERSION=$("$rootDir/.build/get-product-version")
 
 # Run deployment
-ansible-playbook \
-  --extra-vars "version=$VERSION" \
-  --skip-tags $SKIP_TAGS \
-   --inventory ansible/inventory/$ENVIRONMENT \
-   $ANSIBLE_ARG_VAULT_PASSWORD $ANSIBLE_ARG_TAGS ansible/site.yml
-
-# Do Cleanup
-if [ "$ENVIRONMENT" != "$ENVIRONMENT_VAGRANT" ]; then
-  echo "Cleanup, removing old kernel patches.."
-  ansible -i ansible/inventory/$ENVIRONMENT all --become-user=root -m shell -a \
-    "sudo apt autoremove -y"
-fi
+set -x
+ANSIBLE_CONFIG="$scriptDir/ansible.cfg" ansible-playbook \
+  --extra-vars "build_version=$BUILD_VERSION" \
+  --extra-vars "product_version=$PRODUCT_VERSION" \
+   --inventory "$scriptDir/ansible/inventory/$ENVIRONMENT" $DRY_RUN_ARG $LIMIT_ARG \
+   $VAULT_PASSWORD_FILE_ARG $TAGS_ARG $DIFF_ARG $VERBOSE_ARG "$scriptDir/ansible/site.yml"
+set +x

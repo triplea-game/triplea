@@ -1,8 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.player.Player;
-import games.strategy.triplea.TripleAPlayer;
-import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.weak.WeakAi;
@@ -18,61 +16,25 @@ import lombok.Value;
 public class PlayerTypes {
 
   public static final String DOES_NOTHING_PLAYER_LABEL = "Does Nothing (AI)";
-
-  public static final Type HUMAN_PLAYER =
-      new Type("Human") {
-        @Override
-        public Player newPlayerWithName(final String name) {
-          return new TripleAPlayer(name) {
-            @Override
-            public Type getPlayerType() {
-              return HUMAN_PLAYER;
-            }
-          };
-        }
-      };
   public static final Type WEAK_AI =
       new Type("Easy (AI)") {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new WeakAi(name);
+          return new WeakAi(name, getLabel());
         }
       };
   public static final Type FAST_AI =
       new Type("Fast (AI)") {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new FastAi(name);
+          return new FastAi(name, getLabel());
         }
       };
   public static final Type PRO_AI =
       new Type("Hard (AI)") {
         @Override
         public Player newPlayerWithName(final String name) {
-          return new ProAi(name);
-        }
-      };
-  /** A hidden player type to represent network connected players. */
-  public static final Type CLIENT_PLAYER =
-      new Type("Client", false) {
-        @Override
-        public Player newPlayerWithName(final String name) {
-          return new TripleAPlayer(name) {
-            @Override
-            public Type getPlayerType() {
-              return CLIENT_PLAYER;
-            }
-          };
-        }
-      };
-  /** A 'dummy' player type used for battle calc. */
-  public static final Type BATTLE_CALC_DUMMY =
-      new Type("None (AI)", false) {
-        @Override
-        public Player newPlayerWithName(final String name) {
-          throw new UnsupportedOperationException(
-              "Fail fast - bad configuration, should instantiate dummy player "
-                  + "type only for battle calc");
+          return new ProAi(name, getLabel());
         }
       };
 
@@ -83,13 +45,7 @@ public class PlayerTypes {
   }
 
   public static Collection<Type> getBuiltInPlayerTypes() {
-    return List.of(
-        PlayerTypes.HUMAN_PLAYER,
-        PlayerTypes.WEAK_AI,
-        PlayerTypes.FAST_AI,
-        PlayerTypes.PRO_AI,
-        PlayerTypes.CLIENT_PLAYER,
-        PlayerTypes.BATTLE_CALC_DUMMY);
+    return List.of(PlayerTypes.WEAK_AI, PlayerTypes.FAST_AI, PlayerTypes.PRO_AI);
   }
 
   /**
@@ -127,7 +83,7 @@ public class PlayerTypes {
     @Getter(AccessLevel.PACKAGE)
     private final boolean visible;
 
-    Type(final String label) {
+    public Type(final String label) {
       this(label, true);
     }
 
@@ -136,19 +92,10 @@ public class PlayerTypes {
      * method will create the corresponding {@code IRemotePlayer} instance.
      */
     public abstract Player newPlayerWithName(String name);
-  }
-
-  public static class AiType extends Type {
-    private final AiProvider aiProvider;
-
-    public AiType(final AiProvider aiProvide) {
-      super(aiProvide.getLabel());
-      this.aiProvider = aiProvide;
-    }
 
     @Override
-    public Player newPlayerWithName(final String name) {
-      return this.aiProvider.create(name, this);
+    public String toString() {
+      return label;
     }
   }
 }

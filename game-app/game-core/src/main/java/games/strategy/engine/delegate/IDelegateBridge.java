@@ -3,12 +3,16 @@ package games.strategy.engine.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import java.util.Properties;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.util.TuvCostsCalculator;
+import java.util.Optional;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.ISound;
 
 /**
@@ -29,9 +33,6 @@ public interface IDelegateBridge {
   Player getRemotePlayer(GamePlayer gamePlayer);
 
   GamePlayer getGamePlayer();
-
-  /** Returns the current step name. */
-  String getStepName();
 
   /**
    * Add a change to game data. Use this rather than changing gameData directly since this method
@@ -76,9 +77,6 @@ public interface IDelegateBridge {
    */
   ISound getSoundChannelBroadcaster();
 
-  /** Returns the properties for this step. */
-  Properties getStepProperties();
-
   /**
    * After this step finishes executing, the next delegate will not be called.
    *
@@ -94,4 +92,14 @@ public interface IDelegateBridge {
   GameData getData();
 
   void sendMessage(WebSocketMessage webSocketMessage);
+
+  /**
+   * Allow delegate code to access a {@link ResourceLoader}. Implementations may choose to return an
+   * empty optional to prevent messaging in simulation scenarios.
+   */
+  Optional<ResourceLoader> getResourceLoader();
+
+  default IntegerMap<UnitType> getCostsForTuv(final GamePlayer player) {
+    return new TuvCostsCalculator().getCostsForTuv(player);
+  }
 }

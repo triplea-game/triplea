@@ -239,6 +239,10 @@ public final class GameDataTestUtil {
     return unitType("britishInfantry", data);
   }
 
+  public static UnitType japaneseInfantry(final GameState data) {
+    return unitType("japaneseInfantry", data);
+  }
+
   /** Returns a bomber UnitType object for the specified GameData object. */
   public static UnitType bomber(final GameState data) {
     return unitType(Constants.UNIT_TYPE_BOMBER, data);

@@ -4,8 +4,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import java.io.Serializable;
+import javax.annotation.Nullable;
 
 /**
  * Base class designed to make writing custom delegates simpler. Code common to all delegates is
@@ -16,11 +18,20 @@ public abstract class AbstractDelegate implements IDelegate {
   protected String displayName;
   protected GamePlayer player;
   protected IDelegateBridge bridge;
+  @Nullable protected ClientNetworkBridge clientNetworkBridge;
 
   @Override
   public void initialize(final String name, final String displayName) {
     this.name = name;
     this.displayName = displayName;
+  }
+
+  @Override
+  public void setDelegateBridgeAndPlayer(
+      final IDelegateBridge delegateBridge, final ClientNetworkBridge clientNetworkBridge) {
+    bridge = delegateBridge;
+    player = delegateBridge.getGamePlayer();
+    this.clientNetworkBridge = clientNetworkBridge;
   }
 
   @Override

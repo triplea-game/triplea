@@ -13,7 +13,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -155,7 +154,7 @@ public class MustFightBattle extends DependentBattle
             : Properties.getLandBattleRounds(data.getProperties());
   }
 
-  void resetDefendingUnits(final GamePlayer attacker, final GameState data) {
+  void resetDefendingUnits(final GamePlayer attacker) {
     defendingUnits.clear();
     defendingUnits.addAll(battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker)));
   }
@@ -255,7 +254,7 @@ public class MustFightBattle extends DependentBattle
    * units left in the territory.
    */
   @Override
-  public List<Unit> getRemainingAttackingUnits() {
+  public Collection<Unit> getRemainingAttackingUnits() {
     final Set<Unit> remaining = new HashSet<>(attackingUnitsRetreated);
     final Collection<Unit> unitsLeftInTerritory = new ArrayList<>(battleSite.getUnits());
     unitsLeftInTerritory.removeAll(killed);
@@ -267,7 +266,7 @@ public class MustFightBattle extends DependentBattle
                 : Matches.unitIsOwnedBy(attacker)
                     .and(Matches.unitIsAir())
                     .and(Matches.unitIsNotInfrastructure())));
-    return new ArrayList<>(remaining);
+    return remaining;
   }
 
   /**
@@ -276,18 +275,19 @@ public class MustFightBattle extends DependentBattle
    * units and enemy units of the attacker left in the territory.
    */
   @Override
-  public List<Unit> getRemainingDefendingUnits() {
+  public Collection<Unit> getRemainingDefendingUnits() {
     final Set<Unit> remaining = new HashSet<>(defendingUnitsRetreated);
     remaining.addAll(defendingUnits);
     if (getWhoWon() != WhoWon.ATTACKER || attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-      final Collection<Unit> unitsLeftInTerritory = new ArrayList<>(battleSite.getUnits());
+      final var unitsLeftInTerritory =
+          new HashSet<>(
+              CollectionUtils.getMatches(
+                  battleSite.getUnits(),
+                  Matches.unitIsOwnedBy(defender).or(Matches.enemyUnit(attacker))));
       unitsLeftInTerritory.removeAll(killed);
-      remaining.addAll(
-          CollectionUtils.getMatches(
-              unitsLeftInTerritory,
-              Matches.unitIsOwnedBy(defender).or(Matches.enemyUnit(attacker))));
+      remaining.addAll(unitsLeftInTerritory);
     }
-    return new ArrayList<>(remaining);
+    return remaining;
   }
 
   @Override
@@ -441,7 +441,7 @@ public class MustFightBattle extends DependentBattle
       removeUnits(lost, bridge, battleSite, OFFENSE);
     }
     if (attackingUnits.isEmpty()) {
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+      final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
       final int tuvLostAttacker =
           (withdrawn ? 0 : TuvUtils.getTuv(lost, attacker, costs, gameData));
       attackerLostTuv += tuvLostAttacker;
@@ -1505,9 +1505,9 @@ public class MustFightBattle extends DependentBattle
       return;
     }
     // a handy summary of all the units killed
-    IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+    IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
     final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
-    costs = TuvUtils.getCostsForTuv(defender, gameData);
+    costs = bridge.getCostsForTuv(defender);
     final int tuvLostDefender = TuvUtils.getTuv(killed, defender, costs, gameData);
     final int tuvChange = tuvLostDefender - tuvLostAttacker;
     bridge

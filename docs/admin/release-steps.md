@@ -12,8 +12,15 @@ This will build installers and create a release in github releases.
 
 ## Increment version
 
-Change the version number in 'product.properties', increase the version number
+Change the version number in 'product-version.txt', increase the version number
 to prep for the next release and commit this to master.
+
+Add a port number entry in: </infrastructure/ansible/roles/lobby_server/defaults/main.yml>
+Just add one to the previous highest port number.
+Client request routing to lobby depends on a header value sent by game clients.
+NGINX will route this to a corresponding lobby.
+Incrementing version number will cause a new lobby to be deployed.
+
 
 ## Finalize Release Notes
 
@@ -42,11 +49,6 @@ Clean up the above output and update the release-notes.md page on website.
 
 Increase latest version to the release. This will trigger in-game
 notifications to upgrade
-
-## Update partner sites:
-
-  - http://www.freewarefiles.com/TripleA_program_56699.html
-  - http://download.cnet.com/TripleA/3000-18516_4-75184098.html
 
 ## Post to forums:
 

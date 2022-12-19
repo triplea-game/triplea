@@ -11,7 +11,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -48,13 +48,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
-import org.triplea.injection.Injections;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
-import org.triplea.util.Version;
 
 /** Pro AI. */
-public abstract class AbstractProAi extends AbstractBuiltInAi {
+public abstract class AbstractProAi extends AbstractAi {
 
   private final ProOddsCalculator calc;
   @Getter private final ProData proData;
@@ -75,8 +73,11 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
   private List<Territory> storedStrafingTerritories;
 
   public AbstractProAi(
-      final String name, final IBattleCalculator battleCalculator, final ProData proData) {
-    super(name);
+      final String name,
+      final IBattleCalculator battleCalculator,
+      final ProData proData,
+      final String playerLabel) {
+    super(name, playerLabel);
     this.proData = proData;
     calc = new ProOddsCalculator(battleCalculator);
     combatMoveAi = new ProCombatMoveAi(this);
@@ -90,8 +91,6 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
     storedPurchaseTerritories = null;
     storedPoliticalActions = null;
     storedStrafingTerritories = new ArrayList<>();
-
-    ProLogUi.registerDebugMenu();
   }
 
   @Override
@@ -270,12 +269,8 @@ public abstract class AbstractProAi extends AbstractBuiltInAi {
   }
 
   private GameData copyData(GameData data) {
-    Version engineVersion = Injections.getInstance().getEngineVersion();
     GameDataManager.Options options = GameDataManager.Options.builder().withDelegates(true).build();
-    GameData dataCopy;
-    try (GameData.Unlocker ignored = data.acquireWriteLock()) {
-      dataCopy = GameDataUtils.cloneGameData(data, options, engineVersion).orElse(null);
-    }
+    GameData dataCopy = GameDataUtils.cloneGameData(data, options).orElse(null);
     Optional.ofNullable(dataCopy).ifPresent(this::prepareData);
     return dataCopy;
   }

@@ -29,6 +29,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.URI;
@@ -47,19 +48,16 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.chat.ChatModel;
-import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
-import org.triplea.injection.Injections;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -77,7 +75,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
-  private final ServerSetupModel serverSetupModel;
   private ServerMessenger serverMessenger;
   private Messengers messengers;
   private GameData data;
@@ -102,16 +99,14 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   @Getter @Nullable private LobbyWatcherThread lobbyWatcherThread;
   @Nullable private GameToLobbyConnection gameToLobbyConnection;
 
-  public ServerModel(
-      final GameSelectorModel gameSelectorModel,
-      final ServerSetupModel serverSetupModel,
-      final LaunchAction launchAction) {
+  public ServerModel(final GameSelectorModel gameSelectorModel, final LaunchAction launchAction) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
-    this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
-    this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.launchAction = launchAction;
-    getServerProps()
-        .ifPresent(props -> this.createServerMessenger(props, launchAction::handleError));
+  }
+
+  public Optional<GameHostingResponse> initialize() {
+    this.gameSelectorModel.addObserver(gameSelectorObserver);
+    return getServerProps().map(this::createServerMessenger);
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -127,7 +122,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         .ifPresent(InGameLobbyWatcherWrapper::shutDown);
     Optional.ofNullable(chatController).ifPresent(ChatController::deactivate);
     Optional.ofNullable(messengers).ifPresent(Messengers::shutDown);
-    chatModel.cancel();
+    Optional.ofNullable(chatModel).ifPresent(ChatModel::cancel);
   }
 
   public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
@@ -214,8 +209,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     return launchAction.getFallbackConnection(this::cancel);
   }
 
-  private void createServerMessenger(
-      final ServerConnectionProps props, final Consumer<String> errorHandler) {
+  @Nullable
+  private GameHostingResponse createServerMessenger(final ServerConnectionProps props) {
     try {
       this.serverMessenger =
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
@@ -236,7 +231,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 gameSelectorModel, serverMessenger, launchAction.createThreadMessaging());
 
         gameToLobbyConnection =
-            new GameToLobbyConnection(lobbyUri, gameHostingResponse, errorHandler);
+            new GameToLobbyConnection(lobbyUri, gameHostingResponse, launchAction::handleError);
 
         serverMessenger.setGameToLobbyConnection(gameToLobbyConnection);
 
@@ -265,7 +260,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
-      chatModel = launchAction.createChatModel(CHAT_NAME, messengers);
+      // TODO: Project#4 Change no-op network sender to a real network bridge
+      chatModel =
+          launchAction.createChatModel(CHAT_NAME, messengers, ClientNetworkBridge.NO_OP_SENDER);
 
       if (gameToLobbyConnection != null && lobbyWatcherThread != null) {
         chatModel
@@ -280,7 +277,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
-      serverSetupModel.onServerMessengerCreated(this, gameHostingResponse);
+      return gameHostingResponse;
     } catch (final BindException e) {
       log.warn(
           "Could not open network port, please close any other TripleA games you are\n"
@@ -292,6 +289,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       log.error("Unable to create server socket.", e);
       cancel();
     }
+    return null;
   }
 
   private PlayerListing getPlayerListingInternal() {
@@ -478,10 +476,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
     final Map<String, PlayerTypes.Type> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerTypes.Type defaultLocalType =
-        launchAction.shouldMinimizeExpensiveAiUse()
-            ? PlayerTypes.WEAK_AI
-            : PlayerTypes.HUMAN_PLAYER;
+    final PlayerTypes.Type defaultLocalType = launchAction.getDefaultLocalPlayerType();
     for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
       final String player = entry.getKey();
       final String playedBy = entry.getValue();
@@ -499,7 +494,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   public Optional<ServerLauncher> getLauncher() {
     synchronized (this) {
       disallowRemoveConnections();
-      // -1 since we dont count ourselves
+      // -1 since we don't count ourselves
       final int clientCount = serverMessenger.getNodes().size() - 1;
       final Map<String, INode> remotePlayers = new HashMap<>();
       for (final Entry<String, String> entry : playersToNodeListing.entrySet()) {
@@ -515,7 +510,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         }
       }
 
-      final ServerLauncher serverLauncherNew =
+      final ServerLauncher serverLauncher =
           new ServerLauncher(
               clientCount,
               messengers,
@@ -523,11 +518,12 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               getPlayerListingInternal(),
               remotePlayers,
               this,
-              launchAction);
-      Optional.ofNullable(lobbyWatcherThread)
-          .map(LobbyWatcherThread::getLobbyWatcher)
-          .ifPresent(serverLauncherNew::setInGameLobbyWatcher);
-      return Optional.of(serverLauncherNew);
+              launchAction,
+              Optional.ofNullable(lobbyWatcherThread)
+                  .map(LobbyWatcherThread::getLobbyWatcher)
+                  .orElse(null));
+
+      return Optional.of(serverLauncher);
     }
   }
 
@@ -593,8 +589,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     @Override
     public byte[] getSaveGame() {
       try {
-        return IoUtils.writeToMemory(
-            os -> GameDataManager.saveGame(os, data, Injections.getInstance().getEngineVersion()));
+        return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
       } catch (final IOException e) {
         throw new IllegalStateException(e);
       }

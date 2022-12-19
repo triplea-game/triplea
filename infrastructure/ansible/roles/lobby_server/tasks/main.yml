@@ -1,67 +1,103 @@
-- name: create service user group
+## Database
+
+- name: Database - create lobby database
+  include_role:
+    name: database/postgres/create_database
+  vars:
+    database_name: "{{ lobby_db_name }}"
+    database_user: "{{ lobby_db_user }}"
+    database_password: "{{ lobby_db_password }}"
+
+- name: Database - Run Flyway to execute DB migrations (install schema, database tables, data migrations)
+  include_role:
+    name: database/flyway/run_migrations
+  vars:
+    migrations_file: "migrations.zip"
+    flyway_db_name: "{{ lobby_db_name }}"
+    flyway_migration_dir: "lobby_db"
+    flyway_user: "{{ lobby_db_user }}"
+    flyway_password: "{{ lobby_db_password }}"
+
+## Nginx
+
+- name: Nginx config - generate dhparams
+  include_role:
+    name: nginx/generate_dhparams
+
+- name: Nginx config - deploy /etc/nginx/sites-enabled/lobby.conf
+  template:
+    src: "etc_nginx_sites_enabled_lobby.conf"
+    dest: /etc/nginx/sites-enabled/lobby.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Nginx config - deploy 2.5 lobby nginx config
+  template:
+    src: 2-5_lobby.conf
+    dest: /etc/nginx/sites-enabled/lobby-2-5.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Nginx config - generate self signed cert
+  when: nginx_generate_self_signed_cert
+  include_role:
+    name: nginx/generate_self_signed_cert
+  vars:
+    ssl_cert_folder: "{{ lobby_public_cert_folder }}"
+    ssl_cert_key: "{{ lobby_private_key_file }}"
+    ssl_cert: "{{ lobby_public_cert_file }}"
+
+## Application
+
+- name: create lobby service user group
   group:
-    name: "{{ lobby_server_user }}"
+    name: "{{ lobby_user }}"
 
 - name: create service user
   user:
-    name: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
-    create_home: yes
+    name: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
+    create_home: no
     system: yes
 
 - name: ensure deployment folder exists
   file:
     state: directory
-    path: "{{ lobby_server_home_folder }}"
+    path: "{{ lobby_home_folder }}"
     mode: "0755"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
+    owner: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
 
-- name: upload zip artifact file (prerelease build)
-  tags: [prerelease, deploy]
+- name: extract lobby_server zip file
   register: deploy_artifact
-  copy:
-    src: "{{ lobby_artifact }}"
-    dest: "{{ lobby_server_home_folder }}/{{ lobby_artifact }}"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
-
-- name: download zip artifact file (release build)
-  tags: [release, deploy]
-  register: deploy_artifact
-  get_url:
-    url: "{{ lobby_artifact_download }}"
-    dest: "{{ lobby_server_home_folder }}/{{ lobby_artifact }}"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
-
-- name: extract zip file
-  tags: [deploy]
   unarchive:
-    remote_src: yes
-    src: "{{ lobby_server_home_folder }}/{{ lobby_artifact }}"
-    dest: "{{ lobby_server_home_folder }}/"
-    owner: "{{ lobby_server_user }}"
-    group: "{{ lobby_server_user }}"
+    src: "{{ lobby_artifact }}"
+    dest: "{{ lobby_home_folder }}/"
+    owner: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
 
-- name: install systemd service script
-  tags: [deploy]
+- name: install systemd service file
   register: service_script
   template:
     src: lobby_server.service.j2
     dest: /lib/systemd/system/{{ lobby_name }}.service
     mode: "644"
 
-- name: reload systemd
-  tags: [deploy]
-  when: service_script.changed
+# Ideally we would restart the lobby if we update it to run the new version.
+# We do not want to disconnect users, so we do not restart the lobby.
+- name: ensure lobby is started
   systemd:
-    daemon_reload: yes
-
-- name: restart service if new artifact was deployed
-  tags: [deploy]
-  when: (lobby_restart_on_new_deployment) and ((deploy_artifact.changed) or (service_script.changed))
-  service:
     name: "{{ lobby_name }}"
-    state: restarted
+    state: started
     enabled: yes
+    daemon_reload: true
+
+- name: drop a version file in lobby home
+  template:
+    src: version.txt
+    dest: "{{ lobby_home_folder }}/version.txt"
+    mode: "0644"
+    owner: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"

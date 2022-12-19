@@ -11,18 +11,17 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameShutdownRegistry;
+import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.triplea.ai.AiProvider;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.Util;
@@ -34,23 +33,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.Locale;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.ai.does.nothing.DoesNothingAiProvider;
-import org.triplea.ai.flowfield.FlowFieldAiProvider;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
-import org.triplea.injection.Injections;
+import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.map.description.file.MapDescriptionYamlGeneratorRunner;
-import org.triplea.map.game.notes.GameNotesMigrator;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 
@@ -64,7 +56,10 @@ public final class HeadedGameRunner {
 
   public static void initializeClientSettingAndLogging() {
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e.getLocalizedMessage(), e));
-
+    final Locale defaultLocale = Locale.getDefault();
+    if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
+      Locale.setDefault(Locale.US);
+    }
     ClientSetting.initialize();
   }
 
@@ -102,8 +97,16 @@ public final class HeadedGameRunner {
             + "prohibited by design to avoid UI rendering errors in the headless environment.");
 
     initializeClientSettingAndLogging();
-    Injections.init(constructInjections());
     initializeLookAndFeel();
+
+    LobbyHttpClientConfig.setConfig(
+        LobbyHttpClientConfig.builder()
+            .clientVersion(
+                ProductVersionReader.getCurrentVersion().getMajor()
+                    + "."
+                    + ProductVersionReader.getCurrentVersion().getMinor())
+            .systemId(SystemIdLoader.load().getValue())
+            .build());
 
     initializeDesktopIntegrations(args);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
@@ -123,43 +126,8 @@ public final class HeadedGameRunner {
         .build()
         .generateYamlFiles();
 
-    GameNotesMigrator.builder()
-        .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder())
-        .progressIndicator(
-            unzipTask -> BackgroundTaskRunner.runInBackground("Migrating game notes..", unzipTask))
-        .build()
-        .extractGameNotes();
-
-    log.info("Launching game, version: {} ", Injections.getInstance().getEngineVersion());
+    log.info("Launching game, version: {} ", ProductVersionReader.getCurrentVersion());
     start();
-  }
-
-  private static Injections constructInjections() {
-    return Injections.builder()
-        .engineVersion(new ProductVersionReader().getVersion())
-        .playerTypes(gatherPlayerTypes())
-        .build();
-  }
-
-  private static Collection<PlayerTypes.Type> gatherPlayerTypes() {
-    return Stream.of(
-            PlayerTypes.getBuiltInPlayerTypes(),
-            List.of(
-                new PlayerTypes.AiType(new DoesNothingAiProvider()),
-                new PlayerTypes.AiType(new FlowFieldAiProvider())),
-            StreamSupport.stream(ServiceLoader.load(AiProvider.class).spliterator(), false)
-                .map(PlayerTypes.AiType::new)
-                .collect(Collectors.toSet()))
-        .flatMap(Collection::stream)
-        .filter(HeadedGameRunner::filterBetaPlayerType)
-        .collect(Collectors.toList());
-  }
-
-  private static boolean filterBetaPlayerType(final PlayerTypes.Type playerType) {
-    if (playerType.getLabel().equals("FlowField (AI)")) {
-      return ClientSetting.showBetaFeatures.getValue().orElse(false);
-    }
-    return true;
   }
 
   /**

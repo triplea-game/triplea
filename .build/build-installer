@@ -5,7 +5,14 @@
 ## sub-project and copied into: './build/artifacts'
 
 ## install install4j
-set -x
+scriptDir=$(dirname "$0")
+
+if [ -z "$INSTALL4J_LICENSE" ]; then
+  echo "Environment variable 'INSTALL4J_LICENSE' must be set"
+  exit 1
+fi
+
+set -ex
 
 function main() {
   install_install4j
@@ -16,7 +23,7 @@ function main() {
 # Installs install4j, the license key is injected into install4j during this step.
 function install_install4j() {
   INSTALL4J_HOME=/tmp/install4j
-  mkdir $INSTALL4J_HOME
+  mkdir -p $INSTALL4J_HOME
 
   echo "Downloading and installing install4j to '$INSTALL4J_HOME'"
   wget --no-verbose -O install4j_unix.sh \
@@ -29,6 +36,8 @@ function install_install4j() {
 
 ## Runs gradle command that creates the installer executables, uses intall4j
 function build_installers() {
+  ## Set the build number in 'product.properties' before we build the game-headed release
+  $scriptDir/set-game-headed-build-number
   JAVA_OPTS=-Xmx4G ./gradlew \
       --no-daemon \
       --parallel \

@@ -2,8 +2,8 @@
 
 TripleA is a community project and always looking for new members to join.
 
-If you are interested in supporting the project, just pick a contribution role from below and find out what you can do
-to help.
+If you are interested in supporting the project, just pick a contribution
+role from below and find out what you can do to help.
 
 ## Contribution Roles
 
@@ -51,10 +51,12 @@ to help.
 
 #### _How to become one_
 
-- Check the forum ([Development](https://forums.triplea-game.org/category/60/development)) whether release testing is ongoing
+- Check the forum ([Development](https://forums.triplea-game.org/category/60/development)) whether release testing
+  is ongoing
 - Download & install the [latest release](https://github.com/triplea-game/triplea/releases)
-- Once the game is launched, select 'settings > testing' and select the 'prerelease' lobby (note, your lobby account is not shared between 'prod' and 'prerelease')
-- Test: We generally need every aspect of the game tested, i.e. every button, every menu, every setting, every game rule, etc.
+- Test: We generally need every aspect of the game tested, i.e. every button, every menu, every setting,
+  every game rule, etc.
+- Report any issues found to the [issue tracker](https://github.com/triplea-game/triplea/issues)
 
 ### :moneybag: Donor
 
@@ -77,8 +79,10 @@ to help.
 - Basic knowledge of [XML](https://www.w3schools.com/XML/)
 - Using a text editing tool like [Notepad++](https://notepad-plus-plus.org/downloads/)
 - Graphic designer, i.e., creation of image files with advanced image editing software
-- Using a raster image program like [paint.NET](https://www.getpaint.net/) or Adobe Photoshop to produce baseTiles.pngs and reliefTiles.pngs
-- Use vector software like [Inkscape Project](https://inkscape.org/) to produce baseTiles.pngs or the extra image layers on top of reliefTiles.pngs
+- Using a raster image program like [paint.NET](https://www.getpaint.net/) or Adobe Photoshop to produce baseTiles.pngs 
+  and reliefTiles.pngs
+- Use vector software like [Inkscape Project](https://inkscape.org/) to produce baseTiles.pngs or the extra image
+  layers on top of reliefTiles.pngs
 - Icon image program like [IcoFx 1.6.4](http://www.oldversion.com/windows/icofx-1-6-4) to produce units
 
 #### _Contributions_
@@ -88,8 +92,8 @@ to help.
 
 #### _How to become one_
 
-- Read the [Map Maker Guides & Documentation](https://forums.triplea-game.org/topic/2600/map-maker-guides-documentation)
-  and check the documentation on [map-making](map-making)
+https://github.com/triplea-game/triplea/tree/master/docs/map-making
+- Check the documentation on [map-making](map-making)
 
 ### :trident: Map Admin
 
@@ -176,6 +180,7 @@ to help.
 - Implementing new features
 - Code cleaning
 - Code review
+- Design decisions
 
 #### _How to become one_
 
@@ -192,11 +197,12 @@ to help.
 
 - Developer coordination
 - Code review
-- Design decisions
 - Implementing new features
 - Bug fixing
 - Code cleaning
+- Design decisions
 
 #### _How to become one_
 
-- Start as [:wrench: Developer w/o Merge Rights](#wrench-Developer-wo-Merge-Rights) and gain knowledge and trust in carefully working on our project
+- Start as [:wrench: Developer w/o Merge Rights](#wrench-Developer-wo-Merge-Rights) and gain knowledge and trust
+  in carefully working on our project

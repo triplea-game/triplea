@@ -4,8 +4,8 @@ import java.net.URI;
 import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
-import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
+import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
+import org.triplea.http.client.lobby.moderator.toolbox.ModeratorToolboxClient;
 import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
 import org.triplea.http.client.lobby.user.account.UserAccountClient;
 import org.triplea.http.client.remote.actions.RemoteActionsClient;
@@ -16,8 +16,8 @@ public class HttpLobbyClient {
   private final URI lobbyUri;
   private final ApiKey apiKey;
 
-  private final HttpModeratorToolboxClient httpModeratorToolboxClient;
-  private final ModeratorChatClient moderatorLobbyClient;
+  private final ModeratorToolboxClient moderatorToolboxClient;
+  private final ModeratorLobbyClient moderatorLobbyClient;
   private final UserAccountClient userAccountClient;
   private final RemoteActionsClient remoteActionsClient;
   private final PlayerLobbyActionsClient playerLobbyActionsClient;
@@ -26,11 +26,11 @@ public class HttpLobbyClient {
     this.lobbyUri = lobbyUri;
     this.apiKey = apiKey;
 
-    httpModeratorToolboxClient = HttpModeratorToolboxClient.newClient(lobbyUri, apiKey);
-    moderatorLobbyClient = ModeratorChatClient.newClient(lobbyUri, apiKey);
+    moderatorToolboxClient = ModeratorToolboxClient.newClient(lobbyUri, apiKey);
+    moderatorLobbyClient = ModeratorLobbyClient.newClient(lobbyUri, apiKey);
     userAccountClient = UserAccountClient.newClient(lobbyUri, apiKey);
-    remoteActionsClient = new RemoteActionsClient(lobbyUri, apiKey);
-    playerLobbyActionsClient = new PlayerLobbyActionsClient(lobbyUri, apiKey);
+    remoteActionsClient = RemoteActionsClient.newClient(lobbyUri, apiKey);
+    playerLobbyActionsClient = PlayerLobbyActionsClient.newClient(lobbyUri, apiKey);
   }
 
   public GameListingClient newGameListingClient() {

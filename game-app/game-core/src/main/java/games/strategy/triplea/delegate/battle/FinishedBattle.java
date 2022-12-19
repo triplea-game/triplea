@@ -123,7 +123,7 @@ public class FinishedBattle extends AbstractBattle {
     if (!lost.isEmpty()) {
       attackingUnits.removeAll(lost);
       if (attackingUnits.isEmpty()) {
-        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+        final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
         final int tuvLostAttacker =
             (withdrawn ? 0 : TuvUtils.getTuv(lost, attacker, costs, gameData));
         attackerLostTuv += tuvLostAttacker;

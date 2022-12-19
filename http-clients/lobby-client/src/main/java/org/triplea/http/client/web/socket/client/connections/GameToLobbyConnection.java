@@ -2,12 +2,14 @@ package org.triplea.http.client.web.socket.client.connections;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Map;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
@@ -46,6 +48,12 @@ public class GameToLobbyConnection {
         GenericWebSocketClient.builder()
             .errorHandler(errorHandler)
             .websocketUri(URI.create(lobbyUri.toString() + WebsocketPaths.GAME_CONNECTIONS))
+            .headers(
+                Map.of(
+                    LobbyHttpClientConfig.VERSION_HEADER,
+                    LobbyHttpClientConfig.getConfig().getClientVersion(),
+                    LobbyHttpClientConfig.SYSTEM_ID_HEADER,
+                    LobbyHttpClientConfig.getConfig().getSystemId()))
             .build();
     webSocket.connect();
     lobbyWatcherClient =

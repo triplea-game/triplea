@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Postconditions;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
@@ -50,6 +51,7 @@ import org.triplea.swing.jpanel.GridBagConstraintsFill;
  * <p>The dialog is used by various use cases like placing units or choosing which units take hits
  * in a battle round.
  */
+@Slf4j
 public final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
 
@@ -57,6 +59,7 @@ public final class UnitChooser extends JPanel {
 
   @VisibleForTesting public final List<ChooserEntry> entries = new ArrayList<>();
   private final Map<Unit, Collection<Unit>> dependents;
+  private final UiContext uiContext;
   private JTextArea title;
   private int total = -1;
   private final JLabel leftToSelect = new JLabel();
@@ -100,6 +103,7 @@ public final class UnitChooser extends JPanel {
     this.allowMultipleHits = allowMultipleHits;
     NonWithdrawableFactory.makeSureNonWithdrawableFactoryMatchesUiContext(uiContext);
     this.match = match;
+    this.uiContext = uiContext;
   }
 
   UnitChooser(
@@ -235,12 +239,6 @@ public final class UnitChooser extends JPanel {
                       unit.getOwner() != null,
                       "Contract problem: All units in UnitChooser are expected to have an owner,"
                           + " but now one appeared to have none.");
-
-                  Postconditions.assertState(
-                      unit.getOwner().getData() != null,
-                      "All units owners are expected to relate to a gameData object,"
-                          + " but now one appeared to have none.");
-
                   return Properties.getPartialAmphibiousRetreat(
                           unit.getOwner().getData().getProperties())
                       && unit.getWasAmphibious();
@@ -517,10 +515,6 @@ public final class UnitChooser extends JPanel {
       hitTexts.get(0).setValue(hitTexts.get(0).getMax());
     }
 
-    void selectNone() {
-      hitTexts.get(0).setValue(0);
-    }
-
     void setLeftToSelect(final int leftToSelect) {
       this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
       updateLeftToSelect();
@@ -594,7 +588,7 @@ public final class UnitChooser extends JPanel {
         this.damaged = damaged;
 
         MapUnitTooltipManager.setUnitTooltip(
-            this, category.getType(), category.getOwner(), category.getUnits().size());
+            this, category.getType(), category.getOwner(), category.getUnits().size(), uiContext);
       }
 
       @Override
@@ -651,10 +645,10 @@ public final class UnitChooser extends JPanel {
     private UnitImageFactory unitImageFactoryForDecoratedImages = null;
 
     public void makeSureNonWithdrawableFactoryMatchesUiContext(final UiContext uiContext) {
-      if (resourceLoader != UiContext.getResourceLoader()
+      if (resourceLoader != uiContext.getResourceLoader()
           || unitImageFactory != uiContext.getUnitImageFactory()) {
         images.clear();
-        resourceLoader = UiContext.getResourceLoader();
+        resourceLoader = uiContext.getResourceLoader();
         unitImageFactory = uiContext.getUnitImageFactory();
         nonWithdrawableImage = null;
         unitImageFactoryForDecoratedImages = null;
@@ -683,7 +677,7 @@ public final class UnitChooser extends JPanel {
 
       final Graphics2D g2d = unitImageWithNonWithdrawableImage.createGraphics();
 
-      drawNonWithrawableImage(g2d);
+      drawNonWithdrawableImage(g2d);
       g2d.drawImage(undecoratedImage, 0, 0, null);
 
       g2d.dispose();
@@ -725,16 +719,21 @@ public final class UnitChooser extends JPanel {
       // The relation is controlled by getNonWithdrawableImageHeight. By the time of writing
       // this, getNonWithdrawableImageHeight makes the non-withdrawable image half as high as
       // the unit images.
-      // At the time of writing this, there are two variants of the non-whithdrawable image
+      // At the time of writing this, there are two variants of the non-withdrawable image
       // being 24 pixels resp. 32 pixels high.
       // So the unit image will be either 48 pixels or 32 pixels high.
 
       unitImageFactoryForDecoratedImages = unitImageFactory.withScaleFactor(scaleFactor);
 
-      Postconditions.assertState(
-          nonWithdrawableImage.getHeight()
-              == getNonWithdrawableImageHeight(
-                  unitImageFactoryForDecoratedImages.getUnitImageHeight()));
+      double expectedHeight =
+          getNonWithdrawableImageHeight(unitImageFactoryForDecoratedImages.getUnitImageHeight());
+      if (Math.abs(nonWithdrawableImage.getHeight() - expectedHeight) >= 2) {
+        // Don't use Postconditions.assertState() as that turns a UI glitch into a game hang.
+        log.warn(
+            "Unexpected nonWithdrawableImage height {} != {}",
+            nonWithdrawableImage.getHeight(),
+            expectedHeight);
+      }
     }
 
     /**
@@ -758,7 +757,7 @@ public final class UnitChooser extends JPanel {
       }
     }
 
-    private void drawNonWithrawableImage(final Graphics2D g2d) {
+    private void drawNonWithdrawableImage(final Graphics2D g2d) {
       g2d.drawImage(
           getNonWithdrawableImage(),
           getXofNonWithdrawableImage(),

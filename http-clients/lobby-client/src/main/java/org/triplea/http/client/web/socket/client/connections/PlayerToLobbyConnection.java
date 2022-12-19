@@ -3,6 +3,7 @@ package org.triplea.http.client.web.socket.client.connections;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.Builder;
@@ -10,13 +11,14 @@ import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.ChatHistoryMessage;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
-import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
+import org.triplea.http.client.lobby.moderator.toolbox.ModeratorToolboxClient;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.WebSocket;
 import org.triplea.http.client.web.socket.WebsocketPaths;
@@ -47,6 +49,12 @@ public class PlayerToLobbyConnection {
         GenericWebSocketClient.builder()
             .errorHandler(errorHandler)
             .websocketUri(URI.create(lobbyUri + WebsocketPaths.PLAYER_CONNECTIONS))
+            .headers(
+                Map.of(
+                    LobbyHttpClientConfig.VERSION_HEADER,
+                    LobbyHttpClientConfig.getConfig().getClientVersion(),
+                    LobbyHttpClientConfig.SYSTEM_ID_HEADER,
+                    LobbyHttpClientConfig.getConfig().getSystemId()))
             .build();
     webSocket.connect();
     gameListingClient = httpLobbyClient.newGameListingClient();
@@ -103,7 +111,7 @@ public class PlayerToLobbyConnection {
   }
 
   public void disconnectPlayer(final PlayerChatId playerChatId) {
-    httpLobbyClient.getModeratorLobbyClient().disconnectPlayer(playerChatId);
+    httpLobbyClient.getModeratorLobbyClient().disconnectPlayer(playerChatId.getValue());
   }
 
   public void banPlayer(final BanPlayerRequest banPlayerRequest) {
@@ -111,19 +119,21 @@ public class PlayerToLobbyConnection {
   }
 
   public String fetchEmail() {
-    return httpLobbyClient.getUserAccountClient().fetchEmail();
+    return httpLobbyClient.getUserAccountClient().fetchEmail().getUserEmail();
   }
 
   public void changeEmail(final String newEmail) {
     httpLobbyClient.getUserAccountClient().changeEmail(newEmail);
   }
 
-  public HttpModeratorToolboxClient getHttpModeratorToolboxClient() {
-    return httpLobbyClient.getHttpModeratorToolboxClient();
+  public ModeratorToolboxClient getHttpModeratorToolboxClient() {
+    return httpLobbyClient.getModeratorToolboxClient();
   }
 
   public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
-    return httpLobbyClient.getPlayerLobbyActionsClient().fetchPlayerInformation(playerChatId);
+    return httpLobbyClient
+        .getPlayerLobbyActionsClient()
+        .fetchPlayerInformation(playerChatId.getValue());
   }
 
   public void mutePlayer(final PlayerChatId playerChatId, final long minutes) {

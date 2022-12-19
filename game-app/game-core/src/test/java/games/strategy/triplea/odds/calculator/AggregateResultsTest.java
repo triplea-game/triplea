@@ -9,7 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.util.TuvUtils;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -28,8 +28,9 @@ public class AggregateResultsTest {
     final List<Unit> attackingUnits = infantry(gameData).create(100, attacker);
     final GamePlayer defender = germans(gameData);
     final List<Unit> defendingUnits = infantry(gameData).create(100, defender);
-    final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTuv(attacker, gameData);
-    final IntegerMap<UnitType> defenderCostsForTuv = TuvUtils.getCostsForTuv(defender, gameData);
+    final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+    final IntegerMap<UnitType> attackerCostsForTuv = tuvCalculator.getCostsForTuv(attacker);
+    final IntegerMap<UnitType> defenderCostsForTuv = tuvCalculator.getCostsForTuv(defender);
 
     final Tuple<Double, Double> t =
         results.getAverageTuvOfUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);

@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -184,7 +185,7 @@ final class ProTechAi {
                 enemyPlayer,
                 data,
                 enemyShip,
-                Matches.territoryIsBlockedSea(enemyPlayer),
+                ProMatches.territoryIsBlockedSea(enemyPlayer),
                 r,
                 true);
         secondStrength = strength(ships, true, true, transportsFirst);
@@ -225,8 +226,7 @@ final class ProTechAi {
               for (final Unit checkUnit : thisTransUnits) {
                 if (Matches.unitIsLandTransportable().test(checkUnit)) {
                   inf--;
-                }
-                if (Matches.unitIsNotLandTransportable().test(checkUnit)) {
+                } else {
                   inf--;
                   other--;
                 }
@@ -243,14 +243,13 @@ final class ProTechAi {
               transUnits.removeAll(alreadyLoaded);
               final List<Unit> availTransUnits = sortTransportUnits(transUnits);
               for (final Unit transUnit : availTransUnits) {
-                if (availInf > 0 && Matches.unitIsLandTransportable().test(transUnit)) {
+                boolean landTransportable = Matches.unitIsLandTransportable().test(transUnit);
+                if (availInf > 0 && landTransportable) {
                   availInf--;
                   loadedUnits.add(transUnit);
                   alreadyLoaded.add(transUnit);
                 }
-                if (availInf > 0
-                    && availOther > 0
-                    && Matches.unitIsNotLandTransportable().test(transUnit)) {
+                if (availInf > 0 && availOther > 0 && !landTransportable) {
                   availInf--;
                   availOther--;
                   loadedUnits.add(transUnit);

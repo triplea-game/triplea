@@ -23,7 +23,6 @@ class VersionTest {
       final Version version = new Version("1.2");
       assertThat(version.getMajor(), is(1));
       assertThat(version.getMinor(), is(2));
-      assertThat(version.getBuildNumber(), is(""));
       assertThat(version.toString(), is("1.2"));
     }
 
@@ -32,17 +31,15 @@ class VersionTest {
       final Version version = new Version("1.2.3");
       assertThat(version.getMajor(), is(1));
       assertThat(version.getMinor(), is(2));
-      assertThat(version.getBuildNumber(), is("3"));
       assertThat(version.toString(), is("1.2.3"));
     }
 
     @Test
     void stringBuildNumber() {
-      final Version version = new Version("1.2.3@xyz");
+      final Version version = new Version("1.2+xyz");
       assertThat(version.getMajor(), is(1));
       assertThat(version.getMinor(), is(2));
-      assertThat(version.getBuildNumber(), is("3@xyz"));
-      assertThat(version.toString(), is("1.2.3@xyz"));
+      assertThat(version.toString(), is("1.2+xyz"));
     }
   }
 
@@ -50,7 +47,7 @@ class VersionTest {
   class CompareTo {
     @Test
     void shouldThrowExceptionWhenOtherIsNull() {
-      assertThrows(NullPointerException.class, () -> new Version("1.0.0").compareTo(null));
+      assertThrows(NullPointerException.class, () -> new Version("1.0+0").compareTo(null));
     }
 
     @Test
@@ -86,11 +83,8 @@ class VersionTest {
 
   @Test
   void testToString() {
-    assertEquals("1.2.3", new Version("1.2.3").toString());
-    assertEquals("1.2.0", new Version("1.2.0").toString());
-    assertEquals("1.2.3", new Version("1.2.3").toString());
-    assertEquals("1.2.3", new Version("1.2.3.4").toString());
-    assertEquals("1.2.3", new Version("1.2.3.4.something weird").toString());
+    assertEquals("1.2+3", new Version("1.2+3").toString());
+    assertEquals("1.2.3.4", new Version("1.2.3.4").toString());
   }
 
   @Test

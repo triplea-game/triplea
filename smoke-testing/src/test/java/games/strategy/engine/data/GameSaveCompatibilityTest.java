@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.triplea.config.product.ProductVersionReader;
 
 @SuppressWarnings("UnmatchedTest")
 class GameSaveCompatibilityTest {
@@ -22,9 +21,7 @@ class GameSaveCompatibilityTest {
   void loadSaveGames(final Path saveGame) throws Exception {
     final GameData gameData;
     try (InputStream inputStream = Files.newInputStream(saveGame)) {
-      gameData =
-          GameDataManager.loadGame(new ProductVersionReader().getVersion(), inputStream)
-              .orElseThrow();
+      gameData = GameDataManager.loadGame(inputStream).orElseThrow();
     }
 
     assertThat(gameData.getAttachmentOrderAndValues(), is(notNullValue()));

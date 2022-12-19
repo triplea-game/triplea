@@ -85,11 +85,11 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
   }
 
   public Stream<GamePlayer> stream() {
-    return getPlayers().stream();
+    return players.values().stream();
   }
 
   public Collection<String> getPlayersThatMayBeDisabled() {
-    return players.values().stream()
+    return stream()
         .filter(GamePlayer::getCanBeDisabled)
         .filter(p -> !p.getIsDisabled())
         .map(DefaultNamed::getName)

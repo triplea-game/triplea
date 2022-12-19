@@ -1,7 +1,7 @@
 plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'de.undercouch.download' version '5.1.0'
+    id 'de.undercouch.download' version '5.3.0'
 }
 
 archivesBaseName = "$group-$name"
@@ -9,12 +9,14 @@ description = 'TripleA Smoke Testing Application'
 mainClassName = 'org.triplea.test.smoke.ClientConnect'
 
 dependencies {
+    implementation project(':game-app:domain-data')
     implementation project(':game-app:game-core')
     implementation project(':http-clients:feign-common')
     implementation project(':http-clients:lobby-client')
     testImplementation project(':game-app:game-headless')
     testImplementation project(':lib:java-extras')
     testImplementation project(':lib:test-common')
+    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
 
 shadowJar {

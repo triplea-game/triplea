@@ -1,6 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import com.google.common.util.concurrent.Runnables;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -10,15 +9,14 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
-import org.triplea.java.concurrency.AsyncRunner;
-import org.triplea.java.concurrency.CountUpAndDownLatch;
-import org.triplea.util.Version;
 
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up
@@ -34,57 +32,54 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private volatile boolean isDataSet = false;
   // shortcut setting of previous game data if we are trying to set it to a new one, or shutdown
   private final AtomicInteger cancelCurrentOperation = new AtomicInteger(0);
-  // do not let calcing happen while we are setting game data
-  private final CountUpAndDownLatch latchSetData = new CountUpAndDownLatch();
   // do not let setting of game data happen multiple times while we offload creating workers and
-  // copying data to a
-  // different thread
-  private final CountUpAndDownLatch latchWorkerThreadsCreation = new CountUpAndDownLatch();
+  // copying data to a different thread
+  private CompletableFuture<Boolean> latchWorkerThreadsCreation =
+      CompletableFuture.completedFuture(false);
 
   // do not let setting of game data happen at same time
   private final Object mutexSetGameData = new Object();
   // do not let multiple calculations or setting calc data happen at same time
   private final Object mutexCalcIsRunning = new Object();
-  private final Runnable dataLoadedAction;
 
-  public ConcurrentBattleCalculator() {
-    this(Runnables.doNothing());
-  }
-
-  ConcurrentBattleCalculator(final Runnable dataLoadedAction) {
-    this.dataLoadedAction = dataLoadedAction;
-  }
-
-  public void setGameData(final GameData data) {
-    // increment so that a new calc doesn't take place (since they all wait on this latch)
-    latchSetData.increment();
+  /** Return value may be ignored. Exceptions are being handled properly. */
+  public CompletableFuture<Boolean> setGameData(@Nullable final GameData data) {
     // cancel any current setting of data
     cancelCurrentOperation.decrementAndGet();
     // cancel any existing calcing (it won't stop immediately, just quicker)
     cancel();
     synchronized (mutexSetGameData) {
+      waitForGameDataReady();
+      latchWorkerThreadsCreation =
+          CompletableFuture.supplyAsync(() -> setGameDataInternal(data))
+              .exceptionally(
+                  throwable -> {
+                    log.error("Error while trying to set GameData", throwable);
+                    return false;
+                  });
+      return latchWorkerThreadsCreation;
+    }
+  }
+
+  private boolean setGameDataInternal(@Nullable final GameData data) {
+    synchronized (mutexCalcIsRunning) {
+      cancel();
+      cancelCurrentOperation.incrementAndGet();
+      isDataSet = createWorkers(data);
+      return isDataSet;
+    }
+  }
+
+  private void waitForGameDataReady() {
+    synchronized (mutexSetGameData) {
       try {
         // since setting data takes place on a different thread, this is our token. wait on it since
-        latchWorkerThreadsCreation.await();
         // we could have exited the synchronized block already.
+        latchWorkerThreadsCreation.get();
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
-      }
-      cancel();
-      isDataSet = false;
-      if (data == null) {
-        workers.clear();
-        cancelCurrentOperation.incrementAndGet();
-        // allow calcing and other stuff to go ahead
-        latchSetData.countDown();
-      } else {
-        cancelCurrentOperation.incrementAndGet();
-        // increment our token, so that we can set the data in a different thread and return from
-        // this one
-        latchWorkerThreadsCreation.increment();
-        AsyncRunner.runAsync(() -> createWorkers(data))
-            .exceptionally(
-                throwable -> log.error("Error when trying to create Workers", throwable));
+      } catch (ExecutionException e) {
+        throw new IllegalStateException("CompletableFuture should handle all exceptions", e);
       }
     }
   }
@@ -115,63 +110,45 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     return Math.min(numberOfTimesWeCanCopyMax, MAX_THREADS);
   }
 
-  private void createWorkers(final GameData data) {
+  private boolean createWorkers(@Nullable final GameData data) {
     workers.clear();
     if (data != null && cancelCurrentOperation.get() >= 0) {
       // see how long 1 copy takes (some games can get REALLY big)
       final long startTime = System.currentTimeMillis();
       final long startMemory =
           Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-      final Version engineVersion = Injections.getInstance().getEngineVersion();
       final byte[] serializedData;
       try (GameData.Unlocker ignored = data.acquireWriteLock()) {
         // Serialize the data, then release lock on it so game can continue (ie: we don't want to
         // lock on it while we copy it 16 times).
         serializedData =
-            GameDataUtils.gameDataToBytes(
-                    data, GameDataManager.Options.forBattleCalculator(), engineVersion)
+            GameDataUtils.gameDataToBytes(data, GameDataManager.Options.forBattleCalculator())
                 .orElse(null);
         if (serializedData == null) {
-          return;
+          return false;
         }
       }
       if (cancelCurrentOperation.get() >= 0) {
         // Create the first battle calc on the current thread to measure the end-to-end copy time.
-        workers.add(new BattleCalculator(serializedData, engineVersion));
+        workers.add(new BattleCalculator(serializedData));
         int threadsToUse = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
         // Now, create the remaining ones in parallel.
         workers.addAll(
             IntStream.range(1, threadsToUse)
                 .parallel()
                 .filter(j -> cancelCurrentOperation.get() >= 0)
-                .mapToObj(j -> new BattleCalculator(serializedData, engineVersion))
+                .mapToObj(j -> new BattleCalculator(serializedData))
                 .collect(Collectors.toList()));
       }
     }
     if (cancelCurrentOperation.get() < 0 || data == null) {
       // we could have cancelled while setting data, so clear the workers again if so
       workers.clear();
-      isDataSet = false;
-    } else {
-      // should make sure that all workers have their game data set before
-      // we can call calculate and other things
-      isDataSet = true;
-      dataLoadedAction.run();
+      return false;
     }
-    // allow setting new data to take place if it is waiting on us
-    latchWorkerThreadsCreation.countDown();
-    // allow calcing and other stuff to go ahead
-    latchSetData.countDown();
-  }
-
-  private void awaitLatch() {
-    try {
-      // there is a small chance calculate or setCalculateData or something could be called in
-      // between calls to setGameData
-      latchSetData.await();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    // should make sure that all workers have their game data set before
+    // we can call calculate and other things
+    return true;
   }
 
   /**
@@ -190,8 +167,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final boolean retreatWhenOnlyAirLeft,
       final int runCount)
       throws IllegalStateException {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
-      awaitLatch();
       final long start = System.currentTimeMillis();
       if (!isDataSet) {
         // we could have attempted to set a new game data, while the old one was still being set,
@@ -223,8 +200,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setKeepOneAttackingLandUnit(final boolean bool) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
-      awaitLatch();
       for (final BattleCalculator worker : workers) {
         worker.setKeepOneAttackingLandUnit(bool);
       }
@@ -232,8 +209,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setAmphibious(final boolean bool) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
-      awaitLatch();
       for (final BattleCalculator worker : workers) {
         worker.setAmphibious(bool);
       }
@@ -241,8 +218,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setRetreatAfterRound(final int value) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
-      awaitLatch();
       for (final BattleCalculator worker : workers) {
         worker.setRetreatAfterRound(value);
       }
@@ -250,8 +227,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setRetreatAfterXUnitsLeft(final int value) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
-      awaitLatch();
       for (final BattleCalculator worker : workers) {
         worker.setRetreatAfterXUnitsLeft(value);
       }
@@ -259,8 +236,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
-      awaitLatch();
       for (final BattleCalculator worker : workers) {
         worker.setAttackerOrderOfLosses(attackerOrderOfLosses);
       }
@@ -268,8 +245,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
+    waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
-      awaitLatch();
       for (final BattleCalculator worker : workers) {
         worker.setDefenderOrderOfLosses(defenderOrderOfLosses);
       }

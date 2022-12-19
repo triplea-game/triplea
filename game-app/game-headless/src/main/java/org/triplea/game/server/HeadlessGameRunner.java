@@ -11,12 +11,14 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
-import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.triplea.settings.ClientSetting;
+import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
-import org.triplea.injection.Injections;
+import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.util.ExitStatus;
 
 /** Runs a headless game server. */
@@ -30,11 +32,23 @@ public final class HeadlessGameRunner {
    * shut down via administrative command.
    */
   public static void main(final String[] args) {
-    Injections.init(constructInjections());
+    final Locale defaultLocale = Locale.getDefault();
+    if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
+      Locale.setDefault(Locale.US);
+    }
     ClientSetting.initialize();
     System.setProperty(LOBBY_GAME_COMMENTS, GameRunner.BOT_GAME_HOST_COMMENT);
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     System.setProperty(TRIPLEA_SERVER, "true");
+
+    LobbyHttpClientConfig.setConfig(
+        LobbyHttpClientConfig.builder()
+            .systemId(SystemIdLoader.load().getValue())
+            .clientVersion(
+                ProductVersionReader.getCurrentVersion().getMajor()
+                    + "."
+                    + ProductVersionReader.getCurrentVersion().getMinor())
+            .build());
 
     ArgParser.handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
@@ -117,12 +131,5 @@ public final class HeadlessGameRunner {
             + MAP_FOLDER
             + "=<MAP_FOLDER>"
             + "\n");
-  }
-
-  private static Injections constructInjections() {
-    return Injections.builder()
-        .engineVersion(new ProductVersionReader().getVersion())
-        .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
-        .build();
   }
 }

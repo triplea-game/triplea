@@ -8,6 +8,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.ResourceLoader;
 import java.nio.file.Path;
 import javax.annotation.Nullable;
 import org.triplea.sound.ISound;
@@ -49,4 +50,10 @@ public interface IGame {
 
   /** Save the game to the given directory. The file should exist and be writeable. */
   void saveGame(Path f);
+
+  /** Returns the {@link ResourceLoader} for the current game instance. */
+  ResourceLoader getResourceLoader();
+
+  /** Sets the {@link ResourceLoader} for the current game instance. */
+  void setResourceLoader(ResourceLoader resourceLoader);
 }

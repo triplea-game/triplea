@@ -11,21 +11,21 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import lombok.Setter;
-import org.triplea.util.Version;
 
 class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
+  // Use a single TuvCostsCalculator so its computations are cached.
+  private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
   @Setter private boolean keepOneAttackingLandUnit = false;
   @Setter private boolean amphibious = false;
   @Setter private int retreatAfterRound = -1;
@@ -35,19 +35,14 @@ class BattleCalculator implements IBattleCalculator {
   private volatile boolean cancelled = false;
   private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-  private BattleCalculator(@Nullable GameData data) {
-    gameData = Preconditions.checkNotNull(data, "Error cloning game data (low memory?)");
+  BattleCalculator(GameData data) {
+    gameData =
+        GameDataUtils.cloneGameData(data, GameDataManager.Options.forBattleCalculator())
+            .orElseThrow();
   }
 
-  BattleCalculator(GameData data, Version engineVersion) {
-    this(
-        GameDataUtils.cloneGameData(
-                data, GameDataManager.Options.forBattleCalculator(), engineVersion)
-            .orElse(null));
-  }
-
-  BattleCalculator(byte[] data, Version engineVersion) {
-    this(GameDataUtils.createGameDataFromBytes(data, engineVersion).orElse(null));
+  BattleCalculator(byte[] data) {
+    gameData = GameDataUtils.createGameDataFromBytes(data).orElseThrow();
   }
 
   @Override
@@ -95,7 +90,7 @@ class BattleCalculator implements IBattleCalculator {
               this.defenderOrderOfLosses, defendingUnits, gameData);
       for (int i = 0; i < runCount && !cancelled; i++) {
         final CompositeChange allChanges = new CompositeChange();
-        final DummyDelegateBridge bridge1 =
+        final DummyDelegateBridge bridge =
             new DummyDelegateBridge(
                 attacker2,
                 gameData,
@@ -105,8 +100,8 @@ class BattleCalculator implements IBattleCalculator {
                 keepOneAttackingLandUnit,
                 retreatAfterRound,
                 retreatAfterXUnitsLeft,
-                retreatWhenOnlyAirLeft);
-        final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
+                retreatWhenOnlyAirLeft,
+                tuvCalculator);
         final MustFightBattle battle =
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);
@@ -125,7 +120,7 @@ class BattleCalculator implements IBattleCalculator {
         }
         battle.setUnits(
             defendingUnits, attackingUnits, bombardingUnits, defender2, territoryEffects2);
-        bridge1.setBattle(battle);
+        bridge.setBattle(battle);
         battle.fight(bridge);
         aggregateResults.addResult(new BattleResults(battle, gameData));
         // restore the game to its original state

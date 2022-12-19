@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro;
 
+import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
 import static java.util.function.Predicate.not;
 
 import com.google.common.base.Preconditions;
@@ -881,7 +882,7 @@ class ProNonCombatMoveAi {
         for (final Unit transport : transportDefendOptions.keySet()) {
           // Find current naval defense that needs transport if it isn't transporting units
           for (final Territory t : transportDefendOptions.get(transport)) {
-            if (!transport.isTransporting()) {
+            if (!transport.isTransporting(proData.getUnitTerritory(transport))) {
               final ProTerritory proTerritory = moveMap.get(t);
               proTerritory.setBattleResultIfNull(
                   () ->
@@ -1261,6 +1262,7 @@ class ProNonCombatMoveAi {
                 ProTransportUtils.getUnitsToTransportThatCantMoveToHigherValue(
                     player,
                     transport,
+                    proData,
                     territoriesCanLoadFrom,
                     alreadyMovedUnits,
                     moveMap,
@@ -1331,6 +1333,7 @@ class ProNonCombatMoveAi {
                 ProTransportUtils.getUnitsToTransportThatCantMoveToHigherValue(
                     player,
                     transport,
+                    proData,
                     territoriesCanLoadFrom,
                     alreadyMovedUnits,
                     moveMap,
@@ -1402,7 +1405,7 @@ class ProNonCombatMoveAi {
         final Unit transport = it.next();
         final Territory currentTerritory = unitTerritoryMap.get(transport);
         final int moves = transport.getMovementLeft().intValue();
-        if (transport.isTransporting() || moves <= 0) {
+        if (transport.isTransporting(currentTerritory) || moves <= 0) {
           continue;
         }
         final List<ProTerritory> priorizitedLoadTerritories = new ArrayList<>();
@@ -1572,10 +1575,10 @@ class ProNonCombatMoveAi {
             // Find best unload territory
             Territory unloadToTerritory =
                 possibleUnloadTerritories.stream()
-                    .filter(t -> moveMap.get(t).isCanHold())
+                    .filter(t -> moveMap.get(t) != null && moveMap.get(t).isCanHold())
                     .findAny()
                     .orElse(CollectionUtils.getAny(possibleUnloadTerritories));
-            proDestination = moveMap.get(unloadToTerritory);
+            proDestination = proData.getProTerritory(moveMap, unloadToTerritory);
             ProLogger.trace(
                 String.format(
                     "%s moved to safest territory at %s and unloading to %s with %s, "
@@ -1586,8 +1589,8 @@ class ProNonCombatMoveAi {
                     amphibUnits,
                     minStrengthDifference));
           } else {
-            proDestination = moveMap.get(minTerritory);
             // Move transport with units since no unload options
+            proDestination = proData.getProTerritory(moveMap, minTerritory);
             ProLogger.trace(
                 String.format(
                     "%s moved to safest territory at %s with %s, strengthDifference=%s",
@@ -1790,8 +1793,8 @@ class ProNonCombatMoveAi {
                   t,
                   holdValue,
                   minResult.getTuvSwing(),
-                  defendingUnits,
-                  proTerritory.getMaxEnemyUnits()));
+                  summarizeUnits(defendingUnits),
+                  summarizeUnits(proTerritory.getMaxEnemyUnits())));
         }
         ProLogger.trace(
             String.format(
@@ -2404,22 +2407,20 @@ class ProNonCombatMoveAi {
     bfs.traverse(
         new BreadthFirstSearch.Visitor() {
           @Override
-          public void visit(final Territory t) {
+          public boolean visit(Territory t, int distance) {
             // If it's a desired final destination, see if we can move towards it.
-            if (destination.getValue() == null && finalDestinationTest.test(t)) {
+            if (finalDestinationTest.test(t)) {
               Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
               while (r != null && r.hasSteps()) {
                 if (moveMap.get(r.getEnd()).isCanHold() && validateMove.test(r)) {
                   destination.setValue(r.getEnd());
-                  break;
+                  // End the search.
+                  return false;
                 }
                 r = new Route(from, r.getMiddleSteps());
               }
             }
-          }
-
-          public boolean shouldContinueSearch(final int distanceSearched) {
-            return destination.getValue() == null;
+            return true;
           }
         });
     // If nothing chosen and we can't hold the current territory, try to move somewhere safe.

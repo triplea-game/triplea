@@ -2,6 +2,7 @@ package games.strategy.engine.data.gameparser;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.EngineVersionException;
@@ -9,7 +10,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
-import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
@@ -39,7 +39,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +49,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
-import org.triplea.injection.Injections;
 import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
 import org.triplea.map.data.elements.AttachmentList;
@@ -79,13 +78,13 @@ public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
   @Nonnull private final GameData data;
-  private final String xmlUri;
+  private final Path xmlUri;
   private final XmlGameElementMapper xmlGameElementMapper;
-  private final GameDataVariableParser variableParser = new GameDataVariableParser();
+  private GameDataVariables variables;
   private final Version engineVersion;
 
   private GameParser(
-      final String xmlUri,
+      final Path xmlUri,
       final XmlGameElementMapper xmlGameElementMapper,
       final Version engineVersion) {
     data = new GameData();
@@ -105,7 +104,7 @@ public final class GameParser {
     log.debug("Parsing game XML: {}", xmlFile.toAbsolutePath());
     final Optional<GameData> gameData =
         GameParser.parse(
-            xmlFile, new XmlGameElementMapper(), Injections.getInstance().getEngineVersion());
+            xmlFile, new XmlGameElementMapper(), ProductVersionReader.getCurrentVersion());
 
     // if parsed, find the 'map.yml' from a parent folder and set the 'mapName' property
     // using the 'map name' from 'map.yml'
@@ -131,9 +130,8 @@ public final class GameParser {
         xmlFile.toUri(),
         inputStream -> {
           try {
-            return new GameParser(xmlFile.toString(), xmlGameElementMapper, engineVersion)
+            return new GameParser(xmlFile, xmlGameElementMapper, engineVersion)
                 .parse(xmlFile, inputStream);
-
           } catch (final EngineVersionException e) {
             log.warn("Game engine not compatible with: " + xmlFile, e);
             return null;
@@ -147,7 +145,6 @@ public final class GameParser {
   @Nonnull
   private GameData parse(final Path xmlFile, final InputStream stream)
       throws XmlParsingException, GameParseException, EngineVersionException {
-
     final Game game = new XmlMapper(stream).mapXmlToObject(Game.class);
 
     // test minimum engine version first
@@ -182,6 +179,7 @@ public final class GameParser {
 
     parseDelegates(game.getGamePlay().getDelegates());
 
+    variables = GameDataVariables.parse(game.getVariableList());
     parseSteps(game.getGamePlay().getSequence().getSteps());
 
     Optional.ofNullable(game.getGamePlay().getOffset()).ifPresent(this::parseOffset);
@@ -202,11 +200,7 @@ public final class GameParser {
       TechAdvance.createDefaultTechAdvances(data);
     }
 
-    if (game.getAttachmentList() != null) {
-      final Map<String, List<String>> variables =
-          variableParser.parseVariables(game.getVariableList());
-      parseAttachments(game.getAttachmentList(), variables);
-    }
+    parseAttachments(game.getAttachmentList());
 
     if (game.getInitialize() != null) {
 
@@ -335,14 +329,10 @@ public final class GameParser {
 
   private void parseTerritories(
       final List<org.triplea.map.data.elements.Map.Territory> territories) {
-    territories.forEach(
-        current ->
-            data.getMap()
-                .addTerritory(
-                    new Territory(
-                        current.getName(),
-                        Optional.ofNullable(current.getWater()).orElse(false),
-                        data)));
+    for (final org.triplea.map.data.elements.Map.Territory current : territories) {
+      boolean isWater = Optional.ofNullable(current.getWater()).orElse(false);
+      data.getMap().addTerritory(new Territory(current.getName(), isWater, data));
+    }
   }
 
   private void parseConnections(
@@ -591,12 +581,12 @@ public final class GameParser {
     }
   }
 
-  private static Properties parseStepProperties(
+  private Properties parseStepProperties(
       final List<GamePlay.Sequence.Step.StepProperty> properties) {
     final Properties stepProperties = new Properties();
-    properties.forEach(
-        stepProperty ->
-            stepProperties.setProperty(stepProperty.getName(), stepProperty.getValue()));
+    for (final GamePlay.Sequence.Step.StepProperty p : properties) {
+      stepProperties.setProperty(p.getName(), p.getValue());
+    }
     return stepProperties;
   }
 
@@ -810,68 +800,28 @@ public final class GameParser {
     }
   }
 
-  private void parseAttachments(
-      final AttachmentList root, final Map<String, List<String>> variables)
-      throws GameParseException {
+  private void parseAttachments(final AttachmentList root) throws GameParseException {
     for (final AttachmentList.Attachment current : root.getAttachments()) {
       final String foreach = current.getForeach();
       if (foreach == null || foreach.isBlank()) {
-        parseAttachment(current, variables, Map.of());
+        parseAttachment(current, Map.of());
       } else {
-        final List<String> nestedForeach = Splitter.on("^").splitToList(foreach);
-        if (nestedForeach.isEmpty() || nestedForeach.size() > 2) {
-          throw new GameParseException(
-              "Invalid foreach expression, can only use variables, ':', and at most 1 '^': "
-                  + foreach);
-        }
-        final List<String> foreachVariables1 = Splitter.on(":").splitToList(nestedForeach.get(0));
-        final List<String> foreachVariables2 =
-            nestedForeach.size() == 2
-                ? Splitter.on(":").splitToList(nestedForeach.get(1))
-                : List.of();
-        GameParsingValidation.validateForeachVariables(foreachVariables1, variables, foreach);
-        GameParsingValidation.validateForeachVariables(foreachVariables2, variables, foreach);
-        final int length1 = variables.get(foreachVariables1.get(0)).size();
-        for (int i = 0; i < length1; i++) {
-          final Map<String, String> foreachMap1 =
-              createForeachVariablesMap(foreachVariables1, i, variables);
-          if (foreachVariables2.isEmpty()) {
-            parseAttachment(current, variables, foreachMap1);
-          } else {
-            final int length2 = variables.get(foreachVariables2.get(0)).size();
-            for (int j = 0; j < length2; j++) {
-              final Map<String, String> foreachMap2 =
-                  createForeachVariablesMap(foreachVariables2, j, variables);
-              foreachMap2.putAll(foreachMap1);
-              parseAttachment(current, variables, foreachMap2);
-            }
-          }
+        final List<Map<String, String>> combinations =
+            variables.expandVariableCombinations(foreach);
+        for (Map<String, String> foreachMap : combinations) {
+          parseAttachment(current, foreachMap);
         }
       }
     }
   }
 
-  private static Map<String, String> createForeachVariablesMap(
-      final List<String> foreachVariables,
-      final int currentIndex,
-      final Map<String, List<String>> variables) {
-    final Map<String, String> foreachMap = new HashMap<>();
-    for (final String foreachVariable : foreachVariables) {
-      final List<String> foreachValue = variables.get(foreachVariable);
-      foreachMap.put("@" + foreachVariable.replace("$", "") + "@", foreachValue.get(currentIndex));
-    }
-    return foreachMap;
-  }
-
   private void parseAttachment(
-      final AttachmentList.Attachment current,
-      final Map<String, List<String>> variables,
-      final Map<String, String> foreach)
+      final AttachmentList.Attachment current, final Map<String, String> foreach)
       throws GameParseException {
     final String className = current.getJavaClass();
     final Attachable attachable =
         findAttachment(current, Optional.ofNullable(current.getType()).orElse("unitType"), foreach);
-    String name = replaceForeachVariables(current.getName(), foreach);
+    String name = variables.replaceForeachVariables(current.getName(), foreach);
     // Only replace if needed, as replaceAll() can be slow.
     if (name.contains("ttatchment")) {
       name = name.replaceAll("ttatchment", "ttachment");
@@ -887,7 +837,7 @@ public final class GameParser {
     attachable.addAttachment(name, attachment);
 
     final List<Tuple<String, String>> attachmentOptionValues =
-        setOptions(attachment, current.getOptions(), foreach, variables);
+        setOptions(attachment, current.getOptions(), foreach);
     // keep a list of attachment references in the order they were added
     data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));
   }
@@ -895,7 +845,7 @@ public final class GameParser {
   private Attachable findAttachment(
       final AttachmentList.Attachment element, final String type, final Map<String, String> foreach)
       throws GameParseException {
-    final String attachTo = replaceForeachVariables(element.getAttachTo(), foreach);
+    final String attachTo = variables.replaceForeachVariables(element.getAttachTo(), foreach);
     switch (type) {
       case "unitType":
         return getUnitType(attachTo);
@@ -919,36 +869,37 @@ public final class GameParser {
   private List<Tuple<String, String>> setOptions(
       final IAttachment attachment,
       final List<AttachmentList.Attachment.Option> options,
-      final Map<String, String> foreach,
-      final Map<String, List<String>> variables)
+      final Map<String, String> foreach)
       throws GameParseException {
     final List<Tuple<String, String>> results = new ArrayList<>();
-    final Map<String, MutableProperty<?>> propertyMap = attachment.getPropertyMap();
     for (final AttachmentList.Attachment.Option option : options) {
-      if (option.getName() == null || option.getValue() == null) {
+      final String optionName = option.getName();
+      final String value = option.getValue();
+      if (optionName == null || value == null) {
         continue;
       }
       // decapitalize the property name for backwards compatibility
-      final String name = LegacyPropertyMapper.mapLegacyOptionName(decapitalize(option.getName()));
-
+      final String name =
+          LegacyPropertyMapper.mapLegacyOptionName(decapitalize(optionName)).intern();
       if (name.isEmpty()) {
         throw new GameParseException(
             "Option name with zero length for attachment: " + attachment.getName());
       }
-      final String value = option.getValue();
-      final String count = option.getCount();
       if (LegacyPropertyMapper.ignoreOptionName(name, value)) {
         continue;
       }
-      final String countAndValue = (count != null && !count.isEmpty() ? count + ":" : "") + value;
+      final String count = option.getCount();
+      final String countAndValue = Strings.isNullOrEmpty(count) ? value : (count + ":" + value);
       if (containsEmptyForeachVariable(countAndValue, foreach)) {
         continue; // Skip adding option if contains empty foreach variable
       }
-      final String valueWithForeach = replaceForeachVariables(countAndValue, foreach);
-      final String interpolatedValue = replaceVariables(valueWithForeach, variables);
-      final String finalValue = LegacyPropertyMapper.mapLegacyOptionValue(name, interpolatedValue);
+      final String valueWithForeach = variables.replaceForeachVariables(countAndValue, foreach);
+      final String interpolatedValue = variables.replaceVariables(valueWithForeach);
+      final String finalValue =
+          LegacyPropertyMapper.mapLegacyOptionValue(name, interpolatedValue).intern();
       try {
-        Optional.ofNullable(propertyMap.get(name))
+        attachment
+            .getProperty(name)
             .orElseThrow(
                 () ->
                     new GameParseException(
@@ -965,17 +916,9 @@ public final class GameParser {
                 xmlUri, attachment, e.getMessage()),
             e);
       }
-      results.add(Tuple.of(name.intern(), finalValue.intern()));
+      results.add(Tuple.of(name, finalValue));
     }
     return results;
-  }
-
-  private String replaceForeachVariables(final String s, final Map<String, String> foreach) {
-    String result = s;
-    for (final Entry<String, String> entry : foreach.entrySet()) {
-      result = result.replace(entry.getKey(), Optional.ofNullable(entry.getValue()).orElse(""));
-    }
-    return result;
   }
 
   private boolean containsEmptyForeachVariable(final String s, final Map<String, String> foreach) {
@@ -985,17 +928,6 @@ public final class GameParser {
       }
     }
     return false;
-  }
-
-  private String replaceVariables(final String s, final Map<String, List<String>> variables) {
-    String result = s;
-    for (final Entry<String, List<String>> entry : variables.entrySet()) {
-      // Avoid doing the expensive String.join() if there's nothing to replace.
-      if (result.contains(entry.getKey())) {
-        result = result.replace(entry.getKey(), String.join(":", entry.getValue()));
-      }
-    }
-    return result;
   }
 
   @VisibleForTesting
@@ -1035,7 +967,7 @@ public final class GameParser {
       } else {
         owner = getPlayerIdOptional(current.getOwner()).orElse(null);
       }
-      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
+      final int quantity = current.getQuantity();
       territory.getUnitCollection().addAll(type.create(quantity, owner, false, hits, unitDamage));
     }
   }

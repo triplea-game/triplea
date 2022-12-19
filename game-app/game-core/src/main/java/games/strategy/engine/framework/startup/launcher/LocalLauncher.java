@@ -24,7 +24,6 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 
@@ -135,6 +134,6 @@ public class LocalLauncher implements ILauncher {
         playerListing,
         parent,
         launchAction,
-        new PlayerTypes(Injections.getInstance().getPlayerTypes()));
+        new PlayerTypes(launchAction.getPlayerTypes()));
   }
 }

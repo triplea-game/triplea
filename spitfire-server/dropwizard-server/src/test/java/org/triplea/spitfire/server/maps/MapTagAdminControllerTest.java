@@ -23,15 +23,15 @@ class MapTagAdminControllerTest extends ControllerIntegrationTest {
 
   MapTagAdminControllerTest(final URI localhost) {
     this.localhost = localhost;
-    this.client = new MapTagAdminClient(localhost, ControllerIntegrationTest.MODERATOR);
+    this.client = MapTagAdminClient.newClient(localhost, ControllerIntegrationTest.MODERATOR);
   }
 
   @Test
   void requiresAuthentication() {
     assertNotAuthorized(
         ControllerIntegrationTest.NOT_MODERATORS,
-        apiKey -> new MapTagAdminClient(localhost, apiKey),
-        MapTagAdminClient::fetchTagsMetaData,
+        apiKey -> MapTagAdminClient.newClient(localhost, apiKey),
+        MapTagAdminClient::fetchAllowedMapTagValues,
         client ->
             client.updateMapTag(
                 UpdateMapTagRequest.builder()
@@ -43,7 +43,7 @@ class MapTagAdminControllerTest extends ControllerIntegrationTest {
 
   @Test
   void fetchMapTagMetaData() {
-    final List<MapTagMetaData> mapTagMetaData = client.fetchTagsMetaData();
+    final List<MapTagMetaData> mapTagMetaData = client.fetchAllowedMapTagValues();
 
     assertThat(mapTagMetaData, hasSize(2));
     for (final MapTagMetaData item : mapTagMetaData) {
@@ -85,7 +85,7 @@ class MapTagAdminControllerTest extends ControllerIntegrationTest {
   @SuppressWarnings("SameParameterValue")
   private String getMapTagValue(final String mapName, final String tagName) {
     // Get all maps listing
-    final var mapListing = new MapsClient(localhost).fetchMapDownloads();
+    final var mapListing = MapsClient.newClient(localhost).fetchMapListing();
 
     // find specific map from listing
     final var map =

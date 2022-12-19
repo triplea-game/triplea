@@ -1,7 +1,10 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.triplea.ResourceLoader;
+import java.util.Properties;
+
 /** Same as PoliticsText but for user actions. */
-public class UserActionText extends PropertyFile {
+public class UserActionText {
   // Filename
   private static final String PROPERTY_FILE = "actionstext.properties";
   private static final String BUTTON = "BUTTON";
@@ -13,13 +16,10 @@ public class UserActionText extends PropertyFile {
   private static final String TARGET_NOTIFICATION_FAILURE = "TARGET_NOTIFICATION_FAILURE";
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
+  private final Properties properties;
 
-  private UserActionText() {
-    super(PROPERTY_FILE);
-  }
-
-  public static UserActionText getInstance() {
-    return PropertyFile.getInstance(UserActionText.class, UserActionText::new);
+  public UserActionText(final ResourceLoader resourceLoader) {
+    properties = resourceLoader.loadPropertyFile(PROPERTY_FILE);
   }
 
   private String getString(final String value) {

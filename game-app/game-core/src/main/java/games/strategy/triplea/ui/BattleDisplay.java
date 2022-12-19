@@ -10,9 +10,9 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -477,7 +477,7 @@ public class BattleDisplay extends JPanel {
 
     SwingUtilities.invokeLater(
         () -> {
-          final boolean isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
+          final boolean isEditMode = EditDelegate.getEditMode(gameData.getProperties());
           if (!isEditMode) {
             dicePanel.setDiceRoll(dice);
             casualties.setVisible(false);
@@ -792,7 +792,8 @@ public class BattleDisplay extends JPanel {
         // Add a tooltip, with a count of 1 so that the tooltip doesn't have a number label (so it
         // won't get out of date
         // when units are killed.)
-        MapUnitTooltipManager.setUnitTooltip(unit, category.getType(), category.getOwner(), 1);
+        MapUnitTooltipManager.setUnitTooltip(
+            unit, category.getType(), category.getOwner(), 1, uiContext);
         for (final UnitOwner owner : category.getDependents()) {
           unit.add(uiContext.newUnitImageLabel(owner.getType(), owner.getOwner()));
         }

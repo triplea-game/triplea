@@ -16,12 +16,12 @@ import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
-import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.Util;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,7 +37,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import lombok.Getter;
-import org.triplea.injection.Injections;
 import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
 import org.triplea.java.ObjectUtils;
@@ -127,8 +126,7 @@ public class GameData implements Serializable, GameState {
    */
   public byte[] toBytes() {
     try {
-      return IoUtils.writeToMemory(
-          os -> GameDataManager.saveGame(os, this, Injections.getInstance().getEngineVersion()));
+      return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, this));
     } catch (final IOException e) {
       throw new RuntimeException("Failed to write game data to bytes", e);
     }
@@ -358,6 +356,15 @@ public class GameData implements Serializable, GameState {
 
   public void resetHistory() {
     gameHistory = new History(this);
+    GameStep step = getSequence().getStep();
+    // Put the history in a round and step, so that child nodes can be added without errors.
+    final boolean oldForceInSwingEventThread = forceInSwingEventThread;
+    forceInSwingEventThread = false;
+    gameHistory
+        .getHistoryWriter()
+        .startNextStep(
+            step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
+    forceInSwingEventThread = oldForceInSwingEventThread;
   }
 
   /** Not to be called by mere mortals. */
@@ -580,18 +587,17 @@ public class GameData implements Serializable, GameState {
    * Reads the game notes from the game-notes file and returns that text with an auto-generated
    * header. Returns empty if the 'map.yml' or game notes file cannot be found.
    */
-  public String loadGameNotes() {
+  public String loadGameNotes(final Path mapLocation) {
     // Given a game name, the map.yml file can tell us the path to the game xml file.
     // From the game-xml file name, we can find the game-notes file.
-    return findMapDescriptionYaml()
+    return findMapDescriptionYaml(mapLocation)
         .flatMap(yaml -> yaml.getGameXmlPathByGameName(getGameName()))
         .map(GameNotes::loadGameNotes)
         .orElse("");
   }
 
-  private Optional<MapDescriptionYaml> findMapDescriptionYaml() {
-    return FileUtils.findFileInParentFolders(
-            UiContext.getMapLocation(), MapDescriptionYaml.MAP_YAML_FILE_NAME)
+  private Optional<MapDescriptionYaml> findMapDescriptionYaml(final Path mapLocation) {
+    return FileUtils.findFileInParentFolders(mapLocation, MapDescriptionYaml.MAP_YAML_FILE_NAME)
         .flatMap(MapDescriptionYaml::fromFile);
   }
 }

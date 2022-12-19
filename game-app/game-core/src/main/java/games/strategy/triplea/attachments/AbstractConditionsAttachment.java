@@ -4,19 +4,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 /**
@@ -36,6 +34,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
   protected static final String AND = "AND";
   protected static final String OR = "OR";
+  private static final Pattern CONDITION_REGEX = Pattern.compile("AND|OR|\\d+(?:-\\d+)?");
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
   private static final long serialVersionUID = -9008441256118867078L;
@@ -64,13 +63,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (this.conditions == null) {
       this.conditions = new ArrayList<>();
     }
-    final Collection<GamePlayer> gamePlayers = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
       if (subString.isBlank()) {
         continue;
       }
       this.conditions.add(
-          gamePlayers.stream()
+          getData().getPlayerList().stream()
               .map(p -> p.getAttachment(subString))
               .map(RulesAttachment.class::cast)
               .filter(Objects::nonNull)
@@ -110,7 +108,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   @VisibleForTesting
   void setConditionType(final String value) throws GameParseException {
     final String uppercaseValue = value.toUpperCase();
-    if (uppercaseValue.matches("AND|OR|\\d+(?:-\\d+)?")) {
+    if (CONDITION_REGEX.matcher(uppercaseValue).matches()) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
         conditionType = uppercaseValue.intern();
@@ -378,39 +376,33 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put(
-            "conditions",
-            MutableProperty.of(
-                this::setConditions,
-                this::setConditions,
-                this::getConditions,
-                this::resetConditions))
-        .put(
-            "conditionType",
-            MutableProperty.ofString(
-                this::setConditionType, this::getConditionType, this::resetConditionType))
-        .put(
-            "invert",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false))
-        .put(
-            "chance", MutableProperty.ofString(this::setChance, this::getChance, this::resetChance))
-        .put(
-            "chanceIncrementOnFailure",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setChanceIncrementOnFailure,
-                this::getChanceIncrementOnFailure,
-                () -> 0))
-        .put(
-            "chanceDecrementOnSuccess",
-            MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setChanceDecrementOnSuccess,
-                this::getChanceDecrementOnSuccess,
-                () -> 0))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "conditions":
+        return MutableProperty.of(
+            this::setConditions, this::setConditions, this::getConditions, this::resetConditions);
+      case "conditionType":
+        return MutableProperty.ofString(
+            this::setConditionType, this::getConditionType, this::resetConditionType);
+      case "invert":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false);
+      case "chance":
+        return MutableProperty.ofString(this::setChance, this::getChance, this::resetChance);
+      case "chanceIncrementOnFailure":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt,
+            this::setChanceIncrementOnFailure,
+            this::getChanceIncrementOnFailure,
+            () -> 0);
+      case "chanceDecrementOnSuccess":
+        return MutableProperty.ofMapper(
+            DefaultAttachment::getInt,
+            this::setChanceDecrementOnSuccess,
+            this::getChanceDecrementOnSuccess,
+            () -> 0);
+      default:
+        return null;
+    }
   }
 }

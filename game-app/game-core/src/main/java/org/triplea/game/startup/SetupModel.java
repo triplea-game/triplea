@@ -2,9 +2,12 @@ package org.triplea.game.startup;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
+import java.util.Map;
 import java.util.Optional;
 import org.triplea.game.chat.ChatModel;
 
@@ -44,5 +47,18 @@ public interface SetupModel {
     properties.set(IEmailSender.SUBJECT, null);
     properties.set(IEmailSender.RECIPIENTS, null);
     properties.set(IEmailSender.POST_AFTER_COMBAT, null);
+  }
+
+  /** Helper method to be used by implementations to avoid duplicated code. */
+  static boolean staticCanGameStart(GameSelectorModel gameSelectorModel, ServerModel model) {
+    if (gameSelectorModel.getGameData() == null) {
+      return false;
+    }
+    final Map<String, String> players = model.getPlayersToNodeListing();
+    if (players.isEmpty() || players.containsValue(null)) {
+      return false;
+    }
+    // make sure at least 1 player is enabled
+    return model.getPlayersEnabledListing().containsValue(Boolean.TRUE);
   }
 }

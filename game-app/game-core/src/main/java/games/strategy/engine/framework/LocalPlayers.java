@@ -2,7 +2,6 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.player.Player;
-import games.strategy.triplea.player.AbstractHumanPlayer;
 import java.util.Collections;
 import java.util.Set;
 
@@ -30,7 +29,6 @@ public class LocalPlayers {
 
   private static boolean isGamePlayerWithPlayerId(
       final Player player, final GamePlayer gamePlayer) {
-    return player.getGamePlayer().equals(gamePlayer)
-        && AbstractHumanPlayer.class.isAssignableFrom(player.getClass());
+    return player.getGamePlayer().equals(gamePlayer) && !player.isAi();
   }
 }

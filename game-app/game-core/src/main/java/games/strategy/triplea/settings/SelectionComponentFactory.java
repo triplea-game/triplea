@@ -421,14 +421,12 @@ final class SelectionComponentFactory {
     final JTextField uriField = new JTextFieldBuilder().build();
 
     final JRadioButton production = new JRadioButton("Production (default)");
-    final JRadioButton prerelease = new JRadioButton("PreRelease");
     final ActionListener disableCustomField =
         e -> {
           uriField.setText("");
           uriField.setEnabled(false);
         };
     production.addActionListener(disableCustomField);
-    prerelease.addActionListener(disableCustomField);
 
     final JRadioButton custom = new JRadioButton("Custom");
     custom.addActionListener(e -> uriField.setEnabled(true));
@@ -436,9 +434,7 @@ final class SelectionComponentFactory {
     // set radio button selections
     production.setSelected(
         ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRODUCTION_URI));
-    prerelease.setSelected(
-        ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRE_RELEASE_URI));
-    custom.setSelected(!prerelease.isSelected() && !production.isSelected());
+    custom.setSelected(!production.isSelected());
 
     uriField.setEnabled(custom.isSelected());
     uriField.setText(
@@ -446,13 +442,12 @@ final class SelectionComponentFactory {
 
     final ButtonGroup buttonGroup = new ButtonGroup();
     buttonGroup.add(production);
-    buttonGroup.add(prerelease);
     buttonGroup.add(custom);
 
     final var selectionPanel =
         new JPanelBuilder()
             .boxLayoutVertical()
-            .add(new JPanelBuilder().add(production).add(prerelease).add(custom).build())
+            .add(new JPanelBuilder().add(production).add(custom).build())
             .add(uriField)
             .build();
 
@@ -476,8 +471,6 @@ final class SelectionComponentFactory {
           } catch (final URISyntaxException e) {
             showInvalidUriError(e.getMessage(), uriField.getText());
           }
-        } else if (prerelease.isSelected()) {
-          context.setValue(ClientSetting.diceRollerUri, DiceServerEditor.PRE_RELEASE_URI);
         } else {
           context.setValue(ClientSetting.diceRollerUri, DiceServerEditor.PRODUCTION_URI);
         }
@@ -499,9 +492,7 @@ final class SelectionComponentFactory {
       public void reset() {
         production.setSelected(
             ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRODUCTION_URI));
-        prerelease.setSelected(
-            ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRE_RELEASE_URI));
-        custom.setSelected(!prerelease.isSelected() && !production.isSelected());
+        custom.setSelected(!production.isSelected());
       }
     };
   }

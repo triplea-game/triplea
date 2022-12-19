@@ -1,8 +1,8 @@
 plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'com.install4j.gradle' version '9.0.7'
-    id 'de.undercouch.download' version '5.1.0'
+    id 'com.install4j.gradle' version '10.0.4'
+    id 'de.undercouch.download' version '5.3.0'
 }
 
 archivesBaseName = "$group-$name"
@@ -10,17 +10,21 @@ mainClassName = 'org.triplea.game.client.HeadedGameRunner'
 
 ext {
     releasesDir = file("$buildDir/releases")
+    releaseVersion = getProductVersion() + "+" + getCommitNumber()
 }
 
 dependencies {
+    implementation "io.github.openfeign:feign-gson:$openFeignVersion"
     implementation "org.pushing-pixels:radiance-substance:$substanceVersion"
     implementation project(":game-app:ai")
     implementation project(":game-app:domain-data")
     implementation project(":game-app:game-core")
     implementation project(":game-app:map-data")
+    implementation project(":http-clients:feign-common")
     implementation project(":http-clients:lobby-client")
     implementation project(":lib:java-extras")
     implementation project(":lib:swing-lib")
+    implementation project(":lib:websocket-client")
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testImplementation project(":lib:test-common")
 }
@@ -45,7 +49,7 @@ clean.doFirst {
 task downloadAssets {
     doLast {
         download.run {
-            src "https://github.com/triplea-game/assets/releases/download/46/game_headed_assets.zip"
+            src "https://github.com/triplea-game/assets/releases/download/47/game_headed_assets.zip"
             dest "$projectDir/.assets/assets.zip"
             overwrite false
         }
@@ -75,11 +79,11 @@ task downloadPlatformInstallerAssets(group: 'release', dependsOn: downloadAssets
 }
 
 task platformInstallers(
-        type: com.install4j.gradle.Install4jTask,
-        group: 'release',
-        dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
+    type: com.install4j.gradle.Install4jTask,
+    group: 'release',
+    dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
     projectFile = file('build.install4j')
-    release = version
+    release = releaseVersion
 
     doLast {
         ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
@@ -102,14 +106,17 @@ task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
 task release(group: 'release', dependsOn: [portableInstaller, platformInstallers]) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files + [
-            file("$releasesDir/TripleA_${version}_macos.dmg"),
-            file("$releasesDir/TripleA_${version}_unix.sh"),
-            file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
-            file("$releasesDir/TripleA_${version}_windows-64bit.exe")
+            file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
+            file("$releasesDir/TripleA_${releaseVersion}_unix.sh"),
+            file("$releasesDir/TripleA_${releaseVersion}_windows-32bit.exe"),
+            file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
         ])
     }
 }
 
 shadowJar {
+    // 'archiveVersion' sets the version number on packaged jar files
+    // eg: "2.6+105234" in "lobby-server-2.6+50370c.jar"
+    archiveVersion = releaseVersion
     archiveClassifier.set ''
 }

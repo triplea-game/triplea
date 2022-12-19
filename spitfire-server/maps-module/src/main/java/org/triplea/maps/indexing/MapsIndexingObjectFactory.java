@@ -1,5 +1,6 @@
 package org.triplea.maps.indexing;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.dropwizard.lifecycle.Managed;
 import java.net.URI;
 import java.time.Duration;
@@ -36,34 +37,30 @@ public class MapsIndexingObjectFactory {
 
   MapIndexingTaskRunner mapIndexingTaskRunner(
       final MapsModuleConfig configuration, final Jdbi jdbi) {
-    final var githubApiClient =
-        githubApiClient(configuration.getGithubWebServiceUrl(), configuration.getGithubApiToken());
+    var githubApiClient = configuration.createMapsRepoGithubApiClient();
 
     return MapIndexingTaskRunner.builder()
-        .githubOrgName(configuration.getGithubMapsOrgName())
         .githubApiClient(githubApiClient)
-        .mapIndexer(
-            mapIndexingTask(
-                configuration.getGithubMapsOrgName(), githubApiClient, skipMapIndexingCheck(jdbi)))
+        .mapIndexer(mapIndexingTask(githubApiClient, skipMapIndexingCheck(jdbi)))
         .mapIndexDao(jdbi.onDemand(MapIndexDao.class))
         .indexingTaskDelaySeconds(configuration.getIndexingTaskDelaySeconds())
         .build();
   }
 
-  GithubApiClient githubApiClient(final String webserviceUrl, final String apiToken) {
-    return GithubApiClient.builder().uri(URI.create(webserviceUrl)).authToken(apiToken).build();
+  @VisibleForTesting
+  GithubApiClient githubApiClient(String org, String webserviceUrl, String apiToken) {
+    return GithubApiClient.builder()
+        .org(org)
+        .uri(URI.create(webserviceUrl))
+        .authToken(apiToken)
+        .build();
   }
 
   MapIndexingTask mapIndexingTask(
-      final String githubMapsOrgName,
       final GithubApiClient githubApiClient,
       final BiPredicate<MapRepoListing, Instant> skipMapIndexingCheck) {
     return MapIndexingTask.builder()
-        .lastCommitDateFetcher(
-            CommitDateFetcher.builder()
-                .githubApiClient(githubApiClient)
-                .githubOrgName(githubMapsOrgName)
-                .build())
+        .lastCommitDateFetcher(CommitDateFetcher.builder().githubApiClient(githubApiClient).build())
         .skipMapIndexingCheck(skipMapIndexingCheck)
         .mapNameReader(MapNameReader.builder().build())
         .mapDescriptionReader(new MapDescriptionReader())

@@ -8,10 +8,11 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.triplea.injection.Injections;
+import lombok.Builder;
+import org.triplea.config.product.ProductVersionReader;
+import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.Version;
 
@@ -22,13 +23,20 @@ import org.triplea.util.Version;
  * client. Upon receiving the client's response, the server determines if the client knows the game
  * password and gives them access to the game if authentication is successful.
  */
-@RequiredArgsConstructor
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
 
   private final Version engineVersion;
-  @Setter private IServerMessenger serverMessenger;
+  private IServerMessenger serverMessenger;
   @Nullable private String password;
+
+  @Builder
+  public ClientLoginValidator(
+      @Nonnull IServerMessenger serverMessenger, @Nullable String password) {
+    engineVersion = ProductVersionReader.getCurrentVersion();
+    this.serverMessenger = serverMessenger;
+    this.password = password;
+  }
 
   @VisibleForTesting
   interface ErrorMessages {
@@ -39,6 +47,7 @@ public final class ClientLoginValidator implements ILoginValidator {
   }
 
   /** Set the password required for the game. If {@code null} or empty, no password is required. */
+  @ChangeOnNextMajorRelease
   public void setGamePassword(final @Nullable String password) {
     // TODO do not store the plain password, but the hash instead in the next incompatible release
     this.password = password;
@@ -78,7 +87,7 @@ public final class ClientLoginValidator implements ILoginValidator {
     if (engineVersion.getMajor() != clientVersion.getMajor()) {
       return String.format(
           "Client is using %s but the server requires a version compatible with version %s",
-          clientVersion, Injections.getInstance().getEngineVersion());
+          clientVersion, engineVersion);
     }
 
     final String remoteIp = remoteAddress.getAddress().getHostAddress();
@@ -91,7 +100,8 @@ public final class ClientLoginValidator implements ILoginValidator {
     }
 
     if (Boolean.TRUE.toString().equals(propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY))) {
-      final String errorMessage = authenticate(propertiesSentToClient, propertiesReadFromClient);
+      final String errorMessage =
+          authenticate(propertiesSentToClient, propertiesReadFromClient, password);
       if (!Objects.equals(errorMessage, ErrorMessages.NO_ERROR)) {
         // sleep on average 2 seconds
         // try to prevent flooding to guess the password
@@ -104,7 +114,8 @@ public final class ClientLoginValidator implements ILoginValidator {
   }
 
   @VisibleForTesting
-  String authenticate(final Map<String, String> challenge, final Map<String, String> response) {
+  static String authenticate(
+      final Map<String, String> challenge, final Map<String, String> response, String password) {
     try {
       HmacSha512Authenticator.authenticate(password, challenge, response);
       return ErrorMessages.NO_ERROR;

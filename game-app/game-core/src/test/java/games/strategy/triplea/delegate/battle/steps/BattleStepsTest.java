@@ -336,6 +336,8 @@ public class BattleStepsTest {
   void bombardOnFirstRun() {
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
+    final TechAttachment techAttachment = mock(TechAttachment.class);
+    when(attacker.getTechAttachment()).thenReturn(techAttachment);
     final List<String> steps =
         givenBattleSteps(
             givenBattleStateBuilder()
@@ -428,7 +430,6 @@ public class BattleStepsTest {
 
     when(unit1.getOwner()).thenReturn(attacker);
     when(unit3.getOwner()).thenReturn(attacker);
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
     when(battleSite.getUnits()).thenReturn(List.of(unit1, unit3));
@@ -455,7 +456,7 @@ public class BattleStepsTest {
     final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenAnyUnit();
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
+    when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(false);
     final List<String> steps =
         givenBattleSteps(
@@ -514,7 +515,6 @@ public class BattleStepsTest {
 
     when(unit1.getOwner()).thenReturn(attacker);
     when(unit3.getOwner()).thenReturn(attacker);
-    when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
     when(battleSite.getUnits()).thenReturn(List.of(unit1, unit3));

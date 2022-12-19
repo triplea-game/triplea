@@ -12,6 +12,7 @@ import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.api.key.GameHostingApiKeyDaoWrapper;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.dropwizard.common.IpAddressExtractor;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.spitfire.server.HttpController;
@@ -36,14 +37,14 @@ public class GameHostingController extends HttpController {
   @POST
   @Path(GameHostingClient.GAME_HOSTING_REQUEST_PATH)
   public GameHostingResponse hostingRequest(@Context final HttpServletRequest request) {
+    String remoteIp = IpAddressExtractor.extractIpAddress(request);
     try {
       return GameHostingResponse.builder()
-          .apiKey(apiKeySupplier.apply(InetAddress.getByName(request.getRemoteAddr())).getValue())
-          .publicVisibleIp(request.getRemoteAddr())
+          .apiKey(apiKeySupplier.apply(InetAddress.getByName(remoteIp)).getValue())
+          .publicVisibleIp(remoteIp)
           .build();
     } catch (final UnknownHostException e) {
-      throw new IllegalArgumentException(
-          "Invalid IP address in request: " + request.getRemoteAddr(), e);
+      throw new IllegalArgumentException("Invalid IP address in request: " + remoteIp, e);
     }
   }
 }

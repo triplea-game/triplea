@@ -11,6 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -20,10 +21,10 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -35,6 +36,7 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -305,7 +307,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               HistoryChangeFactory.removeUnitsFromTerritory(battleSite, suicideUnits)
                   .perform(bridge);
 
-              final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+              final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
               final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, attacker, costs, gameData);
               attackerLostTuv += tuvLostAttacker;
             }
@@ -321,7 +323,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 // targets.removeAll(unitsCanDie);
                 HistoryChangeFactory.removeUnitsFromTerritory(battleSite, unitsCanDie)
                     .perform(bridge);
-                final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(defender, gameData);
+                final IntegerMap<UnitType> costs = bridge.getCostsForTuv(defender);
                 final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, defender, costs, gameData);
                 defenderLostTuv += tuvLostDefender;
               }
@@ -450,7 +452,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData().getProperties());
+      final boolean isEditMode = EditDelegate.getEditMode(bridge.getData().getProperties());
       for (final String currentTypeAa : aaTypes) {
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
@@ -652,7 +654,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final IDelegateBridge bridge, final CasualtyDetails casualties, final String currentTypeAa) {
     final List<Unit> killed = casualties.getKilled();
     if (!killed.isEmpty()) {
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+      final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
       final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
       attackerLostTuv += tuvLostAttacker;
       // attackingUnits.removeAll(casualties);
@@ -699,7 +701,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         return;
       }
       dice = new int[rollCount];
-      final boolean isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
+      final boolean isEditMode = EditDelegate.getEditMode(gameData.getProperties());
       if (isEditMode) {
         final String annotation =
             attacker.getName()
@@ -926,7 +928,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
           final int totalDamage = current.getUnitDamage() + currentUnitCost;
           // display the results
-          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, currentUnitCost);
+          if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+            bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, dice, currentUnitCost));
+          } else {
+            bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, currentUnitCost);
+          }
+
           if (currentUnitCost > 0) {
             bridge
                 .getSoundChannelBroadcaster()
@@ -968,7 +975,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // Record PUs lost
         gameData.getMoveDelegate().pusLost(battleSite, cost);
         cost *= Properties.getPuMultiplier(gameData.getProperties());
-        bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, cost);
+        if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+          bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, dice, cost));
+        } else {
+          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, cost);
+        }
         if (cost > 0) {
           bridge
               .getSoundChannelBroadcaster()

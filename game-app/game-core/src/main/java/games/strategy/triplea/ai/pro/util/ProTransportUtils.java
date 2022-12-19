@@ -13,7 +13,6 @@ import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
-import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,13 +53,14 @@ public final class ProTransportUtils {
   public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(
       final GamePlayer player,
       final Unit transport,
+      final ProData proData,
       final Set<Territory> territoriesToLoadFrom,
       final Collection<Unit> unitsToIgnore,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
       final double value) {
     final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<>(unitsToIgnore);
-    if (!transport.isTransporting()) {
+    if (!transport.isTransporting(proData.getUnitTerritory(transport))) {
       // Get all units that can be transported
       Predicate<Unit> canBeLoaded =
           ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true);
@@ -110,7 +111,6 @@ public final class ProTransportUtils {
     }
 
     // Get units if transport already loaded
-    final List<Unit> selectedUnits = new ArrayList<>();
     // Get all units that can be transported
     final List<Unit> units = new ArrayList<>();
     for (final Territory loadFrom : territoriesToLoadFrom) {
@@ -124,8 +124,7 @@ public final class ProTransportUtils {
             .thenComparing(getDecreasingAttackComparator(player)));
 
     // Get best units that can be loaded
-    selectedUnits.addAll(selectUnitsToTransportFromList(transport, units));
-    return selectedUnits;
+    return selectUnitsToTransportFromList(transport, units);
   }
 
   /** Selects the best units to load on the transport from the given list. */
@@ -194,13 +193,13 @@ public final class ProTransportUtils {
       final Unit unit,
       final List<Unit> alreadyMovedUnits,
       final Map<Territory, ProTerritory> moveMap) {
-    final List<Unit> movedUnits = getMovedUnits(alreadyMovedUnits, moveMap);
+    final Set<Unit> movedUnits = getMovedUnits(alreadyMovedUnits, moveMap);
     return findBestUnitsToLandTransport(unit, proData.getUnitTerritory(unit), movedUnits);
   }
 
-  public static List<Unit> getMovedUnits(
+  public static Set<Unit> getMovedUnits(
       final List<Unit> alreadyMovedUnits, final Map<Territory, ProTerritory> attackMap) {
-    final List<Unit> movedUnits = new ArrayList<>(alreadyMovedUnits);
+    final Set<Unit> movedUnits = new HashSet<>(alreadyMovedUnits);
     movedUnits.addAll(
         attackMap.values().stream()
             .map(ProTerritory::getAllDefenders)
@@ -210,15 +209,20 @@ public final class ProTransportUtils {
   }
 
   /**
-   * Check if unit is can land transport and if there are any unused units that could be
-   * transported.
+   * Check if unit is a land transport and if there are any unused units that could be transported.
    */
   public static List<Unit> findBestUnitsToLandTransport(
-      final Unit unit, final Territory t, final List<Unit> usedUnits) {
+      final Unit unit, final Territory t, final Set<Unit> usedUnits) {
     if (usedUnits.contains(unit)) {
+      // Can't even move this unit.
       return List.of();
     }
     final GamePlayer player = unit.getOwner();
+    if (!Matches.unitIsLandTransport().test(unit)
+        || !player.getTechAttachment().getMechanizedInfantry()) {
+      // This unit can't transport anything else.
+      return List.of(unit);
+    }
     final List<Unit> units =
         t.getUnitCollection()
             .getMatches(
@@ -226,9 +230,7 @@ public final class ProTransportUtils {
                     .and(Matches.unitIsLandTransportable())
                     .and(ProMatches.unitHasLessMovementThan(unit)));
     units.removeAll(usedUnits);
-    if (Matches.unitIsLandTransport().negate().test(unit)
-        || !TechAttachment.isMechanizedInfantry(player)
-        || units.isEmpty()) {
+    if (units.isEmpty()) {
       return List.of(unit);
     }
     final List<Unit> results = new ArrayList<>();

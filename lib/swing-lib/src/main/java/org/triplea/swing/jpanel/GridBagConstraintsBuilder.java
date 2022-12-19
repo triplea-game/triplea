@@ -50,6 +50,10 @@ public class GridBagConstraintsBuilder {
     this.gridY = gridY;
   }
 
+  public GridBagConstraintsBuilder() {
+    this(0, 0);
+  }
+
   /** Constructs a Swing {@code GridBagConstraints} using current builder values. */
   public GridBagConstraints build() {
     return new GridBagConstraints(

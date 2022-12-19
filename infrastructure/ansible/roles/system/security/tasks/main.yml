@@ -1,6 +1,0 @@
-- name: install security related apt packages
-  apt:
-    state: present
-    name:
-      - fail2ban
-      - unattended-upgrades

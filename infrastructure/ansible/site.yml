@@ -1,9 +1,9 @@
 - hosts: all
+  tags: common
   roles:
     - system/apt_common_tools
     - system/hostname
     - system/firewall
-    - system/security
     - system/journald
     - system/admin_user
 
@@ -12,29 +12,15 @@
   roles:
     - nginx_forums_conf
 
-- hosts: database
-  tags: [database, postgres]
-  roles:
-    - database/postgres
-    - {name: database/flyway, tags: flyway}
-
 - hosts: lobbyServer
   tags: [lobby, lobby_server]
   roles:
-    - java
-    - lobby_server
-    - nginx
-    - postfix
-
-- hosts: letsEncrypt
-  tags: lobby
-  roles:
-    - certbot
-    # Re-run nginx role to fix configuration and do final restart.
-    # Modifications to /etc/nginx/sites-enabled/default triggers a NGINX restart.
-    # Certbot role adds a new line to /etc/nginx/sites-enabled/default
-    # every time it runs and makes changes.
-    - nginx
+    - {name: java, tags: java}
+    - {name: postfix, tags: postfix}
+    - {name: database/postgres/install, tags: postgres}
+    - {name: database/flyway/install, tags: flyway}
+    - {name: nginx/install, tags: nginx}
+    - {name: lobby_server, tags: lobby_app}
 
 - hosts: botHosts
   tags: [bot, bots]

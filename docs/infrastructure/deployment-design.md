@@ -9,7 +9,5 @@ Deployments are triggered as part of the build via github actions.
 
 ## Deployments
 
-- Prerelease will receive the latest code after every merge.
-
 - Production is deployed to on demand. The version to deploy to production
   is defined in configuration.

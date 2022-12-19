@@ -5,12 +5,12 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataFileUtils;
+import games.strategy.engine.framework.IGame;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster.SaveGameParameter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -212,7 +213,8 @@ public class PbemMessagePoster implements Serializable {
       final HistoryLog historyLog,
       final boolean includeSaveGame,
       final IAbstractForumPosterDelegate postingDelegate,
-      final TripleAFrame frame,
+      final JFrame frame,
+      final IGame game,
       final JComponent postButton) {
     String message = "";
     final String displayName = gameProperties.get(IForumPoster.NAME, "");
@@ -253,7 +255,7 @@ public class PbemMessagePoster implements Serializable {
             }
             try {
               saveGameFile = Files.createTempFile("triplea", GameDataFileUtils.getExtension());
-              frame.getGame().saveGame(saveGameFile);
+              game.saveGame(saveGameFile);
               setSaveGame(saveGameFile);
             } catch (final Exception e) {
               postOk = false;

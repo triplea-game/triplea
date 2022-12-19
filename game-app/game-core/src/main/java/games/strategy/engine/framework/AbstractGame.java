@@ -1,18 +1,19 @@
 package games.strategy.engine.framework;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.player.DefaultPlayerBridge;
-import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerBridge;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.triplea.ResourceLoader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -39,14 +40,11 @@ public abstract class AbstractGame implements IGame {
   final Map<GamePlayer, Player> gamePlayers = new HashMap<>();
   final PlayerManager playerManager;
 
-  // TODO: Project#20 - clientNetworkBridge will be used for Websocket network bridge.
-  //   Usages will basically be to add listeners to map message types to methods calls.
-  //   The mapped method calls will replace the existing RMI-style based network code.
-  @SuppressWarnings({"FieldCanBeLocal", "unused"})
   private final ClientNetworkBridge clientNetworkBridge;
-
   @Nullable private IDisplay display;
   @Nullable private ISound sound;
+
+  @Nullable private ResourceLoader resourceLoader;
 
   AbstractGame(
       final GameData data,
@@ -67,13 +65,24 @@ public abstract class AbstractGame implements IGame {
     setupLocalPlayers(gamePlayers);
   }
 
+  @Override
+  public void setResourceLoader(final ResourceLoader resourceLoader) {
+    this.resourceLoader =
+        Preconditions.checkNotNull(resourceLoader, "ResourceLoader needs to be non-null");
+  }
+
+  @Override
+  public ResourceLoader getResourceLoader() {
+    return Preconditions.checkNotNull(
+        resourceLoader, "ResourceLoader has been accessed before setting it");
+  }
+
   private void setupLocalPlayers(final Set<Player> localPlayers) {
     final PlayerList playerList = gameData.getPlayerList();
     for (final Player gp : localPlayers) {
       final GamePlayer player = playerList.getPlayerId(gp.getName());
       gamePlayers.put(player, gp);
-      final IPlayerBridge bridge = new DefaultPlayerBridge(this);
-      gp.initialize(bridge, player);
+      gp.initialize(new PlayerBridge(this), player);
       final RemoteName descriptor = ServerGame.getRemoteName(gp.getGamePlayer());
       messengers.registerRemote(gp, descriptor);
     }
@@ -120,6 +129,21 @@ public abstract class AbstractGame implements IGame {
     }
     if (display != null) {
       messengers.registerChannelSubscriber(display, getDisplayChannel());
+
+      clientNetworkBridge.addListener(
+          IDisplay.BombingResultsMessage.TYPE, message -> message.accept(display));
+      clientNetworkBridge.addListener(
+          IDisplay.NotifyRetreatMessage.TYPE,
+          message -> message.accept(display, gameData.getPlayerList()));
+      clientNetworkBridge.addListener(
+          IDisplay.NotifyUnitsRetreatingMessage.TYPE,
+          message -> message.accept(display, gameData.getUnits()));
+      clientNetworkBridge.addListener(
+          IDisplay.NotifyDiceMessage.TYPE, message -> message.accept(display));
+      clientNetworkBridge.addListener(
+          IDisplay.DisplayShutdownMessage.TYPE, message -> message.accept(display));
+      clientNetworkBridge.addListener(
+          IDisplay.GoToBattleStepMessage.TYPE, message -> message.accept(display));
     }
     this.display = display;
   }

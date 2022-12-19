@@ -13,11 +13,9 @@ import feign.Retryer;
 import feign.codec.Decoder;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,8 +27,6 @@ import lombok.extern.slf4j.Slf4j;
  *     annotations on it.
  */
 @Slf4j
-@RequiredArgsConstructor
-@AllArgsConstructor
 public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
 
   private static final Decoder gsonDecoder = JsonDecoder.gsonDecoder();
@@ -45,10 +41,25 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
    */
   private static final int DEFAULT_READ_TIME_OUT_MS = 20000;
 
-  @Nonnull private final Class<ClientTypeT> classType;
-  @Nonnull private final URI hostUri;
+  private static final Integer maxAttempts = 3;
 
-  private Integer maxAttempts = 3;
+  private final Class<ClientTypeT> classType;
+  private final URI hostUri;
+  private final Map<String, String> headers;
+
+  public HttpClient(Class<ClientTypeT> classType, URI hostUri, Map<String, String> headers) {
+    this.classType = classType;
+    this.hostUri = hostUri;
+    this.headers = headers;
+  }
+
+  public static <T> T newClient(Class<T> t, URI uri) {
+    return new HttpClient<>(t, uri, Map.of()).get();
+  }
+
+  public static <T> T newClient(Class<T> t, URI uri, Map<String, String> headers) {
+    return new HttpClient<>(t, uri, headers).get();
+  }
 
   @Override
   public ClientTypeT get() {
@@ -58,6 +69,12 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
     return Feign.builder()
         .encoder(new JsonEncoder())
         .decoder(gsonDecoder)
+        .requestInterceptor(
+            requestTemplate -> {
+              headers.forEach(requestTemplate::header);
+              requestTemplate.header("Content-Type", "application/json");
+              requestTemplate.header("Accept", "application/json");
+            })
         .errorDecoder(FeignException::errorStatus)
         .retryer(new Retryer.Default(100, SECONDS.toMillis(1), maxAttempts))
         .logger(

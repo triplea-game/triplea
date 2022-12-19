@@ -8,7 +8,7 @@ import org.triplea.domain.data.PlayerEmailValidation;
 public class EmailValidation implements Function<String, Optional<String>> {
   @Override
   public Optional<String> apply(final String email) {
-    return !Strings.nullToEmpty(email).isEmpty() && PlayerEmailValidation.isValid(email)
+    return !Strings.isNullOrEmpty(email) && PlayerEmailValidation.isValid(email)
         ? Optional.empty()
         : Optional.of("Invalid email address");
   }

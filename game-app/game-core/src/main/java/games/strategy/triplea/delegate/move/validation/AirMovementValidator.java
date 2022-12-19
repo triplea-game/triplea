@@ -11,7 +11,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
-import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
@@ -825,7 +825,7 @@ public final class AirMovementValidator {
   }
 
   private static boolean getEditMode(final GameState data) {
-    return BaseEditDelegate.getEditMode(data.getProperties());
+    return EditDelegate.getEditMode(data.getProperties());
   }
 
   public static Collection<Unit> getFriendly(

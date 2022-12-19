@@ -27,6 +27,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SubmergeSubsVsOnlyAirStepTest {
+class SubmergeSubsVsOnlyAirStepTest extends AbstractClientSettingTestCase {
 
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;

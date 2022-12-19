@@ -19,8 +19,8 @@ public class MapIndexingIntegrationTest {
   void runIndexingOnTestMap() {
     final MapIndexingTask mapIndexingTaskRunner =
         MapsIndexingObjectFactory.mapIndexingTask(
-            "triplea-maps",
-            MapsIndexingObjectFactory.githubApiClient("https://api.github.com", null),
+            MapsIndexingObjectFactory.githubApiClient(
+                "triplea-maps", "https://api.github.com", null),
             (repo, repoLastCommitDate) -> false);
 
     final MapIndexingResult result =

@@ -48,6 +48,14 @@ public final class StringUtils {
     return intValue != null && intValue > 0;
   }
 
+  public static boolean isNullOrEmpty(final String value) {
+    return Strings.isNullOrEmpty(value);
+  }
+
+  public static boolean isNullOrBlank(final String value) {
+    return value == null || value.isBlank();
+  }
+
   public static String truncate(final String stringToTruncate, final int maxLength) {
     return Ascii.truncate(Strings.nullToEmpty(stringToTruncate), maxLength, "...");
   }
@@ -74,6 +82,15 @@ public final class StringUtils {
         "Illegal empty ending to truncate requested on string: " + stringToTruncate);
     return stringToTruncate.endsWith(endingToTruncate)
         ? stringToTruncate.substring(0, stringToTruncate.indexOf(endingToTruncate))
+        : stringToTruncate;
+  }
+
+  public static String truncateFrom(final String stringToTruncate, final String truncationToken) {
+    Preconditions.checkArgument(
+        !truncationToken.isEmpty(),
+        "Illegal empty ending to truncate requested on string: " + stringToTruncate);
+    return stringToTruncate.contains(truncationToken)
+        ? stringToTruncate.substring(0, stringToTruncate.indexOf(truncationToken))
         : stringToTruncate;
   }
 

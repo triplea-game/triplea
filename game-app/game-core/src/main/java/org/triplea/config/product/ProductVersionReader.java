@@ -1,7 +1,5 @@
 package org.triplea.config.product;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.triplea.config.PropertyReader;
 import org.triplea.config.ResourcePropertyReader;
 import org.triplea.util.Version;
 
@@ -10,23 +8,14 @@ import org.triplea.util.Version;
  * of the TripleA application suite (e.g. game client, lobby server, etc.).
  */
 public final class ProductVersionReader {
-  private final PropertyReader propertyReader;
+  private static Version currentVersion;
 
-  public ProductVersionReader() {
-    this(new ResourcePropertyReader("META-INF/triplea/product.properties"));
-  }
-
-  @VisibleForTesting
-  ProductVersionReader(final PropertyReader propertyReader) {
-    this.propertyReader = propertyReader;
-  }
-
-  public Version getVersion() {
-    return new Version(propertyReader.readProperty(PropertyKeys.VERSION));
-  }
-
-  @VisibleForTesting
-  interface PropertyKeys {
-    String VERSION = "version";
+  public static Version getCurrentVersion() {
+    if (currentVersion == null) {
+      var resourcePropertyReader =
+          new ResourcePropertyReader("META-INF/triplea/product.properties");
+      currentVersion = new Version(resourcePropertyReader.readProperty("version"));
+    }
+    return currentVersion;
   }
 }

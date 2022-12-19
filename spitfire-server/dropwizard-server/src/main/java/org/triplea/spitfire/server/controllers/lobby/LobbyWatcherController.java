@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyConstants;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
@@ -140,13 +139,16 @@ public class LobbyWatcherController extends HttpController {
     Preconditions.checkArgument(chatMessageUpload.getChatMessage() != null);
     Preconditions.checkArgument(chatMessageUpload.getFromPlayer() != null);
     Preconditions.checkArgument(chatMessageUpload.getGameId() != null);
-    Preconditions.checkArgument(chatMessageUpload.getApiKey() != null);
 
     Preconditions.checkArgument(
         chatMessageUpload.getFromPlayer().length() <= LobbyConstants.USERNAME_MAX_LENGTH);
-    Preconditions.checkArgument(chatMessageUpload.getApiKey().length() <= ApiKey.MAX_LENGTH);
 
-    if (!chatUploadModule.upload(chatMessageUpload)) {
+    String authHeader = request.getHeader("Authorization");
+
+    if (!chatUploadModule.upload(
+        // truncate 'Bearer ' from the auth token if present
+        authHeader.startsWith("Bearer ") ? authHeader.substring("Bearer ".length()) : authHeader,
+        chatMessageUpload)) {
       log.warn(
           "Chat upload request from {} was rejected, "
               + "gameID and API-key pair did not match any existing games.",

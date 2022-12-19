@@ -10,42 +10,33 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
-import org.triplea.injection.Injections;
 
 /** Setup panel model for headless server. */
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class HeadlessServerSetupModel implements ServerSetupModel {
+public class HeadlessServerSetupModel {
 
   private final GameSelectorModel gameSelectorModel;
   private final HeadlessGameServer headlessGameServer;
-  private HeadlessServerSetup headlessServerSetup;
 
-  @Override
-  public void showSelectType() {
-    new ServerModel(gameSelectorModel, this, new HeadlessLaunchAction(headlessGameServer));
+  public HeadlessServerSetup createHeadlessServerSetup() {
+    final ServerModel serverModel =
+        new ServerModel(gameSelectorModel, new HeadlessLaunchAction(headlessGameServer));
+    return onServerMessengerCreated(serverModel, serverModel.initialize().orElse(null));
   }
 
-  @Override
-  public void onServerMessengerCreated(
+  private HeadlessServerSetup onServerMessengerCreated(
       final ServerModel serverModel, final GameHostingResponse gameHostingResponse) {
     checkNotNull(gameHostingResponse, "hosting response is null, did the bot connect to lobby?");
     checkNotNull(System.getProperty(LOBBY_URI));
 
-    Optional.ofNullable(headlessServerSetup).ifPresent(HeadlessServerSetup::cancel);
-
-    final ClientLoginValidator loginValidator =
-        new ClientLoginValidator(Injections.getInstance().getEngineVersion());
-    loginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
-    serverModel.getMessenger().setLoginValidator(loginValidator);
+    serverModel
+        .getMessenger()
+        .setLoginValidator(
+            ClientLoginValidator.builder().serverMessenger(serverModel.getMessenger()).build());
     Optional.ofNullable(serverModel.getLobbyWatcherThread())
         .map(LobbyWatcherThread::getLobbyWatcher)
         .ifPresent(lobbyWatcher -> lobbyWatcher.setGameSelectorModel(gameSelectorModel));
-    headlessServerSetup = new HeadlessServerSetup(serverModel, gameSelectorModel);
-  }
-
-  public HeadlessServerSetup getPanel() {
-    return headlessServerSetup;
+    return new HeadlessServerSetup(serverModel, gameSelectorModel);
   }
 }

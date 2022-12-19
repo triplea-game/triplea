@@ -189,9 +189,10 @@ public final class ProTerritoryValueUtils {
             .traverse(
                 new BreadthFirstSearch.Visitor() {
                   @Override
-                  public void visit(final Territory territory) {
+                  public boolean visit(Territory territory, int distance) {
                     visited.add(territory);
                     landMassSize[0]++;
+                    return true;
                   }
                 });
         if (landMassSize[0] > maxLandMassSize) {
@@ -443,16 +444,25 @@ public final class ProTerritoryValueUtils {
     new BreadthFirstSearch(startTerritory)
         .traverse(
             new BreadthFirstSearch.Visitor() {
+              int currentDistance = -1;
+
               @Override
-              public void visit(final Territory territory) {
+              public boolean visit(Territory territory, int distance) {
                 if (enemyCapitalsAndFactories.contains(territory)) {
                   found.add(territory);
                 }
+                if (distance != currentDistance) {
+                  currentDistance = distance;
+                  // When we reach a new distance, check if we should end the search.
+                  if (!shouldContinueSearch()) {
+                    return false;
+                  }
+                }
+                return true;
               }
 
-              @Override
-              public boolean shouldContinueSearch(final int distanceSearched) {
-                return distanceSearched < MIN_FACTORY_CHECK_DISTANCE || found.isEmpty();
+              public boolean shouldContinueSearch() {
+                return currentDistance < MIN_FACTORY_CHECK_DISTANCE || found.isEmpty();
               }
             });
     return found;

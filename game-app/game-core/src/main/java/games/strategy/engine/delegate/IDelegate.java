@@ -1,6 +1,7 @@
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.message.IRemote;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import java.io.Serializable;
 
 /**
@@ -15,6 +16,9 @@ import java.io.Serializable;
 public interface IDelegate {
   /** Uses name as the internal unique name and displayName for display to users. */
   void initialize(String name, String displayName);
+
+  void setDelegateBridgeAndPlayer(
+      IDelegateBridge delegateBridge, ClientNetworkBridge clientNetworkBridge);
 
   /**
    * Called before the delegate will run and before "start" is called.

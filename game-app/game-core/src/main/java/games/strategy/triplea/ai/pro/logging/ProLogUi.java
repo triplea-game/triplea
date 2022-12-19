@@ -1,54 +1,45 @@
 package games.strategy.triplea.ai.pro.logging;
 
 import games.strategy.engine.framework.GameShutdownRegistry;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.menubar.DebugMenu;
+import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
+import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import games.strategy.ui.Util;
+import java.awt.Frame;
 import java.awt.event.KeyEvent;
-import java.util.Collection;
 import java.util.List;
-import javax.swing.JMenuItem;
-import org.triplea.swing.SwingAction;
+import javax.swing.SwingUtilities;
+import lombok.experimental.UtilityClass;
 
 /** Class to manage log window display. */
+@UtilityClass
 public final class ProLogUi {
-  private static boolean registered = false;
   private static ProLogWindow settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;
 
-  private ProLogUi() {}
-
-  public static void registerDebugMenu() {
-    if (!registered) {
-      DebugMenu.registerMenuCallback("Hard AI", ProLogUi::initialize);
-      registered = true;
-    }
-  }
-
-  private static Collection<JMenuItem> initialize(final TripleAFrame frame) {
+  public static List<AiPlayerDebugOption> buildDebugOptions(final Frame frame) {
     Util.ensureOnEventDispatchThread();
     if (settingsWindow == null) {
       settingsWindow = new ProLogWindow(frame);
       GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);
     }
-
     ProLogger.info("Initialized Hard AI");
-    final JMenuItem logMenuItem =
-        new JMenuItem(SwingAction.of("Show Logs", ProLogUi::showSettingsWindow));
-    logMenuItem.setMnemonic(KeyEvent.VK_X);
-    return List.of(logMenuItem);
+    return List.of(
+        AiPlayerDebugOption.builder()
+            .title("Show Logs")
+            .actionListener(ProLogUi::showSettingsWindow)
+            .mnemonic(KeyEvent.VK_X)
+            .build());
   }
 
   public static void clearCachedInstances() {
     if (settingsWindow != null) {
       settingsWindow.dispose();
     }
-    registered = false;
     settingsWindow = null;
   }
 
-  public static void showSettingsWindow() {
+  public static void showSettingsWindow(AiPlayerDebugAction aiPlayerDebugAction) {
     if (settingsWindow == null) {
       return;
     }
@@ -57,10 +48,12 @@ public final class ProLogUi {
   }
 
   static void notifyAiLogMessage(final String message) {
-    if (settingsWindow == null) {
-      return;
-    }
-    settingsWindow.addMessage(message);
+    SwingUtilities.invokeLater(
+        () -> {
+          if (settingsWindow != null) {
+            settingsWindow.addMessage(message);
+          }
+        });
   }
 
   public static void notifyStartOfRound(final int round, final String name) {

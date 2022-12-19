@@ -1,6 +1,5 @@
 package games.strategy.triplea.attachments;
 
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -173,16 +172,16 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .putAll(super.getPropertyMap())
-        .put(
-            "activateTrigger",
-            MutableProperty.of(
-                this::setActivateTrigger,
-                this::setActivateTrigger,
-                this::getActivateTrigger,
-                this::resetActivateTrigger))
-        .build();
+  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+    switch (propertyName) {
+      case "activateTrigger":
+        return MutableProperty.of(
+            this::setActivateTrigger,
+            this::setActivateTrigger,
+            this::getActivateTrigger,
+            this::resetActivateTrigger);
+      default:
+        return super.getPropertyOrNull(propertyName);
+    }
   }
 }

@@ -9,6 +9,7 @@ import java.net.http.WebSocket.Listener;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayDeque;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
@@ -50,6 +51,8 @@ class WebSocketConnection {
    */
   private final Queue<String> queuedMessages = new ArrayDeque<>();
 
+  private final Map<String, String> headers;
+
   /**
    * State variable to track open connection, this value is set and checked under the same
    * synchronization lock.
@@ -80,13 +83,14 @@ class WebSocketConnection {
       onMethod_ = {@VisibleForTesting})
   private final ScheduledTimer pingSender;
 
-  WebSocketConnection(final URI serverUri) {
+  WebSocketConnection(URI serverUri, Map<String, String> headers) {
     this.serverUri = serverUri;
     pingSender =
         Timers.fixedRateTimer("websocket-ping-sender")
             .period(45, TimeUnit.SECONDS)
             .delay(45, TimeUnit.SECONDS)
             .task(this::sendPingTask);
+    this.headers = headers;
   }
 
   /**
@@ -162,8 +166,12 @@ class WebSocketConnection {
   }
 
   private CompletableFuture<Void> connectAsyncAndStartPingSender() {
-    return httpClient
-        .newWebSocketBuilder()
+    var clientBuilder = httpClient.newWebSocketBuilder();
+
+    // add all headers
+    headers.forEach(clientBuilder::header);
+
+    return clientBuilder
         .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
         .buildAsync(this.serverUri, internalListener)
         .thenRun(pingSender::start);

@@ -8,7 +8,9 @@ import games.strategy.triplea.delegate.Matches;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Value;
 import org.triplea.java.RemoveOnNextMajorRelease;
@@ -102,7 +104,7 @@ public class FiringGroup implements Serializable {
    * @param aliveUnits Units that need to be retained as targets
    */
   public void retainAliveTargets(final Collection<Unit> aliveUnits) {
-    targetUnits.retainAll(aliveUnits);
+    targetUnits.retainAll(new HashSet<>(aliveUnits));
   }
 
   /**
@@ -124,15 +126,18 @@ public class FiringGroup implements Serializable {
   }
 
   private static SuicideAndNonSuicide separateSuicideOnHit(final Collection<Unit> units) {
+    final Predicate<Unit> isSuicideOnHit = Matches.unitIsSuicideOnHit();
 
     final Multimap<UnitType, Unit> map = ArrayListMultimap.create();
-    for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit())) {
-      final UnitType type = unit.getType();
-      map.put(type, unit);
+    final List<Unit> remainingUnits = new ArrayList<>();
+    for (final Unit unit : units) {
+      if (isSuicideOnHit.test(unit)) {
+        map.put(unit.getType(), unit);
+      } else {
+        remainingUnits.add(unit);
+      }
     }
 
-    final Collection<Unit> remainingUnits =
-        CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit().negate());
     return SuicideAndNonSuicide.of(map, remainingUnits);
   }
 

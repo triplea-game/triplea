@@ -2,6 +2,7 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.net.Messengers;
+import games.strategy.net.websocket.ClientNetworkBridge;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.DefaultListCellRenderer;
@@ -9,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.Interruptibles;
+import org.triplea.sound.ClipPlayer;
 import org.triplea.swing.SwingAction;
 
 /**
@@ -24,10 +26,11 @@ public class ChatPanel extends JPanel implements ChatModel {
   private final ChatPlayerPanel chatPlayerPanel;
   private final ChatMessagePanel chatMessagePanel;
 
-  public ChatPanel(final Chat chat, final ChatSoundProfile chatSoundProfile) {
+  public ChatPanel(
+      final Chat chat, final ChatSoundProfile chatSoundProfile, final ClipPlayer clipPlayer) {
     setSize(300, 200);
     chatPlayerPanel = new ChatPlayerPanel(chat);
-    chatMessagePanel = new ChatMessagePanel(chat, chatSoundProfile);
+    chatMessagePanel = new ChatMessagePanel(chat, chatSoundProfile, clipPlayer);
     setLayout(new BorderLayout());
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     split.setLeftComponent(chatMessagePanel);
@@ -45,10 +48,17 @@ public class ChatPanel extends JPanel implements ChatModel {
    * the UI might freeze for a long time.
    */
   public static ChatPanel newChatPanel(
-      final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers));
+      final Messengers messengers,
+      final String chatName,
+      final ChatSoundProfile chatSoundProfile,
+      final ClientNetworkBridge clientNetworkBridge) {
+    final Chat chat =
+        new Chat(new MessengersChatTransmitter(chatName, messengers, clientNetworkBridge));
+    final ClipPlayer clipPlayer = new ClipPlayer();
     return Interruptibles.awaitResult(
-            () -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat, chatSoundProfile)))
+            () ->
+                SwingAction.invokeAndWaitResult(
+                    () -> new ChatPanel(chat, chatSoundProfile, clipPlayer)))
         .result
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }

@@ -16,7 +16,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** Calculates how much support units can give */
@@ -63,29 +62,43 @@ public class SupportCalculator {
       final Predicate<Unit> canSupport =
           Matches.unitIsOfType((UnitType) rule.getAttachedTo())
               .and(Matches.unitIsOwnedByAnyOf(rule.getPlayers()));
-      final List<Unit> supporters = CollectionUtils.getMatches(unitsGivingTheSupport, canSupport);
-      if (supporters.isEmpty()) {
-        continue;
-      }
-      final List<Unit> impArtTechUnits =
-          rule.getImpArtTech()
-              ? CollectionUtils.getMatches(
-                  supporters, Matches.unitOwnerHasImprovedArtillerySupportTech())
-              : List.of();
-
+      final Predicate<Unit> impArtTech =
+          rule.getImpArtTech() ? Matches.unitOwnerHasImprovedArtillerySupportTech() : u -> false;
       final IntegerMap<Unit> unitsForRule = new IntegerMap<>();
-      supporters.forEach(unit -> unitsForRule.put(unit, rule.getNumber()));
-      impArtTechUnits.forEach(unit -> unitsForRule.add(unit, rule.getNumber()));
-      supportUnits.put(rule, unitsForRule);
-      supportRules.computeIfAbsent(rule.getBonusType(), (bonusType) -> new ArrayList<>()).add(rule);
+      for (Unit unit : unitsGivingTheSupport) {
+        if (!canSupport.test(unit)) {
+          continue;
+        }
+
+        unitsForRule.put(unit, rule.getNumber());
+        if (impArtTech.test(unit)) {
+          unitsForRule.add(unit, rule.getNumber());
+        }
+      }
+      if (!unitsForRule.isEmpty()) {
+        supportUnits.put(rule, unitsForRule);
+        supportRules.computeIfAbsent(rule.getBonusType(), (bt) -> new ArrayList<>()).add(rule);
+      }
     }
   }
 
   public int getSupport(final UnitSupportAttachment rule) {
-    return supportUnits.getOrDefault(rule, new IntegerMap<>()).totalValues();
+    return supportUnits.getOrDefault(rule, IntegerMap.of()).totalValues();
   }
 
   public Collection<List<UnitSupportAttachment>> getUnitSupportAttachments() {
     return supportRules.values();
+  }
+
+  public static Map<Unit, IntegerMap<Unit>> getCombinedSupportGiven(
+      AvailableSupports supportFromFriends, AvailableSupports supportFromEnemies) {
+    Map<Unit, IntegerMap<Unit>> support = new HashMap<>();
+    for (var entry : supportFromFriends.getUnitsGivingSupport().entrySet()) {
+      support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
+    }
+    for (var entry : supportFromEnemies.getUnitsGivingSupport().entrySet()) {
+      support.computeIfAbsent(entry.getKey(), u -> new IntegerMap<>()).add(entry.getValue());
+    }
+    return support;
   }
 }

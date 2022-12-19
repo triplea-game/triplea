@@ -41,7 +41,6 @@ class MapIndexingTaskRunnerTest {
   void setup() {
     mapIndexingTaskRunner =
         MapIndexingTaskRunner.builder()
-            .githubOrgName("ORG_NAME")
             .mapIndexDao(mapIndexDao)
             .githubApiClient(githubApiClient)
             .mapIndexer(mapIndexer)
@@ -58,8 +57,7 @@ class MapIndexingTaskRunnerTest {
     final MapRepoListing repoListing2 =
         MapRepoListing.builder().name("uri-2").htmlUrl("https://uri-2").build();
 
-    when(githubApiClient.listRepositories("ORG_NAME"))
-        .thenReturn(List.of(repoListing1, repoListing2));
+    when(githubApiClient.listRepositories()).thenReturn(List.of(repoListing1, repoListing2));
     when(mapIndexer.apply(repoListing1)).thenReturn(Optional.of(MAP_INDEX_RESULT));
 
     mapIndexingTaskRunner.run();

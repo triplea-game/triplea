@@ -12,7 +12,7 @@ import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
+import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.modules.chat.Chatters;
@@ -76,7 +76,7 @@ public class UserBanController extends HttpController {
   }
 
   @POST
-  @Path(ModeratorChatClient.BAN_PLAYER_PATH)
+  @Path(ModeratorLobbyClient.BAN_PLAYER_PATH)
   public Response banPlayer(
       @Auth final AuthenticatedUser authenticatedUser, final BanPlayerRequest banPlayerRequest) {
     Preconditions.checkNotNull(banPlayerRequest);

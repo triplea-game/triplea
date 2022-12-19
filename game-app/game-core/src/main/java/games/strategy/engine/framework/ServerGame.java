@@ -38,7 +38,6 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
@@ -50,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +70,7 @@ public class ServerGame extends AbstractGame {
   private IRandomSource randomSource = new PlainRandomSource();
   private IRandomSource delegateRandomSource;
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
-  @Getter @Setter private InGameLobbyWatcherWrapper inGameLobbyWatcher;
+  @Nullable @Getter private final InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
   private final LaunchAction launchAction;
   private final ClientNetworkBridge clientNetworkBridge;
@@ -94,9 +94,28 @@ public class ServerGame extends AbstractGame {
       final Messengers messengers,
       final ClientNetworkBridge clientNetworkBridge,
       final LaunchAction launchAction) {
+    this(
+        data,
+        localPlayers,
+        remotePlayerMapping,
+        messengers,
+        clientNetworkBridge,
+        launchAction,
+        null);
+  }
+
+  public ServerGame(
+      final GameData data,
+      final Set<Player> localPlayers,
+      final Map<String, INode> remotePlayerMapping,
+      final Messengers messengers,
+      final ClientNetworkBridge clientNetworkBridge,
+      final LaunchAction launchAction,
+      @Nullable final InGameLobbyWatcherWrapper inGameLobbyWatcher) {
     super(data, localPlayers, remotePlayerMapping, messengers, clientNetworkBridge);
     this.clientNetworkBridge = clientNetworkBridge;
     this.launchAction = launchAction;
+    this.inGameLobbyWatcher = inGameLobbyWatcher;
     gameModifiedChannel =
         new IGameModifiedChannel() {
           @Override
@@ -498,24 +517,24 @@ public class ServerGame extends AbstractGame {
       if (!(delegate instanceof IPersistentDelegate)) {
         continue;
       }
-      final DefaultDelegateBridge bridge =
-          new DefaultDelegateBridge(
-              gameData,
-              this,
-              new DelegateHistoryWriter(messengers),
-              randomStats,
-              delegateExecutionManager,
-              clientNetworkBridge);
       if (delegateRandomSource == null) {
         delegateRandomSource =
             (IRandomSource)
                 delegateExecutionManager.newOutboundImplementation(
                     randomSource, new Class<?>[] {IRandomSource.class});
       }
-      bridge.setRandomSource(delegateRandomSource);
+      final DefaultDelegateBridge bridge =
+          new DefaultDelegateBridge(
+              gameData,
+              this,
+              new DelegateHistoryWriter(messengers, gameData),
+              randomStats,
+              delegateExecutionManager,
+              clientNetworkBridge,
+              delegateRandomSource);
       delegateExecutionManager.enterDelegateExecution();
       try {
-        delegate.setDelegateBridgeAndPlayer(bridge);
+        delegate.setDelegateBridgeAndPlayer(bridge, clientNetworkBridge);
         delegate.start();
       } finally {
         delegateExecutionManager.leaveDelegateExecution();
@@ -525,21 +544,21 @@ public class ServerGame extends AbstractGame {
 
   private void startStep(final boolean stepIsRestoredFromSavedGame) {
     // dont save if we just loaded
-    final DefaultDelegateBridge bridge =
-        new DefaultDelegateBridge(
-            gameData,
-            this,
-            new DelegateHistoryWriter(messengers),
-            randomStats,
-            delegateExecutionManager,
-            clientNetworkBridge);
     if (delegateRandomSource == null) {
       delegateRandomSource =
           (IRandomSource)
               delegateExecutionManager.newOutboundImplementation(
                   randomSource, new Class<?>[] {IRandomSource.class});
     }
-    bridge.setRandomSource(delegateRandomSource);
+    final DefaultDelegateBridge bridge =
+        new DefaultDelegateBridge(
+            gameData,
+            this,
+            new DelegateHistoryWriter(messengers, gameData),
+            randomStats,
+            delegateExecutionManager,
+            clientNetworkBridge,
+            delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should
     // not be)
     // we cannot do this the very first run through, because there are no history nodes yet. We
@@ -552,7 +571,7 @@ public class ServerGame extends AbstractGame {
     delegateExecutionManager.enterDelegateExecution();
     try {
       final IDelegate delegate = getCurrentStep().getDelegate();
-      delegate.setDelegateBridgeAndPlayer(bridge);
+      delegate.setDelegateBridgeAndPlayer(bridge, clientNetworkBridge);
       delegate.start();
     } finally {
       delegateExecutionManager.leaveDelegateExecution();
@@ -618,7 +637,7 @@ public class ServerGame extends AbstractGame {
     bridge.getHistoryWriter().startEvent("Game Loaded");
     for (final Player player : localPlayers) {
       allPlayersString.remove(player.getName());
-      final boolean isHuman = player instanceof TripleAPlayer;
+      final boolean isAi = player.isAi();
       bridge
           .getHistoryWriter()
           .addChildToEvent(
@@ -629,10 +648,9 @@ public class ServerGame extends AbstractGame {
                       ? " are"
                       : " is")
                   + " now being played by: "
-                  + player.getPlayerType().getLabel());
+                  + player.getPlayerLabel());
       final GamePlayer p = data.getPlayerList().getPlayerId(player.getName());
-      final String newWhoAmI =
-          ((isHuman ? "Human" : "AI") + ":" + player.getPlayerType().getLabel());
+      final String newWhoAmI = (isAi ? "AI" : "Human") + ":" + player.getPlayerLabel();
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
       }
@@ -685,8 +703,10 @@ public class ServerGame extends AbstractGame {
     delegateRandomSource = null;
   }
 
-  public void stopGameSequence(String status, String title) {
-    delegateExecutionStopped = launchAction.promptGameStop(status, title);
+  public void stopGameSequence(final String status, final String title) {
+    delegateExecutionStopped =
+        launchAction.promptGameStop(
+            status, title, getResourceLoader().getAssetPaths().stream().findAny().orElseThrow());
   }
 
   public boolean isGameSequenceRunning() {

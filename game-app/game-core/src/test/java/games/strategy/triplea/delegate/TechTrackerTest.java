@@ -4,6 +4,8 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -89,8 +91,8 @@ public class TechTrackerTest {
     // Test that updating techs updates the TechTracker's cache.
     GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
     TechTracker techTracker = gameData.getTechTracker();
-    IDelegateBridge bridge = newDelegateBridge(americans(gameData));
     GamePlayer player = americans(gameData);
+    IDelegateBridge bridge = newDelegateBridge(player);
     TechnologyFrontier technologyFrontier = gameData.getTechnologyFrontier();
 
     TechAdvance heavyBomber = technologyFrontier.getAdvanceByName("Heavy Bomber");
@@ -128,5 +130,27 @@ public class TechTrackerTest {
     change = ChangeFactory.attachmentPropertyChange(ta, "true", "heavyBomber");
     gameData.performChange(change);
     assertThat(techTracker.getAttackRollsBonus(player, bomber(gameData)), is(2));
+  }
+
+  @Test
+  void getFullyResearchedPlayerTechCategories() {
+    GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
+    TechTracker techTracker = gameData.getTechTracker();
+    GamePlayer player = americans(gameData);
+    IDelegateBridge bridge = newDelegateBridge(player);
+    assertThat(TechTracker.getFullyResearchedPlayerTechCategories(player), is(empty()));
+
+    // Add one advance, there should still be nothing fully researched.
+    final List<TechnologyFrontier> allAdvances = TechAdvance.getPlayerTechCategories(player);
+    techTracker.addAdvance(player, bridge, allAdvances.get(0).getTechs().get(0));
+    assertThat(TechTracker.getFullyResearchedPlayerTechCategories(player), is(empty()));
+
+    // Add the remaining advances from that category.
+    for (int i = 1; i < allAdvances.get(0).getTechs().size(); i++) {
+      techTracker.addAdvance(player, bridge, allAdvances.get(0).getTechs().get(i));
+    }
+    assertThat(
+        TechTracker.getFullyResearchedPlayerTechCategories(player),
+        containsInAnyOrder(allAdvances.get(0)));
   }
 }

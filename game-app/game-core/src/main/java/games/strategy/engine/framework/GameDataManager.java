@@ -5,8 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -23,8 +21,7 @@ import java.util.zip.GZIPOutputStream;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.triplea.injection.Injections;
-import org.triplea.util.Version;
+import org.triplea.config.product.ProductVersionReader;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
 @Slf4j
@@ -54,90 +51,34 @@ public final class GameDataManager {
     }
   }
 
-  public static Optional<GameData> loadGame(final InputStream is) {
-    return loadGame(Injections.getInstance().getEngineVersion(), is);
-  }
-
   /**
    * Loads game data from the specified stream.
    *
-   * @param ourVersion The version of the currently running game engine. Used to determine if the
-   *     game read from input stream is compatible.
    * @param is The stream from which the game data will be loaded. The caller is responsible for
    *     closing this stream; it will not be closed when this method returns.
    * @return The loaded game data, or an empty optional if an error occurs.
    */
-  public static Optional<GameData> loadGame(final Version ourVersion, final InputStream is) {
+  public static Optional<GameData> loadGame(final InputStream is) {
     try (GZIPInputStream input = new GZIPInputStream(is)) {
-      return loadGameUncompressed(ourVersion, input);
+      return loadGameUncompressed(input);
     } catch (final Throwable e) {
       log.error("Error loading game data", e);
       return Optional.empty();
     }
   }
 
-  public static Optional<GameData> loadGameUncompressed(
-      final Version ourVersion, final InputStream is) {
+  public static Optional<GameData> loadGameUncompressed(final InputStream is) {
     try (ObjectInputStream input = new ObjectInputStream(is)) {
-      final Object version = input.readObject();
-
-      if (isCompatibleVersion(ourVersion, version)
-          || !ClientSetting.saveGameCompatibilityCheck.getSetting()) {
-        final GameData data = (GameData) input.readObject();
-        data.postDeSerialize();
-        loadDelegates(input, data);
-        return Optional.of(data);
-      } else {
-        return Optional.empty();
-      }
+      // read Version object (unused)
+      input.readObject();
+      final GameData data = (GameData) input.readObject();
+      data.postDeSerialize();
+      loadDelegates(input, data);
+      return Optional.of(data);
     } catch (final Throwable e) {
-      log.error("Error loading game data", e);
+      log.warn(
+          "Error loading save game, saved version might not be compatible with current engine.", e);
       return Optional.empty();
-    }
-  }
-
-  @SuppressWarnings("deprecation")
-  private static boolean isCompatibleVersion(final Version ourVersion, final Object version) {
-    if (version instanceof games.strategy.util.Version) {
-      log.warn(
-          String.format(
-              "Incompatible engine versions. We are: %s<br>"
-                  + "Trying to load incompatible save game version: %s<br>"
-                  + "To download an older version of TripleA,<br>"
-                  + "please visit: <a href=\"%s\">%s</a>",
-              Injections.getInstance().getEngineVersion(),
-              ((games.strategy.util.Version) version).getExactVersion(),
-              UrlConstants.RELEASE_NOTES,
-              UrlConstants.RELEASE_NOTES));
-      return false;
-    } else if (!(version instanceof Version)) {
-      log.warn(
-          "Incompatible engine version with save game, "
-              + "unable to determine version of the save game");
-      return false;
-    } else if (ourVersion.getMajor() != ((Version) version).getMajor()) {
-      log.warn(
-          String.format(
-              "Incompatible engine versions. We are: %s<br>"
-                  + "Trying to load game created with: %s<br>"
-                  + "To download the latest version of TripleA,<br>"
-                  + "please visit: <a href=\"%s\">%s</a>",
-              Injections.getInstance().getEngineVersion(),
-              version,
-              UrlConstants.DOWNLOAD_WEBSITE,
-              UrlConstants.DOWNLOAD_WEBSITE));
-      return false;
-    } else if (!GameRunner.headless() && ((Version) version).getMinor() > ourVersion.getMinor()) {
-      // Prompt the user to upgrade
-      log.warn(
-          "This save was made by a newer version of TripleA.<br>"
-              + "To load this save, download the latest version of TripleA: "
-              + "<a href=\"{}\">{}</a>",
-          UrlConstants.DOWNLOAD_WEBSITE,
-          UrlConstants.DOWNLOAD_WEBSITE);
-      return false;
-    } else {
-      return true;
     }
   }
 
@@ -176,9 +117,7 @@ public final class GameDataManager {
    * @param gameData The game data to save.
    * @throws IOException If an error occurs while saving the game.
    */
-  public static void saveGame(
-      final OutputStream out, final GameData gameData, final Version engineVersion)
-      throws IOException {
+  public static void saveGame(final OutputStream out, final GameData gameData) throws IOException {
     checkNotNull(out);
     checkNotNull(gameData);
 
@@ -190,7 +129,7 @@ public final class GameDataManager {
       try (OutputStream os = Files.newOutputStream(tempFile);
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
-        saveGameUncompressed(zippedOutStream, gameData, Options.withEverything(), engineVersion);
+        saveGameUncompressed(zippedOutStream, gameData, Options.withEverything());
       }
 
       // now write to sink (ensure sink is closed per method contract)
@@ -219,15 +158,11 @@ public final class GameDataManager {
   }
 
   public static void saveGameUncompressed(
-      final OutputStream sink,
-      final GameData data,
-      final Options options,
-      final Version engineVersion)
-      throws IOException {
+      final OutputStream sink, final GameData data, final Options options) throws IOException {
     // write to temporary file first in case of error
     try (ObjectOutputStream outStream = new ObjectOutputStream(sink)) {
-      outStream.writeObject(engineVersion);
-      try (GameData.Unlocker ignored = data.acquireReadLock()) {
+      outStream.writeObject(ProductVersionReader.getCurrentVersion());
+      try (GameData.Unlocker ignored = data.acquireWriteLock()) {
         final var history = data.getHistory();
         if (!options.withHistory) {
           data.resetHistory();

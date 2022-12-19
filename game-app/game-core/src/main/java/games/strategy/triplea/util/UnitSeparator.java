@@ -122,8 +122,8 @@ public class UnitSeparator {
               canRetreat);
       // we test to see if we have the key using equals, then since
       // key maps to key, we retrieve it to add the unit to the correct category
-      if (categories.containsKey(entry)) {
-        final UnitCategory stored = categories.get(entry);
+      final UnitCategory stored = categories.get(entry);
+      if (stored != null) {
         stored.addUnit(current);
       } else {
         categories.put(entry, entry);

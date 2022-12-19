@@ -35,7 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import org.triplea.injection.Injections;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -107,7 +107,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
     add(new JLabel("Engine Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
     add(
-        new JLabel(Injections.getInstance().getEngineVersion().toString()),
+        new JLabel(ProductVersionReader.getCurrentVersion().toString()),
         buildGridCell(1, row, new Insets(0, 0, 3, 0)));
     row++;
 
@@ -166,9 +166,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           } else if (canChangeHostBotGameData()) {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
-              clientModelForHostBots
-                  .getHostBotSetMapClientAction(GameSelectorPanel.this)
-                  .actionPerformed(e);
+              clientModelForHostBots.setMap(this);
             }
           }
         });
@@ -221,9 +219,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           } else if (canChangeHostBotGameData()) {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
-              clientModelForHostBots
-                  .getHostBotChangeGameOptionsClientAction(GameSelectorPanel.this)
-                  .actionPerformed(e);
+              clientModelForHostBots.changeGameOptions(this);
             }
           }
         });

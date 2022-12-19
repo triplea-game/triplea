@@ -37,11 +37,11 @@ public class AiGameTest {
     ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
     game.setStopGameOnDelegateExecutionStop(true);
     while (!game.isGameOver()) {
-      game.runNextStep();
       if (game.getData().getSequence().getRound() > 100) {
         log.warn("No winner after 100 rounds");
         break;
       }
+      game.runNextStep();
     }
     assertThat(game.isGameOver(), is(true));
     assertThat(game.getData().getSequence().getRound(), greaterThan(2));
@@ -49,6 +49,31 @@ public class AiGameTest {
     assertThat(endDelegate.getWinners(), not(empty()));
     log.info("Game completed at round: " + game.getData().getSequence().getRound());
     log.info("Game winners: " + endDelegate.getWinners());
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "map_making_tutorial,map/games/Test1.xml",
+  })
+  void testFirstRoundFiftyTimes(String mapName, String mapXmlPath) throws Exception {
+    // Run the first round of all-AI game several times. Ensure no errors and no winner so early.
+    for (int i = 0; i < 10; i++) {
+      GameSelectorModel gameSelector = GameTestUtils.loadGameFromURI(mapName, mapXmlPath);
+      ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
+      game.setStopGameOnDelegateExecutionStop(true);
+      while (!game.isGameOver() && game.getData().getSequence().getRound() < 2) {
+        game.runNextStep();
+      }
+      log.debug(i + " first round stats: " + getResourceSummary(game.getData()));
+      assertThat(
+          "Expecting first round game to not be over so early: "
+              + getResourceSummary(game.getData()),
+          game.isGameOver(),
+          is(false));
+      // Need to call stopGame() to ensure ProAI resets its static ConcurrentBattleCalculator, else
+      // the next test will use the wrong GameData for simulation.
+      game.stopGame();
+    }
   }
 
   @Test
@@ -111,5 +136,13 @@ public class AiGameTest {
         GameTestUtils.loadGameFromURI(
             "imperialism_1974_board_game", "map/games/imperialism_1974_board_game.xml");
     return GameTestUtils.setUpGameWithAis(gameSelector);
+  }
+
+  private String getResourceSummary(GameData gameData) {
+    String summary = "";
+    for (GamePlayer p : gameData.getPlayerList()) {
+      summary += (summary.isEmpty() ? "" : ", ") + p.getName() + ": " + p.getResources();
+    }
+    return summary;
   }
 }

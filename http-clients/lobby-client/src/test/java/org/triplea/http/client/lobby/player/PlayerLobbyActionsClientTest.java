@@ -11,9 +11,8 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.WireMockTest;
+import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.test.common.JsonUtil;
 import ru.lanwen.wiremock.ext.WiremockResolver;
@@ -39,7 +38,7 @@ class PlayerLobbyActionsClientTest extends WireMockTest {
   private static final PlayerSummary PLAYER_SUMMARY_FOR_PLAYER = PlayerSummary.builder().build();
 
   private static PlayerLobbyActionsClient newClient(final WireMockServer wireMockServer) {
-    return newClient(wireMockServer, PlayerLobbyActionsClient::new);
+    return newClient(wireMockServer, PlayerLobbyActionsClient::newClient);
   }
 
   @Test
@@ -53,7 +52,7 @@ class PlayerLobbyActionsClientTest extends WireMockTest {
                     .withStatus(200)
                     .withBody(JsonUtil.toJson(PLAYER_SUMMARY_FOR_MODERATOR))));
 
-    final var result = newClient(server).fetchPlayerInformation(PlayerChatId.of("player-chat-id"));
+    final var result = newClient(server).fetchPlayerInformation("player-chat-id");
     assertThat(result, is(PLAYER_SUMMARY_FOR_MODERATOR));
   }
 
@@ -68,7 +67,7 @@ class PlayerLobbyActionsClientTest extends WireMockTest {
                     .withStatus(200)
                     .withBody(JsonUtil.toJson(PLAYER_SUMMARY_FOR_PLAYER))));
 
-    final var result = newClient(server).fetchPlayerInformation(PlayerChatId.of("player-chat-id"));
+    final var result = newClient(server).fetchPlayerInformation("player-chat-id");
     assertThat(result, is(PLAYER_SUMMARY_FOR_PLAYER));
   }
 

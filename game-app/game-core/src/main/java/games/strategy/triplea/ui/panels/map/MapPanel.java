@@ -14,7 +14,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
@@ -347,7 +347,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final boolean isEditMode;
     // use GameData from mapPanel since it will follow current history node
     try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-      isEditMode = BaseEditDelegate.getEditMode(gameData.getProperties());
+      isEditMode = EditDelegate.getEditMode(gameData.getProperties());
     }
     return isEditMode;
   }
@@ -625,7 +625,12 @@ public class MapPanel extends ImageScrollerLargeView {
     gameData.addTerritoryListener(territoryListener);
     gameData.addDataChangeListener(dataChangeListener);
     clearPendingDrawOperations();
-    executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
+    // Try to mitigate race condition where game data is set after shutting down the executor
+    // technically there's no guarantee because the executor can be shut down after the if check
+    // and before the call to execute, but it should be good enough!
+    if (!executor.isTerminated()) {
+      executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
+    }
   }
 
   @Override

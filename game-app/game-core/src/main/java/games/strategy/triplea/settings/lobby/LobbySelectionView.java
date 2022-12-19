@@ -23,7 +23,7 @@ import org.triplea.ui.events.queue.ViewClass;
 
 /**
  * UI with: <br>
- * 1) Radio buttons to select lobby, eg: prod / prerelease / local / other <br>
+ * 1) Radio buttons to select lobby, eg: prod / local / other <br>
  * 2) A text field for custom input of lobby URI, enabled only if 'other' is selected.<br>
  *
  * <p>The text field is pre-filled and disabled for each radio button choice except for 'other'

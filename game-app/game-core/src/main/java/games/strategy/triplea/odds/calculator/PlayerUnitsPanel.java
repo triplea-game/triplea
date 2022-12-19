@@ -11,7 +11,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.triplea.util.TuvUtils;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.util.ArrayList;
@@ -120,7 +120,7 @@ public class PlayerUnitsPanel extends JPanel {
     }
     final IntegerMap<UnitType> costs;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      costs = TuvUtils.getCostsForTuv(gamePlayer, data);
+      costs = new TuvCostsCalculator().getCostsForTuv(gamePlayer);
     }
 
     GamePlayer previousPlayer = null;

@@ -1,21 +1,18 @@
 package org.triplea.sound;
 
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.PropertyFile;
+import java.util.Properties;
 
 /** sounds.properties file helper class */
-class SoundProperties extends PropertyFile {
+class SoundProperties {
   static final String GENERIC_FOLDER = "generic";
   private static final String PROPERTY_FILE = "sounds.properties";
   private static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
   private static final String DEFAULT_ERA_FOLDER = "ww2";
+  private final Properties properties;
 
   SoundProperties(final ResourceLoader loader) {
-    super(PROPERTY_FILE, loader);
-  }
-
-  static SoundProperties getInstance(final ResourceLoader loader) {
-    return PropertyFile.getInstance(SoundProperties.class, () -> new SoundProperties(loader));
+    properties = loader.loadPropertyFile(PROPERTY_FILE);
   }
 
   String getDefaultEraFolder() {

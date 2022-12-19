@@ -28,7 +28,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseTripleADelegate;
-import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.RocketsFireHelper;
 import games.strategy.triplea.delegate.TechTracker;
@@ -76,11 +75,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean needToFireRockets = true;
   private RocketsFireHelper rocketHelper;
   private IBattle currentBattle = null;
-
-  @Override
-  public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
-    super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
-  }
 
   @Override
   public void start() {
@@ -525,7 +519,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
         final Player remotePlayer = bridge.getRemotePlayer();
-        if (territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data.getProperties())) {
+        final boolean isWater = territory.isWater();
+        if ((isWater && Properties.getSeaBattlesMayBeIgnored(data.getProperties()))
+            || (!isWater && Properties.getLandBattlesMayBeIgnored(data.getProperties()))) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
@@ -906,7 +902,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
         }
       } else if (battle instanceof MustFightBattle) {
-        ((MustFightBattle) battle).resetDefendingUnits(player, data);
+        ((MustFightBattle) battle).resetDefendingUnits(player);
       }
       // now make sure any amphibious battles that are dependent on this 'new' sea battle have their
       // dependencies set.
@@ -919,7 +915,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
             if (adjacentBattle instanceof MustFightBattle) {
               // and we want to reset the defenders if the scrambling air has left that battle
-              ((MustFightBattle) adjacentBattle).resetDefendingUnits(player, data);
+              ((MustFightBattle) adjacentBattle).resetDefendingUnits(player);
             }
           }
         }

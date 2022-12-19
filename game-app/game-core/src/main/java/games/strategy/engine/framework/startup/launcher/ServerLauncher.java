@@ -18,8 +18,10 @@ import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.net.websocket.WebsocketNetworkBridge;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,8 +30,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.injection.Injections;
+import org.triplea.game.server.GameRelayServer;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.lobby.common.GameDescription;
@@ -37,6 +40,9 @@ import org.triplea.lobby.common.GameDescription;
 /** Implementation of {@link ILauncher} for a headed or headless network server game. */
 @Slf4j
 public class ServerLauncher implements ILauncher {
+  // TODO: relay server port hardcoded for now, ideally it would be configurable by client
+  public static final int RELAY_SERVER_PORT = 6000;
+
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
   private final LaunchAction launchAction;
@@ -56,7 +62,8 @@ public class ServerLauncher implements ILauncher {
   // lost
   private final List<INode> observersThatTriedToJoinDuringStartup =
       Collections.synchronizedList(new ArrayList<>());
-  private InGameLobbyWatcherWrapper inGameLobbyWatcher;
+  @Nullable private final InGameLobbyWatcherWrapper inGameLobbyWatcher;
+  private GameRelayServer gameRelayServer;
 
   public ServerLauncher(
       final int clientCount,
@@ -65,7 +72,8 @@ public class ServerLauncher implements ILauncher {
       final PlayerListing playerListing,
       final Map<String, INode> remotePlayers,
       final ServerModel serverModel,
-      final LaunchAction launchAction) {
+      final LaunchAction launchAction,
+      @Nullable final InGameLobbyWatcherWrapper inGameLobbyWatcher) {
     this.gameSelectorModel = gameSelectorModel;
     this.launchAction = launchAction;
     this.clientCount = clientCount;
@@ -74,10 +82,7 @@ public class ServerLauncher implements ILauncher {
     this.remotePlayers = remotePlayers;
     this.serverModel = serverModel;
     this.gameData = gameSelectorModel.getGameData();
-  }
-
-  public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper watcher) {
-    inGameLobbyWatcher = watcher;
+    this.inGameLobbyWatcher = inGameLobbyWatcher;
   }
 
   private boolean testShouldWeAbort() {
@@ -124,11 +129,18 @@ public class ServerLauncher implements ILauncher {
               .getGameLoader()
               .newPlayers(
                   playerListing.getLocalPlayerTypeMap(
-                      new PlayerTypes(Injections.getInstance().getPlayerTypes())));
+                      new PlayerTypes(launchAction.getPlayerTypes())));
 
-      // TODO: Project#20 - if feature flag is toggled, start game relay server
-      //   and use a real ClientNetworkingBridge
-      final ClientNetworkBridge clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
+      // start game relay server
+      final ClientNetworkBridge clientNetworkBridge;
+      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+        gameRelayServer = new GameRelayServer(RELAY_SERVER_PORT);
+        gameRelayServer.start();
+        final URI relayServerUri = GameRelayServer.createLocalhostConnectionUri(RELAY_SERVER_PORT);
+        clientNetworkBridge = new WebsocketNetworkBridge(relayServerUri);
+      } else {
+        clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
+      }
 
       serverGame =
           new ServerGame(
@@ -137,8 +149,8 @@ public class ServerLauncher implements ILauncher {
               remotePlayers,
               messengers,
               clientNetworkBridge,
-              launchAction);
-      serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
+              launchAction,
+              inGameLobbyWatcher);
       launchAction.onLaunch(serverGame);
       // tell the clients to start, later we will wait for them to all signal that they are ready.
       ((IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME))
@@ -291,6 +303,9 @@ public class ServerLauncher implements ILauncher {
       if (serverGame != null) {
         serverGame.stopGame();
       }
+    }
+    if (gameRelayServer != null) {
+      gameRelayServer.stop();
     }
   }
 

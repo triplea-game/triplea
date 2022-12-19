@@ -4,6 +4,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.function.Function;
 
 public interface CombatValue {
 
@@ -24,11 +26,12 @@ public interface CombatValue {
   default Comparator<Unit> unitComparator() {
     // unit support is stateful which would mess up the sort calculations so remove unit supports
     final StrengthCalculator strengthCalculator = this.buildWithNoUnitSupports().getStrength();
+    final var cache = new HashMap<Unit, Integer>();
+    final Function<Unit, Integer> getStrength = u -> strengthCalculator.getStrength(u).getValue();
     return Comparator.<Unit, Boolean>comparing(
-            unit -> strengthCalculator.getStrength(unit).getValue() == 0)
+            unit -> cache.computeIfAbsent(unit, getStrength) == 0)
         .thenComparingDouble(
-            unit ->
-                -strengthCalculator.getStrength(unit).getValue() / (float) this.getDiceSides(unit));
+            unit -> -cache.computeIfAbsent(unit, getStrength) / (float) getDiceSides(unit));
   }
 
   int getDiceSides(Unit unit);

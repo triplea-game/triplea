@@ -134,7 +134,7 @@ public class ChatController implements IChatController {
   @Override
   public void setStatus(final String status) {
     final INode node = MessageContext.getSender();
-    if (Strings.nullToEmpty(status).isEmpty()) {
+    if (Strings.isNullOrEmpty(status)) {
       chatterStatus.remove(node.getPlayerName());
     } else {
       chatterStatus.put(node.getPlayerName(), status);

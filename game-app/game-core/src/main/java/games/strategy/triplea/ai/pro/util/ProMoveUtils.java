@@ -8,7 +8,7 @@ import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.AbstractBuiltInAi;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
@@ -185,7 +185,7 @@ public final class ProMoveUtils {
         final var loadedUnits = new ArrayList<Unit>();
         final var remainingUnitsToLoad = new ArrayList<Unit>();
 
-        if (transport.isTransporting()) {
+        if (transport.isTransporting(transportTerritory)) {
           loadedUnits.addAll(amphibAttackMap.get(transport));
         } else {
           remainingUnitsToLoad.addAll(amphibAttackMap.get(transport));
@@ -455,7 +455,7 @@ public final class ProMoveUtils {
                 + result);
       }
       if (!proData.isSimulation()) {
-        AbstractBuiltInAi.movePause();
+        AbstractAi.movePause();
       }
     }
   }

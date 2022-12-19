@@ -27,10 +27,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
+import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessLaunchAction;
-import org.triplea.injection.Injections;
 import org.triplea.io.ContentDownloader;
 import org.triplea.io.FileUtils;
 import org.triplea.java.collections.CollectionUtils;
@@ -38,19 +37,19 @@ import org.triplea.java.collections.CollectionUtils;
 @UtilityClass
 @Slf4j
 public class GameTestUtils {
+  private static Path tempHome;
+  private static final Map<URI, Path> downloadedMaps = new HashMap<>();
+
   public static void setUp() throws IOException {
-    if (Injections.getInstance() == null) {
-      Injections.init(
-          Injections.builder()
-              .engineVersion(new ProductVersionReader().getVersion())
-              .playerTypes(PlayerTypes.getBuiltInPlayerTypes())
-              .build());
-    }
     // Use a temp dir for downloaded maps to not interfere with the real downloadedMaps folder.
-    Path tempHome = FileUtils.newTempFolder();
-    System.setProperty("user.home", tempHome.toString());
-    ClientSetting.initialize();
+    if (tempHome == null) {
+      tempHome = FileUtils.newTempFolder();
+      System.setProperty("user.home", tempHome.toString());
+    }
+    ClientSetting.setPreferences(new MemoryPreferences());
     assertTrue(ClientFileSystemHelper.getUserMapsFolder().startsWith(tempHome.toAbsolutePath()));
+    ClientSetting.aiMovePauseDuration.setValue(0);
+    ClientSetting.aiCombatStepPauseDuration.setValue(0);
 
     Path tempRoot = FileUtils.newTempFolder();
     FileUtils.writeToFile(tempRoot.resolve(".triplea-root"), "");
@@ -62,17 +61,25 @@ public class GameTestUtils {
   public static GameSelectorModel loadGameFromURI(String mapName, String mapXmlPath)
       throws Exception {
     GameSelectorModel gameSelector = new GameSelectorModel();
-    gameSelector.load(downloadMap(getMapDownloadURI(mapName)).resolve(mapXmlPath));
+    gameSelector.load(downloadMap(getMapDownloadURI(mapName), mapName).resolve(mapXmlPath));
     return gameSelector;
   }
 
-  private static Path downloadMap(URI uri) throws IOException {
-    Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve("map.zip");
-    log.info("Downloading from: " + uri);
-    try (ContentDownloader downloader = new ContentDownloader(uri)) {
-      Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
-    }
-    return ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo).orElseThrow();
+  private static Path downloadMap(URI uri, String mapName) {
+    return downloadedMaps.computeIfAbsent(
+        uri,
+        key -> {
+          Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve(mapName + ".zip");
+          log.info("Downloading from: " + uri);
+          try {
+            try (ContentDownloader downloader = new ContentDownloader(uri)) {
+              Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
+            }
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+          return ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo).orElseThrow();
+        });
   }
 
   private static URI getMapDownloadURI(String mapName) throws URISyntaxException {
