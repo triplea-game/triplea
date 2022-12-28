@@ -42,7 +42,6 @@ public class ProPurchaseAiTest {
       or not.
     */
     Assertions.assertDoesNotThrow(
-        () -> proAi.purchase(false, 20, purchaseDelegate, gameData, gamePlayer)
-    );
+        () -> proAi.purchase(false, 20, purchaseDelegate, gameData, gamePlayer));
   }
 }

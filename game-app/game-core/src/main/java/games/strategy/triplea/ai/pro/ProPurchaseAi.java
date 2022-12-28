@@ -427,7 +427,7 @@ class ProPurchaseAi {
     if (enemyLandReachableBySea.isEmpty()) {
       return false;
     }
-    // Don't save up more if we already have enough PUs to buy the biggest fleet we can. (Initialize IntegerMap with a mutable implementation)
+    // Don't save up more if we already have enough PUs to buy the biggest fleet we can.
     IntegerMap<Resource> maxShipCost = IntegerMap.of(new LinkedHashMap<>());
     Resource pus = player.getData().getResourceList().getResource(Constants.PUS);
     for (ProPurchaseOption option : purchaseOptions.getSeaDefenseOptions()) {
