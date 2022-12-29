@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
+import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -29,7 +30,7 @@ public class ProPurchaseAiTest {
     proAi.initialize(playerBridgeMock, gamePlayer);
     ClientSetting.setPreferences(new MemoryPreferences());
 
-    Mockito.when(playerBridgeMock.getGameData()).thenReturn(gameData);
+    when(playerBridgeMock.getGameData()).thenReturn(gameData);
 
     /* Issue 11093: (https://github.com/triplea-game/triplea/issues/11093)
       This issue happens during execution of ProPurchaseAi.shouldSaveUpForAFleet when the IntegerMap<Resource> maxShipCost
