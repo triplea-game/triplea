@@ -16,14 +16,34 @@ import org.mockito.Mockito;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 
 public class ProPurchaseAiTest {
+  private ProAi proAi;
+  private GameData gameData;
+  private PurchaseDelegate purchaseDelegate;
+  private GamePlayer gamePlayer;
 
   @Test
   public void testShouldSaveUpForAFleet() {
-    final ProAi proAi = new ProAi("Test Name", "Test Player Label");
-    final GameData gameData = TestMapGameData.VICTORY_TEST_SHOULD_SAVE_UP_FOR_A_FLEET.getGameData();
-    final GamePlayer gamePlayer = gameData.getPlayerList().getPlayerId("Italians");
+    setupShouldSaveUpForAFleetTest();
+
+    /* Issue 11093: (https://github.com/triplea-game/triplea/issues/11093)
+      This issue happens during execution of ProPurchaseAi.shouldSaveUpForAFleet when the IntegerMap<Resource> maxShipCost
+      is not reassigned while looping over seaDefenseOptions and an UnsupportedOperationException is thrown later when
+      multiplyAllValuesBy is called by the map. This is because the underlying implementation used by maxShipCost is the
+      immutable one from the original initialization call to IntegerMap.of(), since it was not reassigned in the loop. To
+      remediate this issue the original initialization of the maxShipCost IntegerMap should be done by calling the
+      IntegerMap constructor which will initialize the map to be a mutable LinkedHashMap implementation. This way the
+      underlying implementation will always be a mutable Map implementation, whether maxShipCost is reassigned or not.
+    */
+    Assertions.assertDoesNotThrow(
+        () -> proAi.purchase(false, 20, purchaseDelegate, gameData, gamePlayer));
+  }
+
+  private void setupShouldSaveUpForAFleetTest() {
+    proAi = new ProAi("Test Name", "Test Player Label");
+    gameData = TestMapGameData.VICTORY_TEST_SHOULD_SAVE_UP_FOR_A_FLEET.getGameData();
+    gamePlayer = gameData.getPlayerList().getPlayerId("Italians");
     final IDelegateBridge testBridge = newDelegateBridge(gamePlayer);
-    final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) gameData.getDelegate("purchase");
+    purchaseDelegate = (PurchaseDelegate) gameData.getDelegate("purchase");
     final PlayerBridge playerBridgeMock = Mockito.mock(PlayerBridge.class);
 
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -31,18 +51,5 @@ public class ProPurchaseAiTest {
     ClientSetting.setPreferences(new MemoryPreferences());
 
     when(playerBridgeMock.getGameData()).thenReturn(gameData);
-
-    /* Issue 11093: (https://github.com/triplea-game/triplea/issues/11093)
-      This issue happens during execution of ProPurchaseAi.shouldSaveUpForAFleet when the IntegerMap<Resource> maxShipCost
-      is not reassigned while looping over seaDefenseOptions and an UnsupportedOperationException is thrown later when
-      multiplyAllValuesBy is called by the map. This is because the underlying implementation used by maxShipCost is the
-      immutable one from the original initialization call to IntegerMap.of(), since it was not reassigned in the loop. To
-      remediate this issue the original initialization of the maxShipCost IntegerMap should be done with the
-      IntegerMap.of(Map map) usage while passing in a mutable Map implementation as the argument (LinkedHashMap chosen in code fix).
-      This way the underlying implementation will always be a mutable Map implementation, whether maxShipCost is reassigned
-      or not.
-    */
-    Assertions.assertDoesNotThrow(
-        () -> proAi.purchase(false, 20, purchaseDelegate, gameData, gamePlayer));
   }
 }

@@ -45,7 +45,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -428,7 +427,7 @@ class ProPurchaseAi {
       return false;
     }
     // Don't save up more if we already have enough PUs to buy the biggest fleet we can.
-    IntegerMap<Resource> maxShipCost = IntegerMap.of(new LinkedHashMap<>());
+    IntegerMap<Resource> maxShipCost = new IntegerMap<>();
     Resource pus = player.getData().getResourceList().getResource(Constants.PUS);
     for (ProPurchaseOption option : purchaseOptions.getSeaDefenseOptions()) {
       if (option.getCost() > maxShipCost.getInt(pus)) {
