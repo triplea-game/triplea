@@ -27,6 +27,7 @@ public enum TestMapGameData {
   REVISED("revised_test.xml"),
 
   VICTORY_TEST("victory_test.xml"),
+  VICTORY_TEST_SHOULD_SAVE_UP_FOR_A_FLEET("victory_test_shouldSaveUpForAFleet.xml"),
 
   WW2V3_1941("ww2v3_1941_test.xml"),
 
