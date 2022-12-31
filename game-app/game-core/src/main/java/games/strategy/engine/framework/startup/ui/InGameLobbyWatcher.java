@@ -123,6 +123,12 @@ public class InGameLobbyWatcher {
       // path will be a dead-end.
       shutDown();
       watcherThreadMessaging.handleCurrentGameHostNotReachable();
+
+      // Using return here to break out as this is a dead end.
+      // Initializing keepAliveTimer and connectionChangeListener to null as they won't be needed.
+      keepAliveTimer = null;
+      connectionChangeListener = null;
+      return;
     }
 
     gameId = gamePostingResponse.getGameId();
@@ -248,7 +254,11 @@ public class InGameLobbyWatcher {
 
   void shutDown() {
     isShutdown = true;
-    gameToLobbyConnection.disconnect(gameId);
+    // if gameId is not null (game was created in lobby successfully) send remove game message to
+    //  lobby now that game is to be shut down.
+    if (gameId != null) {
+      gameToLobbyConnection.disconnect(gameId);
+    }
     serverMessenger.removeConnectionChangeListener(connectionChangeListener);
     Optional.ofNullable(keepAliveTimer).ifPresent(ScheduledTimer::cancel);
     cleanUpGameModelListener();
