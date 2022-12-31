@@ -33,23 +33,17 @@ import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnecti
 @ExtendWith(MockitoExtension.class)
 final class InGameLobbyWatcherTest {
 
-  @Mock
-  private IServerMessenger mockIServerMessenger;
+  @Mock private IServerMessenger mockIServerMessenger;
 
-  @Mock
-  private GameToLobbyConnection mockGameToLobbyConnection;
+  @Mock private GameToLobbyConnection mockGameToLobbyConnection;
 
-  @Mock
-  private WatcherThreadMessaging mockWatcherThreadMessaging;
+  @Mock private WatcherThreadMessaging mockWatcherThreadMessaging;
 
-  @Mock
-  private InGameLobbyWatcher mockInGameLobbyWatcher;
+  @Mock private InGameLobbyWatcher mockInGameLobbyWatcher;
 
-  @Mock
-  private INode mockINode;
+  @Mock private INode mockINode;
 
-  @Mock
-  private GamePostingResponse mockGamePostingResponse;
+  @Mock private GamePostingResponse mockGamePostingResponse;
 
   @Test
   public void testNewInGameLobbyWatcher_hostNotReachable() throws Exception {
