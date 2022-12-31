@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,31 +18,45 @@ import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 
+@ExtendWith(MockitoExtension.class)
 final class InGameLobbyWatcherTest {
 
+  @Mock
+  private IServerMessenger mockIServerMessenger;
+
+  @Mock
+  private GameToLobbyConnection mockGameToLobbyConnection;
+
+  @Mock
+  private WatcherThreadMessaging mockWatcherThreadMessaging;
+
+  @Mock
+  private InGameLobbyWatcher mockInGameLobbyWatcher;
+
+  @Mock
+  private INode mockINode;
+
+  @Mock
+  private GamePostingResponse mockGamePostingResponse;
+
   @Test
-  public void testNewInGameLobbyWatcher_hostNotReachable() throws UnknownHostException {
+  public void testNewInGameLobbyWatcher_hostNotReachable() throws Exception {
 
     // need to set LOBBY_GAME_COMMENTS system property to avoid NPE in
     // SystemPropertyReader.gameComments()
     System.setProperty(LOBBY_GAME_COMMENTS, "testLobbyGameComments");
-
-    IServerMessenger mockIServerMessenger = mock(IServerMessenger.class);
-    GameToLobbyConnection mockGameToLobbyConnection = mock(GameToLobbyConnection.class);
-    WatcherThreadMessaging mockWatcherThreadMessaging = mock(WatcherThreadMessaging.class);
-    InGameLobbyWatcher mockInGameLobbyWatcher = mock(InGameLobbyWatcher.class);
-    INode mockINode = mock(INode.class);
-    GamePostingResponse mockGamePostingResponse = mock(GamePostingResponse.class);
 
     when(mockIServerMessenger.getLocalNode()).thenReturn(mockINode);
     when(mockGameToLobbyConnection.getPublicVisibleIp()).thenReturn(InetAddress.getLocalHost());
@@ -87,19 +100,12 @@ final class InGameLobbyWatcherTest {
   }
 
   @Test
-  public void testShutDown_gameIdNotNull() throws UnknownHostException {
+  public void testShutDown_gameIdNotNull() throws Exception {
     final String testGameId = "testGameId";
 
     // need to set LOBBY_GAME_COMMENTS system property to avoid NPE in
     // SystemPropertyReader.gameComments()
     System.setProperty(LOBBY_GAME_COMMENTS, "testLobbyGameComments");
-
-    IServerMessenger mockIServerMessenger = mock(IServerMessenger.class);
-    GameToLobbyConnection mockGameToLobbyConnection = mock(GameToLobbyConnection.class);
-    WatcherThreadMessaging mockWatcherThreadMessaging = mock(WatcherThreadMessaging.class);
-    InGameLobbyWatcher mockInGameLobbyWatcher = mock(InGameLobbyWatcher.class);
-    INode mockINode = mock(INode.class);
-    GamePostingResponse mockGamePostingResponse = mock(GamePostingResponse.class);
 
     when(mockIServerMessenger.getLocalNode()).thenReturn(mockINode);
     when(mockGameToLobbyConnection.getPublicVisibleIp()).thenReturn(InetAddress.getLocalHost());
