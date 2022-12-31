@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -33,7 +34,8 @@ final class InGameLobbyWatcherTest {
   @Test
   public void testNewInGameLobbyWatcher_hostNotReachable() throws UnknownHostException {
 
-    // need to set LOBBY_GAME_COMMENTS system property to avoid NPE in SystemPropertyReader.gameComments()
+    // need to set LOBBY_GAME_COMMENTS system property to avoid NPE in
+    // SystemPropertyReader.gameComments()
     System.setProperty(LOBBY_GAME_COMMENTS, "testLobbyGameComments");
 
     IServerMessenger mockIServerMessenger = mock(IServerMessenger.class);
@@ -45,7 +47,8 @@ final class InGameLobbyWatcherTest {
 
     when(mockIServerMessenger.getLocalNode()).thenReturn(mockINode);
     when(mockGameToLobbyConnection.getPublicVisibleIp()).thenReturn(InetAddress.getLocalHost());
-    when(mockGameToLobbyConnection.postGame(any(GamePostingRequest.class))).thenReturn(mockGamePostingResponse);
+    when(mockGameToLobbyConnection.postGame(any(GamePostingRequest.class)))
+        .thenReturn(mockGamePostingResponse);
 
     // simulate "Your computer is not reachable from the internet"
     when(mockGamePostingResponse.isConnectivityCheckSucceeded()).thenReturn(false);
@@ -63,7 +66,13 @@ final class InGameLobbyWatcherTest {
      InGameLobbyWatcher.shutDown was updated to only call GameToLobbyConnection.disconnect if the gameId is not null
      to avoid an IllegalArgumentException that will be thrown by LobbyWatcherClient.removeGame.
     */
-    Optional<InGameLobbyWatcher> createdWatcherOptional = InGameLobbyWatcher.newInGameLobbyWatcher(mockIServerMessenger, mockGameToLobbyConnection, mockWatcherThreadMessaging, mockInGameLobbyWatcher, true);
+    Optional<InGameLobbyWatcher> createdWatcherOptional =
+        InGameLobbyWatcher.newInGameLobbyWatcher(
+            mockIServerMessenger,
+            mockGameToLobbyConnection,
+            mockWatcherThreadMessaging,
+            mockInGameLobbyWatcher,
+            true);
 
     assertTrue(createdWatcherOptional.isPresent());
     assertNull(createdWatcherOptional.get().getGameId());
@@ -73,7 +82,7 @@ final class InGameLobbyWatcherTest {
     verify(mockGameToLobbyConnection).postGame(any(GamePostingRequest.class));
     verify(mockGamePostingResponse).isConnectivityCheckSucceeded();
 
-    //verify GameToLobbyConnection.disconnect is not called since gameId is null
+    // verify GameToLobbyConnection.disconnect is not called since gameId is null
     verify(mockGameToLobbyConnection, never()).disconnect(null);
   }
 
@@ -81,7 +90,8 @@ final class InGameLobbyWatcherTest {
   public void testShutDown_gameIdNotNull() throws UnknownHostException {
     final String testGameId = "testGameId";
 
-    // need to set LOBBY_GAME_COMMENTS system property to avoid NPE in SystemPropertyReader.gameComments()
+    // need to set LOBBY_GAME_COMMENTS system property to avoid NPE in
+    // SystemPropertyReader.gameComments()
     System.setProperty(LOBBY_GAME_COMMENTS, "testLobbyGameComments");
 
     IServerMessenger mockIServerMessenger = mock(IServerMessenger.class);
@@ -93,24 +103,31 @@ final class InGameLobbyWatcherTest {
 
     when(mockIServerMessenger.getLocalNode()).thenReturn(mockINode);
     when(mockGameToLobbyConnection.getPublicVisibleIp()).thenReturn(InetAddress.getLocalHost());
-    when(mockGameToLobbyConnection.postGame(any(GamePostingRequest.class))).thenReturn(mockGamePostingResponse);
+    when(mockGameToLobbyConnection.postGame(any(GamePostingRequest.class)))
+        .thenReturn(mockGamePostingResponse);
     when(mockGamePostingResponse.isConnectivityCheckSucceeded()).thenReturn(true);
     when(mockGamePostingResponse.getGameId()).thenReturn(testGameId);
 
-    //Create an InGameLobbyWatcher with a non-null gameId and call shutDown to verify
+    // Create an InGameLobbyWatcher with a non-null gameId and call shutDown to verify
     // GameToLobbyConnection.disconnect(gameId) is still called
-    Optional<InGameLobbyWatcher> createdWatcherOptional = InGameLobbyWatcher.newInGameLobbyWatcher(mockIServerMessenger, mockGameToLobbyConnection, mockWatcherThreadMessaging, mockInGameLobbyWatcher, true);
+    Optional<InGameLobbyWatcher> createdWatcherOptional =
+        InGameLobbyWatcher.newInGameLobbyWatcher(
+            mockIServerMessenger,
+            mockGameToLobbyConnection,
+            mockWatcherThreadMessaging,
+            mockInGameLobbyWatcher,
+            true);
 
     assertTrue(createdWatcherOptional.isPresent());
     Assertions.assertNotNull(createdWatcherOptional.get().getGameId());
 
     createdWatcherOptional.get().shutDown();
 
-    verify(mockIServerMessenger, times(2)).getLocalNode();
+    verify(mockIServerMessenger, atLeastOnce()).getLocalNode();
     verify(mockGameToLobbyConnection).getPublicVisibleIp();
-    verify(mockGameToLobbyConnection, times(2)).postGame(any(GamePostingRequest.class));
-    verify(mockGamePostingResponse, times(2)).isConnectivityCheckSucceeded();
-    verify(mockGamePostingResponse, times(2)).getGameId();
+    verify(mockGameToLobbyConnection, atLeastOnce()).postGame(any(GamePostingRequest.class));
+    verify(mockGamePostingResponse, atLeastOnce()).isConnectivityCheckSucceeded();
+    verify(mockGamePostingResponse, atLeastOnce()).getGameId();
     verify(mockGameToLobbyConnection).disconnect(testGameId);
   }
 
