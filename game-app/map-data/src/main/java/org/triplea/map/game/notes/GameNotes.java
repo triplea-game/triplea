@@ -19,10 +19,10 @@ public class GameNotes {
   public static String loadGameNotes(final Path xmlGameFile) {
     Preconditions.checkArgument(
         Files.exists(xmlGameFile),
-        "Error, expected file did not exist: " + xmlGameFile.toAbsolutePath());
+        "File Existantial Error, expected file did not exist: " + xmlGameFile.toAbsolutePath());
     Preconditions.checkArgument(
         !Files.isDirectory(xmlGameFile),
-        "Error, expected file was not a file: " + xmlGameFile.toAbsolutePath());
+        "File Type Error, expected file was not a file: " + xmlGameFile.toAbsolutePath());
 
     final String notesFileName = createExpectedNotesFileName(xmlGameFile);
     final Path notesFile = xmlGameFile.resolveSibling(notesFileName);
