@@ -105,6 +105,7 @@ public class LobbyLogin {
                 .apiKey(ApiKey.of(loginResponse.getApiKey()))
                 .moderator(loginResponse.isModerator())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
+                .loginMessage(loginResponse.getLobbyMessage())
                 .build());
       } else {
         showMessage("Login Failed", loginResponse.getFailReason());
@@ -156,6 +157,7 @@ public class LobbyLogin {
                         .username(UserName.of(createAccountPanel.getUsername()))
                         .apiKey(ApiKey.of(lobbyLoginResponse.getApiKey()))
                         .passwordChangeRequired(lobbyLoginResponse.isPasswordChangeRequired())
+                        .loginMessage(lobbyLoginResponse.getLobbyMessage())
                         .build());
       case CANCEL:
         return Optional.empty();
