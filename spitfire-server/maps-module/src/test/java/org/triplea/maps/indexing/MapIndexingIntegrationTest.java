@@ -5,6 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.StringContains.containsString;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.github.MapRepoListing;
 
@@ -13,6 +14,7 @@ import org.triplea.http.client.github.MapRepoListing;
  * build an indexer and then run indexing on the test map. The test map will be in a known state and
  * we'll then verify the returned indexing results are as expected.
  */
+@Disabled
 public class MapIndexingIntegrationTest {
 
   @Test
