@@ -60,10 +60,16 @@ task downloadAssets {
     }
 }
 
+
 run {
     dependsOn downloadAssets
 }
 
+runShadow {
+    dependsOn downloadAssets
+}
+
+// Downloads JDK bundles that are used to create installers
 task downloadPlatformInstallerAssets(group: 'release', dependsOn: downloadAssets) {
     doLast {
         [
@@ -103,6 +109,7 @@ task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
 }
 
+// creates installer files using install4j (eg: install.exe)
 task release(group: 'release', dependsOn: [portableInstaller, platformInstallers]) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files + [

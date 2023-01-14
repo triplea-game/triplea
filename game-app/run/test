@@ -1,0 +1,4 @@
+#!/bin/bash
+
+scriptDir=$(dirname "$0")
+"$scriptDir/../../gradlew" :game-app:game-headed:check
