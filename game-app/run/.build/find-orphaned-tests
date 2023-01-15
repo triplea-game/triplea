@@ -1,5 +1,12 @@
 #!/bin/bash
 
+## Generally tests should have a name that matches the source file they are testing.
+## EG: FooTest.java is expected to test 'Foo.java'
+## This check will look for examples where there is no matching source file. This can
+## happen if we rename the source file but do not also rename the test.
+## In some cases we do not expect for there to be a matching source file for a test,
+## in this case the test can be annotated with: @SuppressWarning("UnmatchedTest")
+
 set -u
 
 red="\e[91m"
