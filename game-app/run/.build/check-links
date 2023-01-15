@@ -5,11 +5,7 @@ set -eu
 URI_FILE=$(find . -type f -path "*/src/main/java/*" -name "UrlConstants.java")
 green="\e[32m"
 end="\e[0m"
-IGNORE_LIST=(
-  "https://www.axisandallies.org/forums"
-  "https://forums.triplea-game.org/"
-  "https://prod.triplea-game.org"
-  )
+IGNORE_REGEX="www.axisandallies.org|forums.triplea-game.org|prod.triplea-game.org"
 
 if [ -z "$URI_FILE" ]; then
   echo "Error could not find file 'UrlConstants.java'"
@@ -49,9 +45,14 @@ function checkIsOnIgnoreList() {
 
 FAILURE=0
 
-while read -r uri; do
-  checkIsOnIgnoreList "$uri" || checkUri "$uri"
-done < <(sed 's/^.*"\(.*\)".*$/\1/' "$URI_FILE" | grep "http")
+# export checkUri function so that it is visible to 'parallel' command below
+export -f checkUri
+
+# in parallel, check that each URI is available, filtering out elements from the ignore list
+sed 's/^.*"\(.*\)".*$/\1/' "$URI_FILE" \
+   | grep "http" \
+   | grep -Ev "$IGNORE_REGEX" \
+   | parallel checkUri {}
 
 if [ "$FAILURE" == 0 ]; then
   echo -e "${green}Links are valid${end}"
