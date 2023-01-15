@@ -46,7 +46,6 @@ GameListingWebsocketIntegrationTest > Post a game, verify listener is notified F
         at org.triplea.modules.game.GameListingWebsocketIntegrationTest.verifyPostGame(
         GameListingWebsocketIntegrationTest.java:94)
  */
-@SuppressWarnings("UnmatchedTest")
 @Disabled // Disabled due to flakiness, the above error is frequently seen and needs to be resolved.
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor

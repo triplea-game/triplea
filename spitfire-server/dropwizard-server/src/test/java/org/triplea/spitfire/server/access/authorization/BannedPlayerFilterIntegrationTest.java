@@ -20,7 +20,6 @@ import org.triplea.spitfire.server.ControllerIntegrationTest;
  * login endpoint as that will be a common first endpoint for banned users to attempt to access
  * after being booted and banned.
  */
-@SuppressWarnings("UnmatchedTest")
 @AllArgsConstructor
 class BannedPlayerFilterIntegrationTest extends ControllerIntegrationTest {
   private static final String BANNED_SYSTEM_ID = "system-id";

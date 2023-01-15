@@ -13,7 +13,6 @@ import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 import org.triplea.spitfire.server.TestData;
 
-@SuppressWarnings("UnmatchedTest")
 class LobbyWatcherControllerTest extends ControllerIntegrationTest {
   private static final GamePostingRequest GAME_POSTING_REQUEST =
       GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();

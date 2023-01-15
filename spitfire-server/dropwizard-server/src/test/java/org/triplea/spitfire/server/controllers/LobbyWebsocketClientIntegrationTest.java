@@ -48,7 +48,6 @@ import org.triplea.spitfire.server.ControllerIntegrationTest;
    INFO  [2020-09-06 01:52:03,521] org.triplea.dropwizard.test.DropwizardServerExtension:
        Running database cleanup..
 */
-@SuppressWarnings("UnmatchedTest")
 @AllArgsConstructor
 class LobbyWebsocketClientIntegrationTest extends ControllerIntegrationTest {
   private final URI localhost;

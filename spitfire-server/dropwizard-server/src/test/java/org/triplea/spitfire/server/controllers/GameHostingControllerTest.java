@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class GameHostingControllerTest extends ControllerIntegrationTest {
   private final GameHostingClient client;
 

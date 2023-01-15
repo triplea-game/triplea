@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class ModeratorsControllerIntegrationTest extends ControllerIntegrationTest {
   private final URI localhost;
   private final ToolboxModeratorManagementClient playerClient;

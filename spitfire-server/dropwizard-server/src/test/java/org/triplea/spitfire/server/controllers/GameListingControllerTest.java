@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class GameListingControllerTest extends ControllerIntegrationTest {
   private final GameListingClient client;
 

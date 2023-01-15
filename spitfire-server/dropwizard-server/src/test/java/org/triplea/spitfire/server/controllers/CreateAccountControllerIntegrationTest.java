@@ -11,7 +11,6 @@ import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class CreateAccountControllerIntegrationTest extends ControllerIntegrationTest {
   private static final String USERNAME = "user-name";
   private static final String EMAIL = "email@email.com";

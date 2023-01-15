@@ -14,7 +14,6 @@ import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogSearchReques
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class AccessLogControllerIntegrationTest extends ControllerIntegrationTest {
   private final URI localhost;
   private final ToolboxAccessLogClient client;

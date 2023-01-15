@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class BadWordsControllerIntegrationTest extends ControllerIntegrationTest {
 
   private final ToolboxBadWordsClient client;

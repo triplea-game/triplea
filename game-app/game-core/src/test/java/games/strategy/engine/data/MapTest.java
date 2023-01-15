@@ -10,7 +10,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("UnmatchedTest")
 class MapTest {
   private GameData gameData = givenGameData().build();
 

@@ -6,7 +6,6 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class MuteUserControllerIntegrationTest extends ControllerIntegrationTest {
   private final ModeratorLobbyClient client;
 

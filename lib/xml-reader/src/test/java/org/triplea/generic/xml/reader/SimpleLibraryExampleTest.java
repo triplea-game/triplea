@@ -15,7 +15,6 @@ import org.triplea.generic.xml.reader.annotations.BodyText;
 import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
-@SuppressWarnings("UnmatchedTest")
 public class SimpleLibraryExampleTest extends AbstractXmlMapperTest {
 
   SimpleLibraryExampleTest() {

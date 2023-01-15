@@ -9,7 +9,7 @@ import org.triplea.generic.xml.reader.annotations.Tag;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 
 /** Checks that we can successfully cast attribute types to primitives. */
-@SuppressWarnings({"unused", "UnmatchedTest"})
+@SuppressWarnings("unused")
 public class XmlDataErrorTest extends AbstractXmlMapperTest {
   XmlDataErrorTest() {
     super("simple-tag.xml");

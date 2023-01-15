@@ -6,7 +6,6 @@ import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class ForgotPasswordControllerIntegrationTest extends ControllerIntegrationTest {
   private final ForgotPasswordClient client;
 

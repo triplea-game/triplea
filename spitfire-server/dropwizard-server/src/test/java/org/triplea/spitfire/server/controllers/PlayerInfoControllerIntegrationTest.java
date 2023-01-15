@@ -12,7 +12,6 @@ import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class PlayerInfoControllerIntegrationTest extends ControllerIntegrationTest {
 
   private final PlayerLobbyActionsClient client;

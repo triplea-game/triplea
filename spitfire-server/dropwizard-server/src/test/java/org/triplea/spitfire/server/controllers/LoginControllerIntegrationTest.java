@@ -12,7 +12,6 @@ import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class LoginControllerIntegrationTest extends ControllerIntegrationTest {
   private static final String USERNAME = "player";
   private static final String PASSWORD = Sha512Hasher.hashPasswordWithSalt("password");

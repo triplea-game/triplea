@@ -10,7 +10,6 @@ import org.triplea.http.client.remote.actions.RemoteActionsClient;
 import org.triplea.java.IpAddressParser;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class RemoteActionsControllerIntegrationTest extends ControllerIntegrationTest {
   final URI localhost;
   final RemoteActionsClient client;

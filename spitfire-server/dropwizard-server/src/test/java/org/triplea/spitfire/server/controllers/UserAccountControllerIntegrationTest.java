@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.user.account.UserAccountClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class UserAccountControllerIntegrationTest extends ControllerIntegrationTest {
   private final URI localhost;
   private final UserAccountClient client;
