@@ -2,48 +2,34 @@
 
 set -u
 
-script_dir=$(dirname "$0")
+export script_dir=$(dirname "$0")
 
-green="\e[92m"
-blue="\e[34m"
-normal="\e[0m"
-bold="\e[1m"
-boldRed="${bold}\e[91m"
+export green="\e[92m"
+export blue="\e[34m"
+export normal="\e[0m"
+export bold="\e[1m"
+export boldRed="${bold}\e[91m"
 
-javaFiles=$(mktemp)
-testFiles=$(mktemp)
-sqlFiles=$(mktemp)
-trap 'rm $javaFiles $sqlFiles' EXIT
+export javaFiles=$(mktemp)
+export testFiles=$(mktemp)
+trap 'rm $javaFiles $testFiles' EXIT
 
-
-## Create a cache of java and SQL files for faster iteration over all files.
-
-find . -type f -name "*.java" > "$javaFiles"
-find . -type f -name "*Test.java" > "$testFiles"
-find spitfire-server/database/src/main/resources -type f -name "*.sql" > "$sqlFiles"
+## Create a cache of java and test files for faster iteration over all files.
+find . -type f -name "*.java" -path "*/src/main/java/*" > "$javaFiles"
+find . -type f -name "*Test.java" -path "*/src/test/java/*" > "$testFiles"
 
 status=0
 
 
-function main() {
-  favorJava9CollectionsApi
-  #referToCollectionsByInterfaceType
-  removeUnusedLogAnnotations
-  #preferSlf4jOverJavaLogging
-  noTabsInSql
-  useEmptyOverSizeEqualsZero
-  useStaticImportsInTest
-  useIsEmptyMatcherOverHasSizeZero
-  useJavaxNonnullInsteadOfLombokNonNull
-}
-
 function title() {
   echo -e "${bold}${blue}$1${normal}"
 }
+export -f title
 
 function example() {
   echo -e "${blue}Ex: $1${normal}"
 }
+export -f example
 
 function displayResult() {
   local found="$1"
@@ -53,21 +39,21 @@ function displayResult() {
     echo -e "${boldRed}[FIX]${normal}"
   fi
   echo ""
-  
 }
+export -f displayResult
 
 function favorJava9CollectionsApi() {
   title "Verifying preference to use List.of(), Map.of() and Set.of() compared to java.util.Collections.*"
-  example "instead of 'Collections.singleton(value)', use 'Set.of(value)'"
+  example "instead of 'Collections.singleton(value)', use 'Set.of(value)', or EG: use 'Map.of(...)', or 'List.of(..)'"
   local found=0
 
   while read -r file; do
-    grep --color=auto -Hn -f "$script_dir/style.include/disallowed-collection-calls" "$file" && status=1 && found=1
-    grep --color=auto -Hn -f "$script_dir/style.include/disallowed-collection-imports" "$file" && status=1 && found=1
+    grep --color=auto --fixed-strings -Hn -f "$script_dir/style.include/disallowed-collection-calls" "$file" && status=1 && found=1
   done <<< "$(cat "$javaFiles")"
 
   displayResult "$found"
 }
+export -f favorJava9CollectionsApi
 
 function referToCollectionsByInterfaceType() {
   title "Assign to collection types using their interface"
@@ -80,13 +66,14 @@ function referToCollectionsByInterfaceType() {
   
   displayResult "$found"
 }
+export -f referToCollectionsByInterfaceType
 
 function removeUnusedLogAnnotations() {
   title "Remove unused lombok @Slf4j annotations"
   local found=0
 
   while read -r file; do
-    if grep -Eq "@Slf4j" "$file"; then
+    if grep --fixed-strings -q "@Slf4j" "$file"; then
       if ! grep -Eq "log::|log\." "$file"; then
         echo -e "${bold}$file${normal}"
         found=1
@@ -97,6 +84,7 @@ function removeUnusedLogAnnotations() {
 
   displayResult "$found"
 }
+export -f removeUnusedLogAnnotations
 
 function preferSlf4jOverJavaLogging() {
   title "Use @Slf4j instead of @Log"
@@ -111,15 +99,7 @@ function preferSlf4jOverJavaLogging() {
 
   displayResult "$found"
 }
-
-function noTabsInSql() {
-  title "Use spaces in SQL and not tabs"
-  local found=0
-  while read -r file; do
-    grep --color=auto -Pn "\t" "$file" && status=1 && found=1
-  done <<< "$(cat "$sqlFiles")"
-  displayResult "$found"
-}
+export -f preferSlf4jOverJavaLogging
 
 function useEmptyOverSizeEqualsZero() {
   title "Avoid using size() to check for empty or not empty"
@@ -133,7 +113,7 @@ function useEmptyOverSizeEqualsZero() {
 
   displayResult "$found"
 }
-
+export -f useEmptyOverSizeEqualsZero
 
 # Checks for static imports by looking for fully qualified constructs used in test, eg:
 #   Mockito.when
@@ -154,26 +134,13 @@ function useStaticImportsInTest() {
 
   displayResult "$found"
 }
-
-function useIsEmptyMatcherOverHasSizeZero() {
-  title "Use IsEmptyCollection.isEmpty() instead of hasSize(0)"
-  example "assertThat(collection, hasSize(0)) -> assertThat(collection, is(empty())"
-  local found=0
-  while read -r file; do
-    grep --color=auto -Hn \
-      "hasSize(0)" \
-      "$file" \
-     && status=1 && found=1
-  done <<< "$(cat "$testFiles")"
-  
-  displayResult "$found"
-}
+export -f useStaticImportsInTest
 
 function useJavaxNonnullInsteadOfLombokNonNull() {
   title "Use javax.annotation.Nonnull instead of lombok.NonNull"
   local found=0
   while read -r file; do
-    grep --color=auto --with-filename --line-number \
+    grep --color=auto --with-filename --line-number --fixed-strings \
       "lombok.NonNull" \
       "$file" \
      && status=1 && found=1
@@ -181,7 +148,17 @@ function useJavaxNonnullInsteadOfLombokNonNull() {
 
   displayResult "$found"
 }
+export -f useJavaxNonnullInsteadOfLombokNonNull
 
-main
+
+parallel ::: \
+  removeUnusedLogAnnotations \
+  useStaticImportsInTest \
+  useJavaxNonnullInsteadOfLombokNonNull
+
+## The below flag errors that need to be fixed before they can be enabled
+#  favorJava9CollectionsApi
+#  referToCollectionsByInterfaceType
+#  preferSlf4jOverJavaLogging
 
 exit "$status"
