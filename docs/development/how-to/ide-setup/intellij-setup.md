@@ -27,7 +27,7 @@ Plugin installation can be initiated from the JetBrains Marketplace web page, by
         1. after install finish configuration in: **Other Settings > Checkstyle**
             1. load checkstyle file by clicking on the "plus" and navigating to the file
             `.\IdeaProjects\triplea\config\checkstyle` (If you can't find it, you can download it from 
-             [the repository](https://github.com/triplea-game/triplea/blob/master/config/checkstyle/checkstyle.xml))
+             [the repository](https://github.com/triplea-game/triplea/blob/master/.build/checkstyle.xml))
             1. set checkstyle version
             1. set to scan all sources
       ![Screenshot from 2020-10-18 19-18-46

@@ -11,8 +11,8 @@
      1. [Install Plugin](http://eclipse-cs.sourceforge.net)
      1. Follow: https://checkstyle.org/eclipse-cs/#!/project-setup
      1. After step 3 "Activate Checkstyle for your project", select the TripleA configuration file
-      instead of "Sun Checks". Checkstyle file: [triplea/config/checkstyle/checkstyle.xml
-     ](https://github.com/triplea-game/triplea/blob/master/config/checkstyle/checkstyle.xml)
+      instead of "Sun Checks". Checkstyle file: [triplea/.build/checkstyle.xml
+     ](https://github.com/triplea-game/triplea/blob/master/.build/checkstyle.xml)
   - ***Lombok***
     1. Download [jar file](https://projectlombok.org/downloads/lombok.jar) and execute it: `java -jar lombok.jar`
        - [manual install](https://groups.google.com/forum/#!topic/project-lombok/3rVS0eXVl5U)
