@@ -1,9 +1,0 @@
-#!/bin/bash
-
-boldGreen="\e[1m\e[92m"
-normal="\e[0m"
-
-./gradlew --parallel spotlessApply checkStyleMain checkStyleTest \
-&& .build/code-convention-checks/run \
-&& .build/find-unused-or-unmatched-tests/run \
-&& echo -e "${boldGreen}SUCCESS${normal}"
