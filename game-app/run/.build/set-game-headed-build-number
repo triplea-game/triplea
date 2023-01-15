@@ -3,10 +3,9 @@
 # Overwrites the game-headed 'product.properties' file to have an updated build version
 
 scriptDir=$(dirname "$0")
-rootDir="$scriptDir/.."
-buildVersion=$($scriptDir/get-build-version)
+buildVersion=$("$scriptDir"/get-build-version)
+productPropertiesFile=$(find "$scriptDir/../../" -path "*src/main/resources/META-INF/*" -name "product.properties" -type f)
 
 set -x
 
-echo "version = $buildVersion" > \
-  "$rootDir/game-app/game-core/src/main/resources/META-INF/triplea/product.properties"
+echo "version = $buildVersion" > "$productPropertiesFile"
