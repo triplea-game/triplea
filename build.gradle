@@ -152,7 +152,7 @@ subprojects {
 
     checkstyle {
         toolVersion = "$checkstyleVersion"
-        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        configFile = rootProject.file('.build/checkstyle.xml')
         configProperties = [samedir: configFile.parent]
     }
 
@@ -182,7 +182,7 @@ subprojects {
 
     pmd {
         consoleOutput = true
-        ruleSetFiles = files(rootProject.file('config/pmd/pmd.xml'))
+        ruleSetFiles = files(rootProject.file('.build/pmd.xml'))
         ruleSets = []
         incrementalAnalysis = true
     }
