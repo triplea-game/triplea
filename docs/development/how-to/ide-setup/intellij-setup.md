@@ -39,8 +39,3 @@ Plugin installation can be initiated from the JetBrains Marketplace web page, by
   1. *PlantUML Integration*
         1. GraphViz also needs to be installed: <https://graphviz.org/download/>
 
-### Settings
-  1. *File > Import Settings*
-  1. Select file: [.ide-intellij/intellij-settings.zip
-   ](https://github.com/triplea-game/triplea/blob/master/.ide-intellij/intellij-settings.zip)
-
