@@ -13,7 +13,6 @@ import org.triplea.generic.xml.reader.annotations.TagList;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 
 /** Tests to verify validation is working as expected. */
-@SuppressWarnings({"unused", "UnmatchedTest"})
 public class JavaDataModelErrorTest extends AbstractXmlMapperTest {
 
   JavaDataModelErrorTest() {

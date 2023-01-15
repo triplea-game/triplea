@@ -51,7 +51,6 @@ import org.triplea.spitfire.server.ControllerIntegrationTest;
  * that have joined. So we expect 'moderator' to be the only player in the connected list, when
  * chatter joins we expect both moderator and chatter to be in the connected event list.
  */
-@SuppressWarnings({"UnmatchedTest", "SameParameterValue"})
 @RequiredArgsConstructor
 class LobbyChatIntegrationTest extends ControllerIntegrationTest {
   private static final int MESSAGE_TIMEOUT = 3000;

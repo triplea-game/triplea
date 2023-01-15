@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class GameChatHistoryControllerIntegrationTest extends ControllerIntegrationTest {
   private final ModeratorLobbyClient client;
 

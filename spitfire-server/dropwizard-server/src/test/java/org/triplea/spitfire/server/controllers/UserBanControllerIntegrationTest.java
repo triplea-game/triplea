@@ -15,7 +15,6 @@ import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class UserBanControllerIntegrationTest extends ControllerIntegrationTest {
 
   private final URI localhost;

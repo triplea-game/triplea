@@ -13,7 +13,6 @@ import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class ModeratorAuditHistoryControllerIntegrationTest extends ControllerIntegrationTest {
   private final URI localhost;
   private final ToolboxEventLogClient client;

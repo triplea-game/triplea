@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
  * @deprecated Do not use this class, this is here purely to allow serialization from older save
  *     games.
  */
-@SuppressWarnings({"MemberName", "UnmatchedTest"})
+@SuppressWarnings("MemberName")
 @Deprecated
 public final class Version implements Serializable, Comparable<Version> {
   private static final long serialVersionUID = -4770210855326775333L;

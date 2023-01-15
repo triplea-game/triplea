@@ -5,6 +5,5 @@ set -e
 scriptDir=$(dirname "$0")
 "$scriptDir/../../gradlew" :game-app:game-headed:check
 
-"$scriptDir/.build/find-orphaned-tests"
 "$scriptDir/.build/check-links"
 

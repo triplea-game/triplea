@@ -10,7 +10,6 @@ import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.Tag;
 
 /** Checks that we can successfully cast attribute types to primitives. */
-@SuppressWarnings("UnmatchedTest")
 public class AttributeDataCastingTest extends AbstractXmlMapperTest {
   AttributeDataCastingTest() {
     super("simple-tag.xml");

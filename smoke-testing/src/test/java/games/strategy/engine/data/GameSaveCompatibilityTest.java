@@ -13,7 +13,6 @@ import java.util.Collection;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-@SuppressWarnings("UnmatchedTest")
 class GameSaveCompatibilityTest {
 
   @ParameterizedTest

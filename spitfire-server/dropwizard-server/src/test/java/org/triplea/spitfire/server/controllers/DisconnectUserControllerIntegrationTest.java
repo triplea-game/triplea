@@ -7,7 +7,6 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class DisconnectUserControllerIntegrationTest extends ControllerIntegrationTest {
   private static final PlayerChatId CHAT_ID = PlayerChatId.of("chat-id");
   private final URI localhost;

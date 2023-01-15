@@ -12,7 +12,6 @@ import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.spitfire.server.ControllerIntegrationTest;
 
-@SuppressWarnings("UnmatchedTest")
 class ErrorReportControllerIntegrationTest extends ControllerIntegrationTest {
   private final ErrorReportClient client;
 
