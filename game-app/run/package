@@ -1,8 +1,9 @@
 #!/bin/bash
 
-## Builds TripleA game-installers and build artifacts suitable
-## for distribution.  Build artifacts will be created for each
-## sub-project and copied into: './build/artifacts'
+# Builds TripleA game-installers
+# The goal of this script is to build all of the installers and place
+# the installer executables into a build folder. From there, any files
+# located in that folder will be uploaded to github releases.
 
 ## install install4j
 scriptDir=$(dirname "$0")

@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -eEux
-
-script_dir=$(dirname "$0")
-"$script_dir/check-links"
-
