@@ -5,7 +5,6 @@ set -u
 function main() {
   .build/setup-database
   ./gradlew test jacocoTestReport \
-     --exclude-task :smoke-testing:test \
      --exclude-task :spitfire-server:lobby-module:test \
      --exclude-task :spitfire-server:maps-module:test \
      --exclude-task :spitfire-server:dropwizard-server:test
