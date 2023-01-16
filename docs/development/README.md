@@ -1,34 +1,68 @@
 # Developer Setup Guide
 
 ## Before Getting Started
-- Install JDK 11 (project is on this Java version)
-- [Install IDE](./how-to/ide-setup) (favor choosing IDEA)
+- Install JDK 11 (project is using this Java version)
+- [Install IDE](./how-to/ide-setup) (IDEA is better supported, YMMV with Eclipse)
   - Create as a gradle project (file > open project > select the build.gradle file))
-  - Usually TripleA and lobby are started from within IDE, look for checked in 'run configurations'.
 - Install docker
   - Docker for Mac can be obtained at: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
+  - Docker for linux (ubuntu): https://docs.docker.com/engine/install/ubuntu/
 
 ## Getting Started
 
-- Fork: <https://github.com/triplea-game/triplea>
-- Using your favorite git-client, clone the newly forked repository 
+- Fork & Clone: <https://github.com/triplea-game/triplea>
 - Setup IDE: [/docs/development/how-to/ide-setup](how-to/ide-setup)
 - Use a feature-branch workflow, see: [typical git workflow](reference/typical-git-workflow.md))
 - Submit pull request, see: [pull requests process](../project/pull-requests.md).
 
-## Compile and launch TripleA
+If you are new to Open Source & Github:
+  - https://docs.github.com/en/get-started/quickstart/contributing-to-projects
+  - [Create SSH Key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+    (usually you will not need to add the SSH key to your keychain, just create it and add it to github)
+
+## Compile and launch TripleA (CLI)
 
 ```bash
-./gradlew :game-app:game-headed:run
+./game-app/run/run
 ```
 
-For more detailed steps on building the project, see:
-- [how-to/cli-build-commands.md](reference/cli-build-commands.md)
+For more detailed steps on building the project with CLI, see:
+- [reference/cli-build-commands.md](reference/cli-build-commands.md)
 
-TripleA can also be launched from IDE as well, there  are run-configurations
-checked into the code that the IDE should automatically find.
+## Compile and launch TripleA (IDEA)
 
-## Launch Local Database
+IDE setup has the needed configurations for the project to compile. There are checked in launchers that
+IDEA should automatically find.  Look in 'run configurations' to launch the game-client.
+
+## Running all tests locally before PR (CLI)
+
+```
+./game-app/run/check
+```
+
+## Run Formatting
+
+We use 'google java format', be sure to install the plugin in your IDE to properly format
+from IDE. Everything can also be formatted from CLI:
+
+```
+./gradew spotlessApply
+```
+
+PR builds will fail if the code is not formatted with spotless.
+
+
+## Code Conventions (Style Guide)
+
+Full list of coding conventions can be found at: [reference/code-conventions](./reference/code-conventions)
+
+Please be sure to check these out so that you can fit the general style of the project.
+
+## Lobby Development
+ 
+### Launch Local Database
+
+Local database is needed to run the servers (lobby).
 
 ```bash
 # requires docker to be installed
@@ -42,26 +76,7 @@ After the database is launched you can:
 - run the full set of tests
 - launch a local lobby
 
-## Running all tests & checks locally before PR
-
-The verify script will execute all checks done as part of the PR
-builds. The verify script will launch a local database if it is not
-already running. 
-```
-cd .../triplea/
-./verify
-```
-
-## Run Formatting
-
-We use 'google java format', a plugin can be installed to IDE to properly format
-from IDE. Everything can be formatted as well from CLI:
-
-```
-./gradew spotlessApply
-```
-
-## Launch local lobby:
+### Launch local lobby
 
 Lobby can be launched via the checked-in run configurations from IDE, or from CLI:
 ```bash
@@ -92,9 +107,6 @@ To connect to local lobby, from the game client:
 ./spitfire-server/database/reset_docker_db
 ```
 
-## Code Conventions
-
-Full list of coding conventions can be found at: [reference/code-conventions](./reference/code-conventions)
 
 ## Deployment & Infrastructure Development
 
@@ -111,9 +123,11 @@ for more information.
 ## Save-Game Compatibility
 
 - Do not rename private fields or delete private fields of anything that extends `GameDataComponent`
+- Do not move class files (change package) of anything that extends `GameDataComponent`
 
-Game saves are done via object serialization that is then written to file. Renaming or deleting
-fields will prevent previous save games from loading.
+The above are to protect save game compatibility.  Game saves are done via Java object serialization. The serialized
+data is binary and written to file. Changing any object that was serialized to a game data file will prevent the
+save games from loading.
 
 ## Network Compatibility
 
@@ -121,7 +135,6 @@ fields will prevent previous save games from loading.
 
 ## Lots of Manual Testing Required
 
-A lot of code is not automatically verified via tests, any change should be tested pretty
-thoroughly and for a variety of maps and scenarios. This can be very time consuming for
-even the smallest of changes.
-
+A lot of code is not automatically verified via tests. If reasonable tests can be added, do so!
+Generally though even the smallest of changes will need to be manually and thoroughly tested
+in a variety of maps and scenarios.
