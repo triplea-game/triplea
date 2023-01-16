@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+scriptDir=$(dirname "$0")
+"$scriptDir/../../gradlew" --parallel \
+  lib:java-extra:check \
+  lib:swing-lib:check \
+  lib:swing-lib-test-support:check \
+  lib:test-common:check \
+  lib:websocket-client:check \
+  lib:websocket-server:check \
+  lib:xml-reader:check

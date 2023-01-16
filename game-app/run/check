@@ -10,3 +10,4 @@ scriptDir=$(dirname "$0")
   :game-app:smoke-testing:check
 
 "$scriptDir/.build/check-links"
+
