@@ -4,6 +4,9 @@ CLI build commands that can be run.
 ## Running Tests via CLI
 
 ```
+# Run game-app tests
+./game-app/run/check
+
 # Run tests for a (sub)project
 ./gradlew :game-app:game-core:test
 
@@ -17,8 +20,9 @@ CLI build commands that can be run.
 ./gradlew :game-app:game-core:test --tests 'games.strategy.triplea.UnitUtilsTest.*Units*'
 ```
 
-`gradle` uses caches heavily, thus, if nothing has changed, reruning a test will not actually run the test again but only recall its cached result.  To really re-execute a test you must run the task `:clean` or `:cleanTest` beforehand and supply the `--no-build-cache` option:
+`gradle` uses caches heavily, thus, if nothing has changed, re-running a test will not actually run the test again.
+To really re-execute a test use the `--rerun-tasks` option:
 ```
-./gradlew --no-build-cache :game-app:game-core:cleanTest :game-app:game-core:test
+./gradlew --rerun-tasks :game-app:game-core:test
 ```
 
