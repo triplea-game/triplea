@@ -1,37 +1,20 @@
 #!/bin/bash
 
-boldGreen="\e[1m\e[92m"
-normal="\e[0m"
+# This script runs all checks across the entire project.
 
 function main {
   checkDependency "docker"
-  runBuild
+  ./game-app/run/check
+  ./spitfire-server/run/check
 }
 
 # Verifies a given dependency is installed, if not, aborts
 function checkDependency {
   local depName="$1"
-  hash "$depName" || quit "ERROR: dependency not installed '$depName'"
-}
-
-function quit {
-  local errorMessage="$1"
-  echo "$errorMessage"
-  exit 1
-}
-
-function runBuild {
-  # Note, we cannot run database tests in parallel as they conflict with
-  # each other, so we run them in serial after running all other gradle checks
-  DATABASE_TESTS=":spitfire-server:check"
-
-  spitfire-server/database/start_docker_db \
-    && ./gradlew --parallel spotlessApply check -x $DATABASE_TESTS \
-    && ./gradlew $DATABASE_TESTS \
-    && .build/code-convention-checks/run \
-    && .build/find-unused-or-unmatched-tests/run \
-    && .build/check-links-and-yaml-syntax/run \
-    && echo -e "${boldGreen}SUCCESS${normal}"
+  if ! hash "$depName"; then
+    echo "ERROR: dependency not installed '$depName'"
+    exit 1
+  fi
 }
 
 main
