@@ -11,3 +11,5 @@ scriptDir=$(dirname "$0")
   lib:websocket-client:check \
   lib:websocket-server:check \
   lib:xml-reader:check
+
+"$scriptDir/../../.build/code-convention-checks/check-custom-style" lib
