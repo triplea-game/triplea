@@ -2,7 +2,14 @@
 
 set -u
 
-export script_dir=$(dirname "$0")
+export scriptDir=$(dirname "$0")
+basePath="$scriptDir/../../${1-.}"
+
+if [ ! -d "$basePath" ]; then
+  echo "Error, invalid path: $basePath"
+  echo "Check script arguments"
+  exit 1
+fi
 
 export green="\e[92m"
 export blue="\e[34m"
@@ -15,8 +22,8 @@ export testFiles=$(mktemp)
 trap 'rm $javaFiles $testFiles' EXIT
 
 ## Create a cache of java and test files for faster iteration over all files.
-find . -type f -name "*.java" -path "*/src/main/java/*" > "$javaFiles"
-find . -type f -name "*Test.java" -path "*/src/test/java/*" > "$testFiles"
+find "$basePath" -type f -name "*.java" -path "*/src/main/java/*" > "$javaFiles"
+find "$basePath" -type f -name "*Test.java" -path "*/src/test/java/*" > "$testFiles"
 
 status=0
 

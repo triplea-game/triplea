@@ -2,3 +2,4 @@
 
 scriptDir=$(dirname "$0")
 "$scriptDir/../../gradlew" :game-app:game-headed:run
+"$scriptDir/../../.build/code-convention-checks/check-custom-style" game-app
