@@ -1,8 +1,17 @@
-name: Unit Tests
+name: Lobby Build
 on:
   push:
-    branches: master
+    branches:
+      - master
+    paths:
+      - 'spitfire-server/**'
+      - 'http-clients/**'
+      - 'lib/**'
   pull_request:
+    paths:
+      - 'spitfire-server/**'
+      - 'http-clients/**'
+      - 'lib/**'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,5 +37,5 @@ jobs:
           distribution: temurin
           java-version: 11
       - name: Run Tests
-        run: .build/unit-testing/run
+        run: ./spitfire-server/run/check
 

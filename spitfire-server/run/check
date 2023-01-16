@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+scriptDir=$(dirname "$0")
+"$scriptDir/../../gradlew" :spitfire-server:dropwizard-server:check
+"$scriptDir/../.build/find-unused-dbunit-datasets"
