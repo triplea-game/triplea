@@ -32,7 +32,7 @@ jobs:
           INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
       - name: set build version variables
         run: |
-          BUILD_VERSION=$(.build/get-build-version)
+          BUILD_VERSION=$(game-app/run/.build/get-build-version)
           echo "build_version=$BUILD_VERSION" | tee -a $GITHUB_ENV
           echo "release_name=$(date +%Y-%B-%d) - $BUILD_VERSION" | tee -a $GITHUB_ENV
       - name: Create Github Release
