@@ -3,7 +3,7 @@
 set -u
 
 function main() {
-  .build/setup-database
+  spitfire-server/run/.build/setup-database
   ./gradlew test jacocoTestReport
   result="$?"
 
