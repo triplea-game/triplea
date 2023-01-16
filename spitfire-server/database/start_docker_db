@@ -11,12 +11,6 @@ function main() {
 
   runDocker
   waitForDatabaseToStart
-
-  echo -e "[${bold_green}Deploying schemas - running flyway${normal}]"
-  pwd
-  "$(dirname "$0")/../../gradlew" flywayMigrateAll
-
-  "$(dirname "$0")"/load_sample_data
   echo -e "[${bold_green}DONE${normal}]"
 }
 
