@@ -15,3 +15,4 @@ fi
 "$scriptDir/.build/setup-database"
 "$scriptDir/../../gradlew" :spitfire-server:dropwizard-server:check
 "$scriptDir/../run/.build/find-unused-dbunit-datasets"
+"$scriptDir/../../.build/code-convention-checks/check-custom-style" spitfire-server
