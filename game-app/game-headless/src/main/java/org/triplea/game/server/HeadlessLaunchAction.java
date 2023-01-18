@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.filter.ThresholdFilter;
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.MessengersChatTransmitter;
@@ -28,6 +29,7 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +41,21 @@ import org.triplea.sound.HeadlessSoundChannel;
 
 @Slf4j
 public class HeadlessLaunchAction implements LaunchAction {
+  // Skip resources loading is convenient for test context where we certainly do not need
+  // map specific resources. Headless bot is unlikely to need map resources at all. Until then,
+  // we have this flag that can be set for test context to skip map specific resource loading.
+  private static boolean skipMapResourceLoading = false;
 
   private final HeadlessGameServer headlessGameServer;
 
   public HeadlessLaunchAction(final HeadlessGameServer headlessGameServer) {
     this.headlessGameServer = headlessGameServer;
+  }
+
+  /** Map specific resource loading can be turned off when in a test context. */
+  @VisibleForTesting
+  public static void setSkipMapResourceLoading(boolean value) {
+    skipMapResourceLoading = value;
   }
 
   @Override
@@ -85,10 +97,16 @@ public class HeadlessLaunchAction implements LaunchAction {
       final Set<Player> players,
       final Chat chat) {
     final GameData gameData = game.getData();
-    final Path mapPath =
-        InstalledMapsListing.searchAllMapsForMapName(gameData.getMapName())
-            .orElseThrow(
-                () -> new IllegalStateException("Unable to find map: " + gameData.getMapName()));
+
+    final List<Path> mapPath =
+        skipMapResourceLoading
+            ? List.of()
+            : List.of(
+                InstalledMapsListing.searchAllMapsForMapName(gameData.getMapName())
+                    .orElseThrow(
+                        () ->
+                            new IllegalStateException(
+                                "Unable to find map: " + gameData.getMapName())));
     game.setResourceLoader(new ResourceLoader(mapPath));
     game.setDisplay(new HeadlessDisplay());
     game.setSoundChannel(new HeadlessSoundChannel());

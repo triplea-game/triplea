@@ -706,7 +706,7 @@ public class ServerGame extends AbstractGame {
   public void stopGameSequence(final String status, final String title) {
     delegateExecutionStopped =
         launchAction.promptGameStop(
-            status, title, getResourceLoader().getAssetPaths().stream().findAny().orElseThrow());
+            status, title, getResourceLoader().getAssetPaths().stream().findAny().orElse(null));
   }
 
   public boolean isGameSequenceRunning() {

@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -193,9 +194,10 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public boolean promptGameStop(String status, String title, Path mapLocation) {
+  public boolean promptGameStop(String status, String title, @Nullable Path mapLocation) {
     // now tell the HOST, and see if they want to continue the game.
-    String displayMessage = LocalizeHtml.localizeImgLinksInHtml(status, mapLocation);
+    String displayMessage =
+        mapLocation == null ? status : LocalizeHtml.localizeImgLinksInHtml(status, mapLocation);
     if (displayMessage.endsWith("</body>")) {
       displayMessage =
           displayMessage.substring(0, displayMessage.length() - "</body>".length())

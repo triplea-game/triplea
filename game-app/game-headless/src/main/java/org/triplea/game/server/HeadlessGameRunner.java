@@ -62,6 +62,8 @@ public final class HeadlessGameRunner {
         .build()
         .unzipMapFiles();
 
+    log.info(
+        "Using map folder: " + ClientSetting.mapFolderOverride.getValueOrThrow().toAbsolutePath());
     try {
       HeadlessGameServer.runHeadlessGameServer();
     } catch (final Exception e) {

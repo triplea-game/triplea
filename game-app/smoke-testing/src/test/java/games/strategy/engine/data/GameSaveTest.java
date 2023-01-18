@@ -7,13 +7,12 @@ import static org.hamcrest.io.FileMatchers.aFileWithSize;
 
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Checks that no error is encountered when saving a game on several different maps. This test
@@ -29,17 +28,18 @@ class GameSaveTest {
     GameTestUtils.setUp();
   }
 
+  /** Validates that we can properly create a save game file without any errors. */
   @ParameterizedTest
-  @CsvSource({
-    "map_making_tutorial,map/games/Test1.xml",
-    "minimap,map/games/minimap.xml",
-    "world_war_ii_revised,map/games/ww2v2.xml",
-    "pacific_challenge,map/games/Pacific_Theater_Solo_Challenge.xml",
-    "imperialism_1974_board_game,map/games/imperialism_1974_board_game.xml",
-  })
-  void testSaveGame(String mapName, String mapXmlPath) throws Exception {
-    GameSelectorModel gameSelector = GameTestUtils.loadGameFromURI(mapName, mapXmlPath);
-    ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
+  @ValueSource(
+      strings = {
+        "Test1.xml",
+        "minimap.xml",
+        "ww2v2.xml",
+        "Pacific_Theater_Solo_Challenge.xml",
+        "imperialism_1974_board_game.xml"
+      })
+  void testSaveGame(String mapXmlPath) throws Exception {
+    ServerGame game = GameTestUtils.setUpGameWithAis(mapXmlPath);
     Path saveFile = Files.createTempFile("save", GameDataFileUtils.getExtension());
     game.saveGame(saveFile);
     assertThat(saveFile.toFile(), is(not(aFileWithSize(0))));
