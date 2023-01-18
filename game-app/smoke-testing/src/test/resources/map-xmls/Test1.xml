@@ -1,5 +1,10 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
+<!--
+   This map is used for AI testing. It is intentionally a bit lopsided towards Russia
+   to help ensure that Russia can win relatively quickly. The map is kept simple to
+   help avoid a lot of AI calculations.
+ -->
 <game>
         <info name="Test1" version="1.0.0"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
@@ -7,27 +12,11 @@
                 <!-- Territory Definitions -->
                 <territory name="Berlin"/>
                 <territory name="Center"/>
-                <territory name="Corner 1"/>
-                <territory name="Corner 2"/>
                 <territory name="Moscow"/>
-                <territory name="SZ 1" water="true"/>
-                <territory name="SZ 2" water="true"/>
-                <territory name="SZ 3" water="true"/>
-                <territory name="SZ 4" water="true"/>
 
                 <!-- Territory Connections -->
-                <connection t1="Berlin" t2="SZ 4"/>
-                <connection t1="Corner 1" t2="SZ 2"/>
-                <connection t1="Corner 2" t2="SZ 3"/>
-                <connection t1="Moscow" t2="SZ 1"/>
-                <connection t1="SZ 1" t2="Center"/>
-                <connection t1="SZ 1" t2="SZ 2"/>
-                <connection t1="SZ 2" t2="Center"/>
-                <connection t1="SZ 3" t2="Center"/>
-                <connection t1="SZ 3" t2="SZ 1"/>
-                <connection t1="SZ 3" t2="SZ 4"/>
-                <connection t1="SZ 4" t2="Center"/>
-                <connection t1="SZ 4" t2="SZ 2"/>
+                <connection t1="Berlin" t2="Center"/>
+                <connection t1="Moscow" t2="Center"/>
         </map>
         <resourceList>
                 <resource name="PUs"/>
@@ -47,12 +36,6 @@
                 <unit name="armour"/>
                 <unit name="fighter"/>
                 <unit name="bomber"/>
-                <unit name="transport"/>
-                <unit name="submarine"/>
-                <unit name="destroyer"/>
-                <unit name="cruiser"/>
-                <unit name="carrier"/>
-                <unit name="battleship"/>
                 <unit name="factory"/>
                 <unit name="aaGun"/>
         </unitList>
@@ -60,8 +43,6 @@
                 <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
                 <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
-                <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
-                <delegate name="tech_Activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
                 <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
                 <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
                 <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
@@ -76,22 +57,18 @@
                         <step name="germansBid" delegate="bid" player="Germans" maxRunCount="1"/>
                         <step name="germansBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
 						
-                        <step name="russiansTech" delegate="tech" player="Russians"/>
                         <step name="russiansPurchase" delegate="purchase" player="Russians"/>
                         <step name="russiansCombatMove" delegate="move" player="Russians"/>
                         <step name="russiansBattle" delegate="battle" player="Russians"/>
                         <step name="russiansNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
                         <step name="russiansPlace" delegate="place" player="Russians"/>
-                        <step name="russiansTechActivation" delegate="tech_Activation" player="Russians"/>
                         <step name="russiansEndTurn" delegate="endTurn" player="Russians"/>
 						
-                        <step name="germansTech" delegate="tech" player="Germans"/>
                         <step name="germansPurchase" delegate="purchase" player="Germans"/>
                         <step name="germansCombatMove" delegate="move" player="Germans"/>
                         <step name="germansBattle" delegate="battle" player="Germans"/>
                         <step name="germansNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
                         <step name="germansPlace" delegate="place" player="Germans"/>
-                        <step name="germansTechActivation" delegate="tech_Activation" player="Germans"/>
                         <step name="germansEndTurn" delegate="endTurn" player="Germans"/>
 						
                         <step name="endRoundStep" delegate="endRound"/>
@@ -119,30 +96,6 @@
                         <cost resource="PUs" quantity="12"/>
                         <result resourceOrUnit="bomber" quantity="1"/>
                 </productionRule>
-                <productionRule name="buytransport">
-                        <cost resource="PUs" quantity="7"/>
-                        <result resourceOrUnit="transport" quantity="1"/>
-                </productionRule>
-                <productionRule name="buysubmarine">
-                        <cost resource="PUs" quantity="6"/>
-                        <result resourceOrUnit="submarine" quantity="1"/>
-                </productionRule>
-                <productionRule name="buydestroyer">
-                        <cost resource="PUs" quantity="8"/>
-                        <result resourceOrUnit="destroyer" quantity="1"/>
-                </productionRule>
-                <productionRule name="buycruiser">
-                        <cost resource="PUs" quantity="12"/>
-                        <result resourceOrUnit="cruiser" quantity="1"/>
-                </productionRule>
-                <productionRule name="buycarrier">
-                        <cost resource="PUs" quantity="14"/>
-                        <result resourceOrUnit="carrier" quantity="1"/>
-                </productionRule>
-                <productionRule name="buybattleship">
-                        <cost resource="PUs" quantity="20"/>
-                        <result resourceOrUnit="battleship" quantity="1"/>
-                </productionRule>
                 <productionRule name="buyfactory">
                         <cost resource="PUs" quantity="15"/>
                         <result resourceOrUnit="factory" quantity="1"/>
@@ -158,12 +111,6 @@
                         <frontierRules name="buyarmour"/>
                         <frontierRules name="buyfighter"/>
                         <frontierRules name="buybomber"/>
-                        <frontierRules name="buytransport"/>
-                        <frontierRules name="buysubmarine"/>
-                        <frontierRules name="buydestroyer"/>
-                        <frontierRules name="buycruiser"/>
-                        <frontierRules name="buycarrier"/>
-                        <frontierRules name="buybattleship"/>
                         <frontierRules name="buyfactory"/>
                         <frontierRules name="buyaaGun"/>
                 </productionFrontier>
@@ -173,12 +120,6 @@
                         <frontierRules name="buyarmour"/>
                         <frontierRules name="buyfighter"/>
                         <frontierRules name="buybomber"/>
-                        <frontierRules name="buytransport"/>
-                        <frontierRules name="buysubmarine"/>
-                        <frontierRules name="buydestroyer"/>
-                        <frontierRules name="buycruiser"/>
-                        <frontierRules name="buycarrier"/>
-                        <frontierRules name="buybattleship"/>
                         <frontierRules name="buyfactory"/>
                         <frontierRules name="buyaaGun"/>
                 </productionFrontier>
@@ -188,35 +129,6 @@
 
         </production>
         <attachmentList>
-                    <attachment name="techAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
-                           <option name="superSub" value="False"/>
-                           <option name="jetPower" value="False"/>
-                           <option name="shipyards" value="False"/>
-                           <option name="aARadar" value="False"/>
-                           <option name="longRangeAir" value="False"/>
-                           <option name="heavyBomber" value="False"/>
-                           <option name="improvedArtillerySupport" value="False"/>
-                           <option name="rocket" value="False"/>
-                           <option name="paratroopers" value="False"/>
-                           <option name="increasedFactoryProduction" value="False"/>
-                           <option name="warBonds" value="False"/>
-                           <option name="mechanizedInfantry" value="False"/>
-                    </attachment>
-                    <attachment name="techAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
-                           <option name="superSub" value="False"/>
-                           <option name="jetPower" value="False"/>
-                           <option name="shipyards" value="False"/>
-                           <option name="aARadar" value="False"/>
-                           <option name="longRangeAir" value="False"/>
-                           <option name="heavyBomber" value="False"/>
-                           <option name="improvedArtillerySupport" value="False"/>
-                           <option name="rocket" value="False"/>
-                           <option name="paratroopers" value="False"/>
-                           <option name="increasedFactoryProduction" value="False"/>
-                           <option name="warBonds" value="False"/>
-                           <option name="mechanizedInfantry" value="False"/>
-                    </attachment>
-
                     <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="attack" value="1"/>
@@ -254,50 +166,6 @@
                          <option name="isAir" value="true"/>
                          <option name="transportCapacity" value="2"/>
                     </attachment>
-                    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
-                         <option name="movement" value="2"/>
-                         <option name="attack" value="0"/>
-                         <option name="defense" value="0"/>
-                         <option name="transportCapacity" value="5"/>
-                         <option name="isSea" value="true"/>
-                    </attachment>
-                    <attachment name="unitAttachment" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
-                         <option name="movement" value="2"/>
-                         <option name="attack" value="2"/>
-                         <option name="defense" value="1"/>
-                         <option name="isSea" value="true"/>
-                         <option name="isSub" value="true"/>
-                    </attachment>
-                    <attachment name="unitAttachment" attachTo="destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
-                         <option name="movement" value="2"/>
-                         <option name="attack" value="2"/>
-                         <option name="defense" value="2"/>
-                         <option name="isSea" value="true"/>
-                         <option name="isDestroyer" value="true"/>
-                    </attachment>
-                    <attachment name="unitAttachment" attachTo="cruiser" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
-                         <option name="movement" value="2"/>
-                         <option name="attack" value="3"/>
-                         <option name="defense" value="3"/>
-                         <option name="canBombard" value="true"/>
-                         <option name="isSea" value="true"/>
-                         <option name="hitPoints" value="1"/>
-                    </attachment>
-                    <attachment name="unitAttachment" attachTo="carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
-                         <option name="movement" value="2"/>
-                         <option name="attack" value="1"/>
-                         <option name="defense" value="2"/>
-                         <option name="isSea" value="true"/>
-                         <option name="carrierCapacity" value="2"/>
-                    </attachment>
-                    <attachment name="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
-                         <option name="movement" value="2"/>
-                         <option name="attack" value="4"/>
-                         <option name="defense" value="4"/>
-                         <option name="canBombard" value="true"/>
-                         <option name="isSea" value="true"/>
-                         <option name="hitPoints" value="2"/>
-                    </attachment>
                     <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
                          <option name="isFactory" value="true"/>
                     </attachment>
@@ -307,19 +175,10 @@
                          <option name="movement" value="1"/>
                     </attachment>
 					
-                    <attachment name="territoryAttachment" attachTo="SZ 3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
-                        <option name="production" value="1"/>
-                   </attachment>
                     <attachment name="territoryAttachment" attachTo="Moscow" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="5"/>
                         <option name="capital" value="Russians"/>
                         <option name="victoryCity" value="1"/>
-                   </attachment>
-                    <attachment name="territoryAttachment" attachTo="Corner 2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
-                   </attachment>
-                    <attachment name="territoryAttachment" attachTo="SZ 2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
-                        <option name="production" value="1"/>
                    </attachment>
                     <attachment name="territoryAttachment" attachTo="Berlin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="5"/>
@@ -330,38 +189,22 @@
                         <option name="production" value="4"/>
                         <option name="victoryCity" value="1"/>
                    </attachment>
-                    <attachment name="territoryAttachment" attachTo="Corner 1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
-                   </attachment>
         </attachmentList>
         <initialize>
                 <ownerInitialize>
-                        <territoryOwner territory="SZ 3" owner="Russians"/>
                         <territoryOwner territory="Moscow" owner="Russians"/>
-                        <territoryOwner territory="Corner 2" owner="Russians"/>
-						
-                        <territoryOwner territory="SZ 2" owner="Germans"/>
                         <territoryOwner territory="Berlin" owner="Germans"/>
                         <territoryOwner territory="Center" owner="Germans"/>
-                        <territoryOwner territory="Corner 1" owner="Germans"/>
                 </ownerInitialize>
                 <unitInitialize>
                         <unitPlacement unitType="infantry" territory="Moscow" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="bomber" territory="Moscow" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="armour" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="factory" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="aaGun" territory="Moscow" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Corner 2" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="transport" territory="SZ 1" quantity="2" owner="Russians"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 1" quantity="2" owner="Russians"/>
-						
                         <unitPlacement unitType="infantry" territory="Berlin" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="factory" territory="Berlin" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="aaGun" territory="Berlin" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="infantry" territory="Corner 1" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="infantry" territory="SZ 4" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="armour" territory="SZ 4" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="transport" territory="SZ 4" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 4" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="cruiser" territory="SZ 4" quantity="1" owner="Germans"/>
                 </unitInitialize>
                 <resourceInitialize>
                         <resourceGiven player="Russians" resource="PUs" quantity="5"/>
