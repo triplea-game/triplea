@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nullable;
 import org.triplea.game.chat.ChatModel;
 
 /**
@@ -64,7 +65,7 @@ public interface LaunchAction {
    *
    * @return true if the game should stop execution, false otherwise.
    */
-  boolean promptGameStop(String status, String title, Path mapLocation);
+  boolean promptGameStop(String status, String title, @Nullable Path mapLocation);
 
   PlayerTypes.Type getDefaultLocalPlayerType();
 }

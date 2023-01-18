@@ -1,14 +1,12 @@
 package games.strategy.engine.data;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
-import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.net.Messengers;
@@ -16,8 +14,6 @@ import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -30,24 +26,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessLaunchAction;
-import org.triplea.io.ContentDownloader;
 import org.triplea.io.FileUtils;
 import org.triplea.java.collections.CollectionUtils;
 
 @UtilityClass
 @Slf4j
 public class GameTestUtils {
-  private static Path tempHome;
-  private static final Map<URI, Path> downloadedMaps = new HashMap<>();
-
   public static void setUp() throws IOException {
-    // Use a temp dir for downloaded maps to not interfere with the real downloadedMaps folder.
-    if (tempHome == null) {
-      tempHome = FileUtils.newTempFolder();
-      System.setProperty("user.home", tempHome.toString());
-    }
+
+    HeadlessLaunchAction.setSkipMapResourceLoading(true);
+
     ClientSetting.setPreferences(new MemoryPreferences());
-    assertTrue(ClientFileSystemHelper.getUserMapsFolder().startsWith(tempHome.toAbsolutePath()));
     ClientSetting.aiMovePauseDuration.setValue(0);
     ClientSetting.aiCombatStepPauseDuration.setValue(0);
 
@@ -58,36 +47,16 @@ public class GameTestUtils {
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
   }
 
-  public static GameSelectorModel loadGameFromURI(String mapName, String mapXmlPath)
-      throws Exception {
-    GameSelectorModel gameSelector = new GameSelectorModel();
-    gameSelector.load(downloadMap(getMapDownloadURI(mapName), mapName).resolve(mapXmlPath));
-    return gameSelector;
-  }
+  public static ServerGame setUpGameWithAis(String xmlName) {
+    Path xmlFilePath = Path.of("src", "test", "resources", "map-xmls", xmlName);
+    if (!Files.exists(xmlFilePath)) {
+      throw new IllegalStateException(
+          "Error, expected test file to exist: " + xmlFilePath.toAbsolutePath());
+    }
 
-  private static Path downloadMap(URI uri, String mapName) {
-    return downloadedMaps.computeIfAbsent(
-        uri,
-        key -> {
-          Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve(mapName + ".zip");
-          log.info("Downloading from: " + uri);
-          try {
-            try (ContentDownloader downloader = new ContentDownloader(uri)) {
-              Files.copy(downloader.getStream(), targetTempFileToDownloadTo);
-            }
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-          return ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo).orElseThrow();
-        });
-  }
-
-  private static URI getMapDownloadURI(String mapName) throws URISyntaxException {
-    return new URI(String.format("https://github.com/triplea-maps/%s/archive/master.zip", mapName));
-  }
-
-  public static ServerGame setUpGameWithAis(GameSelectorModel gameSelector) {
-    GameData gameData = gameSelector.getGameData();
+    GameData gameData =
+        GameParser.parse(xmlFilePath)
+            .orElseThrow(() -> new RuntimeException("Error parsing file: " + xmlFilePath));
     Map<String, PlayerTypes.Type> playerTypes = new HashMap<>();
     for (var player : gameData.getPlayerList().getPlayers()) {
       playerTypes.put(player.getName(), PlayerTypes.PRO_AI);

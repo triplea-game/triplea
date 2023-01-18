@@ -7,15 +7,12 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * End-to-end test that starts all-AI games on a selected set of maps and verifies they conclude
@@ -29,13 +26,9 @@ public class AiGameTest {
     GameTestUtils.setUp();
   }
 
-  @ParameterizedTest
-  @CsvSource({
-    "map_making_tutorial,map/games/Test1.xml",
-  })
-  void testAiGame(String mapName, String mapXmlPath) throws Exception {
-    GameSelectorModel gameSelector = GameTestUtils.loadGameFromURI(mapName, mapXmlPath);
-    ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
+  @Test
+  void testAiGame() {
+    ServerGame game = GameTestUtils.setUpGameWithAis("Test1.xml");
     game.setStopGameOnDelegateExecutionStop(true);
     while (!game.isGameOver()) {
       if (game.getData().getSequence().getRound() > 100) {
@@ -55,9 +48,7 @@ public class AiGameTest {
   @RepeatedTest(10)
   // Run the first round of all-AI game several times. Ensure no errors and no winner so early.
   void testFirstRoundTenTimes() throws Exception {
-    GameSelectorModel gameSelector =
-        GameTestUtils.loadGameFromURI("map_making_tutorial", "map/games/Test1.xml");
-    ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
+    ServerGame game = GameTestUtils.setUpGameWithAis("Test1.xml");
     game.setStopGameOnDelegateExecutionStop(true);
     while (!game.isGameOver() && game.getData().getSequence().getRound() < 2) {
       game.runNextStep();
@@ -73,8 +64,8 @@ public class AiGameTest {
   }
 
   @Test
-  void testAiGameWithConsumedUnits() throws Exception {
-    ServerGame game = loadImperialism1974();
+  void testAiGameWithConsumedUnits() {
+    ServerGame game = GameTestUtils.setUpGameWithAis("imperialism_1974_board_game.xml");
     game.getData().preGameDisablePlayers(p -> !p.getName().equals("Blue"));
     game.setUpGameForRunningSteps();
 
@@ -94,8 +85,8 @@ public class AiGameTest {
   }
 
   @Test
-  void testAiGameMovingConsumedUnitsToFactories() throws Exception {
-    ServerGame game = loadImperialism1974();
+  void testAiGameMovingConsumedUnitsToFactories() {
+    ServerGame game = GameTestUtils.setUpGameWithAis("imperialism_1974_board_game.xml");
     GameData gameData = game.getData();
     gameData.preGameDisablePlayers(p -> !p.getName().equals("Blue"));
     game.setUpGameForRunningSteps();
@@ -125,13 +116,6 @@ public class AiGameTest {
     // Verify that the Culiacan wealth was moved to Oaxaca (that has a port).
     assertThat(GameTestUtils.countUnitsOfType(oaxaca, blue, "wealth"), is(1));
     assertThat(GameTestUtils.countUnitsOfType(culiacan, blue, "wealth"), is(0));
-  }
-
-  private ServerGame loadImperialism1974() throws Exception {
-    GameSelectorModel gameSelector =
-        GameTestUtils.loadGameFromURI(
-            "imperialism_1974_board_game", "map/games/imperialism_1974_board_game.xml");
-    return GameTestUtils.setUpGameWithAis(gameSelector);
   }
 
   private String getResourceSummary(GameData gameData) {
