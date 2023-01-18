@@ -1,0 +1,2084 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="=ATARI=" version="1.3.2"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Taclobau"/>
+    <territory name="Anique"/>
+    <territory name="W.D"/>
+    <territory name="Palawan"/>
+    <territory name="N.China"/>
+    <territory name="N.Surgie"/>
+    <territory name="Catan"/>
+    <territory name="Cama"/>
+    <territory name="N.D"/>
+    <territory name="Tarlac"/>
+    <territory name="N.Negros"/>
+    <territory name="Cagayan"/>
+    <territory name="Manacuin"/>
+    <territory name="San F."/>
+    <territory name="Baslian"/>
+    <territory name="N.P"/>
+    <territory name="Clark Field"/>
+    <territory name="E.Aklan"/>
+    <territory name="E.M"/>
+    <territory name="E.L"/>
+    <territory name="E.I"/>
+    <territory name="Compo"/>
+    <territory name="Kaosiung"/>
+    <territory name="Kaliuga"/>
+    <territory name="E.China"/>
+    <territory name="S.Z"/>
+    <territory name="Calamba"/>
+    <territory name="S.P"/>
+    <territory name="S.M"/>
+    <territory name="S.L"/>
+    <territory name="Sultan"/>
+    <territory name="Ifuago"/>
+    <territory name="Bulacan"/>
+    <territory name="S.Cama"/>
+    <territory name="S.Formosa"/>
+    <territory name="S.Agusa"/>
+    <territory name="N.Formosa"/>
+    <territory name="Manila"/>
+    <territory name="S.Ilocos"/>
+    <territory name="N.Ilocos"/>
+    <territory name="Laoag"/>
+    <territory name="E.Mindo"/>
+    <territory name="Lanas"/>
+    <territory name="Lanao"/>
+    <territory name="E.Davao"/>
+    <territory name="S.Lanao"/>
+    <territory name="Kota"/>
+    <territory name="Aurora"/>
+    <territory name="Cotambo"/>
+    <territory name="Masbate"/>
+    <territory name="N.Samar"/>
+    <territory name="N.Borneo"/>
+    <territory name="Aklan"/>
+    <territory name="Lucena"/>
+    <territory name="Iloio"/>
+    <territory name="Abra"/>
+    <territory name="Dupan"/>
+    <territory name="Cotabo"/>
+    <territory name="Bataan C."/>
+    <territory name="Cebu"/>
+    <territory name="S.Surgi"/>
+    <territory name="Amoy"/>
+    <territory name="N.Zamboanga"/>
+    <territory name="M.T."/>
+    <territory name="Batangas"/>
+    <territory name="E.Sarunga"/>
+    <territory name="Misamis"/>
+    <territory name="Albay"/>
+    <territory name="Legazpi"/>
+    <territory name="Bukidnon"/>
+    <territory name="Quezon"/>
+    <territory name="Sandauan"/>
+    <territory name="N.Agusa"/>
+    <territory name="Bon"/>
+    <territory name="Bava"/>
+    <territory name="Zamboang"/>
+    <territory name="Z.M."/>
+    <territory name="Davao"/>
+    <territory name="Quirino"/>
+    <territory name="W.China"/>
+    <territory name="W.Mindo"/>
+    <territory name="Bohol"/>
+    <territory name="Leyte"/>
+    <territory name="Sarunga"/>
+    <territory name="Ladiz"/>
+    <territory name="S.Negros"/>
+    <territory name="Llagan"/>
+    <territory name="Apayao"/>
+    <territory name="Baguioi"/>
+    <territory name="Panga"/>
+    <territory name="S.China"/>
+    <territory name="N.Nueva"/>
+    <territory name="Samar"/>
+    <territory name="E.Samar"/>
+    <territory name="E.Z"/>
+    <territory name="Sulu"/>
+    <territory name="Borneo"/>
+    <territory name="E.Borneo"/>
+    <territory name="S.Borneo"/>
+    <territory name="sz13" water="true"/>
+    <territory name="Marquin" water="true"/>
+    <territory name="sz1" water="true"/>
+    <territory name="sz2" water="true"/>
+    <territory name="sz3" water="true"/>
+    <territory name="sz4" water="true"/>
+    <territory name="sz5" water="true"/>
+    <territory name="sz6" water="true"/>
+    <territory name="sz7" water="true"/>
+    <territory name="sz8" water="true"/>
+    <territory name="sz9" water="true"/>
+    <territory name="sz10" water="true"/>
+    <territory name="sz11" water="true"/>
+    <territory name="sz12" water="true"/>
+    <territory name="sz14" water="true"/>
+    <territory name="sz15" water="true"/>
+    <territory name="sz16" water="true"/>
+    <territory name="sz17" water="true"/>
+    <territory name="sz18" water="true"/>
+    <territory name="sz19" water="true"/>
+    <territory name="sz20" water="true"/>
+    <territory name="sz21" water="true"/>
+    <territory name="sz22" water="true"/>
+    <territory name="sz23" water="true"/>
+    <territory name="sz24" water="true"/>
+    <territory name="sz25" water="true"/>
+    <territory name="sz26" water="true"/>
+    <territory name="sz27" water="true"/>
+    <territory name="sz28" water="true"/>
+    <territory name="sz29" water="true"/>
+    <territory name="sz30" water="true"/>
+    <territory name="sz31" water="true"/>
+    <territory name="sz32" water="true"/>
+    <territory name="sz34" water="true"/>
+    <territory name="sz35" water="true"/>
+    <territory name="sz36" water="true"/>
+    <territory name="sz37" water="true"/>
+    <territory name="sz38" water="true"/>
+    <territory name="sz39" water="true"/>
+    <territory name="sz40" water="true"/>
+    <territory name="sz41" water="true"/>
+    <territory name="Raa" water="true"/>
+    <territory name="sz43" water="true"/>
+    <territory name="sz44" water="true"/>
+    <territory name="sz45" water="true"/>
+    <territory name="sz46" water="true"/>
+    <territory name="sz47" water="true"/>
+    <territory name="sz48" water="true"/>
+    <territory name="sz49" water="true"/>
+    <territory name="sz50" water="true"/>
+    <territory name="sz51" water="true"/>
+    <territory name="sz52" water="true"/>
+    <territory name="sz53" water="true"/>
+    <territory name="Surgi" water="true"/>
+    <territory name="sz55" water="true"/>
+    <territory name="sz56" water="true"/>
+    <territory name="sz57" water="true"/>
+    <territory name="sz58" water="true"/>
+    <territory name="sz59" water="true"/>
+    <territory name="sz60" water="true"/>
+    <territory name="sz61" water="true"/>
+    <territory name="sz62" water="true"/>
+    <territory name="sz63" water="true"/>
+    <territory name="sz64" water="true"/>
+    <territory name="sz65" water="true"/>
+    <territory name="sz66" water="true"/>
+    <territory name="sz67" water="true"/>
+    <territory name="sz68" water="true"/>
+    <territory name="sz69" water="true"/>
+    <territory name="sz70" water="true"/>
+    <territory name="sz71" water="true"/>
+    <territory name="sz72" water="true"/>
+    <territory name="73" water="true"/>
+    <territory name="sz74" water="true"/>
+    <territory name="sz75" water="true"/>
+    <territory name="sz76" water="true"/>
+    <territory name="sz78" water="true"/>
+    <territory name="Tawi" water="true"/>
+    <territory name="sz80" water="true"/>
+    <territory name="sz81" water="true"/>
+    <territory name="sz82" water="true"/>
+    <territory name="sz83" water="true"/>
+    <territory name="Sieg 2008" water="true"/>
+    <territory name="sz85" water="true"/>
+    <territory name="sz86" water="true"/>
+    <territory name="sz87" water="true"/>
+    <territory name="sz88" water="true"/>
+    <territory name="sz89" water="true"/>
+    <territory name="sz90" water="true"/>
+    <territory name="sz91" water="true"/>
+    <!-- Territory Connections -->
+    <connection t1="W.China" t2="N.China"/>
+    <connection t1="W.China" t2="S.China"/>
+    <connection t1="N.China" t2="S.China"/>
+    <connection t1="E.China" t2="S.China"/>
+    <connection t1="E.China" t2="N.China"/>
+    <connection t1="Amoy" t2="S.China"/>
+    <connection t1="Amoy" t2="E.China"/>
+    <connection t1="Amoy" t2="sz1"/>
+    <connection t1="E.China" t2="sz1"/>
+    <connection t1="S.China" t2="sz1"/>
+    <connection t1="sz2" t2="sz1"/>
+    <connection t1="sz6" t2="sz1"/>
+    <connection t1="sz7" t2="sz1"/>
+    <connection t1="sz2" t2="sz7"/>
+    <connection t1="sz2" t2="N.Formosa"/>
+    <connection t1="sz2" t2="S.Formosa"/>
+    <connection t1="S.Formosa" t2="N.Formosa"/>
+    <connection t1="S.Formosa" t2="Kaosiung"/>
+    <connection t1="sz7" t2="Kaosiung"/>
+    <connection t1="S.Formosa" t2="sz7"/>
+    <connection t1="S.Formosa" t2="sz8"/>
+    <connection t1="S.Formosa" t2="sz3"/>
+    <connection t1="N.Formosa" t2="sz8"/>
+    <connection t1="sz7" t2="sz8"/>
+    <connection t1="sz3" t2="sz8"/>
+    <connection t1="sz7" t2="sz6"/>
+    <connection t1="sz3" t2="sz4"/>
+    <connection t1="sz3" t2="sz9"/>
+    <connection t1="sz8" t2="sz9"/>
+    <connection t1="sz4" t2="sz9"/>
+    <connection t1="sz4" t2="sz5"/>
+    <connection t1="sz9" t2="sz10"/>
+    <connection t1="sz5" t2="sz10"/>
+    <connection t1="sz11" t2="sz6"/>
+    <connection t1="sz12" t2="sz6"/>
+    <connection t1="sz12" t2="sz7"/>
+    <connection t1="sz12" t2="sz13"/>
+    <connection t1="sz8" t2="sz13"/>
+    <connection t1="sz9" t2="sz13"/>
+    <connection t1="sz14" t2="sz13"/>
+    <connection t1="sz19" t2="sz13"/>
+    <connection t1="N.Ilocos" t2="sz13"/>
+    <connection t1="Cagayan" t2="sz13"/>
+    <connection t1="Cagayan" t2="Apayao"/>
+    <connection t1="Cagayan" t2="N.Ilocos"/>
+    <connection t1="Cagayan" t2="Llagan"/>
+    <connection t1="Cagayan" t2="Kaliuga"/>
+    <connection t1="N.Ilocos" t2="S.Ilocos"/>
+    <connection t1="Abra" t2="S.Ilocos"/>
+    <connection t1="Abra" t2="N.Ilocos"/>
+    <connection t1="Abra" t2="Apayao"/>
+    <connection t1="N.Ilocos" t2="Apayao"/>
+    <connection t1="N.Ilocos" t2="Laoag"/>
+    <connection t1="sz12" t2="Laoag"/>
+    <connection t1="sz18" t2="Laoag"/>
+    <connection t1="Apayao" t2="Kaliuga"/>
+    <connection t1="Abra" t2="Kaliuga"/>
+    <connection t1="M.T." t2="Kaliuga"/>
+    <connection t1="Cagayan" t2="Kaliuga"/>
+    <connection t1="Llagan" t2="Kaliuga"/>
+    <connection t1="Llagan" t2="M.T."/>
+    <connection t1="Llagan" t2="Ifuago"/>
+    <connection t1="Llagan" t2="Quirino"/>
+    <connection t1="Llagan" t2="Aurora"/>
+    <connection t1="Llagan" t2="sz19"/>
+    <connection t1="Llagan" t2="sz20"/>
+    <connection t1="N.Ilocos" t2="sz18"/>
+    <connection t1="S.Ilocos" t2="sz18"/>
+    <connection t1="S.Ilocos" t2="M.T."/>
+    <connection t1="Abra" t2="M.T."/>
+    <connection t1="S.Ilocos" t2="San F."/>
+    <connection t1="sz25" t2="San F."/>
+    <connection t1="S.Ilocos" t2="Baguioi"/>
+    <connection t1="S.Ilocos" t2="sz25"/>
+    <connection t1="M.T." t2="Baguioi"/>
+    <connection t1="Ifuago" t2="Baguioi"/>
+    <connection t1="San F." t2="Baguioi"/>
+    <connection t1="N.Nueva" t2="Baguioi"/>
+    <connection t1="Ifuago" t2="Baguioi"/>
+    <connection t1="N.Nueva" t2="Llagan"/>
+    <connection t1="N.Nueva" t2="Quirino"/>
+    <connection t1="N.Nueva" t2="Aurora"/>
+    <connection t1="Aurora" t2="Quirino"/>
+    <connection t1="sz20" t2="Aurora"/>
+    <connection t1="sz26" t2="Aurora"/>
+    <connection t1="N.Nueva" t2="Clark Field"/>
+    <connection t1="Dupan" t2="Clark Field"/>
+    <connection t1="Dupan" t2="San F."/>
+    <connection t1="Dupan" t2="sz25"/>
+    <connection t1="Dupan" t2="Tarlac"/>
+    <connection t1="Dupan" t2="Z.M."/>
+    <connection t1="sz25" t2="Z.M."/>
+    <connection t1="sz31" t2="Z.M."/>
+    <connection t1="Bataan C." t2="Z.M."/>
+    <connection t1="Tarlac" t2="Z.M."/>
+    <connection t1="Bataan C." t2="sz31"/>
+    <connection t1="Bataan C." t2="sz32"/>
+    <connection t1="Bataan C." t2="Panga"/>
+    <connection t1="Tarlac" t2="Panga"/>
+    <connection t1="Tarlac" t2="Clark Field"/>
+    <connection t1="Clark Field" t2="Panga"/>
+    <connection t1="Bulacan" t2="Panga"/>
+    <connection t1="Bulacan" t2="Clark Field"/>
+    <connection t1="Bulacan" t2="Lucena"/>
+    <connection t1="Clark Field" t2="Lucena"/>
+    <connection t1="sz26" t2="Lucena"/>
+    <connection t1="sz26" t2="sz90"/>
+    <connection t1="Marquin" t2="Lucena"/>
+    <connection t1="Manila" t2="Lucena"/>
+    <connection t1="Calamba" t2="Lucena"/>
+    <connection t1="Calamba" t2="Manila"/>
+    <connection t1="Calamba" t2="sz32"/>
+    <connection t1="Bulacan" t2="sz32"/>
+    <connection t1="Bulacan" t2="Manila"/>
+    <connection t1="sz32" t2="Manila"/>
+    <connection t1="Calamba" t2="Batangas"/>
+    <connection t1="sz32" t2="Batangas"/>
+    <connection t1="Marquin" t2="Batangas"/>
+    <connection t1="Lucena" t2="Batangas"/>
+    <connection t1="Quezon" t2="Lucena"/>
+    <connection t1="Quezon" t2="Marquin"/>
+    <connection t1="Quezon" t2="sz34"/>
+    <connection t1="Quezon" t2="sz90"/>
+    <connection t1="E.L" t2="sz90"/>
+    <connection t1="E.L" t2="sz26"/>
+    <connection t1="sz90" t2="sz26"/>
+    <connection t1="sz90" t2="sz27"/>
+    <connection t1="Quezon" t2="Cama"/>
+    <connection t1="sz90" t2="Cama"/>
+    <connection t1="sz90" t2="S.Cama"/>
+    <connection t1="Cama" t2="S.Cama"/>
+    <connection t1="sz34" t2="S.Cama"/>
+    <connection t1="Albay" t2="S.Cama"/>
+    <connection t1="Albay" t2="sz35"/>
+    <connection t1="Albay" t2="sz34"/>
+    <connection t1="Albay" t2="Legazpi"/>
+    <connection t1="sz35" t2="Legazpi"/>
+    <connection t1="sz35" t2="Catan"/>
+    <connection t1="sz27" t2="Catan"/>
+    <connection t1="sz27" t2="sz35"/>
+    <connection t1="sz28" t2="sz35"/>
+    <connection t1="sz28" t2="sz36"/>
+    <connection t1="sz28" t2="sz37"/>
+    <connection t1="sz22" t2="sz37"/>
+    <connection t1="sz32" t2="sz40"/>
+    <connection t1="sz32" t2="sz31"/>
+    <connection t1="sz32" t2="sz30"/>
+    <connection t1="sz31" t2="sz30"/>
+    <connection t1="sz29" t2="sz30"/>
+    <connection t1="sz38" t2="sz30"/>
+    <connection t1="sz39" t2="sz30"/>
+    <connection t1="sz38" t2="sz39"/>
+    <connection t1="sz39" t2="sz40"/>
+    <connection t1="sz39" t2="sz32"/>
+    <connection t1="sz39" t2="sz48"/>
+    <connection t1="sz39" t2="sz49"/>
+    <connection t1="sz32" t2="Marquin"/>
+    <connection t1="sz34" t2="Marquin"/>
+    <connection t1="Raa" t2="Marquin"/>
+    <connection t1="Raa" t2="sz34"/>
+    <connection t1="W.Mindo" t2="E.Mindo"/>
+    <connection t1="W.Mindo" t2="sz32"/>
+    <connection t1="W.Mindo" t2="sz40"/>
+    <connection t1="W.Mindo" t2="sz41"/>
+    <connection t1="Marquin" t2="E.Mindo"/>
+    <connection t1="Raa" t2="E.Mindo"/>
+    <connection t1="Raa" t2="Bon"/>
+    <connection t1="sz34" t2="Bon"/>
+    <connection t1="sz34" t2="Masbate"/>
+    <connection t1="sz44" t2="Masbate"/>
+    <connection t1="sz35" t2="sz34"/>
+    <connection t1="sz35" t2="sz36"/>
+    <connection t1="sz34" t2="E.M"/>
+    <connection t1="E.M" t2="Masbate"/>
+    <connection t1="N.Samar" t2="sz35"/>
+    <connection t1="N.Samar" t2="sz34"/>
+    <connection t1="N.Samar" t2="sz36"/>
+    <connection t1="N.Samar" t2="Samar"/>
+    <connection t1="N.Samar" t2="E.Samar"/>
+    <connection t1="Samar" t2="E.Samar"/>
+    <connection t1="sz36" t2="E.Samar"/>
+    <connection t1="sz45" t2="E.Samar"/>
+    <connection t1="Taclobau" t2="Samar"/>
+    <connection t1="Taclobau" t2="E.Samar"/>
+    <connection t1="Taclobau" t2="Leyte"/>
+    <connection t1="Taclobau" t2="sz45"/>
+    <connection t1="Taclobau" t2="sz44"/>
+    <connection t1="Leyte" t2="S.L"/>
+    <connection t1="sz44" t2="Leyte"/>
+    <connection t1="sz45" t2="Leyte"/>
+    <connection t1="sz52" t2="Leyte"/>
+    <connection t1="sz52" t2="S.L"/>
+    <connection t1="sz53" t2="S.L"/>
+    <connection t1="sz45" t2="S.L"/>
+    <connection t1="sz44" t2="sz52"/>
+    <connection t1="sz53" t2="sz52"/>
+    <connection t1="sz61" t2="sz52"/>
+    <connection t1="sz61" t2="sz62"/>
+    <connection t1="sz62" t2="sz53"/>
+    <connection t1="sz45" t2="sz53"/>
+    <connection t1="Surgi" t2="sz53"/>
+    <connection t1="sz44" t2="sz51"/>
+    <connection t1="Raa" t2="sz43"/>
+    <connection t1="Raa" t2="sz41"/>
+    <connection t1="sz41" t2="sz43"/>
+    <connection t1="Anique" t2="sz43"/>
+    <connection t1="Anique" t2="Raa"/>
+    <connection t1="Anique" t2="Aklan"/>
+    <connection t1="Raa" t2="Aklan"/>
+    <connection t1="sz34" t2="Aklan"/>
+    <connection t1="E.Aklan" t2="Aklan"/>
+    <connection t1="E.Aklan" t2="sz34"/>
+    <connection t1="E.Aklan" t2="sz44"/>
+    <connection t1="E.Aklan" t2="sz51"/>
+    <connection t1="Ladiz" t2="sz51"/>
+    <connection t1="E.Aklan" t2="Ladiz"/>
+    <connection t1="Aklan" t2="Ladiz"/>
+    <connection t1="Anique" t2="Ladiz"/>
+    <connection t1="Iloio" t2="Ladiz"/>
+    <connection t1="Iloio" t2="sz51"/>
+    <connection t1="sz44" t2="sz43"/>
+    <connection t1="Palawan" t2="sz57"/>
+    <connection t1="Palawan" t2="sz58"/>
+    <connection t1="Palawan" t2="N.P"/>
+    <connection t1="Palawan" t2="S.P"/>
+    <connection t1="sz65" t2="S.P"/>
+    <connection t1="sz57" t2="S.P"/>
+    <connection t1="sz66" t2="S.P"/>
+    <connection t1="sz58" t2="S.P"/>
+    <connection t1="sz49" t2="N.P"/>
+    <connection t1="sz58" t2="N.P"/>
+    <connection t1="sz49" t2="sz58"/>
+    <connection t1="sz49" t2="sz50"/>
+    <connection t1="sz58" t2="sz50"/>
+    <connection t1="sz59" t2="sz50"/>
+    <connection t1="N.Negros" t2="S.Negros"/>
+    <connection t1="N.Negros" t2="sz44"/>
+    <connection t1="N.Negros" t2="sz52"/>
+    <connection t1="N.Negros" t2="sz51"/>
+    <connection t1="S.Negros" t2="sz60"/>
+    <connection t1="S.Negros" t2="sz61"/>
+    <connection t1="S.Negros" t2="sz52"/>
+    <connection t1="Cebu" t2="sz52"/>
+    <connection t1="Cebu" t2="sz44"/>
+    <connection t1="Bohol" t2="sz52"/>
+    <connection t1="Bohol" t2="sz53"/>
+    <connection t1="sz51" t2="sz60"/>
+    <connection t1="sz51" t2="sz59"/>
+    <connection t1="sz58" t2="sz59"/>
+    <connection t1="sz66" t2="sz59"/>
+    <connection t1="sz67" t2="sz59"/>
+    <connection t1="sz68" t2="sz59"/>
+    <connection t1="sz60" t2="sz59"/>
+    <connection t1="sz60" t2="sz61"/>
+    <connection t1="sz60" t2="sz68"/>
+    <connection t1="N.Surgie" t2="sz45"/>
+    <connection t1="N.Surgie" t2="sz53"/>
+    <connection t1="N.Surgie" t2="Surgi"/>
+    <connection t1="S.Surgi" t2="Surgi"/>
+    <connection t1="S.Surgi" t2="sz53"/>
+    <connection t1="S.Surgi" t2="sz63"/>
+    <connection t1="S.Surgi" t2="N.Agusa"/>
+    <connection t1="S.Surgi" t2="S.Agusa"/>
+    <connection t1="sz62" t2="N.Agusa"/>
+    <connection t1="Misamis" t2="N.Agusa"/>
+    <connection t1="S.Agusa" t2="N.Agusa"/>
+    <connection t1="Misamis" t2="S.Agusa"/>
+    <connection t1="Misamis" t2="Bukidnon"/>
+    <connection t1="S.Agusa" t2="Bukidnon"/>
+    <connection t1="Lanas" t2="Bukidnon"/>
+    <connection t1="S.Lanao" t2="Bukidnon"/>
+    <connection t1="S.Lanao" t2="Misamis"/>
+    <connection t1="Lanas" t2="S.Lanao"/>
+    <connection t1="Lanas" t2="Cotabo"/>
+    <connection t1="Lanas" t2="Manacuin"/>
+    <connection t1="Cotabo" t2="Manacuin"/>
+    <connection t1="Sultan" t2="Manacuin"/>
+    <connection t1="Sultan" t2="Cotabo"/>
+    <connection t1="Sultan" t2="Cotambo"/>
+    <connection t1="Sultan" t2="Sarunga"/>
+    <connection t1="Cotambo" t2="Sarunga"/>
+    <connection t1="Cotambo" t2="Bava"/>
+    <connection t1="Sultan" t2="Bava"/>
+    <connection t1="Cotabo" t2="Bava"/>
+    <connection t1="Davao" t2="Bava"/>
+    <connection t1="Cotabo" t2="Davao"/>
+    <connection t1="sz72" t2="Davao"/>
+    <connection t1="W.D" t2="Davao"/>
+    <connection t1="N.D" t2="Davao"/>
+    <connection t1="Cotabo" t2="Bukidnon"/>
+    <connection t1="N.D" t2="Bukidnon"/>
+    <connection t1="W.D" t2="Bukidnon"/>
+    <connection t1="N.D" t2="S.Agusa"/>
+    <connection t1="Compo" t2="S.Agusa"/>
+    <connection t1="E.Davao" t2="S.Agusa"/>
+    <connection t1="Compo" t2="E.Davao"/>
+    <connection t1="Compo" t2="N.D"/>
+    <connection t1="Compo" t2="sz72"/>
+    <connection t1="sz72" t2="E.Davao"/>
+    <connection t1="73" t2="E.Davao"/>
+    <connection t1="sz72" t2="Bava"/>
+    <connection t1="sz85" t2="Bava"/>
+    <connection t1="E.Sarunga" t2="Bava"/>
+    <connection t1="E.Sarunga" t2="Cotambo"/>
+    <connection t1="E.Sarunga" t2="sz85"/>
+    <connection t1="sz71" t2="sz85"/>
+    <connection t1="sz72" t2="sz85"/>
+    <connection t1="sz88" t2="sz85"/>
+    <connection t1="Sieg 2008" t2="sz85"/>
+    <connection t1="sz82" t2="sz85"/>
+    <connection t1="sz87" t2="sz85"/>
+    <connection t1="sz71" t2="Sarunga"/>
+    <connection t1="sz85" t2="Sarunga"/>
+    <connection t1="sz85" t2="Cotambo"/>
+    <connection t1="sz71" t2="Sultan"/>
+    <connection t1="sz70" t2="Sultan"/>
+    <connection t1="sz70" t2="Manacuin"/>
+    <connection t1="sz70" t2="Lanas"/>
+    <connection t1="S.Lanao" t2="sz70"/>
+    <connection t1="S.Lanao" t2="sz61"/>
+    <connection t1="E.Z" t2="sz70"/>
+    <connection t1="E.Z" t2="S.Lanao"/>
+    <connection t1="E.Z" t2="Lanao"/>
+    <connection t1="sz61" t2="Lanao"/>
+    <connection t1="E.Z" t2="N.Zamboanga"/>
+    <connection t1="Lanao" t2="N.Zamboanga"/>
+    <connection t1="E.Z" t2="S.Z"/>
+    <connection t1="S.Z" t2="N.Zamboanga"/>
+    <connection t1="Zamboang" t2="N.Zamboanga"/>
+    <connection t1="S.Z" t2="Zamboang"/>
+    <connection t1="S.Z" t2="sz69"/>
+    <connection t1="S.Z" t2="sz70"/>
+    <connection t1="sz60" t2="N.Zamboanga"/>
+    <connection t1="sz61" t2="N.Zamboanga"/>
+    <connection t1="sz68" t2="N.Zamboanga"/>
+    <connection t1="sz70" t2="sz69"/>
+    <connection t1="sz68" t2="sz69"/>
+    <connection t1="Baslian" t2="sz69"/>
+    <connection t1="Baslian" t2="sz81"/>
+    <connection t1="Baslian" t2="sz68"/>
+    <connection t1="sz68" t2="Zamboang"/>
+    <connection t1="sz69" t2="Zamboang"/>
+    <connection t1="sz68" t2="sz81"/>
+    <connection t1="sz69" t2="sz81"/>
+    <connection t1="sz68" t2="sz67"/>
+    <connection t1="sz81" t2="sz70"/>
+    <connection t1="sz81" t2="sz71"/>
+    <connection t1="sz81" t2="sz82"/>
+    <connection t1="sz81" t2="Tawi"/>
+    <connection t1="sz81" t2="sz67"/>
+    <connection t1="Sulu" t2="sz67"/>
+    <connection t1="Sulu" t2="sz81"/>
+    <connection t1="Sulu" t2="Tawi"/>
+    <connection t1="sz37" t2="sz36"/>
+    <connection t1="sz37" t2="sz46"/>
+    <connection t1="sz45" t2="sz36"/>
+    <connection t1="sz45" t2="sz46"/>
+    <connection t1="sz46" t2="sz36"/>
+    <connection t1="sz45" t2="Surgi"/>
+    <connection t1="sz45" t2="sz55"/>
+    <connection t1="Surgi" t2="sz63"/>
+    <connection t1="Surgi" t2="sz55"/>
+    <connection t1="Surgi" t2="sz64"/>
+    <connection t1="73" t2="sz63"/>
+    <connection t1="sz63" t2="sz64"/>
+    <connection t1="73" t2="sz88"/>
+    <connection t1="73" t2="sz89"/>
+    <connection t1="73" t2="sz74"/>
+    <connection t1="73" t2="sz64"/>
+    <connection t1="sz55" t2="sz46"/>
+    <connection t1="sz55" t2="sz64"/>
+    <connection t1="sz74" t2="sz64"/>
+    <connection t1="sz74" t2="sz89"/>
+    <connection t1="sz88" t2="sz89"/>
+    <connection t1="sz87" t2="sz89"/>
+    <connection t1="sz88" t2="sz87"/>
+    <connection t1="E.I" t2="sz87"/>
+    <connection t1="E.I" t2="Sieg 2008"/>
+    <connection t1="sz86" t2="sz87"/>
+    <connection t1="Sieg 2008" t2="sz87"/>
+    <connection t1="Sieg 2008" t2="sz86"/>
+    <connection t1="Sieg 2008" t2="sz82"/>
+    <connection t1="Sieg 2008" t2="sz83"/>
+    <connection t1="sz82" t2="sz83"/>
+    <connection t1="sz82" t2="sz80"/>
+    <connection t1="sz82" t2="sz71"/>
+    <connection t1="sz70" t2="sz71"/>
+    <connection t1="sz80" t2="sz83"/>
+    <connection t1="sz80" t2="Tawi"/>
+    <connection t1="sz80" t2="sz78"/>
+    <connection t1="Tawi" t2="sz67"/>
+    <connection t1="Tawi" t2="sz78"/>
+    <connection t1="Tawi" t2="sz76"/>
+    <connection t1="sz66" t2="sz75"/>
+    <connection t1="sz66" t2="sz58"/>
+    <connection t1="sz66" t2="sz76"/>
+    <connection t1="sz66" t2="sz67"/>
+    <connection t1="sz66" t2="sz65"/>
+    <connection t1="sz76" t2="sz75"/>
+    <connection t1="sz76" t2="sz78"/>
+    <connection t1="sz76" t2="sz67"/>
+    <connection t1="sz16" t2="sz23"/>
+    <connection t1="sz72" t2="sz88"/>
+    <connection t1="Kota" t2="sz75"/>
+    <connection t1="Kota" t2="N.Borneo"/>
+    <connection t1="sz75" t2="N.Borneo"/>
+    <connection t1="Borneo" t2="N.Borneo"/>
+    <connection t1="E.Borneo" t2="N.Borneo"/>
+    <connection t1="E.Borneo" t2="Borneo"/>
+    <connection t1="E.Borneo" t2="sz76"/>
+    <connection t1="E.Borneo" t2="sz75"/>
+    <connection t1="E.Borneo" t2="sz78"/>
+    <connection t1="sz78" t2="Borneo"/>
+    <connection t1="S.Borneo" t2="Borneo"/>
+    <connection t1="S.Borneo" t2="Sandauan"/>
+    <connection t1="S.Borneo" t2="sz78"/>
+    <connection t1="Sandauan" t2="sz78"/>
+    <connection t1="sz38" t2="sz29"/>
+    <connection t1="sz38" t2="sz47"/>
+    <connection t1="sz56" t2="sz47"/>
+    <connection t1="sz56" t2="sz65"/>
+    <connection t1="sz75" t2="sz65"/>
+    <connection t1="sz56" t2="sz57"/>
+    <connection t1="sz49" t2="sz57"/>
+    <connection t1="sz65" t2="sz57"/>
+    <connection t1="sz43" t2="sz51"/>
+    <connection t1="sz51" t2="sz50"/>
+    <connection t1="sz50" t2="sz41"/>
+    <connection t1="sz41" t2="sz49"/>
+    <connection t1="sz40" t2="sz41"/>
+    <connection t1="sz40" t2="sz91"/>
+    <connection t1="sz41" t2="sz91"/>
+    <connection t1="sz48" t2="sz38"/>
+    <connection t1="sz48" t2="sz47"/>
+    <connection t1="sz48" t2="sz56"/>
+    <connection t1="sz48" t2="sz57"/>
+    <connection t1="sz48" t2="sz49"/>
+    <connection t1="sz12" t2="sz11"/>
+    <connection t1="sz16" t2="sz11"/>
+    <connection t1="sz17" t2="sz11"/>
+    <connection t1="sz17" t2="sz12"/>
+    <connection t1="sz18" t2="sz12"/>
+    <connection t1="sz18" t2="sz25"/>
+    <connection t1="sz17" t2="sz24"/>
+    <connection t1="sz17" t2="sz25"/>
+    <connection t1="sz17" t2="sz23"/>
+    <connection t1="sz17" t2="sz16"/>
+    <connection t1="sz23" t2="sz24"/>
+    <connection t1="sz24" t2="sz25"/>
+    <connection t1="sz24" t2="sz29"/>
+    <connection t1="sz24" t2="sz30"/>
+    <connection t1="sz24" t2="sz31"/>
+    <connection t1="sz25" t2="sz31"/>
+    <connection t1="sz23" t2="sz29"/>
+    <connection t1="sz9" t2="sz14"/>
+    <connection t1="sz10" t2="sz15"/>
+    <connection t1="sz19" t2="sz14"/>
+    <connection t1="sz14" t2="sz15"/>
+    <connection t1="sz14" t2="sz20"/>
+    <connection t1="sz14" t2="sz21"/>
+    <connection t1="sz15" t2="sz22"/>
+    <connection t1="sz15" t2="sz21"/>
+    <connection t1="sz19" t2="sz20"/>
+    <connection t1="sz21" t2="sz20"/>
+    <connection t1="sz21" t2="sz22"/>
+    <connection t1="sz20" t2="sz26"/>
+    <connection t1="sz26" t2="sz27"/>
+    <connection t1="sz27" t2="sz28"/>
+    <connection t1="sz21" t2="sz27"/>
+    <connection t1="sz21" t2="sz28"/>
+    <connection t1="sz22" t2="sz28"/>
+    <connection t1="sz43" t2="sz44"/>
+    <connection t1="sz7" t2="sz13"/>
+    <connection t1="N.D" t2="W.D"/>
+    <connection t1="sz14" t2="sz10"/>
+    <connection t1="N.Formosa" t2="sz3"/>
+    <connection t1="Cagayan" t2="sz19"/>
+    <connection t1="Ifuago" t2="N.Nueva"/>
+    <connection t1="Dupan" t2="N.Nueva"/>
+    <connection t1="Baguioi" t2="Dupan"/>
+    <connection t1="Aurora" t2="Clark Field"/>
+    <connection t1="Z.M." t2="Panga"/>
+    <connection t1="S.M" t2="sz91"/>
+    <connection t1="Cotabo" t2="W.D"/>
+    <connection t1="Lucena" t2="sz90"/>
+    <connection t1="sz44" t2="sz34"/>
+    <connection t1="S.Cama" t2="Quezon"/>
+    <connection t1="S.Cama" t2="sz35"/>
+    <connection t1="Samar" t2="sz44"/>
+    <connection t1="E.Mindo" t2="sz32"/>
+    <connection t1="N.Nueva" t2="Ifuago"/>
+    <connection t1="sz20" t2="sz27"/>
+    <connection t1="sz18" t2="sz17"/>
+    <connection t1="E.Davao" t2="S.Surgi"/>
+    <connection t1="S.Lanao" t2="Lanao"/>
+    <connection t1="sz32" t2="Panga"/>
+    <connection t1="sz72" t2="73"/>
+    <connection t1="Iloio" t2="Anique"/>
+    <connection t1="sz51" t2="Anique"/>
+    <connection t1="sz49" t2="sz91"/>
+    <connection t1="Ifuago" t2="M.T."/>
+    <connection t1="sz39" t2="sz91"/>
+    <connection t1="sz27" t2="S.Cama"/>
+    <connection t1="sz62" t2="Misamis"/>
+    <connection t1="sz62" t2="S.Lanao"/>
+    <connection t1="sz62" t2="sz52"/>
+    <connection t1="sz43" t2="sz50"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="G.Hisaichi" optional="false"/>
+    <player name="G.Masaharu" optional="false"/>
+    <player name="Americans" optional="false"/>
+    <player name="Philipines" optional="false"/>
+    <player name="British" optional="false"/>
+    <!-- Axis alliance -->
+    <alliance player="G.Hisaichi" alliance="Axis"/>
+    <alliance player="G.Masaharu" alliance="Axis"/>
+    <!-- Allies alliance -->
+    <alliance player="British" alliance="Allies"/>
+    <alliance player="Philipines" alliance="Allies"/>
+    <alliance player="Americans" alliance="Allies"/>
+  </playerList>
+  <unitList>
+    <unit name="Infantry"/>
+    <unit name="Elite"/>
+    <unit name="Armour"/>
+    <unit name="Halftrack"/>
+    <unit name="Scout"/>
+    <unit name="Fighter"/>
+    <unit name="L.Fighter"/>
+    <unit name="EarlyFighter"/>
+    <unit name="Bomber"/>
+    <unit name="NakajimaG5N"/>
+    <unit name="Lancaster"/>
+    <unit name="Transport"/>
+    <unit name="B.Transport"/>
+    <unit name="Battleship"/>
+    <unit name="Carrier"/>
+    <unit name="B.Carrier"/>
+    <unit name="B29"/>
+    <unit name="T.Boat"/>
+    <unit name="Submarine"/>
+    <unit name="Factory"/>
+    <unit name="AAGun"/>
+    <unit name="Bunker"/>
+    <unit name="Artillery"/>
+    <unit name="Destroyer"/>
+    <unit name="Cruiser"/>
+    <unit name="H.Cruiser"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="G.HisaichiBid" delegate="bid" player="G.Hisaichi" maxRunCount="1"/>
+      <step name="G.HisaichiBidPlace" delegate="placeBid" player="G.Hisaichi" maxRunCount="1"/>
+      <step name="G.MasaharuBid" delegate="bid" player="G.Masaharu" maxRunCount="1"/>
+      <step name="G.MasaharuBidPlace" delegate="placeBid" player="G.Masaharu" maxRunCount="1"/>
+      <step name="americanBid" delegate="bid" player="Americans" maxRunCount="1"/>
+      <step name="americanBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
+      <step name="PhilipinesBid" delegate="bid" player="Philipines" maxRunCount="1"/>
+      <step name="PhilipinesBidPlace" delegate="placeBid" player="Philipines" maxRunCount="1"/>
+      <step name="britishBid" delegate="bid" player="British" maxRunCount="1"/>
+      <step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
+      <!-- G.Hisaichi Game Sequence -->
+      <step name="G.HisaichiTech" delegate="tech" player="G.Hisaichi"/>
+      <step name="G.HisaichiTechActivation" delegate="tech_activation" player="G.Hisaichi"/>
+      <step name="G.HisaichiPurchase" delegate="purchase" player="G.Hisaichi"/>
+      <step name="G.HisaichiCombatMove" delegate="move" player="G.Hisaichi"/>
+      <step name="G.HisaichiBattle" delegate="battle" player="G.Hisaichi"/>
+      <step name="G.HisaichiNonCombatMove" delegate="move" player="G.Hisaichi" display="Non Combat Move"/>
+      <step name="G.HisaichiPlace" delegate="place" player="G.Hisaichi"/>
+      <step name="G.HisaichiEndTurn" delegate="endTurn" player="G.Hisaichi"/>
+      <!-- G.Masaharu Game Sequence -->
+      <step name="G.MasaharuTech" delegate="tech" player="G.Masaharu"/>
+      <step name="G.MasaharuTechActivation" delegate="tech_activation" player="G.Masaharu"/>
+      <step name="G.MasaharuPurchase" delegate="purchase" player="G.Masaharu"/>
+      <step name="G.MasaharuCombatMove" delegate="move" player="G.Masaharu"/>
+      <step name="G.MasaharuBattle" delegate="battle" player="G.Masaharu"/>
+      <step name="G.MasaharuNonCombatMove" delegate="move" player="G.Masaharu" display="Non Combat Move"/>
+      <step name="G.MasaharuPlace" delegate="place" player="G.Masaharu"/>
+      <step name="G.MasaharuEndTurn" delegate="endTurn" player="G.Masaharu"/>
+      <!-- Americans Game Sequence -->
+      <step name="americanTech" delegate="tech" player="Americans"/>
+      <step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
+      <step name="americanPurchase" delegate="purchase" player="Americans"/>
+      <step name="americanCombatMove" delegate="move" player="Americans"/>
+      <step name="americanBattle" delegate="battle" player="Americans"/>
+      <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
+      <step name="americanPlace" delegate="place" player="Americans"/>
+      <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
+      <!-- Philipines Game Sequence -->
+      <step name="PhilipinesTech" delegate="tech" player="Philipines"/>
+      <step name="PhilipinesTechActivation" delegate="tech_activation" player="Philipines"/>
+      <step name="PhilipinesPurchase" delegate="purchase" player="Philipines"/>
+      <step name="PhilipinesCombatMove" delegate="move" player="Philipines"/>
+      <step name="PhilipinesBattle" delegate="battle" player="Philipines"/>
+      <step name="PhilipinesNonCombatMove" delegate="move" player="Philipines" display="Non Combat Move"/>
+      <step name="PhilipinesPlace" delegate="place" player="Philipines"/>
+      <step name="PhilipinesEndTurn" delegate="endTurn" player="Philipines"/>
+      <!-- British Game Sequence -->
+      <step name="britishTech" delegate="tech" player="British"/>
+      <step name="britishTechActivation" delegate="tech_activation" player="British"/>
+      <step name="britishPurchase" delegate="purchase" player="British"/>
+      <step name="britishCombatMove" delegate="move" player="British"/>
+      <step name="britishBattle" delegate="battle" player="British"/>
+      <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
+      <step name="britishPlace" delegate="place" player="British"/>
+      <step name="britishEndTurn" delegate="endTurn" player="British"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="Infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyElite">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="Elite" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="Artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="Armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHalftrack">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="Halftrack" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyScout">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="Scout" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="Fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyL.Fighter">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="L.Fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyEarlyFighter">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="EarlyFighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="Bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyNakajimaG5N">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="NakajimaG5N" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyLancaster">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="Lancaster" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransport">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="Transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyB.Transport">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="B.Transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrier">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="Carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyB.Carrier">
+      <cost resource="PUs" quantity="25"/>
+      <result resourceOrUnit="B.Carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyB29">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="B29" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyT.Boat">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="T.Boat" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyer">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="Destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleship">
+      <cost resource="PUs" quantity="24"/>
+      <result resourceOrUnit="Battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarine">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="Submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCruiser">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="Cruiser" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyH.Cruiser">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="H.Cruiser" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactory">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="Factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="AAGun" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="productionG.Hisaichi">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyElite"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyEarlyFighter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyL.Fighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyNakajimaG5N"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buyB.Transport"/>
+      <frontierRules name="buyT.Boat"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyB.Carrier"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyCruiser"/>
+      <frontierRules name="buyH.Cruiser"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionG.Masaharu">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyElite"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyEarlyFighter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyL.Fighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyNakajimaG5N"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buyB.Transport"/>
+      <frontierRules name="buyT.Boat"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyB.Carrier"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyCruiser"/>
+      <frontierRules name="buyH.Cruiser"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionAmericans">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyElite"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyEarlyFighter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyL.Fighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyB29"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buyB.Transport"/>
+      <frontierRules name="buyT.Boat"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyB.Carrier"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyCruiser"/>
+      <frontierRules name="buyH.Cruiser"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionPhilipines">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyElite"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyEarlyFighter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buyT.Boat"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionBritish">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyElite"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyEarlyFighter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyL.Fighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyLancaster"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buyB.Transport"/>
+      <frontierRules name="buyT.Boat"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyB.Carrier"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyCruiser"/>
+      <frontierRules name="buyH.Cruiser"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <playerProduction player="G.Masaharu" frontier="productionG.Masaharu"/>
+    <playerProduction player="G.Hisaichi" frontier="productionG.Hisaichi"/>
+    <playerProduction player="Americans" frontier="productionAmericans"/>
+    <playerProduction player="Philipines" frontier="productionPhilipines"/>
+    <playerProduction player="British" frontier="productionBritish"/>
+  </production>
+  <attachmentList>
+    <attachment name="unitAttachment" attachTo="Infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Elite" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Halftrack" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Scout" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="EarlyFighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="L.Fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="NakajimaG5N" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="8"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Lancaster" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="8"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="B.Transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="8"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="T.Boat" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="canBombard" value="true"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="isDestroyer" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Cruiser" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="canBombard" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="H.Cruiser" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="carrierCapacity" value="2"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="B.Carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="carrierCapacity" value="3"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="B29" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="8"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isSub" value="true"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+      <option name="transportCost" value="6"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="AAGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="3"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Bunker" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="0"/>
+      <option name="defense" value="3"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Taclobau" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="Philipines"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Amoy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="G.Masaharu"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kaosiung" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="G.Hisaichi"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Davao" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Americans"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Borneo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="capital" value="British"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Surgie" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Catan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cama" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.D" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tarlac" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Negros" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cagayan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Manacuin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="San F." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Baslian" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Zamboanga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.P" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Clark Field" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.Aklan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.M" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.L" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.I" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Compo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kaliuga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.China" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Z" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Calamba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.P" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.M" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.L" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sultan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ifuago" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bulacan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Cama" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Formosa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Agusa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Formosa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Manila" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Ilocos" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Ilocos" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Laoag" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.Mindo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lanas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lanao" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Lanao" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kota" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aurora" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.Samar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cotambo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Masbate" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Samar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aklan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lucena" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Iloio" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Abra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dupan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cotabo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bataan C." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cebu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Surgi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Zamboanga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="M.T." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Batangas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.Sarunga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Misamis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Albay" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Legazpi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bukidnon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Quezon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sandauan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Agusa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bava" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zamboang" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Z.M." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Quirino" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W.China" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W.Mindo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bohol" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Leyte" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sarunga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ladiz" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Negros" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Llagan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Apayao" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Baguioi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Panga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.Z" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.China" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Nueva" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Samar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sulu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.Borneo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S.Borneo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Anique" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W.D" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Palawan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.China" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E.Davao" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N.Borneo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz46" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz22" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz86" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz38" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz56" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz74" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz80" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz23" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="sz11" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <!-- canals -->
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- G.Hisaichi Owned Territories -->
+      <territoryOwner territory="Kaosiung" owner="G.Hisaichi"/>
+      <territoryOwner territory="N.Formosa" owner="G.Hisaichi"/>
+      <territoryOwner territory="S.Formosa" owner="G.Hisaichi"/>
+      <territoryOwner territory="sz5" owner="G.Hisaichi"/>
+      <territoryOwner territory="sz4" owner="G.Hisaichi"/>
+      <territoryOwner territory="sz10" owner="G.Hisaichi"/>
+      <!-- G.Homa Owned Territories -->
+      <territoryOwner territory="Amoy" owner="G.Masaharu"/>
+      <territoryOwner territory="E.China" owner="G.Masaharu"/>
+      <territoryOwner territory="S.China" owner="G.Masaharu"/>
+      <territoryOwner territory="N.China" owner="G.Masaharu"/>
+      <territoryOwner territory="W.China" owner="G.Masaharu"/>
+      <territoryOwner territory="sz11" owner="G.Masaharu"/>
+      <!-- Philipines Owned Territories -->
+      <territoryOwner territory="Taclobau" owner="Philipines"/>
+      <territoryOwner territory="Bulacan" owner="Philipines"/>
+      <territoryOwner territory="E.M" owner="Philipines"/>
+      <territoryOwner territory="Batangas" owner="Philipines"/>
+      <territoryOwner territory="Abra" owner="Philipines"/>
+      <territoryOwner territory="Kaliuga" owner="Philipines"/>
+      <territoryOwner territory="M.T." owner="Philipines"/>
+      <territoryOwner territory="Ifuago" owner="Philipines"/>
+      <territoryOwner territory="San F." owner="Philipines"/>
+      <territoryOwner territory="Baguioi" owner="Philipines"/>
+      <territoryOwner territory="Quirino" owner="Philipines"/>
+      <territoryOwner territory="Tarlac" owner="Philipines"/>
+      <territoryOwner territory="Panga" owner="Philipines"/>
+      <territoryOwner territory="E.L" owner="Philipines"/>
+      <territoryOwner territory="Quezon" owner="Philipines"/>
+      <territoryOwner territory="S.Cama" owner="Philipines"/>
+      <territoryOwner territory="Catan" owner="Philipines"/>
+      <territoryOwner territory="E.Mindo" owner="Philipines"/>
+      <territoryOwner territory="Bon" owner="Philipines"/>
+      <territoryOwner territory="Masbate" owner="Philipines"/>
+      <territoryOwner territory="E.Samar" owner="Philipines"/>
+      <territoryOwner territory="Leyte" owner="Philipines"/>
+      <territoryOwner territory="N.Surgie" owner="Philipines"/>
+      <territoryOwner territory="Samar" owner="Philipines"/>
+      <territoryOwner territory="Ladiz" owner="Philipines"/>
+      <territoryOwner territory="Iloio" owner="Philipines"/>
+      <territoryOwner territory="E.Aklan" owner="Philipines"/>
+      <territoryOwner territory="S.Negros" owner="Philipines"/>
+      <territoryOwner territory="Cebu" owner="Philipines"/>
+      <territoryOwner territory="Baslian" owner="Philipines"/>
+      <territoryOwner territory="S.Z" owner="Philipines"/>
+      <territoryOwner territory="E.Z" owner="Philipines"/>
+      <territoryOwner territory="Lanao" owner="Philipines"/>
+      <territoryOwner territory="S.Lanao" owner="Philipines"/>
+      <territoryOwner territory="N.Nueva" owner="Philipines"/>
+      <territoryOwner territory="S.L" owner="Philipines"/>
+      <!-- American Owned Territories -->
+      <territoryOwner territory="Davao" owner="Americans"/>
+      <territoryOwner territory="Clark Field" owner="Americans"/>
+      <territoryOwner territory="Cagayan" owner="Americans"/>
+      <territoryOwner territory="N.Samar" owner="Americans"/>
+      <territoryOwner territory="N.Negros" owner="Americans"/>
+      <territoryOwner territory="N.Negros" owner="Americans"/>
+      <territoryOwner territory="W.D" owner="Americans"/>
+      <territoryOwner territory="N.D" owner="Americans"/>
+      <territoryOwner territory="Compo" owner="Americans"/>
+      <territoryOwner territory="Cotabo" owner="Americans"/>
+      <territoryOwner territory="Bava" owner="Americans"/>
+      <territoryOwner territory="E.Davao" owner="Americans"/>
+      <territoryOwner territory="S.Agusa" owner="Americans"/>
+      <territoryOwner territory="N.Agusa" owner="Americans"/>
+      <territoryOwner territory="Misamis" owner="Americans"/>
+      <territoryOwner territory="Lanas" owner="Americans"/>
+      <territoryOwner territory="Manacuin" owner="Americans"/>
+      <territoryOwner territory="S.Agusa" owner="Americans"/>
+      <territoryOwner territory="Legazpi" owner="Americans"/>
+      <territoryOwner territory="Aklan" owner="Americans"/>
+      <territoryOwner territory="Bukidnon" owner="Americans"/>
+      <territoryOwner territory="Sultan" owner="Americans"/>
+      <territoryOwner territory="Sarunga" owner="Americans"/>
+      <territoryOwner territory="Cotambo" owner="Americans"/>
+      <territoryOwner territory="Bava" owner="Americans"/>
+      <territoryOwner territory="E.Sarunga" owner="Americans"/>
+      <territoryOwner territory="E.I" owner="Americans"/>
+      <territoryOwner territory="Zamboang" owner="Americans"/>
+      <territoryOwner territory="Albay" owner="Americans"/>
+      <territoryOwner territory="E.Sarunga" owner="Americans"/>
+      <territoryOwner territory="N.Ilocos" owner="Americans"/>
+      <territoryOwner territory="Laoag" owner="Americans"/>
+      <territoryOwner territory="Dupan" owner="Americans"/>
+      <territoryOwner territory="Bohol" owner="Americans"/>
+      <territoryOwner territory="Manila" owner="Americans"/>
+      <territoryOwner territory="Lucena" owner="Americans"/>
+      <territoryOwner territory="Aurora" owner="Americans"/>
+      <territoryOwner territory="Llagan" owner="Americans"/>
+      <territoryOwner territory="Apayao" owner="Americans"/>
+      <territoryOwner territory="S.Surgi" owner="Americans"/>
+      <territoryOwner territory="Z.M." owner="Americans"/>
+      <territoryOwner territory="Bataan C." owner="Americans"/>
+      <territoryOwner territory="Calamba" owner="Americans"/>
+      <territoryOwner territory="N.Zamboanga" owner="Americans"/>
+      <territoryOwner territory="W.Mindo" owner="Americans"/>
+      <territoryOwner territory="S.Ilocos" owner="Americans"/>
+      <territoryOwner territory="Sulu" owner="Americans"/>
+      <territoryOwner territory="S.M" owner="Americans"/>
+      <territoryOwner territory="Cama" owner="Americans"/>
+      <territoryOwner territory="Anique" owner="Americans"/>
+      <territoryOwner territory="sz46" owner="Americans"/>
+      <territoryOwner territory="sz22" owner="Americans"/>
+      <territoryOwner territory="sz86" owner="Americans"/>
+      <territoryOwner territory="sz74" owner="Americans"/>
+      <!-- British Owned Territories -->
+      <territoryOwner territory="Borneo" owner="British"/>
+      <territoryOwner territory="N.Borneo" owner="British"/>
+      <territoryOwner territory="S.Borneo" owner="British"/>
+      <territoryOwner territory="E.Borneo" owner="British"/>
+      <territoryOwner territory="Sandauan" owner="British"/>
+      <territoryOwner territory="Kota" owner="British"/>
+      <territoryOwner territory="sz38" owner="British"/>
+      <territoryOwner territory="sz56" owner="British"/>
+      <territoryOwner territory="sz80" owner="British"/>
+      <territoryOwner territory="sz23" owner="British"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- G.Hisaichi Unit Placements -->
+      <unitPlacement unitType="Factory" territory="Kaosiung" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="AAGun" territory="Kaosiung" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Infantry" territory="Kaosiung" quantity="8" owner="G.Hisaichi"/>
+      <unitPlacement unitType="EarlyFighter" territory="Kaosiung" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Factory" territory="S.Formosa" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Bomber" territory="S.Formosa" quantity="4" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Armour" territory="S.Formosa" quantity="4" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Infantry" territory="S.Formosa" quantity="6" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Elite" territory="S.Formosa" quantity="6" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Artillery" territory="S.Formosa" quantity="6" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Factory" territory="N.Formosa" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="NakajimaG5N" territory="N.Formosa" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Armour" territory="N.Formosa" quantity="4" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Infantry" territory="N.Formosa" quantity="6" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Elite" territory="N.Formosa" quantity="6" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Halftrack" territory="N.Formosa" quantity="3" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Artillery" territory="N.Formosa" quantity="4" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Battleship" territory="sz7" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Cruiser" territory="sz7" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Destroyer" territory="sz2" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Submarine" territory="sz2" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Carrier" territory="sz7" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="B.Carrier" territory="sz7" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Fighter" territory="sz7" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="EarlyFighter" territory="sz7" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Transport" territory="sz7" quantity="4" owner="G.Hisaichi"/>
+      <unitPlacement unitType="B.Transport" territory="sz2" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Battleship" territory="sz9" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="H.Cruiser" territory="sz8" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Cruiser" territory="sz9" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Destroyer" territory="sz9" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Submarine" territory="sz8" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Carrier" territory="sz9" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Fighter" territory="sz9" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Transport" territory="sz8" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="B.Transport" territory="sz8" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Transport" territory="sz3" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Destroyer" territory="sz3" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Submarine" territory="sz12" quantity="2" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Submarine" territory="sz13" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Submarine" territory="sz5" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="Cruiser" territory="sz5" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="B.Transport" territory="sz5" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="B.Carrier" territory="sz5" quantity="1" owner="G.Hisaichi"/>
+      <unitPlacement unitType="EarlyFighter" territory="sz5" quantity="3" owner="G.Hisaichi"/>
+      <!-- G.Masaharu Unit Placements -->
+      <unitPlacement unitType="Factory" territory="Amoy" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="AAGun" territory="Amoy" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Infantry" territory="Amoy" quantity="6" owner="G.Masaharu"/>
+      <unitPlacement unitType="EarlyFighter" territory="Amoy" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Infantry" territory="E.China" quantity="5" owner="G.Masaharu"/>
+      <unitPlacement unitType="Fighter" territory="E.China" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="NakajimaG5N" territory="E.China" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Bomber" territory="E.China" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Halftrack" territory="E.China" quantity="3" owner="G.Masaharu"/>
+      <unitPlacement unitType="Scout" territory="E.China" quantity="4" owner="G.Masaharu"/>
+      <unitPlacement unitType="Infantry" territory="N.China" quantity="6" owner="G.Masaharu"/>
+      <unitPlacement unitType="EarlyFighter" territory="N.China" quantity="3" owner="G.Masaharu"/>
+      <unitPlacement unitType="Armour" territory="N.China" quantity="3" owner="G.Masaharu"/>
+      <unitPlacement unitType="Artillery" territory="N.China" quantity="3" owner="G.Masaharu"/>
+      <unitPlacement unitType="Infantry" territory="W.China" quantity="8" owner="G.Masaharu"/>
+      <unitPlacement unitType="EarlyFighter" territory="W.China" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Factory" territory="W.China" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="AAGun" territory="W.China" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Factory" territory="S.China" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="AAGun" territory="S.China" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Elite" territory="S.China" quantity="6" owner="G.Masaharu"/>
+      <unitPlacement unitType="EarlyFighter" territory="S.China" quantity="3" owner="G.Masaharu"/>
+      <unitPlacement unitType="Armour" territory="S.China" quantity="5" owner="G.Masaharu"/>
+      <unitPlacement unitType="Battleship" territory="sz1" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Cruiser" territory="sz1" quantity="2" owner="G.Masaharu"/>
+      <unitPlacement unitType="Destroyer" territory="sz1" quantity="3" owner="G.Masaharu"/>
+      <unitPlacement unitType="Submarine" territory="sz1" quantity="3" owner="G.Masaharu"/>
+      <unitPlacement unitType="Carrier" territory="sz1" quantity="2" owner="G.Masaharu"/>
+      <unitPlacement unitType="Fighter" territory="sz1" quantity="2" owner="G.Masaharu"/>
+      <unitPlacement unitType="EarlyFighter" territory="sz1" quantity="2" owner="G.Masaharu"/>
+      <unitPlacement unitType="Transport" territory="sz1" quantity="6" owner="G.Masaharu"/>
+      <unitPlacement unitType="Submarine" territory="sz6" quantity="2" owner="G.Masaharu"/>
+      <unitPlacement unitType="Cruiser" territory="sz6" quantity="2" owner="G.Masaharu"/>
+      <unitPlacement unitType="Transport" territory="sz6" quantity="4" owner="G.Masaharu"/>
+      <unitPlacement unitType="B.Carrier" territory="sz6" quantity="1" owner="G.Masaharu"/>
+      <unitPlacement unitType="Fighter" territory="sz6" quantity="3" owner="G.Masaharu"/>
+      <unitPlacement unitType="H.Cruiser" territory="sz6" quantity="1" owner="G.Masaharu"/>
+      <!-- Philipines Unit Placements -->
+      <unitPlacement unitType="Factory" territory="Taclobau" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="AAGun" territory="Taclobau" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Taclobau" quantity="6" owner="Philipines"/>
+      <unitPlacement unitType="EarlyFighter" territory="Taclobau" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Armour" territory="Taclobau" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Factory" territory="Iloio" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="AAGun" territory="Iloio" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Iloio" quantity="3" owner="Philipines"/>
+      <unitPlacement unitType="EarlyFighter" territory="Iloio" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Abra" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Artillery" territory="Abra" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Kaliuga" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Factory" territory="N.Nueva" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="AAGun" territory="N.Nueva" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="N.Nueva" quantity="4" owner="Philipines"/>
+      <unitPlacement unitType="Armour" territory="N.Nueva" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="M.T." quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Ifuago" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Baguioi" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="San F." quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Tarlac" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Scout" territory="Quirino" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Panga" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Bulacan" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Batangas" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Armour" territory="Batangas" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="E.Mindo" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="E.L" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Quezon" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="S.Cama" quantity="3" owner="Philipines"/>
+      <unitPlacement unitType="Armour" territory="S.Cama" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Bon" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Masbate" quantity="2" owner="Philipines"/>
+      <unitPlacement unitType="AAGun" territory="Masbate" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="E.M" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Samar" quantity="2" owner="Philipines"/>
+      <unitPlacement unitType="Scout" territory="Samar" quantity="2" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="E.Samar" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Leyte" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="N.Surgie" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Cebu" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="S.Negros" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Ladiz" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Baslian" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="S.Z" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="E.Z" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Lanao" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="S.Lanao" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Catan" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="E.Aklan" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="Manila" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Armour" territory="Manila" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Transport" territory="sz51" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="T.Boat" territory="sz51" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Transport" territory="sz45" quantity="2" owner="Philipines"/>
+      <unitPlacement unitType="T.Boat" territory="sz45" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Destroyer" territory="sz45" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Submarine" territory="sz81" quantity="1" owner="Philipines"/>
+      <unitPlacement unitType="Infantry" territory="S.L" quantity="1" owner="Philipines"/>
+      <!-- Americans Unit Placements -->
+      <unitPlacement unitType="Infantry" territory="N.Ilocos" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Apayao" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Artillery" territory="Apayao" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="Apayao" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="N.Samar" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="N.Samar" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Bunker" territory="N.Samar" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="N.Samar" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Llagan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Artillery" territory="Llagan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Aurora" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Dupan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Artillery" territory="Dupan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Scout" territory="Dupan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Z.M." quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="Z.M." quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Artillery" territory="Bataan C." quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Calamba" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Halftrack" territory="Calamba" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Lucena" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="Lucena" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Cama" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Scout" territory="Cama" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="W.Mindo" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Artillery" territory="W.Mindo" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="W.Mindo" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Albay" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Scout" territory="Albay" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Anique" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Scout" territory="Anique" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Bohol" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="N.Zamboanga" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Halftrack" territory="N.Zamboanga" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Factory" territory="Misamis" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Misamis" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Misamis" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Lanas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Manacuin" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Cotabo" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Cotambo" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Sarunga" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Scout" territory="Sarunga" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="E.Sarunga" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Bava" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="W.D" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="N.D" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="S.Agusa" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="S.Agusa" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="N.Agusa" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="S.Surgi" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="S.Surgi" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Compo" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="E.Davao" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="S.Ilocos" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="S.M" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Sulu" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Aklan" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="E.I" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Factory" territory="Davao" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Davao" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Davao" quantity="4" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="Davao" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Factory" territory="Laoag" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Laoag" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Laoag" quantity="4" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="Laoag" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="Laoag" quantity="4" owner="Americans"/>
+      <unitPlacement unitType="Factory" territory="Manila" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Manila" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Manila" quantity="5" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="Manila" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Factory" territory="Legazpi" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Legazpi" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Legazpi" quantity="4" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="Legazpi" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="Factory" territory="Zamboang" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Zamboang" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Zamboang" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Scout" territory="Zamboang" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="Clark Field" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Bomber" territory="Clark Field" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Clark Field" quantity="4" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Clark Field" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Bunker" territory="Clark Field" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="Cagayan" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="Bomber" territory="Cagayan" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Cagayan" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Cagayan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Bunker" territory="Cagayan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="N.Negros" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="N.Negros" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Bunker" territory="N.Negros" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="N.Negros" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="Bukidnon" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="B29" territory="Bukidnon" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Bukidnon" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Bukidnon" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Bunker" territory="Bukidnon" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Armour" territory="Bukidnon" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="Sultan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Bomber" territory="Sultan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Infantry" territory="Sultan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="AAGun" territory="Sultan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Bunker" territory="Sultan" quantity="1" owner="Americans"/>
+      <!-- Fleet Unit Placements -->
+      <unitPlacement unitType="Battleship" territory="sz72" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Destroyer" territory="sz72" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="Cruiser" territory="sz72" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Carrier" territory="sz72" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Cruiser" territory="sz68" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Submarine" territory="sz68" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Transport" territory="sz69" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Transport" territory="sz70" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Submarine" territory="sz53" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Transport" territory="sz44" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="H.Cruiser" territory="sz35" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Transport" territory="sz35" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Cruiser" territory="sz41" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Submarine" territory="sz41" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Battleship" territory="sz32" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Transport" territory="sz32" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Submarine" territory="sz26" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Cruiser" territory="sz18" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Transport" territory="sz18" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Destroyer" territory="sz18" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="T.Boat" territory="sz20" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="T.Boat" territory="Raa" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="T.Boat" territory="Surgi" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Transport" territory="Surgi" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="Battleship" territory="sz82" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Destroyer" territory="sz82" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="Transport" territory="sz82" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="H.Cruiser" territory="sz19" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="Carrier" territory="sz19" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="EarlyFighter" territory="sz19" quantity="2" owner="Americans"/>
+      <!-- British Unit Placements -->
+      <unitPlacement unitType="Factory" territory="Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="AAGun" territory="Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="Infantry" territory="Borneo" quantity="4" owner="British"/>
+      <unitPlacement unitType="EarlyFighter" territory="Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="Factory" territory="Kota" quantity="1" owner="British"/>
+      <unitPlacement unitType="AAGun" territory="Kota" quantity="1" owner="British"/>
+      <unitPlacement unitType="Infantry" territory="Kota" quantity="4" owner="British"/>
+      <unitPlacement unitType="Factory" territory="Sandauan" quantity="1" owner="British"/>
+      <unitPlacement unitType="AAGun" territory="Sandauan" quantity="1" owner="British"/>
+      <unitPlacement unitType="Infantry" territory="Sandauan" quantity="3" owner="British"/>
+      <unitPlacement unitType="Infantry" territory="E.Borneo" quantity="2" owner="British"/>
+      <unitPlacement unitType="Artillery" territory="E.Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="Armour" territory="E.Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="Infantry" territory="N.Borneo" quantity="2" owner="British"/>
+      <unitPlacement unitType="Artillery" territory="N.Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="Armour" territory="N.Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="Infantry" territory="S.Borneo" quantity="2" owner="British"/>
+      <unitPlacement unitType="Artillery" territory="S.Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="Armour" territory="S.Borneo" quantity="1" owner="British"/>
+      <unitPlacement unitType="H.Cruiser" territory="sz78" quantity="1" owner="British"/>
+      <unitPlacement unitType="Transport" territory="sz78" quantity="2" owner="British"/>
+      <unitPlacement unitType="Submarine" territory="sz76" quantity="1" owner="British"/>
+      <unitPlacement unitType="Submarine" territory="sz75" quantity="3" owner="British"/>
+      <unitPlacement unitType="T.Boat" territory="sz75" quantity="1" owner="British"/>
+      <!-- Neutral  Unit Placements -->
+      <unitPlacement unitType="Infantry" territory="N.P" quantity="1"/>
+      <unitPlacement unitType="Infantry" territory="Palawan" quantity="2"/>
+      <unitPlacement unitType="Artillery" territory="Palawan" quantity="1"/>
+      <unitPlacement unitType="Infantry" territory="S.P" quantity="1"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="G.Hisaichi" resource="PUs" quantity="40"/>
+      <resourceGiven player="Philipines" resource="PUs" quantity="16"/>
+      <resourceGiven player="G.Masaharu" resource="PUs" quantity="30"/>
+      <resourceGiven player="British" resource="PUs" quantity="6"/>
+      <resourceGiven player="Americans" resource="PUs" quantity="8"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Use 4th Edition Rules -->
+    <!-- Low Luck -->
+    <property name="Low Luck" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Sub Control Sea Zone Restricted" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="3"/>
+    </property>
+    <property name="MaxFactoriesPerTerritory" value="1" editable="false">
+      <number min="1" max="10"/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <!-- Bids -->
+    <property name="G.Hisaichi bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="G.Masaharu bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Americans bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Philipines bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="British bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="atari" editable="false"/>
+    <property name="notes" value=" &lt;br&gt;============================================ &lt;br&gt; &lt;br&gt;&lt;H1&gt;--------------= ATARI =--------------&lt;/H1&gt; &lt; &lt;br&gt;====================1.3===================== &lt;br&gt;============================================ &lt;br&gt; &lt;br&gt;Its The 8.December 1941 The Japanese Plan to Conquest &lt;br&gt;Space For Living begins. &lt;br&gt;General Masaharu Homma and General Hisaichi Terauchi   &lt;br&gt;Are Assigned to Bring Victory to the Japanese Imperator. &lt;br&gt;Defeat Is Out of Question... &lt;br&gt; &lt;br&gt;===================Units==================== &lt;br&gt; &lt;br&gt;--------------Attack/Defend/Movement/Cost/Ability------------- &lt;br&gt; &lt;br&gt;----------------------------Land Units---------------------------- &lt;br&gt; &lt;br&gt;Infantry    - 1 / 2 / 1 / 2 &lt;br&gt;Elite       - 2 / 2 / 1 / 3 &lt;br&gt;Scout       - 2 / 1 / 2 / 3 Two Scouts One Trans. &lt;br&gt;Artillery   - 2 / 2 / 1 / 4 Support &lt;br&gt;Truck       - 1 / 2 / 3 / 4 &lt;br&gt;Halftrax    - 2 / 2 / 3 / 6 Support / Blitz &lt;br&gt;Armour      - 3 / 3 / 2 / 5 &lt;br&gt;Bunker      - 0 / 3 / 0 / 0 Two Hit &lt;br&gt;AAGun       - 0 / 1 / 0 / 5  &lt;br&gt;Factory     - 0 / 0 / 0 / 15 &lt;br&gt;  &lt;br&gt;-----------------------------Air Units----------------------------- &lt;br&gt; &lt;br&gt;EarlyFighter- 2 / 3 / 4 / 8 &lt;br&gt;Fighter     - 3 / 4 / 4 / 10 &lt;br&gt;LongrangeFighter- 3 / 4 / 6 / 12 &lt;br&gt;Bomber      - 4 / 1 / 6 / 15 Strat.Bomb &lt;br&gt;NakajimaG5N     - 5 / 2 / 8 / 20 Strat.Bomb (B29/Lancaster) &lt;br&gt; &lt;br&gt;-----------------------------Sea Units----------------------------- &lt;br&gt; &lt;br&gt;TorpedoBoat - 2 / 1 / 1 / 6 &lt;br&gt;Transport   - 0 / 1 / 2 / 8 &lt;br&gt;Big Transport   - 0 / 1 / 2 / 12  4 Inf/1Inf3Armour &lt;br&gt;Submarine   - 2 / 2 / 2 / 8 &lt;br&gt;Destroyer   - 3 / 3 / 2 / 12 &lt;br&gt;Carrier     - 1 / 3 / 2 / 16 &lt;br&gt;Big Carrier     - 1 / 3 / 2 / 25 3Fighters/ Two Hit &lt;br&gt;Cruiser     - 3 / 3 / 2 / 14 Bombard &lt;br&gt;Heavy Cruiser     - 4 / 4 / 2 / 18  &lt;br&gt;Battleship  - 4 / 4 / 2 / 24 Bombard / Two Hit &lt;br&gt; &lt;br&gt;================Special Rule================= &lt;br&gt; &lt;br&gt;In Round 12 US Gets Support From One Of Its &lt;br&gt;Sea Zones (Only If He Controls One). &lt;br&gt;Units Should Be EDITED By US &lt;br&gt; &lt;br&gt;UNITS &lt;br&gt; &lt;br&gt;1 Battleship &lt;br&gt;1 B.Carrier + 3 E.Fighters &lt;br&gt;1 Submarine &lt;br&gt;1 Cruiser &lt;br&gt;2 Transports &lt;br&gt; &lt;br&gt; &lt;br&gt;  &lt;br&gt;=================Turn Order================== &lt;br&gt;   &lt;br&gt;-------- G.Hisaichi  //  G.Masaharu  // U.S   //  Phil.  //  Brits ------- &lt;br&gt; &lt;br&gt;-----------------------TECH ISNT AKTIV----------------------- &lt;br&gt; &lt;br&gt;================Let There Be War============== &lt;br&gt; &lt;br&gt;===================SIEG===================== &lt;br&gt; &lt;br&gt;  "/>
+  </propertyList>
+</game>

@@ -1,0 +1,1578 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="command and conquer" version="0.9.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="South Africa"/>
+    <territory name="Bosno-Serbia"/>
+    <territory name="Italy"/>
+    <territory name="Corsica"/>
+    <territory name="Sardinia"/>
+    <territory name="Crete"/>
+    <territory name="Cyprus"/>
+    <territory name="Switzerland"/>
+    <territory name="France"/>
+    <territory name="Spain"/>
+    <territory name="Portugal"/>
+    <territory name="Turkey"/>
+    <territory name="Egypt"/>
+    <territory name="Pakistan"/>
+    <territory name="Persia"/>
+    <territory name="Afghanistan"/>
+    <territory name="Canary Islands"/>
+    <territory name="Romania"/>
+    <territory name="Austria"/>
+    <territory name="Czech Republic"/>
+    <territory name="Greece"/>
+    <territory name="Caucasus"/>
+    <territory name="Ukraine"/>
+    <territory name="Mozambique"/>
+    <territory name="Ethiopia"/>
+    <territory name="Eritrea"/>
+    <territory name="Turkmenistan"/>
+    <territory name="Tajikistan"/>
+    <territory name="Azerbaijan"/>
+    <territory name="Syria"/>
+    <territory name="Saudi Arabia"/>
+    <territory name="Madagascar"/>
+    <territory name="Malta"/>
+    <territory name="Sicily"/>
+    <territory name="Islas Baleares"/>
+    <territory name="Oman"/>
+    <territory name="Yemen"/>
+    <territory name="Mesopotamia"/>
+    <territory name="W. Libya"/>
+    <territory name="E. Libya"/>
+    <territory name="Tunisia"/>
+    <territory name="Algeria"/>
+    <territory name="Morocco"/>
+    <territory name="Western Sahara"/>
+    <territory name="Mauritania"/>
+    <territory name="Sierra Leone"/>
+    <territory name="Angola"/>
+    <territory name="Senegal"/>
+    <territory name="Sahara"/>
+    <territory name="Republic of Congo"/>
+    <territory name="Mali"/>
+    <territory name="Chad"/>
+    <territory name="Cote D'Ivoire"/>
+    <territory name="Nigeria"/>
+    <territory name="Niger"/>
+    <territory name="Cameroon"/>
+    <territory name="Gabon"/>
+    <territory name="Uganda"/>
+    <territory name="Kenya"/>
+    <territory name="Somalia"/>
+    <territory name="Sudan"/>
+    <territory name="Zambia"/>
+    <territory name="Namibia"/>
+    <territory name="Botswana"/>
+    <territory name="Kazakhstan"/>
+    <territory name="sz 1" water="true"/>
+    <territory name="sz2" water="true"/>
+    <territory name="sz 3" water="true"/>
+    <territory name="sz 4" water="true"/>
+    <territory name="sz 5" water="true"/>
+    <territory name="sz 6" water="true"/>
+    <territory name="sz 7" water="true"/>
+    <territory name="sz 8" water="true"/>
+    <territory name="sz 9" water="true"/>
+    <territory name="sz 10" water="true"/>
+    <territory name="sz 11" water="true"/>
+    <territory name="sz 12" water="true"/>
+    <territory name="sz 13" water="true"/>
+    <territory name="sz 14" water="true"/>
+    <territory name="sz 15" water="true"/>
+    <territory name="sz 16" water="true"/>
+    <territory name="sz 17" water="true"/>
+    <territory name="sz 18" water="true"/>
+    <territory name="sz 19" water="true"/>
+    <territory name="sz 20" water="true"/>
+    <territory name="sz 21" water="true"/>
+    <territory name="sz 22" water="true"/>
+    <territory name="sz 23" water="true"/>
+    <territory name="sz 24" water="true"/>
+    <territory name="sz 25" water="true"/>
+    <territory name="sz 26" water="true"/>
+    <territory name="sz 27" water="true"/>
+    <territory name="sz 28" water="true"/>
+    <!-- Territory Connections -->
+    <connection t1="Bosno-Serbia" t2="Austria"/>
+    <connection t1="Bosno-Serbia" t2="Greece"/>
+    <connection t1="Bosno-Serbia" t2="Romania"/>
+    <connection t1="Bosno-Serbia" t2="Czech Republic"/>
+    <connection t1="Austria" t2="Switzerland"/>
+    <connection t1="Austria" t2="France"/>
+    <connection t1="Austria" t2="sz 1"/>
+    <connection t1="Austria" t2="Italy"/>
+    <connection t1="Austria" t2="Czech Republic"/>
+    <connection t1="France" t2="Switzerland"/>
+    <connection t1="France" t2="Italy"/>
+    <connection t1="France" t2="Spain"/>
+    <connection t1="Spain" t2="Portugal"/>
+    <connection t1="Czech Republic" t2="Romania"/>
+    <connection t1="Czech Republic" t2="Ukraine"/>
+    <connection t1="Romania" t2="Greece"/>
+    <connection t1="Romania" t2="Ukraine"/>
+    <connection t1="Greece" t2="Turkey"/>
+    <connection t1="Ukraine" t2="Caucasus"/>
+    <connection t1="Caucasus" t2="Kazakhstan"/>
+    <connection t1="Caucasus" t2="Azerbaijan"/>
+    <connection t1="Caucasus" t2="Turkmenistan"/>
+    <connection t1="Kazakhstan" t2="Turkmenistan"/>
+    <connection t1="Kazakhstan" t2="Tajikistan"/>
+    <connection t1="Tajikistan" t2="Turkmenistan"/>
+    <connection t1="Tajikistan" t2="Afghanistan"/>
+    <connection t1="Afghanistan" t2="Pakistan"/>
+    <connection t1="Afghanistan" t2="Persia"/>
+    <connection t1="Afghanistan" t2="Turkmenistan"/>
+    <connection t1="Pakistan" t2="Persia"/>
+    <connection t1="Persia" t2="Turkmenistan"/>
+    <connection t1="Persia" t2="Azerbaijan"/>
+    <connection t1="Persia" t2="Mesopotamia"/>
+    <connection t1="Azerbaijan" t2="Turkey"/>
+    <connection t1="Azerbaijan" t2="Mesopotamia"/>
+    <connection t1="Turkey" t2="Mesopotamia"/>
+    <connection t1="Turkey" t2="Syria"/>
+    <connection t1="Mesopotamia" t2="Syria"/>
+    <connection t1="Syria" t2="Egypt"/>
+    <connection t1="Egypt" t2="E. Libya"/>
+    <connection t1="Egypt" t2="Sudan"/>
+    <connection t1="E. Libya" t2="Sudan"/>
+    <connection t1="E. Libya" t2="W. Libya"/>
+    <connection t1="W. Libya" t2="Tunisia"/>
+    <connection t1="W. Libya" t2="Algeria"/>
+    <connection t1="Tunisia" t2="Algeria"/>
+    <connection t1="Algeria" t2="Morocco"/>
+    <connection t1="Morocco" t2="Western Sahara"/>
+    <connection t1="Western Sahara" t2="Mauritania"/>
+    <connection t1="Mauritania" t2="Senegal"/>
+    <connection t1="Mauritania" t2="Mali"/>
+    <connection t1="Senegal" t2="Mali"/>
+    <connection t1="Senegal" t2="Sierra Leone"/>
+    <connection t1="Sierra Leone" t2="Mali"/>
+    <connection t1="Sierra Leone" t2="Cote D'Ivoire"/>
+    <connection t1="Cote D'Ivoire" t2="Mali"/>
+    <connection t1="Cote D'Ivoire" t2="Nigeria"/>
+    <connection t1="Cote D'Ivoire" t2="Niger"/>
+    <connection t1="Niger" t2="Mali"/>
+    <connection t1="Niger" t2="Nigeria"/>
+    <connection t1="Niger" t2="Chad"/>
+    <connection t1="Nigeria" t2="Cameroon"/>
+    <connection t1="Nigeria" t2="Chad"/>
+    <connection t1="Chad" t2="Cameroon"/>
+    <connection t1="Chad" t2="Sudan"/>
+    <connection t1="Chad" t2="Uganda"/>
+    <connection t1="Chad" t2="Republic of Congo"/>
+    <connection t1="Sudan" t2="Egypt"/>
+    <connection t1="Sudan" t2="Eritrea"/>
+    <connection t1="Sudan" t2="E. Libya"/>
+    <connection t1="Sudan" t2="Ethiopia"/>
+    <connection t1="Sudan" t2="Uganda"/>
+    <connection t1="Eritrea" t2="Ethiopia"/>
+    <connection t1="Eritrea" t2="Somalia"/>
+    <connection t1="Saudi Arabia" t2="Syria"/>
+    <connection t1="Saudi Arabia" t2="Mesopotamia"/>
+    <connection t1="Saudi Arabia" t2="Yemen"/>
+    <connection t1="Saudi Arabia" t2="Oman"/>
+    <connection t1="Yemen" t2="Oman"/>
+    <connection t1="Ethiopia" t2="Somalia"/>
+    <connection t1="Ethiopia" t2="Uganda"/>
+    <connection t1="Ethiopia" t2="Kenya"/>
+    <connection t1="Uganda" t2="Republic of Congo"/>
+    <connection t1="Uganda" t2="Kenya"/>
+    <connection t1="Somalia" t2="Kenya"/>
+    <connection t1="Kenya" t2="Mozambique"/>
+    <connection t1="Kenya" t2="Republic of Congo"/>
+    <connection t1="Kenya" t2="Zambia"/>
+    <connection t1="Gabon" t2="Republic of Congo"/>
+    <connection t1="Republic of Congo" t2="Angola"/>
+    <connection t1="Republic of Congo" t2="Zambia"/>
+    <connection t1="Angola" t2="Zambia"/>
+    <connection t1="Angola" t2="Namibia"/>
+    <connection t1="Zambia" t2="Mozambique"/>
+    <connection t1="Zambia" t2="Namibia"/>
+    <connection t1="Zambia" t2="Botswana"/>
+    <connection t1="Zambia" t2="South Africa"/>
+    <connection t1="Namibia" t2="Botswana"/>
+    <connection t1="Namibia" t2="South Africa"/>
+    <connection t1="South Africa" t2="Botswana"/>
+    <connection t1="South Africa" t2="Mozambique"/>
+    <connection t1="Kenya" t2="Republic of Congo"/>
+    <connection t1="Kenya" t2="Zambia"/>
+    <connection t1="Gabon" t2="Republic of Congo"/>
+    <connection t1="Republic of Congo" t2="Angola"/>
+    <connection t1="Republic of Congo" t2="Zambia"/>
+    <connection t1="Angola" t2="Zambia"/>
+    <connection t1="Angola" t2="Namibia"/>
+    <connection t1="Zambia" t2="Mozambique"/>
+    <connection t1="Zambia" t2="Namibia"/>
+    <connection t1="Zambia" t2="Botswana"/>
+    <connection t1="Zambia" t2="South Africa"/>
+    <connection t1="Namibia" t2="Botswana"/>
+    <connection t1="Namibia" t2="South Africa"/>
+    <connection t1="South Africa" t2="Botswana"/>
+    <connection t1="South Africa" t2="Mozambique"/>
+    <connection t1="Sahara" t2="Chad"/>
+    <connection t1="Italy" t2="sz 1"/>
+    <connection t1="France" t2="sz 26"/>
+    <connection t1="France" t2="sz 28"/>
+    <connection t1="Spain" t2="sz 26"/>
+    <connection t1="Spain" t2="sz 27"/>
+    <connection t1="Spain" t2="sz 28"/>
+    <connection t1="Portugal" t2="sz 26"/>
+    <connection t1="Portugal" t2="sz 27"/>
+    <connection t1="Romania" t2="sz 3"/>
+    <connection t1="Caucasus" t2="sz 3"/>
+    <connection t1="Persia" t2="sz 6"/>
+    <connection t1="Turkey" t2="sz 3"/>
+    <connection t1="Turkey" t2="sz2"/>
+    <connection t1="W. Libya" t2="sz 1"/>
+    <connection t1="Tunisia" t2="sz 28"/>
+    <connection t1="Tunisia" t2="sz 1"/>
+    <connection t1="Azerbaijan" t2="sz 3"/>
+    <connection t1="Mesopotamia" t2="sz 6"/>
+    <connection t1="Egypt" t2="sz2"/>
+    <connection t1="Egypt" t2="sz 4"/>
+    <connection t1="E. Libya" t2="sz 1"/>
+    <connection t1="E. Libya" t2="sz2"/>
+    <connection t1="Algeria" t2="sz 26"/>
+    <connection t1="Canary Islands" t2="sz 25"/>
+    <connection t1="Morocco" t2="sz 28"/>
+    <connection t1="Morocco" t2="sz 25"/>
+    <connection t1="Syria" t2="sz2"/>
+    <connection t1="Syria" t2="sz 4"/>
+    <connection t1="Western Sahara" t2="sz 25"/>
+    <connection t1="Western Sahara" t2="sz 22"/>
+    <connection t1="Greece" t2="sz 1"/>
+    <connection t1="Greece" t2="sz2"/>
+    <connection t1="Greece" t2="sz 3"/>
+    <connection t1="Islas Baleares" t2="sz 28"/>
+    <connection t1="Corsica" t2="sz 28"/>
+    <connection t1="Corsica" t2="sz 1"/>
+    <connection t1="Sardinia" t2="sz 28"/>
+    <connection t1="Sardinia" t2="sz 1"/>
+    <connection t1="Malta" t2="sz 1"/>
+    <connection t1="Sicily" t2="sz 1"/>
+    <connection t1="Crete" t2="sz2"/>
+    <connection t1="Cyprus" t2="sz2"/>
+    <connection t1="Ukraine" t2="sz 3"/>
+    <connection t1="Somalia" t2="sz 4"/>
+    <connection t1="Somalia" t2="sz 5"/>
+    <connection t1="Somalia" t2="sz 8"/>
+    <connection t1="Madagascar" t2="sz 8"/>
+    <connection t1="Madagascar" t2="sz 12"/>
+    <connection t1="Madagascar" t2="sz 13"/>
+    <connection t1="Mozambique" t2="sz 8"/>
+    <connection t1="Mozambique" t2="sz 13"/>
+    <connection t1="Mozambique" t2="sz 14"/>
+    <connection t1="Kenya" t2="sz 8"/>
+    <connection t1="Yemen" t2="sz 4"/>
+    <connection t1="Yemen" t2="sz 5"/>
+    <connection t1="Oman" t2="sz 5"/>
+    <connection t1="Oman" t2="sz 6"/>
+    <connection t1="Saudi Arabia" t2="sz 4"/>
+    <connection t1="Saudi Arabia" t2="sz 6"/>
+    <connection t1="Sudan" t2="sz 4"/>
+    <connection t1="Eritrea" t2="sz 4"/>
+    <connection t1="Sierra Leone" t2="sz 21"/>
+    <connection t1="Mauritania" t2="sz 22"/>
+    <connection t1="Senegal" t2="sz 22"/>
+    <connection t1="Bosno-Serbia" t2="sz 1"/>
+    <connection t1="Kenya" t2="sz 8"/>
+    <connection t1="South Africa" t2="sz 15"/>
+    <connection t1="South Africa" t2="sz 14"/>
+    <connection t1="Namibia" t2="sz 15"/>
+    <connection t1="Namibia" t2="sz 20"/>
+    <connection t1="Angola" t2="sz 20"/>
+    <connection t1="Republic of Congo" t2="sz 20"/>
+    <connection t1="Gabon" t2="sz 20"/>
+    <connection t1="Gabon" t2="sz 21"/>
+    <connection t1="Cameroon" t2="sz 21"/>
+    <connection t1="Nigeria" t2="sz 21"/>
+    <connection t1="Cote D'Ivoire" t2="sz 21"/>
+    <connection t1="Sierra Leone" t2="sz 21"/>
+    <connection t1="Sierra Leone" t2="sz 23"/>
+    <connection t1="Senegal" t2="sz 23"/>
+    <connection t1="Senegal" t2="sz 24"/>
+    <connection t1="Mauritania" t2="sz 24"/>
+    <connection t1="Western Sahara" t2="sz 24"/>
+    <connection t1="Western Sahara" t2="sz 27"/>
+    <connection t1="Morocco" t2="sz 27"/>
+    <connection t1="Morocco" t2="sz 28"/>
+    <connection t1="sz 1" t2="sz2"/>
+    <connection t1="sz2" t2="sz 3"/>
+    <connection t1="sz2" t2="sz 4"/>
+    <connection t1="sz 4" t2="sz 5"/>
+    <connection t1="sz 5" t2="sz 6"/>
+    <connection t1="sz 6" t2="sz 7"/>
+    <connection t1="sz 5" t2="sz 8"/>
+    <connection t1="sz 5" t2="sz 7"/>
+    <connection t1="sz 7" t2="sz 8"/>
+    <connection t1="sz 7" t2="sz 9"/>
+    <connection t1="sz 8" t2="sz 9"/>
+    <connection t1="sz 9" t2="sz 12"/>
+    <connection t1="sz 8" t2="sz 12"/>
+    <connection t1="sz 8" t2="sz 13"/>
+    <connection t1="sz 12" t2="sz 13"/>
+    <connection t1="sz 9" t2="sz 10"/>
+    <connection t1="sz 12" t2="sz 10"/>
+    <connection t1="sz 10" t2="sz 11"/>
+    <connection t1="sz 12" t2="sz 11"/>
+    <connection t1="sz 12" t2="sz 13"/>
+    <connection t1="sz 13" t2="sz 11"/>
+    <connection t1="sz 13" t2="sz 14"/>
+    <connection t1="sz 14" t2="sz 15"/>
+    <connection t1="sz 14" t2="sz 16"/>
+    <connection t1="sz 15" t2="sz 20"/>
+    <connection t1="sz 15" t2="sz 18"/>
+    <connection t1="sz 15" t2="sz 16"/>
+    <connection t1="sz 16" t2="sz 17"/>
+    <connection t1="sz 16" t2="sz 18"/>
+    <connection t1="sz 17" t2="sz 18"/>
+    <connection t1="sz 17" t2="sz 22"/>
+    <connection t1="sz 17" t2="sz 19"/>
+    <connection t1="sz 18" t2="sz 20"/>
+    <connection t1="sz 20" t2="sz 21"/>
+    <connection t1="sz 20" t2="sz 19"/>
+    <connection t1="sz 19" t2="sz 22"/>
+    <connection t1="sz 13" t2="sz 11"/>
+    <connection t1="sz 13" t2="sz 14"/>
+    <connection t1="sz 14" t2="sz 15"/>
+    <connection t1="sz 14" t2="sz 16"/>
+    <connection t1="sz 15" t2="sz 20"/>
+    <connection t1="sz 15" t2="sz 18"/>
+    <connection t1="sz 15" t2="sz 16"/>
+    <connection t1="sz 18" t2="sz 19"/>
+    <connection t1="sz 19" t2="sz 21"/>
+    <connection t1="sz 21" t2="sz 23"/>
+    <connection t1="sz 21" t2="sz 22"/>
+    <connection t1="sz 22" t2="sz 23"/>
+    <connection t1="sz 23" t2="sz 24"/>
+    <connection t1="sz 24" t2="sz 25"/>
+    <connection t1="sz 24" t2="sz 27"/>
+    <connection t1="sz 25" t2="sz 26"/>
+    <connection t1="sz 25" t2="sz 27"/>
+    <connection t1="sz 26" t2="sz 27"/>
+    <connection t1="sz 27" t2="sz 28"/>
+    <connection t1="sz 28" t2="sz 1"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- Nod -->
+    <player name="Nod" optional="false"/>
+    <!-- GDI -->
+    <player name="GDI" optional="false"/>
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="grenadier"/>
+    <unit name="rocket"/>
+    <unit name="flamethrower"/>
+    <unit name="recon"/>
+    <unit name="buggy"/>
+    <unit name="humvee"/>
+    <unit name="mammoth"/>
+    <unit name="nodchopper"/>
+    <unit name="gdichopper"/>
+    <unit name="turret"/>
+    <unit name="obelisk"/>
+    <unit name="guardtower"/>
+    <unit name="advancedguardtower"/>
+    <unit name="armour"/>
+    <unit name="fighter"/>
+    <unit name="bomber"/>
+    <unit name="transport"/>
+    <unit name="battleship"/>
+    <unit name="carrier"/>
+    <unit name="submarine"/>
+    <unit name="factory"/>
+    <unit name="aaGun"/>
+    <unit name="artillery"/>
+    <unit name="destroyer"/>
+    <unit name="cruiser"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="nodBid" delegate="bid" player="Nod" maxRunCount="1"/>
+      <step name="nodBidPlace" delegate="placeBid" player="Nod" maxRunCount="1"/>
+      <step name="gdiBid" delegate="bid" player="GDI" maxRunCount="1"/>
+      <step name="gdiBidPlace" delegate="placeBid" player="GDI" maxRunCount="1"/>
+      <!-- Nod Game Sequence -->
+      <step name="nodPurchase" delegate="purchase" player="Nod"/>
+      <step name="nodCombatMove" delegate="move" player="Nod"/>
+      <step name="nodBattle" delegate="battle" player="Nod"/>
+      <step name="nodNonCombatMove" delegate="move" player="Nod" display="Non Combat Move"/>
+      <step name="nodPlace" delegate="place" player="Nod"/>
+      <step name="nodEndTurn" delegate="endTurn" player="Nod"/>
+      <!-- GDI Game Sequence -->
+      <step name="gdiPurchase" delegate="purchase" player="GDI"/>
+      <step name="gdiCombatMove" delegate="move" player="GDI"/>
+      <step name="gdiBattle" delegate="battle" player="GDI"/>
+      <step name="gdiNonCombatMove" delegate="move" player="GDI" display="Non Combat Move"/>
+      <step name="gdiPlace" delegate="place" player="GDI"/>
+      <step name="gdiEndTurn" delegate="endTurn" player="GDI"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyGrenadier">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="grenadier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyRocket">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="rocket" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFlamethrower">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="flamethrower" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyRecon">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="recon" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBuggy">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="buggy" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHumvee">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="humvee" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyMammoth">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="mammoth" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyNODChopper">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="nodchopper" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyGDIChopper">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="gdichopper" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTurret">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="turret" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyGuardtower">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="guardtower" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyObelisk">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="obelisk" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAdvancedguardtower">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="advancedguardtower" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransport">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrier">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyer">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCruiser">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="cruiser" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleship">
+      <cost resource="PUs" quantity="24"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarine">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactory">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="NODproduction">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyCruiser"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+      <frontierRules name="buyRocket"/>
+      <frontierRules name="buyFlamethrower"/>
+      <frontierRules name="buyRecon"/>
+      <frontierRules name="buyBuggy"/>
+      <frontierRules name="buyNODChopper"/>
+      <frontierRules name="buyTurret"/>
+      <frontierRules name="buyObelisk"/>
+    </productionFrontier>
+    <productionFrontier name="GDIproduction">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyCruiser"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+      <frontierRules name="buyGrenadier"/>
+      <frontierRules name="buyRocket"/>
+      <frontierRules name="buyHumvee"/>
+      <frontierRules name="buyMammoth"/>
+      <frontierRules name="buyGDIChopper"/>
+      <frontierRules name="buyGuardtower"/>
+      <frontierRules name="buyAdvancedguardtower"/>
+    </productionFrontier>
+    <playerProduction player="GDI" frontier="GDIproduction"/>
+    <playerProduction player="Nod" frontier="NODproduction"/>
+  </production>
+  <attachmentList>
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="grenadier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="rocket" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="flamethrower" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="recon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="1"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="buggy" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="humvee" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="mammoth" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="nodchopper" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="gdichopper" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="turret" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="guardtower" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="obelisk" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="advancedguardtower" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="canBombard" value="true"/>
+      <option name="hitPoints" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="isDestroyer" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="cruiser" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="carrierCapacity" value="2"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isSub" value="true"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="3"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sudan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Italy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Somalia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Uganda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kenya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zambia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mali" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Turkmenistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sicily" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tajikistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cameroon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Persia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Algeria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gabon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sierra Leone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cote D'Ivoire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Senegal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Niger" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nigeria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ukraine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oman" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yemen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Saudi Arabia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Switzerland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eritrea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ethiopia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Republic of Congo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Namibia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Angola" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Botswana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mozambique" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cyprus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Crete" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sardinia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Corsica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Islas Baleares" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Greece" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Caucasus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mauritania" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Western Sahara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Austria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Czech Republic" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kazakhstan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Azerbaijan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pakistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Afghanistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Romania" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Spain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Portugal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="France" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Morocco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Malta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tunisia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Libya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Libya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Azerbaijan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mesopotamia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Turkey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Syria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Madagascar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Egypt" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sahara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Africa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="GDI"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bosno-Serbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="capital" value="Nod"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Canary Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <!-- canals -->
+    <attachment name="canalAttachment" attachTo="sz2" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Suez Canal"/>
+      <option name="landTerritories" value="Egypt:Syria"/>
+    </attachment>
+    <attachment name="canalAttachment" attachTo="sz 4" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Suez Canal"/>
+      <option name="landTerritories" value="Egypt:Syria"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- Nod Owned Territories -->
+      <territoryOwner territory="Bosno-Serbia" owner="Nod"/>
+      <territoryOwner territory="Egypt" owner="Nod"/>
+      <territoryOwner territory="E. Libya" owner="Nod"/>
+      <territoryOwner territory="Romania" owner="Nod"/>
+      <territoryOwner territory="Greece" owner="Nod"/>
+      <territoryOwner territory="W. Libya" owner="Nod"/>
+      <territoryOwner territory="Tunisia" owner="Nod"/>
+      <territoryOwner territory="Yemen" owner="Nod"/>
+      <territoryOwner territory="Switzerland" owner="Nod"/>
+      <territoryOwner territory="Persia" owner="Nod"/>
+      <territoryOwner territory="Afghanistan" owner="Nod"/>
+      <territoryOwner territory="Pakistan" owner="Nod"/>
+      <territoryOwner territory="Crete" owner="Nod"/>
+      <territoryOwner territory="Syria" owner="Nod"/>
+      <!-- GDI Owned Territories -->
+      <territoryOwner territory="South Africa" owner="GDI"/>
+      <territoryOwner territory="Madagascar" owner="GDI"/>
+      <territoryOwner territory="Botswana" owner="GDI"/>
+      <territoryOwner territory="Zambia" owner="GDI"/>
+      <territoryOwner territory="Ethiopia" owner="GDI"/>
+      <territoryOwner territory="Kenya" owner="GDI"/>
+      <territoryOwner territory="Angola" owner="GDI"/>
+      <territoryOwner territory="Sierra Leone" owner="GDI"/>
+      <territoryOwner territory="Senegal" owner="GDI"/>
+      <territoryOwner territory="Cote D'Ivoire" owner="GDI"/>
+      <territoryOwner territory="Italy" owner="GDI"/>
+      <territoryOwner territory="Sicily" owner="GDI"/>
+      <territoryOwner territory="Sardinia" owner="GDI"/>
+      <territoryOwner territory="Corsica" owner="GDI"/>
+      <territoryOwner territory="Mesopotamia" owner="GDI"/>
+      <territoryOwner territory="Malta" owner="GDI"/>
+      <territoryOwner territory="Namibia" owner="GDI"/>
+      <territoryOwner territory="Gabon" owner="GDI"/>
+      <territoryOwner territory="Syria" owner="GDI"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Nod Unit Placements -->
+      <unitPlacement unitType="aaGun" territory="Bosno-Serbia" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Bosno-Serbia" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="armour" territory="Bosno-Serbia" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="fighter" territory="Bosno-Serbia" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="aaGun" territory="Egypt" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="armour" territory="Egypt" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="artillery" territory="Bosno-Serbia" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="fighter" territory="sz 1" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Tunisia" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Afghanistan" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="factory" territory="Bosno-Serbia" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Egypt" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="factory" territory="Egypt" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="W. Libya" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="armour" territory="W. Libya" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="bomber" territory="Egypt" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="flamethrower" territory="Egypt" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="fighter" territory="Egypt" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="E. Libya" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="E. Libya" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Greece" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Italy" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Romania" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="armour" territory="Greece" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="artillery" territory="Algeria" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="artillery" territory="Romania" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="artillery" territory="Afghanistan" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Persia" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Cameroon" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Ukraine" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Mesopotamia" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Yemen" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Saudi Arabia" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Somalia" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Azerbaijan" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Republic of Congo" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Eritrea" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Switzerland" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Chad" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Turkmenistan" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Turkey" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Nigeria" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="France" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Crete" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Syria" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Mozambique" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="armour" territory="Pakistan" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="infantry" territory="Sudan" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="transport" territory="sz 1" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="submarine" territory="sz 28" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="submarine" territory="sz2" quantity="2" owner="Nod"/>
+      <unitPlacement unitType="transport" territory="sz2" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="submarine" territory="sz 1" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="battleship" territory="sz 1" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="cruiser" territory="sz 1" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="carrier" territory="sz 1" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="submarine" territory="sz 22" quantity="1" owner="Nod"/>
+      <unitPlacement unitType="cruiser" territory="sz 22" quantity="1" owner="Nod"/>
+      <!-- GDI Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Madagascar" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="armour" territory="Sierra Leone" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="armour" territory="Zambia" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Senegal" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="armour" territory="South Africa" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="South Africa" quantity="6" owner="GDI"/>
+      <unitPlacement unitType="artillery" territory="South Africa" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="guardtower" territory="South Africa" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="grenadier" territory="Kenya" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="factory" territory="Kenya" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="factory" territory="South Africa" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="aaGun" territory="South Africa" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="fighter" territory="South Africa" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="fighter" territory="sz 10" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Afghanistan" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="gdichopper" territory="Kenya" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="bomber" territory="South Africa" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Ethiopia" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="armour" territory="Ethiopia" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="aaGun" territory="Kenya" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Botswana" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="armour" territory="Mesopotamia" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="humvee" territory="Zambia" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Malta" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Mesopotamia" quantity="5" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Angola" quantity="3" owner="GDI"/>
+      <unitPlacement unitType="armour" territory="Cote D'Ivoire" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Cote D'Ivoire" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="infantry" territory="Kenya" quantity="4" owner="GDI"/>
+      <unitPlacement unitType="transport" territory="sz 14" quantity="2" owner="GDI"/>
+      <unitPlacement unitType="cruiser" territory="sz 14" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="transport" territory="sz 15" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="destroyer" territory="sz 8" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="destroyer" territory="sz 26" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="destroyer" territory="sz 27" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="cruiser" territory="sz 27" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="battleship" territory="sz 17" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="destroyer" territory="sz 18" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="transport" territory="sz 17" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="carrier" territory="sz 10" quantity="1" owner="GDI"/>
+      <unitPlacement unitType="transport" territory="sz 10" quantity="1" owner="GDI"/>
+      <!-- Neutral Unit Placements -->
+      <unitPlacement unitType="fighter" territory="France" quantity="3"/>
+      <unitPlacement unitType="rocket" territory="France" quantity="1"/>
+      <unitPlacement unitType="armour" territory="France" quantity="2"/>
+      <unitPlacement unitType="aaGun" territory="France" quantity="1"/>
+      <unitPlacement unitType="factory" territory="France" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Caucasus" quantity="6"/>
+      <unitPlacement unitType="infantry" territory="France" quantity="11"/>
+      <unitPlacement unitType="infantry" territory="Tajikistan" quantity="3"/>
+      <unitPlacement unitType="aaGun" territory="Syria" quantity="1"/>
+      <unitPlacement unitType="aaGun" territory="Mozambique" quantity="1"/>
+      <unitPlacement unitType="fighter" territory="Syria" quantity="1"/>
+      <unitPlacement unitType="armour" territory="Mali" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Mali" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="Madagascar" quantity="1"/>
+      <unitPlacement unitType="aaGun" territory="Mali" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Mauritania" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Pakistan" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Sudan" quantity="4"/>
+      <unitPlacement unitType="infantry" territory="Azerbaijan" quantity="4"/>
+      <unitPlacement unitType="armour" territory="Azerbaijan" quantity="1"/>
+      <unitPlacement unitType="aaGun" territory="Cameroon" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Cameroon" quantity="4"/>
+      <unitPlacement unitType="aaGun" territory="Azerbaijan" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Namibia" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Syria" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="Algeria" quantity="1"/>
+      <unitPlacement unitType="armour" territory="Switzerland" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Switzerland" quantity="6"/>
+      <unitPlacement unitType="infantry" territory="Gabon" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Portugal" quantity="2"/>
+      <unitPlacement unitType="aaGun" territory="Republic of Congo" quantity="1"/>
+      <unitPlacement unitType="fighter" territory="Republic of Congo" quantity="1"/>
+      <unitPlacement unitType="rocket" territory="Republic of Congo" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Republic of Congo" quantity="8"/>
+      <unitPlacement unitType="artillery" territory="Republic of Congo" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Spain" quantity="6"/>
+      <unitPlacement unitType="fighter" territory="Spain" quantity="3"/>
+      <unitPlacement unitType="fighter" territory="Cote D'Ivoire" quantity="1"/>
+      <unitPlacement unitType="fighter" territory="Turkey" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Turkey" quantity="4"/>
+      <unitPlacement unitType="infantry" territory="Somalia" quantity="4"/>
+      <unitPlacement unitType="infantry" territory="Uganda" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Czech Republic" quantity="4"/>
+      <unitPlacement unitType="armour" territory="Czech Republic" quantity="2"/>
+      <unitPlacement unitType="fighter" territory="Austria" quantity="2"/>
+      <unitPlacement unitType="armour" territory="Austria" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="Austria" quantity="7"/>
+      <unitPlacement unitType="infantry" territory="Chad" quantity="5"/>
+      <unitPlacement unitType="armour" territory="Chad" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Mozambique" quantity="4"/>
+      <unitPlacement unitType="infantry" territory="Sicily" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Sardinia" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="W. Libya" quantity="1"/>
+      <unitPlacement unitType="aaGun" territory="Italy" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Italy" quantity="8"/>
+      <unitPlacement unitType="infantry" territory="Saudi Arabia" quantity="4"/>
+      <unitPlacement unitType="infantry" territory="Yemen" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Morocco" quantity="2"/>
+      <unitPlacement unitType="fighter" territory="Italy" quantity="3"/>
+      <unitPlacement unitType="armour" territory="Italy" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Oman" quantity="2"/>
+      <unitPlacement unitType="artillery" territory="Italy" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Eritrea" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Niger" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Nigeria" quantity="3"/>
+      <unitPlacement unitType="armour" territory="Nigeria" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Tunisia" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Mesopotamia" quantity="3"/>
+      <unitPlacement unitType="armour" territory="Ukraine" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Ukraine" quantity="5"/>
+      <unitPlacement unitType="artillery" territory="Ukraine" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Turkmenistan" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="Tunisia" quantity="1"/>
+      <unitPlacement unitType="destroyer" territory="sz 5" quantity="1"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Nod" resource="PUs" quantity="28"/>
+      <resourceGiven player="GDI" resource="PUs" quantity="35"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Sub Control Sea Zone Restricted" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Blitzable" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Bids -->
+    <property name="Nod bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="GDI bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="command_and_conquer" editable="false"/>
+    <property name="notes">
+      <value><![CDATA[       
+				
+					Command and Conquer
+				<br>by -a
+				<br>
+<br>				
+<br> <-------------COMMAND & CONQUER: Axis & Allies------------->
+<br>Version: 0.9
+<br>_______________________________________________________________________
+
+
+<br>				  He who controls the past; commands the future. 
+<br>				  He who commands the future, conquers the past.
+
+<br>								Kane, Brotherhood of Nod			
+
+<br>_______________________________________________________________________
+
+<br>Contents:
+
+<br>0	Instructions for installation
+
+<br>1	Background of Command & Conquer
+<br>	
+<br>2	Brotherhood of Nod
+
+<br>3	Global Defense Initiative
+
+<br>4	Origins
+
+<br>5	Map Quirks
+
+<br>6	Units
+
+<br>7	Buildings
+
+<br>9	Naval Units
+
+<br>7	Resources
+
+<br>_______________________________________________________________________	
+
+<br>Instructions for installation
+
+<br>_______________________________________________________________________	
+
+<br>Simply move the whole file to the maps section of the TripleA folder. 
+
+<br>Then, move the GDI and Nod image folders to TripleA/your-version/images/units.
+<br>The Neutral folder only contains two units, so simply drop them into the Neutral folder already in your directory.
+
+<br>Move command and conquer.xml to the games folder.
+
+<br>Have fun.
+
+
+<br>_______________________________________________________________________
+
+
+<br>Background of C&C: Tiberium Dawn
+
+<br>_______________________________________________________________________	
+
+<br>The original Command and Conquer game was produced by Westwood Studios, and distributed internationally by Virgin Interactive in 1995. The opening sequence shows animation of the bombing of the fictional Grand Trade Center in Vienna, with the act being blamed on Brotherhood of Nod terrorists and their mysterious leader. The conflict between the industrialized world's leading countries and the rapidly spreading Nod society is centered around control of the fictional resource of Tiberium; an exotic and extraterrestrial substance which extracts all nutrients from the land it sits upon and deposits them into toxic, above-ground crystals that can be processed into potent materials:
+
+<br>http://youtube.com/watch?v=zS9irxBAwb0
+
+<br>While the United Nations GDI focuses on research on attempting to mitigate the damage the Tiberium crystals increasingly begin to cause to the Earth's peoples and ecosystems, Nod's position is to embrace Tiberium as a gift from God and the herald of a new age for humanity. Nod has done heavy research into pioneering Tiberium-based technologies and its self-proclaimed messianic leader, a man known only as Kane, appears to have designs to convert the entire world to a Tiberium-based ecosystem. The GDI was created by the G8 nations to counter Kane's plans for a new world order. 
+
+<br>_______________________________________________________________________
+
+
+<br>Brotherhood of Nod
+
+<br>_______________________________________________________________________
+
+
+<br>Before the outbreak of the First Tiberium War, the most accepted idea was that the Brotherhood was simply another minor terrorist faction. However, when a scandal broke out involving major American defense contractors, it was discovered that Nod had substantial military air, sea, and land power. Nod is headed by Kane, known as Jacob Caine by Interpol in the Western world, and as Amir al-Quayym by MI6 in the Middle East.
+
+<br>Nod forces are composed of guerrillas from other allied organizations, mercenaries and conscripts from the territories Nod controls, as well as Nod-indoctrinated religious fanatics. Before the Sarajevo central headquarters was identified, Nod was believed to have no central command base, instead operating from multiple individual locations, with posts previously identified in Kuantan, Malaysia; the Ar-Rub' al-Khali desert, Saudi Arabia; Tokyo, Japan and Caen, France[1].
+
+<br>Nod is also believed to back a number of officially recognized political parties: the Fist of Allah party in Jordan, the United We Stand America party in the United States, and the Albion First! party in the United Kingdom, among others[1]. Additionally, they are affiliated with the Irish Republican Party, Islamic Jihad, Tamil Tigers and Al-Queda.
+
+<br>Nod's chief asset is its near monopoly on the Tiberium harvesting industry. Due partially to chance, the alien organism arrived via meteor impact near the Tiber river in Italy and thus the genesis of the name Tiberium. Kane, the self-appointed leader of the Brotherhood of Nod, claims that it was the Brotherhood who first discovered the organism and that he named it after Tiberius Caesar Augustus. Tiberium spreads quickly and thrives in temperate to warm conditions. Many of the poorer countries straddling the equatorial regions were hit hardest by the rapidly spreading substance. The Brotherhood, being anti-Western, tapped into these suddenly rich nations for substantial control of the Tiberium market. At the time of Command & Conquer: Tiberian Dawn, Nod controlled almost half the world's Tiberium supply at 49%[4]; compared with the lackluster 27% controlled by the G8 nations (sponsors of GDI), and the remaining 24% in the hands of unaffiliated nations.
+
+<br>Before Command & Conquer: Tiberian Dawn is played out, it is believed that Nod's fiscal assets were in the range of 255.2 billion US dollars based on audits of seized financial records. Because Nod controls a large portion of the world's supply and they are at the forefront of Tiberium research, they possess incredible leverage in financial operations such as on the London Gold Exchange.
+
+<br>As long as man has had breath the Brotherhood has existed. For from the beginning - when man's struggle was with nature, not knowing where he might sleep, how he would eat, or whether he would survive to see the light of dawn - there have always been those who would lord over others. People who believe that they, by some unseen right, are granted power over others, and would push others down so they might climb, are the greatest threat to mankind's existence. For many years has one man or one race prospered on the sweat and work of others.
+
+<br>Such injustices are not just a sin against mankind, but also a sin against God. The Brotherhood had its beginnings with the first downtrodden who looked for a better way. These oppressed sought a path that would allow them to gather fruits of life and achieve enough resources and wealth that they and their families could survive and advance with the rest of mankind.
+
+<br>_______________________________________________________________________
+
+
+<br>Global Defense Initiative
+
+<br>_______________________________________________________________________
+
+
+<br>The Global Defense Initiative, or GDI, originally was a covert multinational special forces group operating under the designation of "Operations Group Echo: Black Ops 9". The concept behind the organization was first proposed within the United Nations Security Council by representatives of Allied countries during the 20th century's Second Great War, and was in the aftermath of this conflict jointly founded by unspecified numbers of the Council's members as a specialized, peace enforcing unit with a mandate to operate worldwide. The unit was outfitted with military as well as political means to be able of silently hamstringing anything from local ethnic unrest to regionalized armed conflicts across the globe, and was given as its primary objective the ensuring no fledgling confrontations would ever escalate into a continental or worldwide emergency again. As O.G.E.: B.O.9 repeatedly became deployed throughout the world over the many years however, rumors about their existence slowly began to seep into the mainstream public consciousness. Eventually, the overseeing Security Council came to the decision that transparency and limited disclosure were the best response to the international media's speculations on the nature and the purpose of the secret unit. The final proverbial straw for this would come when an operation in which the attempted assassination upon Saddam Hussein, in a covert effort to prevent the outbreak of the Persian Gulf War, failed miserably and resulted in the death of a large number of agents. This incident, coupled with the rapid spread of a toxic and extraterrestrial substance known as Tiberium, as well as the ever increasing influence of the globalized Brotherhood of Nod society, prompted the Security Council into greatly expanding and revising the mandate as well as the purpose of O.G.E.: B.O.9. The organization was brought out of the shadows, and was restructured in order to make it capable of tackling the threats of the modern ages openly as well as directly. In accordance with the United Nations Global Defense Act (UNGDA), the United Nations' Global Defense Initiative (UNGDI) was founded at the date of October 12th, 1995. The proposal stated the following:
+
+<br>"The Global Defense Initiative was founded to enforce the United Nations Global Defense Act and uphold the ideals as outlined in the United Nations Charter."
+
+<br>_______________________________________________________________________
+
+
+<br>Origins
+
+<br>_______________________________________________________________________
+
+
+<br>Throughout the titles of the Command & Conquer series, Brotherhood of Nod loyalists of different generations alike have alluded that Kane is none other than the Abrahamic figure of Cain -- allegedly the first man in Earth's history to have committed murder according to the scriptures of Judaism, Christianity and Islam. Cain and Abel were the two sons of Adam and Eve, born after the Fall of Man when Adam and Eve had been tempted into eating the forbidden fruit from the Tree of Knowledge of Good and Evil.
+
+<br>The story is told in the Bible at Genesis 4:1-16, the Qur'an at 5:26-32 and in Moses at 5:16-41. In all versions, Cain, a farmer, commits the first murder by killing his own brother Abel, a shepherd, after God rejected Cain's sacrifice yet accepted that of Abel. God sought out Cain to ask him where his brother might be, to which Cain replied: "I know not; Am I my brother's keeper?". Upon this answer, God cursed Cain to wander the Earth forever, unable to die of old age. In his fear, Cain pleaded with God, who then placed a mark upon him. Cain then began his wandering of the lands. Early translations of Hebrew text described these alleged events, stating that:
+
+<br>"Cain departed to the Land of Nod. And Adam had another son, whose name was Seth."
+
+<br>In a direct correlation, the manual of the original Command & Conquer game lists a quote by Kane with the source being cited a file designated as "#GEN4:16"[1]. This again is a reference to Genesis 4:16, which reads;
+
+<br>"And Cain went out from the presence of the Lord, and dwelt in the Land of Nod, on the east of Eden."
+
+<br>Additionally, in the title of Command & Conquer: Renegade, the player discovers an ancient underground tomb located in Cairo, its epitaph depicting and describing the slaying of Abel, and with Kane stating that the coffin contained Abel's remains. Kane appears to be either immortal or ageless, as his actions span over 100 years, yet he seems to have not aged a day since his first canonical appearance as Joseph Stalin's mysterious advisor in Command & Conquer: Red Alert.
+
+<br>The story implies that he may in fact have been instigating the world war between the Soviet Union and the Allied nations in order to further the Brotherhood of Nod's long-term goals. Indeed -- Nadia, one of Stalin's other closest advisors and evidently a member of the Brotherhood herself as early as the 1950s, instructs the player to "keep the peace" until Nod would "tire of the USSR in the early 1990s" upon the campaign's successful conclusion[4]. Kane however then shoots her without provocation or warning, and proclaims to the player that he "[is] the future". Moreover, during the Allied campaign, a news announcer reporting on the Allies' loss of Greece is suddenly heard stating that the United Nations are in the process of creating a special military task force intended to deal with future globalized conflicts. This task force is implied to have been "Operations Group Echo: Black Ops 9" -- the covert and international peace enforcing unit of the United Nations and the precursor of the Global Defense Initiative, one of the two main and iconic factions of the Tiberian series along with the Brotherhood of Nod.
+
+<br>A much debated theory intended to resolve the apparent timeline error which came to exist between Command & Conquer: Tiberian Dawn and Command & Conquer: Red Alert 2 is to consider Red Alert as the genesis of two parallel storylines. If the Soviet campaign were to be successfully completed in Red Alert, then the USSR would emerge as the dominant Eurasian power and Kane and the Brotherhood of Nod would subsequently take control of this new empire. 
+<br>	Conversely, if the Allied campaign were to be completed in Red Alert, the Allies would emerge victorious and the timeline would instead lead into the events of  Command & Conquer: Tiberium Dawn.
+
+<br>Kane with Stalin: http://en.wikipedia.org/wiki/Image:Kane_with_Stalin.jpg
+
+<br>_______________________________________________________________________
+
+
+<br>Map Quirks
+
+<br>_______________________________________________________________________
+
+
+<br>You may figure this out on your own or already know, but units which start in enemy or neutral territories have some unique abilities. They can move to an adjacent territory in the combat phase and, in the case of units in neutral territories, they can stay in a territory without fighting the neutral defenders.
+
+<br>This can be something you want or annoying, as neutral units in your own territories restrict your movement. Watch out for ambushes...
+
+<br>Eventually I hope to code the neutral penalty differently for each player. Nod will have no penalty for invading neutral countries, while GDI will pay 5 ipcs per territory they invade. This requires a little foresight like in classic, as you must save enough money to attack the desired territories.
+
+<br>And believe me you will want to keep up with Nod.
+
+<br>_______________________________________________________________________
+
+
+<br>Units
+
+<br>_______________________________________________________________________
+
+
+<br>Infantry- 3, 1, 1, 2
+
+<br>	Keep it simple for this one.
+
+
+<br>Grenadier- 3, 1, 2, 1
+
+<br>	Similar to the middle earth units; for a little variety. GDI only.
+
+
+<br>Rocket soldier- 4, 1, 1, 3
+
+<br>	Powerful defensive unit, just like in c&c. Receives artillery bonus like infantry.
+
+
+<br>Flame Thrower- 4, 1, 3, 1
+
+<br>	Nod's answer to the grenadier. Nod only.
+
+
+<br>Artillery- 4, 1, 2, 2
+
+<br>	Exactly the same as in revised. Rocket soldiers also receive the artillery bonus.
+
+
+<br>Recon Buggy/ Humvee- 4, 2, 2, 2
+
+<br>	I'm taking my inspiration here from New World Order with a little modification.
+
+
+<br>Attack Bike- 5, 3, 3, 1
+
+<br>	Quick and deadly, just like in the original game. Nod only.
+
+
+<br>Armor- 5, 2, 3, 3
+
+<br>	Pretty Standard, represents the light and medium tanks for both factions.
+
+
+<br>X-66 'Mammoth' Tank- 10, 1, 4, 4
+
+<br>	Ultra slow 'battleship' on land, without two hits. Fills transport. GDI only.
+
+
+<br>F-15/Mig-21- 10, 4, 3, 4
+
+<br>	No reason to change this.
+
+
+<br>Tu-16/B-2- 15, 6, 4, 1
+
+<br>	Ibid.
+
+
+<br>Orca- 8, 3, 3, 3
+
+<br>Similar to a fighter but slower and less robust. Can land on a carrier just like a fighter. GDI only.
+
+
+<br>Apache- 8, 3, 2, 4
+
+<br>Powerful defensive helicopter. Can land on a carrier just like a fighter. Nod only.
+
+<br>_______________________________________________________________________
+
+
+<br>Buildings
+
+<br>_______________________________________________________________________
+
+
+<br>Guard Tower- 5, -, -, 4
+
+<br>High velocity machine-gun fortification. Cannot move.
+
+
+<br>Gun Turret-5 -, -, 4
+
+<br>Powerful anti-tank defense. Cannot move.
+
+
+<br>Advanced Guard Tower- 9, -, -, 5
+
+<br>Dedicated multi-role missile installation. Cannot move.
+
+
+<br>Obelisk of Light- 9, -, -, 5
+
+<br>Powerful laser-based defense. Cannot move.
+
+
+<br>_______________________________________________________________________
+
+
+<br>Naval Units
+
+<br>_______________________________________________________________________
+
+
+
+<br>Transport- 8, 2, 0, 1
+
+<br>	Vanilla.
+
+
+<br>Submarine- 8, 2, 2, 2
+
+<br>	Standard. Nod only.
+
+
+<br>Destroyer- 8, 2, 2, 2
+
+<br>	Slight modification. GDI only.
+
+
+<br>Cruiser- 10, 2, 3, 3
+
+<br>	This unit is from Big World.
+
+
+<br>Battleship- 24, 2, 4, 4
+
+<br>	No comment.
+
+
+<br>Aircraft Carrier- 15, 2, 1, 3
+
+<br>	Almost done.
+
+
+<br>_______________________________________________________________________
+
+
+<br>Resources
+
+<br>_______________________________________________________________________
+
+
+<br>	http://en.wikipedia.org/wiki/Command_&_Conquer
+
+
+<br>TripleA Developers Forum, C&C in TripleA?:
+
+<br>	http://tripleadev.org/index.php?showtopic=1555
+
+
+<br>Game Endings:
+
+<br>Nod
+<br>	http://www.youtube.com/watch?v=dtT2gvOfp9Q
+
+
+<br>GDI
+<br>	http://www.youtube.com/watch?v=ELpqg3ECzk4&feature=related
+
+
+<br>Nod Mission 1:
+
+<br>http://www.youtube.com/watch?v=nfIVE0RwhFs&feature=related
+
+
+<br>GDI Mission 1:
+<br>	http://www.youtube.com/watch?v=bQar_1fWfkg
+
+<br>If you "improve" the game, please post on the TripleA forum, under the topic C&C in TripleA?
+
+<br>Thanks, and, enjoy.
+				<br>
+				<br>
+				<br>converted up to TripleA 1.2.x.x by Veqryn
+			]]></value>
+    </property>
+  </propertyList>
+</game>

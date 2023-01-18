@@ -1,0 +1,1259 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Stalingrad" version="2.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="France"/>
+    <territory name="Germany"/>
+    <territory name="Manstein Army"/>
+    <territory name="Manstein Army Unite"/>
+    <territory name="Free"/>
+    <territory name="Donetz River"/>
+    <territory name="Kotelnikowo"/>
+    <territory name="Kumsky"/>
+    <territory name="Nishne"/>
+    <territory name="Pantizanzkiy"/>
+    <territory name="West Mishvoka River"/>
+    <territory name="Aksay River"/>
+    <territory name="Sarpa"/>
+    <territory name="Jelchi"/>
+    <territory name="Zalivskiy"/>
+    <territory name="Shestakov Bridge"/>
+    <territory name="Wolga Island"/>
+    <territory name="Pokrovka"/>
+    <territory name="Krestovy"/>
+    <territory name="Kozhzavod"/>
+    <territory name="Krasnaja"/>
+    <territory name="Saratov"/>
+    <territory name="South Volzhskiy"/>
+    <territory name="North Volzhskiy"/>
+    <territory name="Kamyshin"/>
+    <territory name="South Beachhead"/>
+    <territory name="Wertjatshi"/>
+    <territory name="Peskovatka"/>
+    <territory name="Samofalowa Station"/>
+    <territory name="Samofalowa"/>
+    <territory name="Marinowka"/>
+    <territory name="Trekhostarskaya"/>
+    <territory name="Barilkin"/>
+    <territory name="Kumenny"/>
+    <territory name="Kachalino"/>
+    <territory name="North Beachhead"/>
+    <territory name="West Rynok"/>
+    <territory name="Rynok"/>
+    <territory name="Fields"/>
+    <territory name="Spartakowka"/>
+    <territory name="Barricade Colony"/>
+    <territory name="Plant Barricade"/>
+    <territory name="Red Oktober Colony"/>
+    <territory name="Plant Red Oktober"/>
+    <territory name="Wolga Hide"/>
+    <territory name="Railway Track Switch"/>
+    <territory name="Stepnoy"/>
+    <territory name="Dimitrewka"/>
+    <territory name="Karpowka"/>
+    <territory name="Rogatshik"/>
+    <territory name="Pitomnik"/>
+    <territory name="Nadezhda"/>
+    <territory name="Kalatsh And Sowjetski"/>
+    <territory name="Wood"/>
+    <territory name="Oblast Wood"/>
+    <territory name="Oblast"/>
+    <territory name="Ovrazhny"/>
+    <territory name="Gumrak"/>
+    <territory name="Gorodistshe"/>
+    <territory name="Main Train Station"/>
+    <territory name="Warapanowa"/>
+    <territory name="Bassarging"/>
+    <territory name="Height"/>
+    <territory name="Sowjetski Rails"/>
+    <territory name="North Don River"/>
+    <territory name="North Korolzvoy"/>
+    <territory name="Korolzvoy"/>
+    <territory name="Tank Scrab"/>
+    <territory name="Hospital"/>
+    <territory name="Don River"/>
+    <territory name="Chir River"/>
+    <territory name="Gawrilowka"/>
+    <territory name="Marmai Hights 102"/>
+    <territory name="Krutoi Channel"/>
+    <territory name="Krutoi Estuary"/>
+    <territory name="North Stalingrad Ruines"/>
+    <territory name="Bazinowka"/>
+    <territory name="Tank Barricades"/>
+    <territory name="South Gardens"/>
+    <territory name="German Tross"/>
+    <territory name="Zanya"/>
+    <territory name="South Station"/>
+    <territory name="Minina River"/>
+    <territory name="South Station Rails"/>
+    <territory name="Kuporosnoje"/>
+    <territory name="Minina Estuary"/>
+    <territory name="South Stalingrad"/>
+    <territory name="Selshanka"/>
+    <territory name="Tennis Racket"/>
+    <territory name="Stadium"/>
+    <territory name="Houses"/>
+    <territory name="South Wolga Hide"/>
+    <territory name="Zeriza Estuary"/>
+    <territory name="Place of 9Jan"/>
+    <territory name="Zeriza River"/>
+    <territory name="Pavlovs House"/>
+    <territory name="Stalingrad City"/>
+    <territory name="Streets"/>
+    <territory name="Main Station Rails"/>
+    <territory name="Tartars Wall"/>
+    <!-- Territory Connections -->
+    <connection t1="Kuporosnoje" t2="Tennis Racket"/>
+    <connection t1="Kuporosnoje" t2="Selshanka"/>
+    <connection t1="Kuporosnoje" t2="Minina Estuary"/>
+    <connection t1="Minina Estuary" t2="Tennis Racket"/>
+    <connection t1="Minina Estuary" t2="South Stalingrad"/>
+    <connection t1="South Stalingrad" t2="Tennis Racket"/>
+    <connection t1="Selshanka" t2="Tennis Racket"/>
+    <connection t1="Tennis Racket" t2="Stadium"/>
+    <connection t1="Tennis Racket" t2="Houses"/>
+    <connection t1="Tennis Racket" t2="South Wolga Hide"/>
+    <connection t1="Stadium" t2="Houses"/>
+    <connection t1="Stadium" t2="Zeriza River"/>
+    <connection t1="Stadium" t2="Place of 9Jan"/>
+    <connection t1="Houses" t2="Place of 9Jan"/>
+    <connection t1="Houses" t2="Zeriza Estuary"/>
+    <connection t1="Houses" t2="South Wolga Hide"/>
+    <connection t1="South Wolga Hide" t2="Zeriza Estuary"/>
+    <connection t1="Zeriza Estuary" t2="Place of 9Jan"/>
+    <connection t1="Place of 9Jan" t2="Zeriza River"/>
+    <connection t1="Bazinowka" t2="Zanya"/>
+    <connection t1="Bazinowka" t2="Tank Barricades"/>
+    <connection t1="Tank Barricades" t2="Zanya"/>
+    <connection t1="Tank Barricades" t2="South Station"/>
+    <connection t1="Tank Barricades" t2="Minina River"/>
+    <connection t1="Tank Barricades" t2="South Gardens"/>
+    <connection t1="South Gardens" t2="Minina River"/>
+    <connection t1="South Gardens" t2="Selshanka"/>
+    <connection t1="Zanya" t2="South Station"/>
+    <connection t1="Zanya" t2="South Station Rails"/>
+    <connection t1="South Station" t2="Minina River"/>
+    <connection t1="South Station" t2="Selshanka"/>
+    <connection t1="South Station" t2="South Station Rails"/>
+    <connection t1="South Station" t2="Tennis Racket"/>
+    <connection t1="Minina River" t2="Selshanka"/>
+    <connection t1="South Station Rails" t2="Tennis Racket"/>
+    <connection t1="South Station Rails" t2="Stadium"/>
+    <connection t1="South Station Rails" t2="Zeriza River"/>
+    <connection t1="Main Station Rails" t2="Zeriza River"/>
+    <connection t1="Main Station Rails" t2="Pavlovs House"/>
+    <connection t1="Main Station Rails" t2="Streets"/>
+    <connection t1="Streets" t2="Pavlovs House"/>
+    <connection t1="Streets" t2="Stalingrad City"/>
+    <connection t1="Stalingrad City" t2="Pavlovs House"/>
+    <connection t1="Stalingrad City" t2="Place of 9Jan"/>
+    <connection t1="Stalingrad City" t2="Zeriza Estuary"/>
+    <connection t1="Pavlovs House" t2="Zeriza River"/>
+    <connection t1="Pavlovs House" t2="Place of 9Jan"/>
+    <connection t1="North Korolzvoy" t2="Korolzvoy"/>
+    <connection t1="North Korolzvoy" t2="Tank Scrab"/>
+    <connection t1="North Korolzvoy" t2="Don River"/>
+    <connection t1="German Tross" t2="Zanya"/>
+    <connection t1="German Tross" t2="Korolzvoy"/>
+    <connection t1="German Tross" t2="Don River"/>
+    <connection t1="Korolzvoy" t2="Tank Scrab"/>
+    <connection t1="Korolzvoy" t2="Hospital"/>
+    <connection t1="Korolzvoy" t2="South Station Rails"/>
+    <connection t1="Korolzvoy" t2="Zanya"/>
+    <connection t1="Korolzvoy" t2="Don River"/>
+    <connection t1="Tank Scrab" t2="Hospital"/>
+    <connection t1="Hospital" t2="South Station Rails"/>
+    <connection t1="Hospital" t2="Zeriza River"/>
+    <connection t1="Don River" t2="Zanya"/>
+    <connection t1="Don River" t2="Chir River"/>
+    <connection t1="Don River" t2="Bazinowka"/>
+    <connection t1="Chir River" t2="Bazinowka"/>
+    <connection t1="Marmai Hights 102" t2="Tartars Wall"/>
+    <connection t1="Marmai Hights 102" t2="Krutoi Channel"/>
+    <connection t1="Marmai Hights 102" t2="Krutoi Estuary"/>
+    <connection t1="Marmai Hights 102" t2="North Stalingrad Ruines"/>
+    <connection t1="North Stalingrad Ruines" t2="Krutoi Estuary"/>
+    <connection t1="Krutoi Estuary" t2="Streets"/>
+    <connection t1="Krutoi Estuary" t2="Stalingrad City"/>
+    <connection t1="Krutoi Estuary" t2="Krutoi Channel"/>
+    <connection t1="Krutoi Channel" t2="Streets"/>
+    <connection t1="Krutoi Channel" t2="Tartars Wall"/>
+    <connection t1="Krutoi Channel" t2="Main Station Rails"/>
+    <connection t1="Main Station Rails" t2="Tartars Wall"/>
+    <connection t1="Bassarging" t2="Warapanowa"/>
+    <connection t1="Bassarging" t2="Height"/>
+    <connection t1="Bassarging" t2="Sowjetski Rails"/>
+    <connection t1="Warapanowa" t2="Height"/>
+    <connection t1="Warapanowa" t2="North Korolzvoy"/>
+    <connection t1="Warapanowa" t2="Tank Scrab"/>
+    <connection t1="Warapanowa" t2="Hospital"/>
+    <connection t1="Warapanowa" t2="Main Train Station"/>
+    <connection t1="Main Train Station" t2="Tartars Wall"/>
+    <connection t1="Main Train Station" t2="Main Station Rails"/>
+    <connection t1="Main Train Station" t2="Zeriza River"/>
+    <connection t1="Main Train Station" t2="Hospital"/>
+    <connection t1="Height" t2="Sowjetski Rails"/>
+    <connection t1="Height" t2="North Don River"/>
+    <connection t1="Height" t2="North Korolzvoy"/>
+    <connection t1="Sowjetski Rails" t2="North Don River"/>
+    <connection t1="Sowjetski Rails" t2="Chir River"/>
+    <connection t1="North Don River" t2="Chir River"/>
+    <connection t1="North Don River" t2="North Korolzvoy"/>
+    <connection t1="North Don River" t2="Don River"/>
+    <connection t1="Karpowka" t2="Kalatsh And Sowjetski"/>
+    <connection t1="Karpowka" t2="Rogatshik"/>
+    <connection t1="Karpowka" t2="Bassarging"/>
+    <connection t1="Kalatsh And Sowjetski" t2="Bassarging"/>
+    <connection t1="Kalatsh And Sowjetski" t2="Sowjetski Rails"/>
+    <connection t1="Kalatsh And Sowjetski" t2="Chir River"/>
+    <connection t1="Rogatshik" t2="Bassarging"/>
+    <connection t1="Rogatshik" t2="Pitomnik"/>
+    <connection t1="Pitomnik" t2="Bassarging"/>
+    <connection t1="Pitomnik" t2="Nadezhda"/>
+    <connection t1="Pitomnik" t2="Oblast"/>
+    <connection t1="Pitomnik" t2="Wood"/>
+    <connection t1="Pitomnik" t2="Warapanowa"/>
+    <connection t1="Nadezhda" t2="Gorodistshe"/>
+    <connection t1="Nadezhda" t2="Gumrak"/>
+    <connection t1="Nadezhda" t2="Oblast"/>
+    <connection t1="Wood" t2="Warapanowa"/>
+    <connection t1="Wood" t2="Oblast"/>
+    <connection t1="Wood" t2="Oblast Wood"/>
+    <connection t1="Oblast" t2="Oblast Wood"/>
+    <connection t1="Oblast" t2="Gumrak"/>
+    <connection t1="Oblast" t2="Ovrazhny"/>
+    <connection t1="Gorodistshe" t2="Gumrak"/>
+    <connection t1="Oblast Wood" t2="Warapanowa"/>
+    <connection t1="Oblast Wood" t2="Ovrazhny"/>
+    <connection t1="Oblast Wood" t2="Main Train Station"/>
+    <connection t1="Oblast Wood" t2="Tartars Wall"/>
+    <connection t1="Gumrak" t2="Ovrazhny"/>
+    <connection t1="Gorodistshe" t2="Tartars Wall"/>
+    <connection t1="Gorodistshe" t2="Ovrazhny"/>
+    <connection t1="Ovrazhny" t2="Tartars Wall"/>
+    <connection t1="Marinowka" t2="Kalatsh And Sowjetski"/>
+    <connection t1="Marinowka" t2="Karpowka"/>
+    <connection t1="Marinowka" t2="Dimitrewka"/>
+    <connection t1="Marinowka" t2="Trekhostarskaya"/>
+    <connection t1="Marinowka" t2="Peskovatka"/>
+    <connection t1="Marinowka" t2="Wertjatshi"/>
+    <connection t1="Wertjatshi" t2="Peskovatka"/>
+    <connection t1="Wertjatshi" t2="Samofalowa"/>
+    <connection t1="Wertjatshi" t2="Kachalino"/>
+    <connection t1="Kachalino" t2="Samofalowa"/>
+    <connection t1="Kachalino" t2="Barilkin"/>
+    <connection t1="Kachalino" t2="West Rynok"/>
+    <connection t1="Kachalino" t2="North Beachhead"/>
+    <connection t1="North Beachhead" t2="Rynok"/>
+    <connection t1="North Beachhead" t2="West Rynok"/>
+    <connection t1="West Rynok" t2="Rynok"/>
+    <connection t1="Peskovatka" t2="Trekhostarskaya"/>
+    <connection t1="Peskovatka" t2="Stepnoy"/>
+    <connection t1="Peskovatka" t2="Samofalowa Station"/>
+    <connection t1="Peskovatka" t2="Barilkin"/>
+    <connection t1="Peskovatka" t2="Samofalowa"/>
+    <connection t1="Samofalowa" t2="Barilkin"/>
+    <connection t1="Barilkin" t2="Samofalowa Station"/>
+    <connection t1="Barilkin" t2="West Rynok"/>
+    <connection t1="Barilkin" t2="Kumenny"/>
+    <connection t1="Barilkin" t2="Railway Track Switch"/>
+    <connection t1="West Rynok" t2="Kumenny"/>
+    <connection t1="West Rynok" t2="Fields"/>
+    <connection t1="Rynok" t2="Fields"/>
+    <connection t1="Rynok" t2="Spartakowka"/>
+    <connection t1="Trekhostarskaya" t2="Stepnoy"/>
+    <connection t1="Trekhostarskaya" t2="Dimitrewka"/>
+    <connection t1="Samofalowa Station" t2="Stepnoy"/>
+    <connection t1="Samofalowa Station" t2="Railway Track Switch"/>
+    <connection t1="Samofalowa Station" t2="Gorodistshe"/>
+    <connection t1="Samofalowa Station" t2="Nadezhda"/>
+    <connection t1="Kumenny" t2="Fields"/>
+    <connection t1="Kumenny" t2="Barricade Colony"/>
+    <connection t1="Kumenny" t2="Red Oktober Colony"/>
+    <connection t1="Kumenny" t2="Railway Track Switch"/>
+    <connection t1="Fields" t2="Barricade Colony"/>
+    <connection t1="Fields" t2="Spartakowka"/>
+    <connection t1="Barricade Colony" t2="Spartakowka"/>
+    <connection t1="Barricade Colony" t2="Red Oktober Colony"/>
+    <connection t1="Barricade Colony" t2="Plant Barricade"/>
+    <connection t1="Barricade Colony" t2="Plant Red Oktober"/>
+    <connection t1="Plant Barricade" t2="Plant Red Oktober"/>
+    <connection t1="Railway Track Switch" t2="Gorodistshe"/>
+    <connection t1="Railway Track Switch" t2="Red Oktober Colony"/>
+    <connection t1="Red Oktober Colony" t2="Plant Red Oktober"/>
+    <connection t1="Red Oktober Colony" t2="Gorodistshe"/>
+    <connection t1="Red Oktober Colony" t2="Marmai Hights 102"/>
+    <connection t1="Plant Red Oktober" t2="North Stalingrad Ruines"/>
+    <connection t1="Plant Red Oktober" t2="Wolga Hide"/>
+    <connection t1="Plant Red Oktober" t2="Marmai Hights 102"/>
+    <connection t1="Wolga Hide" t2="North Stalingrad Ruines"/>
+    <connection t1="Marmai Hights 102" t2="Gorodistshe"/>
+    <connection t1="Stepnoy" t2="Dimitrewka"/>
+    <connection t1="Stepnoy" t2="Pitomnik"/>
+    <connection t1="Stepnoy" t2="Nadezhda"/>
+    <connection t1="Dimitrewka" t2="Pitomnik"/>
+    <connection t1="Dimitrewka" t2="Rogatshik"/>
+    <connection t1="Dimitrewka" t2="Karpowka"/>
+    <connection t1="France" t2="Germany"/>
+    <connection t1="Germany" t2="Manstein Army"/>
+    <connection t1="Manstein Army" t2="Manstein Army Unite"/>
+    <connection t1="Manstein Army Unite" t2="Donetz River"/>
+    <connection t1="Donetz River" t2="Kotelnikowo"/>
+    <connection t1="Kotelnikowo" t2="Kumsky"/>
+    <connection t1="Kotelnikowo" t2="Nishne"/>
+    <connection t1="Kumsky" t2="Kalatsh And Sowjetski"/>
+    <connection t1="Nishne" t2="Kalatsh And Sowjetski"/>
+    <connection t1="Nishne" t2="Kumsky"/>
+    <connection t1="Kamyshin" t2="North Beachhead"/>
+    <connection t1="Kamyshin" t2="North Volzhskiy"/>
+    <connection t1="North Volzhskiy" t2="South Volzhskiy"/>
+    <connection t1="North Volzhskiy" t2="Plant Barricade"/>
+    <connection t1="South Volzhskiy" t2="Krasnaja"/>
+    <connection t1="South Volzhskiy" t2="Saratov"/>
+    <connection t1="South Volzhskiy" t2="Stalingrad City"/>
+    <connection t1="Saratov" t2="Kozhzavod"/>
+    <connection t1="Saratov" t2="Krasnaja"/>
+    <connection t1="Krasnaja" t2="Kozhzavod"/>
+    <connection t1="Kozhzavod" t2="Stalingrad City"/>
+    <connection t1="Kozhzavod" t2="Krestovy"/>
+    <connection t1="Krestovy" t2="South Stalingrad"/>
+    <connection t1="Krestovy" t2="Pokrovka"/>
+    <connection t1="Pokrovka" t2="Wolga Island"/>
+    <connection t1="Pokrovka" t2="South Beachhead"/>
+    <connection t1="Wolga Island" t2="South Beachhead"/>
+    <connection t1="South Beachhead" t2="Sarpa"/>
+    <connection t1="South Beachhead" t2="Aksay River"/>
+    <connection t1="Aksay River" t2="Sarpa"/>
+    <connection t1="Aksay River" t2="Shestakov Bridge"/>
+    <connection t1="Aksay River" t2="West Mishvoka River"/>
+    <connection t1="West Mishvoka River" t2="Shestakov Bridge"/>
+    <connection t1="West Mishvoka River" t2="Zalivskiy"/>
+    <connection t1="West Mishvoka River" t2="Jelchi"/>
+    <connection t1="West Mishvoka River" t2="Pantizanzkiy"/>
+    <connection t1="West Mishvoka River" t2="Gawrilowka"/>
+    <connection t1="Gawrilowka" t2="Pantizanzkiy"/>
+    <connection t1="Gawrilowka" t2="Kalatsh And Sowjetski"/>
+    <connection t1="Gawrilowka" t2="Chir River"/>
+    <connection t1="Pantizanzkiy" t2="Chir River"/>
+    <connection t1="Pantizanzkiy" t2="Jelchi"/>
+    <connection t1="Pantizanzkiy" t2="Bazinowka"/>
+    <connection t1="Jelchi" t2="Bazinowka"/>
+    <connection t1="Jelchi" t2="Tank Barricades"/>
+    <connection t1="Jelchi" t2="Zalivskiy"/>
+    <connection t1="Zalivskiy" t2="Sarpa"/>
+    <connection t1="Zalivskiy" t2="Shestakov Bridge"/>
+    <connection t1="Zalivskiy" t2="South Gardens"/>
+    <connection t1="Zalivskiy" t2="Selshanka"/>
+    <connection t1="Zalivskiy" t2="Tank Barricades"/>
+    <connection t1="Sarpa" t2="Selshanka"/>
+    <connection t1="Sarpa" t2="Shestakov Bridge"/>
+    <connection t1="Sarpa" t2="Kuporosnoje"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Manstein_Army_Group" optional="false"/>
+    <player name="Russian_Flanks" optional="false"/>
+    <player name="sixth_Army" optional="false"/>
+    <!--<player name="FreeRussian" optional="false"/>-->
+    <player name="Russian_Stalingrad_Defenders" optional="false"/>
+    <!-- Axis Alliances -->
+    <alliance player="sixth_Army" alliance="Axis"/>
+    <alliance player="Manstein_Army_Group" alliance="Axis"/>
+    <!-- Allies Alliances -->
+    <alliance player="Russian_Flanks" alliance="Allies"/>
+    <alliance player="Russian_Stalingrad_Defenders" alliance="Allies"/>
+    <!--<alliance player="FreeRussian" alliance="Free"/>-->
+  </playerList>
+  <unitList>
+    <unit name="aaGun"/>
+    <unit name="armour"/>
+    <unit name="artillery"/>
+    <unit name="bomber"/>
+    <!--             <unit name="bomber_hb"/>
+                <unit name="bomber_lr"/>
+                <unit name="bomber_lr_hb"/> -->
+    <unit name="factory"/>
+    <unit name="fighter"/>
+    <!--                <unit name="fighter_jp"/>
+                <unit name="fighter_lr"/>
+                <unit name="fighter_lr_jp"/>-->
+    <unit name="infantry"/>
+    <unit name="rockets"/>
+    <unit name="trucks"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="Manstein_Army_GroupBid" delegate="bid" player="Manstein_Army_Group" maxRunCount="1"/>
+      <step name="Manstein_Army_GroupBidPlace" delegate="placeBid" player="Manstein_Army_Group" maxRunCount="1"/>
+      <step name="Russian_FlanksBid" delegate="bid" player="Russian_Flanks" maxRunCount="1"/>
+      <step name="Russian_FlanksBidPlace" delegate="placeBid" player="Russian_Flanks" maxRunCount="1"/>
+      <step name="sixth_ArmyBid" delegate="bid" player="sixth_Army" maxRunCount="1"/>
+      <step name="sixth_ArmyBidPlace" delegate="placeBid" player="sixth_Army" maxRunCount="1"/>
+      <step name="Russian_Stalingrad_DefendersBid" delegate="bid" player="Russian_Stalingrad_Defenders" maxRunCount="1"/>
+      <step name="Russian_Stalingrad_DefendersBidPlace" delegate="placeBid" player="Russian_Stalingrad_Defenders" maxRunCount="1"/>
+      <!-- Manstein_Army_Group Game Sequence -->
+      <!--<step name="FreeRussianTech" delegate="tech" player="FreeRussian"/>
+      <step name="FreeRussianPurchase" delegate="purchase" player="FreeRussian"/>
+      <step name="FreeRussianCombatMove" delegate="move" player="FreeRussian"/>
+      <step name="FreeRussianBattle" delegate="battle" player="FreeRussian"/>
+      <step name="FreeRussianNonCombatMove" delegate="move" player="FreeRussian" display="Non Combat Move"/>
+      <step name="FreeRussianPlace" delegate="place" player="FreeRussian"/>
+      <step name="FreeRussianTechActivation" delegate="tech_activation" player="FreeRussian"/>
+      <step name="FreeRussianEndTurn" delegate="endTurn" player="FreeRussian"/>-->
+      <step name="Manstein_Army_GroupTech" delegate="tech" player="Manstein_Army_Group"/>
+      <step name="Manstein_Army_GroupPurchase" delegate="purchase" player="Manstein_Army_Group"/>
+      <step name="Manstein_Army_GroupCombatMove" delegate="move" player="Manstein_Army_Group"/>
+      <step name="Manstein_Army_GroupBattle" delegate="battle" player="Manstein_Army_Group"/>
+      <step name="Manstein_Army_GroupNonCombatMove" delegate="move" player="Manstein_Army_Group" display="Non Combat Move"/>
+      <step name="Manstein_Army_GroupPlace" delegate="place" player="Manstein_Army_Group"/>
+      <step name="Manstein_Army_GroupTechActivation" delegate="tech_activation" player="Manstein_Army_Group"/>
+      <step name="Manstein_Army_GroupEndTurn" delegate="endTurn" player="Manstein_Army_Group"/>
+      <!-- Russian_Flanks Game Sequence -->
+      <step name="Russian_FlanksTech" delegate="tech" player="Russian_Flanks"/>
+      <step name="Russian_FlanksPurchase" delegate="purchase" player="Russian_Flanks"/>
+      <step name="Russian_FlanksCombatMove" delegate="move" player="Russian_Flanks"/>
+      <step name="Russian_FlanksBattle" delegate="battle" player="Russian_Flanks"/>
+      <step name="Russian_FlanksNonCombatMove" delegate="move" player="Russian_Flanks" display="Non Combat Move"/>
+      <step name="Russian_FlanksPlace" delegate="place" player="Russian_Flanks"/>
+      <step name="Russian_FlanksTechActivation" delegate="tech_activation" player="Russian_Flanks"/>
+      <step name="Russian_FlanksEndTurn" delegate="endTurn" player="Russian_Flanks"/>
+      <!-- sixth_Army Game Sequence -->
+      <step name="sixth_ArmyTech" delegate="tech" player="sixth_Army"/>
+      <step name="sixth_ArmyPurchase" delegate="purchase" player="sixth_Army"/>
+      <step name="sixth_ArmyCombatMove" delegate="move" player="sixth_Army"/>
+      <step name="sixth_ArmyBattle" delegate="battle" player="sixth_Army"/>
+      <step name="sixth_ArmyNonCombatMove" delegate="move" player="sixth_Army" display="Non Combat Move"/>
+      <step name="sixth_ArmyPlace" delegate="place" player="sixth_Army"/>
+      <step name="sixth_ArmyTechActivation" delegate="tech_activation" player="sixth_Army"/>
+      <step name="sixth_ArmyEndTurn" delegate="endTurn" player="sixth_Army"/>
+      <!-- Russian_Stalingrad_Defenders Game Sequence -->
+      <step name="Russian_Stalingrad_DefendersTech" delegate="tech" player="Russian_Stalingrad_Defenders"/>
+      <step name="Russian_Stalingrad_DefendersPurchase" delegate="purchase" player="Russian_Stalingrad_Defenders"/>
+      <step name="Russian_Stalingrad_DefendersCombatMove" delegate="move" player="Russian_Stalingrad_Defenders"/>
+      <step name="Russian_Stalingrad_DefendersBattle" delegate="battle" player="Russian_Stalingrad_Defenders"/>
+      <step name="Russian_Stalingrad_DefendersNonCombatMove" delegate="move" player="Russian_Stalingrad_Defenders" display="Non Combat Move"/>
+      <step name="Russian_Stalingrad_DefendersPlace" delegate="place" player="Russian_Stalingrad_Defenders"/>
+      <step name="Russian_Stalingrad_DefendersTechActivation" delegate="tech_activation" player="Russian_Stalingrad_Defenders"/>
+      <step name="Russian_Stalingrad_DefendersEndTurn" delegate="endTurn" player="Russian_Stalingrad_Defenders"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactory">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <!-- Advanced Industrial Production -->
+    <productionRule name="buyInfantryIndustrialTechnology">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtilleryIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmourIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomberIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGunIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="production">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionIndustrialTechnology">
+      <frontierRules name="buyInfantryIndustrialTechnology"/>
+      <frontierRules name="buyArtilleryIndustrialTechnology"/>
+      <frontierRules name="buyArmourIndustrialTechnology"/>
+      <frontierRules name="buyFighterIndustrialTechnology"/>
+      <frontierRules name="buyBomberIndustrialTechnology"/>
+      <frontierRules name="buyAAGunIndustrialTechnology"/>
+      <frontierRules name="buyFactoryIndustrialTechnology"/>
+    </productionFrontier>
+    <playerProduction player="sixth_Army" frontier="production"/>
+    <playerProduction player="Russian_Flanks" frontier="production"/>
+    <playerProduction player="Manstein_Army_Group" frontier="production"/>
+    <playerProduction player="Russian_Stalingrad_Defenders" frontier="production"/>
+  </production>
+  <attachmentList>
+    <attachment name="techAttachment" attachTo="sixth_Army" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Russian_Flanks" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Manstein_Army_Group" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Russian_Stalingrad_Defenders" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="3"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <!--                    <attachment name="unitAttachment" attachTo="bomber_hb" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                      <option name="movement" value="6"/>
+                      <option name="isAir" value="true"/>
+                      <option name="attack" value="4"/>
+                      <option name="defense" value="1"/>
+                      <option name="isStrategicBomber" value="true"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="bomber_lr" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                      <option name="movement" value="6"/>
+                      <option name="isAir" value="true"/>
+                      <option name="attack" value="4"/>
+                      <option name="defense" value="1"/>
+                      <option name="isStrategicBomber" value="true"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="bomber_lr_hb" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                      <option name="movement" value="6"/>
+                      <option name="isAir" value="true"/>
+                      <option name="attack" value="4"/>
+                      <option name="defense" value="1"/>
+                      <option name="isStrategicBomber" value="true"/>
+                    </attachment>
+-->
+    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <!--                    <attachment name="unitAttachment" attachTo="fighter_jp" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                      <option name="movement" value="4"/>
+                      <option name="carrierCost" value="1"/>
+                      <option name="isAir" value="true"/>
+                      <option name="attack" value="3"/>
+                      <option name="defense" value="4"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="fighter_lr" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                      <option name="movement" value="4"/>
+                      <option name="carrierCost" value="1"/>
+                      <option name="isAir" value="true"/>
+                      <option name="attack" value="3"/>
+                      <option name="defense" value="4"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="fighter_lr_jp" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                      <option name="movement" value="4"/>
+                      <option name="carrierCost" value="1"/>
+                      <option name="isAir" value="true"/>
+                      <option name="attack" value="3"/>
+                      <option name="defense" value="4"/>
+                    </attachment>
+-->
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="rockets" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="trucks" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="France" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Germany" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Manstein Army" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="capital" value="Manstein_Army_Group"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Manstein Army Unite" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Donetz River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kotelnikowo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kumsky" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nishne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pantizanzkiy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="West Mishvoka River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aksay River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sarpa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jelchi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zalivskiy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shestakov Bridge" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wolga Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pokrovka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Krestovy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kozhzavod" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Krasnaja" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Russian_Stalingrad_Defenders"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Saratov" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="capital" value="Russian_Flanks"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Volzhskiy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Volzhskiy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kamyshin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Beachhead" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wertjatshi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Peskovatka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Samofalowa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Samofalowa Station" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Marinowka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Trekhostarskaya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Barilkin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kachalino" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="West Rynok" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rynok" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Beachhead" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kumenny" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fields" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stepnoy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dimitrewka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Karpowka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rogatshik" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Barricade Colony" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Plant Barricade" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Plant Red Oktober" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wolga Hide" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Spartakowka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Red Oktober Colony" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Railway Track Switch" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pitomnik" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nadezhda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kalatsh And Sowjetski" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="11"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oblast Wood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oblast" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ovrazhny" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gumrak" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gorodistshe" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Main Train Station" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Warapanowa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bassarging" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Height" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sowjetski Rails" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Don River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Korolzvoy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Korolzvoy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tank Scrab" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hospital" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Don River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chir River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gawrilowka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Marmai Hights 102" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Krutoi Channel" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Krutoi Estuary" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Stalingrad Ruines" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bazinowka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tank Barricades" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Free" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <!--<option name="capital" value="FreeRussian"/>-->
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="German Tross" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="capital" value="sixth_Army"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zanya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Station" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Minina River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Station Rails" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kuporosnoje" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Minina Estuary" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Stalingrad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Selshanka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tennis Racket" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stadium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Houses" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Wolga Hide" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zeriza Estuary" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Place of 9Jan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zeriza River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pavlovs House" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stalingrad City" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Streets" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Main Station Rails" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tartars Wall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Gardens" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <!-- canals -->
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- German Owned Territories -->
+      <!-- Manstein_Army_Group Owned Territories -->
+      <!--<territoryOwner territory="Donetz River" owner="FreeRussian"/>
+      <territoryOwner territory="Rynok" owner="FreeRussian"/>
+      <territoryOwner territory="West Rynok" owner="FreeRussian"/>
+      <territoryOwner territory="Kachalino" owner="FreeRussian"/>
+      <territoryOwner territory="Barilkin" owner="FreeRussian"/>
+      <territoryOwner territory="Samofalowa" owner="FreeRussian"/>
+      <territoryOwner territory="Wertjatshi" owner="FreeRussian"/>
+      <territoryOwner territory="Peskovatka" owner="FreeRussian"/>
+      <territoryOwner territory="Marinowka" owner="FreeRussian"/>
+      <territoryOwner territory="Trekhostarskaya" owner="FreeRussian"/>
+      <territoryOwner territory="Stepnoy" owner="FreeRussian"/>
+      <territoryOwner territory="Rogatshik" owner="FreeRussian"/>
+      <territoryOwner territory="Dimitrewka" owner="FreeRussian"/>
+      <territoryOwner territory="Karpowka" owner="FreeRussian"/>
+      <territoryOwner territory="Kalatsh And Sowjetski" owner="FreeRussian"/>
+      <territoryOwner territory="Nishne" owner="FreeRussian"/>
+      <territoryOwner territory="Kumsky" owner="FreeRussian"/>
+      <territoryOwner territory="Kotelnikowo" owner="FreeRussian"/>
+      <territoryOwner territory="Sowjetski Rails" owner="FreeRussian"/>
+      <territoryOwner territory="North Don River" owner="FreeRussian"/>
+      <territoryOwner territory="Gawrilowka" owner="FreeRussian"/>
+      <territoryOwner territory="Chir River" owner="FreeRussian"/>
+      <territoryOwner territory="Don River" owner="FreeRussian"/>
+      <territoryOwner territory="Bazinowka" owner="FreeRussian"/>
+      <territoryOwner territory="West Mishvoka River" owner="FreeRussian"/>
+      <territoryOwner territory="Jelchi" owner="FreeRussian"/>
+      <territoryOwner territory="Pantizanzkiy" owner="FreeRussian"/>
+      <territoryOwner territory="Tank Barricades" owner="FreeRussian"/>
+      <territoryOwner territory="Zalivskiy" owner="FreeRussian"/>
+      <territoryOwner territory="Minina River" owner="FreeRussian"/>
+      <territoryOwner territory="Selshanka" owner="FreeRussian"/>
+      <territoryOwner territory="South Gardens" owner="FreeRussian"/>
+      <territoryOwner territory="Free" owner="FreeRussian"/>
+
+      <territoryOwner territory="Sarpa" owner="FreeRussian"/>
+      <territoryOwner territory="Aksay River" owner="FreeRussian"/>
+      <territoryOwner territory="Shestakov Bridge" owner="FreeRussian"/>-->
+      <territoryOwner territory="Manstein Army" owner="Manstein_Army_Group"/>
+      <territoryOwner territory="Manstein Army Unite" owner="Manstein_Army_Group"/>
+      <territoryOwner territory="France" owner="Manstein_Army_Group"/>
+      <territoryOwner territory="Germany" owner="Manstein_Army_Group"/>
+      <!-- Russian_Flanks Owned Territories -->
+      <territoryOwner territory="Pokrovka" owner="Russian_Flanks"/>
+      <territoryOwner territory="Kamyshin" owner="Russian_Flanks"/>
+      <territoryOwner territory="Saratov" owner="Russian_Flanks"/>
+      <territoryOwner territory="North Beachhead" owner="Russian_Flanks"/>
+      <territoryOwner territory="South Beachhead" owner="Russian_Flanks"/>
+      <territoryOwner territory="Wolga Island" owner="Russian_Flanks"/>
+      <!-- sixth_Army Owned Territories -->
+      <territoryOwner territory="Fields" owner="sixth_Army"/>
+      <territoryOwner territory="Spartakowka" owner="sixth_Army"/>
+      <territoryOwner territory="Railway Track Switch" owner="sixth_Army"/>
+      <territoryOwner territory="Kumenny" owner="sixth_Army"/>
+      <territoryOwner territory="Red Oktober Colony" owner="sixth_Army"/>
+      <territoryOwner territory="Samofalowa Station" owner="sixth_Army"/>
+      <territoryOwner territory="North Korolzvoy" owner="sixth_Army"/>
+      <territoryOwner territory="Korolzvoy" owner="sixth_Army"/>
+      <territoryOwner territory="Tank Scrab" owner="sixth_Army"/>
+      <territoryOwner territory="Hospital" owner="sixth_Army"/>
+      <territoryOwner territory="Marmai Hights 102" owner="sixth_Army"/>
+      <territoryOwner territory="Krutoi Channel" owner="sixth_Army"/>
+      <territoryOwner territory="Tennis Racket" owner="sixth_Army"/>
+      <territoryOwner territory="Stadium" owner="sixth_Army"/>
+      <territoryOwner territory="Houses" owner="sixth_Army"/>
+      <territoryOwner territory="Zeriza River" owner="sixth_Army"/>
+      <territoryOwner territory="Main Station Rails" owner="sixth_Army"/>
+      <territoryOwner territory="Tartars Wall" owner="sixth_Army"/>
+      <territoryOwner territory="South Station Rails" owner="sixth_Army"/>
+      <territoryOwner territory="Kuporosnoje" owner="sixth_Army"/>
+      <territoryOwner territory="Minina Estuary" owner="sixth_Army"/>
+      <territoryOwner territory="Wood" owner="sixth_Army"/>
+      <territoryOwner territory="Oblast Wood" owner="sixth_Army"/>
+      <territoryOwner territory="Oblast" owner="sixth_Army"/>
+      <territoryOwner territory="Ovrazhny" owner="sixth_Army"/>
+      <territoryOwner territory="Gumrak" owner="sixth_Army"/>
+      <territoryOwner territory="Gorodistshe" owner="sixth_Army"/>
+      <territoryOwner territory="Main Train Station" owner="sixth_Army"/>
+      <territoryOwner territory="Warapanowa" owner="sixth_Army"/>
+      <territoryOwner territory="Bassarging" owner="sixth_Army"/>
+      <territoryOwner territory="Height" owner="sixth_Army"/>
+      <territoryOwner territory="German Tross" owner="sixth_Army"/>
+      <territoryOwner territory="Zanya" owner="sixth_Army"/>
+      <territoryOwner territory="South Station" owner="sixth_Army"/>
+      <territoryOwner territory="Pitomnik" owner="sixth_Army"/>
+      <territoryOwner territory="Nadezhda" owner="sixth_Army"/>
+      <!-- Russian_Stalingrad_Defenders Owned Territories -->
+      <territoryOwner territory="South Stalingrad" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="North Stalingrad Ruines" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Krutoi Estuary" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Barricade Colony" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="South Volzhskiy" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="North Volzhskiy" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Krestovy" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Kozhzavod" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Krasnaja" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Plant Barricade" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Plant Red Oktober" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Wolga Hide" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="South Wolga Hide" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Zeriza Estuary" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Place of 9Jan" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Pavlovs House" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Stalingrad City" owner="Russian_Stalingrad_Defenders"/>
+      <territoryOwner territory="Streets" owner="Russian_Stalingrad_Defenders"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Manstein_Army_Group    starting units    -->
+      <unitPlacement unitType="infantry" territory="Manstein Army" quantity="1" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="armour" territory="Manstein Army" quantity="1" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="factory" territory="Manstein Army" quantity="1" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="aaGun" territory="Manstein Army" quantity="1" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="bomber" territory="Manstein Army Unite" quantity="1" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="aaGun" territory="Manstein Army Unite" quantity="1" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="infantry" territory="Manstein Army Unite" quantity="6" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="artillery" territory="Manstein Army Unite" quantity="3" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="infantry" territory="Germany" quantity="1" owner="Manstein_Army_Group"/>
+      <unitPlacement unitType="armour" territory="France" quantity="2" owner="Manstein_Army_Group"/>
+      <!-- Russian_Flanks    starting units    -->
+      <unitPlacement unitType="armour" territory="South Beachhead" quantity="2" owner="Russian_Flanks"/>
+      <unitPlacement unitType="armour" territory="North Beachhead" quantity="2" owner="Russian_Flanks"/>
+      <unitPlacement unitType="aaGun" territory="Wolga Island" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="aaGun" territory="Saratov" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="infantry" territory="Wolga Island" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="factory" territory="Kamyshin" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="factory" territory="Pokrovka" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="factory" territory="Saratov" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="aaGun" territory="Kamyshin" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="aaGun" territory="Pokrovka" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="infantry" territory="Kamyshin" quantity="5" owner="Russian_Flanks"/>
+      <unitPlacement unitType="infantry" territory="Pokrovka" quantity="5" owner="Russian_Flanks"/>
+      <unitPlacement unitType="artillery" territory="Kamyshin" quantity="3" owner="Russian_Flanks"/>
+      <unitPlacement unitType="artillery" territory="Pokrovka" quantity="3" owner="Russian_Flanks"/>
+      <unitPlacement unitType="infantry" territory="Saratov" quantity="2" owner="Russian_Flanks"/>
+      <unitPlacement unitType="artillery" territory="Saratov" quantity="1" owner="Russian_Flanks"/>
+      <unitPlacement unitType="bomber" territory="Saratov" quantity="1" owner="Russian_Flanks"/>
+      <!-- sixth_Army    starting units    -->
+      <unitPlacement unitType="infantry" territory="Spartakowka" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Kumenny" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Red Oktober Colony" quantity="3" owner="sixth_Army"/>
+      <unitPlacement unitType="armour" territory="Red Oktober Colony" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="artillery" territory="Red Oktober Colony" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Krutoi Channel" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Hospital" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Gorodistshe" quantity="2" owner="sixth_Army"/>
+      <unitPlacement unitType="bomber" territory="Gumrak" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Gumrak" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="aaGun" territory="Gumrak" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="factory" territory="Gumrak" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="German Tross" quantity="5" owner="sixth_Army"/>
+      <unitPlacement unitType="aaGun" territory="German Tross" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="factory" territory="German Tross" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Main Train Station" quantity="2" owner="sixth_Army"/>
+      <unitPlacement unitType="aaGun" territory="Main Train Station" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="factory" territory="Main Train Station" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Marmai Hights 102" quantity="2" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Tartars Wall" quantity="2" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Kuporosnoje" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Tennis Racket" quantity="3" owner="sixth_Army"/>
+      <unitPlacement unitType="artillery" territory="Tennis Racket" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Houses" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Bassarging" quantity="1" owner="sixth_Army"/>
+      <unitPlacement unitType="infantry" territory="Zeriza River" quantity="2" owner="sixth_Army"/>
+      <unitPlacement unitType="artillery" territory="Zeriza River" quantity="1" owner="sixth_Army"/>
+      <!-- Russian_Stalingrad_Defenders    starting units    -->
+      <unitPlacement unitType="infantry" territory="Krasnaja" quantity="2" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="artillery" territory="Krasnaja" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="factory" territory="Krasnaja" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="fighter" territory="Krasnaja" quantity="2" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="aaGun" territory="Krasnaja" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="South Volzhskiy" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="North Volzhskiy" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="Krestovy" quantity="2" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="Kozhzavod" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="Plant Red Oktober" quantity="3" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="Plant Barricade" quantity="4" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="artillery" territory="Plant Barricade" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="Barricade Colony" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="Stalingrad City" quantity="3" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="South Stalingrad" quantity="3" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="Place of 9Jan" quantity="1" owner="Russian_Stalingrad_Defenders"/>
+      <unitPlacement unitType="infantry" territory="Pavlovs House" quantity="3" owner="Russian_Stalingrad_Defenders"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <!--<resourceGiven player="FreeRussian" resource="PUs" quantity="0"/>-->
+      <resourceGiven player="sixth_Army" resource="PUs" quantity="9"/>
+      <resourceGiven player="Manstein_Army_Group" resource="PUs" quantity="12"/>
+      <resourceGiven player="Russian_Flanks" resource="PUs" quantity="14"/>
+      <resourceGiven player="Russian_Stalingrad_Defenders" resource="PUs" quantity="9"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Sub Control Sea Zone Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Super Sub Defence Bonus" value="1"/>
+    <property name="Neutrals Are Blitzable" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- Bids -->
+    <property name="Manstein_Army_Group bid" value="6" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Russian_Flanks" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="sixth_Army bid" value="4" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!--<property name="FreeRussian bid" value="0" editable="false">
+      <number min="0" max="1"/>
+    </property>-->
+    <property name="Russian_Stalingrad_Defenders bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="stalingrad" editable="false"/>
+    <property name="notes">
+      <value><![CDATA[       
+		        	
+		        	Stalingrad by Aka
+					<br>
+					<br>
+					<br>Converted up by Veqryn
+		        	]]></value>
+    </property>
+  </propertyList>
+</game>

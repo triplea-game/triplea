@@ -1,0 +1,2929 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Zombieland" version="1.2.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="San Diego"/>
+    <territory name="Rhode Island"/>
+    <territory name="Panhandle"/>
+    <territory name="Tampa"/>
+    <territory name="Idaho Falls"/>
+    <territory name="Springfield"/>
+    <territory name="Corpus Christi"/>
+    <territory name="Duluth"/>
+    <territory name="Baton Rouge"/>
+    <territory name="New Hampshire"/>
+    <territory name="Grand Canyon"/>
+    <territory name="Cincinnati"/>
+    <territory name="San Francisco"/>
+    <territory name="Sacramento"/>
+    <territory name="Ft. Dodge"/>
+    <territory name="Savannah"/>
+    <territory name="Memphis"/>
+    <territory name="Omaha"/>
+    <territory name="Miami"/>
+    <territory name="Harrisburg"/>
+    <territory name="Yazoo River"/>
+    <territory name="Portland"/>
+    <territory name="Bakersfield"/>
+    <territory name="Des Moines"/>
+    <territory name="Clinton"/>
+    <territory name="Santa Fe"/>
+    <territory name="Columbia Plateau"/>
+    <territory name="Eugene"/>
+    <territory name="Maine"/>
+    <territory name="Adirondacks"/>
+    <territory name="Buffalo"/>
+    <territory name="Peoria"/>
+    <territory name="Kansas City"/>
+    <territory name="Wilmington"/>
+    <territory name="Yakima"/>
+    <territory name="San Joaquin"/>
+    <territory name="Augusta"/>
+    <territory name="El Paso"/>
+    <territory name="Colorado Springs"/>
+    <territory name="Ft. Wayne"/>
+    <territory name="Morgantown"/>
+    <territory name="Austin"/>
+    <territory name="Cape Girardeau"/>
+    <territory name="Tallahassee"/>
+    <territory name="Columbus"/>
+    <territory name="Sheridan"/>
+    <territory name="Dallas"/>
+    <territory name="Cheyenne"/>
+    <territory name="Salt Lake City"/>
+    <territory name="Arikaree"/>
+    <territory name="Danville"/>
+    <territory name="Las Vegas"/>
+    <territory name="Grand Junction"/>
+    <territory name="Washington"/>
+    <territory name="Philadelphia"/>
+    <territory name="Charlottesville"/>
+    <territory name="Montgomery"/>
+    <territory name="St. Louis"/>
+    <territory name="Connecticut"/>
+    <territory name="Reno"/>
+    <territory name="Mojave"/>
+    <territory name="Birmingham"/>
+    <territory name="Gary"/>
+    <territory name="Roswell"/>
+    <territory name="St. Joseph"/>
+    <territory name="Bowling Green"/>
+    <territory name="Tuscon"/>
+    <territory name="Catskills"/>
+    <territory name="Lansing"/>
+    <territory name="Albuquerque"/>
+    <territory name="Wichita"/>
+    <territory name="Phoenix"/>
+    <territory name="Jackson"/>
+    <territory name="Topeka"/>
+    <territory name="Tulsa"/>
+    <territory name="Sevier"/>
+    <territory name="Seattle"/>
+    <territory name="Massachusetts"/>
+    <territory name="Butte"/>
+    <territory name="Charleston"/>
+    <territory name="Knoxville"/>
+    <territory name="Fresno"/>
+    <territory name="Mobile"/>
+    <territory name="Maryland"/>
+    <territory name="San Antonio"/>
+    <territory name="Billings"/>
+    <territory name="Macon"/>
+    <territory name="Raleigh"/>
+    <territory name="Fort Smith"/>
+    <territory name="Gila"/>
+    <territory name="Atlanta"/>
+    <territory name="Minneapolis"/>
+    <territory name="Spokane"/>
+    <territory name="Vermont"/>
+    <territory name="Amarillo"/>
+    <territory name="Jacksonville"/>
+    <territory name="Hopkinsville"/>
+    <territory name="New York"/>
+    <territory name="Oklahoma City"/>
+    <territory name="New Jersey"/>
+    <territory name="Rapid City"/>
+    <territory name="Sand Hills"/>
+    <territory name="Shreveport"/>
+    <territory name="Grand Island"/>
+    <territory name="Huntington"/>
+    <territory name="Cleveland"/>
+    <territory name="Milwaukee"/>
+    <territory name="Albany"/>
+    <territory name="Toledo"/>
+    <territory name="Lake Powell"/>
+    <territory name="Chicago"/>
+    <territory name="Richmond"/>
+    <territory name="Boston"/>
+    <territory name="Fargo"/>
+    <territory name="Charlotte"/>
+    <territory name="Little Rock"/>
+    <territory name="Detroit"/>
+    <territory name="Davenport"/>
+    <territory name="Superior"/>
+    <territory name="Norfolk"/>
+    <territory name="Indianapolis"/>
+    <territory name="Sioux Falls"/>
+    <territory name="Pittsburgh"/>
+    <territory name="Bismarck"/>
+    <territory name="New Orleans"/>
+    <territory name="Delaware"/>
+    <territory name="New Castle"/>
+    <territory name="Houston"/>
+    <territory name="Great Basin"/>
+    <territory name="Frankfort"/>
+    <territory name="Greenville"/>
+    <territory name="Boise"/>
+    <territory name="Allentown"/>
+    <territory name="St. Cloud"/>
+    <territory name="Garden City"/>
+    <territory name="Las Cruces"/>
+    <territory name="Nashville"/>
+    <territory name="Denver"/>
+    <territory name="Beaumont"/>
+    <territory name="Tyler"/>
+    <territory name="Eau Claire"/>
+    <territory name="Ozarks"/>
+    <territory name="Los Angeles"/>
+    <territory name="Quebec"/>
+    <territory name="Baja California"/>
+    <territory name="Sonora"/>
+    <territory name="Chihuahua"/>
+    <territory name="Mexico"/>
+    <territory name="East Ontario"/>
+    <territory name="West Ontario"/>
+    <territory name="Manitoba"/>
+    <territory name="West Canada"/>
+    <territory name="USArmyCapital"/>
+    <territory name="CitizensMilitiaCapital"/>
+    <territory name="GreenZombiesCapital"/>
+    <territory name="GrayZombiesCapital"/>
+    <territory name="BrownZombiesCapital"/>
+    <!-- Territory Connections -->
+    <!-- Territory Connections -->
+    <connection t1="West Canada" t2="Arikaree"/>
+    <connection t1="West Canada" t2="Spokane"/>
+    <connection t1="West Canada" t2="Boise"/>
+    <connection t1="West Canada" t2="Butte"/>
+    <connection t1="West Canada" t2="Billings"/>
+    <connection t1="West Canada" t2="West Ontario"/>
+    <connection t1="Manitoba" t2="Billings"/>
+    <connection t1="Manitoba" t2="Bismarck"/>
+    <connection t1="Manitoba" t2="Fargo"/>
+    <connection t1="Manitoba" t2="Duluth"/>
+    <connection t1="Manitoba" t2="West Ontario"/>
+    <connection t1="West Ontario" t2="Tulsa"/>
+    <connection t1="West Ontario" t2="Duluth"/>
+    <connection t1="West Ontario" t2="East Ontario"/>
+    <connection t1="Detroit" t2="East Ontario"/>
+    <connection t1="Buffalo" t2="East Ontario"/>
+    <connection t1="Adirondacks" t2="East Ontario"/>
+    <connection t1="Quebec" t2="East Ontario"/>
+    <connection t1="San Diego" t2="Bakersfield"/>
+    <connection t1="Panhandle" t2="Tulsa"/>
+    <connection t1="Panhandle" t2="Garden City"/>
+    <connection t1="Panhandle" t2="Arikaree"/>
+    <connection t1="Tampa" t2="Jacksonville"/>
+    <connection t1="Idaho Falls" t2="Sheridan"/>
+    <connection t1="Idaho Falls" t2="Boise"/>
+    <connection t1="Idaho Falls" t2="Great Basin"/>
+    <connection t1="Idaho Falls" t2="Columbia Plateau"/>
+    <connection t1="Springfield" t2="Indianapolis"/>
+    <connection t1="Springfield" t2="Hopkinsville"/>
+    <connection t1="Corpus Christi" t2="San Antonio"/>
+    <connection t1="Duluth" t2="Eau Claire"/>
+    <connection t1="Duluth" t2="Fargo"/>
+    <connection t1="Baton Rouge" t2="Shreveport"/>
+    <connection t1="Baton Rouge" t2="Beaumont"/>
+    <connection t1="Grand Canyon" t2="Las Cruces"/>
+    <connection t1="Grand Canyon" t2="Gila"/>
+    <connection t1="Cincinnati" t2="Frankfort"/>
+    <connection t1="Cincinnati" t2="Toledo"/>
+    <connection t1="San Francisco" t2="San Joaquin"/>
+    <connection t1="San Francisco" t2="Sacramento"/>
+    <connection t1="Sacramento" t2="Fresno"/>
+    <connection t1="Sacramento" t2="Reno"/>
+    <connection t1="Sacramento" t2="Eugene"/>
+    <connection t1="Ft. Dodge" t2="Davenport"/>
+    <connection t1="Ft. Dodge" t2="St. Cloud"/>
+    <connection t1="Ft. Dodge" t2="Omaha"/>
+    <connection t1="Savannah" t2="Jacksonville"/>
+    <connection t1="Savannah" t2="Macon"/>
+    <connection t1="Memphis" t2="Cape Girardeau"/>
+    <connection t1="Omaha" t2="Des Moines"/>
+    <connection t1="Omaha" t2="Topeka"/>
+    <connection t1="Omaha" t2="Sioux Falls"/>
+    <connection t1="Omaha" t2="Grand Island"/>
+    <connection t1="Miami" t2="Tampa"/>
+    <connection t1="Harrisburg" t2="Clinton"/>
+    <connection t1="Harrisburg" t2="Allentown"/>
+    <connection t1="Harrisburg" t2="Philadelphia"/>
+    <connection t1="Harrisburg" t2="Pittsburgh"/>
+    <connection t1="Yazoo River" t2="Birmingham"/>
+    <connection t1="Yazoo River" t2="Memphis"/>
+    <connection t1="Yazoo River" t2="Jackson"/>
+    <connection t1="Yazoo River" t2="Little Rock"/>
+    <connection t1="Yazoo River" t2="Fort Smith"/>
+    <connection t1="Portland" t2="Eugene"/>
+    <connection t1="Portland" t2="Yakima"/>
+    <connection t1="Bakersfield" t2="Los Angeles"/>
+    <connection t1="Bakersfield" t2="Mojave"/>
+    <connection t1="Bakersfield" t2="San Joaquin"/>
+    <connection t1="Des Moines" t2="Davenport"/>
+    <connection t1="Des Moines" t2="Ft. Dodge"/>
+    <connection t1="Clinton" t2="Buffalo"/>
+    <connection t1="Clinton" t2="Catskills"/>
+    <connection t1="Santa Fe" t2="Roswell"/>
+    <connection t1="Santa Fe" t2="Panhandle"/>
+    <connection t1="Santa Fe" t2="Grand Canyon"/>
+    <connection t1="Santa Fe" t2="Colorado Springs"/>
+    <connection t1="Columbia Plateau" t2="Reno"/>
+    <connection t1="Columbia Plateau" t2="Portland"/>
+    <connection t1="Columbia Plateau" t2="Spokane"/>
+    <connection t1="Eugene" t2="Columbia Plateau"/>
+    <connection t1="Maine" t2="New Hampshire"/>
+    <connection t1="Maine" t2="Boston"/>
+    <connection t1="Adirondacks" t2="Albany"/>
+    <connection t1="Adirondacks" t2="Buffalo"/>
+    <connection t1="Buffalo" t2="Catskills"/>
+    <connection t1="Buffalo" t2="New Castle"/>
+    <connection t1="Peoria" t2="Springfield"/>
+    <connection t1="Peoria" t2="Milwaukee"/>
+    <connection t1="Peoria" t2="Des Moines"/>
+    <connection t1="Peoria" t2="St. Joseph"/>
+    <connection t1="Peoria" t2="Cape Girardeau"/>
+    <connection t1="Kansas City" t2="St. Joseph"/>
+    <connection t1="Kansas City" t2="Topeka"/>
+    <connection t1="Wilmington" t2="Charlotte"/>
+    <connection t1="Wilmington" t2="Charleston"/>
+    <connection t1="Yakima" t2="Columbia Plateau"/>
+    <connection t1="Yakima" t2="Seattle"/>
+    <connection t1="San Joaquin" t2="Fresno"/>
+    <connection t1="Augusta" t2="Savannah"/>
+    <connection t1="Augusta" t2="Greenville"/>
+    <connection t1="Augusta" t2="Charlotte"/>
+    <connection t1="Augusta" t2="Atlanta"/>
+    <connection t1="Augusta" t2="Nashville"/>
+    <connection t1="El Paso" t2="Austin"/>
+    <connection t1="El Paso" t2="Corpus Christi"/>
+    <connection t1="El Paso" t2="Roswell"/>
+    <connection t1="Colorado Springs" t2="Arikaree"/>
+    <connection t1="Colorado Springs" t2="Denver"/>
+    <connection t1="Colorado Springs" t2="Lake Powell"/>
+    <connection t1="Ft. Wayne" t2="Toledo"/>
+    <connection t1="Ft. Wayne" t2="Cincinnati"/>
+    <connection t1="Ft. Wayne" t2="Indianapolis"/>
+    <connection t1="Ft. Wayne" t2="Gary"/>
+    <connection t1="Morgantown" t2="Pittsburgh"/>
+    <connection t1="Austin" t2="Corpus Christi"/>
+    <connection t1="Austin" t2="Beaumont"/>
+    <connection t1="Austin" t2="Tyler"/>
+    <connection t1="Austin" t2="Dallas"/>
+    <connection t1="Austin" t2="San Antonio"/>
+    <connection t1="Cape Girardeau" t2="Springfield"/>
+    <connection t1="Cape Girardeau" t2="Fort Smith"/>
+    <connection t1="Cape Girardeau" t2="Ozarks"/>
+    <connection t1="Cape Girardeau" t2="St. Joseph"/>
+    <connection t1="Tallahassee" t2="Mobile"/>
+    <connection t1="Tallahassee" t2="Macon"/>
+    <connection t1="Columbus" t2="Pittsburgh"/>
+    <connection t1="Columbus" t2="Morgantown"/>
+    <connection t1="Columbus" t2="Huntington"/>
+    <connection t1="Columbus" t2="Cincinnati"/>
+    <connection t1="Columbus" t2="Toledo"/>
+    <connection t1="Sheridan" t2="Rapid City"/>
+    <connection t1="Sheridan" t2="Butte"/>
+    <connection t1="Cheyenne" t2="Sheridan"/>
+    <connection t1="Salt Lake City" t2="Lake Powell"/>
+    <connection t1="Salt Lake City" t2="Sevier"/>
+    <connection t1="Arikaree" t2="Santa Fe"/>
+    <connection t1="Arikaree" t2="Garden City"/>
+    <connection t1="Arikaree" t2="Grand Island"/>
+    <connection t1="Arikaree" t2="Sand Hills"/>
+    <connection t1="Arikaree" t2="Cheyenne"/>
+    <connection t1="Danville" t2="Norfolk"/>
+    <connection t1="Danville" t2="Huntington"/>
+    <connection t1="Las Vegas" t2="Reno"/>
+    <connection t1="Las Vegas" t2="Grand Canyon"/>
+    <connection t1="Las Vegas" t2="Mojave"/>
+    <connection t1="Grand Junction" t2="Colorado Springs"/>
+    <connection t1="Grand Junction" t2="Cheyenne"/>
+    <connection t1="Washington" t2="Morgantown"/>
+    <connection t1="Philadelphia" t2="New Jersey"/>
+    <connection t1="Philadelphia" t2="Delaware"/>
+    <connection t1="Charlottesville" t2="Morgantown"/>
+    <connection t1="Charlottesville" t2="Washington"/>
+    <connection t1="Charlottesville" t2="Richmond"/>
+    <connection t1="Charlottesville" t2="Danville"/>
+    <connection t1="Montgomery" t2="Macon"/>
+    <connection t1="Montgomery" t2="Yazoo River"/>
+    <connection t1="St. Louis" t2="Peoria"/>
+    <connection t1="St. Louis" t2="Springfield"/>
+    <connection t1="St. Louis" t2="Cape Girardeau"/>
+    <connection t1="Connecticut" t2="Rhode Island"/>
+    <connection t1="Connecticut" t2="New York"/>
+    <connection t1="Reno" t2="Great Basin"/>
+    <connection t1="Mojave" t2="Grand Canyon"/>
+    <connection t1="Mojave" t2="Gila"/>
+    <connection t1="Mojave" t2="San Diego"/>
+    <connection t1="Birmingham" t2="Montgomery"/>
+    <connection t1="Birmingham" t2="Memphis"/>
+    <connection t1="Gary" t2="Chicago"/>
+    <connection t1="Gary" t2="Springfield"/>
+    <connection t1="Roswell" t2="Albuquerque"/>
+    <connection t1="Roswell" t2="Amarillo"/>
+    <connection t1="Roswell" t2="Las Cruces"/>
+    <connection t1="St. Joseph" t2="Des Moines"/>
+    <connection t1="St. Joseph" t2="Omaha"/>
+    <connection t1="Bowling Green" t2="Danville"/>
+    <connection t1="Bowling Green" t2="Hopkinsville"/>
+    <connection t1="Tuscon" t2="Phoenix"/>
+    <connection t1="Tuscon" t2="Las Cruces"/>
+    <connection t1="Tuscon" t2="Grand Canyon"/>
+    <connection t1="Catskills" t2="Adirondacks"/>
+    <connection t1="Catskills" t2="Albany"/>
+    <connection t1="Catskills" t2="Allentown"/>
+    <connection t1="Lansing" t2="Toledo"/>
+    <connection t1="Lansing" t2="Ft. Wayne"/>
+    <connection t1="Lansing" t2="Gary"/>
+    <connection t1="Albuquerque" t2="Santa Fe"/>
+    <connection t1="Albuquerque" t2="Las Cruces"/>
+    <connection t1="Wichita" t2="Ozarks"/>
+    <connection t1="Wichita" t2="Kansas City"/>
+    <connection t1="Wichita" t2="Panhandle"/>
+    <connection t1="Phoenix" t2="Grand Canyon"/>
+    <connection t1="Jackson" t2="Montgomery"/>
+    <connection t1="Jackson" t2="Baton Rouge"/>
+    <connection t1="Topeka" t2="Wichita"/>
+    <connection t1="Topeka" t2="St. Joseph"/>
+    <connection t1="Topeka" t2="Garden City"/>
+    <connection t1="Tulsa" t2="Fort Smith"/>
+    <connection t1="Tulsa" t2="Oklahoma City"/>
+    <connection t1="Tulsa" t2="Wichita"/>
+    <connection t1="Sevier" t2="Lake Powell"/>
+    <connection t1="Sevier" t2="Grand Canyon"/>
+    <connection t1="Sevier" t2="Cheyenne"/>
+    <connection t1="Sevier" t2="Idaho Falls"/>
+    <connection t1="Sevier" t2="Great Basin"/>
+    <connection t1="Sevier" t2="Las Vegas"/>
+    <connection t1="Seattle" t2="Spokane"/>
+    <connection t1="Massachusetts" t2="Vermont"/>
+    <connection t1="Massachusetts" t2="New Hampshire"/>
+    <connection t1="Massachusetts" t2="Albany"/>
+    <connection t1="Massachusetts" t2="Rhode Island"/>
+    <connection t1="Massachusetts" t2="Connecticut"/>
+    <connection t1="Butte" t2="Billings"/>
+    <connection t1="Butte" t2="Idaho Falls"/>
+    <connection t1="Charleston" t2="Charlotte"/>
+    <connection t1="Charleston" t2="Greenville"/>
+    <connection t1="Charleston" t2="Savannah"/>
+    <connection t1="Knoxville" t2="Charlotte"/>
+    <connection t1="Knoxville" t2="Danville"/>
+    <connection t1="Knoxville" t2="Bowling Green"/>
+    <connection t1="Knoxville" t2="Nashville"/>
+    <connection t1="Fresno" t2="Bakersfield"/>
+    <connection t1="Fresno" t2="Mojave"/>
+    <connection t1="Fresno" t2="San Francisco"/>
+    <connection t1="Fresno" t2="Las Vegas"/>
+    <connection t1="Fresno" t2="Reno"/>
+    <connection t1="Mobile" t2="Macon"/>
+    <connection t1="Mobile" t2="Montgomery"/>
+    <connection t1="Mobile" t2="Jackson"/>
+    <connection t1="Maryland" t2="Morgantown"/>
+    <connection t1="Maryland" t2="Washington"/>
+    <connection t1="Maryland" t2="Delaware"/>
+    <connection t1="Maryland" t2="Philadelphia"/>
+    <connection t1="Maryland" t2="Harrisburg"/>
+    <connection t1="Maryland" t2="Richmond"/>
+    <connection t1="San Antonio" t2="El Paso"/>
+    <connection t1="Billings" t2="Rapid City"/>
+    <connection t1="Billings" t2="Sheridan"/>
+    <connection t1="Macon" t2="Augusta"/>
+    <connection t1="Macon" t2="Birmingham"/>
+    <connection t1="Macon" t2="Nashville"/>
+    <connection t1="Raleigh" t2="Wilmington"/>
+    <connection t1="Raleigh" t2="Danville"/>
+    <connection t1="Fort Smith" t2="Ozarks"/>
+    <connection t1="Fort Smith" t2="Little Rock"/>
+    <connection t1="Fort Smith" t2="Memphis"/>
+    <connection t1="Gila" t2="Phoenix"/>
+    <connection t1="Gila" t2="Tuscon"/>
+    <connection t1="Atlanta" t2="Macon"/>
+    <connection t1="Minneapolis" t2="Duluth"/>
+    <connection t1="Spokane" t2="Yakima"/>
+    <connection t1="Vermont" t2="New Hampshire"/>
+    <connection t1="Vermont" t2="Albany"/>
+    <connection t1="Vermont" t2="Adirondacks"/>
+    <connection t1="Amarillo" t2="Austin"/>
+    <connection t1="Amarillo" t2="El Paso"/>
+    <connection t1="Amarillo" t2="Dallas"/>
+    <connection t1="Amarillo" t2="Tyler"/>
+    <connection t1="Amarillo" t2="Panhandle"/>
+    <connection t1="Amarillo" t2="Santa Fe"/>
+    <connection t1="Jacksonville" t2="Tallahassee"/>
+    <connection t1="Jacksonville" t2="Macon"/>
+    <connection t1="Hopkinsville" t2="Indianapolis"/>
+    <connection t1="Hopkinsville" t2="Cape Girardeau"/>
+    <connection t1="Hopkinsville" t2="Memphis"/>
+    <connection t1="New York" t2="Albany"/>
+    <connection t1="New York" t2="Catskills"/>
+    <connection t1="New York" t2="New Jersey"/>
+    <connection t1="Oklahoma City" t2="Amarillo"/>
+    <connection t1="Oklahoma City" t2="Little Rock"/>
+    <connection t1="Oklahoma City" t2="Panhandle"/>
+    <connection t1="New Jersey" t2="Allentown"/>
+    <connection t1="New Jersey" t2="Catskills"/>
+    <connection t1="Rapid City" t2="Bismarck"/>
+    <connection t1="Rapid City" t2="Sand Hills"/>
+    <connection t1="Sand Hills" t2="Omaha"/>
+    <connection t1="Sand Hills" t2="Cheyenne"/>
+    <connection t1="Shreveport" t2="Jackson"/>
+    <connection t1="Shreveport" t2="Yazoo River"/>
+    <connection t1="Shreveport" t2="Little Rock"/>
+    <connection t1="Shreveport" t2="Tyler"/>
+    <connection t1="Grand Island" t2="Sand Hills"/>
+    <connection t1="Grand Island" t2="Topeka"/>
+    <connection t1="Huntington" t2="Morgantown"/>
+    <connection t1="Huntington" t2="Charlottesville"/>
+    <connection t1="Cleveland" t2="New Castle"/>
+    <connection t1="Cleveland" t2="Columbus"/>
+    <connection t1="Milwaukee" t2="Davenport"/>
+    <connection t1="Albany" t2="Connecticut"/>
+    <connection t1="Toledo" t2="Cleveland"/>
+    <connection t1="Lake Powell" t2="Grand Junction"/>
+    <connection t1="Arikaree" t2="Grand Junction"/>
+    <connection t1="Lake Powell" t2="Cheyenne"/>
+    <connection t1="Lake Powell" t2="Grand Canyon"/>
+    <connection t1="Chicago" t2="Springfield"/>
+    <connection t1="Chicago" t2="Peoria"/>
+    <connection t1="Richmond" t2="Norfolk"/>
+    <connection t1="Boston" t2="Massachusetts"/>
+    <connection t1="Washington" t2="Richmond"/>
+    <connection t1="Fargo" t2="St. Cloud"/>
+    <connection t1="Fargo" t2="Sioux Falls"/>
+    <connection t1="Charlotte" t2="Danville"/>
+    <connection t1="Charlotte" t2="Raleigh"/>
+    <connection t1="Charlotte" t2="Greenville"/>
+    <connection t1="Charlotte" t2="Augusta"/>
+    <connection t1="Charlotte" t2="Nashville"/>
+    <connection t1="Little Rock" t2="Tulsa"/>
+    <connection t1="Detroit" t2="Lansing"/>
+    <connection t1="Davenport" t2="Peoria"/>
+    <connection t1="Davenport" t2="Eau Claire"/>
+    <connection t1="Superior" t2="Eau Claire"/>
+    <connection t1="Norfolk" t2="Charlottesville"/>
+    <connection t1="Norfolk" t2="Raleigh"/>
+    <connection t1="Indianapolis" t2="Bowling Green"/>
+    <connection t1="Indianapolis" t2="Gary"/>
+    <connection t1="Indianapolis" t2="Cincinnati"/>
+    <connection t1="Sioux Falls" t2="Rapid City"/>
+    <connection t1="Sioux Falls" t2="St. Cloud"/>
+    <connection t1="Sioux Falls" t2="Ft. Dodge"/>
+    <connection t1="Sioux Falls" t2="Sand Hills"/>
+    <connection t1="Pittsburgh" t2="New Castle"/>
+    <connection t1="Pittsburgh" t2="Cleveland"/>
+    <connection t1="Bismarck" t2="Fargo"/>
+    <connection t1="Bismarck" t2="Sioux Falls"/>
+    <connection t1="Bismarck" t2="Billings"/>
+    <connection t1="New Orleans" t2="Jackson"/>
+    <connection t1="New Orleans" t2="Baton Rouge"/>
+    <connection t1="New Castle" t2="Clinton"/>
+    <connection t1="New Castle" t2="Harrisburg"/>
+    <connection t1="Houston" t2="Austin"/>
+    <connection t1="Houston" t2="Corpus Christi"/>
+    <connection t1="Great Basin" t2="Columbia Plateau"/>
+    <connection t1="Great Basin" t2="Las Vegas"/>
+    <connection t1="Frankfort" t2="Huntington"/>
+    <connection t1="Frankfort" t2="Danville"/>
+    <connection t1="Frankfort" t2="Columbus"/>
+    <connection t1="Frankfort" t2="Bowling Green"/>
+    <connection t1="Frankfort" t2="Indianapolis"/>
+    <connection t1="Boise" t2="Butte"/>
+    <connection t1="Boise" t2="Spokane"/>
+    <connection t1="Boise" t2="Columbia Plateau"/>
+    <connection t1="Allentown" t2="Philadelphia"/>
+    <connection t1="Allentown" t2="Clinton"/>
+    <connection t1="St. Cloud" t2="Davenport"/>
+    <connection t1="St. Cloud" t2="Duluth"/>
+    <connection t1="St. Cloud" t2="Minneapolis"/>
+    <connection t1="Garden City" t2="Wichita"/>
+    <connection t1="Garden City" t2="Grand Island"/>
+    <connection t1="Las Cruces" t2="Santa Fe"/>
+    <connection t1="Las Cruces" t2="El Paso"/>
+    <connection t1="Las Cruces" t2="Tuscon"/>
+    <connection t1="Nashville" t2="Birmingham"/>
+    <connection t1="Nashville" t2="Bowling Green"/>
+    <connection t1="Nashville" t2="Hopkinsville"/>
+    <connection t1="Nashville" t2="Memphis"/>
+    <connection t1="Denver" t2="Grand Junction"/>
+    <connection t1="Denver" t2="Arikaree"/>
+    <connection t1="Beaumont" t2="Shreveport"/>
+    <connection t1="Beaumont" t2="Houston"/>
+    <connection t1="Tyler" t2="Little Rock"/>
+    <connection t1="Tyler" t2="Beaumont"/>
+    <connection t1="Tyler" t2="Dallas"/>
+    <connection t1="Tyler" t2="Oklahoma City"/>
+    <connection t1="Eau Claire" t2="Milwaukee"/>
+    <connection t1="Eau Claire" t2="Minneapolis"/>
+    <connection t1="Ozarks" t2="St. Joseph"/>
+    <connection t1="Ozarks" t2="Tulsa"/>
+    <connection t1="Ozarks" t2="Kansas City"/>
+    <connection t1="Boston" t2="New Hampshire"/>
+    <connection t1="Quebec" t2="Maine"/>
+    <connection t1="Quebec" t2="New Hampshire"/>
+    <connection t1="Quebec" t2="Vermont"/>
+    <connection t1="Quebec" t2="Adirondacks"/>
+    <connection t1="Baja California" t2="San Diego"/>
+    <connection t1="Baja California" t2="Mojave"/>
+    <connection t1="Baja California" t2="Sonora"/>
+    <connection t1="Baja California" t2="Gila"/>
+    <connection t1="Baja California" t2="Tuscon"/>
+    <connection t1="Sonora" t2="Tuscon"/>
+    <connection t1="Sonora" t2="Las Cruces"/>
+    <connection t1="Sonora" t2="El Paso"/>
+    <connection t1="Sonora" t2="Chihuahua"/>
+    <connection t1="Sonora" t2="Mexico"/>
+    <connection t1="Chihuahua" t2="Corpus Christi"/>
+    <connection t1="Chihuahua" t2="El Paso"/>
+    <connection t1="Mexico" t2="Chihuahua"/>
+  </map>
+  <resourceList>
+    <resource name="techTokens"/>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="GreenZombies" optional="false"/>
+    <player name="CitizensMilitia" optional="false"/>
+    <player name="BrownZombies" optional="false"/>
+    <player name="USArmy" optional="false"/>
+    <player name="GrayZombies" optional="false"/>
+    <player name="Neutrals" optional="false"/>
+    <alliance player="GreenZombies" alliance="Zombies"/>
+    <alliance player="CitizensMilitia" alliance="Humans"/>
+    <alliance player="BrownZombies" alliance="Zombies"/>
+    <alliance player="USArmy" alliance="Humans"/>
+    <alliance player="GrayZombies" alliance="Zombies"/>
+    <alliance player="Neutrals" alliance="Neutrals"/>
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="tank"/>
+    <unit name="fighter"/>
+    <unit name="bomber"/>
+    <unit name="stealth_bomber"/>
+    <unit name="truck"/>
+    <unit name="halftrack"/>
+    <unit name="special_forces"/>
+    <unit name="land"/>
+    <unit name="artillery"/>
+    <unit name="helicopter"/>
+    <unit name="freedom_fighter"/>
+    <unit name="survivalist"/>
+    <unit name="vigilante"/>
+    <unit name="zombie_hunter"/>
+    <unit name="ghoul"/>
+    <unit name="juggernaut"/>
+    <unit name="mutant"/>
+    <unit name="undead"/>
+    <unit name="zombieling"/>
+    <unit name="Chuck_Norris"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Z-Day"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Attack"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Deploy Forces"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Gather Forces"/>
+    <delegate name="purchaseNoPU" javaClass="games.strategy.triplea.delegate.NoPUPurchaseDelegate" display="Gather Forces"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endTurnNoPU" javaClass="games.strategy.triplea.delegate.NoPUEndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <step name="GreenZombiesBid" delegate="bid" player="GreenZombies" maxRunCount="1"/>
+      <step name="GreenZombiesBidPlace" delegate="placeBid" player="GreenZombies" maxRunCount="1"/>
+      <step name="CitizensMilitiaBid" delegate="bid" player="CitizensMilitia" maxRunCount="1"/>
+      <step name="CitizensMilitiaBidPlace" delegate="placeBid" player="CitizensMilitia" maxRunCount="1"/>
+      <step name="BrownZombiesBid" delegate="bid" player="BrownZombies" maxRunCount="1"/>
+      <step name="BrownZombiesBidPlace" delegate="placeBid" player="BrownZombies" maxRunCount="1"/>
+      <step name="USArmyBid" delegate="bid" player="USArmy" maxRunCount="1"/>
+      <step name="USArmyBidPlace" delegate="placeBid" player="USArmy" maxRunCount="1"/>
+      <step name="GrayZombiesBid" delegate="bid" player="GrayZombies" maxRunCount="1"/>
+      <step name="GrayZombiesBidPlace" delegate="placeBid" player="GrayZombies" maxRunCount="1"/>
+      <step name="GreenZombiesTech" delegate="tech" player="GreenZombies"/>
+      <step name="GreenZombiesPurchase" delegate="purchase" player="GreenZombies" display="The virus spreads..."/>
+      <step name="GreenZombiesPlace" delegate="place" player="GreenZombies" display="The rise of the dead..."/>
+      <step name="GreenZombiesCombatMove" delegate="move" player="GreenZombies" display="Zombie Attack!"/>
+      <step name="GreenZombiesBattle" delegate="battle" player="GreenZombies" display="AAAAAAH!"/>
+      <step name="GreenZombiesNonCombatMove" delegate="move" player="GreenZombies" display="The walking dead"/>
+      <step name="GreenZombiesTechActivation" delegate="tech_activation" player="GreenZombies"/>
+      <step name="GreenZombiesSecondPlace" delegate="place" player="GreenZombies" display="The dead rise again"/>
+      <step name="GreenZombiesEndTurn" delegate="endTurn" player="GreenZombies"/>
+      <step name="CitizensMilitiaTech" delegate="tech" player="CitizensMilitia"/>
+      <step name="CitizensMilitiaPurchase" delegate="purchase" player="CitizensMilitia"/>
+      <step name="CitizensMilitiaPlace" delegate="place" player="CitizensMilitia"/>
+      <step name="CitizensMilitiaCombatMove" delegate="move" player="CitizensMilitia"/>
+      <step name="CitizensMilitiaBattle" delegate="battle" player="CitizensMilitia"/>
+      <step name="CitizensMilitiaNonCombatMove" delegate="move" player="CitizensMilitia" display="Manuever"/>
+      <step name="CitizensMilitiaTechActivation" delegate="tech_activation" player="CitizensMilitia"/>
+      <step name="CitizensMilitiaEndTurn" delegate="endTurnNoPU" player="CitizensMilitia"/>
+      <step name="BrownZombiesTech" delegate="tech" player="BrownZombies"/>
+      <step name="BrownZombiesPurchase" delegate="purchase" player="BrownZombies" display="The virus spreads..."/>
+      <step name="BrownZombiesPlace" delegate="place" player="BrownZombies" display="The rise of the dead..."/>
+      <step name="BrownZombiesCombatMove" delegate="move" player="BrownZombies" display="Zombie Attack!"/>
+      <step name="BrownZombiesBattle" delegate="battle" player="BrownZombies" display="AAAAAAH!"/>
+      <step name="BrownZombiesNonCombatMove" delegate="move" player="BrownZombies" display="The walking dead"/>
+      <step name="BrownZombiesTechActivation" delegate="tech_activation" player="BrownZombies"/>
+      <step name="BrownZombiesSecondPlace" delegate="place" player="BrownZombies" display="The dead rise again"/>
+      <step name="BrownZombiesEndTurn" delegate="endTurn" player="BrownZombies"/>
+      <step name="USArmyTech" delegate="tech" player="USArmy"/>
+      <step name="USArmyPurchase" delegate="purchase" player="USArmy"/>
+      <step name="USArmyPlace" delegate="place" player="USArmy"/>
+      <step name="USArmyCombatMove" delegate="move" player="USArmy"/>
+      <step name="USArmyBattle" delegate="battle" player="USArmy"/>
+      <step name="USArmyNonCombatMove" delegate="move" player="USArmy" display="Manuever"/>
+      <step name="USArmyTechActivation" delegate="tech_activation" player="USArmy"/>
+      <step name="USArmyEndTurn" delegate="endTurnNoPU" player="USArmy"/>
+      <step name="GrayZombiesTech" delegate="tech" player="GrayZombies"/>
+      <step name="GrayZombiesPurchase" delegate="purchase" player="GrayZombies" display="The virus spreads..."/>
+      <step name="GrayZombiesPlace" delegate="place" player="GrayZombies" display="The rise of the dead..."/>
+      <step name="GrayZombiesCombatMove" delegate="move" player="GrayZombies" display="Zombie Attack!"/>
+      <step name="GrayZombiesBattle" delegate="battle" player="GrayZombies" display="AAAAAAH!"/>
+      <step name="GrayZombiesNonCombatMove" delegate="move" player="GrayZombies" display="The walking dead"/>
+      <step name="GrayZombiesTechActivation" delegate="tech_activation" player="GrayZombies"/>
+      <step name="GrayZombiesSecondPlace" delegate="place" player="GrayZombies" display="The dead rise again"/>
+      <step name="GrayZombiesEndTurn" delegate="endTurn" player="GrayZombies"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTank">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="tank" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyStealthBomber">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="stealth_bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTruck">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="truck" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHalftrack">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="halftrack" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySpecialForces">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="special_forces" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyLand">
+      <cost resource="PUs" quantity="30"/>
+      <result resourceOrUnit="land" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHelicopter">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="helicopter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFreedomFighter">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="freedom_fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySurvivalist">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="survivalist" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyVigilante">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="vigilante" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyZombieHunter">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="zombie_hunter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyGhoul">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="ghoul" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyJuggernaut">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="juggernaut" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyMutant">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="mutant" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyUndead">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="undead" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyZombieling">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="zombieling" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyChuckNorris">
+      <cost resource="PUs" quantity="100"/>
+      <result resourceOrUnit="Chuck_Norris" quantity="1"/>
+    </productionRule>
+    <!-- Advanced Industrial Production
+                
+                <productionRule name="buyInfantryIndustrialTechnology">
+                        <cost resource="PUs" quantity="3" />
+                        <result resourceOrUnit="infantry" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyTankIndustrialTechnology">
+                        <cost resource="PUs" quantity="5"/>
+                        <result resourceOrUnit="tank" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyFighterIndustrialTechnology">
+                        <cost resource="PUs" quantity="10"/>
+                        <result resourceOrUnit="fighter" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyBomberIndustrialTechnology">
+                        <cost resource="PUs" quantity="12"/>
+                        <result resourceOrUnit="bomber" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyStealthBomberIndustrialTechnology">
+                        <cost resource="PUs" quantity="18"/>
+                        <result resourceOrUnit="stealth_bomber" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyTruckIndustrialTechnology">
+                        <cost resource="PUs" quantity="1"/>
+                        <result resourceOrUnit="truck" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyHalftrackIndustrialTechnology">
+                        <cost resource="PUs" quantity="4"/>
+                        <result resourceOrUnit="halftrack" quantity="1"/>
+                </productionRule>
+                <productionRule name="buySpecialForcesIndustrialTechnology">
+                        <cost resource="PUs" quantity="5"/>
+                        <result resourceOrUnit="special_forces" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyLandIndustrialTechnology">
+                        <cost resource="PUs" quantity="30"/>
+                        <result resourceOrUnit="land" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyArtilleryIndustrialTechnology">
+                        <cost resource="PUs" quantity="4"/>
+                        <result resourceOrUnit="artillery" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyHelicopterIndustrialTechnology">
+                        <cost resource="PUs" quantity="8"/>
+                        <result resourceOrUnit="helicopter" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyFreedomFighterIndustrialTechnology">
+                        <cost resource="PUs" quantity="5"/>
+                        <result resourceOrUnit="freedom_fighter" quantity="1"/>
+                </productionRule>
+                <productionRule name="buySurvivalistIndustrialTechnology">
+                        <cost resource="PUs" quantity="4"/>
+                        <result resourceOrUnit="survivalist" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyVigilanteIndustrialTechnology">
+                        <cost resource="PUs" quantity="7"/>
+                        <result resourceOrUnit="vigilante" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyZombieHunterIndustrialTechnology">
+                        <cost resource="PUs" quantity="9"/>
+                        <result resourceOrUnit="zombie_hunter" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyGhoulIndustrialTechnology">
+                        <cost resource="PUs" quantity="4"/>
+                        <result resourceOrUnit="ghoul" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyJuggernautIndustrialTechnology">
+                        <cost resource="PUs" quantity="5"/>
+                        <result resourceOrUnit="juggernaut" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyMutantIndustrialTechnology">
+                        <cost resource="PUs" quantity="8"/>
+                        <result resourceOrUnit="mutant" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyUndeadIndustrialTechnology">
+                        <cost resource="PUs" quantity="3"/>
+                        <result resourceOrUnit="undead" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyZombielingIndustrialTechnology">
+                        <cost resource="PUs" quantity="2"/>
+                        <result resourceOrUnit="zombieling" quantity="1"/>
+                </productionRule>
+                                
+                                -->
+    <!-- Repair rules -->
+    <repairRule name="repairLand">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="land" quantity="1"/>
+    </repairRule>
+    <repairFrontier name="repair">
+      <repairRules name="repairLand"/>
+    </repairFrontier>
+    <productionFrontier name="zombie-production">
+      <frontierRules name="buyGhoul"/>
+      <frontierRules name="buyJuggernaut"/>
+      <frontierRules name="buyMutant"/>
+      <frontierRules name="buyUndead"/>
+      <frontierRules name="buyZombieling"/>
+    </productionFrontier>
+    <productionFrontier name="army-production">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyTank"/>
+      <frontierRules name="buyHelicopter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyStealthBomber"/>
+      <frontierRules name="buyTruck"/>
+      <frontierRules name="buySpecialForces"/>
+      <frontierRules name="buyHalftrack"/>
+    </productionFrontier>
+    <productionFrontier name="militia-production">
+      <frontierRules name="buyVigilante"/>
+      <frontierRules name="buySurvivalist"/>
+      <frontierRules name="buyFreedomFighter"/>
+      <frontierRules name="buyZombieHunter"/>
+    </productionFrontier>
+    <playerProduction player="GrayZombies" frontier="zombie-production"/>
+    <playerProduction player="Neutrals" frontier="army-production"/>
+    <playerProduction player="BrownZombies" frontier="zombie-production"/>
+    <playerProduction player="USArmy" frontier="army-production"/>
+    <playerProduction player="GreenZombies" frontier="zombie-production"/>
+    <playerProduction player="CitizensMilitia" frontier="militia-production"/>
+    <playerRepair player="GrayZombies" frontier="repair"/>
+    <playerRepair player="BrownZombies" frontier="repair"/>
+    <playerRepair player="USArmy" frontier="repair"/>
+    <playerRepair player="GreenZombies" frontier="repair"/>
+    <playerRepair player="CitizensMilitia" frontier="repair"/>
+    <playerRepair player="Neutrals" frontier="repair"/>
+  </production>
+  <attachmentList>
+    <attachment name="techAttachment" attachTo="GrayZombies" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="shipyards" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="BrownZombies" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="shipyards" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="USArmy" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="shipyards" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="true"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="true"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="true"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="GreenZombies" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="shipyards" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="CitizensMilitia" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="shipyards" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="true"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="isInfantry" value="true"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="tank" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="false"/>
+      <option name="isLandTransport" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+      <option name="carrierCost" value="3"/>
+      <option name="isAir" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="10"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="isAir" value="true"/>
+      <option name="isAirTransport" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="stealth_bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="14"/>
+      <option name="attack" value="6"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="isAir" value="true"/>
+      <option name="isAirTransport" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="truck" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="canBlitz" value="true"/>
+      <option name="isLandTransport" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="halftrack" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="special_forces" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="2"/>
+      <option name="isInfantry" value="true"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="helicopter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="5"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="land" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="freedom_fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="artillerySupportable" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="survivalist" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="vigilante" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="zombie_hunter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="ghoul" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="juggernaut" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="mutant" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="undead" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="zombieling" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Chuck_Norris" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="attack" value="6"/>
+      <option name="defense" value="6"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="hitPoints" value="2"/>
+      <option name="isAir" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="San Diego" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rhode Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Panhandle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tampa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Idaho Falls" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Springfield" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Corpus Christi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Duluth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Baton Rouge" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Hampshire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grand Canyon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cincinnati" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="San Francisco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="unitProduction" value="6"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sacramento" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ft. Dodge" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Savannah" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Memphis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Omaha" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Miami" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="unitProduction" value="5"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Harrisburg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yazoo River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Portland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bakersfield" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Des Moines" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Clinton" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Santa Fe" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Columbia Plateau" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eugene" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Maine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Adirondacks" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Buffalo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Peoria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kansas City" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wilmington" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yakima" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="San Joaquin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Augusta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="El Paso" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Colorado Springs" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ft. Wayne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Morgantown" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Austin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cape Girardeau" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tallahassee" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Columbus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sheridan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dallas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cheyenne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Salt Lake City" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arikaree" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Danville" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Las Vegas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grand Junction" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Washington" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="unitProduction" value="6"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Philadelphia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="unitProduction" value="5"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Charlottesville" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Montgomery" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="St. Louis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Connecticut" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Reno" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mojave" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Birmingham" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gary" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Roswell" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="St. Joseph" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bowling Green" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tuscon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Catskills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lansing" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Albuquerque" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wichita" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Phoenix" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jackson" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Topeka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tulsa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sevier" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Seattle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Massachusetts" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Butte" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Charleston" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Knoxville" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fresno" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mobile" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Maryland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="San Antonio" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Billings" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Macon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Raleigh" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fort Smith" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gila" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Atlanta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Minneapolis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Spokane" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vermont" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Amarillo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jacksonville" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hopkinsville" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New York" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="unitProduction" value="10"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oklahoma City" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Jersey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rapid City" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sand Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shreveport" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grand Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Huntington" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cleveland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Milwaukee" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Albany" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Toledo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lake Powell" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chicago" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="unitProduction" value="7"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Richmond" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Boston" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="unitProduction" value="5"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fargo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Charlotte" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Little Rock" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Detroit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="unitProduction" value="5"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Davenport" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Superior" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Norfolk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Indianapolis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sioux Falls" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pittsburgh" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bismarck" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Orleans" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Delaware" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Castle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Houston" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Great Basin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Frankfort" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Greenville" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Boise" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Allentown" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="St. Cloud" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Garden City" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Las Cruces" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nashville" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Denver" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Beaumont" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tyler" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eau Claire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ozarks" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="unitProduction" value="1"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Los Angeles" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="unitProduction" value="8"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Manitoba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="West Canada" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="West Ontario" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="East Ontario" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Quebec" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Baja California" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sonora" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chihuahua" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="originalOwner" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mexico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+      <option name="capital" value="Neutrals"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="USArmyCapital" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="unitProduction" value="0"/>
+      <option name="capital" value="USArmy"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="CitizensMilitiaCapital" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="unitProduction" value="0"/>
+      <option name="capital" value="CitizensMilitia"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="GreenZombiesCapital" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="unitProduction" value="0"/>
+      <option name="capital" value="GreenZombies"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="BrownZombiesCapital" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="unitProduction" value="0"/>
+      <option name="capital" value="BrownZombies"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="GrayZombiesCapital" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="unitProduction" value="0"/>
+      <option name="capital" value="GrayZombies"/>
+    </attachment>
+    <attachment name="rulesAttachment" attachTo="GreenZombies" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="placementCapturedTerritory" value="true"/>
+    </attachment>
+    <attachment name="rulesAttachment" attachTo="GrayZombies" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="placementCapturedTerritory" value="true"/>
+    </attachment>
+    <attachment name="rulesAttachment" attachTo="BrownZombies" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="placementCapturedTerritory" value="true"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="Duluth" owner="USArmy"/>
+      <territoryOwner territory="Ft. Wayne" owner="USArmy"/>
+      <territoryOwner territory="Austin" owner="USArmy"/>
+      <territoryOwner territory="Cheyenne" owner="USArmy"/>
+      <territoryOwner territory="Washington" owner="USArmy"/>
+      <territoryOwner territory="Roswell" owner="USArmy"/>
+      <territoryOwner territory="Catskills" owner="USArmy"/>
+      <territoryOwner territory="Topeka" owner="USArmy"/>
+      <territoryOwner territory="Charleston" owner="USArmy"/>
+      <territoryOwner territory="Fresno" owner="USArmy"/>
+      <territoryOwner territory="Mobile" owner="USArmy"/>
+      <territoryOwner territory="Fort Smith" owner="USArmy"/>
+      <territoryOwner territory="Hopkinsville" owner="USArmy"/>
+      <territoryOwner territory="Lake Powell" owner="USArmy"/>
+      <territoryOwner territory="Sioux Falls" owner="USArmy"/>
+      <territoryOwner territory="Boise" owner="USArmy"/>
+      <territoryOwner territory="Denver" owner="USArmy"/>
+      <territoryOwner territory="Rhode Island" owner="CitizensMilitia"/>
+      <territoryOwner territory="Panhandle" owner="CitizensMilitia"/>
+      <territoryOwner territory="Tampa" owner="CitizensMilitia"/>
+      <territoryOwner territory="Idaho Falls" owner="CitizensMilitia"/>
+      <territoryOwner territory="Springfield" owner="CitizensMilitia"/>
+      <territoryOwner territory="Corpus Christi" owner="CitizensMilitia"/>
+      <territoryOwner territory="Baton Rouge" owner="CitizensMilitia"/>
+      <territoryOwner territory="New Hampshire" owner="CitizensMilitia"/>
+      <territoryOwner territory="Grand Canyon" owner="CitizensMilitia"/>
+      <territoryOwner territory="Cincinnati" owner="CitizensMilitia"/>
+      <territoryOwner territory="Sacramento" owner="CitizensMilitia"/>
+      <territoryOwner territory="Ft. Dodge" owner="CitizensMilitia"/>
+      <territoryOwner territory="Savannah" owner="CitizensMilitia"/>
+      <territoryOwner territory="Omaha" owner="CitizensMilitia"/>
+      <territoryOwner territory="Harrisburg" owner="CitizensMilitia"/>
+      <territoryOwner territory="Yazoo River" owner="CitizensMilitia"/>
+      <territoryOwner territory="Portland" owner="CitizensMilitia"/>
+      <territoryOwner territory="Bakersfield" owner="CitizensMilitia"/>
+      <territoryOwner territory="Des Moines" owner="CitizensMilitia"/>
+      <territoryOwner territory="Clinton" owner="CitizensMilitia"/>
+      <territoryOwner territory="Santa Fe" owner="CitizensMilitia"/>
+      <territoryOwner territory="Columbia Plateau" owner="CitizensMilitia"/>
+      <territoryOwner territory="Eugene" owner="CitizensMilitia"/>
+      <territoryOwner territory="Maine" owner="CitizensMilitia"/>
+      <territoryOwner territory="Adirondacks" owner="CitizensMilitia"/>
+      <territoryOwner territory="Buffalo" owner="CitizensMilitia"/>
+      <territoryOwner territory="Peoria" owner="CitizensMilitia"/>
+      <territoryOwner territory="Kansas City" owner="CitizensMilitia"/>
+      <territoryOwner territory="Wilmington" owner="CitizensMilitia"/>
+      <territoryOwner territory="San Joaquin" owner="CitizensMilitia"/>
+      <territoryOwner territory="Augusta" owner="CitizensMilitia"/>
+      <territoryOwner territory="El Paso" owner="CitizensMilitia"/>
+      <territoryOwner territory="Colorado Springs" owner="CitizensMilitia"/>
+      <territoryOwner territory="Morgantown" owner="CitizensMilitia"/>
+      <territoryOwner territory="Cape Girardeau" owner="CitizensMilitia"/>
+      <territoryOwner territory="Tallahassee" owner="CitizensMilitia"/>
+      <territoryOwner territory="Columbus" owner="CitizensMilitia"/>
+      <territoryOwner territory="Sheridan" owner="CitizensMilitia"/>
+      <territoryOwner territory="Salt Lake City" owner="CitizensMilitia"/>
+      <territoryOwner territory="Arikaree" owner="CitizensMilitia"/>
+      <territoryOwner territory="Danville" owner="CitizensMilitia"/>
+      <territoryOwner territory="Las Vegas" owner="CitizensMilitia"/>
+      <territoryOwner territory="Grand Junction" owner="CitizensMilitia"/>
+      <territoryOwner territory="Montgomery" owner="CitizensMilitia"/>
+      <territoryOwner territory="Reno" owner="CitizensMilitia"/>
+      <territoryOwner territory="Mojave" owner="CitizensMilitia"/>
+      <territoryOwner territory="Birmingham" owner="CitizensMilitia"/>
+      <territoryOwner territory="Gary" owner="CitizensMilitia"/>
+      <territoryOwner territory="St. Joseph" owner="CitizensMilitia"/>
+      <territoryOwner territory="Bowling Green" owner="CitizensMilitia"/>
+      <territoryOwner territory="Tuscon" owner="CitizensMilitia"/>
+      <territoryOwner territory="Lansing" owner="CitizensMilitia"/>
+      <territoryOwner territory="Albuquerque" owner="CitizensMilitia"/>
+      <territoryOwner territory="Wichita" owner="CitizensMilitia"/>
+      <territoryOwner territory="Phoenix" owner="CitizensMilitia"/>
+      <territoryOwner territory="Jackson" owner="CitizensMilitia"/>
+      <territoryOwner territory="Tulsa" owner="CitizensMilitia"/>
+      <territoryOwner territory="Sevier" owner="CitizensMilitia"/>
+      <territoryOwner territory="Seattle" owner="CitizensMilitia"/>
+      <territoryOwner territory="Massachusetts" owner="CitizensMilitia"/>
+      <territoryOwner territory="Butte" owner="CitizensMilitia"/>
+      <territoryOwner territory="Knoxville" owner="CitizensMilitia"/>
+      <territoryOwner territory="San Antonio" owner="CitizensMilitia"/>
+      <territoryOwner territory="Billings" owner="CitizensMilitia"/>
+      <territoryOwner territory="Macon" owner="CitizensMilitia"/>
+      <territoryOwner territory="Raleigh" owner="CitizensMilitia"/>
+      <territoryOwner territory="Gila" owner="CitizensMilitia"/>
+      <territoryOwner territory="Atlanta" owner="CitizensMilitia"/>
+      <territoryOwner territory="Minneapolis" owner="CitizensMilitia"/>
+      <territoryOwner territory="Vermont" owner="CitizensMilitia"/>
+      <territoryOwner territory="Amarillo" owner="CitizensMilitia"/>
+      <territoryOwner territory="Oklahoma City" owner="CitizensMilitia"/>
+      <territoryOwner territory="Rapid City" owner="CitizensMilitia"/>
+      <territoryOwner territory="Sand Hills" owner="CitizensMilitia"/>
+      <territoryOwner territory="Shreveport" owner="CitizensMilitia"/>
+      <territoryOwner territory="Grand Island" owner="CitizensMilitia"/>
+      <territoryOwner territory="Huntington" owner="CitizensMilitia"/>
+      <territoryOwner territory="Cleveland" owner="CitizensMilitia"/>
+      <territoryOwner territory="Milwaukee" owner="CitizensMilitia"/>
+      <territoryOwner territory="Albany" owner="CitizensMilitia"/>
+      <territoryOwner territory="Toledo" owner="CitizensMilitia"/>
+      <territoryOwner territory="Fargo" owner="CitizensMilitia"/>
+      <territoryOwner territory="Charlotte" owner="CitizensMilitia"/>
+      <territoryOwner territory="Little Rock" owner="CitizensMilitia"/>
+      <territoryOwner territory="Davenport" owner="CitizensMilitia"/>
+      <territoryOwner territory="Norfolk" owner="CitizensMilitia"/>
+      <territoryOwner territory="Indianapolis" owner="CitizensMilitia"/>
+      <territoryOwner territory="Pittsburgh" owner="CitizensMilitia"/>
+      <territoryOwner territory="Bismarck" owner="CitizensMilitia"/>
+      <territoryOwner territory="Delaware" owner="CitizensMilitia"/>
+      <territoryOwner territory="New Castle" owner="CitizensMilitia"/>
+      <territoryOwner territory="Great Basin" owner="CitizensMilitia"/>
+      <territoryOwner territory="Frankfort" owner="CitizensMilitia"/>
+      <territoryOwner territory="Greenville" owner="CitizensMilitia"/>
+      <territoryOwner territory="Allentown" owner="CitizensMilitia"/>
+      <territoryOwner territory="St. Cloud" owner="CitizensMilitia"/>
+      <territoryOwner territory="Garden City" owner="CitizensMilitia"/>
+      <territoryOwner territory="Las Cruces" owner="CitizensMilitia"/>
+      <territoryOwner territory="Nashville" owner="CitizensMilitia"/>
+      <territoryOwner territory="Beaumont" owner="CitizensMilitia"/>
+      <territoryOwner territory="Tyler" owner="CitizensMilitia"/>
+      <territoryOwner territory="Eau Claire" owner="CitizensMilitia"/>
+      <territoryOwner territory="Ozarks" owner="CitizensMilitia"/>
+      <territoryOwner territory="San Diego" owner="GreenZombies"/>
+      <territoryOwner territory="St. Louis" owner="GreenZombies"/>
+      <territoryOwner territory="Maryland" owner="GreenZombies"/>
+      <territoryOwner territory="New Jersey" owner="GreenZombies"/>
+      <territoryOwner territory="Richmond" owner="GreenZombies"/>
+      <territoryOwner territory="New Orleans" owner="GreenZombies"/>
+      <territoryOwner territory="Houston" owner="GreenZombies"/>
+      <territoryOwner territory="San Francisco" owner="BrownZombies"/>
+      <territoryOwner territory="Yakima" owner="BrownZombies"/>
+      <territoryOwner territory="Dallas" owner="BrownZombies"/>
+      <territoryOwner territory="Charlottesville" owner="BrownZombies"/>
+      <territoryOwner territory="Jacksonville" owner="BrownZombies"/>
+      <territoryOwner territory="New York" owner="BrownZombies"/>
+      <territoryOwner territory="Detroit" owner="BrownZombies"/>
+      <territoryOwner territory="Memphis" owner="GrayZombies"/>
+      <territoryOwner territory="Miami" owner="GrayZombies"/>
+      <territoryOwner territory="Philadelphia" owner="GrayZombies"/>
+      <territoryOwner territory="Connecticut" owner="GrayZombies"/>
+      <territoryOwner territory="Spokane" owner="GrayZombies"/>
+      <territoryOwner territory="Chicago" owner="GrayZombies"/>
+      <territoryOwner territory="Boston" owner="GrayZombies"/>
+      <territoryOwner territory="Los Angeles" owner="GrayZombies"/>
+      <territoryOwner territory="Superior" owner="CitizensMilitia"/>
+      <territoryOwner territory="USArmyCapital" owner="USArmy"/>
+      <territoryOwner territory="GreenZombiesCapital" owner="GreenZombies"/>
+      <territoryOwner territory="CitizensMilitiaCapital" owner="CitizensMilitia"/>
+      <territoryOwner territory="GrayZombiesCapital" owner="GrayZombies"/>
+      <territoryOwner territory="BrownZombiesCapital" owner="BrownZombies"/>
+      <territoryOwner territory="Mexico" owner="Neutrals"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Land Production -->
+      <unitPlacement unitType="land" territory="Duluth" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Ft. Wayne" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Austin" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Cheyenne" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Washington" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Roswell" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Catskills" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Topeka" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Charleston" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Fresno" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Mobile" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Fort Smith" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Hopkinsville" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Lake Powell" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Sioux Falls" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Boise" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Denver" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="land" territory="Rhode Island" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Panhandle" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Tampa" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Idaho Falls" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Springfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Corpus Christi" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Baton Rouge" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="New Hampshire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Grand Canyon" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Cincinnati" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Sacramento" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Ft. Dodge" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Savannah" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Omaha" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Harrisburg" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Yazoo River" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Portland" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Bakersfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Des Moines" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Clinton" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Santa Fe" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Columbia Plateau" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Eugene" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Maine" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Adirondacks" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Buffalo" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Peoria" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Kansas City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Wilmington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="San Joaquin" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Augusta" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="El Paso" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Colorado Springs" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Morgantown" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Cape Girardeau" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Tallahassee" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Columbus" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Sheridan" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Salt Lake City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Arikaree" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Danville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Las Vegas" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Grand Junction" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Montgomery" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Reno" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Mojave" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Birmingham" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Gary" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="St. Joseph" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Bowling Green" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Tuscon" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Lansing" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Albuquerque" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Wichita" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Phoenix" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Jackson" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Tulsa" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Sevier" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Seattle" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Massachusetts" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Butte" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Knoxville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="San Antonio" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Billings" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Macon" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Raleigh" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Gila" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Atlanta" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Minneapolis" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Vermont" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Amarillo" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Oklahoma City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Rapid City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Sand Hills" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Shreveport" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Grand Island" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Huntington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Cleveland" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Milwaukee" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Albany" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Toledo" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Fargo" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Charlotte" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Little Rock" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Davenport" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Norfolk" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Indianapolis" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Pittsburgh" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Bismarck" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Delaware" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="New Castle" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Great Basin" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Frankfort" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Greenville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Allentown" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="St. Cloud" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Garden City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Las Cruces" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Nashville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Beaumont" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Tyler" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Eau Claire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="Ozarks" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="land" territory="San Diego" quantity="1" owner="GreenZombies"/>
+      <unitPlacement unitType="land" territory="St. Louis" quantity="1" owner="GreenZombies"/>
+      <unitPlacement unitType="land" territory="Maryland" quantity="1" owner="GreenZombies"/>
+      <unitPlacement unitType="land" territory="New Jersey" quantity="1" owner="GreenZombies"/>
+      <unitPlacement unitType="land" territory="Richmond" quantity="1" owner="GreenZombies"/>
+      <unitPlacement unitType="land" territory="New Orleans" quantity="1" owner="GreenZombies"/>
+      <unitPlacement unitType="land" territory="Houston" quantity="1" owner="GreenZombies"/>
+      <unitPlacement unitType="land" territory="San Francisco" quantity="1" owner="BrownZombies"/>
+      <unitPlacement unitType="land" territory="Yakima" quantity="1" owner="BrownZombies"/>
+      <unitPlacement unitType="land" territory="Dallas" quantity="1" owner="BrownZombies"/>
+      <unitPlacement unitType="land" territory="Charlottesville" quantity="1" owner="BrownZombies"/>
+      <unitPlacement unitType="land" territory="Jacksonville" quantity="1" owner="BrownZombies"/>
+      <unitPlacement unitType="land" territory="New York" quantity="1" owner="BrownZombies"/>
+      <unitPlacement unitType="land" territory="Detroit" quantity="1" owner="BrownZombies"/>
+      <unitPlacement unitType="land" territory="Memphis" quantity="1" owner="GrayZombies"/>
+      <unitPlacement unitType="land" territory="Miami" quantity="1" owner="GrayZombies"/>
+      <unitPlacement unitType="land" territory="Philadelphia" quantity="1" owner="GrayZombies"/>
+      <unitPlacement unitType="land" territory="Connecticut" quantity="1" owner="GrayZombies"/>
+      <unitPlacement unitType="land" territory="Spokane" quantity="1" owner="GrayZombies"/>
+      <unitPlacement unitType="land" territory="Chicago" quantity="1" owner="GrayZombies"/>
+      <unitPlacement unitType="land" territory="Boston" quantity="1" owner="GrayZombies"/>
+      <unitPlacement unitType="land" territory="Los Angeles" quantity="1" owner="GrayZombies"/>
+      <unitPlacement unitType="land" territory="Superior" quantity="1" owner="CitizensMilitia"/>
+      <!-- US Army Placement -->
+      <unitPlacement unitType="infantry" territory="Duluth" quantity="15" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Duluth" quantity="4" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Duluth" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="bomber" territory="Duluth" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Duluth" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Duluth" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Duluth" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Duluth" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Duluth" quantity="10" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Ft. Wayne" quantity="10" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Ft. Wayne" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Ft. Wayne" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Ft. Wayne" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Ft. Wayne" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Ft. Wayne" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Ft. Wayne" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Ft. Wayne" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Austin" quantity="10" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Austin" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Austin" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Austin" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Austin" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Austin" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Austin" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Austin" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Cheyenne" quantity="15" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Cheyenne" quantity="4" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Cheyenne" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="stealth_bomber" territory="Cheyenne" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="bomber" territory="Cheyenne" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Cheyenne" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Cheyenne" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Cheyenne" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Cheyenne" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Cheyenne" quantity="10" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Washington" quantity="10" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Washington" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Washington" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="bomber" territory="Duluth" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Washington" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Washington" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Washington" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Washington" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Washington" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Roswell" quantity="15" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Roswell" quantity="4" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Roswell" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="stealth_bomber" territory="Roswell" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="bomber" territory="Roswell" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Roswell" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Roswell" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Roswell" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Roswell" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Roswell" quantity="10" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Catskills" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Catskills" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Catskills" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Catskills" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Catskills" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Catskills" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Catskills" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Catskills" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Topeka" quantity="15" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Topeka" quantity="4" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Topeka" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="stealth_bomber" territory="Topeka" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="bomber" territory="Topeka" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Topeka" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Topeka" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Topeka" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Topeka" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Topeka" quantity="10" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Charleston" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Charleston" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Charleston" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Charleston" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Charleston" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Charleston" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Charleston" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Fresno" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Fresno" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Fresno" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Fresno" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Fresno" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Fresno" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Fresno" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Fresno" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Mobile" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Mobile" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Mobile" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Mobile" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Mobile" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Mobile" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Mobile" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Fort Smith" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Fort Smith" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Fort Smith" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Fort Smith" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Fort Smith" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Fort Smith" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Fort Smith" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Hopkinsville" quantity="8" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Hopkinsville" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Hopkinsville" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Hopkinsville" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Hopkinsville" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Hopkinsville" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Hopkinsville" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Lake Powell" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Lake Powell" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="stealth_bomber" territory="Lake Powell" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="bomber" territory="Lake Powell" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Lake Powell" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Sioux Falls" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="fighter" territory="Sioux Falls" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="stealth_bomber" territory="Sioux Falls" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="bomber" territory="Sioux Falls" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Sioux Falls" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="helicopter" territory="Sioux Falls" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Boise" quantity="5" owner="USArmy"/>
+      <unitPlacement unitType="tank" territory="Boise" quantity="1" owner="USArmy"/>
+      <unitPlacement unitType="special_forces" territory="Boise" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="artillery" territory="Boise" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="halftrack" territory="Boise" quantity="2" owner="USArmy"/>
+      <unitPlacement unitType="truck" territory="Boise" quantity="3" owner="USArmy"/>
+      <unitPlacement unitType="infantry" territory="Denver" quantity="20" owner="USArmy"/>
+      <!-- Militia Placement -->
+      <unitPlacement unitType="freedom_fighter" territory="Maine" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Maine" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Maine" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Maine" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="New Hampshire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="New Hampshire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="New Hampshire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="New Hampshire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Vermont" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Massachusetts" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Rhode Island" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Rhode Island" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Rhode Island" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Rhode Island" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Albany" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Albany" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Albany" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Albany" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Adirondacks" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Buffalo" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Allentown" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Clinton" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Harrisburg" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="New Castle" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Delaware" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Pittsburgh" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Pittsburgh" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Pittsburgh" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Pittsburgh" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Morgantown" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Huntington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Huntington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Huntington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Huntington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Danville" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Norfolk" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Raleigh" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Raleigh" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Raleigh" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Raleigh" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Wilmington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Wilmington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Wilmington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Wilmington" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Charlotte" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Charlotte" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Charlotte" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Charlotte" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Cleveland" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Cleveland" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Cleveland" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Cleveland" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Columbus" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Columbus" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Columbus" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Columbus" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Toledo" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Toledo" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Toledo" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Toledo" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Cincinnati" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Cincinnati" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Cincinnati" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Cincinnati" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Frankfort" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Frankfort" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Frankfort" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Frankfort" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Bowling Green" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Indianapolis" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Indianapolis" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Indianapolis" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Indianapolis" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Gary" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Gary" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Gary" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Gary" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Lansing" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Lansing" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Lansing" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Lansing" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Nashville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Nashville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Nashville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Nashville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Knoxville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Knoxville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Knoxville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Knoxville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Greenville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Greenville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Greenville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Greenville" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Augusta" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Atlanta" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Macon" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Savannah" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Savannah" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Savannah" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Savannah" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Tallahassee" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Tallahassee" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Tallahassee" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Tallahassee" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Tampa" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Tampa" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Tampa" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Tampa" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Birmingham" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Montgomery" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Montgomery" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Montgomery" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Montgomery" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Yazoo River" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Jackson" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Jackson" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Jackson" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Jackson" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Superior" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Eau Claire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Eau Claire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Eau Claire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Eau Claire" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Milwaukee" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Milwaukee" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Milwaukee" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Milwaukee" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Peoria" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Springfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Springfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Springfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Springfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="St. Cloud" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Minneapolis" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Minneapolis" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Minneapolis" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Minneapolis" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Davenport" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Ft. Dodge" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Des Moines" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Des Moines" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Des Moines" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Des Moines" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="St. Joseph" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Ozarks" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Cape Girardeau" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Little Rock" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Little Rock" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Little Rock" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Little Rock" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Shreveport" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Baton Rouge" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Amarillo" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Tyler" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Beaumont" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="San Antonio" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="San Antonio" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="San Antonio" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="San Antonio" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="El Paso" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Corpus Christi" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Corpus Christi" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Corpus Christi" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Corpus Christi" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="Chuck_Norris" territory="Panhandle" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Oklahoma City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Oklahoma City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Oklahoma City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Oklahoma City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Tulsa" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Wichita" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Kansas City" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Kansas City" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Kansas City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Kansas City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Garden City" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Grand Island" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Sand Hills" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Omaha" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Rapid City" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Bismarck" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Fargo" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Butte" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Billings" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Sheridan" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Arikaree" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Grand Junction" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Colorado Springs" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Santa Fe" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Albuquerque" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Albuquerque" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Albuquerque" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Albuquerque" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Las Cruces" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Grand Canyon" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Gila" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Phoenix" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Phoenix" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Phoenix" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Phoenix" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Tuscon" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Sevier" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Salt Lake City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Salt Lake City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Salt Lake City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Salt Lake City" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Idaho Falls" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Seattle" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Seattle" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Seattle" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Seattle" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Portland" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Portland" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Portland" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Portland" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Eugene" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Eugene" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Eugene" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Eugene" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Columbia Plateau" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Great Basin" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Reno" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Las Vegas" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Las Vegas" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Las Vegas" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Las Vegas" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Sacramento" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Sacramento" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Sacramento" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Sacramento" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="San Joaquin" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Bakersfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="survivalist" territory="Bakersfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="vigilante" territory="Bakersfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="zombie_hunter" territory="Bakersfield" quantity="1" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Mojave" quantity="2" owner="CitizensMilitia"/>
+      <unitPlacement unitType="freedom_fighter" territory="Superior" quantity="2" owner="CitizensMilitia"/>
+      <!-- GreenZombies Placement -->
+      <unitPlacement unitType="zombieling" territory="San Diego" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="undead" territory="San Diego" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="ghoul" territory="San Diego" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="mutant" territory="San Diego" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="juggernaut" territory="San Diego" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="zombieling" territory="St. Louis" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="undead" territory="St. Louis" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="ghoul" territory="St. Louis" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="mutant" territory="St. Louis" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="juggernaut" territory="St. Louis" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="zombieling" territory="Maryland" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="undead" territory="Maryland" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="ghoul" territory="Maryland" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="mutant" territory="Maryland" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Maryland" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="zombieling" territory="New Jersey" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="undead" territory="New Jersey" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="ghoul" territory="New Jersey" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="mutant" territory="New Jersey" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="juggernaut" territory="New Jersey" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="zombieling" territory="Richmond" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="undead" territory="Richmond" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="ghoul" territory="Richmond" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="mutant" territory="Richmond" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Richmond" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="zombieling" territory="New Orleans" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="undead" territory="New Orleans" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="ghoul" territory="New Orleans" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="mutant" territory="New Orleans" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="juggernaut" territory="New Orleans" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="zombieling" territory="Houston" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="undead" territory="Houston" quantity="10" owner="GreenZombies"/>
+      <unitPlacement unitType="ghoul" territory="Houston" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="mutant" territory="Houston" quantity="3" owner="GreenZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Houston" quantity="3" owner="GreenZombies"/>
+      <!-- BrownZombies Placement -->
+      <unitPlacement unitType="zombieling" territory="San Francisco" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="undead" territory="San Francisco" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="ghoul" territory="San Francisco" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="mutant" territory="San Francisco" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="juggernaut" territory="San Francisco" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="zombieling" territory="Yakima" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="undead" territory="Yakima" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="ghoul" territory="Yakima" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="mutant" territory="Yakima" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Yakima" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="zombieling" territory="Dallas" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="undead" territory="Dallas" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="ghoul" territory="Dallas" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="mutant" territory="Dallas" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Dallas" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="zombieling" territory="Charlottesville" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="undead" territory="Charlottesville" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="ghoul" territory="Charlottesville" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="mutant" territory="Charlottesville" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Charlottesville" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="zombieling" territory="Jacksonville" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="undead" territory="Jacksonville" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="ghoul" territory="Jacksonville" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="mutant" territory="Jacksonville" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Jacksonville" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="zombieling" territory="New York" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="undead" territory="New York" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="ghoul" territory="New York" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="mutant" territory="New York" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="juggernaut" territory="New York" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="zombieling" territory="Detroit" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="undead" territory="Detroit" quantity="10" owner="BrownZombies"/>
+      <unitPlacement unitType="ghoul" territory="Detroit" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="mutant" territory="Detroit" quantity="3" owner="BrownZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Detroit" quantity="3" owner="BrownZombies"/>
+      <!-- GrayZombies Placement -->
+      <unitPlacement unitType="zombieling" territory="Memphis" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="undead" territory="Memphis" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="ghoul" territory="Memphis" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="mutant" territory="Memphis" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Memphis" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="zombieling" territory="Miami" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="undead" territory="Miami" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="ghoul" territory="Miami" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="mutant" territory="Miami" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Miami" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="zombieling" territory="Philadelphia" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="undead" territory="Philadelphia" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="ghoul" territory="Philadelphia" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="mutant" territory="Philadelphia" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Philadelphia" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="zombieling" territory="Connecticut" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="undead" territory="Connecticut" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="ghoul" territory="Connecticut" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="mutant" territory="Connecticut" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Connecticut" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="zombieling" territory="Spokane" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="undead" territory="Spokane" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="ghoul" territory="Spokane" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="mutant" territory="Spokane" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Spokane" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="zombieling" territory="Chicago" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="undead" territory="Chicago" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="ghoul" territory="Chicago" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="mutant" territory="Chicago" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Chicago" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="zombieling" territory="Boston" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="undead" territory="Boston" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="ghoul" territory="Boston" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="mutant" territory="Boston" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Boston" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="zombieling" territory="Los Angeles" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="undead" territory="Los Angeles" quantity="10" owner="GrayZombies"/>
+      <unitPlacement unitType="ghoul" territory="Los Angeles" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="mutant" territory="Los Angeles" quantity="3" owner="GrayZombies"/>
+      <unitPlacement unitType="juggernaut" territory="Los Angeles" quantity="3" owner="GrayZombies"/>
+      <!-- Neutrals Placement -->
+      <unitPlacement unitType="infantry" territory="Mexico" quantity="30" owner="Neutrals"/>
+      <unitPlacement unitType="infantry" territory="Chihuahua" quantity="30"/>
+      <unitPlacement unitType="infantry" territory="Sonora" quantity="30"/>
+      <unitPlacement unitType="infantry" territory="Baja California" quantity="30"/>
+      <unitPlacement unitType="infantry" territory="West Canada" quantity="30"/>
+      <unitPlacement unitType="infantry" territory="Manitoba" quantity="30"/>
+      <unitPlacement unitType="infantry" territory="West Ontario" quantity="30"/>
+      <unitPlacement unitType="infantry" territory="East Ontario" quantity="30"/>
+      <unitPlacement unitType="infantry" territory="Quebec" quantity="30"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="GreenZombies" resource="PUs" quantity="10"/>
+      <resourceGiven player="CitizensMilitia" resource="PUs" quantity="50"/>
+      <resourceGiven player="BrownZombies" resource="PUs" quantity="10"/>
+      <resourceGiven player="USArmy" resource="PUs" quantity="50"/>
+      <resourceGiven player="GrayZombies" resource="PUs" quantity="10"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <property name="GreenZombies bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="CitizensMilitia bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="BrownZombies bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="USArmy bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="GrayZombies bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Total Victory" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Honorable Surrender" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Projection of Power" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for AntiAircraft" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Technology" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Bombing and Territory Damage" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Super Sub Defence Bonus" value="0" editable="true">
+      <number min="0" max="1"/>
+    </property>
+    <property name="Tech Development" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="5" editable="false">
+      <number min="2" max="5"/>
+    </property>
+    <property name="Always on AA" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits Start Turn" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Display Sea Names" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="WW2V3" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="WW2V3 Tech Model" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Use Shipyards" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="All Rockets Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Blitz Through Factories And AA Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="AA Territory Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Multiple AA Per Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Partial Amphibious Retreat" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Naval Bombard Casualties Return Fire" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Hari-Kari Units" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Surviving Air Move To Land" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Air Attack Sub Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Transport In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Transport Casualties Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unescorted Transport Dies" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Sub In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Defending Subs Sneak Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Retreat Before Battle" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Previous Units Fight" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce new fighters on old carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Land existing fighters on new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unit Placement In Enemy Seas" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Placement Restricted By Factory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Impassable" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Blitzable" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unplaced units live when not placed" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="mapName" value="zombieland" editable="false"/>
+    <property name="notes">
+      <value><![CDATA[  
+
+<html>
+<body bgcolor="DADADA">
+<br>
+<br>
+<center>
+<table border="1"bgcolor="ABABAB">
+<tr>
+<th style="font-size:140%;000000"><img src="http://i958.photobucket.com/albums/ae64/pulicat/TripleA/Zombieland/logo.jpg"/></th>
+</tr>
+</table>
+<br>
+<table border="1"bgcolor="ABABAB">
+<tr>
+ <th 
+<span style="font-size:120%;000000"colspan="2">Version 1.2</span>
+ </th>
+</tr>
+</table>
+</center>
+<br>
+
+<b>
+<br> The zombie apocalypse has arrived! Zombies have spread to most of the main population centers in the United States and are threatening to take over the rest. Can the US military and bands of survivalist militias contain and exterminate the zombie plague, or will this be the end of civilization as we know it?
+<br>
+<br><font size="5"> Overview </font>
+</b>
+<br>
+<br> The Humans do not generate income. They start out with some cash, which is suggested to be saved for emergency purchases during the game, but that's it. They cannot build any more troops, and whatever casualties they suffer are irrecoverable. The Zombies on the other hand will grow and breed like rabbits and their numbers will soon get out of hand. On the upside, the humans have Chuck Norris on their side, who can send any zombie flying with a roundhouse kick to the face. Can you exterminate the undead before it is too late?
+<br>
+<br> Humans:<ul>
+<li> USArmy
+<li> CitizensMilitia</ul>
+<br>
+<br> Zombies:<ul>
+<li> GreenZombies
+<li> BrownZombies
+<li> GrayZombies
+</ul>
+<br>
+<br>Rules:<ul>
+<li> Neutrals are played by AI (they have no turns).
+<li> Purchase and place before movement.
+<li> Trucks are the only army units that can blitz. Their function is primarily to transport infantry and special forces because USArmy has mechanized tech.
+<li> Humans do not collect income. Their numbers will only go down as time goes on.
+<li> You can build in any territory you own, up to the production value (invisible factories in all the lands).
+<li> Purchase and place units comes before movement phase.
+<li> There is no home territory. No such thing as liberating allied territory. Whatever you take becomes yours.
+<li> Zombies may produce in newly captured territory.
+<li> Note: Chuck Norris attacks with 5 dice but defends with only 1.
+<li> When in doubt, shoot first, ask questions later. </ul>
+ 
+<br>
+<br><b>Good luck!</b>
+<br>
+<br>
+</body>
+</html>
+
+					]]></value>
+    </property>
+  </propertyList>
+</game>

@@ -1,0 +1,1424 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="HexGlobe FFA" version="2.5"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <triplea minimumVersion="1.6.1.4"/>
+  <map>
+    <!-- Territory Name Definitions -->
+    <territory name="A1"/>
+    <territory name="A2"/>
+    <territory name="A3"/>
+    <territory name="A4"/>
+    <territory name="A5"/>
+    <territory name="A6"/>
+    <territory name="A7"/>
+    <territory name="A8"/>
+    <territory name="A9"/>
+    <territory name="A10"/>
+    <territory name="B1"/>
+    <territory name="B2"/>
+    <territory name="B3"/>
+    <territory name="B4"/>
+    <territory name="B5"/>
+    <territory name="B6"/>
+    <territory name="B7"/>
+    <territory name="B8"/>
+    <territory name="B9"/>
+    <territory name="B10"/>
+    <territory name="C1"/>
+    <territory name="C2"/>
+    <territory name="C3"/>
+    <territory name="C4"/>
+    <territory name="C5"/>
+    <territory name="C6"/>
+    <territory name="C7"/>
+    <territory name="C8"/>
+    <territory name="C9"/>
+    <territory name="C10"/>
+    <territory name="D1"/>
+    <territory name="D2"/>
+    <territory name="D3"/>
+    <territory name="D4"/>
+    <territory name="D5"/>
+    <territory name="D6"/>
+    <territory name="D7"/>
+    <territory name="D8"/>
+    <territory name="D9"/>
+    <territory name="D10"/>
+    <territory name="E1"/>
+    <territory name="E2"/>
+    <territory name="E3"/>
+    <territory name="E4"/>
+    <territory name="E5"/>
+    <territory name="E6"/>
+    <territory name="E7"/>
+    <territory name="E8"/>
+    <territory name="E9"/>
+    <territory name="E10"/>
+    <territory name="F1"/>
+    <territory name="F2"/>
+    <territory name="F3"/>
+    <territory name="F4"/>
+    <territory name="F5"/>
+    <territory name="F6"/>
+    <territory name="F7"/>
+    <territory name="F8"/>
+    <territory name="F9"/>
+    <territory name="F10"/>
+    <territory name="G1"/>
+    <territory name="G2"/>
+    <territory name="G3"/>
+    <territory name="G4"/>
+    <territory name="G5"/>
+    <territory name="G6"/>
+    <territory name="G7"/>
+    <territory name="G8"/>
+    <territory name="G9"/>
+    <territory name="G10"/>
+    <territory name="H1"/>
+    <territory name="H2"/>
+    <territory name="H3"/>
+    <territory name="H4"/>
+    <territory name="H5"/>
+    <territory name="H6"/>
+    <territory name="H7"/>
+    <territory name="H8"/>
+    <territory name="H9"/>
+    <territory name="H10"/>
+    <territory name="I1"/>
+    <territory name="I2"/>
+    <territory name="I3"/>
+    <territory name="I4"/>
+    <territory name="I5"/>
+    <territory name="I6"/>
+    <territory name="I7"/>
+    <territory name="I8"/>
+    <territory name="I9"/>
+    <territory name="I10"/>
+    <territory name="J1"/>
+    <territory name="J2"/>
+    <territory name="J3"/>
+    <territory name="J4"/>
+    <territory name="J5"/>
+    <territory name="J6"/>
+    <territory name="J7"/>
+    <territory name="J8"/>
+    <territory name="J9"/>
+    <territory name="J10"/>
+    <!-- Territory and Seazone Connections -->
+    <!--  vertical connections -->
+    <connection t1="A1" t2="A2"/>
+    <connection t1="A2" t2="A3"/>
+    <connection t1="A3" t2="A4"/>
+    <connection t1="A4" t2="A5"/>
+    <connection t1="A5" t2="A6"/>
+    <connection t1="A6" t2="A7"/>
+    <connection t1="A7" t2="A8"/>
+    <connection t1="A8" t2="A9"/>
+    <connection t1="A9" t2="A10"/>
+    <connection t1="A10" t2="A1"/>
+    <connection t1="B1" t2="B2"/>
+    <connection t1="B2" t2="B3"/>
+    <connection t1="B3" t2="B4"/>
+    <connection t1="B4" t2="B5"/>
+    <connection t1="B5" t2="B6"/>
+    <connection t1="B6" t2="B7"/>
+    <connection t1="B7" t2="B8"/>
+    <connection t1="B8" t2="B9"/>
+    <connection t1="B9" t2="B10"/>
+    <connection t1="B10" t2="B1"/>
+    <connection t1="C1" t2="C2"/>
+    <connection t1="C2" t2="C3"/>
+    <connection t1="C3" t2="C4"/>
+    <connection t1="C4" t2="C5"/>
+    <connection t1="C5" t2="C6"/>
+    <connection t1="C6" t2="C7"/>
+    <connection t1="C7" t2="C8"/>
+    <connection t1="C8" t2="C9"/>
+    <connection t1="C9" t2="C10"/>
+    <connection t1="C10" t2="C1"/>
+    <connection t1="D1" t2="D2"/>
+    <connection t1="D2" t2="D3"/>
+    <connection t1="D3" t2="D4"/>
+    <connection t1="D4" t2="D5"/>
+    <connection t1="D5" t2="D6"/>
+    <connection t1="D6" t2="D7"/>
+    <connection t1="D7" t2="D8"/>
+    <connection t1="D8" t2="D9"/>
+    <connection t1="D9" t2="D10"/>
+    <connection t1="D10" t2="D1"/>
+    <connection t1="E1" t2="E2"/>
+    <connection t1="E2" t2="E3"/>
+    <connection t1="E3" t2="E4"/>
+    <connection t1="E4" t2="E5"/>
+    <connection t1="E5" t2="E6"/>
+    <connection t1="E6" t2="E7"/>
+    <connection t1="E7" t2="E8"/>
+    <connection t1="E8" t2="E9"/>
+    <connection t1="E9" t2="E10"/>
+    <connection t1="E10" t2="E1"/>
+    <connection t1="F1" t2="F2"/>
+    <connection t1="F2" t2="F3"/>
+    <connection t1="F3" t2="F4"/>
+    <connection t1="F4" t2="F5"/>
+    <connection t1="F5" t2="F6"/>
+    <connection t1="F6" t2="F7"/>
+    <connection t1="F7" t2="F8"/>
+    <connection t1="F8" t2="F9"/>
+    <connection t1="F9" t2="F10"/>
+    <connection t1="F10" t2="F1"/>
+    <connection t1="G1" t2="G2"/>
+    <connection t1="G2" t2="G3"/>
+    <connection t1="G3" t2="G4"/>
+    <connection t1="G4" t2="G5"/>
+    <connection t1="G5" t2="G6"/>
+    <connection t1="G6" t2="G7"/>
+    <connection t1="G7" t2="G8"/>
+    <connection t1="G8" t2="G9"/>
+    <connection t1="G9" t2="G10"/>
+    <connection t1="G10" t2="G1"/>
+    <connection t1="H1" t2="H2"/>
+    <connection t1="H2" t2="H3"/>
+    <connection t1="H3" t2="H4"/>
+    <connection t1="H4" t2="H5"/>
+    <connection t1="H5" t2="H6"/>
+    <connection t1="H6" t2="H7"/>
+    <connection t1="H7" t2="H8"/>
+    <connection t1="H8" t2="H9"/>
+    <connection t1="H9" t2="H10"/>
+    <connection t1="H10" t2="H1"/>
+    <connection t1="I1" t2="I2"/>
+    <connection t1="I2" t2="I3"/>
+    <connection t1="I3" t2="I4"/>
+    <connection t1="I4" t2="I5"/>
+    <connection t1="I5" t2="I6"/>
+    <connection t1="I6" t2="I7"/>
+    <connection t1="I7" t2="I8"/>
+    <connection t1="I8" t2="I9"/>
+    <connection t1="I9" t2="I10"/>
+    <connection t1="I10" t2="I1"/>
+    <connection t1="J1" t2="J2"/>
+    <connection t1="J2" t2="J3"/>
+    <connection t1="J3" t2="J4"/>
+    <connection t1="J4" t2="J5"/>
+    <connection t1="J5" t2="J6"/>
+    <connection t1="J6" t2="J7"/>
+    <connection t1="J7" t2="J8"/>
+    <connection t1="J8" t2="J9"/>
+    <connection t1="J9" t2="J10"/>
+    <connection t1="J10" t2="J1"/>
+    <!--   sideways -->
+    <connection t1="A1" t2="B1"/>
+    <connection t1="A2" t2="B2"/>
+    <connection t1="A3" t2="B3"/>
+    <connection t1="A4" t2="B4"/>
+    <connection t1="A5" t2="B5"/>
+    <connection t1="A6" t2="B6"/>
+    <connection t1="A7" t2="B7"/>
+    <connection t1="A8" t2="B8"/>
+    <connection t1="A9" t2="B9"/>
+    <connection t1="A10" t2="B10"/>
+    <connection t1="A1" t2="B2"/>
+    <connection t1="A2" t2="B3"/>
+    <connection t1="A3" t2="B4"/>
+    <connection t1="A4" t2="B5"/>
+    <connection t1="A5" t2="B6"/>
+    <connection t1="A6" t2="B7"/>
+    <connection t1="A7" t2="B8"/>
+    <connection t1="A8" t2="B9"/>
+    <connection t1="A9" t2="B10"/>
+    <connection t1="A10" t2="B1"/>
+    <connection t1="A1" t2="J1"/>
+    <connection t1="A2" t2="J2"/>
+    <connection t1="A3" t2="J3"/>
+    <connection t1="A4" t2="J4"/>
+    <connection t1="A5" t2="J5"/>
+    <connection t1="A6" t2="J6"/>
+    <connection t1="A7" t2="J7"/>
+    <connection t1="A8" t2="J8"/>
+    <connection t1="A9" t2="J9"/>
+    <connection t1="A10" t2="J10"/>
+    <connection t1="A1" t2="J2"/>
+    <connection t1="A2" t2="J3"/>
+    <connection t1="A3" t2="J4"/>
+    <connection t1="A4" t2="J5"/>
+    <connection t1="A5" t2="J6"/>
+    <connection t1="A6" t2="J7"/>
+    <connection t1="A7" t2="J8"/>
+    <connection t1="A8" t2="J9"/>
+    <connection t1="A9" t2="J10"/>
+    <connection t1="A10" t2="J1"/>
+    <connection t1="C1" t2="B1"/>
+    <connection t1="C2" t2="B2"/>
+    <connection t1="C3" t2="B3"/>
+    <connection t1="C4" t2="B4"/>
+    <connection t1="C5" t2="B5"/>
+    <connection t1="C6" t2="B6"/>
+    <connection t1="C7" t2="B7"/>
+    <connection t1="C8" t2="B8"/>
+    <connection t1="C9" t2="B9"/>
+    <connection t1="C10" t2="B10"/>
+    <connection t1="C1" t2="B2"/>
+    <connection t1="C2" t2="B3"/>
+    <connection t1="C3" t2="B4"/>
+    <connection t1="C4" t2="B5"/>
+    <connection t1="C5" t2="B6"/>
+    <connection t1="C6" t2="B7"/>
+    <connection t1="C7" t2="B8"/>
+    <connection t1="C8" t2="B9"/>
+    <connection t1="C9" t2="B10"/>
+    <connection t1="C10" t2="B1"/>
+    <connection t1="C1" t2="D1"/>
+    <connection t1="C2" t2="D2"/>
+    <connection t1="C3" t2="D3"/>
+    <connection t1="C4" t2="D4"/>
+    <connection t1="C5" t2="D5"/>
+    <connection t1="C6" t2="D6"/>
+    <connection t1="C7" t2="D7"/>
+    <connection t1="C8" t2="D8"/>
+    <connection t1="C9" t2="D9"/>
+    <connection t1="C10" t2="D10"/>
+    <connection t1="C1" t2="D2"/>
+    <connection t1="C2" t2="D3"/>
+    <connection t1="C3" t2="D4"/>
+    <connection t1="C4" t2="D5"/>
+    <connection t1="C5" t2="D6"/>
+    <connection t1="C6" t2="D7"/>
+    <connection t1="C7" t2="D8"/>
+    <connection t1="C8" t2="D9"/>
+    <connection t1="C9" t2="D10"/>
+    <connection t1="C10" t2="D1"/>
+    <connection t1="E1" t2="F1"/>
+    <connection t1="E2" t2="F2"/>
+    <connection t1="E3" t2="F3"/>
+    <connection t1="E4" t2="F4"/>
+    <connection t1="E5" t2="F5"/>
+    <connection t1="E6" t2="F6"/>
+    <connection t1="E7" t2="F7"/>
+    <connection t1="E8" t2="F8"/>
+    <connection t1="E9" t2="F9"/>
+    <connection t1="E10" t2="F10"/>
+    <connection t1="E1" t2="F2"/>
+    <connection t1="E2" t2="F3"/>
+    <connection t1="E3" t2="F4"/>
+    <connection t1="E4" t2="F5"/>
+    <connection t1="E5" t2="F6"/>
+    <connection t1="E6" t2="F7"/>
+    <connection t1="E7" t2="F8"/>
+    <connection t1="E8" t2="F9"/>
+    <connection t1="E9" t2="F10"/>
+    <connection t1="E10" t2="F1"/>
+    <connection t1="E1" t2="D1"/>
+    <connection t1="E2" t2="D2"/>
+    <connection t1="E3" t2="D3"/>
+    <connection t1="E4" t2="D4"/>
+    <connection t1="E5" t2="D5"/>
+    <connection t1="E6" t2="D6"/>
+    <connection t1="E7" t2="D7"/>
+    <connection t1="E8" t2="D8"/>
+    <connection t1="E9" t2="D9"/>
+    <connection t1="E10" t2="D10"/>
+    <connection t1="E1" t2="D2"/>
+    <connection t1="E2" t2="D3"/>
+    <connection t1="E3" t2="D4"/>
+    <connection t1="E4" t2="D5"/>
+    <connection t1="E5" t2="D6"/>
+    <connection t1="E6" t2="D7"/>
+    <connection t1="E7" t2="D8"/>
+    <connection t1="E8" t2="D9"/>
+    <connection t1="E9" t2="D10"/>
+    <connection t1="E10" t2="D1"/>
+    <connection t1="G1" t2="F1"/>
+    <connection t1="G2" t2="F2"/>
+    <connection t1="G3" t2="F3"/>
+    <connection t1="G4" t2="F4"/>
+    <connection t1="G5" t2="F5"/>
+    <connection t1="G6" t2="F6"/>
+    <connection t1="G7" t2="F7"/>
+    <connection t1="G8" t2="F8"/>
+    <connection t1="G9" t2="F9"/>
+    <connection t1="G10" t2="F10"/>
+    <connection t1="G1" t2="F2"/>
+    <connection t1="G2" t2="F3"/>
+    <connection t1="G3" t2="F4"/>
+    <connection t1="G4" t2="F5"/>
+    <connection t1="G5" t2="F6"/>
+    <connection t1="G6" t2="F7"/>
+    <connection t1="G7" t2="F8"/>
+    <connection t1="G8" t2="F9"/>
+    <connection t1="G9" t2="F10"/>
+    <connection t1="G10" t2="F1"/>
+    <connection t1="G1" t2="H1"/>
+    <connection t1="G2" t2="H2"/>
+    <connection t1="G3" t2="H3"/>
+    <connection t1="G4" t2="H4"/>
+    <connection t1="G5" t2="H5"/>
+    <connection t1="G6" t2="H6"/>
+    <connection t1="G7" t2="H7"/>
+    <connection t1="G8" t2="H8"/>
+    <connection t1="G9" t2="H9"/>
+    <connection t1="G10" t2="H10"/>
+    <connection t1="G1" t2="H2"/>
+    <connection t1="G2" t2="H3"/>
+    <connection t1="G3" t2="H4"/>
+    <connection t1="G4" t2="H5"/>
+    <connection t1="G5" t2="H6"/>
+    <connection t1="G6" t2="H7"/>
+    <connection t1="G7" t2="H8"/>
+    <connection t1="G8" t2="H9"/>
+    <connection t1="G9" t2="H10"/>
+    <connection t1="G10" t2="H1"/>
+    <connection t1="I1" t2="J1"/>
+    <connection t1="I2" t2="J2"/>
+    <connection t1="I3" t2="J3"/>
+    <connection t1="I4" t2="J4"/>
+    <connection t1="I5" t2="J5"/>
+    <connection t1="I6" t2="J6"/>
+    <connection t1="I7" t2="J7"/>
+    <connection t1="I8" t2="J8"/>
+    <connection t1="I9" t2="J9"/>
+    <connection t1="I10" t2="J10"/>
+    <connection t1="I1" t2="J2"/>
+    <connection t1="I2" t2="J3"/>
+    <connection t1="I3" t2="J4"/>
+    <connection t1="I4" t2="J5"/>
+    <connection t1="I5" t2="J6"/>
+    <connection t1="I6" t2="J7"/>
+    <connection t1="I7" t2="J8"/>
+    <connection t1="I8" t2="J9"/>
+    <connection t1="I9" t2="J10"/>
+    <connection t1="I10" t2="J1"/>
+    <connection t1="I1" t2="H1"/>
+    <connection t1="I2" t2="H2"/>
+    <connection t1="I3" t2="H3"/>
+    <connection t1="I4" t2="H4"/>
+    <connection t1="I5" t2="H5"/>
+    <connection t1="I6" t2="H6"/>
+    <connection t1="I7" t2="H7"/>
+    <connection t1="I8" t2="H8"/>
+    <connection t1="I9" t2="H9"/>
+    <connection t1="I10" t2="H10"/>
+    <connection t1="I1" t2="H2"/>
+    <connection t1="I2" t2="H3"/>
+    <connection t1="I3" t2="H4"/>
+    <connection t1="I4" t2="H5"/>
+    <connection t1="I5" t2="H6"/>
+    <connection t1="I6" t2="H7"/>
+    <connection t1="I7" t2="H8"/>
+    <connection t1="I8" t2="H9"/>
+    <connection t1="I9" t2="H10"/>
+    <connection t1="I10" t2="H1"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+    <resource name="techTokens"/>
+  </resourceList>
+  <playerList>
+    <!-- Player Turn Order -->
+    <player name="Germans" optional="false"/>
+    <player name="Russians" optional="false"/>
+    <player name="Japanese" optional="false"/>
+    <player name="British" optional="false"/>
+    <!-- Axis alliance -->
+    <alliance player="Germans" alliance="Germans"/>
+    <alliance player="Japanese" alliance="Japanese"/>
+    <!-- Allies alliance -->
+    <alliance player="British" alliance="British"/>
+    <alliance player="Russians" alliance="Russians"/>
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="armour"/>
+    <unit name="fighter"/>
+    <unit name="bomber"/>
+    <unit name="factory"/>
+    <unit name="aaGun"/>
+    <unit name="artillery"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="purchaseNoPU" javaClass="games.strategy.triplea.delegate.NoPUPurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endTurnNoPU" javaClass="games.strategy.triplea.delegate.NoPUEndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
+      <step name="japaneseBidPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
+      <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
+      <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+      <step name="germanBid" delegate="bid" player="Germans" maxRunCount="1"/>
+      <step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
+      <step name="britishBid" delegate="bid" player="British" maxRunCount="1"/>
+      <step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
+      <!-- Japanese Game Sequence -->
+      <step name="japaneseTech" delegate="tech" player="Japanese"/>
+      <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
+      <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
+      <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
+      <step name="japaneseBattle" delegate="battle" player="Japanese"/>
+      <step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
+      <step name="japanesePlace" delegate="place" player="Japanese"/>
+      <step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
+      <!-- Russians Game Sequence -->
+      <step name="russianTech" delegate="tech" player="Russians"/>
+      <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
+      <step name="russianCombatMove" delegate="move" player="Russians"/>
+      <step name="russianPurchase" delegate="purchase" player="Russians"/>
+      <step name="russianBattle" delegate="battle" player="Russians"/>
+      <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
+      <step name="russianPlace" delegate="place" player="Russians"/>
+      <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
+      <!-- Germans Game Sequence -->
+      <step name="germanTech" delegate="tech" player="Germans"/>
+      <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
+      <step name="germanCombatMove" delegate="move" player="Germans"/>
+      <step name="germanPurchase" delegate="purchase" player="Germans"/>
+      <step name="germanBattle" delegate="battle" player="Germans"/>
+      <step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
+      <step name="germanPlace" delegate="place" player="Germans"/>
+      <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
+      <!-- British Game Sequence -->
+      <step name="britishTech" delegate="tech" player="British"/>
+      <step name="britishTechActivation" delegate="tech_activation" player="British"/>
+      <step name="britishCombatMove" delegate="move" player="British"/>
+      <step name="britishPurchase" delegate="purchase" player="British"/>
+      <step name="britishBattle" delegate="battle" player="British"/>
+      <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
+      <step name="britishPlace" delegate="place" player="British"/>
+      <step name="britishEndTurn" delegate="endTurn" player="British"/>
+      <!-- End Round -->
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactory">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <!-- Advanced Industrial Production -->
+    <productionRule name="buyInfantryIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtilleryIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmourIndustrialTechnology">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomberIndustrialTechnology">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGunIndustrialTechnology">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <!-- Repair rules -->
+    <repairRule name="repairFactory">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </repairRule>
+    <repairRule name="repairFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="factory" quantity="2"/>
+    </repairRule>
+    <repairFrontier name="repair">
+      <repairRules name="repairFactory"/>
+    </repairFrontier>
+    <repairFrontier name="repairIndustrialTechnology">
+      <repairRules name="repairFactoryIndustrialTechnology"/>
+    </repairFrontier>
+    <productionFrontier name="production">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <!--
+
+unneeded?
+
+                <productionFrontier name="productionIndustrialTechnology">
+                        <frontierRules name="buyInfantryIndustrialTechnology"/>
+                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
+                        <frontierRules name="buyArmourIndustrialTechnology"/>
+                        <frontierRules name="buyFighterIndustrialTechnology"/>
+                        <frontierRules name="buyBomberIndustrialTechnology"/>
+ name="buyAAGunIndustrialTechnology"/>
+                        <frontierRules name="buyFactoryIndustrialTechnology"/>        
+                </productionFrontier>
+                
+
+-->
+    <playerProduction player="Germans" frontier="production"/>
+    <playerProduction player="Russians" frontier="production"/>
+    <playerProduction player="Japanese" frontier="production"/>
+    <playerProduction player="British" frontier="production"/>
+    <playerRepair player="Germans" frontier="repair"/>
+    <playerRepair player="Russians" frontier="repair"/>
+    <playerRepair player="Japanese" frontier="repair"/>
+    <playerRepair player="British" frontier="repair"/>
+  </production>
+  <attachmentList>
+    <!-- Germans -->
+    <attachment name="techAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="jetPower" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <!-- Russians -->
+    <attachment name="techAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="jetPower" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <!-- Japanese -->
+    <attachment name="techAttachment" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="jetPower" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <!-- British -->
+    <attachment name="techAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="jetPower" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <!-- Infantry -->
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="isInfantry" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <!-- Artillery -->
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <!-- Armour -->
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="isLandTransport" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <!-- Fighter -->
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <!-- Bomber -->
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="transportCapacity" value="2"/>
+      <option name="isAirTransport" value="true"/>
+    </attachment>
+    <!-- Factory -->
+    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <!-- AA Gun -->
+    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="3"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <!-- Territory Attachments -->
+    <attachment name="territoryAttachment" attachTo="A1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Germans"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Russians"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="B10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="D10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Japanese"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="British"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="F10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="G10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="H10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="I10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="J10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <!-- Objectives -->
+    <attachment name="objectiveAttachmentGermans1" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="1"/>
+      <option name="destroyedTUV" value="currentRound" count="3"/>
+    </attachment>
+    <attachment name="objectiveAttachmentGermans2" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="2"/>
+      <option name="destroyedTUV" value="currentRound" count="10"/>
+    </attachment>
+    <attachment name="objectiveAttachmentGermans3" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="4"/>
+      <option name="destroyedTUV" value="currentRound" count="25"/>
+    </attachment>
+    <attachment name="objectiveAttachmentGermans4" attachTo="Germans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="8"/>
+      <option name="destroyedTUV" value="currentRound" count="50"/>
+    </attachment>
+    <attachment name="objectiveAttachmentRussians1" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="1"/>
+      <option name="destroyedTUV" value="currentRound" count="3"/>
+    </attachment>
+    <attachment name="objectiveAttachmentRussians2" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="2"/>
+      <option name="destroyedTUV" value="currentRound" count="10"/>
+    </attachment>
+    <attachment name="objectiveAttachmentRussians3" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="4"/>
+      <option name="destroyedTUV" value="currentRound" count="25"/>
+    </attachment>
+    <attachment name="objectiveAttachmentRussians4" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="8"/>
+      <option name="destroyedTUV" value="currentRound" count="50"/>
+    </attachment>
+    <attachment name="objectiveAttachmentJapanese1" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="1"/>
+      <option name="destroyedTUV" value="currentRound" count="3"/>
+    </attachment>
+    <attachment name="objectiveAttachmentJapanese2" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="2"/>
+      <option name="destroyedTUV" value="currentRound" count="10"/>
+    </attachment>
+    <attachment name="objectiveAttachmentJapanese3" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="4"/>
+      <option name="destroyedTUV" value="currentRound" count="25"/>
+    </attachment>
+    <attachment name="objectiveAttachmentJapanese4" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="8"/>
+      <option name="destroyedTUV" value="currentRound" count="50"/>
+    </attachment>
+    <attachment name="objectiveAttachmentBritish1" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="1"/>
+      <option name="destroyedTUV" value="currentRound" count="3"/>
+    </attachment>
+    <attachment name="objectiveAttachmentBritish2" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="2"/>
+      <option name="destroyedTUV" value="currentRound" count="10"/>
+    </attachment>
+    <attachment name="objectiveAttachmentBritish3" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="4"/>
+      <option name="destroyedTUV" value="currentRound" count="25"/>
+    </attachment>
+    <attachment name="objectiveAttachmentBritish4" attachTo="British" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="objectiveValue" value="8"/>
+      <option name="destroyedTUV" value="currentRound" count="50"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="A1" owner="Germans"/>
+      <territoryOwner territory="A6" owner="Russians"/>
+      <territoryOwner territory="F4" owner="Japanese"/>
+      <territoryOwner territory="F9" owner="British"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Unit Placements -->
+      <unitPlacement unitType="factory" territory="A1" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="aaGun" territory="A1" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="factory" territory="A6" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="aaGun" territory="A6" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="factory" territory="F4" quantity="1" owner="Japanese"/>
+      <unitPlacement unitType="aaGun" territory="F4" quantity="1" owner="Japanese"/>
+      <unitPlacement unitType="factory" territory="F9" quantity="1" owner="British"/>
+      <unitPlacement unitType="aaGun" territory="F9" quantity="1" owner="British"/>
+      <unitPlacement unitType="infantry" territory="A2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="A3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="A4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="A5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="A7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="A8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="A9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="A10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="B10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="C10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="D10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="E10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="F1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="F2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="F3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="F5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="F6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="F7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="F8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="F10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="G10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="H10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="I10" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J1" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J2" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J3" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J4" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J5" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J6" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J7" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J8" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J9" quantity="3"/>
+      <unitPlacement unitType="infantry" territory="J10" quantity="3"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Germans" resource="PUs" quantity="10"/>
+      <resourceGiven player="Russians" resource="PUs" quantity="10"/>
+      <resourceGiven player="Japanese" resource="PUs" quantity="10"/>
+      <resourceGiven player="British" resource="PUs" quantity="10"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- OPTIONAL PROPERTIES -->
+    <!-- Bidding -->
+    <property name="Russians bid" value="60" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Germans bid" value="60" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="British bid" value="60" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Japanese bid" value="60" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- victory options -->
+    <property name="Low Luck" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for AntiAircraft" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Technology" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Bombing and Territory Damage" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="National Objectives" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="3"/>
+    </property>
+    <property name="Always on AA" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- END OF OPTIONAL PROPERTIES -->
+    <!-- rules and tech -->
+    <property name="WW2V3" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="WW2V3 Tech Model" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="All Rockets Attack" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+      <boolean/>
+    </property>
+    <!-- These require an associated value in the attachments section above-->
+    <property name="Movement By Territory Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Production Per X Territories Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unit Placement Per Territory Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Place in Any Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unplaced units live when not placed" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Occupied Territories" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- specific rules -->
+    <!-- land related -->
+    <property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="AA Territory Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- sea related -->
+    <property name="Partial Amphibious Retreat" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Naval Bombard Casualties Return Fire" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Hari-Kari Units" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Surviving Air Move To Land" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Air Attack Sub Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Transport In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Transport Casualties Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unescorted Transport Dies" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Sub In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Defending Subs Sneak Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Retreat Before Battle" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- Sub Control Sea Zone Restricted should be FALSE if there are any convoy zones! -->
+    <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Previous Units Fight" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- production related -->
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce new fighters on old carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Land existing fighters on new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="LHTR Carrier production rules" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unit Placement In Enemy Seas" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Placement Restricted By Factory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- to do with neutrals -->
+    <property name="neutralCharge" value="0"/>
+    <property name="Neutrals Are Impassable" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Blitzable" value="false" editable="false">
+      <boolean/>
+    </property>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="hex_globe10" editable="false"/>
+    <!-- notes appear in the notes menu in the main screen, format as html -->
+    <property name="notes">
+      <value><![CDATA[  
+
+Uses v3 ruleset.
+Combat move before production.
+
+
+You gain a national objective bonus for destroying TUV of other players each turn as follows:  INDEPENDENTS ARENT WORTH THIS BONUS
+<li>TUV destroyed  ---   Total Bonus PU
+<li>       3    ----------    1
+<li>       10   ----------             3
+<li>       25   ----------             7
+<li>       50   ----------             15
+
+
+					]]></value>
+    </property>
+  </propertyList>
+</game>
+<!-- 
+						WW2V2 XML by Zero Pilot 9.08
+						Triplelk Jason Clark - baseline
+						Zero Pilot Mike McCaughey - integration
+						ComradeKev - custom code and rules
+						Seidelin - playtesting
+						Veqryn - Minor updates for engine 1.2.5.x, and again for engine 1.3.x.x
+						-->

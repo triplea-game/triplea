@@ -1,0 +1,3043 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Greyhawk" version="0.9.9"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Admundfort"/>
+    <territory name="Hesuel Ilshar"/>
+    <territory name="Oldred"/>
+    <territory name="Ket"/>
+    <territory name="Glorioles"/>
+    <territory name="Rauxes"/>
+    <territory name="Grand Duchy of Geoff"/>
+    <territory name="Bright Desert"/>
+    <territory name="Menowood"/>
+    <territory name="Spine Ridge North"/>
+    <territory name="Welkwood"/>
+    <territory name="Tors"/>
+    <territory name="Bandit Kingdoms"/>
+    <territory name="Radigast City"/>
+    <territory name="Womtham"/>
+    <territory name="Sterich"/>
+    <territory name="Little Hills"/>
+    <territory name="Artonsamay"/>
+    <territory name="Corusk South"/>
+    <territory name="Dim Forest"/>
+    <territory name="Freehold"/>
+    <territory name="Pitchfield"/>
+    <territory name="Hestmark West"/>
+    <territory name="Terlep West"/>
+    <territory name="Lo Reltarma"/>
+    <territory name="Cruski West"/>
+    <territory name="Rieuwood"/>
+    <territory name="Abbor Alz"/>
+    <territory name="Fellreev Forest"/>
+    <territory name="Barrens East"/>
+    <territory name="Irongate"/>
+    <territory name="Perrenland"/>
+    <territory name="Willip"/>
+    <territory name="Highfolk"/>
+    <territory name="Sulward City"/>
+    <territory name="Rel Mord"/>
+    <territory name="Cruski South"/>
+    <territory name="Edge Field"/>
+    <territory name="Bissel"/>
+    <territory name="Yecha Hills"/>
+    <territory name="Spine Ridge"/>
+    <territory name="Yatil Pass"/>
+    <territory name="Vast Swamp"/>
+    <territory name="Hold of the Sea Princes"/>
+    <territory name="Kingdom of Nyrond"/>
+    <territory name="Mitrick"/>
+    <territory name="Forlorn Forest"/>
+    <territory name="Loftwick"/>
+    <territory name="Grabford"/>
+    <territory name="Dim Forest East"/>
+    <territory name="Gnarley Forest"/>
+    <territory name="Lortmil Mountains"/>
+    <territory name="Warfields"/>
+    <territory name="Barrier Peaks"/>
+    <territory name="Gull Cliffs"/>
+    <territory name="Tangles"/>
+    <territory name="Lorridges"/>
+    <territory name="Grandwood Forest"/>
+    <territory name="Phostwood"/>
+    <territory name="Blue"/>
+    <territory name="Jotens"/>
+    <territory name="Niole Dra"/>
+    <territory name="Amedio South"/>
+    <territory name="Tundra"/>
+    <territory name="Fellreev West"/>
+    <territory name="Bellport"/>
+    <territory name="Flinty Hills"/>
+    <territory name="Hornwood"/>
+    <territory name="Corusk Pass"/>
+    <territory name="Tusman Hills"/>
+    <territory name="Wormhall"/>
+    <territory name="Verbobonc"/>
+    <territory name="Naerie"/>
+    <territory name="Hepmonaland"/>
+    <territory name="Riftcrag"/>
+    <territory name="Eastfair"/>
+    <territory name="Fruztii"/>
+    <territory name="Crystalmist Mountains"/>
+    <territory name="Sulhaut Mountains"/>
+    <territory name="Vesve Forest"/>
+    <territory name="Spinewood"/>
+    <territory name="The Pomarj"/>
+    <territory name="Stoink"/>
+    <territory name="Ahlissa"/>
+    <territory name="Thellywood"/>
+    <territory name="Asperdi"/>
+    <territory name="Lorridges North"/>
+    <territory name="Corusk East"/>
+    <territory name="Celadon West"/>
+    <territory name="Maure Wetlands"/>
+    <territory name="Soull"/>
+    <territory name="Olman"/>
+    <territory name="Udgru East"/>
+    <territory name="Ull"/>
+    <territory name="Rushmoors"/>
+    <territory name="Hraak Forest"/>
+    <territory name="Archclericy of Veluna"/>
+    <territory name="Duchy of Ulek"/>
+    <territory name="Bone March"/>
+    <territory name="Vlekstaad"/>
+    <territory name="Glot"/>
+    <territory name="Traft"/>
+    <territory name="Innspa"/>
+    <territory name="Bramblewood West"/>
+    <territory name="Ogburg"/>
+    <territory name="Duchy of Tenh"/>
+    <territory name="See of Medegia"/>
+    <territory name="Amedio Jungle"/>
+    <territory name="Tusmit"/>
+    <territory name="Iuz"/>
+    <territory name="Hookhill"/>
+    <territory name="Grandwood South"/>
+    <territory name="Spikey Forest"/>
+    <territory name="Hool"/>
+    <territory name="Fellreev South"/>
+    <territory name="Littleberg"/>
+    <territory name="Jotsplat"/>
+    <territory name="Mounds of Dawn"/>
+    <territory name="Blackwater"/>
+    <territory name="The Headlands"/>
+    <territory name="Dorakaa"/>
+    <territory name="Elredd"/>
+    <territory name="Free City of Greyhawk"/>
+    <territory name="The Great Kingdom"/>
+    <territory name="Hellfurnace Mountains"/>
+    <territory name="Blackmoor"/>
+    <territory name="Gnat Marshes"/>
+    <territory name="Suss Forest"/>
+    <territory name="Good Hills"/>
+    <territory name="Lone Heath"/>
+    <territory name="Jurnre"/>
+    <territory name="Javan"/>
+    <territory name="Soull Pass"/>
+    <territory name="Kingdom of Keoland"/>
+    <territory name="North Province"/>
+    <territory name="Wild Coast"/>
+    <territory name="Deepstill"/>
+    <territory name="Troll Fens"/>
+    <territory name="Wastes"/>
+    <territory name="Griff Pass"/>
+    <territory name="Plains of the Paynims"/>
+    <territory name="Griff West"/>
+    <territory name="Howling Hills"/>
+    <territory name="Rovers of the Barrens"/>
+    <territory name="Rift Canyon"/>
+    <territory name="Lortmil Pass"/>
+    <territory name="Celadon Forest"/>
+    <territory name="Ceshra"/>
+    <territory name="Yecha"/>
+    <territory name="Hochoch"/>
+    <territory name="Jalpa"/>
+    <territory name="The Yeomanry"/>
+    <territory name="Idee"/>
+    <territory name="Clatspur Range"/>
+    <territory name="Gradsul"/>
+    <territory name="Wolf Nomads"/>
+    <territory name="Chendl"/>
+    <territory name="Burneal East"/>
+    <territory name="Timberway Forest"/>
+    <territory name="Midmeadow"/>
+    <territory name="Celene"/>
+    <territory name="Abbor Alz East"/>
+    <territory name="Chathold"/>
+    <territory name="Rakers East"/>
+    <territory name="Onnwal"/>
+    <territory name="Sea of Dust"/>
+    <territory name="Cairn Hills"/>
+    <territory name="Quag"/>
+    <territory name="Torrich"/>
+    <territory name="Gamboge Forest"/>
+    <territory name="Prelacy of Almor"/>
+    <territory name="Kingdom of Furyondy"/>
+    <territory name="Barrens West"/>
+    <territory name="The Scarlet Brotherhood"/>
+    <territory name="Silver Wood"/>
+    <territory name="Rel Astra"/>
+    <territory name="Theocracy of the Pale"/>
+    <territory name="Land of Black Ice"/>
+    <territory name="Fairwind Isle"/>
+    <territory name="Cold Marshes"/>
+    <territory name="Antalotol"/>
+    <territory name="Olman Middle"/>
+    <territory name="Yatil Mountains"/>
+    <territory name="Forlorn East"/>
+    <territory name="Reyhu"/>
+    <territory name="Shield Lands"/>
+    <territory name="Pontylver"/>
+    <territory name="Eru-Jovar"/>
+    <territory name="Havenhill"/>
+    <territory name="Ratik Pass"/>
+    <territory name="Olman East"/>
+    <territory name="Flen"/>
+    <territory name="Bluff Hills"/>
+    <territory name="County of Sunndi"/>
+    <territory name="Adri West"/>
+    <territory name="Stark Mounds"/>
+    <territory name="Flanmi"/>
+    <territory name="County of Urnst"/>
+    <territory name="Principality of Ulek"/>
+    <territory name="Hool Marshes"/>
+    <territory name="Welkwood South"/>
+    <territory name="Hestmark Highlands"/>
+    <territory name="Oyt Wood"/>
+    <territory name="Imeda"/>
+    <territory name="Griff Mountains"/>
+    <territory name="Sable Wood"/>
+    <territory name="Gull"/>
+    <territory name="Tusman Hills South"/>
+    <territory name="Fellreev East"/>
+    <territory name="Tiger Nomads"/>
+    <territory name="Krakenheim"/>
+    <territory name="Sepia Uplands"/>
+    <territory name="Adri Forest"/>
+    <territory name="Hraak Pass"/>
+    <territory name="Hold of Stonefist"/>
+    <territory name="Dreadwood"/>
+    <territory name="Udgru Forest"/>
+    <territory name="Thelly"/>
+    <territory name="South Province"/>
+    <territory name="Caliphate of Ekbir"/>
+    <territory name="The Horned Society"/>
+    <territory name="Kron Hills"/>
+    <territory name="Drachensgrab Hills"/>
+    <territory name="Lortmil South"/>
+    <territory name="Gran March"/>
+    <territory name="Kro Terlep"/>
+    <territory name="Rakers"/>
+    <territory name="Port Ekul"/>
+    <territory name="Nuther Wood"/>
+    <territory name="Burneal Forest"/>
+    <territory name="Dry Steppes"/>
+    <territory name="Crockport"/>
+    <territory name="Ratik"/>
+    <territory name="Rookroost"/>
+    <territory name="Sultanate of Zeif"/>
+    <territory name="Valley of the Mage"/>
+    <territory name="Molag"/>
+    <territory name="Thornward"/>
+    <territory name="Vesve South"/>
+    <territory name="Winetha"/>
+    <territory name="Yatil East"/>
+    <territory name="Cruski"/>
+    <territory name="Burneal West"/>
+    <territory name="Corusk Mountains"/>
+    <territory name="County of Ulek"/>
+    <territory name="Blemu Hills"/>
+    <territory name="Bramblewood Forest"/>
+    <territory name="Duxchan"/>
+    <territory name="Gryrax"/>
+    <territory name="Loftwood"/>
+    <territory name="Duchy of Urnst"/>
+    <territory name="Schnai"/>
+    <territory name="Spindrift Sound" water="true"/>
+    <territory name="Lordship Isles East" water="true"/>
+    <territory name="Lendore Isles" water="true"/>
+    <territory name="Jerlea Bay" water="true"/>
+    <territory name="Aerdi Sea" water="true"/>
+    <territory name="Fjords" water="true"/>
+    <territory name="Oljatt Sea" water="true"/>
+    <territory name="The Lordship Isles" water="true"/>
+    <territory name="Meno Bay" water="true"/>
+    <territory name="Dramidj North" water="true"/>
+    <territory name="Grendep Bay" water="true"/>
+    <territory name="Scant Strait" water="true"/>
+    <territory name="Sea of Ulek" water="true"/>
+    <territory name="Corusk Fjord" water="true"/>
+    <territory name="Woolly Bay" water="true"/>
+    <territory name="Middle Olman Islands" water="true"/>
+    <territory name="Icy Sea" water="true"/>
+    <territory name="Solnor Corner" water="true"/>
+    <territory name="Sea of Gearnat" water="true"/>
+    <territory name="Olman Islands" water="true"/>
+    <territory name="Solnor North" water="true"/>
+    <territory name="Azure Sea" water="true"/>
+    <territory name="Icy Sea West" water="true"/>
+    <territory name="Densac Gulf" water="true"/>
+    <territory name="Dramidj Ocean" water="true"/>
+    <territory name="White Fanged Bay" water="true"/>
+    <territory name="Amedio Bay" water="true"/>
+    <territory name="Tilva Strait" water="true"/>
+    <territory name="Kaport Bay" water="true"/>
+    <territory name="Hraak Bay" water="true"/>
+    <territory name="Icy Sea East" water="true"/>
+    <territory name="Solnor Ocean" water="true"/>
+    <territory name="Flotsam and Jetsom" water="true"/>
+    <territory name="Relmor Bay" water="true"/>
+    <territory name="Olman Islands East" water="true"/>
+    <territory name="Idee Coast" water="true"/>
+    <territory name="Sea Barons" water="true"/>
+    <territory name="Jenelrad" water="true"/>
+    <territory name="Marner" water="true"/>
+    <territory name="Whyestil Lake" water="true"/>
+    <territory name="Nyr Dyv" water="true"/>
+    <territory name="Lake Quag" water="true"/>
+    <!-- Territory Connections -->
+    <connection t1="Dramidj North" t2="Dramidj Ocean"/>
+    <connection t1="Dramidj North" t2="Yecha Hills"/>
+    <connection t1="Dramidj North" t2="Yecha"/>
+    <connection t1="Dramidj North" t2="Tundra"/>
+    <connection t1="Dramidj Ocean" t2="Yecha Hills"/>
+    <connection t1="Dramidj Ocean" t2="Udgru Forest"/>
+    <connection t1="Dramidj Ocean" t2="Caliphate of Ekbir"/>
+    <connection t1="Dramidj Ocean" t2="Sultanate of Zeif"/>
+    <connection t1="Sultanate of Zeif" t2="Caliphate of Ekbir"/>
+    <connection t1="Sultanate of Zeif" t2="Ceshra"/>
+    <connection t1="Sultanate of Zeif" t2="Antalotol"/>
+    <connection t1="Antalotol" t2="Ceshra"/>
+    <connection t1="Antalotol" t2="Ull"/>
+    <connection t1="Ull" t2="Dry Steppes"/>
+    <connection t1="Ull" t2="Plains of the Paynims"/>
+    <connection t1="Ull" t2="Ceshra"/>
+    <connection t1="Plains of the Paynims" t2="Tusman Hills South"/>
+    <connection t1="Plains of the Paynims" t2="Ket"/>
+    <connection t1="Plains of the Paynims" t2="Tusman Hills"/>
+    <connection t1="Plains of the Paynims" t2="Ceshra"/>
+    <connection t1="Plains of the Paynims" t2="Tusmit"/>
+    <connection t1="Tusmit" t2="Ceshra"/>
+    <connection t1="Tusmit" t2="Tusman Hills"/>
+    <connection t1="Tusmit" t2="Udgru East"/>
+    <connection t1="Tusmit" t2="Caliphate of Ekbir"/>
+    <connection t1="Caliphate of Ekbir" t2="Ceshra"/>
+    <connection t1="Caliphate of Ekbir" t2="Udgru East"/>
+    <connection t1="Caliphate of Ekbir" t2="Udgru Forest"/>
+    <connection t1="Udgru Forest" t2="Udgru East"/>
+    <connection t1="Udgru Forest" t2="Yecha Hills"/>
+    <connection t1="Yecha" t2="Yecha Hills"/>
+    <connection t1="Yecha" t2="Tiger Nomads"/>
+    <connection t1="Yecha" t2="Burneal West"/>
+    <connection t1="Yecha" t2="Tundra"/>
+    <connection t1="Tundra" t2="Burneal West"/>
+    <connection t1="Tundra" t2="Blackmoor"/>
+    <connection t1="Tundra" t2="Burneal East"/>
+    <connection t1="Tundra" t2="Burneal Forest"/>
+    <connection t1="Burneal Forest" t2="Burneal East"/>
+    <connection t1="Burneal Forest" t2="Burneal West"/>
+    <connection t1="Burneal Forest" t2="Tiger Nomads"/>
+    <connection t1="Burneal Forest" t2="Wolf Nomads"/>
+    <connection t1="Burneal West" t2="Tiger Nomads"/>
+    <connection t1="Wolf Nomads" t2="Tiger Nomads"/>
+    <connection t1="Wolf Nomads" t2="Burneal East"/>
+    <connection t1="Wolf Nomads" t2="Eru-Jovar"/>
+    <connection t1="Wolf Nomads" t2="Quag"/>
+    <connection t1="Quag" t2="Tiger Nomads"/>
+    <connection t1="Quag" t2="Traft"/>
+    <connection t1="Quag" t2="Eru-Jovar"/>
+    <connection t1="Quag" t2="Sepia Uplands"/>
+    <connection t1="Quag" t2="Lake Quag"/>
+    <connection t1="Sepia Uplands" t2="Traft"/>
+    <connection t1="Sepia Uplands" t2="Vesve South"/>
+    <connection t1="Sepia Uplands" t2="Vesve Forest"/>
+    <connection t1="Sepia Uplands" t2="Deepstill"/>
+    <connection t1="Sepia Uplands" t2="Eru-Jovar"/>
+    <connection t1="Eru-Jovar" t2="Burneal East"/>
+    <connection t1="Eru-Jovar" t2="Blackwater"/>
+    <connection t1="Eru-Jovar" t2="Deepstill"/>
+    <connection t1="Eru-Jovar" t2="Blackmoor"/>
+    <connection t1="Blackmoor" t2="Burneal East"/>
+    <connection t1="Blackmoor" t2="Icy Sea West"/>
+    <connection t1="Lake Quag" t2="Traft"/>
+    <connection t1="Lake Quag" t2="Mounds of Dawn"/>
+    <connection t1="Lake Quag" t2="Perrenland"/>
+    <connection t1="Perrenland" t2="Mounds of Dawn"/>
+    <connection t1="Perrenland" t2="Yatil Pass"/>
+    <connection t1="Perrenland" t2="Traft"/>
+    <connection t1="Ket" t2="Yatil Pass"/>
+    <connection t1="Ket" t2="Tusman Hills"/>
+    <connection t1="Ket" t2="Bramblewood West"/>
+    <connection t1="Ket" t2="Bramblewood Forest"/>
+    <connection t1="Ket" t2="Tusman Hills South"/>
+    <connection t1="Tusman Hills South" t2="Bramblewood West"/>
+    <connection t1="Tusman Hills South" t2="Bramblewood Forest"/>
+    <connection t1="Bramblewood Forest" t2="Bramblewood West"/>
+    <connection t1="Bramblewood Forest" t2="Thornward"/>
+    <connection t1="Bramblewood Forest" t2="Lorridges North"/>
+    <connection t1="Lorridges North" t2="Mitrick"/>
+    <connection t1="Lorridges North" t2="Thornward"/>
+    <connection t1="Lorridges North" t2="Lorridges"/>
+    <connection t1="Lorridges" t2="Mitrick"/>
+    <connection t1="Lorridges" t2="Hookhill"/>
+    <connection t1="Lorridges" t2="Thornward"/>
+    <connection t1="Lorridges" t2="Bissel"/>
+    <connection t1="Bissel" t2="Thornward"/>
+    <connection t1="Bissel" t2="Hookhill"/>
+    <connection t1="Bissel" t2="Dim Forest East"/>
+    <connection t1="Bissel" t2="Dim Forest"/>
+    <connection t1="Dim Forest" t2="Dim Forest East"/>
+    <connection t1="Dim Forest" t2="Hochoch"/>
+    <connection t1="Dim Forest" t2="Oyt Wood"/>
+    <connection t1="Dim Forest" t2="Valley of the Mage"/>
+    <connection t1="Dim Forest" t2="Grand Duchy of Geoff"/>
+    <connection t1="Grand Duchy of Geoff" t2="Hornwood"/>
+    <connection t1="Grand Duchy of Geoff" t2="Stark Mounds"/>
+    <connection t1="Grand Duchy of Geoff" t2="Oyt Wood"/>
+    <connection t1="Oyt Wood" t2="Stark Mounds"/>
+    <connection t1="Oyt Wood" t2="Hochoch"/>
+    <connection t1="Oyt Wood" t2="Sterich"/>
+    <connection t1="Stark Mounds" t2="Sterich"/>
+    <connection t1="Sterich" t2="Hochoch"/>
+    <connection t1="Sterich" t2="Rushmoors"/>
+    <connection t1="Sterich" t2="Kingdom of Keoland"/>
+    <connection t1="Sterich" t2="Flen"/>
+    <connection t1="Flen" t2="Kingdom of Keoland"/>
+    <connection t1="Flen" t2="Niole Dra"/>
+    <connection t1="Flen" t2="Good Hills"/>
+    <connection t1="Good Hills" t2="Niole Dra"/>
+    <connection t1="Good Hills" t2="Gradsul"/>
+    <connection t1="Good Hills" t2="Dreadwood"/>
+    <connection t1="Good Hills" t2="Little Hills"/>
+    <connection t1="Little Hills" t2="Dreadwood"/>
+    <connection t1="Little Hills" t2="Javan"/>
+    <connection t1="Little Hills" t2="Loftwick"/>
+    <connection t1="Little Hills" t2="The Yeomanry"/>
+    <connection t1="The Yeomanry" t2="Loftwick"/>
+    <connection t1="The Yeomanry" t2="Javan"/>
+    <connection t1="The Yeomanry" t2="Tors"/>
+    <connection t1="Tors" t2="Hool"/>
+    <connection t1="Tors" t2="Javan"/>
+    <connection t1="Tors" t2="Hool Marshes"/>
+    <connection t1="Tors" t2="Hold of the Sea Princes"/>
+    <connection t1="Hold of the Sea Princes" t2="Hool"/>
+    <connection t1="Hold of the Sea Princes" t2="Jerlea Bay"/>
+    <connection t1="Hold of the Sea Princes" t2="Flotsam and Jetsom"/>
+    <connection t1="Hold of the Sea Princes" t2="Hool Marshes"/>
+    <connection t1="Hool Marshes" t2="Flotsam and Jetsom"/>
+    <connection t1="Hool Marshes" t2="Sea of Ulek"/>
+    <connection t1="Hool Marshes" t2="Javan"/>
+    <connection t1="Hool Marshes" t2="Dreadwood"/>
+    <connection t1="Dreadwood" t2="Javan"/>
+    <connection t1="Dreadwood" t2="Sea of Ulek"/>
+    <connection t1="Dreadwood" t2="Gradsul"/>
+    <connection t1="Gradsul" t2="Sea of Ulek"/>
+    <connection t1="Gradsul" t2="Principality of Ulek"/>
+    <connection t1="Gradsul" t2="Jurnre"/>
+    <connection t1="Gradsul" t2="Silver Wood"/>
+    <connection t1="Gradsul" t2="Niole Dra"/>
+    <connection t1="Niole Dra" t2="Silver Wood"/>
+    <connection t1="Niole Dra" t2="Duchy of Ulek"/>
+    <connection t1="Niole Dra" t2="Kingdom of Keoland"/>
+    <connection t1="Niole Dra" t2="Gran March"/>
+    <connection t1="Niole Dra" t2="Rushmoors"/>
+    <connection t1="Rushmoors" t2="Kingdom of Keoland"/>
+    <connection t1="Rushmoors" t2="Gran March"/>
+    <connection t1="Rushmoors" t2="Hookhill"/>
+    <connection t1="Rushmoors" t2="Hochoch"/>
+    <connection t1="Rushmoors" t2="Dim Forest East"/>
+    <connection t1="Dim Forest East" t2="Hochoch"/>
+    <connection t1="Dim Forest East" t2="Hookhill"/>
+    <connection t1="Hookhill" t2="Gran March"/>
+    <connection t1="Gran March" t2="Duchy of Ulek"/>
+    <connection t1="Duchy of Ulek" t2="Silver Wood"/>
+    <connection t1="Duchy of Ulek" t2="Lortmil Pass"/>
+    <connection t1="Duchy of Ulek" t2="Jurnre"/>
+    <connection t1="Jurnre" t2="Silver Wood"/>
+    <connection t1="Jurnre" t2="County of Ulek"/>
+    <connection t1="Jurnre" t2="Principality of Ulek"/>
+    <connection t1="Principality of Ulek" t2="Gryrax"/>
+    <connection t1="Principality of Ulek" t2="Sea of Ulek"/>
+    <connection t1="Gryrax" t2="Sea of Ulek"/>
+    <connection t1="Gryrax" t2="Havenhill"/>
+    <connection t1="Gryrax" t2="Suss Forest"/>
+    <connection t1="Suss Forest" t2="Havenhill"/>
+    <connection t1="Suss Forest" t2="Elredd"/>
+    <connection t1="Suss Forest" t2="Welkwood South"/>
+    <connection t1="Suss Forest" t2="Woolly Bay"/>
+    <connection t1="Suss Forest" t2="The Pomarj"/>
+    <connection t1="Suss Forest" t2="Drachensgrab Hills"/>
+    <connection t1="Drachensgrab Hills" t2="The Pomarj"/>
+    <connection t1="Drachensgrab Hills" t2="Woolly Bay"/>
+    <connection t1="Drachensgrab Hills" t2="Havenhill"/>
+    <connection t1="Drachensgrab Hills" t2="Blue"/>
+    <connection t1="Drachensgrab Hills" t2="Sea of Ulek"/>
+    <connection t1="Havenhill" t2="Sea of Ulek"/>
+    <connection t1="Havenhill" t2="The Pomarj"/>
+    <connection t1="Blue" t2="Sea of Ulek"/>
+    <connection t1="Blue" t2="Woolly Bay"/>
+    <connection t1="Blue" t2="Scant Strait"/>
+    <connection t1="Welkwood South" t2="Woolly Bay"/>
+    <connection t1="Welkwood South" t2="Elredd"/>
+    <connection t1="Welkwood South" t2="Wild Coast"/>
+    <connection t1="Welkwood South" t2="Welkwood"/>
+    <connection t1="Welkwood South" t2="Celene"/>
+    <connection t1="Celene" t2="Lortmil Pass"/>
+    <connection t1="Celene" t2="Welkwood"/>
+    <connection t1="Celene" t2="Kron Hills"/>
+    <connection t1="Elredd" t2="Woolly Bay"/>
+    <connection t1="Kron Hills" t2="Archclericy of Veluna"/>
+    <connection t1="Kron Hills" t2="Welkwood"/>
+    <connection t1="Kron Hills" t2="Verbobonc"/>
+    <connection t1="Verbobonc" t2="Welkwood"/>
+    <connection t1="Verbobonc" t2="Kingdom of Furyondy"/>
+    <connection t1="Verbobonc" t2="Littleberg"/>
+    <connection t1="Verbobonc" t2="Archclericy of Veluna"/>
+    <connection t1="Verbobonc" t2="Mitrick"/>
+    <connection t1="Mitrick" t2="Archclericy of Veluna"/>
+    <connection t1="Mitrick" t2="Highfolk"/>
+    <connection t1="Mitrick" t2="Littleberg"/>
+    <connection t1="Littleberg" t2="Highfolk"/>
+    <connection t1="Littleberg" t2="Kingdom of Furyondy"/>
+    <connection t1="Littleberg" t2="Chendl"/>
+    <connection t1="Littleberg" t2="Crockport"/>
+    <connection t1="Crockport" t2="Chendl"/>
+    <connection t1="Crockport" t2="Grabford"/>
+    <connection t1="Crockport" t2="Whyestil Lake"/>
+    <connection t1="Crockport" t2="Vesve Forest"/>
+    <connection t1="Crockport" t2="Highfolk"/>
+    <connection t1="Crockport" t2="Vesve South"/>
+    <connection t1="Vesve South" t2="Highfolk"/>
+    <connection t1="Vesve South" t2="Vesve Forest"/>
+    <connection t1="Vesve Forest" t2="Whyestil Lake"/>
+    <connection t1="Vesve Forest" t2="Dorakaa"/>
+    <connection t1="Vesve Forest" t2="Deepstill"/>
+    <connection t1="Deepstill" t2="Dorakaa"/>
+    <connection t1="Deepstill" t2="Blackwater"/>
+    <connection t1="Deepstill" t2="Iuz"/>
+    <connection t1="Iuz" t2="Blackwater"/>
+    <connection t1="Iuz" t2="Howling Hills"/>
+    <connection t1="Iuz" t2="The Horned Society"/>
+    <connection t1="Iuz" t2="Dorakaa"/>
+    <connection t1="Howling Hills" t2="Blackwater"/>
+    <connection t1="The Horned Society" t2="Rovers of the Barrens"/>
+    <connection t1="The Horned Society" t2="Fellreev Forest"/>
+    <connection t1="The Horned Society" t2="Fellreev West"/>
+    <connection t1="The Horned Society" t2="Fellreev South"/>
+    <connection t1="The Horned Society" t2="Dorakaa"/>
+    <connection t1="The Horned Society" t2="Whyestil Lake"/>
+    <connection t1="The Horned Society" t2="Molag"/>
+    <connection t1="Whyestil Lake" t2="Dorakaa"/>
+    <connection t1="Whyestil Lake" t2="Molag"/>
+    <connection t1="Whyestil Lake" t2="Grabford"/>
+    <connection t1="Grabford" t2="Molag"/>
+    <connection t1="Grabford" t2="Chendl"/>
+    <connection t1="Grabford" t2="Willip"/>
+    <connection t1="Willip" t2="Molag"/>
+    <connection t1="Willip" t2="Chendl"/>
+    <connection t1="Willip" t2="Shield Lands"/>
+    <connection t1="Willip" t2="Nyr Dyv"/>
+    <connection t1="Willip" t2="Kingdom of Furyondy"/>
+    <connection t1="Kingdom of Furyondy" t2="Chendl"/>
+    <connection t1="Kingdom of Furyondy" t2="Nyr Dyv"/>
+    <connection t1="Kingdom of Furyondy" t2="Welkwood"/>
+    <connection t1="Kingdom of Furyondy" t2="Gnarley Forest"/>
+    <connection t1="Gnarley Forest" t2="Welkwood"/>
+    <connection t1="Gnarley Forest" t2="Free City of Greyhawk"/>
+    <connection t1="Gnarley Forest" t2="Woolly Bay"/>
+    <connection t1="Gnarley Forest" t2="Nyr Dyv"/>
+    <connection t1="Gnarley Forest" t2="Wild Coast"/>
+    <connection t1="Wild Coast" t2="Woolly Bay"/>
+    <connection t1="Wild Coast" t2="Welkwood"/>
+    <connection t1="Free City of Greyhawk" t2="Woolly Bay"/>
+    <connection t1="Free City of Greyhawk" t2="Nyr Dyv"/>
+    <connection t1="Free City of Greyhawk" t2="Abbor Alz"/>
+    <connection t1="Free City of Greyhawk" t2="Cairn Hills"/>
+    <connection t1="Free City of Greyhawk" t2="Maure Wetlands"/>
+    <connection t1="Maure Wetlands" t2="Abbor Alz"/>
+    <connection t1="Maure Wetlands" t2="Cairn Hills"/>
+    <connection t1="Cairn Hills" t2="Abbor Alz"/>
+    <connection t1="Cairn Hills" t2="Duchy of Urnst"/>
+    <connection t1="Cairn Hills" t2="Nyr Dyv"/>
+    <connection t1="Nyr Dyv" t2="Duchy of Urnst"/>
+    <connection t1="Nyr Dyv" t2="Radigast City"/>
+    <connection t1="Nyr Dyv" t2="Reyhu"/>
+    <connection t1="Nyr Dyv" t2="Warfields"/>
+    <connection t1="Nyr Dyv" t2="Admundfort"/>
+    <connection t1="Nyr Dyv" t2="Shield Lands"/>
+    <connection t1="Nyr Dyv" t2="Woolly Bay"/>
+    <connection t1="Shield Lands" t2="Admundfort"/>
+    <connection t1="Shield Lands" t2="Molag"/>
+    <connection t1="Shield Lands" t2="Warfields"/>
+    <connection t1="Shield Lands" t2="Wormhall"/>
+    <connection t1="Wormhall" t2="Warfields"/>
+    <connection t1="Wormhall" t2="Rift Canyon"/>
+    <connection t1="Wormhall" t2="Tangles"/>
+    <connection t1="Wormhall" t2="Molag"/>
+    <connection t1="Wormhall" t2="Bandit Kingdoms"/>
+    <connection t1="Wormhall" t2="Fellreev South"/>
+    <connection t1="Fellreev South" t2="Molag"/>
+    <connection t1="Fellreev South" t2="Fellreev West"/>
+    <connection t1="Fellreev South" t2="Bandit Kingdoms"/>
+    <connection t1="Bandit Kingdoms" t2="Fellreev West"/>
+    <connection t1="Bandit Kingdoms" t2="Tangles"/>
+    <connection t1="Bandit Kingdoms" t2="Fellreev Forest"/>
+    <connection t1="Fellreev Forest" t2="Tangles"/>
+    <connection t1="Fellreev Forest" t2="Fellreev West"/>
+    <connection t1="Fellreev Forest" t2="Fellreev East"/>
+    <connection t1="Fellreev Forest" t2="Barrens East"/>
+    <connection t1="Fellreev Forest" t2="Rovers of the Barrens"/>
+    <connection t1="Rovers of the Barrens" t2="Barrens East"/>
+    <connection t1="Rovers of the Barrens" t2="Forlorn Forest"/>
+    <connection t1="Rovers of the Barrens" t2="Barrens West"/>
+    <connection t1="Icy Sea West" t2="Barrens West"/>
+    <connection t1="Icy Sea West" t2="Wastes"/>
+    <connection t1="Icy Sea West" t2="Icy Sea"/>
+    <connection t1="Wastes" t2="Icy Sea"/>
+    <connection t1="Wastes" t2="Forlorn Forest"/>
+    <connection t1="Wastes" t2="Rovers of the Barrens"/>
+    <connection t1="Wastes" t2="Barrens West"/>
+    <connection t1="Forlorn Forest" t2="Icy Sea"/>
+    <connection t1="Forlorn Forest" t2="White Fanged Bay"/>
+    <connection t1="Forlorn Forest" t2="Forlorn East"/>
+    <connection t1="Forlorn Forest" t2="Barrens East"/>
+    <connection t1="Barrens East" t2="Forlorn East"/>
+    <connection t1="Barrens East" t2="Vlekstaad"/>
+    <connection t1="Barrens East" t2="Bluff Hills"/>
+    <connection t1="Barrens East" t2="Fellreev East"/>
+    <connection t1="Fellreev East" t2="Bluff Hills"/>
+    <connection t1="Fellreev East" t2="Rookroost"/>
+    <connection t1="Fellreev East" t2="Tangles"/>
+    <connection t1="Fellreev East" t2="Riftcrag"/>
+    <connection t1="Riftcrag" t2="Tangles"/>
+    <connection t1="Riftcrag" t2="Rookroost"/>
+    <connection t1="Riftcrag" t2="Duchy of Tenh"/>
+    <connection t1="Riftcrag" t2="Artonsamay"/>
+    <connection t1="Riftcrag" t2="Rift Canyon"/>
+    <connection t1="Rift Canyon" t2="Tangles"/>
+    <connection t1="Rift Canyon" t2="Warfields"/>
+    <connection t1="Rift Canyon" t2="Freehold"/>
+    <connection t1="Rift Canyon" t2="Artonsamay"/>
+    <connection t1="Rift Canyon" t2="Stoink"/>
+    <connection t1="Rift Canyon" t2="Radigast City"/>
+    <connection t1="Rift Canyon" t2="Reyhu"/>
+    <connection t1="Reyhu" t2="Warfields"/>
+    <connection t1="Reyhu" t2="Freehold"/>
+    <connection t1="Reyhu" t2="Radigast City"/>
+    <connection t1="Radigast City" t2="Freehold"/>
+    <connection t1="Radigast City" t2="Stoink"/>
+    <connection t1="Radigast City" t2="County of Urnst"/>
+    <connection t1="Radigast City" t2="Kingdom of Nyrond"/>
+    <connection t1="Radigast City" t2="Duchy of Urnst"/>
+    <connection t1="Duchy of Urnst" t2="Kingdom of Nyrond"/>
+    <connection t1="Duchy of Urnst" t2="Celadon Forest"/>
+    <connection t1="Duchy of Urnst" t2="Celadon West"/>
+    <connection t1="Duchy of Urnst" t2="Abbor Alz"/>
+    <connection t1="Duchy of Urnst" t2="Abbor Alz East"/>
+    <connection t1="Abbor Alz East" t2="Abbor Alz"/>
+    <connection t1="Abbor Alz East" t2="Celadon West"/>
+    <connection t1="Abbor Alz East" t2="Gnat Marshes"/>
+    <connection t1="Abbor Alz East" t2="Oldred"/>
+    <connection t1="Abbor Alz East" t2="Bright Desert"/>
+    <connection t1="Abbor Alz East" t2="Sea of Gearnat"/>
+    <connection t1="Abbor Alz East" t2="Woolly Bay"/>
+    <connection t1="Bright Desert" t2="Abbor Alz"/>
+    <connection t1="Woolly Bay" t2="Abbor Alz"/>
+    <connection t1="Woolly Bay" t2="Bright Desert"/>
+    <connection t1="Woolly Bay" t2="Sea of Gearnat"/>
+    <connection t1="Woolly Bay" t2="Scant Strait"/>
+    <connection t1="Oldred" t2="Sea of Gearnat"/>
+    <connection t1="Oldred" t2="Relmor Bay"/>
+    <connection t1="Oldred" t2="Rel Mord"/>
+    <connection t1="Oldred" t2="Kingdom of Nyrond"/>
+    <connection t1="Oldred" t2="Celadon Forest"/>
+    <connection t1="Oldred" t2="Gnat Marshes"/>
+    <connection t1="Gnat Marshes" t2="Celadon West"/>
+    <connection t1="Gnat Marshes" t2="Celadon Forest"/>
+    <connection t1="Celadon Forest" t2="Celadon West"/>
+    <connection t1="Celadon Forest" t2="Kingdom of Nyrond"/>
+    <connection t1="Kingdom of Nyrond" t2="Rel Mord"/>
+    <connection t1="Kingdom of Nyrond" t2="Flinty Hills"/>
+    <connection t1="Kingdom of Nyrond" t2="Gamboge Forest"/>
+    <connection t1="Kingdom of Nyrond" t2="Midmeadow"/>
+    <connection t1="Kingdom of Nyrond" t2="County of Urnst"/>
+    <connection t1="County of Urnst" t2="Midmeadow"/>
+    <connection t1="County of Urnst" t2="Stoink"/>
+    <connection t1="Stoink" t2="Midmeadow"/>
+    <connection t1="Stoink" t2="Nuther Wood"/>
+    <connection t1="Stoink" t2="Artonsamay"/>
+    <connection t1="Artonsamay" t2="Nuther Wood"/>
+    <connection t1="Artonsamay" t2="Phostwood"/>
+    <connection t1="Artonsamay" t2="Duchy of Tenh"/>
+    <connection t1="Duchy of Tenh" t2="Phostwood"/>
+    <connection t1="Duchy of Tenh" t2="Theocracy of the Pale"/>
+    <connection t1="Duchy of Tenh" t2="Troll Fens"/>
+    <connection t1="Duchy of Tenh" t2="Griff Pass"/>
+    <connection t1="Duchy of Tenh" t2="Rookroost"/>
+    <connection t1="Rookroost" t2="Bluff Hills"/>
+    <connection t1="Icy Sea" t2="Icy Sea East"/>
+    <connection t1="Icy Sea" t2="Hold of Stonefist"/>
+    <connection t1="Icy Sea" t2="White Fanged Bay"/>
+    <connection t1="White Fanged Bay" t2="Hold of Stonefist"/>
+    <connection t1="White Fanged Bay" t2="Forlorn East"/>
+    <connection t1="White Fanged Bay" t2="Vlekstaad"/>
+    <connection t1="Vlekstaad" t2="Forlorn East"/>
+    <connection t1="Vlekstaad" t2="Griff Pass"/>
+    <connection t1="Vlekstaad" t2="Hold of Stonefist"/>
+    <connection t1="Hold of Stonefist" t2="Icy Sea East"/>
+    <connection t1="Hold of Stonefist" t2="Hraak Forest"/>
+    <connection t1="Hold of Stonefist" t2="Hraak Bay"/>
+    <connection t1="Hraak Bay" t2="Icy Sea East"/>
+    <connection t1="Hraak Bay" t2="Corusk Fjord"/>
+    <connection t1="Hraak Bay" t2="Cruski West"/>
+    <connection t1="Hraak Bay" t2="Hraak Forest"/>
+    <connection t1="Hraak Forest" t2="Hraak Pass"/>
+    <connection t1="Corusk Fjord" t2="Cruski West"/>
+    <connection t1="Corusk Fjord" t2="Solnor Corner"/>
+    <connection t1="Corusk Fjord" t2="Jotsplat"/>
+    <connection t1="Jotsplat" t2="Solnor Corner"/>
+    <connection t1="Jotsplat" t2="Corusk Pass"/>
+    <connection t1="Jotsplat" t2="Cruski"/>
+    <connection t1="Cruski" t2="Corusk Pass"/>
+    <connection t1="Cruski" t2="Solnor Corner"/>
+    <connection t1="Cruski" t2="Sable Wood"/>
+    <connection t1="Sable Wood" t2="Solnor Corner"/>
+    <connection t1="Sable Wood" t2="Cruski South"/>
+    <connection t1="Cruski South" t2="Solnor Corner"/>
+    <connection t1="Cruski South" t2="Glot"/>
+    <connection t1="Cruski South" t2="Solnor North"/>
+    <connection t1="Solnor North" t2="Solnor Corner"/>
+    <connection t1="Solnor North" t2="Solnor Ocean"/>
+    <connection t1="Solnor North" t2="Glot"/>
+    <connection t1="Glot" t2="Soull Pass"/>
+    <connection t1="Soull Pass" t2="Soull"/>
+    <connection t1="Soull" t2="Fjords"/>
+    <connection t1="Soull" t2="Schnai"/>
+    <connection t1="Schnai" t2="Fjords"/>
+    <connection t1="Schnai" t2="Grendep Bay"/>
+    <connection t1="Schnai" t2="Corusk Pass"/>
+    <connection t1="Schnai" t2="Spikey Forest"/>
+    <connection t1="Schnai" t2="Jenelrad"/>
+    <connection t1="Jenelrad" t2="Grendep Bay"/>
+    <connection t1="Jenelrad" t2="Spikey Forest"/>
+    <connection t1="Jenelrad" t2="Fruztii"/>
+    <connection t1="Jenelrad" t2="Krakenheim"/>
+    <connection t1="Krakenheim" t2="Spikey Forest"/>
+    <connection t1="Krakenheim" t2="Fruztii"/>
+    <connection t1="Fruztii" t2="Grendep Bay"/>
+    <connection t1="Fruztii" t2="Hraak Pass"/>
+    <connection t1="Fruztii" t2="Timberway Forest"/>
+    <connection t1="Fruztii" t2="Marner"/>
+    <connection t1="Marner" t2="Timberway Forest"/>
+    <connection t1="Marner" t2="Grendep Bay"/>
+    <connection t1="Marner" t2="Ratik"/>
+    <connection t1="Ratik" t2="Grendep Bay"/>
+    <connection t1="Ratik" t2="Timberway Forest"/>
+    <connection t1="Ratik" t2="Ratik Pass"/>
+    <connection t1="Theocracy of the Pale" t2="Troll Fens"/>
+    <connection t1="Theocracy of the Pale" t2="Ogburg"/>
+    <connection t1="Theocracy of the Pale" t2="Phostwood"/>
+    <connection t1="Theocracy of the Pale" t2="Gamboge Forest"/>
+    <connection t1="Theocracy of the Pale" t2="Midmeadow"/>
+    <connection t1="Theocracy of the Pale" t2="Nuther Wood"/>
+    <connection t1="Nuther Wood" t2="Phostwood"/>
+    <connection t1="Nuther Wood" t2="Midmeadow"/>
+    <connection t1="Midmeadow" t2="Gamboge Forest"/>
+    <connection t1="Gamboge Forest" t2="Ogburg"/>
+    <connection t1="Gamboge Forest" t2="Flinty Hills"/>
+    <connection t1="Flinty Hills" t2="Rel Mord"/>
+    <connection t1="Flinty Hills" t2="Womtham"/>
+    <connection t1="Flinty Hills" t2="Innspa"/>
+    <connection t1="Flinty Hills" t2="Jalpa"/>
+    <connection t1="Flinty Hills" t2="Adri West"/>
+    <connection t1="Flinty Hills" t2="Eastfair"/>
+    <connection t1="Flinty Hills" t2="Blemu Hills"/>
+    <connection t1="Flinty Hills" t2="Bone March"/>
+    <connection t1="Bone March" t2="Blemu Hills"/>
+    <connection t1="Bone March" t2="Ratik Pass"/>
+    <connection t1="Bone March" t2="Bellport"/>
+    <connection t1="Bone March" t2="Eastfair"/>
+    <connection t1="Bone March" t2="Loftwood"/>
+    <connection t1="Bone March" t2="Kaport Bay"/>
+    <connection t1="Kaport Bay" t2="Bellport"/>
+    <connection t1="Kaport Bay" t2="Eastfair"/>
+    <connection t1="Kaport Bay" t2="North Province"/>
+    <connection t1="Kaport Bay" t2="Solnor Ocean"/>
+    <connection t1="Kaport Bay" t2="Loftwood"/>
+    <connection t1="Kaport Bay" t2="Grendep Bay"/>
+    <connection t1="Grendep Bay" t2="Loftwood"/>
+    <connection t1="Grendep Bay" t2="Fjords"/>
+    <connection t1="Grendep Bay" t2="Solnor Ocean"/>
+    <connection t1="Solnor Ocean" t2="Fjords"/>
+    <connection t1="Solnor Ocean" t2="Sea Barons"/>
+    <connection t1="Solnor Ocean" t2="Winetha"/>
+    <connection t1="Solnor Ocean" t2="North Province"/>
+    <connection t1="North Province" t2="Winetha"/>
+    <connection t1="North Province" t2="Flanmi"/>
+    <connection t1="North Province" t2="Eastfair"/>
+    <connection t1="Eastfair" t2="Bellport"/>
+    <connection t1="Eastfair" t2="Blemu Hills"/>
+    <connection t1="Eastfair" t2="Adri West"/>
+    <connection t1="Eastfair" t2="Flanmi"/>
+    <connection t1="Eastfair" t2="Edge Field"/>
+    <connection t1="Eastfair" t2="Adri Forest"/>
+    <connection t1="Adri Forest" t2="Edge Field"/>
+    <connection t1="Adri Forest" t2="The Great Kingdom"/>
+    <connection t1="Adri Forest" t2="Adri West"/>
+    <connection t1="Adri Forest" t2="Jalpa"/>
+    <connection t1="Jalpa" t2="Adri West"/>
+    <connection t1="Jalpa" t2="The Great Kingdom"/>
+    <connection t1="Jalpa" t2="Torrich"/>
+    <connection t1="Jalpa" t2="Pontylver"/>
+    <connection t1="Jalpa" t2="Glorioles"/>
+    <connection t1="Jalpa" t2="Thelly"/>
+    <connection t1="Jalpa" t2="South Province"/>
+    <connection t1="Jalpa" t2="Thellywood"/>
+    <connection t1="Jalpa" t2="Chathold"/>
+    <connection t1="Jalpa" t2="Innspa"/>
+    <connection t1="Jalpa" t2="Prelacy of Almor"/>
+    <connection t1="Prelacy of Almor" t2="Chathold"/>
+    <connection t1="Prelacy of Almor" t2="Innspa"/>
+    <connection t1="Prelacy of Almor" t2="Rel Mord"/>
+    <connection t1="Prelacy of Almor" t2="Relmor Bay"/>
+    <connection t1="Prelacy of Almor" t2="Womtham"/>
+    <connection t1="Womtham" t2="Innspa"/>
+    <connection t1="Womtham" t2="Rel Mord"/>
+    <connection t1="Rel Mord" t2="Relmor Bay"/>
+    <connection t1="Relmor Bay" t2="Chathold"/>
+    <connection t1="Relmor Bay" t2="Thellywood"/>
+    <connection t1="Relmor Bay" t2="South Province"/>
+    <connection t1="Relmor Bay" t2="Ahlissa"/>
+    <connection t1="Relmor Bay" t2="Sea of Gearnat"/>
+    <connection t1="Sea of Gearnat" t2="Ahlissa"/>
+    <connection t1="Sea of Gearnat" t2="Irongate"/>
+    <connection t1="Sea of Gearnat" t2="The Headlands"/>
+    <connection t1="Sea of Gearnat" t2="Scant Strait"/>
+    <connection t1="Sea of Gearnat" t2="Onnwal"/>
+    <connection t1="Onnwal" t2="Scant Strait"/>
+    <connection t1="Onnwal" t2="The Headlands"/>
+    <connection t1="The Headlands" t2="Scant Strait"/>
+    <connection t1="The Headlands" t2="Idee Coast"/>
+    <connection t1="The Headlands" t2="Irongate"/>
+    <connection t1="Irongate" t2="Ahlissa"/>
+    <connection t1="Irongate" t2="Idee Coast"/>
+    <connection t1="Irongate" t2="Idee"/>
+    <connection t1="Idee" t2="Idee Coast"/>
+    <connection t1="Idee" t2="Naerie"/>
+    <connection t1="Idee" t2="Hestmark West"/>
+    <connection t1="Idee" t2="Ahlissa"/>
+    <connection t1="Ahlissa" t2="Hestmark West"/>
+    <connection t1="Ahlissa" t2="South Province"/>
+    <connection t1="South Province" t2="Thelly"/>
+    <connection t1="South Province" t2="Hestmark West"/>
+    <connection t1="South Province" t2="Thellywood"/>
+    <connection t1="Thellywood" t2="Chathold"/>
+    <connection t1="Rieuwood" t2="Hestmark West"/>
+    <connection t1="Rieuwood" t2="Thelly"/>
+    <connection t1="Rieuwood" t2="Glorioles"/>
+    <connection t1="Rieuwood" t2="Pitchfield"/>
+    <connection t1="Rieuwood" t2="Naerie"/>
+    <connection t1="Naerie" t2="Hestmark West"/>
+    <connection t1="Naerie" t2="Pitchfield"/>
+    <connection t1="Naerie" t2="Menowood"/>
+    <connection t1="Naerie" t2="Idee Coast"/>
+    <connection t1="Idee Coast" t2="Menowood"/>
+    <connection t1="Idee Coast" t2="Meno Bay"/>
+    <connection t1="Idee Coast" t2="Azure Sea"/>
+    <connection t1="Idee Coast" t2="Scant Strait"/>
+    <connection t1="Scant Strait" t2="Azure Sea"/>
+    <connection t1="Scant Strait" t2="Sea of Ulek"/>
+    <connection t1="Sea of Ulek" t2="Azure Sea"/>
+    <connection t1="Sea of Ulek" t2="Amedio Bay"/>
+    <connection t1="Sea of Ulek" t2="Flotsam and Jetsom"/>
+    <connection t1="Flotsam and Jetsom" t2="Fairwind Isle"/>
+    <connection t1="Flotsam and Jetsom" t2="Jerlea Bay"/>
+    <connection t1="Flotsam and Jetsom" t2="Amedio Bay"/>
+    <connection t1="Amedio Bay" t2="Jerlea Bay"/>
+    <connection t1="Amedio Bay" t2="Azure Sea"/>
+    <connection t1="Amedio Bay" t2="Olman Islands"/>
+    <connection t1="Amedio Bay" t2="Amedio South"/>
+    <connection t1="Amedio Bay" t2="Middle Olman Islands"/>
+    <connection t1="Amedio Bay" t2="Amedio Jungle"/>
+    <connection t1="Amedio Jungle" t2="Jerlea Bay"/>
+    <connection t1="Amedio Jungle" t2="Amedio South"/>
+    <connection t1="Azure Sea" t2="Meno Bay"/>
+    <connection t1="Azure Sea" t2="Olman Islands East"/>
+    <connection t1="Azure Sea" t2="Densac Gulf"/>
+    <connection t1="Azure Sea" t2="Middle Olman Islands"/>
+    <connection t1="Middle Olman Islands" t2="Olman Middle"/>
+    <connection t1="Middle Olman Islands" t2="Densac Gulf"/>
+    <connection t1="Middle Olman Islands" t2="Olman Islands"/>
+    <connection t1="Olman Islands" t2="Olman"/>
+    <connection t1="Olman Islands" t2="Densac Gulf"/>
+    <connection t1="Olman Islands East" t2="Olman East"/>
+    <connection t1="Olman Islands East" t2="Densac Gulf"/>
+    <connection t1="Olman Islands East" t2="Spinewood"/>
+    <connection t1="Olman Islands East" t2="Meno Bay"/>
+    <connection t1="Meno Bay" t2="Spinewood"/>
+    <connection t1="Meno Bay" t2="Terlep West"/>
+    <connection t1="Meno Bay" t2="Kro Terlep"/>
+    <connection t1="Meno Bay" t2="Spine Ridge"/>
+    <connection t1="Meno Bay" t2="Spine Ridge North"/>
+    <connection t1="Meno Bay" t2="Menowood"/>
+    <connection t1="Menowood" t2="Pitchfield"/>
+    <connection t1="Menowood" t2="Spine Ridge North"/>
+    <connection t1="Densac Gulf" t2="Spinewood"/>
+    <connection t1="Densac Gulf" t2="The Scarlet Brotherhood"/>
+    <connection t1="Densac Gulf" t2="Port Ekul"/>
+    <connection t1="Densac Gulf" t2="Hepmonaland"/>
+    <connection t1="Densac Gulf" t2="Tilva Strait"/>
+    <connection t1="Tilva Strait" t2="Hepmonaland"/>
+    <connection t1="Tilva Strait" t2="The Lordship Isles"/>
+    <connection t1="Tilva Strait" t2="Aerdi Sea"/>
+    <connection t1="Tilva Strait" t2="Hestmark Highlands"/>
+    <connection t1="Tilva Strait" t2="Spine Ridge"/>
+    <connection t1="Tilva Strait" t2="Port Ekul"/>
+    <connection t1="Tilva Strait" t2="Oljatt Sea"/>
+    <connection t1="Port Ekul" t2="Spine Ridge"/>
+    <connection t1="Port Ekul" t2="The Scarlet Brotherhood"/>
+    <connection t1="Port Ekul" t2="Hesuel Ilshar"/>
+    <connection t1="Hesuel Ilshar" t2="The Scarlet Brotherhood"/>
+    <connection t1="Hesuel Ilshar" t2="Spinewood"/>
+    <connection t1="Hesuel Ilshar" t2="Terlep West"/>
+    <connection t1="Hesuel Ilshar" t2="Kro Terlep"/>
+    <connection t1="Hesuel Ilshar" t2="Spine Ridge"/>
+    <connection t1="Kro Terlep" t2="Spine Ridge"/>
+    <connection t1="Kro Terlep" t2="Terlep West"/>
+    <connection t1="Spinewood" t2="Terlep West"/>
+    <connection t1="Spinewood" t2="The Scarlet Brotherhood"/>
+    <connection t1="Oljatt Sea" t2="Hepmonaland"/>
+    <connection t1="Oljatt Sea" t2="Lendore Isles"/>
+    <connection t1="Oljatt Sea" t2="Lordship Isles East"/>
+    <connection t1="Oljatt Sea" t2="The Lordship Isles"/>
+    <connection t1="The Lordship Isles" t2="Lordship Isles East"/>
+    <connection t1="The Lordship Isles" t2="Duxchan"/>
+    <connection t1="The Lordship Isles" t2="Spindrift Sound"/>
+    <connection t1="The Lordship Isles" t2="Aerdi Sea"/>
+    <connection t1="Aerdi Sea" t2="Spindrift Sound"/>
+    <connection t1="Aerdi Sea" t2="See of Medegia"/>
+    <connection t1="Aerdi Sea" t2="Pontylver"/>
+    <connection t1="Aerdi Sea" t2="Hestmark Highlands"/>
+    <connection t1="Aerdi Sea" t2="Glorioles"/>
+    <connection t1="Glorioles" t2="Hestmark Highlands"/>
+    <connection t1="Glorioles" t2="Pontylver"/>
+    <connection t1="Glorioles" t2="Thelly"/>
+    <connection t1="Glorioles" t2="Pitchfield"/>
+    <connection t1="Glorioles" t2="County of Sunndi"/>
+    <connection t1="Thelly" t2="Hestmark West"/>
+    <connection t1="County of Sunndi" t2="Pitchfield"/>
+    <connection t1="County of Sunndi" t2="Hestmark Highlands"/>
+    <connection t1="Pontylver" t2="See of Medegia"/>
+    <connection t1="Pontylver" t2="Grandwood South"/>
+    <connection t1="Pontylver" t2="Torrich"/>
+    <connection t1="Pontylver" t2="Grandwood Forest"/>
+    <connection t1="Grandwood Forest" t2="Grandwood South"/>
+    <connection t1="Grandwood Forest" t2="Torrich"/>
+    <connection t1="Grandwood Forest" t2="Rel Astra"/>
+    <connection t1="Grandwood Forest" t2="Gull"/>
+    <connection t1="Grandwood Forest" t2="Gull Cliffs"/>
+    <connection t1="Grandwood Forest" t2="Winetha"/>
+    <connection t1="Grandwood Forest" t2="Imeda"/>
+    <connection t1="Imeda" t2="Torrich"/>
+    <connection t1="Imeda" t2="Rauxes"/>
+    <connection t1="Imeda" t2="Winetha"/>
+    <connection t1="Imeda" t2="The Great Kingdom"/>
+    <connection t1="The Great Kingdom" t2="Torrich"/>
+    <connection t1="The Great Kingdom" t2="Edge Field"/>
+    <connection t1="The Great Kingdom" t2="Rauxes"/>
+    <connection t1="Rauxes" t2="Winetha"/>
+    <connection t1="Rauxes" t2="Edge Field"/>
+    <connection t1="Edge Field" t2="Flanmi"/>
+    <connection t1="Edge Field" t2="Winetha"/>
+    <connection t1="Winetha" t2="Flanmi"/>
+    <connection t1="Winetha" t2="Sea Barons"/>
+    <connection t1="Winetha" t2="Gull Cliffs"/>
+    <connection t1="Gull Cliffs" t2="Gull"/>
+    <connection t1="Gull Cliffs" t2="Sea Barons"/>
+    <connection t1="Gull" t2="Sea Barons"/>
+    <connection t1="Sea Barons" t2="Asperdi"/>
+    <connection t1="Sea Barons" t2="Lendore Isles"/>
+    <connection t1="Sea Barons" t2="Spindrift Sound"/>
+    <connection t1="Sea Barons" t2="Rel Astra"/>
+    <connection t1="Rel Astra" t2="Grandwood South"/>
+    <connection t1="Rel Astra" t2="Spindrift Sound"/>
+    <connection t1="Rel Astra" t2="See of Medegia"/>
+    <connection t1="See of Medegia" t2="Grandwood South"/>
+    <connection t1="See of Medegia" t2="Spindrift Sound"/>
+    <connection t1="Spindrift Sound" t2="Lendore Isles"/>
+    <connection t1="Spindrift Sound" t2="Lordship Isles East"/>
+    <connection t1="Lordship Isles East" t2="Sulward City"/>
+    <connection t1="Lordship Isles East" t2="Lendore Isles"/>
+    <connection t1="Lendore Isles" t2="Lo Reltarma"/>
+    <connection t1="Lone Heath" t2="Gull"/>
+    <connection t1="Lone Heath" t2="Sea Barons"/>
+    <connection t1="Lone Heath" t2="Rel Astra"/>
+    <connection t1="Lone Heath" t2="Grandwood Forest"/>
+    <connection t1="Land of Black Ice" t2="Blackmoor"/>
+    <connection t1="Land of Black Ice" t2="Tundra"/>
+    <connection t1="Yatil Mountains" t2="Yecha"/>
+    <connection t1="Yatil Mountains" t2="Yecha Hills"/>
+    <connection t1="Yatil Mountains" t2="Udgru Forest"/>
+    <connection t1="Yatil Mountains" t2="Udgru East"/>
+    <connection t1="Yatil Mountains" t2="Tusmit"/>
+    <connection t1="Yatil Mountains" t2="Tusman Hills"/>
+    <connection t1="Yatil Mountains" t2="Ket"/>
+    <connection t1="Yatil Mountains" t2="Yatil Pass"/>
+    <connection t1="Yatil Mountains" t2="Perrenland"/>
+    <connection t1="Yatil Mountains" t2="Mounds of Dawn"/>
+    <connection t1="Yatil Mountains" t2="Lake Quag"/>
+    <connection t1="Yatil Mountains" t2="Quag"/>
+    <connection t1="Yatil Mountains" t2="Tiger Nomads"/>
+    <connection t1="Yatil East" t2="Perrenland"/>
+    <connection t1="Yatil East" t2="Yatil Pass"/>
+    <connection t1="Yatil East" t2="Ket"/>
+    <connection t1="Yatil East" t2="Lorridges North"/>
+    <connection t1="Yatil East" t2="Bramblewood Forest"/>
+    <connection t1="Yatil East" t2="Mitrick"/>
+    <connection t1="Yatil East" t2="Highfolk"/>
+    <connection t1="Yatil East" t2="Vesve South"/>
+    <connection t1="Yatil East" t2="Clatspur Range"/>
+    <connection t1="Clatspur Range" t2="Perrenland"/>
+    <connection t1="Clatspur Range" t2="Lake Quag"/>
+    <connection t1="Clatspur Range" t2="Vesve South"/>
+    <connection t1="Clatspur Range" t2="Traft"/>
+    <connection t1="Clatspur Range" t2="Sepia Uplands"/>
+    <connection t1="Cold Marshes" t2="Blackmoor"/>
+    <connection t1="Cold Marshes" t2="Howling Hills"/>
+    <connection t1="Cold Marshes" t2="Iuz"/>
+    <connection t1="Cold Marshes" t2="The Horned Society"/>
+    <connection t1="Cold Marshes" t2="Blackwater"/>
+    <connection t1="Cold Marshes" t2="Eru-Jovar"/>
+    <connection t1="Cold Marshes" t2="Barrens West"/>
+    <connection t1="Cold Marshes" t2="Icy Sea West"/>
+    <connection t1="Cold Marshes" t2="Rovers of the Barrens"/>
+    <connection t1="Barrier Peaks" t2="Bramblewood Forest"/>
+    <connection t1="Barrier Peaks" t2="Valley of the Mage"/>
+    <connection t1="Barrier Peaks" t2="Plains of the Paynims"/>
+    <connection t1="Barrier Peaks" t2="Tusman Hills South"/>
+    <connection t1="Barrier Peaks" t2="Ull"/>
+    <connection t1="Barrier Peaks" t2="Dry Steppes"/>
+    <connection t1="Barrier Peaks" t2="Crystalmist Mountains"/>
+    <connection t1="Barrier Peaks" t2="Hornwood"/>
+    <connection t1="Barrier Peaks" t2="Grand Duchy of Geoff"/>
+    <connection t1="Barrier Peaks" t2="Dim Forest"/>
+    <connection t1="Barrier Peaks" t2="Thornward"/>
+    <connection t1="Barrier Peaks" t2="Bissel"/>
+    <connection t1="Crystalmist Mountains" t2="Hornwood"/>
+    <connection t1="Crystalmist Mountains" t2="Grand Duchy of Geoff"/>
+    <connection t1="Crystalmist Mountains" t2="Dry Steppes"/>
+    <connection t1="Crystalmist Mountains" t2="Sterich"/>
+    <connection t1="Crystalmist Mountains" t2="Stark Mounds"/>
+    <connection t1="Crystalmist Mountains" t2="Jotens"/>
+    <connection t1="Crystalmist Mountains" t2="Hellfurnace Mountains"/>
+    <connection t1="Crystalmist Mountains" t2="Sulhaut Mountains"/>
+    <connection t1="Sulhaut Mountains" t2="Hellfurnace Mountains"/>
+    <connection t1="Sulhaut Mountains" t2="Dry Steppes"/>
+    <connection t1="Sulhaut Mountains" t2="Sea of Dust"/>
+    <connection t1="Sea of Dust" t2="Hellfurnace Mountains"/>
+    <connection t1="Hellfurnace Mountains" t2="Jotens"/>
+    <connection t1="Hellfurnace Mountains" t2="Amedio Jungle"/>
+    <connection t1="Hellfurnace Mountains" t2="Jerlea Bay"/>
+    <connection t1="Hellfurnace Mountains" t2="Hold of the Sea Princes"/>
+    <connection t1="Hellfurnace Mountains" t2="Hool"/>
+    <connection t1="Hellfurnace Mountains" t2="Tors"/>
+    <connection t1="Hellfurnace Mountains" t2="Loftwick"/>
+    <connection t1="Hellfurnace Mountains" t2="The Yeomanry"/>
+    <connection t1="Jotens" t2="Loftwick"/>
+    <connection t1="Jotens" t2="Flen"/>
+    <connection t1="Jotens" t2="Sterich"/>
+    <connection t1="Jotens" t2="Little Hills"/>
+    <connection t1="Jotens" t2="Good Hills"/>
+    <connection t1="Lortmil South" t2="Lortmil Pass"/>
+    <connection t1="Lortmil South" t2="Duchy of Ulek"/>
+    <connection t1="Lortmil South" t2="County of Ulek"/>
+    <connection t1="Lortmil South" t2="Jurnre"/>
+    <connection t1="Lortmil South" t2="Principality of Ulek"/>
+    <connection t1="Lortmil South" t2="Gryrax"/>
+    <connection t1="Lortmil South" t2="Suss Forest"/>
+    <connection t1="Lortmil South" t2="Welkwood South"/>
+    <connection t1="Lortmil South" t2="Celene"/>
+    <connection t1="Lortmil Mountains" t2="Lortmil Pass"/>
+    <connection t1="Lortmil Mountains" t2="Celene"/>
+    <connection t1="Lortmil Mountains" t2="Kron Hills"/>
+    <connection t1="Lortmil Mountains" t2="Archclericy of Veluna"/>
+    <connection t1="Lortmil Mountains" t2="Mitrick"/>
+    <connection t1="Lortmil Mountains" t2="Lorridges"/>
+    <connection t1="Lortmil Mountains" t2="Gran March"/>
+    <connection t1="Lortmil Mountains" t2="Hookhill"/>
+    <connection t1="Lortmil Mountains" t2="Duchy of Ulek"/>
+    <connection t1="Vast Swamp" t2="Tilva Strait"/>
+    <connection t1="Vast Swamp" t2="Spine Ridge"/>
+    <connection t1="Vast Swamp" t2="Hestmark Highlands"/>
+    <connection t1="Vast Swamp" t2="County of Sunndi"/>
+    <connection t1="Vast Swamp" t2="Pitchfield"/>
+    <connection t1="Vast Swamp" t2="Spine Ridge North"/>
+    <connection t1="Vast Swamp" t2="Menowood"/>
+    <connection t1="Vast Swamp" t2="Meno Bay"/>
+    <connection t1="Rakers East" t2="Ratik Pass"/>
+    <connection t1="Rakers East" t2="Grendep Bay"/>
+    <connection t1="Rakers East" t2="Ratik"/>
+    <connection t1="Rakers East" t2="Loftwood"/>
+    <connection t1="Rakers East" t2="Bone March"/>
+    <connection t1="Rakers" t2="Ratik"/>
+    <connection t1="Rakers" t2="Ratik Pass"/>
+    <connection t1="Rakers" t2="Bone March"/>
+    <connection t1="Rakers" t2="Flinty Hills"/>
+    <connection t1="Rakers" t2="Ogburg"/>
+    <connection t1="Rakers" t2="Gamboge Forest"/>
+    <connection t1="Rakers" t2="Theocracy of the Pale"/>
+    <connection t1="Rakers" t2="Troll Fens"/>
+    <connection t1="Rakers" t2="Griff Mountains"/>
+    <connection t1="Rakers" t2="Hraak Pass"/>
+    <connection t1="Rakers" t2="Fruztii"/>
+    <connection t1="Rakers" t2="Timberway Forest"/>
+    <connection t1="Griff Mountains" t2="Troll Fens"/>
+    <connection t1="Griff Mountains" t2="Duchy of Tenh"/>
+    <connection t1="Griff Pass" t2="Griff Mountains"/>
+    <connection t1="Hraak Pass" t2="Griff Mountains"/>
+    <connection t1="Griff Mountains" t2="Hraak Forest"/>
+    <connection t1="Griff Mountains" t2="Hold of Stonefist"/>
+    <connection t1="Griff Mountains" t2="Vlekstaad"/>
+    <connection t1="Griff West" t2="Griff Pass"/>
+    <connection t1="Griff West" t2="Vlekstaad"/>
+    <connection t1="Griff West" t2="Duchy of Tenh"/>
+    <connection t1="Bluff Hills" t2="Griff West"/>
+    <connection t1="Griff West" t2="Rookroost"/>
+    <connection t1="Griff West" t2="Barrens East"/>
+    <connection t1="Corusk Mountains" t2="Hraak Pass"/>
+    <connection t1="Corusk Mountains" t2="Hraak Forest"/>
+    <connection t1="Corusk Mountains" t2="Fruztii"/>
+    <connection t1="Corusk Mountains" t2="Krakenheim"/>
+    <connection t1="Corusk Mountains" t2="Spikey Forest"/>
+    <connection t1="Corusk Mountains" t2="Schnai"/>
+    <connection t1="Corusk Mountains" t2="Corusk Pass"/>
+    <connection t1="Corusk Mountains" t2="Hraak Bay"/>
+    <connection t1="Corusk Mountains" t2="Jotsplat"/>
+    <connection t1="Corusk Mountains" t2="Cruski West"/>
+    <connection t1="Corusk Mountains" t2="Corusk Fjord"/>
+    <connection t1="Corusk East" t2="Corusk Pass"/>
+    <connection t1="Corusk East" t2="Schnai"/>
+    <connection t1="Corusk East" t2="Soull Pass"/>
+    <connection t1="Corusk East" t2="Soull"/>
+    <connection t1="Corusk East" t2="Cruski"/>
+    <connection t1="Corusk East" t2="Sable Wood"/>
+    <connection t1="Corusk East" t2="Glot"/>
+    <connection t1="Corusk East" t2="Cruski South"/>
+    <connection t1="Corusk South" t2="Soull Pass"/>
+    <connection t1="Corusk South" t2="Soull"/>
+    <connection t1="Corusk South" t2="Glot"/>
+    <connection t1="Corusk South" t2="Fjords"/>
+    <connection t1="Corusk South" t2="Solnor Ocean"/>
+    <connection t1="Corusk South" t2="Solnor North"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <player name="Iuz" optional="false"/>
+    <player name="Furyondy" optional="false"/>
+    <player name="Great_Kingdom" optional="false"/>
+    <player name="Nyrond" optional="false"/>
+    <player name="Scarlet_Brotherhood" optional="false"/>
+    <player name="Keoland" optional="false"/>
+    <!--  Good_Alliance -->
+    <alliance player="Furyondy" alliance="Good_Alliance"/>
+    <alliance player="Keoland" alliance="Good_Alliance"/>
+    <alliance player="Nyrond" alliance="Good_Alliance"/>
+    <!-- Evil_Alliance -->
+    <alliance player="Great_Kingdom" alliance="Evil_Alliance"/>
+    <alliance player="Iuz" alliance="Evil_Alliance"/>
+    <alliance player="Scarlet_Brotherhood" alliance="Evil_Alliance"/>
+  </playerList>
+  <unitList>
+    <unit name="light_infantry"/>
+    <unit name="medium_infantry"/>
+    <unit name="heavy_infantry"/>
+    <unit name="light_cavalry"/>
+    <unit name="medium_cavalry"/>
+    <unit name="heavy_cavalry"/>
+    <unit name="halfling"/>
+    <unit name="dwarf"/>
+    <unit name="elf"/>
+    <unit name="treant"/>
+    <unit name="goblin"/>
+    <unit name="orc"/>
+    <unit name="hobgoblin"/>
+    <unit name="troll"/>
+    <unit name="bowman"/>
+    <unit name="giant"/>
+    <unit name="dragon"/>
+    <unit name="ship"/>
+    <unit name="small_ship"/>
+    <unit name="Fortification"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="IuzBid" delegate="bid" player="Iuz" maxRunCount="1"/>
+      <step name="IuzBidPlace" delegate="placeBid" player="Iuz" maxRunCount="1"/>
+      <step name="FuryondyBid" delegate="bid" player="Furyondy" maxRunCount="1"/>
+      <step name="FuryondyBidPlace" delegate="placeBid" player="Furyondy" maxRunCount="1"/>
+      <step name="Great_KingdomBid" delegate="bid" player="Great_Kingdom" maxRunCount="1"/>
+      <step name="Great_KingdomBidPlace" delegate="placeBid" player="Great_Kingdom" maxRunCount="1"/>
+      <step name="NyrondBid" delegate="bid" player="Nyrond" maxRunCount="1"/>
+      <step name="NyrondBidPlace" delegate="placeBid" player="Nyrond" maxRunCount="1"/>
+      <step name="Scarlet_BrotherhoodBid" delegate="bid" player="Scarlet_Brotherhood" maxRunCount="1"/>
+      <step name="Scarlet_BrotherhoodBidPlace" delegate="placeBid" player="Scarlet_Brotherhood" maxRunCount="1"/>
+      <step name="KeolandBid" delegate="bid" player="Keoland" maxRunCount="1"/>
+      <step name="KeolandBidPlace" delegate="placeBid" player="Keoland" maxRunCount="1"/>
+      <!-- Iuz Game Sequence -->
+      <step name="IuzPurchase" delegate="purchase" player="Iuz"/>
+      <step name="IuzCombatMove" delegate="move" player="Iuz"/>
+      <step name="IuzBattle" delegate="battle" player="Iuz"/>
+      <step name="IuzNonCombatMove" delegate="move" player="Iuz" display="Non Combat Move"/>
+      <step name="IuzPlace" delegate="place" player="Iuz"/>
+      <step name="IuzEndTurn" delegate="endTurn" player="Iuz"/>
+      <!-- Furyondy Game Sequence -->
+      <step name="FuryondyPurchase" delegate="purchase" player="Furyondy"/>
+      <step name="FuryondyCombatMove" delegate="move" player="Furyondy"/>
+      <step name="FuryondyBattle" delegate="battle" player="Furyondy"/>
+      <step name="FuryondyNonCombatMove" delegate="move" player="Furyondy" display="Non Combat Move"/>
+      <step name="FuryondyPlace" delegate="place" player="Furyondy"/>
+      <step name="FuryondyEndTurn" delegate="endTurn" player="Furyondy"/>
+      <!-- Great_Kingdom Game Sequence -->
+      <step name="Great_KingdomPurchase" delegate="purchase" player="Great_Kingdom"/>
+      <step name="Great_KingdomCombatMove" delegate="move" player="Great_Kingdom"/>
+      <step name="Great_KingdomBattle" delegate="battle" player="Great_Kingdom"/>
+      <step name="Great_KingdomNonCombatMove" delegate="move" player="Great_Kingdom" display="Non Combat Move"/>
+      <step name="Great_KingdomPlace" delegate="place" player="Great_Kingdom"/>
+      <step name="Great_KingdomEndTurn" delegate="endTurn" player="Great_Kingdom"/>
+      <!-- Nyrond Game Sequence -->
+      <step name="NyrondPurchase" delegate="purchase" player="Nyrond"/>
+      <step name="NyrondCombatMove" delegate="move" player="Nyrond"/>
+      <step name="NyrondBattle" delegate="battle" player="Nyrond"/>
+      <step name="NyrondNonCombatMove" delegate="move" player="Nyrond" display="Non Combat Move"/>
+      <step name="NyrondPlace" delegate="place" player="Nyrond"/>
+      <step name="NyrondEndTurn" delegate="endTurn" player="Nyrond"/>
+      <!-- Scarlet_Brotherhood Game Sequence -->
+      <step name="Scarlet_BrotherhoodPurchase" delegate="purchase" player="Scarlet_Brotherhood"/>
+      <step name="Scarlet_BrotherhoodCombatMove" delegate="move" player="Scarlet_Brotherhood"/>
+      <step name="Scarlet_BrotherhoodBattle" delegate="battle" player="Scarlet_Brotherhood"/>
+      <step name="Scarlet_BrotherhoodNonCombatMove" delegate="move" player="Scarlet_Brotherhood" display="Non Combat Move"/>
+      <step name="Scarlet_BrotherhoodPlace" delegate="place" player="Scarlet_Brotherhood"/>
+      <step name="Scarlet_BrotherhoodEndTurn" delegate="endTurn" player="Scarlet_Brotherhood"/>
+      <!-- Keoland Game Sequence -->
+      <step name="KeolandPurchase" delegate="purchase" player="Keoland"/>
+      <step name="KeolandCombatMove" delegate="move" player="Keoland"/>
+      <step name="KeolandBattle" delegate="battle" player="Keoland"/>
+      <step name="KeolandNonCombatMove" delegate="move" player="Keoland" display="Non Combat Move"/>
+      <step name="KeolandPlace" delegate="place" player="Keoland"/>
+      <step name="KeolandEndTurn" delegate="endTurn" player="Keoland"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buylight_infantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="light_infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buymedium_infantry">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="medium_infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyheavy_infantry">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="heavy_infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buylight_cavalry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="light_cavalry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buymedium_cavalry">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="medium_cavalry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyheavy_cavalry">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="heavy_cavalry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyhalfling">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="halfling" quantity="1"/>
+    </productionRule>
+    <productionRule name="buydwarf">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="dwarf" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyelf">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="elf" quantity="1"/>
+    </productionRule>
+    <productionRule name="buytreant">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="treant" quantity="1"/>
+    </productionRule>
+    <productionRule name="buygoblin">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="goblin" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyorc">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="orc" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyhobgoblin">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="hobgoblin" quantity="1"/>
+    </productionRule>
+    <productionRule name="buytroll">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="troll" quantity="1"/>
+    </productionRule>
+    <productionRule name="buybowman">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="bowman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buygiant">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="giant" quantity="1"/>
+    </productionRule>
+    <productionRule name="buydragon">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="dragon" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyship">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="ship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buysmall_ship">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="small_ship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFortification">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="Fortification" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="NyrondProduction">
+      <frontierRules name="buylight_infantry"/>
+      <frontierRules name="buymedium_cavalry"/>
+      <frontierRules name="buymedium_infantry"/>
+      <frontierRules name="buybowman"/>
+      <frontierRules name="buyheavy_infantry"/>
+      <frontierRules name="buydwarf"/>
+      <frontierRules name="buygiant"/>
+      <frontierRules name="buyelf"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buysmall_ship"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyship"/>
+    </productionFrontier>
+    <productionFrontier name="Great_KingdomProduction">
+      <frontierRules name="buylight_infantry"/>
+      <frontierRules name="buymedium_cavalry"/>
+      <frontierRules name="buymedium_infantry"/>
+      <frontierRules name="buyheavy_cavalry"/>
+      <frontierRules name="buybowman"/>
+      <frontierRules name="buyhobgoblin"/>
+      <frontierRules name="buygiant"/>
+      <frontierRules name="buyorc"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buysmall_ship"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyship"/>
+    </productionFrontier>
+    <productionFrontier name="FuryondyProduction">
+      <frontierRules name="buylight_infantry"/>
+      <frontierRules name="buymedium_cavalry"/>
+      <frontierRules name="buymedium_infantry"/>
+      <frontierRules name="buyheavy_cavalry"/>
+      <frontierRules name="buyheavy_infantry"/>
+      <frontierRules name="buybowman"/>
+      <frontierRules name="buygiant"/>
+      <frontierRules name="buyelf"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buysmall_ship"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyship"/>
+    </productionFrontier>
+    <productionFrontier name="Scarlet_BrotherhoodProduction">
+      <frontierRules name="buylight_infantry"/>
+      <frontierRules name="buylight_cavalry"/>
+      <frontierRules name="buymedium_infantry"/>
+      <frontierRules name="buybowman"/>
+      <frontierRules name="buyheavy_infantry"/>
+      <frontierRules name="buygiant"/>
+      <frontierRules name="buyorc"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buytroll"/>
+      <frontierRules name="buysmall_ship"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyship"/>
+    </productionFrontier>
+    <productionFrontier name="KeolandProduction">
+      <frontierRules name="buymedium_infantry"/>
+      <frontierRules name="buymedium_cavalry"/>
+      <frontierRules name="buyhalfling"/>
+      <frontierRules name="buybowman"/>
+      <frontierRules name="buydwarf"/>
+      <frontierRules name="buygiant"/>
+      <frontierRules name="buyelf"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buytreant"/>
+      <frontierRules name="buysmall_ship"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyship"/>
+    </productionFrontier>
+    <productionFrontier name="IuzProduction">
+      <frontierRules name="buylight_cavalry"/>
+      <frontierRules name="buymedium_infantry"/>
+      <frontierRules name="buygoblin"/>
+      <frontierRules name="buybowman"/>
+      <frontierRules name="buyhobgoblin"/>
+      <frontierRules name="buygiant"/>
+      <frontierRules name="buyorc"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buytroll"/>
+      <frontierRules name="buysmall_ship"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyship"/>
+    </productionFrontier>
+    <playerProduction player="Nyrond" frontier="NyrondProduction"/>
+    <playerProduction player="Great_Kingdom" frontier="Great_KingdomProduction"/>
+    <playerProduction player="Furyondy" frontier="FuryondyProduction"/>
+    <playerProduction player="Scarlet_Brotherhood" frontier="Scarlet_BrotherhoodProduction"/>
+    <playerProduction player="Keoland" frontier="KeolandProduction"/>
+    <playerProduction player="Iuz" frontier="IuzProduction"/>
+  </production>
+  <attachmentList>
+    <attachment name="techAttachment" attachTo="Nyrond" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="true"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Great_Kingdom" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="true"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Furyondy" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="true"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Scarlet_Brotherhood" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="true"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Keoland" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="true"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Iuz" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="true"/>
+    </attachment>
+    <!-- Unit Attachment -->
+    <attachment name="unitAttachment" attachTo="light_infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="medium_infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="heavy_infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="light_cavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="medium_cavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="heavy_cavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="transportCost" value="1"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="halfling" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="dwarf" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="elf" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="treant" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+      <option name="canBlitz" value="true"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="goblin" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="orc" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="hobgoblin" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="troll" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bowman" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="isAA" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="giant" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="5"/>
+      <option name="hitPoints" value="2"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="dragon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="8"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="4"/>
+      <option name="isAir" value="true"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="small_ship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Fortification" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="ship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="2"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <!-- Territory Attachment -->
+    <attachment name="territoryAttachment" attachTo="Dorakaa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Iuz"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chendl" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Furyondy"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rel Mord" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Nyrond"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rauxes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Great_Kingdom"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hesuel Ilshar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Scarlet_Brotherhood"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Niole Dra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Keoland"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Admundfort" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oldred" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ket" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Glorioles" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grand Duchy of Geoff" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bright Desert" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Menowood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Spine Ridge North" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Welkwood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tors" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bandit Kingdoms" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Radigast City" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Womtham" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sterich" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Little Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Artonsamay" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dim Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Freehold" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pitchfield" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Schnai" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hestmark West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Terlep West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lo Reltarma" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cruski West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rieuwood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Abbor Alz" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fellreev Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Barrens East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Irongate" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Perrenland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Willip" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Highfolk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sulward City" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cruski South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Edge Field" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bissel" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yecha Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Spine Ridge" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yatil Pass" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hold of the Sea Princes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kingdom of Nyrond" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mitrick" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Forlorn Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Loftwick" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grabford" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dim Forest East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gnarley Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Warfields" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gull Cliffs" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tangles" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lorridges" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grandwood Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Phostwood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Blue" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Amedio South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tundra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fellreev West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bellport" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Flinty Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hornwood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Corusk Pass" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tusman Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wormhall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Verbobonc" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Naerie" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hepmonaland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Riftcrag" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eastfair" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fruztii" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vesve Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Spinewood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="The Pomarj" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stoink" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ahlissa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thellywood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Asperdi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lorridges North" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Celadon West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Maure Wetlands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Soull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Olman" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Udgru East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rushmoors" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hraak Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Archclericy of Veluna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Duchy of Ulek" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bone March" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vlekstaad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Glot" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Traft" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Innspa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bramblewood West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ogburg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Duchy of Tenh" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="See of Medegia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Amedio Jungle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tusmit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Iuz" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hookhill" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grandwood South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Spikey Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hool" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fellreev South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Littleberg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jotsplat" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mounds of Dawn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Blackwater" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="The Headlands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Elredd" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Free City of Greyhawk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="The Great Kingdom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Blackmoor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gnat Marshes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Suss Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Good Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lone Heath" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jurnre" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Javan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Soull Pass" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kingdom of Keoland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Province" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wild Coast" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Deepstill" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Troll Fens" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wastes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Griff Pass" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Plains of the Paynims" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Howling Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rovers of the Barrens" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rift Canyon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lortmil Pass" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Celadon Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ceshra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yecha" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hochoch" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jalpa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="The Yeomanry" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Idee" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gradsul" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wolf Nomads" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Burneal East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Timberway Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Midmeadow" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Celene" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Abbor Alz East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chathold" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Onnwal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sea of Dust" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cairn Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Quag" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Torrich" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gamboge Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Prelacy of Almor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kingdom of Furyondy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Barrens West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="The Scarlet Brotherhood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Silver Wood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rel Astra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Theocracy of the Pale" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fairwind Isle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Antalotol" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Olman Middle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Forlorn East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Reyhu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shield Lands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pontylver" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eru-Jovar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Havenhill" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ratik Pass" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Olman East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Flen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bluff Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="County of Sunndi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Adri West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stark Mounds" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Flanmi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="County of Urnst" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Principality of Ulek" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hool Marshes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Welkwood South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hestmark Highlands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oyt Wood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Imeda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sable Wood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tusman Hills South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fellreev East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tiger Nomads" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Krakenheim" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sepia Uplands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Adri Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hraak Pass" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hold of Stonefist" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dreadwood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Udgru Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thelly" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Province" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Caliphate of Ekbir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="The Horned Society" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kron Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Drachensgrab Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gran March" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kro Terlep" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Port Ekul" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nuther Wood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Burneal Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dry Steppes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Crockport" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ratik" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rookroost" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sultanate of Zeif" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Valley of the Mage" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Molag" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thornward" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vesve South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Winetha" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cruski" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Burneal West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="County of Ulek" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Blemu Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bramblewood Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Duxchan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gryrax" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Loftwood" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Duchy of Urnst" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Land of Black Ice" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yatil Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Clatspur Range" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yatil East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cold Marshes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lortmil Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lortmil South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Barrier Peaks" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Crystalmist Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jotens" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sulhaut Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hellfurnace Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vast Swamp" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rakers" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rakers East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Griff Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Griff West" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Corusk Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Corusk East" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Corusk South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <!-- canals -->
+    <attachment name="canalAttachment" attachTo="Nyr Dyv" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Selintan Canal"/>
+      <option name="landTerritories" value="Gnarley Forest:Free City of Greyhawk"/>
+    </attachment>
+    <attachment name="canalAttachment" attachTo="Woolly Bay" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Selintan Canal"/>
+      <option name="landTerritories" value="Gnarley Forest:Free City of Greyhawk"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- Great_Kingdom Owned Territories -->
+      <territoryOwner territory="Flanmi" owner="Great_Kingdom"/>
+      <territoryOwner territory="Winetha" owner="Great_Kingdom"/>
+      <territoryOwner territory="Edge Field" owner="Great_Kingdom"/>
+      <territoryOwner territory="The Great Kingdom" owner="Great_Kingdom"/>
+      <territoryOwner territory="Jalpa" owner="Great_Kingdom"/>
+      <territoryOwner territory="Torrich" owner="Great_Kingdom"/>
+      <territoryOwner territory="Imeda" owner="Great_Kingdom"/>
+      <territoryOwner territory="Rauxes" owner="Great_Kingdom"/>
+      <territoryOwner territory="Gull Cliffs" owner="Great_Kingdom"/>
+      <territoryOwner territory="Gull" owner="Great_Kingdom"/>
+      <territoryOwner territory="Asperdi" owner="Great_Kingdom"/>
+      <!-- Furyondy Owned Territories -->
+      <territoryOwner territory="Admundfort" owner="Furyondy"/>
+      <territoryOwner territory="Shield Lands" owner="Furyondy"/>
+      <territoryOwner territory="Willip" owner="Furyondy"/>
+      <territoryOwner territory="Grabford" owner="Furyondy"/>
+      <territoryOwner territory="Crockport" owner="Furyondy"/>
+      <territoryOwner territory="Chendl" owner="Furyondy"/>
+      <territoryOwner territory="Littleberg" owner="Furyondy"/>
+      <territoryOwner territory="Kingdom of Furyondy" owner="Furyondy"/>
+      <territoryOwner territory="Verbobonc" owner="Furyondy"/>
+      <!-- Nyrond Owned Territories -->
+      <territoryOwner territory="Midmeadow" owner="Nyrond"/>
+      <territoryOwner territory="Kingdom of Nyrond" owner="Nyrond"/>
+      <territoryOwner territory="Rel Mord" owner="Nyrond"/>
+      <territoryOwner territory="Oldred" owner="Nyrond"/>
+      <territoryOwner territory="Womtham" owner="Nyrond"/>
+      <territoryOwner territory="Innspa" owner="Nyrond"/>
+      <territoryOwner territory="Prelacy of Almor" owner="Nyrond"/>
+      <territoryOwner territory="Chathold" owner="Nyrond"/>
+      <territoryOwner territory="County of Sunndi" owner="Nyrond"/>
+      <territoryOwner territory="Pitchfield" owner="Nyrond"/>
+      <!-- Keoland Owned Territories -->
+      <territoryOwner territory="Kingdom of Keoland" owner="Keoland"/>
+      <territoryOwner territory="Niole Dra" owner="Keoland"/>
+      <territoryOwner territory="Gradsul" owner="Keoland"/>
+      <territoryOwner territory="Loftwick" owner="Keoland"/>
+      <territoryOwner territory="The Yeomanry" owner="Keoland"/>
+      <!-- Scarlet_Brotherhood Owned Territories -->
+      <territoryOwner territory="Hool" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="Hold of the Sea Princes" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="Fairwind Isle" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="Idee" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="Naerie" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="Kro Terlep" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="Hesuel Ilshar" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="Terlep West" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="The Scarlet Brotherhood" owner="Scarlet_Brotherhood"/>
+      <territoryOwner territory="Port Ekul" owner="Scarlet_Brotherhood"/>
+      <!-- Iuz Owned Territories -->
+      <territoryOwner territory="Hold of Stonefist" owner="Iuz"/>
+      <territoryOwner territory="Vlekstaad" owner="Iuz"/>
+      <territoryOwner territory="Molag" owner="Iuz"/>
+      <territoryOwner territory="The Horned Society" owner="Iuz"/>
+      <territoryOwner territory="Dorakaa" owner="Iuz"/>
+      <territoryOwner territory="Iuz" owner="Iuz"/>
+      <territoryOwner territory="Howling Hills" owner="Iuz"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Iuz Unit Placements -->
+      <unitPlacement unitType="medium_infantry" territory="Hold of Stonefist" quantity="2" owner="Iuz"/>
+      <unitPlacement unitType="medium_infantry" territory="Vlekstaad" quantity="2" owner="Iuz"/>
+      <unitPlacement unitType="light_cavalry" territory="Vlekstaad" quantity="3" owner="Iuz"/>
+      <unitPlacement unitType="Fortification" territory="Vlekstaad" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="small_ship" territory="White Fanged Bay" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="orc" territory="Molag" quantity="3" owner="Iuz"/>
+      <unitPlacement unitType="hobgoblin" territory="Molag" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="medium_infantry" territory="Molag" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="Fortification" territory="Molag" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="goblin" territory="The Horned Society" quantity="2" owner="Iuz"/>
+      <unitPlacement unitType="medium_infantry" territory="The Horned Society" quantity="2" owner="Iuz"/>
+      <unitPlacement unitType="hobgoblin" territory="Dorakaa" quantity="2" owner="Iuz"/>
+      <unitPlacement unitType="orc" territory="Dorakaa" quantity="2" owner="Iuz"/>
+      <unitPlacement unitType="medium_infantry" territory="Dorakaa" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="Fortification" territory="Dorakaa" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="bowman" territory="Dorakaa" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="light_cavalry" territory="Iuz" quantity="3" owner="Iuz"/>
+      <unitPlacement unitType="medium_infantry" territory="Iuz" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="hobgoblin" territory="Howling Hills" quantity="1" owner="Iuz"/>
+      <unitPlacement unitType="goblin" territory="Howling Hills" quantity="3" owner="Iuz"/>
+      <unitPlacement unitType="Fortification" territory="Howling Hills" quantity="1" owner="Iuz"/>
+      <!-- Scarlet_Brotherhood Unit Placements -->
+      <unitPlacement unitType="small_ship" territory="Idee Coast" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="small_ship" territory="Tilva Strait" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="ship" territory="Tilva Strait" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="ship" territory="Jerlea Bay" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="small_ship" territory="Flotsam and Jetsom" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="ship" territory="Flotsam and Jetsom" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_infantry" territory="Hool" quantity="3" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="medium_infantry" territory="Hold of the Sea Princes" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_cavalry" territory="Hold of the Sea Princes" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="orc" territory="Hold of the Sea Princes" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="Fortification" territory="Hold of the Sea Princes" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_infantry" territory="Fairwind Isle" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="medium_infantry" territory="Fairwind Isle" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="medium_infantry" territory="Idee" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="orc" territory="Idee" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="Fortification" territory="Idee" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="medium_infantry" territory="Naerie" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_cavalry" territory="Naerie" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_infantry" territory="Naerie" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_infantry" territory="Kro Terlep" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="orc" territory="Kro Terlep" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="heavy_infantry" territory="Hesuel Ilshar" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="orc" territory="Hesuel Ilshar" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="Fortification" territory="Hesuel Ilshar" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="bowman" territory="Hesuel Ilshar" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_infantry" territory="Terlep West" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_infantry" territory="The Scarlet Brotherhood" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="orc" territory="Port Ekul" quantity="2" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_infantry" territory="Port Ekul" quantity="1" owner="Scarlet_Brotherhood"/>
+      <unitPlacement unitType="light_cavalry" territory="Port Ekul" quantity="1" owner="Scarlet_Brotherhood"/>
+      <!-- Keoland Unit Placements -->
+      <unitPlacement unitType="small_ship" territory="Sea of Ulek" quantity="2" owner="Keoland"/>
+      <unitPlacement unitType="ship" territory="Sea of Ulek" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="medium_cavalry" territory="Kingdom of Keoland" quantity="3" owner="Keoland"/>
+      <unitPlacement unitType="medium_infantry" territory="Kingdom of Keoland" quantity="2" owner="Keoland"/>
+      <unitPlacement unitType="dwarf" territory="Niole Dra" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="elf" territory="Niole Dra" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="halfling" territory="Niole Dra" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="medium_infantry" territory="Niole Dra" quantity="2" owner="Keoland"/>
+      <unitPlacement unitType="Fortification" territory="Niole Dra" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="bowman" territory="Niole Dra" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="medium_infantry" territory="Gradsul" quantity="2" owner="Keoland"/>
+      <unitPlacement unitType="elf" territory="Gradsul" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="dwarf" territory="Gradsul" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="medium_cavalry" territory="Gradsul" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="Fortification" territory="Gradsul" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="dwarf" territory="Loftwick" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="medium_infantry" territory="Loftwick" quantity="2" owner="Keoland"/>
+      <unitPlacement unitType="medium_cavalry" territory="Loftwick" quantity="2" owner="Keoland"/>
+      <unitPlacement unitType="Fortification" territory="Loftwick" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="dwarf" territory="The Yeomanry" quantity="1" owner="Keoland"/>
+      <unitPlacement unitType="halfling" territory="The Yeomanry" quantity="2" owner="Keoland"/>
+      <unitPlacement unitType="medium_infantry" territory="The Yeomanry" quantity="2" owner="Keoland"/>
+      <!-- Nyrond Unit Placements -->
+      <unitPlacement unitType="ship" territory="Relmor Bay" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="small_ship" territory="Relmor Bay" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="dwarf" territory="County of Sunndi" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_infantry" territory="County of Sunndi" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_cavalry" territory="County of Sunndi" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="Fortification" territory="County of Sunndi" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="elf" territory="Pitchfield" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="light_infantry" territory="Pitchfield" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_infantry" territory="Pitchfield" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="medium_infantry" territory="Midmeadow" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="light_infantry" territory="Kingdom of Nyrond" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="medium_cavalry" territory="Kingdom of Nyrond" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="Fortification" territory="Kingdom of Nyrond" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_cavalry" territory="Rel Mord" quantity="3" owner="Nyrond"/>
+      <unitPlacement unitType="heavy_infantry" territory="Rel Mord" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="Fortification" territory="Rel Mord" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="bowman" territory="Rel Mord" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_cavalry" territory="Oldred" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="medium_infantry" territory="Oldred" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="medium_cavalry" territory="Womtham" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_infantry" territory="Womtham" quantity="3" owner="Nyrond"/>
+      <unitPlacement unitType="medium_infantry" territory="Innspa" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="medium_cavalry" territory="Innspa" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="heavy_infantry" territory="Prelacy of Almor" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_cavalry" territory="Prelacy of Almor" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_infantry" territory="Prelacy of Almor" quantity="3" owner="Nyrond"/>
+      <unitPlacement unitType="Fortification" territory="Prelacy of Almor" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="heavy_infantry" territory="Chathold" quantity="1" owner="Nyrond"/>
+      <unitPlacement unitType="medium_cavalry" territory="Chathold" quantity="2" owner="Nyrond"/>
+      <unitPlacement unitType="medium_infantry" territory="Chathold" quantity="2" owner="Nyrond"/>
+      <!-- Furyondy Unit Placements -->
+      <unitPlacement unitType="medium_infantry" territory="Admundfort" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="heavy_infantry" territory="Admundfort" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="heavy_infantry" territory="Shield Lands" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="medium_infantry" territory="Shield Lands" quantity="2" owner="Furyondy"/>
+      <unitPlacement unitType="heavy_cavalry" territory="Shield Lands" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="Fortification" territory="Shield Lands" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="heavy_infantry" territory="Willip" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="medium_infantry" territory="Willip" quantity="3" owner="Furyondy"/>
+      <unitPlacement unitType="heavy_cavalry" territory="Willip" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="heavy_infantry" territory="Grabford" quantity="2" owner="Furyondy"/>
+      <unitPlacement unitType="medium_infantry" territory="Grabford" quantity="3" owner="Furyondy"/>
+      <unitPlacement unitType="medium_infantry" territory="Crockport" quantity="2" owner="Furyondy"/>
+      <unitPlacement unitType="medium_cavalry" territory="Crockport" quantity="2" owner="Furyondy"/>
+      <unitPlacement unitType="Fortification" territory="Crockport" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="heavy_infantry" territory="Chendl" quantity="2" owner="Furyondy"/>
+      <unitPlacement unitType="medium_infantry" territory="Chendl" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="Fortification" territory="Chendl" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="bowman" territory="Chendl" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="light_infantry" territory="Littleberg" quantity="2" owner="Furyondy"/>
+      <unitPlacement unitType="medium_cavalry" territory="Littleberg" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="medium_cavalry" territory="Kingdom of Furyondy" quantity="2" owner="Furyondy"/>
+      <unitPlacement unitType="medium_infantry" territory="Kingdom of Furyondy" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="Fortification" territory="Kingdom of Furyondy" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="light_infantry" territory="Verbobonc" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="medium_cavalry" territory="Verbobonc" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="small_ship" territory="Whyestil Lake" quantity="1" owner="Furyondy"/>
+      <unitPlacement unitType="ship" territory="Nyr Dyv" quantity="1" owner="Furyondy"/>
+      <!-- Great_Kingdom Unit Placements -->
+      <unitPlacement unitType="ship" territory="Sea Barons" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="small_ship" territory="Sea Barons" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="light_infantry" territory="Flanmi" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_cavalry" territory="Flanmi" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="Fortification" territory="Flanmi" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_cavalry" territory="Winetha" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_infantry" territory="Winetha" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_cavalry" territory="Edge Field" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="light_infantry" territory="Edge Field" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_infantry" territory="The Great Kingdom" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_cavalry" territory="The Great Kingdom" quantity="3" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_infantry" territory="Jalpa" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="heavy_cavalry" territory="Jalpa" quantity="3" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_infantry" territory="Torrich" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_cavalry" territory="Torrich" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="light_infantry" territory="Torrich" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="Fortification" territory="Torrich" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="light_infantry" territory="Imeda" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_cavalry" territory="Imeda" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="heavy_cavalry" territory="Rauxes" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_infantry" territory="Rauxes" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="Fortification" territory="Rauxes" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="bowman" territory="Rauxes" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="light_infantry" territory="Gull Cliffs" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="light_infantry" territory="Gull" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="light_infantry" territory="Asperdi" quantity="2" owner="Great_Kingdom"/>
+      <unitPlacement unitType="medium_cavalry" territory="Asperdi" quantity="1" owner="Great_Kingdom"/>
+      <unitPlacement unitType="Fortification" territory="Asperdi" quantity="1" owner="Great_Kingdom"/>
+      <!-- Neutral Unit Placements -->
+      <unitPlacement unitType="light_infantry" territory="Ket" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Ket" quantity="2"/>
+      <unitPlacement unitType="dwarf" territory="Glorioles" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Grand Duchy of Geoff" quantity="1"/>
+      <unitPlacement unitType="medium_cavalry" territory="Grand Duchy of Geoff" quantity="1"/>
+      <unitPlacement unitType="small_ship" territory="Lordship Isles East" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Bright Desert" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Menowood" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Menowood" quantity="2"/>
+      <unitPlacement unitType="halfling" territory="Spine Ridge North" quantity="2"/>
+      <unitPlacement unitType="ship" territory="Lendore Isles" quantity="1"/>
+      <unitPlacement unitType="dragon" territory="Lendore Isles" quantity="1"/>
+      <unitPlacement unitType="treant" territory="Welkwood" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Welkwood" quantity="1"/>
+      <unitPlacement unitType="dwarf" territory="Tors" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Tors" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Bandit Kingdoms" quantity="1"/>
+      <unitPlacement unitType="medium_cavalry" territory="Bandit Kingdoms" quantity="1"/>
+      <unitPlacement unitType="medium_cavalry" territory="Radigast City" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Radigast City" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Sterich" quantity="3"/>
+      <unitPlacement unitType="dwarf" territory="Little Hills" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Little Hills" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Artonsamay" quantity="2"/>
+      <unitPlacement unitType="ship" territory="Fjords" quantity="1"/>
+      <unitPlacement unitType="small_ship" territory="Fjords" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Dim Forest" quantity="2"/>
+      <unitPlacement unitType="treant" territory="Dim Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Freehold" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Schnai" quantity="3"/>
+      <unitPlacement unitType="halfling" territory="Hestmark West" quantity="3"/>
+      <unitPlacement unitType="elf" territory="Lo Reltarma" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Lo Reltarma" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Cruski West" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Rieuwood" quantity="3"/>
+      <unitPlacement unitType="small_ship" territory="The Lordship Isles" quantity="1"/>
+      <unitPlacement unitType="ship" territory="The Lordship Isles" quantity="2"/>
+      <unitPlacement unitType="ship" territory="Dramidj Ocean" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Abbor Alz" quantity="2"/>
+      <unitPlacement unitType="light_cavalry" territory="Abbor Alz" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Fellreev Forest" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Fellreev Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Barrens East" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Barrens East" quantity="1"/>
+      <unitPlacement unitType="dwarf" territory="Irongate" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Irongate" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Perrenland" quantity="4"/>
+      <unitPlacement unitType="halfling" territory="Highfolk" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Highfolk" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Sulward City" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Cruski South" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Bissel" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Bissel" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Yecha Hills" quantity="2"/>
+      <unitPlacement unitType="giant" territory="Yecha Hills" quantity="1"/>
+      <unitPlacement unitType="dwarf" territory="Spine Ridge" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Spine Ridge" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Yatil Pass" quantity="2"/>
+      <unitPlacement unitType="small_ship" territory="Grendep Bay" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Mitrick" quantity="3"/>
+      <unitPlacement unitType="heavy_cavalry" territory="Mitrick" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Forlorn Forest" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Dim Forest East" quantity="2"/>
+      <unitPlacement unitType="elf" territory="Gnarley Forest" quantity="1"/>
+      <unitPlacement unitType="goblin" territory="Gnarley Forest" quantity="1"/>
+      <unitPlacement unitType="treant" territory="Gnarley Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Gnarley Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Warfields" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Tangles" quantity="1"/>
+      <unitPlacement unitType="orc" territory="Tangles" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Lorridges" quantity="2"/>
+      <unitPlacement unitType="dwarf" territory="Lorridges" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Grandwood Forest" quantity="2"/>
+      <unitPlacement unitType="elf" territory="Grandwood Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Phostwood" quantity="2"/>
+      <unitPlacement unitType="elf" territory="Phostwood" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Blue" quantity="1"/>
+      <unitPlacement unitType="orc" territory="Blue" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Amedio South" quantity="2"/>
+      <unitPlacement unitType="goblin" territory="Amedio South" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Tundra" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Fellreev West" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Bellport" quantity="2"/>
+      <unitPlacement unitType="orc" territory="Bellport" quantity="1"/>
+      <unitPlacement unitType="orc" territory="Flinty Hills" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Flinty Hills" quantity="1"/>
+      <unitPlacement unitType="dwarf" territory="Flinty Hills" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Flinty Hills" quantity="1"/>
+      <unitPlacement unitType="giant" territory="Hornwood" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Hornwood" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Corusk Pass" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Tusman Hills" quantity="2"/>
+      <unitPlacement unitType="halfling" territory="Tusman Hills" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Wormhall" quantity="3"/>
+      <unitPlacement unitType="troll" territory="Hepmonaland" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Hepmonaland" quantity="3"/>
+      <unitPlacement unitType="small_ship" territory="Woolly Bay" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Riftcrag" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Fruztii" quantity="2"/>
+      <unitPlacement unitType="elf" territory="Vesve Forest" quantity="1"/>
+      <unitPlacement unitType="goblin" territory="Vesve Forest" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Vesve Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Spinewood" quantity="1"/>
+      <unitPlacement unitType="troll" territory="Spinewood" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="The Pomarj" quantity="2"/>
+      <unitPlacement unitType="goblin" territory="The Pomarj" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Stoink" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Stoink" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Ahlissa" quantity="3"/>
+      <unitPlacement unitType="medium_cavalry" territory="Ahlissa" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Thellywood" quantity="2"/>
+      <unitPlacement unitType="dwarf" territory="Lorridges North" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Lorridges North" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Lorridges North" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Celadon West" quantity="1"/>
+      <unitPlacement unitType="treant" territory="Celadon West" quantity="1"/>
+      <unitPlacement unitType="troll" territory="Maure Wetlands" quantity="1"/>
+      <unitPlacement unitType="goblin" territory="Maure Wetlands" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Soull" quantity="4"/>
+      <unitPlacement unitType="light_infantry" territory="Olman" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Udgru East" quantity="2"/>
+      <unitPlacement unitType="light_cavalry" territory="Ull" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Rushmoors" quantity="1"/>
+      <unitPlacement unitType="troll" territory="Rushmoors" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Hraak Forest" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Archclericy of Veluna" quantity="3"/>
+      <unitPlacement unitType="heavy_cavalry" territory="Archclericy of Veluna" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Duchy of Ulek" quantity="3"/>
+      <unitPlacement unitType="medium_infantry" territory="Bone March" quantity="2"/>
+      <unitPlacement unitType="orc" territory="Bone March" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Glot" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Traft" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Bramblewood West" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Ogburg" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Ogburg" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Duchy of Tenh" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Duchy of Tenh" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="See of Medegia" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="See of Medegia" quantity="1"/>
+      <unitPlacement unitType="hobgoblin" territory="Amedio Jungle" quantity="1"/>
+      <unitPlacement unitType="goblin" territory="Amedio Jungle" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Amedio Jungle" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Tusmit" quantity="3"/>
+      <unitPlacement unitType="medium_cavalry" territory="Tusmit" quantity="2"/>
+      <unitPlacement unitType="small_ship" territory="Solnor North" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Hookhill" quantity="3"/>
+      <unitPlacement unitType="medium_cavalry" territory="Hookhill" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Grandwood South" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Spikey Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Fellreev South" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Jotsplat" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Mounds of Dawn" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Mounds of Dawn" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Blackwater" quantity="2"/>
+      <unitPlacement unitType="goblin" territory="Blackwater" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="The Headlands" quantity="2"/>
+      <unitPlacement unitType="halfling" territory="The Headlands" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Elredd" quantity="3"/>
+      <unitPlacement unitType="medium_infantry" territory="Free City of Greyhawk" quantity="5"/>
+      <unitPlacement unitType="Fortification" territory="Free City of Greyhawk" quantity="1"/>
+      <unitPlacement unitType="bowman" territory="Free City of Greyhawk" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Blackmoor" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Gnat Marshes" quantity="1"/>
+      <unitPlacement unitType="goblin" territory="Gnat Marshes" quantity="1"/>
+      <unitPlacement unitType="goblin" territory="Suss Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Suss Forest" quantity="2"/>
+      <unitPlacement unitType="halfling" territory="Good Hills" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Lone Heath" quantity="1"/>
+      <unitPlacement unitType="troll" territory="Lone Heath" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Jurnre" quantity="2"/>
+      <unitPlacement unitType="halfling" territory="Jurnre" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Soull Pass" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="North Province" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="North Province" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Eastfair" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Eastfair" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Wild Coast" quantity="3"/>
+      <unitPlacement unitType="light_infantry" territory="Deepstill" quantity="3"/>
+      <unitPlacement unitType="troll" territory="Troll Fens" quantity="3"/>
+      <unitPlacement unitType="light_infantry" territory="Wastes" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Griff Pass" quantity="2"/>
+      <unitPlacement unitType="light_cavalry" territory="Plains of the Paynims" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Rovers of the Barrens" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Rovers of the Barrens" quantity="1"/>
+      <unitPlacement unitType="giant" territory="Rift Canyon" quantity="1"/>
+      <unitPlacement unitType="goblin" territory="Rift Canyon" quantity="2"/>
+      <unitPlacement unitType="dwarf" territory="Lortmil Pass" quantity="2"/>
+      <unitPlacement unitType="elf" territory="Celadon Forest" quantity="2"/>
+      <unitPlacement unitType="light_cavalry" territory="Celadon Forest" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Ceshra" quantity="1"/>
+      <unitPlacement unitType="medium_cavalry" territory="Ceshra" quantity="3"/>
+      <unitPlacement unitType="light_infantry" territory="Yecha" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Yecha" quantity="2"/>
+      <unitPlacement unitType="light_cavalry" territory="Hochoch" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Hochoch" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Javan" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Javan" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Wolf Nomads" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Wolf Nomads" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Burneal East" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Timberway Forest" quantity="2"/>
+      <unitPlacement unitType="elf" territory="Celene" quantity="4"/>
+      <unitPlacement unitType="light_infantry" territory="Abbor Alz East" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Onnwal" quantity="3"/>
+      <unitPlacement unitType="light_infantry" territory="Cairn Hills" quantity="2"/>
+      <unitPlacement unitType="halfling" territory="Cairn Hills" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Quag" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Gamboge Forest" quantity="2"/>
+      <unitPlacement unitType="light_cavalry" territory="Gamboge Forest" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Barrens West" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Silver Wood" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Rel Astra" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Rel Astra" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Theocracy of the Pale" quantity="3"/>
+      <unitPlacement unitType="medium_cavalry" territory="Theocracy of the Pale" quantity="1"/>
+      <unitPlacement unitType="medium_cavalry" territory="Antalotol" quantity="3"/>
+      <unitPlacement unitType="light_infantry" territory="Olman Middle" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Forlorn East" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Reyhu" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Pontylver" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Pontylver" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Eru-Jovar" quantity="3"/>
+      <unitPlacement unitType="medium_infantry" territory="Havenhill" quantity="3"/>
+      <unitPlacement unitType="medium_infantry" territory="Ratik Pass" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Olman East" quantity="1"/>
+      <unitPlacement unitType="giant" territory="Flen" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Flen" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Bluff Hills" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Adri West" quantity="2"/>
+      <unitPlacement unitType="light_cavalry" territory="Adri West" quantity="1"/>
+      <unitPlacement unitType="giant" territory="Stark Mounds" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="County of Urnst" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="County of Urnst" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Principality of Ulek" quantity="2"/>
+      <unitPlacement unitType="troll" territory="Hool Marshes" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Hool Marshes" quantity="2"/>
+      <unitPlacement unitType="elf" territory="Welkwood South" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Welkwood South" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="Hestmark Highlands" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Hestmark Highlands" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Oyt Wood" quantity="1"/>
+      <unitPlacement unitType="treant" territory="Oyt Wood" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Sable Wood" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Tusman Hills South" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Fellreev East" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Tiger Nomads" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Tiger Nomads" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Krakenheim" quantity="3"/>
+      <unitPlacement unitType="halfling" territory="Sepia Uplands" quantity="3"/>
+      <unitPlacement unitType="elf" territory="Adri Forest" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Adri Forest" quantity="2"/>
+      <unitPlacement unitType="light_cavalry" territory="Adri Forest" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Hraak Pass" quantity="2"/>
+      <unitPlacement unitType="treant" territory="Dreadwood" quantity="2"/>
+      <unitPlacement unitType="goblin" territory="Dreadwood" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Udgru Forest" quantity="3"/>
+      <unitPlacement unitType="medium_infantry" territory="Thelly" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="South Province" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="South Province" quantity="2"/>
+      <unitPlacement unitType="heavy_infantry" territory="Caliphate of Ekbir" quantity="2"/>
+      <unitPlacement unitType="heavy_cavalry" territory="Caliphate of Ekbir" quantity="3"/>
+      <unitPlacement unitType="light_cavalry" territory="Kron Hills" quantity="2"/>
+      <unitPlacement unitType="halfling" territory="Kron Hills" quantity="2"/>
+      <unitPlacement unitType="hobgoblin" territory="Drachensgrab Hills" quantity="2"/>
+      <unitPlacement unitType="goblin" territory="Drachensgrab Hills" quantity="3"/>
+      <unitPlacement unitType="medium_infantry" territory="Gran March" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Gran March" quantity="1"/>
+      <unitPlacement unitType="light_infantry" territory="Nuther Wood" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Burneal Forest" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Ratik" quantity="3"/>
+      <unitPlacement unitType="medium_infantry" territory="Rookroost" quantity="2"/>
+      <unitPlacement unitType="medium_cavalry" territory="Rookroost" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Sultanate of Zeif" quantity="2"/>
+      <unitPlacement unitType="heavy_cavalry" territory="Sultanate of Zeif" quantity="3"/>
+      <unitPlacement unitType="dragon" territory="Valley of the Mage" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Valley of the Mage" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Thornward" quantity="3"/>
+      <unitPlacement unitType="medium_cavalry" territory="Thornward" quantity="1"/>
+      <unitPlacement unitType="elf" territory="Vesve South" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Vesve South" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Cruski" quantity="2"/>
+      <unitPlacement unitType="light_infantry" territory="Burneal West" quantity="1"/>
+      <unitPlacement unitType="halfling" territory="County of Ulek" quantity="3"/>
+      <unitPlacement unitType="goblin" territory="Blemu Hills" quantity="2"/>
+      <unitPlacement unitType="hobgoblin" territory="Blemu Hills" quantity="1"/>
+      <unitPlacement unitType="light_cavalry" territory="Bramblewood Forest" quantity="2"/>
+      <unitPlacement unitType="goblin" territory="Bramblewood Forest" quantity="2"/>
+      <unitPlacement unitType="medium_infantry" territory="Duxchan" quantity="2"/>
+      <unitPlacement unitType="dwarf" territory="Gryrax" quantity="3"/>
+      <unitPlacement unitType="light_infantry" territory="Loftwood" quantity="2"/>
+      <unitPlacement unitType="elf" territory="Duchy of Urnst" quantity="1"/>
+      <unitPlacement unitType="medium_infantry" territory="Duchy of Urnst" quantity="2"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Nyrond" resource="PUs" quantity="25"/>
+      <resourceGiven player="Great_Kingdom" resource="PUs" quantity="25"/>
+      <resourceGiven player="Iuz" resource="PUs" quantity="25"/>
+      <resourceGiven player="Furyondy" resource="PUs" quantity="25"/>
+      <resourceGiven player="Scarlet_Brotherhood" resource="PUs" quantity="25"/>
+      <resourceGiven player="Keoland" resource="PUs" quantity="25"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Allow multiple AA per territory -->
+    <property name="Multiple AA Per Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <!-- Bidding -->
+    <property name="Furyondy bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Nyrond bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Scarlet_Brotherhood bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Keoland bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Iuz bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Great_Kingdom bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="greyhawk" editable="false"/>
+    <!-- notes appear in the notes menu in the main screen, format as html -->
+    <property name="notes">
+      <string/>
+      <value><![CDATA[
+				<div style="color:#700000 "><h1>This version of Greyhawk has been deprecated.</h1>
+				<h1>Please download the new GREYHAWK WARS game, a massive expansion of the original concept: http://tinyurl.com/ghwars</h1></div>
+				<p>
+				<p>
+				
+				<h3>Greyhawk for TripleA</h3><br>
+				Created by Panguitch (ghpanguitch@gmail.com)<br><br>
+				
+				Based on the World of Greyhawk, the classic setting for Dungeons and dragons, this is an attempt to adapt the Greyhawk Wars strategy game for TripleA.  
+				These names are all trademarked by Wizards of the Coast, but as Greyhawk Wars is long out of print I believe my effort can do no harm and, if anything, can bring attention
+				to an excellent wargame.  Myriad changes to game play and combat were necessary in adapting this concept to the TripleA engine, 
+				and the entire aspects of diplomacy, hero actions, event cards, etc., could not be included.  
+				In short, it's only a shadow of the Greyhawk Wars game for which I harbor much nostalgia.  If you have a chance to pick the real thing up on eBay or something, it's worth it.
+				To learn more visit the Greyhawk Wiki: http://www.canonfire.com/wiki/index.php?title=Greyhawk_Wars<br><br>
+				
+				<b>Background</b><br>
+				This scenario depicts the erruption of what amounts to a world war.  The evil demi-god Iuz has returned and reclamed his territory north of Whyestil Lake.  
+				He quickly reasserted control over the Horned Society and took over the Hold of Stonefist through subterfuge 
+				(his attempts to do the same to the barbarians to the east along the Thillonrian Peninsula failed).  He is now prepared to march south, on the rich lands of Furyondy
+				and former provinces of Nyrond like the Duchy of Tenh.<br><br>
+				Meanwhile Ivid V, Mad Overking of the Great Kingdom of Aerdy, has determined to reclaim that kingdom's former glory 
+				by subjugating the North and South Provinces, the See of Medegia, and most importantly, the Prelacy of Almor and the Kingdom of Nyrond.<br><br>
+				In the shadows the Scarlet Brotherhood has moved, through espionage, assassination, and coups to usurp the Hold of the Sea Princes and Idee.
+				This secretive monastic order, led by the Father of Obedience, employs savages from Hepmonaland in its ruthless attempts
+				to purify the world.<br><br>
+				Against these evil forces three kingdoms are arrayed, traditional bastions of good:  Furyondy, Nyrond, and Keoland.
+				Weakened by internal strife and dissension, will they be able to withstand the coming storm?<br><br>
+				
+				<b>Units</b><br>
+				(attack, defend, movement, cost)<br><br>
+				
+				Light Infantry 1,2,2,3<br>
+				Medium Infantry 2,3,2,4<br>
+				Heavy Infantry 3,4,2,5<br><br>
+				
+				Light Cavalry 1,1,4,3<br>
+				Medium Cavalry 2,1,4,4<br>
+				Heavy Cavalry 3,2,4,5<br><br>
+				
+				giant 4,5,2,10 (takes two hits to kill)<br>
+				dragon 5,4,8,12 (an air unit that rolls two dice in attacks)<br>
+				bowman 1,1,2,4 (an anti-air unit)<br><br>
+				
+				Small ship 2,2,6,6 (can transport any one unit)<br>
+				ship 3,3,6,10 (can transport any two units and takes two hits to kill)<br><br>
+				
+				Evil-only units:<br>
+				goblin 2,1,2,3<br>
+				hobgoblin 2,3,2,6 (takes two hits to kill)<br>
+				orc 3,2,2,7 (takes two hits to kill)<br>
+				troll 4,3,2,9 (takes two hits to kill)<br><br>
+				
+				Good-only units:<br>
+				halfling 1,3,2,3<br>
+				dwarf 2,3,2,6 (takes two hits to kill)<br>
+				elf 3,2,2,7 (takes two hits to kill)<br>
+				treant 3,4,2,8 (takes two hits to kill)<br><br>
+				
+				Fortifications are the equivalent of factories and cost 12.
+			]]></value>
+    </property>
+  </propertyList>
+</game>

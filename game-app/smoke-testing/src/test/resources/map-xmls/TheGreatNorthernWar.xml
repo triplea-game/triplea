@@ -1,0 +1,1063 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="The Great Northern War" version="0.3.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Kuressaare"/>
+    <territory name="Stockholm"/>
+    <territory name="Eastern Baltic Sea" water="true"/>
+    <territory name="Malmo"/>
+    <territory name="Hannover"/>
+    <territory name="Vilna"/>
+    <territory name="Vologda"/>
+    <territory name="Goteborg"/>
+    <territory name="Segezja"/>
+    <territory name="Gulf of Gdansk" water="true"/>
+    <territory name="Trondheim"/>
+    <territory name="Narva"/>
+    <territory name="Gavle"/>
+    <territory name="Mariehamn"/>
+    <territory name="Bremen"/>
+    <territory name="Arkhangelsk"/>
+    <territory name="Reval"/>
+    <territory name="Berlin"/>
+    <territory name="Tromso"/>
+    <territory name="Skagerrak" water="true"/>
+    <territory name="Gulf of Riga" water="true"/>
+    <territory name="Radom"/>
+    <territory name="Kalmarsund" water="true"/>
+    <territory name="Stavanger"/>
+    <territory name="Schleswig"/>
+    <territory name="Gulf of Finland" water="true"/>
+    <territory name="Ostersund"/>
+    <territory name="Moskva"/>
+    <territory name="Koningsberg"/>
+    <territory name="Minsk"/>
+    <territory name="Narvik"/>
+    <territory name="North Sea" water="true"/>
+    <territory name="Atlantic Ocean" water="true"/>
+    <territory name="Kemi"/>
+    <territory name="Aarhus"/>
+    <territory name="Ladoga" water="true"/>
+    <territory name="Visby"/>
+    <territory name="Kobenhavn"/>
+    <territory name="Deutsche Bucht" water="true"/>
+    <territory name="Kalmar"/>
+    <territory name="Kolberg"/>
+    <territory name="Warszawa"/>
+    <territory name="Oulu"/>
+    <territory name="Stralsund"/>
+    <territory name="Hamburg"/>
+    <territory name="Norwegian Sea" water="true"/>
+    <territory name="Kattegat" water="true"/>
+    <territory name="Oresund" water="true"/>
+    <territory name="Riga"/>
+    <territory name="Barents Sea" water="true"/>
+    <territory name="White Sea" water="true"/>
+    <territory name="Helsingfors"/>
+    <territory name="Novogorod"/>
+    <territory name="Oslo"/>
+    <territory name="Kuopio"/>
+    <territory name="Viborg"/>
+    <territory name="Western Baltic Sea" water="true"/>
+    <territory name="Borgholm"/>
+    <territory name="St. Petersburg"/>
+    <territory name="Luleaa"/>
+    <territory name="Uddevalla"/>
+    <territory name="Umeaa"/>
+    <territory name="Southern Gulf of Bothnia" water="true"/>
+    <territory name="Northern Gulf of Bothnia" water="true"/>
+    <territory name="Murmansk"/>
+    <territory name="Gdansk"/>
+    <territory name="Bergen"/>
+    <territory name="Vasa"/>
+    <territory name="Karlstad"/>
+    <territory name="Rostock"/>
+    <territory name="Halle"/>
+    <territory name="Dresden"/>
+    <territory name="Poznan"/>
+    <territory name="Pinsk"/>
+    <territory name="Kiyv"/>
+    <territory name="Poltava"/>
+    <territory name="Ryazan"/>
+    <territory name="Kursk"/>
+    <territory name="Plunge"/>
+    <territory name="Pskov"/>
+    <territory name="Smolensk"/>
+    <!-- Territory Connections -->
+    <!-- SeaZone Connections -->
+    <connection t1="Skagerrak" t2="Kattegat"/>
+    <connection t1="Skagerrak" t2="North Sea"/>
+    <connection t1="North Sea" t2="Norwegian Sea"/>
+    <connection t1="North Sea" t2="Deutsche Bucht"/>
+    <connection t1="Atlantic Ocean" t2="Norwegian Sea"/>
+    <connection t1="Atlantic Ocean" t2="Barents Sea"/>
+    <connection t1="White Sea" t2="Barents Sea"/>
+    <connection t1="Oresund" t2="Kattegat"/>
+    <connection t1="Oresund" t2="Kalmarsund"/>
+    <connection t1="Western Baltic Sea" t2="Kalmarsund"/>
+    <connection t1="Western Baltic Sea" t2="Eastern Baltic Sea"/>
+    <connection t1="Western Baltic Sea" t2="Southern Gulf of Bothnia"/>
+    <connection t1="Southern Gulf of Bothnia" t2="Eastern Baltic Sea"/>
+    <connection t1="Southern Gulf of Bothnia" t2="Northern Gulf of Bothnia"/>
+    <connection t1="Gulf of Gdansk" t2="Kalmarsund"/>
+    <connection t1="Gulf of Gdansk" t2="Gulf of Riga"/>
+    <connection t1="Eastern Baltic Sea" t2="Gulf of Riga"/>
+    <connection t1="Eastern Baltic Sea" t2="Gulf of Finland"/>
+    <!-- SeaZone to Land Connections -->
+    <connection t1="White Sea" t2="Arkhangelsk"/>
+    <connection t1="White Sea" t2="Segezja"/>
+    <connection t1="White Sea" t2="Murmansk"/>
+    <connection t1="Barents Sea" t2="Arkhangelsk"/>
+    <connection t1="Barents Sea" t2="Murmansk"/>
+    <connection t1="Barents Sea" t2="Tromso"/>
+    <connection t1="Barents Sea" t2="Narvik"/>
+    <connection t1="Atlantic Ocean" t2="Narvik"/>
+    <connection t1="Atlantic Ocean" t2="Trondheim"/>
+    <connection t1="Atlantic Ocean" t2="Bergen"/>
+    <connection t1="Norwegian Sea" t2="Bergen"/>
+    <connection t1="Norwegian Sea" t2="Stavanger"/>
+    <connection t1="North Sea" t2="Stavanger"/>
+    <connection t1="North Sea" t2="Aarhus"/>
+    <connection t1="Skagerrak" t2="Stavanger"/>
+    <connection t1="Skagerrak" t2="Aarhus"/>
+    <connection t1="Skagerrak" t2="Uddevalla"/>
+    <connection t1="Skagerrak" t2="Oslo"/>
+    <connection t1="Deutsche Bucht" t2="Aarhus"/>
+    <connection t1="Deutsche Bucht" t2="Schleswig"/>
+    <connection t1="Deutsche Bucht" t2="Hamburg"/>
+    <connection t1="Deutsche Bucht" t2="Bremen"/>
+    <connection t1="Kattegat" t2="Aarhus"/>
+    <connection t1="Kattegat" t2="Uddevalla"/>
+    <connection t1="Kattegat" t2="Goteborg"/>
+    <connection t1="Kattegat" t2="Malmo"/>
+    <connection t1="Kattegat" t2="Kobenhavn"/>
+    <connection t1="Oresund" t2="Kobenhavn"/>
+    <connection t1="Oresund" t2="Aarhus"/>
+    <connection t1="Oresund" t2="Malmo"/>
+    <connection t1="Oresund" t2="Schleswig"/>
+    <connection t1="Oresund" t2="Rostock"/>
+    <connection t1="Oresund" t2="Stralsund"/>
+    <connection t1="Oresund" t2="Kolberg"/>
+    <connection t1="Kalmarsund" t2="Malmo"/>
+    <connection t1="Kalmarsund" t2="Kolberg"/>
+    <connection t1="Kalmarsund" t2="Kalmar"/>
+    <connection t1="Kalmarsund" t2="Borgholm"/>
+    <connection t1="Kalmarsund" t2="Visby"/>
+    <connection t1="Western Baltic Sea" t2="Kalmar"/>
+    <connection t1="Western Baltic Sea" t2="Borgholm"/>
+    <connection t1="Western Baltic Sea" t2="Visby"/>
+    <connection t1="Western Baltic Sea" t2="Stockholm"/>
+    <connection t1="Western Baltic Sea" t2="Mariehamn"/>
+    <connection t1="Gulf of Gdansk" t2="Visby"/>
+    <connection t1="Gulf of Gdansk" t2="Kolberg"/>
+    <connection t1="Gulf of Gdansk" t2="Gdansk"/>
+    <connection t1="Gulf of Gdansk" t2="Koningsberg"/>
+    <connection t1="Gulf of Gdansk" t2="Plunge"/>
+    <connection t1="Eastern Baltic Sea" t2="Reval"/>
+    <connection t1="Eastern Baltic Sea" t2="Visby"/>
+    <connection t1="Eastern Baltic Sea" t2="Mariehamn"/>
+    <connection t1="Eastern Baltic Sea" t2="Kuressaare"/>
+    <connection t1="Eastern Baltic Sea" t2="Helsingfors"/>
+    <connection t1="Gulf of Riga" t2="Visby"/>
+    <connection t1="Gulf of Riga" t2="Plunge"/>
+    <connection t1="Gulf of Riga" t2="Riga"/>
+    <connection t1="Gulf of Riga" t2="Kuressaare"/>
+    <connection t1="Gulf of Riga" t2="Reval"/>
+    <connection t1="Gulf of Finland" t2="Reval"/>
+    <connection t1="Gulf of Finland" t2="Narva"/>
+    <connection t1="Gulf of Finland" t2="St. Petersburg"/>
+    <connection t1="Gulf of Finland" t2="Viborg"/>
+    <connection t1="Gulf of Finland" t2="Helsingfors"/>
+    <connection t1="Southern Gulf of Bothnia" t2="Mariehamn"/>
+    <connection t1="Southern Gulf of Bothnia" t2="Helsingfors"/>
+    <connection t1="Southern Gulf of Bothnia" t2="Vasa"/>
+    <connection t1="Southern Gulf of Bothnia" t2="Umeaa"/>
+    <connection t1="Southern Gulf of Bothnia" t2="Gavle"/>
+    <connection t1="Southern Gulf of Bothnia" t2="Stockholm"/>
+    <connection t1="Northern Gulf of Bothnia" t2="Umeaa"/>
+    <connection t1="Northern Gulf of Bothnia" t2="Vasa"/>
+    <connection t1="Northern Gulf of Bothnia" t2="Luleaa"/>
+    <connection t1="Northern Gulf of Bothnia" t2="Kemi"/>
+    <connection t1="Northern Gulf of Bothnia" t2="Oulu"/>
+    <connection t1="Ladoga" t2="Kuopio"/>
+    <connection t1="Ladoga" t2="St. Petersburg"/>
+    <connection t1="Ladoga" t2="Viborg"/>
+    <connection t1="Ladoga" t2="Segezja"/>
+    <connection t1="Ladoga" t2="Arkhangelsk"/>
+    <connection t1="Ladoga" t2="Vologda"/>
+    <!-- Land to Land Connections -->
+    <connection t1="Oslo" t2="Stavanger"/>
+    <connection t1="Oslo" t2="Bergen"/>
+    <connection t1="Oslo" t2="Trondheim"/>
+    <connection t1="Oslo" t2="Karlstad"/>
+    <connection t1="Oslo" t2="Uddevalla"/>
+    <connection t1="Bergen" t2="Stavanger"/>
+    <connection t1="Bergen" t2="Trondheim"/>
+    <connection t1="Narvik" t2="Trondheim"/>
+    <connection t1="Narvik" t2="Ostersund"/>
+    <connection t1="Narvik" t2="Luleaa"/>
+    <connection t1="Narvik" t2="Tromso"/>
+    <connection t1="Karlstad" t2="Trondheim"/>
+    <connection t1="Karlstad" t2="Ostersund"/>
+    <connection t1="Karlstad" t2="Umeaa"/>
+    <connection t1="Karlstad" t2="Gavle"/>
+    <connection t1="Karlstad" t2="Stockholm"/>
+    <connection t1="Karlstad" t2="Goteborg"/>
+    <connection t1="Karlstad" t2="Uddevalla"/>
+    <connection t1="Ostersund" t2="Trondheim"/>
+    <connection t1="Ostersund" t2="Luleaa"/>
+    <connection t1="Ostersund" t2="Umeaa"/>
+    <connection t1="Goteborg" t2="Uddevalla"/>
+    <connection t1="Goteborg" t2="Malmo"/>
+    <connection t1="Goteborg" t2="Stockholm"/>
+    <connection t1="Goteborg" t2="Kalmar"/>
+    <connection t1="Kalmar" t2="Stockholm"/>
+    <connection t1="Kalmar" t2="Malmo"/>
+    <connection t1="Gavle" t2="Stockholm"/>
+    <connection t1="Gavle" t2="Umeaa"/>
+    <connection t1="Luleaa" t2="Umeaa"/>
+    <connection t1="Luleaa" t2="Tromso"/>
+    <connection t1="Luleaa" t2="Kemi"/>
+    <connection t1="Kemi" t2="Tromso"/>
+    <connection t1="Kemi" t2="Murmansk"/>
+    <connection t1="Kemi" t2="Oulu"/>
+    <connection t1="Murmansk" t2="Tromso"/>
+    <connection t1="Murmansk" t2="Segezja"/>
+    <connection t1="Murmansk" t2="Oulu"/>
+    <connection t1="Kuopio" t2="Oulu"/>
+    <connection t1="Kuopio" t2="Vasa"/>
+    <connection t1="Kuopio" t2="Helsingfors"/>
+    <connection t1="Kuopio" t2="Viborg"/>
+    <connection t1="Kuopio" t2="Segezja"/>
+    <connection t1="Segezja" t2="Oulu"/>
+    <connection t1="Segezja" t2="Arkhangelsk"/>
+    <connection t1="Vasa" t2="Oulu"/>
+    <connection t1="Vasa" t2="Helsingfors"/>
+    <connection t1="Viborg" t2="Helsingfors"/>
+    <connection t1="Viborg" t2="St. Petersburg"/>
+    <connection t1="Vologda" t2="Arkhangelsk"/>
+    <connection t1="Vologda" t2="St. Petersburg"/>
+    <connection t1="Vologda" t2="Novogorod"/>
+    <connection t1="Narva" t2="St. Petersburg"/>
+    <connection t1="Narva" t2="Novogorod"/>
+    <connection t1="Narva" t2="Riga"/>
+    <connection t1="Narva" t2="Reval"/>
+    <connection t1="Narva" t2="Pskov"/>
+    <connection t1="Novogorod" t2="St. Petersburg"/>
+    <connection t1="Novogorod" t2="Moskva"/>
+    <connection t1="Novogorod" t2="Pskov"/>
+    <connection t1="Novogorod" t2="Smolensk"/>
+    <connection t1="Reval" t2="Kuressaare"/>
+    <connection t1="Reval" t2="Riga"/>
+    <connection t1="Moskva" t2="Smolensk"/>
+    <connection t1="Moskva" t2="Ryazan"/>
+    <connection t1="Kursk" t2="Ryazan"/>
+    <connection t1="Kursk" t2="Poltava"/>
+    <connection t1="Kursk" t2="Kiyv"/>
+    <connection t1="Kiyv" t2="Poltava"/>
+    <connection t1="Kiyv" t2="Ryazan"/>
+    <connection t1="Kiyv" t2="Minsk"/>
+    <connection t1="Kiyv" t2="Pinsk"/>
+    <connection t1="Smolensk" t2="Pskov"/>
+    <connection t1="Smolensk" t2="Ryazan"/>
+    <connection t1="Smolensk" t2="Kiyv"/>
+    <connection t1="Smolensk" t2="Vilna"/>
+    <connection t1="Pskov" t2="Riga"/>
+    <connection t1="Pskov" t2="Vilna"/>
+    <connection t1="Vilna" t2="Riga"/>
+    <connection t1="Vilna" t2="Koningsberg"/>
+    <connection t1="Vilna" t2="Plunge"/>
+    <connection t1="Vilna" t2="Minsk"/>
+    <connection t1="Vilna" t2="Warszawa"/>
+    <connection t1="Vilna" t2="Kiyv"/>
+    <connection t1="Plunge" t2="Riga"/>
+    <connection t1="Plunge" t2="Koningsberg"/>
+    <connection t1="Minsk" t2="Pinsk"/>
+    <connection t1="Minsk" t2="Radom"/>
+    <connection t1="Minsk" t2="Warszawa"/>
+    <connection t1="Radom" t2="Gdansk"/>
+    <connection t1="Radom" t2="Warszawa"/>
+    <connection t1="Radom" t2="Pinsk"/>
+    <connection t1="Radom" t2="Poznan"/>
+    <connection t1="Warszawa" t2="Koningsberg"/>
+    <connection t1="Warszawa" t2="Gdansk"/>
+    <connection t1="Gdansk" t2="Koningsberg"/>
+    <connection t1="Gdansk" t2="Kolberg"/>
+    <connection t1="Gdansk" t2="Poznan"/>
+    <connection t1="Kolberg" t2="Berlin"/>
+    <connection t1="Kolberg" t2="Stralsund"/>
+    <connection t1="Kolberg" t2="Poznan"/>
+    <connection t1="Berlin" t2="Stralsund"/>
+    <connection t1="Berlin" t2="Rostock"/>
+    <connection t1="Berlin" t2="Hamburg"/>
+    <connection t1="Berlin" t2="Hannover"/>
+    <connection t1="Berlin" t2="Halle"/>
+    <connection t1="Berlin" t2="Dresden"/>
+    <connection t1="Berlin" t2="Poznan"/>
+    <connection t1="Dresden" t2="Poznan"/>
+    <connection t1="Dresden" t2="Halle"/>
+    <connection t1="Hamburg" t2="Hannover"/>
+    <connection t1="Hamburg" t2="Bremen"/>
+    <connection t1="Hamburg" t2="Rostock"/>
+    <connection t1="Hamburg" t2="Schleswig"/>
+    <connection t1="Hannover" t2="Halle"/>
+    <connection t1="Hannover" t2="Bremen"/>
+    <connection t1="Rostock" t2="Schleswig"/>
+    <connection t1="Rostock" t2="Stralsund"/>
+    <connection t1="Schleswig" t2="Aarhus"/>
+    <connection t1="Schleswig" t2="Kobenhavn"/>
+    <connection t1="Kobenhavn" t2="Aarhus"/>
+    <connection t1="Kobenhavn" t2="Malmo"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- Swedish Alliance  -->
+    <player name="Sweden" optional="false"/>
+    <player name="Ottoman_Empire-Ukraina_Cossacks" optional="false"/>
+    <!-- The Coalition -->
+    <player name="Denmark-Norway" optional="false"/>
+    <player name="Russia" optional="false"/>
+    <player name="Prussia" optional="false"/>
+    <player name="Saxony" optional="false"/>
+    <player name="Hannover" optional="false"/>
+    <!-- Swedish Alliance -->
+    <alliance player="Sweden" alliance="Swedish Alliance"/>
+    <alliance player="Ottoman_Empire-Ukraina_Cossacks" alliance="Swedish Alliance"/>
+    <!-- The Coalition -->
+    <alliance player="Denmark-Norway" alliance="The Coalition"/>
+    <alliance player="Russia" alliance="The Coalition"/>
+    <alliance player="Prussia" alliance="The Coalition"/>
+    <alliance player="Saxony" alliance="The Coalition"/>
+    <alliance player="Hannover" alliance="The Coalition"/>
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="cavalry"/>
+    <unit name="artillery"/>
+    <unit name="corrvette"/>
+    <unit name="battleship"/>
+    <unit name="city"/>
+    <unit name="fortress"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="SwedenBid" delegate="bid" player="Sweden" maxRunCount="1"/>
+      <step name="SwedenBidPlace" delegate="placeBid" player="Sweden" maxRunCount="1"/>
+      <step name="Denmark-NorwayBid" delegate="bid" player="Denmark-Norway" maxRunCount="1"/>
+      <step name="Denmark-NorwayBidPlace" delegate="placeBid" player="Denmark-Norway" maxRunCount="1"/>
+      <step name="PrussiaBid" delegate="bid" player="Prussia" maxRunCount="1"/>
+      <step name="PrussiaBidPlace" delegate="placeBid" player="Prussia" maxRunCount="1"/>
+      <step name="RussiaBid" delegate="bid" player="Russia" maxRunCount="1"/>
+      <step name="RussiaBidPlace" delegate="placeBid" player="Russia" maxRunCount="1"/>
+      <step name="Ottoman_Empire-Ukraina_CossacksBid" delegate="bid" player="Ottoman_Empire-Ukraina_Cossacks" maxRunCount="1"/>
+      <step name="Ottoman_Empire-Ukraina_CossacksBidPlace" delegate="placeBid" player="Ottoman_Empire-Ukraina_Cossacks" maxRunCount="1"/>
+      <step name="SaxonyBid" delegate="bid" player="Saxony" maxRunCount="1"/>
+      <step name="SaxonyBidPlace" delegate="placeBid" player="Saxony" maxRunCount="1"/>
+      <step name="HannoverBid" delegate="bid" player="Hannover" maxRunCount="1"/>
+      <step name="HannoverBidPlace" delegate="placeBid" player="Hannover" maxRunCount="1"/>
+      <!-- Sweden Game Sequence -->
+      <step name="SwedenPurchase" delegate="purchase" player="Sweden"/>
+      <step name="SwedenCombatMove" delegate="move" player="Sweden"/>
+      <step name="SwedenBattle" delegate="battle" player="Sweden"/>
+      <step name="SwedenNonCombatMove" delegate="move" player="Sweden" display="Non Combat Move"/>
+      <step name="SwedenPlace" delegate="place" player="Sweden"/>
+      <step name="SwedenEndTurn" delegate="endTurn" player="Sweden"/>
+      <!-- Russia Game Sequence -->
+      <step name="RussiaPurchase" delegate="purchase" player="Russia"/>
+      <step name="RussiaCombatMove" delegate="move" player="Russia"/>
+      <step name="RussiaBattle" delegate="battle" player="Russia"/>
+      <step name="RussiaNonCombatMove" delegate="move" player="Russia" display="Non Combat Move"/>
+      <step name="RussiaPlace" delegate="place" player="Russia"/>
+      <step name="RussiaEndTurn" delegate="endTurn" player="Russia"/>
+      <!-- Denmark-Norway Game Sequence -->
+      <step name="Denmark-NorwayPurchase" delegate="purchase" player="Denmark-Norway"/>
+      <step name="Denmark-NorwayCombatMove" delegate="move" player="Denmark-Norway"/>
+      <step name="Denmark-NorwayBattle" delegate="battle" player="Denmark-Norway"/>
+      <step name="Denmark-NorwayNonCombatMove" delegate="move" player="Denmark-Norway" display="Non Combat Move"/>
+      <step name="Denmark-NorwayPlace" delegate="place" player="Denmark-Norway"/>
+      <step name="Denmark-NorwayEndTurn" delegate="endTurn" player="Denmark-Norway"/>
+      <!-- Polish_Lithuanian_Commonwealth Game Sequence -->
+      <!-- Prussia Game Sequence -->
+      <step name="PrussiaPurchase" delegate="purchase" player="Prussia"/>
+      <step name="PrussiaCombatMove" delegate="move" player="Prussia"/>
+      <step name="PrussiaBattle" delegate="battle" player="Prussia"/>
+      <step name="PrussiaNonCombatMove" delegate="move" player="Prussia" display="Non Combat Move"/>
+      <step name="PrussiaPlace" delegate="place" player="Prussia"/>
+      <step name="PrussiaEndTurn" delegate="endTurn" player="Prussia"/>
+      <!-- Ottoman_Empire-Ukraina_Cossacks Game Sequence -->
+      <step name="Ottoman_Empire-Ukraina_CossacksPurchase" delegate="purchase" player="Ottoman_Empire-Ukraina_Cossacks"/>
+      <step name="Ottoman_Empire-Ukraina_CossacksCombatMove" delegate="move" player="Ottoman_Empire-Ukraina_Cossacks"/>
+      <step name="Ottoman_Empire-Ukraina_CossacksBattle" delegate="battle" player="Ottoman_Empire-Ukraina_Cossacks"/>
+      <step name="Ottoman_Empire-Ukraina_CossacksNonCombatMove" delegate="move" player="Ottoman_Empire-Ukraina_Cossacks" display="Non Combat Move"/>
+      <step name="Ottoman_Empire-Ukraina_CossacksPlace" delegate="place" player="Ottoman_Empire-Ukraina_Cossacks"/>
+      <step name="Ottoman_Empire-Ukraina_CossacksEndTurn" delegate="endTurn" player="Ottoman_Empire-Ukraina_Cossacks"/>
+      <!-- Saxony Game Sequence -->
+      <step name="SaxonyPurchase" delegate="purchase" player="Saxony"/>
+      <step name="SaxonyCombatMove" delegate="move" player="Saxony"/>
+      <step name="SaxonyBattle" delegate="battle" player="Saxony"/>
+      <step name="SaxonyNonCombatMove" delegate="move" player="Saxony" display="Non Combat Move"/>
+      <step name="SaxonyPlace" delegate="place" player="Saxony"/>
+      <step name="SaxonyEndTurn" delegate="endTurn" player="Saxony"/>
+      <!-- Hannover Game Sequence -->
+      <step name="HannoverPurchase" delegate="purchase" player="Hannover"/>
+      <step name="HannoverCombatMove" delegate="move" player="Hannover"/>
+      <step name="HannoverBattle" delegate="battle" player="Hannover"/>
+      <step name="HannoverNonCombatMove" delegate="move" player="Hannover" display="Non Combat Move"/>
+      <step name="HannoverPlace" delegate="place" player="Hannover"/>
+      <step name="HannoverEndTurn" delegate="endTurn" player="Hannover"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCavalry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="cavalry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCorrvette">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="corrvette" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleship">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCity">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="city" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFortress">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="fortress" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="production">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyCavalry"/>
+      <frontierRules name="buyCorrvette"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyCity"/>
+      <frontierRules name="buyFortress"/>
+    </productionFrontier>
+    <playerProduction player="Prussia" frontier="production"/>
+    <playerProduction player="Denmark-Norway" frontier="production"/>
+    <playerProduction player="Russia" frontier="production"/>
+    <playerProduction player="Sweden" frontier="production"/>
+    <playerProduction player="Ottoman_Empire-Ukraina_Cossacks" frontier="production"/>
+    <playerProduction player="Saxony" frontier="production"/>
+    <playerProduction player="Hannover" frontier="production"/>
+  </production>
+  <attachmentList>
+    <!-- Infantry -->
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <!-- Artillery -->
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <!-- Cavalry -->
+    <attachment name="unitAttachment" attachTo="cavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <!-- Carrack -->
+    <attachment name="unitAttachment" attachTo="corrvette" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="8"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <!-- City -->
+    <attachment name="unitAttachment" attachTo="city" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <!-- Fortress -->
+    <attachment name="unitAttachment" attachTo="fortress" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="4"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <!-- Territory Attachment -->
+    <attachment name="territoryAttachment" attachTo="Segezja" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Minsk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Schleswig" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vologda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Umeaa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kalmar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Viborg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Narva" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stockholm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Sweden"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gavle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Riga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arkhangelsk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vilna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Berlin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Prussia"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oslo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aarhus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tromso" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Uddevalla" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stavanger" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Murmansk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Moskva" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="Russia"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Malmo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Goteborg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="St. Petersburg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Trondheim" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Novogorod" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pskov" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Smolensk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kuopio" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Warszawa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Reval" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gdansk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kemi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Koningsberg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hannover" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="Hannover"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Radom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Plunge" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Poznan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pinsk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hamburg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kobenhavn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="Denmark-Norway"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Karlstad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vasa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kolberg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stralsund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bremen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Narvik" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ostersund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Luleaa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oulu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Helsingfors" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mariehamn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Visby" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Borgholm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kuressaare" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bergen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kiyv" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Ottoman_Empire-Ukraina_Cossacks"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Poltava" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dresden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="Saxony"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Halle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rostock" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ryazan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kursk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- Sweden Owned Territories -->
+      <territoryOwner territory="Stockholm" owner="Sweden"/>
+      <territoryOwner territory="Vasa" owner="Sweden"/>
+      <territoryOwner territory="Karlstad" owner="Sweden"/>
+      <territoryOwner territory="Kemi" owner="Sweden"/>
+      <territoryOwner territory="Reval" owner="Sweden"/>
+      <territoryOwner territory="Viborg" owner="Sweden"/>
+      <territoryOwner territory="Kuopio" owner="Sweden"/>
+      <territoryOwner territory="St. Petersburg" owner="Sweden"/>
+      <territoryOwner territory="Goteborg" owner="Sweden"/>
+      <territoryOwner territory="Kalmar" owner="Sweden"/>
+      <territoryOwner territory="Malmo" owner="Sweden"/>
+      <territoryOwner territory="Uddevalla" owner="Sweden"/>
+      <territoryOwner territory="Riga" owner="Sweden"/>
+      <territoryOwner territory="Gavle" owner="Sweden"/>
+      <territoryOwner territory="Narva" owner="Sweden"/>
+      <territoryOwner territory="Luleaa" owner="Sweden"/>
+      <territoryOwner territory="Helsingfors" owner="Sweden"/>
+      <territoryOwner territory="Bremen" owner="Sweden"/>
+      <territoryOwner territory="Stralsund" owner="Sweden"/>
+      <territoryOwner territory="Oulu" owner="Sweden"/>
+      <territoryOwner territory="Umeaa" owner="Sweden"/>
+      <territoryOwner territory="Ostersund" owner="Sweden"/>
+      <territoryOwner territory="Mariehamn" owner="Sweden"/>
+      <territoryOwner territory="Kuressaare" owner="Sweden"/>
+      <territoryOwner territory="Visby" owner="Sweden"/>
+      <territoryOwner territory="Borgholm" owner="Sweden"/>
+      <!-- Russia Owned Territories -->
+      <territoryOwner territory="Moskva" owner="Russia"/>
+      <territoryOwner territory="Novogorod" owner="Russia"/>
+      <territoryOwner territory="Murmansk" owner="Russia"/>
+      <territoryOwner territory="Arkhangelsk" owner="Russia"/>
+      <territoryOwner territory="Vologda" owner="Russia"/>
+      <territoryOwner territory="Segezja" owner="Russia"/>
+      <territoryOwner territory="Kursk" owner="Russia"/>
+      <territoryOwner territory="Ryazan" owner="Russia"/>
+      <territoryOwner territory="Smolensk" owner="Russia"/>
+      <territoryOwner territory="Pskov" owner="Russia"/>
+      <!-- Denmark-Norway Owned Territories -->
+      <territoryOwner territory="Kobenhavn" owner="Denmark-Norway"/>
+      <territoryOwner territory="Trondheim" owner="Denmark-Norway"/>
+      <territoryOwner territory="Stavanger" owner="Denmark-Norway"/>
+      <territoryOwner territory="Oslo" owner="Denmark-Norway"/>
+      <territoryOwner territory="Aarhus" owner="Denmark-Norway"/>
+      <territoryOwner territory="Schleswig" owner="Denmark-Norway"/>
+      <territoryOwner territory="Tromso" owner="Denmark-Norway"/>
+      <territoryOwner territory="Bergen" owner="Denmark-Norway"/>
+      <territoryOwner territory="Narvik" owner="Denmark-Norway"/>
+      <!--Polish_Lithuanian_Commonwealth Owned Territories -->
+      <!-- Prussia Owned Territories -->
+      <territoryOwner territory="Kolberg" owner="Prussia"/>
+      <territoryOwner territory="Koningsberg" owner="Prussia"/>
+      <territoryOwner territory="Berlin" owner="Prussia"/>
+      <!-- Ottoman_Empire-Ukraina_Cossacks Owned Territories -->
+      <territoryOwner territory="Kiyv" owner="Ottoman_Empire-Ukraina_Cossacks"/>
+      <territoryOwner territory="Poltava" owner="Ottoman_Empire-Ukraina_Cossacks"/>
+      <!-- Saxony Owned Territories -->
+      <territoryOwner territory="Dresden" owner="Saxony"/>
+      <territoryOwner territory="Halle" owner="Saxony"/>
+      <territoryOwner territory="Poznan" owner="Saxony"/>
+      <territoryOwner territory="Warszawa" owner="Saxony"/>
+      <territoryOwner territory="Gdansk" owner="Saxony"/>
+      <!-- Hannover Owned Territories -->
+      <territoryOwner territory="Hannover" owner="Hannover"/>
+      <territoryOwner territory="Hamburg" owner="Hannover"/>
+      <territoryOwner territory="Rostock" owner="Hannover"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Sweden Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Stockholm" quantity="10" owner="Sweden"/>
+      <unitPlacement unitType="city" territory="Stockholm" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="fortress" territory="Stockholm" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="Stockholm" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Stockholm" quantity="5" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Malmo" quantity="6" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="Malmo" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="fortress" territory="Malmo" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Malmo" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Goteborg" quantity="7" owner="Sweden"/>
+      <unitPlacement unitType="city" territory="Goteborg" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="fortress" territory="Goteborg" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="Goteborg" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Goteborg" quantity="4" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Gavle" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Gavle" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="St. Petersburg" quantity="7" owner="Sweden"/>
+      <unitPlacement unitType="city" territory="St. Petersburg" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="St. Petersburg" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="St. Petersburg" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Riga" quantity="5" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Riga" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Narva" quantity="5" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Narva" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Kuopio" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Kuopio" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Oulu" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Kemi" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Luleaa" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Umeaa" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Ostersund" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Karlstad" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Uddevalla" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Vasa" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="Vasa" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Helsingfors" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Helsingfors" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="Helsingfors" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="fortress" territory="Reval" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Reval" quantity="4" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Reval" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Kalmar" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="Kalmar" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Viborg" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="fortress" territory="Visby" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Visby" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Visby" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Mariehamn" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Kuressaare" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Kuressaare" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Borgholm" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Stralsund" quantity="5" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Stralsund" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="Stralsund" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="fortress" territory="Stralsund" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="infantry" territory="Bremen" quantity="4" owner="Sweden"/>
+      <unitPlacement unitType="artillery" territory="Bremen" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="cavalry" territory="Bremen" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="fortress" territory="Bremen" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="corrvette" territory="Northern Gulf of Bothnia" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="corrvette" territory="Southern Gulf of Bothnia" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="corrvette" territory="Eastern Baltic Sea" quantity="2" owner="Sweden"/>
+      <unitPlacement unitType="battleship" territory="Eastern Baltic Sea" quantity="1" owner="Sweden"/>
+      <unitPlacement unitType="corrvette" territory="Western Baltic Sea" quantity="3" owner="Sweden"/>
+      <unitPlacement unitType="battleship" territory="Western Baltic Sea" quantity="1" owner="Sweden"/>
+      <!-- Russian Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Moskva" quantity="10" owner="Russia"/>
+      <unitPlacement unitType="city" territory="Moskva" quantity="1" owner="Russia"/>
+      <unitPlacement unitType="fortress" territory="Moskva" quantity="2" owner="Russia"/>
+      <unitPlacement unitType="artillery" territory="Moskva" quantity="2" owner="Russia"/>
+      <unitPlacement unitType="cavalry" territory="Moskva" quantity="8" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Ryazan" quantity="7" owner="Russia"/>
+      <unitPlacement unitType="cavalry" territory="Ryazan" quantity="3" owner="Russia"/>
+      <unitPlacement unitType="artillery" territory="Ryazan" quantity="1" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Kursk" quantity="6" owner="Russia"/>
+      <unitPlacement unitType="cavalry" territory="Kursk" quantity="3" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Pskov" quantity="7" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Smolensk" quantity="5" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Novogorod" quantity="8" owner="Russia"/>
+      <unitPlacement unitType="artillery" territory="Novogorod" quantity="1" owner="Russia"/>
+      <unitPlacement unitType="city" territory="Novogorod" quantity="1" owner="Russia"/>
+      <unitPlacement unitType="fortress" territory="Novogorod" quantity="1" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Vologda" quantity="6" owner="Russia"/>
+      <unitPlacement unitType="cavalry" territory="Vologda" quantity="2" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="2" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Segezja" quantity="3" owner="Russia"/>
+      <unitPlacement unitType="infantry" territory="Murmansk" quantity="1" owner="Russia"/>
+      <unitPlacement unitType="corrvette" territory="Ladoga" quantity="1" owner="Russia"/>
+      <unitPlacement unitType="corrvette" territory="White Sea" quantity="1" owner="Russia"/>
+      <!-- Denmark-Norway Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Kobenhavn" quantity="8" owner="Denmark-Norway"/>
+      <unitPlacement unitType="city" territory="Kobenhavn" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="fortress" territory="Kobenhavn" quantity="3" owner="Denmark-Norway"/>
+      <unitPlacement unitType="cavalry" territory="Kobenhavn" quantity="3" owner="Denmark-Norway"/>
+      <unitPlacement unitType="artillery" territory="Kobenhavn" quantity="4" owner="Denmark-Norway"/>
+      <unitPlacement unitType="infantry" territory="Oslo" quantity="5" owner="Denmark-Norway"/>
+      <unitPlacement unitType="cavalry" territory="Oslo" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="fortress" territory="Oslo" quantity="3" owner="Denmark-Norway"/>
+      <unitPlacement unitType="artillery" territory="Oslo" quantity="2" owner="Denmark-Norway"/>
+      <unitPlacement unitType="city" territory="Oslo" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="fortress" territory="Trondheim" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="infantry" territory="Trondheim" quantity="2" owner="Denmark-Norway"/>
+      <unitPlacement unitType="artillery" territory="Trondheim" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="infantry" territory="Bergen" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="infantry" territory="Stavanger" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="infantry" territory="Schleswig" quantity="3" owner="Denmark-Norway"/>
+      <unitPlacement unitType="artillery" territory="Schleswig" quantity="2" owner="Denmark-Norway"/>
+      <unitPlacement unitType="infantry" territory="Aarhus" quantity="3" owner="Denmark-Norway"/>
+      <unitPlacement unitType="infantry" territory="Narvik" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="infantry" territory="Tromso" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="corrvette" territory="Atlantic Ocean" quantity="1" owner="Denmark-Norway"/>
+      <unitPlacement unitType="corrvette" territory="Kattegat" quantity="2" owner="Denmark-Norway"/>
+      <unitPlacement unitType="corrvette" territory="Oresund" quantity="4" owner="Denmark-Norway"/>
+      <unitPlacement unitType="battleship" territory="Oresund" quantity="1" owner="Denmark-Norway"/>
+      <!-- Polish_Lithuanian_Commonwealth Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Radom" quantity="2"/>
+      <unitPlacement unitType="cavalry" territory="Radom" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Pinsk" quantity="4"/>
+      <unitPlacement unitType="artillery" territory="Pinsk" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Minsk" quantity="6"/>
+      <unitPlacement unitType="artillery" territory="Minsk" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Plunge" quantity="4"/>
+      <unitPlacement unitType="infantry" territory="Vilna" quantity="6"/>
+      <unitPlacement unitType="artillery" territory="Vilna" quantity="1"/>
+      <!-- Prussia Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Berlin" quantity="6" owner="Prussia"/>
+      <unitPlacement unitType="city" territory="Berlin" quantity="1" owner="Prussia"/>
+      <unitPlacement unitType="fortress" territory="Berlin" quantity="2" owner="Prussia"/>
+      <unitPlacement unitType="cavalry" territory="Berlin" quantity="4" owner="Prussia"/>
+      <unitPlacement unitType="infantry" territory="Koningsberg" quantity="3" owner="Prussia"/>
+      <unitPlacement unitType="artillery" territory="Koningsberg" quantity="1" owner="Prussia"/>
+      <unitPlacement unitType="city" territory="Koningsberg" quantity="1" owner="Prussia"/>
+      <unitPlacement unitType="fortress" territory="Koningsberg" quantity="3" owner="Prussia"/>
+      <unitPlacement unitType="infantry" territory="Kolberg" quantity="4" owner="Prussia"/>
+      <unitPlacement unitType="artillery" territory="Kolberg" quantity="1" owner="Prussia"/>
+      <!-- Ottoman_Empire-Ukraina_Cossacks Unit Placements -->
+      <unitPlacement unitType="cavalry" territory="Kiyv" quantity="9" owner="Ottoman_Empire-Ukraina_Cossacks"/>
+      <unitPlacement unitType="infantry" territory="Kiyv" quantity="10" owner="Ottoman_Empire-Ukraina_Cossacks"/>
+      <unitPlacement unitType="cavalry" territory="Poltava" quantity="3" owner="Ottoman_Empire-Ukraina_Cossacks"/>
+      <unitPlacement unitType="infantry" territory="Poltava" quantity="6" owner="Ottoman_Empire-Ukraina_Cossacks"/>
+      <unitPlacement unitType="artillery" territory="Poltava" quantity="2" owner="Ottoman_Empire-Ukraina_Cossacks"/>
+      <!-- Hannover Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Hannover" quantity="5" owner="Hannover"/>
+      <unitPlacement unitType="city" territory="Hannover" quantity="1" owner="Hannover"/>
+      <unitPlacement unitType="fortress" territory="Hannover" quantity="2" owner="Hannover"/>
+      <unitPlacement unitType="artillery" territory="Hannover" quantity="2" owner="Hannover"/>
+      <unitPlacement unitType="infantry" territory="Hamburg" quantity="4" owner="Hannover"/>
+      <unitPlacement unitType="artillery" territory="Hamburg" quantity="1" owner="Hannover"/>
+      <unitPlacement unitType="city" territory="Hamburg" quantity="1" owner="Hannover"/>
+      <unitPlacement unitType="fortress" territory="Hamburg" quantity="1" owner="Hannover"/>
+      <unitPlacement unitType="infantry" territory="Rostock" quantity="4" owner="Hannover"/>
+      <unitPlacement unitType="corrvette" territory="Deutsche Bucht" quantity="1" owner="Hannover"/>
+      <!-- Saxony Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Dresden" quantity="9" owner="Saxony"/>
+      <unitPlacement unitType="city" territory="Dresden" quantity="1" owner="Saxony"/>
+      <unitPlacement unitType="fortress" territory="Dresden" quantity="2" owner="Saxony"/>
+      <unitPlacement unitType="cavalry" territory="Dresden" quantity="4" owner="Saxony"/>
+      <unitPlacement unitType="artillery" territory="Dresden" quantity="6" owner="Saxony"/>
+      <unitPlacement unitType="infantry" territory="Halle" quantity="7" owner="Saxony"/>
+      <unitPlacement unitType="cavalry" territory="Halle" quantity="5" owner="Saxony"/>
+      <unitPlacement unitType="artillery" territory="Halle" quantity="2" owner="Saxony"/>
+      <unitPlacement unitType="infantry" territory="Poznan" quantity="6" owner="Saxony"/>
+      <unitPlacement unitType="infantry" territory="Warszawa" quantity="7" owner="Saxony"/>
+      <unitPlacement unitType="city" territory="Warszawa" quantity="1" owner="Saxony"/>
+      <unitPlacement unitType="fortress" territory="Warszawa" quantity="1" owner="Saxony"/>
+      <unitPlacement unitType="cavalry" territory="Warszawa" quantity="2" owner="Saxony"/>
+      <unitPlacement unitType="artillery" territory="Warszawa" quantity="3" owner="Saxony"/>
+      <unitPlacement unitType="infantry" territory="Gdansk" quantity="5" owner="Saxony"/>
+      <unitPlacement unitType="artillery" territory="Gdansk" quantity="3" owner="Saxony"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Prussia" resource="PUs" quantity="16"/>
+      <resourceGiven player="Russia" resource="PUs" quantity="29"/>
+      <resourceGiven player="Denmark-Norway" resource="PUs" quantity="27"/>
+      <resourceGiven player="Sweden" resource="PUs" quantity="59"/>
+      <resourceGiven player="Saxony" resource="PUs" quantity="25"/>
+      <resourceGiven player="Hannover" resource="PUs" quantity="14"/>
+      <resourceGiven player="Ottoman_Empire-Ukraina_Cossacks" resource="PUs" quantity="8"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Sub Control Sea Zone Restricted" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Blitzable" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Bids -->
+    <property name="Sweden bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Ottoman_Empire-Ukraina_Cossacks bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Saxony bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Hannover bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Denmark-Norway bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Prussia bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Russia bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="the_great_northern_war" editable="false"/>
+    <!-- notes appear in the notes menu in the main screen, format as html -->
+    <property name="notes" value="&lt;h1&gt;The Great Northern War &lt;/h1&gt; &lt;br&gt; &lt;br&gt;     &lt;b&gt; Created by: Doctor Che &lt;/b&gt; &lt;br&gt;      The Great Northern War (1700-21) ended the Swedish Empire, leaving Russia dominant in the Baltic Sea and a major &lt;br&gt;     player in European politics. The war began as a coordinated attack on Sweden by the coalition in 1700 and ended &lt;br&gt;     in 1721 with the Treaty of Nystad and the Stockholm treaties. It was fought between a coalition of Russia, Denmark-Norway, &lt;br&gt;     and Saxony (also the Polish-Lithuanian Commonwealth from 1701 and Prussia and Hanover from 1715) and many smaller &lt;br&gt;     northgerman states on one side and Sweden, which was partially helped by the Ottoman Empire (who later left the war) on the other. &lt;br&gt;     &lt;br&gt;     Units Stat:&lt;br&gt;     Infantry: cost=3 / attack=1 / defence=2 / movement=1 / transport cost=2 / artillery supportable&lt;br&gt;     Cavalry: cost=3 / attack=1 / defence=1 / movement=2 / transport cost=3 / can blitz / artillery&lt;br&gt;     Artillery: cost=4 / attack=2 / defence=2 / movement=1 / transport cost=3 / artillery&lt;br&gt;     Corvette: cost=8 / attack=1 / defence=2 / movement=2 / transport capacity=5&lt;br&gt;     Battleship: cost=18 / attack=3 / defence=2 / movement=2 / transport capacity=8 / 2 hit&lt;br&gt;     City: cost=15 / attack=0 / defence=0 / movement=0 / factory&lt;br&gt;     Fortress: cost=6 / attack=0 / defence=4 / movement=0 / 2 hit&lt;br&gt;     &lt;br&gt;     Land Connections over Sea Zones:&lt;br&gt;     Kobenhavn - Malmo&lt;br&gt;     Kobenhavn - Aarhus&lt;br&gt;     Kobenhavn - Schleswig&lt;br&gt;     &lt;br&gt;     &lt;br&gt;     &lt;br&gt;Converted up to TripleA 1.2.5.x by Veqryn     &lt;br&gt;      "/>
+  </propertyList>
+</game>

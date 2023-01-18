@@ -19,7 +19,6 @@ bin/
 build/
 out/
 
-game-app/smoke-testing/src/test/resources/map-xmls/
 game-app/smoke-testing/src/test/resources/save-games/
 
 game-headed/triplea.log

@@ -1,0 +1,1822 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="War of the Lance" version="1.2"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Eastern Khur"/>
+    <territory name="Broken Chain"/>
+    <territory name="Western Khur"/>
+    <territory name="Nerakan Valley"/>
+    <territory name="Ice Wall"/>
+    <territory name="Frozen Reach"/>
+    <territory name="Quermish"/>
+    <territory name="Ogrelands"/>
+    <territory name="Kern"/>
+    <territory name="Goblin Home"/>
+    <territory name="Qwalmish"/>
+    <territory name="Blodehelm"/>
+    <territory name="Blode"/>
+    <territory name="Throt"/>
+    <territory name="Southern Ergoth Foothills"/>
+    <territory name="Southern Ergoth Plain"/>
+    <territory name="Kothas"/>
+    <territory name="Mithas"/>
+    <territory name="Kagonesti Coast"/>
+    <territory name="Central Silvanesti"/>
+    <territory name="Dairly Plains"/>
+    <territory name="East Silvanesti"/>
+    <territory name="Wayreth Forest"/>
+    <territory name="Kharolis"/>
+    <territory name="Elven Colonies"/>
+    <territory name="Northern Silvanesti"/>
+    <territory name="Silvanost"/>
+    <territory name="Qualinesti"/>
+    <territory name="Silvanesti Plains"/>
+    <territory name="Garrdlund"/>
+    <territory name="Plains of Solamnia"/>
+    <territory name="Southern Khur"/>
+    <territory name="Tarsis"/>
+    <territory name="Khalkist Chain"/>
+    <territory name="Southlund"/>
+    <territory name="South Plains of Dust"/>
+    <territory name="Abanasinia"/>
+    <territory name="Greater Northern Ergoth"/>
+    <territory name="East Plains of Dust"/>
+    <territory name="Nostar"/>
+    <territory name="Gunthar"/>
+    <territory name="Estwilde"/>
+    <territory name="North Plains of Dust"/>
+    <territory name="Central Qlettaar"/>
+    <territory name="Misty Isle"/>
+    <territory name="Nordmaar"/>
+    <territory name="Saifhum"/>
+    <territory name="New Coast"/>
+    <territory name="Nightlund"/>
+    <territory name="The Delving"/>
+    <territory name="Lemish"/>
+    <territory name="Heartlund"/>
+    <territory name="Elkhome"/>
+    <territory name="West Plains of Dust"/>
+    <territory name="Northern Waste"/>
+    <territory name="Elian Isles"/>
+    <territory name="Tanith"/>
+    <territory name="Enstar"/>
+    <territory name="Torath Plain"/>
+    <territory name="Karthay"/>
+    <territory name="Southern Qlettaar"/>
+    <territory name="Kaolyn"/>
+    <territory name="Palanthus Province"/>
+    <territory name="Taman Busek"/>
+    <territory name="Northern Qlettaar"/>
+    <territory name="Cristyne"/>
+    <territory name="Teyr"/>
+    <territory name="Coastlund"/>
+    <territory name="Hinterlands"/>
+    <territory name="Lesser Northern Ergoth"/>
+    <territory name="Wings of Habbakuk"/>
+    <territory name="Balifor"/>
+    <territory name="Zhakar"/>
+    <territory name="Kendermore"/>
+    <territory name="Hillhome"/>
+    <territory name="Nevermind Range"/>
+    <territory name="Hylo"/>
+    <territory name="Thorbardin"/>
+    <territory name="Plains of Dergoth"/>
+    <territory name="NZ35" water="true"/>
+    <territory name="NZ36" water="true"/>
+    <territory name="NZ33" water="true"/>
+    <territory name="NZ34" water="true"/>
+    <territory name="NZ32" water="true"/>
+    <territory name="NZ30" water="true"/>
+    <territory name="NZ39" water="true"/>
+    <territory name="NZ38" water="true"/>
+    <territory name="NZ37" water="true"/>
+    <territory name="Shallsea"/>
+    <territory name="Northern Courram" water="true"/>
+    <territory name="Bay of Balifor" water="true"/>
+    <territory name="NZ22" water="true"/>
+    <territory name="NZ23" water="true"/>
+    <territory name="NZ24" water="true"/>
+    <territory name="NZ25" water="true"/>
+    <territory name="NZ20" water="true"/>
+    <territory name="NZ21" water="true"/>
+    <territory name="NZ27" water="true"/>
+    <territory name="NZ26" water="true"/>
+    <territory name="NZ29" water="true"/>
+    <territory name="NZ28" water="true"/>
+    <territory name="NZ50" water="true"/>
+    <territory name="Palanthas"/>
+    <territory name="NZ53" water="true"/>
+    <territory name="NZ54" water="true"/>
+    <territory name="NZ51" water="true"/>
+    <territory name="NZ52" water="true"/>
+    <territory name="NZ57" water="true"/>
+    <territory name="NZ58" water="true"/>
+    <territory name="NZ55" water="true"/>
+    <territory name="NZ56" water="true"/>
+    <territory name="NZ59" water="true"/>
+    <territory name="NZ40" water="true"/>
+    <territory name="NZ41" water="true"/>
+    <territory name="NZ42" water="true"/>
+    <territory name="NZ43" water="true"/>
+    <territory name="NZ341" water="true"/>
+    <territory name="NZ44" water="true"/>
+    <territory name="NZ45" water="true"/>
+    <territory name="NZ46" water="true"/>
+    <territory name="NZ47" water="true"/>
+    <territory name="NZ49" water="true"/>
+    <territory name="NZ48" water="true"/>
+    <territory name="Lurbidus Ocean" water="true"/>
+    <territory name="Sirrion Sea" water="true"/>
+    <territory name="NZ60" water="true"/>
+    <territory name="NZ15" water="true"/>
+    <territory name="NZ16" water="true"/>
+    <territory name="NZ17" water="true"/>
+    <territory name="NZ18" water="true"/>
+    <territory name="NZ19" water="true"/>
+    <territory name="NZ10" water="true"/>
+    <territory name="NZ12" water="true"/>
+    <territory name="NZ11" water="true"/>
+    <territory name="NZ14" water="true"/>
+    <territory name="NZ13" water="true"/>
+    <territory name="NZ06" water="true"/>
+    <territory name="NZ07" water="true"/>
+    <territory name="NZ05" water="true"/>
+    <territory name="NZ08" water="true"/>
+    <territory name="NZ09" water="true"/>
+    <territory name="NZ03" water="true"/>
+    <territory name="NZ02" water="true"/>
+    <territory name="Bloodsea of Istar"/>
+    <territory name="NZ01" water="true"/>
+    <territory name="Ice Mountain Bay" water="true"/>
+    <!-- Territory Connections -->
+    <connection t1="Eastern Khur" t2="Balifor"/>
+    <connection t1="Eastern Khur" t2="NZ38"/>
+    <connection t1="Broken Chain" t2="NZ22"/>
+    <connection t1="Broken Chain" t2="Southern Qlettaar"/>
+    <connection t1="Broken Chain" t2="Taman Busek"/>
+    <connection t1="Broken Chain" t2="Nerakan Valley"/>
+    <connection t1="Western Khur" t2="Zhakar"/>
+    <connection t1="Western Khur" t2="Eastern Khur"/>
+    <connection t1="Western Khur" t2="Ogrelands"/>
+    <connection t1="Western Khur" t2="Nerakan Valley"/>
+    <connection t1="Western Khur" t2="Broken Chain"/>
+    <connection t1="Western Khur" t2="NZ38"/>
+    <connection t1="Nerakan Valley" t2="Taman Busek"/>
+    <connection t1="Ice Wall" t2="South Plains of Dust"/>
+    <connection t1="Frozen Reach" t2="Ice Mountain Bay"/>
+    <connection t1="Frozen Reach" t2="NZ29"/>
+    <connection t1="Ogrelands" t2="NZ46"/>
+    <connection t1="Ogrelands" t2="NZ45"/>
+    <connection t1="Ogrelands" t2="The Delving"/>
+    <connection t1="Ogrelands" t2="Eastern Khur"/>
+    <connection t1="Kern" t2="Ogrelands"/>
+    <connection t1="Qwalmish" t2="NZ06"/>
+    <connection t1="Qwalmish" t2="NZ07"/>
+    <connection t1="Qwalmish" t2="Estwilde"/>
+    <connection t1="Qwalmish" t2="Northern Qlettaar"/>
+    <connection t1="Blodehelm" t2="NZ23"/>
+    <connection t1="Blodehelm" t2="NZ21"/>
+    <connection t1="Blodehelm" t2="Blode"/>
+    <connection t1="Blodehelm" t2="Zhakar"/>
+    <connection t1="Blodehelm" t2="NZ22"/>
+    <connection t1="Blode" t2="Zhakar"/>
+    <connection t1="Blode" t2="Northern Silvanesti"/>
+    <connection t1="Throt" t2="Central Qlettaar"/>
+    <connection t1="Throt" t2="Northern Qlettaar"/>
+    <connection t1="Throt" t2="Nightlund"/>
+    <connection t1="Throt" t2="Garrdlund"/>
+    <connection t1="Southern Ergoth Foothills" t2="NZ25"/>
+    <connection t1="Southern Ergoth Foothills" t2="NZ19"/>
+    <connection t1="Southern Ergoth Plain" t2="NZ16"/>
+    <connection t1="Southern Ergoth Plain" t2="NZ19"/>
+    <connection t1="Kothas" t2="NZ52"/>
+    <connection t1="Kothas" t2="NZ53"/>
+    <connection t1="Mithas" t2="NZ52"/>
+    <connection t1="Mithas" t2="NZ53"/>
+    <connection t1="Mithas" t2="NZ54"/>
+    <connection t1="Mithas" t2="NZ51"/>
+    <connection t1="Mithas" t2="NZ55"/>
+    <connection t1="Kagonesti Coast" t2="NZ26"/>
+    <connection t1="Kagonesti Coast" t2="Elven Colonies"/>
+    <connection t1="Kagonesti Coast" t2="Southern Ergoth Foothills"/>
+    <connection t1="Kagonesti Coast" t2="Southern Ergoth Plain"/>
+    <connection t1="Central Silvanesti" t2="Silvanost"/>
+    <connection t1="Dairly Plains" t2="NZ39"/>
+    <connection t1="Dairly Plains" t2="NZ40"/>
+    <connection t1="Dairly Plains" t2="NZ41"/>
+    <connection t1="Dairly Plains" t2="NZ42"/>
+    <connection t1="Dairly Plains" t2="NZ44"/>
+    <connection t1="Dairly Plains" t2="NZ43"/>
+    <connection t1="East Silvanesti" t2="Central Silvanesti"/>
+    <connection t1="East Silvanesti" t2="NZ32"/>
+    <connection t1="East Silvanesti" t2="NZ33"/>
+    <connection t1="East Silvanesti" t2="NZ37"/>
+    <connection t1="East Silvanesti" t2="Bay of Balifor"/>
+    <connection t1="East Silvanesti" t2="Southern Khur"/>
+    <connection t1="Wayreth Forest" t2="Kharolis"/>
+    <connection t1="Wayreth Forest" t2="Qualinesti"/>
+    <connection t1="Wayreth Forest" t2="NZ25"/>
+    <connection t1="Kharolis" t2="NZ29"/>
+    <connection t1="Kharolis" t2="NZ25"/>
+    <connection t1="Kharolis" t2="Tarsis"/>
+    <connection t1="Kharolis" t2="Thorbardin"/>
+    <connection t1="Northern Silvanesti" t2="Zhakar"/>
+    <connection t1="Northern Silvanesti" t2="Southern Khur"/>
+    <connection t1="Northern Silvanesti" t2="Central Silvanesti"/>
+    <connection t1="Silvanost" t2="East Silvanesti"/>
+    <connection t1="Silvanesti Plains" t2="NZ341"/>
+    <connection t1="Silvanesti Plains" t2="Silvanost"/>
+    <connection t1="Silvanesti Plains" t2="Central Silvanesti"/>
+    <connection t1="Silvanesti Plains" t2="Northern Silvanesti"/>
+    <connection t1="Garrdlund" t2="Nightlund"/>
+    <connection t1="Garrdlund" t2="Plains of Solamnia"/>
+    <connection t1="Garrdlund" t2="Heartlund"/>
+    <connection t1="Southern Khur" t2="Bay of Balifor"/>
+    <connection t1="Southern Khur" t2="NZ38"/>
+    <connection t1="Southern Khur" t2="Western Khur"/>
+    <connection t1="Tarsis" t2="West Plains of Dust"/>
+    <connection t1="Tarsis" t2="Thorbardin"/>
+    <connection t1="Tarsis" t2="North Plains of Dust"/>
+    <connection t1="Khalkist Chain" t2="The Delving"/>
+    <connection t1="Southlund" t2="NZ16"/>
+    <connection t1="Southlund" t2="NZ19"/>
+    <connection t1="Southlund" t2="NZ20"/>
+    <connection t1="Southlund" t2="NZ21"/>
+    <connection t1="South Plains of Dust" t2="NZ30"/>
+    <connection t1="Abanasinia" t2="NZ20"/>
+    <connection t1="Abanasinia" t2="NZ19"/>
+    <connection t1="Abanasinia" t2="Qualinesti"/>
+    <connection t1="Abanasinia" t2="Plains of Dergoth"/>
+    <connection t1="Abanasinia" t2="NZ24"/>
+    <connection t1="Greater Northern Ergoth" t2="NZ10"/>
+    <connection t1="Greater Northern Ergoth" t2="NZ15"/>
+    <connection t1="Greater Northern Ergoth" t2="Goblin Home"/>
+    <connection t1="East Plains of Dust" t2="West Plains of Dust"/>
+    <connection t1="East Plains of Dust" t2="Ice Wall"/>
+    <connection t1="East Plains of Dust" t2="South Plains of Dust"/>
+    <connection t1="East Plains of Dust" t2="Torath Plain"/>
+    <connection t1="East Plains of Dust" t2="Silvanesti Plains"/>
+    <connection t1="Nostar" t2="Sirrion Sea"/>
+    <connection t1="Nostar" t2="NZ25"/>
+    <connection t1="Gunthar" t2="NZ14"/>
+    <connection t1="Gunthar" t2="NZ13"/>
+    <connection t1="Estwilde" t2="Northern Qlettaar"/>
+    <connection t1="Estwilde" t2="Nightlund"/>
+    <connection t1="Estwilde" t2="NZ07"/>
+    <connection t1="North Plains of Dust" t2="East Plains of Dust"/>
+    <connection t1="Central Qlettaar" t2="Southern Qlettaar"/>
+    <connection t1="Misty Isle" t2="NZ42"/>
+    <connection t1="Misty Isle" t2="NZ43"/>
+    <connection t1="Misty Isle" t2="NZ52"/>
+    <connection t1="Misty Isle" t2="NZ53"/>
+    <connection t1="Nordmaar" t2="Qwalmish"/>
+    <connection t1="Nordmaar" t2="NZ50"/>
+    <connection t1="Nordmaar" t2="NZ49"/>
+    <connection t1="Nordmaar" t2="Northern Courram"/>
+    <connection t1="Nordmaar" t2="NZ60"/>
+    <connection t1="Nordmaar" t2="NZ06"/>
+    <connection t1="Saifhum" t2="NZ58"/>
+    <connection t1="Saifhum" t2="NZ54"/>
+    <connection t1="Saifhum" t2="NZ51"/>
+    <connection t1="Saifhum" t2="NZ48"/>
+    <connection t1="New Coast" t2="NZ23"/>
+    <connection t1="New Coast" t2="North Plains of Dust"/>
+    <connection t1="New Coast" t2="Torath Plain"/>
+    <connection t1="New Coast" t2="Hillhome"/>
+    <connection t1="Nightlund" t2="Northern Qlettaar"/>
+    <connection t1="Nightlund" t2="Plains of Solamnia"/>
+    <connection t1="The Delving" t2="Nerakan Valley"/>
+    <connection t1="The Delving" t2="Teyr"/>
+    <connection t1="The Delving" t2="NZ50"/>
+    <connection t1="The Delving" t2="Kern"/>
+    <connection t1="Lemish" t2="NZ21"/>
+    <connection t1="Lemish" t2="Kaolyn"/>
+    <connection t1="Lemish" t2="Quermish"/>
+    <connection t1="Lemish" t2="Throt"/>
+    <connection t1="Lemish" t2="Garrdlund"/>
+    <connection t1="Heartlund" t2="NZ12"/>
+    <connection t1="Heartlund" t2="NZ16"/>
+    <connection t1="Heartlund" t2="Southlund"/>
+    <connection t1="Heartlund" t2="Kaolyn"/>
+    <connection t1="Heartlund" t2="Lemish"/>
+    <connection t1="Heartlund" t2="Elkhome"/>
+    <connection t1="Elkhome" t2="Plains of Solamnia"/>
+    <connection t1="West Plains of Dust" t2="Ice Wall"/>
+    <connection t1="West Plains of Dust" t2="North Plains of Dust"/>
+    <connection t1="Northern Waste" t2="NZ05"/>
+    <connection t1="Northern Waste" t2="NZ06"/>
+    <connection t1="Northern Waste" t2="NZ07"/>
+    <connection t1="Northern Waste" t2="Hinterlands"/>
+    <connection t1="Elian Isles" t2="NZ41"/>
+    <connection t1="Elian Isles" t2="NZ42"/>
+    <connection t1="Tanith" t2="NZ11"/>
+    <connection t1="Tanith" t2="NZ03"/>
+    <connection t1="Tanith" t2="Lurbidus Ocean"/>
+    <connection t1="Tanith" t2="Coastlund"/>
+    <connection t1="Enstar" t2="NZ26"/>
+    <connection t1="Enstar" t2="NZ25"/>
+    <connection t1="Enstar" t2="Sirrion Sea"/>
+    <connection t1="Torath Plain" t2="North Plains of Dust"/>
+    <connection t1="Torath Plain" t2="Silvanesti Plains"/>
+    <connection t1="Torath Plain" t2="NZ23"/>
+    <connection t1="Torath Plain" t2="Blode"/>
+    <connection t1="Torath Plain" t2="Blodehelm"/>
+    <connection t1="Torath Plain" t2="Northern Silvanesti"/>
+    <connection t1="Karthay" t2="NZ54"/>
+    <connection t1="Karthay" t2="NZ55"/>
+    <connection t1="Karthay" t2="NZ56"/>
+    <connection t1="Karthay" t2="NZ57"/>
+    <connection t1="Karthay" t2="NZ58"/>
+    <connection t1="Southern Qlettaar" t2="NZ22"/>
+    <connection t1="Southern Qlettaar" t2="Throt"/>
+    <connection t1="Kaolyn" t2="Southlund"/>
+    <connection t1="Palanthus Province" t2="Palanthas"/>
+    <connection t1="Palanthus Province" t2="Wings of Habbakuk"/>
+    <connection t1="Palanthus Province" t2="Hinterlands"/>
+    <connection t1="Palanthus Province" t2="Northern Waste"/>
+    <connection t1="Palanthus Province" t2="Lurbidus Ocean"/>
+    <connection t1="Taman Busek" t2="The Delving"/>
+    <connection t1="Taman Busek" t2="Khalkist Chain"/>
+    <connection t1="Taman Busek" t2="Central Qlettaar"/>
+    <connection t1="Taman Busek" t2="Southern Qlettaar"/>
+    <connection t1="Northern Qlettaar" t2="Khalkist Chain"/>
+    <connection t1="Northern Qlettaar" t2="Teyr"/>
+    <connection t1="Cristyne" t2="NZ14"/>
+    <connection t1="Cristyne" t2="NZ15"/>
+    <connection t1="Cristyne" t2="NZ18"/>
+    <connection t1="Teyr" t2="Khalkist Chain"/>
+    <connection t1="Teyr" t2="Qwalmish"/>
+    <connection t1="Teyr" t2="Nordmaar"/>
+    <connection t1="Coastlund" t2="NZ11"/>
+    <connection t1="Coastlund" t2="NZ12"/>
+    <connection t1="Coastlund" t2="Elkhome"/>
+    <connection t1="Coastlund" t2="Plains of Solamnia"/>
+    <connection t1="Coastlund" t2="Palanthus Province"/>
+    <connection t1="Coastlund" t2="Palanthas"/>
+    <connection t1="Coastlund" t2="Heartlund"/>
+    <connection t1="Hinterlands" t2="Nightlund"/>
+    <connection t1="Hinterlands" t2="NZ07"/>
+    <connection t1="Hinterlands" t2="Wings of Habbakuk"/>
+    <connection t1="Hinterlands" t2="Plains of Solamnia"/>
+    <connection t1="Lesser Northern Ergoth" t2="NZ09"/>
+    <connection t1="Lesser Northern Ergoth" t2="NZ03"/>
+    <connection t1="Lesser Northern Ergoth" t2="NZ11"/>
+    <connection t1="Lesser Northern Ergoth" t2="Hylo"/>
+    <connection t1="Lesser Northern Ergoth" t2="Greater Northern Ergoth"/>
+    <connection t1="Balifor" t2="Bay of Balifor"/>
+    <connection t1="Balifor" t2="NZ45"/>
+    <connection t1="Balifor" t2="Ogrelands"/>
+    <connection t1="Balifor" t2="Kendermore"/>
+    <connection t1="Balifor" t2="Eastern Khur"/>
+    <connection t1="Zhakar" t2="Southern Khur"/>
+    <connection t1="Zhakar" t2="Broken Chain"/>
+    <connection t1="Zhakar" t2="NZ22"/>
+    <connection t1="Kendermore" t2="NZ37"/>
+    <connection t1="Kendermore" t2="NZ39"/>
+    <connection t1="Kendermore" t2="NZ45"/>
+    <connection t1="Kendermore" t2="NZ44"/>
+    <connection t1="Kendermore" t2="Dairly Plains"/>
+    <connection t1="Hillhome" t2="NZ24"/>
+    <connection t1="Hillhome" t2="Plains of Dergoth"/>
+    <connection t1="Hillhome" t2="Thorbardin"/>
+    <connection t1="Hillhome" t2="Tarsis"/>
+    <connection t1="Hillhome" t2="North Plains of Dust"/>
+    <connection t1="Nevermind Range" t2="NZ15"/>
+    <connection t1="Nevermind Range" t2="NZ10"/>
+    <connection t1="Nevermind Range" t2="NZ13"/>
+    <connection t1="Nevermind Range" t2="Gunthar"/>
+    <connection t1="Hylo" t2="Greater Northern Ergoth"/>
+    <connection t1="Hylo" t2="NZ12"/>
+    <connection t1="Hylo" t2="NZ11"/>
+    <connection t1="Plains of Dergoth" t2="NZ24"/>
+    <connection t1="Plains of Dergoth" t2="Qualinesti"/>
+    <connection t1="Plains of Dergoth" t2="Wayreth Forest"/>
+    <connection t1="NZ35" t2="NZ40"/>
+    <connection t1="NZ36" t2="NZ35"/>
+    <connection t1="NZ36" t2="NZ39"/>
+    <connection t1="NZ36" t2="NZ37"/>
+    <connection t1="NZ33" t2="NZ34"/>
+    <connection t1="NZ33" t2="NZ37"/>
+    <connection t1="NZ34" t2="NZ35"/>
+    <connection t1="NZ34" t2="NZ36"/>
+    <connection t1="NZ32" t2="NZ33"/>
+    <connection t1="NZ32" t2="NZ34"/>
+    <connection t1="NZ30" t2="NZ341"/>
+    <connection t1="NZ39" t2="NZ40"/>
+    <connection t1="NZ38" t2="Balifor"/>
+    <connection t1="NZ38" t2="Eastern Khur"/>
+    <connection t1="NZ38" t2="Western Khur"/>
+    <connection t1="NZ37" t2="Bay of Balifor"/>
+    <connection t1="Shallsea" t2="NZ20"/>
+    <connection t1="Shallsea" t2="NZ21"/>
+    <connection t1="Northern Courram" t2="NZ58"/>
+    <connection t1="Bay of Balifor" t2="NZ38"/>
+    <connection t1="NZ23" t2="NZ21"/>
+    <connection t1="NZ24" t2="NZ20"/>
+    <connection t1="NZ24" t2="NZ21"/>
+    <connection t1="NZ24" t2="Shallsea"/>
+    <connection t1="NZ24" t2="New Coast"/>
+    <connection t1="NZ25" t2="NZ19"/>
+    <connection t1="NZ20" t2="NZ19"/>
+    <connection t1="NZ20" t2="NZ21"/>
+    <connection t1="NZ21" t2="NZ22"/>
+    <connection t1="NZ27" t2="NZ26"/>
+    <connection t1="NZ27" t2="NZ28"/>
+    <connection t1="NZ26" t2="NZ25"/>
+    <connection t1="NZ26" t2="NZ18"/>
+    <connection t1="NZ29" t2="Ice Mountain Bay"/>
+    <connection t1="NZ28" t2="Sirrion Sea"/>
+    <connection t1="NZ28" t2="NZ29"/>
+    <connection t1="NZ50" t2="NZ49"/>
+    <connection t1="NZ50" t2="Kern"/>
+    <connection t1="Palanthas" t2="Lurbidus Ocean"/>
+    <connection t1="NZ53" t2="NZ52"/>
+    <connection t1="NZ53" t2="NZ55"/>
+    <connection t1="NZ54" t2="NZ51"/>
+    <connection t1="NZ51" t2="NZ48"/>
+    <connection t1="NZ51" t2="NZ52"/>
+    <connection t1="NZ52" t2="NZ43"/>
+    <connection t1="NZ57" t2="NZ56"/>
+    <connection t1="NZ57" t2="NZ59"/>
+    <connection t1="NZ58" t2="NZ54"/>
+    <connection t1="NZ58" t2="NZ57"/>
+    <connection t1="NZ55" t2="NZ54"/>
+    <connection t1="NZ56" t2="NZ55"/>
+    <connection t1="NZ59" t2="NZ60"/>
+    <connection t1="NZ59" t2="Northern Courram"/>
+    <connection t1="NZ40" t2="NZ41"/>
+    <connection t1="NZ41" t2="NZ42"/>
+    <connection t1="NZ42" t2="NZ53"/>
+    <connection t1="NZ43" t2="NZ42"/>
+    <connection t1="NZ43" t2="NZ44"/>
+    <connection t1="NZ341" t2="NZ32"/>
+    <connection t1="NZ341" t2="Silvanost"/>
+    <connection t1="NZ44" t2="NZ45"/>
+    <connection t1="NZ45" t2="NZ46"/>
+    <connection t1="NZ46" t2="NZ47"/>
+    <connection t1="NZ46" t2="Kern"/>
+    <connection t1="NZ47" t2="Kern"/>
+    <connection t1="NZ49" t2="NZ48"/>
+    <connection t1="NZ49" t2="Northern Courram"/>
+    <connection t1="NZ48" t2="NZ47"/>
+    <connection t1="NZ48" t2="NZ58"/>
+    <connection t1="Lurbidus Ocean" t2="NZ05"/>
+    <connection t1="Sirrion Sea" t2="NZ29"/>
+    <connection t1="Sirrion Sea" t2="NZ26"/>
+    <connection t1="Sirrion Sea" t2="Kharolis"/>
+    <connection t1="Sirrion Sea" t2="Nostar"/>
+    <connection t1="NZ60" t2="Northern Courram"/>
+    <connection t1="NZ15" t2="NZ10"/>
+    <connection t1="NZ15" t2="NZ18"/>
+    <connection t1="NZ15" t2="Kagonesti Coast"/>
+    <connection t1="NZ16" t2="NZ19"/>
+    <connection t1="NZ16" t2="NZ15"/>
+    <connection t1="NZ17" t2="NZ27"/>
+    <connection t1="NZ17" t2="NZ18"/>
+    <connection t1="NZ18" t2="Kagonesti Coast"/>
+    <connection t1="NZ12" t2="NZ16"/>
+    <connection t1="NZ11" t2="NZ12"/>
+    <connection t1="NZ14" t2="NZ13"/>
+    <connection t1="NZ14" t2="NZ17"/>
+    <connection t1="NZ14" t2="NZ18"/>
+    <connection t1="NZ06" t2="NZ60"/>
+    <connection t1="NZ07" t2="NZ06"/>
+    <connection t1="NZ05" t2="NZ06"/>
+    <connection t1="NZ08" t2="NZ09"/>
+    <connection t1="NZ08" t2="NZ13"/>
+    <connection t1="NZ09" t2="NZ10"/>
+    <connection t1="NZ09" t2="Nevermind Range"/>
+    <connection t1="NZ03" t2="NZ09"/>
+    <connection t1="NZ03" t2="NZ11"/>
+    <connection t1="NZ03" t2="Lurbidus Ocean"/>
+    <connection t1="NZ02" t2="NZ01"/>
+    <connection t1="NZ02" t2="NZ03"/>
+    <connection t1="NZ02" t2="NZ09"/>
+    <connection t1="NZ02" t2="NZ08"/>
+    <connection t1="NZ01" t2="NZ03"/>
+    <connection t1="NZ01" t2="Eastern Khur"/>
+    <connection t1="Ice Mountain Bay" t2="West Plains of Dust"/>
+    <connection t1="Ice Mountain Bay" t2="Tarsis"/>
+    <connection t1="Ice Mountain Bay" t2="Kharolis"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="BlackArmy" optional="false"/>
+    <player name="BlueArmy" optional="false"/>
+    <player name="GreenArmy" optional="false"/>
+    <player name="RedArmy" optional="false"/>
+    <player name="WhiteArmy" optional="false"/>
+    <player name="GoblinsAndOgres" optional="false"/>
+    <player name="Minotaurs" optional="false"/>
+    <player name="Elves" optional="false"/>
+    <player name="Humans" optional="false"/>
+    <player name="SmallRaces" optional="false"/>
+    <alliance player="BlackArmy" alliance="Evil"/>
+    <alliance player="BlueArmy" alliance="Evil"/>
+    <alliance player="GreenArmy" alliance="Evil"/>
+    <alliance player="RedArmy" alliance="Evil"/>
+    <alliance player="WhiteArmy" alliance="Evil"/>
+    <alliance player="GoblinsAndOgres" alliance="Evil"/>
+    <alliance player="Minotaurs" alliance="Evil"/>
+    <alliance player="Elves" alliance="Good"/>
+    <alliance player="Humans" alliance="Good"/>
+    <alliance player="SmallRaces" alliance="Good"/>
+  </playerList>
+  <unitList>
+    <unit name="soldier"/>
+    <unit name="mounted"/>
+    <unit name="catapult"/>
+    <unit name="sailboat"/>
+    <unit name="caravel"/>
+    <unit name="galleon"/>
+    <unit name="dragon"/>
+    <unit name="fortifications"/>
+    <unit name="stronghold"/>
+    <unit name="barbarian"/>
+    <unit name="fighter"/>
+    <unit name="ranger"/>
+    <unit name="rogue"/>
+    <unit name="wizard"/>
+    <unit name="priest"/>
+    <unit name="goblin"/>
+    <unit name="mercenary"/>
+    <unit name="ogre"/>
+    <unit name="demi-human"/>
+    <unit name="griffin"/>
+    <unit name="knight"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <step name="blackarmyBid" delegate="bid" player="BlackArmy" maxRunCount="1"/>
+      <step name="blackarmyBidPlace" delegate="placeBid" player="BlackArmy" maxRunCount="1"/>
+      <step name="bluearmyBid" delegate="bid" player="BlueArmy" maxRunCount="1"/>
+      <step name="bluearmyBidPlace" delegate="placeBid" player="BlueArmy" maxRunCount="1"/>
+      <step name="greenarmyBid" delegate="bid" player="GreenArmy" maxRunCount="1"/>
+      <step name="greenarmyBidPlace" delegate="placeBid" player="GreenArmy" maxRunCount="1"/>
+      <step name="redarmyBid" delegate="bid" player="RedArmy" maxRunCount="1"/>
+      <step name="redarmyBidPlace" delegate="placeBid" player="RedArmy" maxRunCount="1"/>
+      <step name="whitearmyBid" delegate="bid" player="WhiteArmy" maxRunCount="1"/>
+      <step name="whitearmyBidPlace" delegate="placeBid" player="WhiteArmy" maxRunCount="1"/>
+      <step name="GoblinsAndOgresBid" delegate="bid" player="GoblinsAndOgres" maxRunCount="1"/>
+      <step name="GoblinsAndOgresBidPlace" delegate="placeBid" player="GoblinsAndOgres" maxRunCount="1"/>
+      <step name="minotaursBid" delegate="bid" player="Minotaurs" maxRunCount="1"/>
+      <step name="minotaursBidPlace" delegate="placeBid" player="Minotaurs" maxRunCount="1"/>
+      <step name="elvesBid" delegate="bid" player="Elves" maxRunCount="1"/>
+      <step name="elvesBidPlace" delegate="placeBid" player="Elves" maxRunCount="1"/>
+      <step name="humansBid" delegate="bid" player="Humans" maxRunCount="1"/>
+      <step name="humansBidPlace" delegate="placeBid" player="Humans" maxRunCount="1"/>
+      <step name="smallracesBid" delegate="bid" player="SmallRaces" maxRunCount="1"/>
+      <step name="smallracesBidPlace" delegate="placeBid" player="SmallRaces" maxRunCount="1"/>
+      <step name="blackarmyPurchase" delegate="purchase" player="BlackArmy"/>
+      <step name="blackarmyCombatMove" delegate="move" player="BlackArmy"/>
+      <step name="blackarmyBattle" delegate="battle" player="BlackArmy"/>
+      <step name="blackarmyNonCombatMove" delegate="move" player="BlackArmy" display="Non Combat Move"/>
+      <step name="blackarmyPlace" delegate="place" player="BlackArmy"/>
+      <step name="blackarmyEndTurn" delegate="endTurn" player="BlackArmy"/>
+      <step name="bluearmyPurchase" delegate="purchase" player="BlueArmy"/>
+      <step name="bluearmyCombatMove" delegate="move" player="BlueArmy"/>
+      <step name="bluearmyBattle" delegate="battle" player="BlueArmy"/>
+      <step name="bluearmyNonCombatMove" delegate="move" player="BlueArmy" display="Non Combat Move"/>
+      <step name="bluearmyPlace" delegate="place" player="BlueArmy"/>
+      <step name="bluearmyEndTurn" delegate="endTurn" player="BlueArmy"/>
+      <step name="greenarmyPurchase" delegate="purchase" player="GreenArmy"/>
+      <step name="greenarmyCombatMove" delegate="move" player="GreenArmy"/>
+      <step name="greenarmyBattle" delegate="battle" player="GreenArmy"/>
+      <step name="greenarmyNonCombatMove" delegate="move" player="GreenArmy" display="Non Combat Move"/>
+      <step name="greenarmyPlace" delegate="place" player="GreenArmy"/>
+      <step name="greenarmyEndTurn" delegate="endTurn" player="GreenArmy"/>
+      <step name="redarmyPurchase" delegate="purchase" player="RedArmy"/>
+      <step name="redarmyCombatMove" delegate="move" player="RedArmy"/>
+      <step name="redarmyBattle" delegate="battle" player="RedArmy"/>
+      <step name="redarmyNonCombatMove" delegate="move" player="RedArmy" display="Non Combat Move"/>
+      <step name="redarmyPlace" delegate="place" player="RedArmy"/>
+      <step name="redarmyEndTurn" delegate="endTurn" player="RedArmy"/>
+      <step name="whitearmyPurchase" delegate="purchase" player="WhiteArmy"/>
+      <step name="whitearmyCombatMove" delegate="move" player="WhiteArmy"/>
+      <step name="whitearmyBattle" delegate="battle" player="WhiteArmy"/>
+      <step name="whitearmyNonCombatMove" delegate="move" player="WhiteArmy" display="Non Combat Move"/>
+      <step name="whitearmyPlace" delegate="place" player="WhiteArmy"/>
+      <step name="whitearmyEndTurn" delegate="endTurn" player="WhiteArmy"/>
+      <step name="GoblinsAndOgresPurchase" delegate="purchase" player="GoblinsAndOgres"/>
+      <step name="GoblinsAndOgresCombatMove" delegate="move" player="GoblinsAndOgres"/>
+      <step name="GoblinsAndOgresBattle" delegate="battle" player="GoblinsAndOgres"/>
+      <step name="GoblinsAndOgresNonCombatMove" delegate="move" player="GoblinsAndOgres" display="Non Combat Move"/>
+      <step name="GoblinsAndOgresPlace" delegate="place" player="GoblinsAndOgres"/>
+      <step name="GoblinsAndOgresEndTurn" delegate="endTurn" player="GoblinsAndOgres"/>
+      <step name="minotaursPurchase" delegate="purchase" player="Minotaurs"/>
+      <step name="minotaursCombatMove" delegate="move" player="Minotaurs"/>
+      <step name="minotaursBattle" delegate="battle" player="Minotaurs"/>
+      <step name="minotaursNonCombatMove" delegate="move" player="Minotaurs" display="Non Combat Move"/>
+      <step name="minotaursPlace" delegate="place" player="Minotaurs"/>
+      <step name="minotaursEndTurn" delegate="endTurn" player="Minotaurs"/>
+      <step name="elvesPurchase" delegate="purchase" player="Elves"/>
+      <step name="elvesCombatMove" delegate="move" player="Elves"/>
+      <step name="elvesBattle" delegate="battle" player="Elves"/>
+      <step name="elvesNonCombatMove" delegate="move" player="Elves" display="Non Combat Move"/>
+      <step name="elvesPlace" delegate="place" player="Elves"/>
+      <step name="elvesEndTurn" delegate="endTurn" player="Elves"/>
+      <step name="humansPurchase" delegate="purchase" player="Humans"/>
+      <step name="humansCombatMove" delegate="move" player="Humans"/>
+      <step name="humansBattle" delegate="battle" player="Humans"/>
+      <step name="humansNonCombatMove" delegate="move" player="Humans" display="Non Combat Move"/>
+      <step name="humansPlace" delegate="place" player="Humans"/>
+      <step name="humansEndTurn" delegate="endTurn" player="Humans"/>
+      <step name="smallracesPurchase" delegate="purchase" player="SmallRaces"/>
+      <step name="smallracesCombatMove" delegate="move" player="SmallRaces"/>
+      <step name="smallracesBattle" delegate="battle" player="SmallRaces"/>
+      <step name="smallracesNonCombatMove" delegate="move" player="SmallRaces" display="Non Combat Move"/>
+      <step name="smallracesPlace" delegate="place" player="SmallRaces"/>
+      <step name="smallracesEndTurn" delegate="endTurn" player="SmallRaces"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buysoldier">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="soldier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buymounted">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="mounted" quantity="1"/>
+    </productionRule>
+    <productionRule name="buycatapult">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="catapult" quantity="1"/>
+    </productionRule>
+    <productionRule name="buysailboat">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="sailboat" quantity="1"/>
+    </productionRule>
+    <productionRule name="buycaravel">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="caravel" quantity="1"/>
+    </productionRule>
+    <productionRule name="buygalleon">
+      <cost resource="PUs" quantity="21"/>
+      <result resourceOrUnit="galleon" quantity="1"/>
+    </productionRule>
+    <productionRule name="buydragon">
+      <cost resource="PUs" quantity="30"/>
+      <result resourceOrUnit="dragon" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyfortifications">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="fortifications" quantity="2"/>
+    </productionRule>
+    <productionRule name="buystronghold">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="stronghold" quantity="1"/>
+    </productionRule>
+    <productionRule name="buybarbarian">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="barbarian" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyfighter">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyranger">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="ranger" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyrogue">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="rogue" quantity="1"/>
+    </productionRule>
+    <productionRule name="buywizard">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="wizard" quantity="1"/>
+    </productionRule>
+    <productionRule name="buypriest">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="priest" quantity="1"/>
+    </productionRule>
+    <productionRule name="buygoblin">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="goblin" quantity="1"/>
+    </productionRule>
+    <productionRule name="buymercenary">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="mercenary" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyogre">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="ogre" quantity="1"/>
+    </productionRule>
+    <productionRule name="buydemi-human">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="demi-human" quantity="1"/>
+    </productionRule>
+    <productionRule name="buygriffin">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="griffin" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyknight">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="knight" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="BlackArmyFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <!--<frontierRules name="buyfighter"/>-->
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buypriest"/>
+      <frontierRules name="buygoblin"/>
+      <frontierRules name="buymercenary"/>
+      <frontierRules name="buyogre"/>
+    </productionFrontier>
+    <productionFrontier name="BlueArmyFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buygoblin"/>
+      <frontierRules name="buymercenary"/>
+      <frontierRules name="buyogre"/>
+    </productionFrontier>
+    <productionFrontier name="GreenArmyFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buypriest"/>
+      <frontierRules name="buygoblin"/>
+      <frontierRules name="buymercenary"/>
+      <frontierRules name="buyogre"/>
+    </productionFrontier>
+    <productionFrontier name="RedArmyFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buypriest"/>
+      <frontierRules name="buygoblin"/>
+      <frontierRules name="buymercenary"/>
+      <frontierRules name="buyogre"/>
+    </productionFrontier>
+    <productionFrontier name="WhiteArmyFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buypriest"/>
+      <frontierRules name="buygoblin"/>
+      <frontierRules name="buymercenary"/>
+      <frontierRules name="buyogre"/>
+    </productionFrontier>
+    <productionFrontier name="GoblinsAndOgresFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buypriest"/>
+      <frontierRules name="buygoblin"/>
+      <frontierRules name="buymercenary"/>
+      <frontierRules name="buyogre"/>
+    </productionFrontier>
+    <productionFrontier name="MinotaursFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buypriest"/>
+      <frontierRules name="buygoblin"/>
+      <frontierRules name="buymercenary"/>
+      <frontierRules name="buyogre"/>
+    </productionFrontier>
+    <productionFrontier name="ElvesFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <!--<frontierRules name="buyfighter"/>-->
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buydemi-human"/>
+      <frontierRules name="buyknight"/>
+    </productionFrontier>
+    <productionFrontier name="HumansFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buypriest"/>
+      <!--<frontierRules name="buyogre"/>-->
+      <frontierRules name="buygriffin"/>
+      <frontierRules name="buyknight"/>
+    </productionFrontier>
+    <productionFrontier name="SmallRacesFrontier">
+      <frontierRules name="buysoldier"/>
+      <frontierRules name="buymounted"/>
+      <frontierRules name="buycatapult"/>
+      <frontierRules name="buysailboat"/>
+      <frontierRules name="buycaravel"/>
+      <frontierRules name="buygalleon"/>
+      <frontierRules name="buydragon"/>
+      <frontierRules name="buyfortifications"/>
+      <frontierRules name="buystronghold"/>
+      <frontierRules name="buybarbarian"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buyranger"/>
+      <frontierRules name="buyrogue"/>
+      <frontierRules name="buywizard"/>
+      <frontierRules name="buypriest"/>
+      <frontierRules name="buydemi-human"/>
+      <frontierRules name="buygriffin"/>
+      <frontierRules name="buyknight"/>
+    </productionFrontier>
+    <playerProduction player="BlackArmy" frontier="BlackArmyFrontier"/>
+    <playerProduction player="BlueArmy" frontier="BlueArmyFrontier"/>
+    <playerProduction player="GreenArmy" frontier="GreenArmyFrontier"/>
+    <playerProduction player="RedArmy" frontier="RedArmyFrontier"/>
+    <playerProduction player="WhiteArmy" frontier="WhiteArmyFrontier"/>
+    <playerProduction player="GoblinsAndOgres" frontier="GoblinsAndOgresFrontier"/>
+    <playerProduction player="Minotaurs" frontier="MinotaursFrontier"/>
+    <playerProduction player="Elves" frontier="ElvesFrontier"/>
+    <playerProduction player="Humans" frontier="HumansFrontier"/>
+    <playerProduction player="SmallRaces" frontier="SmallRacesFrontier"/>
+  </production>
+  <attachmentList>
+    <attachment name="unitAttachment" attachTo="soldier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isInfantry" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="mounted" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="catapult" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="3"/>
+      <option name="defense" value="1"/>
+      <option name="movement" value="1"/>
+      <option name="artillery" value="true"/>
+      <option name="transportCost" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="sailboat" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="movement" value="2"/>
+      <option name="transportCapacity" value="1"/>
+      <option name="isSea" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="caravel" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="movement" value="2"/>
+      <option name="transportCapacity" value="2"/>
+      <option name="isSea" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="galleon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="movement" value="2"/>
+      <option name="transportCapacity" value="3"/>
+      <option name="isSea" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="dragon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+      <option name="movement" value="6"/>
+      <option name="hitPoints" value="2"/>
+      <option name="isAir" value="true"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="transportCapacity" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fortifications" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="movement" value="0"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="stronghold" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="barbarian" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="5"/>
+      <option name="defense" value="3"/>
+      <option name="movement" value="1"/>
+      <option name="isInfantry" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="movement" value="1"/>
+      <option name="isInfantry" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="ranger" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="3"/>
+      <option name="defense" value="5"/>
+      <option name="movement" value="1"/>
+      <option name="isInfantry" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="rogue" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="6"/>
+      <option name="defense" value="1"/>
+      <option name="artillery" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+      <option name="transportCost" value="1"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="wizard" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="5"/>
+      <option name="defense" value="2"/>
+      <option name="movement" value="1"/>
+      <option name="artillery" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="priest" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="2"/>
+      <option name="defense" value="5"/>
+      <option name="movement" value="1"/>
+      <option name="artillery" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="goblin" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="movement" value="1"/>
+      <option name="isInfantry" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="mercenary" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="movement" value="1"/>
+      <option name="isInfantry" value="true"/>
+      <option name="isMarine" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="ogre" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="movement" value="1"/>
+      <option name="isInfantry" value="true"/>
+      <option name="transportCost" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="demi-human" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="3"/>
+      <option name="defense" value="1"/>
+      <option name="movement" value="1"/>
+      <option name="isInfantry" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="griffin" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+      <option name="movement" value="4"/>
+      <option name="isAir" value="true"/>
+      <option name="transportCapacity" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="knight" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="movement" value="2"/>
+      <option name="isAirTransportable" value="true"/>
+      <option name="transportCost" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eastern Khur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="BlackArmy"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Broken Chain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="BlueArmy"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Western Khur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="GreenArmy"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nerakan Valley" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="9"/>
+      <option name="capital" value="RedArmy"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ice Wall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="capital" value="WhiteArmy"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Frozen Reach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Quermish" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ogrelands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kern" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Goblin Home" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Qwalmish" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Blodehelm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Blode" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="GoblinsAndOgres"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Throt" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Southern Ergoth Foothills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Southern Ergoth Plain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kothas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mithas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="capital" value="Minotaurs"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kagonesti Coast" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Central Silvanesti" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dairly Plains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="East Silvanesti" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wayreth Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kharolis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Elven Colonies" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="capital" value="Elves"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Northern Silvanesti" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Silvanost" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Qualinesti" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Silvanesti Plains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Garrdlund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Plains of Solamnia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Southern Khur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tarsis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Khalkist Chain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Southlund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Plains of Dust" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Abanasinia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Greater Northern Ergoth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="East Plains of Dust" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nostar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gunthar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="capital" value="Humans"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Estwilde" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Plains of Dust" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Central Qlettaar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Misty Isle" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nordmaar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Saifhum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Coast" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nightlund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="The Delving" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lemish" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Heartlund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Elkhome" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="West Plains of Dust" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Northern Waste" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Elian Isles" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tanith" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Enstar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Torath Plain" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Karthay" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Southern Qlettaar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kaolyn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Palanthus Province" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Taman Busek" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Northern Qlettaar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cristyne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Teyr" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Coastlund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hinterlands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lesser Northern Ergoth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wings of Habbakuk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Balifor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zhakar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kendermore" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hillhome" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nevermind Range" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="SmallRaces"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hylo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thorbardin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Plains of Dergoth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shallsea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Palanthas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bloodsea of Istar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="Eastern Khur" owner="BlackArmy"/>
+      <territoryOwner territory="Broken Chain" owner="BlueArmy"/>
+      <territoryOwner territory="Western Khur" owner="GreenArmy"/>
+      <territoryOwner territory="Nerakan Valley" owner="RedArmy"/>
+      <territoryOwner territory="Ice Wall" owner="WhiteArmy"/>
+      <territoryOwner territory="Frozen Reach" owner="WhiteArmy"/>
+      <territoryOwner territory="Quermish" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Ogrelands" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Kern" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Goblin Home" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Qwalmish" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Blodehelm" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Blode" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Throt" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Southern Ergoth Foothills" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Southern Ergoth Plain" owner="GoblinsAndOgres"/>
+      <territoryOwner territory="Kothas" owner="Minotaurs"/>
+      <territoryOwner territory="Mithas" owner="Minotaurs"/>
+      <territoryOwner territory="Kagonesti Coast" owner="Elves"/>
+      <territoryOwner territory="Central Silvanesti" owner="Elves"/>
+      <territoryOwner territory="Dairly Plains" owner="Elves"/>
+      <territoryOwner territory="East Silvanesti" owner="Elves"/>
+      <territoryOwner territory="Wayreth Forest" owner="Elves"/>
+      <territoryOwner territory="Kharolis" owner="Elves"/>
+      <territoryOwner territory="Elven Colonies" owner="Elves"/>
+      <territoryOwner territory="Northern Silvanesti" owner="Elves"/>
+      <territoryOwner territory="Silvanost" owner="Elves"/>
+      <territoryOwner territory="Qualinesti" owner="Elves"/>
+      <territoryOwner territory="Silvanesti Plains" owner="Elves"/>
+      <territoryOwner territory="Garrdlund" owner="Humans"/>
+      <territoryOwner territory="Plains of Solamnia" owner="Humans"/>
+      <territoryOwner territory="Southern Khur" owner="Humans"/>
+      <territoryOwner territory="Tarsis" owner="Humans"/>
+      <territoryOwner territory="Khalkist Chain" owner="Humans"/>
+      <territoryOwner territory="Southlund" owner="Humans"/>
+      <territoryOwner territory="South Plains of Dust" owner="Humans"/>
+      <territoryOwner territory="Abanasinia" owner="Humans"/>
+      <territoryOwner territory="Greater Northern Ergoth" owner="Humans"/>
+      <territoryOwner territory="East Plains of Dust" owner="Humans"/>
+      <territoryOwner territory="Nostar" owner="Humans"/>
+      <territoryOwner territory="Gunthar" owner="Humans"/>
+      <territoryOwner territory="Estwilde" owner="Humans"/>
+      <territoryOwner territory="North Plains of Dust" owner="Humans"/>
+      <territoryOwner territory="Central Qlettaar" owner="Humans"/>
+      <territoryOwner territory="Misty Isle" owner="Humans"/>
+      <territoryOwner territory="Nordmaar" owner="Humans"/>
+      <territoryOwner territory="Saifhum" owner="Humans"/>
+      <territoryOwner territory="New Coast" owner="Humans"/>
+      <territoryOwner territory="Nightlund" owner="Humans"/>
+      <territoryOwner territory="The Delving" owner="Humans"/>
+      <territoryOwner territory="Lemish" owner="Humans"/>
+      <territoryOwner territory="Heartlund" owner="Humans"/>
+      <territoryOwner territory="Elkhome" owner="Humans"/>
+      <territoryOwner territory="West Plains of Dust" owner="Humans"/>
+      <territoryOwner territory="Northern Waste" owner="Humans"/>
+      <territoryOwner territory="Elian Isles" owner="Humans"/>
+      <territoryOwner territory="Tanith" owner="Humans"/>
+      <territoryOwner territory="Enstar" owner="Humans"/>
+      <territoryOwner territory="Torath Plain" owner="Humans"/>
+      <territoryOwner territory="Karthay" owner="Humans"/>
+      <territoryOwner territory="Southern Qlettaar" owner="Humans"/>
+      <territoryOwner territory="Kaolyn" owner="Humans"/>
+      <territoryOwner territory="Palanthus Province" owner="Humans"/>
+      <territoryOwner territory="Taman Busek" owner="Humans"/>
+      <territoryOwner territory="Northern Qlettaar" owner="Humans"/>
+      <territoryOwner territory="Cristyne" owner="Humans"/>
+      <territoryOwner territory="Teyr" owner="Humans"/>
+      <territoryOwner territory="Coastlund" owner="Humans"/>
+      <territoryOwner territory="Hinterlands" owner="Humans"/>
+      <territoryOwner territory="Lesser Northern Ergoth" owner="Humans"/>
+      <territoryOwner territory="Wings of Habbakuk" owner="Humans"/>
+      <territoryOwner territory="Balifor" owner="Humans"/>
+      <territoryOwner territory="Zhakar" owner="SmallRaces"/>
+      <territoryOwner territory="Kendermore" owner="SmallRaces"/>
+      <territoryOwner territory="Hillhome" owner="SmallRaces"/>
+      <territoryOwner territory="Nevermind Range" owner="SmallRaces"/>
+      <territoryOwner territory="Hylo" owner="SmallRaces"/>
+      <territoryOwner territory="Thorbardin" owner="SmallRaces"/>
+      <territoryOwner territory="Plains of Dergoth" owner="SmallRaces"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <unitPlacement unitType="soldier" territory="Eastern Khur" quantity="2" owner="BlackArmy"/>
+      <unitPlacement unitType="mounted" territory="Eastern Khur" quantity="2" owner="BlackArmy"/>
+      <unitPlacement unitType="catapult" territory="Eastern Khur" quantity="2" owner="BlackArmy"/>
+      <unitPlacement unitType="sailboat" territory="Eastern Khur" quantity="1" owner="BlackArmy"/>
+      <unitPlacement unitType="caravel" territory="Eastern Khur" quantity="1" owner="BlackArmy"/>
+      <unitPlacement unitType="dragon" territory="Eastern Khur" quantity="2" owner="BlackArmy"/>
+      <unitPlacement unitType="stronghold" territory="Eastern Khur" quantity="1" owner="BlackArmy"/>
+      <unitPlacement unitType="ranger" territory="Eastern Khur" quantity="1" owner="BlackArmy"/>
+      <unitPlacement unitType="goblin" territory="Eastern Khur" quantity="2" owner="BlackArmy"/>
+      <unitPlacement unitType="goblin" territory="Eastern Khur" quantity="2" owner="BlackArmy"/>
+      <unitPlacement unitType="mercenary" territory="Eastern Khur" quantity="2" owner="BlackArmy"/>
+      <unitPlacement unitType="ogre" territory="Eastern Khur" quantity="2" owner="BlackArmy"/>
+      <unitPlacement unitType="soldier" territory="Broken Chain" quantity="2" owner="BlueArmy"/>
+      <unitPlacement unitType="mounted" territory="Broken Chain" quantity="2" owner="BlueArmy"/>
+      <unitPlacement unitType="catapult" territory="Broken Chain" quantity="2" owner="BlueArmy"/>
+      <unitPlacement unitType="sailboat" territory="Broken Chain" quantity="1" owner="BlueArmy"/>
+      <unitPlacement unitType="caravel" territory="Broken Chain" quantity="1" owner="BlueArmy"/>
+      <unitPlacement unitType="galleon" territory="Broken Chain" quantity="1" owner="BlueArmy"/>
+      <unitPlacement unitType="dragon" territory="Broken Chain" quantity="4" owner="BlueArmy"/>
+      <unitPlacement unitType="stronghold" territory="Broken Chain" quantity="1" owner="BlueArmy"/>
+      <unitPlacement unitType="fighter" territory="Broken Chain" quantity="1" owner="BlueArmy"/>
+      <unitPlacement unitType="goblin" territory="Broken Chain" quantity="2" owner="BlueArmy"/>
+      <unitPlacement unitType="mercenary" territory="Broken Chain" quantity="2" owner="BlueArmy"/>
+      <unitPlacement unitType="ogre" territory="Broken Chain" quantity="2" owner="BlueArmy"/>
+      <unitPlacement unitType="ogre" territory="Broken Chain" quantity="2" owner="BlueArmy"/>
+      <unitPlacement unitType="soldier" territory="Western Khur" quantity="2" owner="GreenArmy"/>
+      <unitPlacement unitType="mounted" territory="Western Khur" quantity="2" owner="GreenArmy"/>
+      <unitPlacement unitType="catapult" territory="Western Khur" quantity="2" owner="GreenArmy"/>
+      <unitPlacement unitType="sailboat" territory="Western Khur" quantity="1" owner="GreenArmy"/>
+      <unitPlacement unitType="caravel" territory="Western Khur" quantity="1" owner="GreenArmy"/>
+      <unitPlacement unitType="dragon" territory="Western Khur" quantity="3" owner="GreenArmy"/>
+      <unitPlacement unitType="stronghold" territory="Western Khur" quantity="1" owner="GreenArmy"/>
+      <unitPlacement unitType="rogue" territory="Western Khur" quantity="1" owner="GreenArmy"/>
+      <unitPlacement unitType="goblin" territory="Western Khur" quantity="2" owner="GreenArmy"/>
+      <unitPlacement unitType="mercenary" territory="Western Khur" quantity="2" owner="GreenArmy"/>
+      <unitPlacement unitType="ogre" territory="Western Khur" quantity="2" owner="GreenArmy"/>
+      <unitPlacement unitType="ogre" territory="Western Khur" quantity="2" owner="GreenArmy"/>
+      <unitPlacement unitType="soldier" territory="Nerakan Valley" quantity="2" owner="RedArmy"/>
+      <unitPlacement unitType="mounted" territory="Nerakan Valley" quantity="2" owner="RedArmy"/>
+      <unitPlacement unitType="catapult" territory="Nerakan Valley" quantity="2" owner="RedArmy"/>
+      <unitPlacement unitType="dragon" territory="Nerakan Valley" quantity="5" owner="RedArmy"/>
+      <unitPlacement unitType="stronghold" territory="Nerakan Valley" quantity="1" owner="RedArmy"/>
+      <unitPlacement unitType="priest" territory="Nerakan Valley" quantity="1" owner="RedArmy"/>
+      <unitPlacement unitType="goblin" territory="Nerakan Valley" quantity="2" owner="RedArmy"/>
+      <unitPlacement unitType="mercenary" territory="Nerakan Valley" quantity="2" owner="RedArmy"/>
+      <unitPlacement unitType="ogre" territory="Nerakan Valley" quantity="2" owner="RedArmy"/>
+      <unitPlacement unitType="soldier" territory="Ice Wall" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="mounted" territory="Ice Wall" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="catapult" territory="Ice Wall" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="stronghold" territory="Ice Wall" quantity="1" owner="WhiteArmy"/>
+      <unitPlacement unitType="barbarian" territory="Ice Wall" quantity="1" owner="WhiteArmy"/>
+      <unitPlacement unitType="goblin" territory="Ice Wall" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="mercenary" territory="Ice Wall" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="ogre" territory="Ice Wall" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="ogre" territory="Ice Wall" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="soldier" territory="Frozen Reach" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="soldier" territory="Frozen Reach" quantity="2" owner="WhiteArmy"/>
+      <unitPlacement unitType="soldier" territory="Quermish" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="soldier" territory="Quermish" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="sailboat" territory="Quermish" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="stronghold" territory="Quermish" quantity="1" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Quermish" quantity="4" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="mercenary" territory="Quermish" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Ogrelands" quantity="4" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Ogrelands" quantity="4" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Ogrelands" quantity="4" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Ogrelands" quantity="4" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="mercenary" territory="Ogrelands" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="ogre" territory="Ogrelands" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Kern" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Kern" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="ogre" territory="Kern" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="stronghold" territory="Goblin Home" quantity="1" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Goblin Home" quantity="6" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="mercenary" territory="Goblin Home" quantity="1" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="ogre" territory="Goblin Home" quantity="1" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Blodehelm" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Blodehelm" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="ogre" territory="Blodehelm" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="fortifications" territory="Blode" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="stronghold" territory="Blode" quantity="1" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="barbarian" territory="Blode" quantity="1" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Blode" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="ogre" territory="Blode" quantity="4" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="fortifications" territory="Throt" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="fortifications" territory="Throt" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Throt" quantity="6" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Southern Ergoth Foothills" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Southern Ergoth Foothills" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="mercenary" territory="Southern Ergoth Foothills" quantity="1" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="ogre" territory="Southern Ergoth Foothills" quantity="2" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="goblin" territory="Southern Ergoth Plain" quantity="3" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="ogre" territory="Southern Ergoth Plain" quantity="1" owner="GoblinsAndOgres"/>
+      <unitPlacement unitType="demi-human" territory="Kagonesti Coast" quantity="4" owner="Elves"/>
+      <unitPlacement unitType="griffin" territory="Kagonesti Coast" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Central Silvanesti" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Central Silvanesti" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="soldier" territory="Dairly Plains" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="East Silvanesti" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="East Silvanesti" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Wayreth Forest" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Wayreth Forest" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Kharolis" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Kharolis" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="soldier" territory="Elven Colonies" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="soldier" territory="Elven Colonies" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="sailboat" territory="Elven Colonies" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="stronghold" territory="Elven Colonies" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Elven Colonies" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="griffin" territory="Elven Colonies" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="soldier" territory="Northern Silvanesti" quantity="4" owner="Elves"/>
+      <unitPlacement unitType="mounted" territory="Northern Silvanesti" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="mounted" territory="Northern Silvanesti" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Northern Silvanesti" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="stronghold" territory="Silvanost" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="ranger" territory="Silvanost" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Silvanost" quantity="4" owner="Elves"/>
+      <unitPlacement unitType="griffin" territory="Silvanost" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="stronghold" territory="Qualinesti" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Qualinesti" quantity="3" owner="Elves"/>
+      <unitPlacement unitType="griffin" territory="Qualinesti" quantity="1" owner="Elves"/>
+      <unitPlacement unitType="mounted" territory="Silvanesti Plains" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="mounted" territory="Silvanesti Plains" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="demi-human" territory="Silvanesti Plains" quantity="2" owner="Elves"/>
+      <unitPlacement unitType="soldier" territory="Garrdlund" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Garrdlund" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Garrdlund" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Garrdlund" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Plains of Solamnia" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Plains of Solamnia" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Southern Khur" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Southern Khur" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Southern Khur" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Tarsis" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Tarsis" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Tarsis" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="sailboat" territory="Tarsis" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Tarsis" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="stronghold" territory="Tarsis" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Khalkist Chain" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Khalkist Chain" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Khalkist Chain" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Khalkist Chain" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Khalkist Chain" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Southlund" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Southlund" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Southlund" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="stronghold" territory="Southlund" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="knight" territory="Southlund" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="South Plains of Dust" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Abanasinia" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Abanasinia" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Greater Northern Ergoth" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Greater Northern Ergoth" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Greater Northern Ergoth" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="East Plains of Dust" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="East Plains of Dust" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Nostar" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Gunthar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="sailboat" territory="Gunthar" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="knight" territory="Gunthar" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Estwilde" quantity="6" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Estwilde" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="stronghold" territory="Estwilde" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="North Plains of Dust" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="North Plains of Dust" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Central Qlettaar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Central Qlettaar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Misty Isle" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Misty Isle" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Nordmaar" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Nordmaar" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Nordmaar" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Nordmaar" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Nordmaar" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Nordmaar" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="stronghold" territory="Nordmaar" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Saifhum" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Saifhum" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="New Coast" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="New Coast" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="The Delving" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="The Delving" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Lemish" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Lemish" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Lemish" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Lemish" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Heartlund" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Heartlund" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="sailboat" territory="Heartlund" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Heartlund" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="stronghold" territory="Heartlund" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="knight" territory="Heartlund" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Elkhome" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Elkhome" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="West Plains of Dust" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="West Plains of Dust" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Northern Waste" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Northern Waste" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Elian Isles" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Tanith" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Enstar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Enstar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Torath Plain" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Karthay" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="sailboat" territory="Karthay" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Karthay" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Southern Qlettaar" quantity="3" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Southern Qlettaar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Southern Qlettaar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Kaolyn" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Palanthus Province" quantity="4" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Palanthus Province" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Palanthus Province" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="knight" territory="Palanthus Province" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Taman Busek" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Taman Busek" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Northern Qlettaar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Northern Qlettaar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Northern Qlettaar" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Cristyne" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Cristyne" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Teyr" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Teyr" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Teyr" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Coastlund" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="stronghold" territory="Coastlund" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="knight" territory="Coastlund" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Hinterlands" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Lesser Northern Ergoth" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Lesser Northern Ergoth" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Wings of Habbakuk" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="mounted" territory="Wings of Habbakuk" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="catapult" territory="Wings of Habbakuk" quantity="1" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Balifor" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="soldier" territory="Balifor" quantity="2" owner="Humans"/>
+      <unitPlacement unitType="fortifications" territory="Zhakar" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="fortifications" territory="Zhakar" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Zhakar" quantity="3" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Kendermore" quantity="6" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Kendermore" quantity="6" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Kendermore" quantity="6" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Kendermore" quantity="6" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Kendermore" quantity="6" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Kendermore" quantity="6" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Hillhome" quantity="3" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Hillhome" quantity="3" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Hillhome" quantity="3" owner="SmallRaces"/>
+      <unitPlacement unitType="soldier" territory="Nevermind Range" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="soldier" territory="Nevermind Range" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="catapult" territory="Nevermind Range" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="caravel" territory="Nevermind Range" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="fortifications" territory="Nevermind Range" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="stronghold" territory="Nevermind Range" quantity="1" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Nevermind Range" quantity="4" owner="SmallRaces"/>
+      <unitPlacement unitType="rogue" territory="Hylo" quantity="1" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Hylo" quantity="3" owner="SmallRaces"/>
+      <unitPlacement unitType="soldier" territory="Thorbardin" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="soldier" territory="Thorbardin" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="catapult" territory="Thorbardin" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="fortifications" territory="Thorbardin" quantity="6" owner="SmallRaces"/>
+      <unitPlacement unitType="stronghold" territory="Thorbardin" quantity="1" owner="SmallRaces"/>
+      <unitPlacement unitType="fighter" territory="Thorbardin" quantity="1" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Thorbardin" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="soldier" territory="Plains of Dergoth" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="catapult" territory="Plains of Dergoth" quantity="1" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Plains of Dergoth" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="demi-human" territory="Plains of Dergoth" quantity="2" owner="SmallRaces"/>
+      <unitPlacement unitType="soldier" territory="Shallsea" quantity="2"/>
+      <unitPlacement unitType="soldier" territory="Shallsea" quantity="2"/>
+      <unitPlacement unitType="soldier" territory="Palanthas" quantity="10"/>
+      <unitPlacement unitType="fortifications" territory="Palanthas" quantity="4"/>
+      <unitPlacement unitType="fortifications" territory="Palanthas" quantity="4"/>
+      <unitPlacement unitType="fortifications" territory="Palanthas" quantity="4"/>
+      <unitPlacement unitType="fortifications" territory="Palanthas" quantity="4"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="BlackArmy" resource="PUs" quantity="0"/>
+      <resourceGiven player="BlueArmy" resource="PUs" quantity="0"/>
+      <resourceGiven player="GreenArmy" resource="PUs" quantity="0"/>
+      <resourceGiven player="RedArmy" resource="PUs" quantity="0"/>
+      <resourceGiven player="WhiteArmy" resource="PUs" quantity="0"/>
+      <resourceGiven player="GoblinsAndOgres" resource="PUs" quantity="0"/>
+      <resourceGiven player="Minotaurs" resource="PUs" quantity="0"/>
+      <resourceGiven player="Elves" resource="PUs" quantity="0"/>
+      <resourceGiven player="Humans" resource="PUs" quantity="0"/>
+      <resourceGiven player="SmallRaces" resource="PUs" quantity="0"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Bids -->
+    <property name="BlackArmy bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="BlueArmy bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="GreenArmy bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="RedArmy bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="WhiteArmy bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="GoblinsAndOgres bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Minotaurs bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Elves bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Humans bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="SmallRaces bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0" editable="false">
+      <number min="0" max="9999999"/>
+    </property>
+    <property name="maxFactoriesPerTerritory" value="1" editable="false">
+      <number min="1" max="100"/>
+    </property>
+    <property name="Sub Control Sea Zone Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="mapName" value="war_of_the_lance" editable="false">
+      <string/>
+    </property>
+    <property name="notes">
+      <string/>
+      <value><![CDATA[This is the first ALPHA of the map of Ansalon]]></value>
+    </property>
+  </propertyList>
+</game>

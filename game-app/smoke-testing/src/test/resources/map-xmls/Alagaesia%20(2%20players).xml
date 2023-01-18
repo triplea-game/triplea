@@ -1,0 +1,2431 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd"[]>
+<game>
+  <info name="Alagaësia (2 players)" version="1.0" />
+  <loader javaClass="games.strategy.triplea.TripleA" />
+  <triplea minimumVersion="1.9" />
+  <diceSides value="6" />
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Dauth"/>
+	<territory name="Nadindel"/>
+	<territory name="Melian"/>
+	<territory name="Hedarth"/>
+	<territory name="Buragh"/>
+	<territory name="Lithgow"/>
+	<territory name="Daret"/>
+	<territory name="Thun"/>
+	<territory name="Fernoth Merna"/>
+	<territory name="Aroughs"/>
+	<territory name="Toark Valley"/>
+	<territory name="Palancar Valley"/>
+	<territory name="Osilon"/>
+	<territory name="Silverwood Forest"/>
+	<territory name="Urubaen"/>
+	<territory name="Kostha Merna"/>
+	<territory name="Fionula"/>
+	<territory name="Marna"/>
+	<territory name="Az Ragni"/>
+	<territory name="Orthiad"/>
+	<territory name="Coast of Leona"/>
+	<territory name="Galfni"/>
+	<territory name="Central Surda"/>
+	<territory name="Eastern Beor Mountains"/>
+	<territory name="Western Central Plains"/>
+	<territory name="Northern Beor Mountains"/>
+	<territory name="Dalgon"/>
+	<territory name="Vroengard"/>
+	<territory name="Southwestern Du Weldenwarden"/>
+	<territory name="Terim"/>
+	<territory name="Bullridge"/>
+	<territory name="Coast of Tudosten"/>
+	<territory name="Ardwen" water="true"/>
+	<territory name="The Burning Plains"/>
+	<territory name="Fenmark"/>
+	<territory name="Northern Gray Heath"/>
+	<territory name="Eastern Du Weldenwarden"/>
+	<territory name="Kuasta"/>
+	<territory name="Boars Eye" water="true"/>
+	<territory name="Ilia Feon"/>
+	<territory name="Belatona"/>
+	<territory name="Southern Ramr River"/>
+	<territory name="Edda River"/>
+	<territory name="Odred Valley"/>
+	<territory name="Sea 1" water="true"/>
+	<territory name="Sea 2" water="true"/>
+	<territory name="Sea 3" water="true"/>
+	<territory name="Southern Spine"/>
+	<territory name="Sea 4" water="true"/>
+	<territory name="Sea 5" water="true"/>
+	<territory name="Eastern Central Plains"/>
+	<territory name="Sea 6" water="true"/>
+	<territory name="Sea 7" water="true"/>
+	<territory name="Sea 8" water="true"/>
+	<territory name="Ellesmera"/>
+	<territory name="Sea 9" water="true"/>
+	<territory name="Utgard"/>
+	<territory name="Eoam"/>
+	<territory name="Western Beor Mountains"/>
+	<territory name="Southern Gray Heath"/>
+	<territory name="Northwestern Beor Mountains"/>
+	<territory name="Northern Urgal Settlements"/>
+	<territory name="Jiet River"/>
+	<territory name="Lake Tudosten" water="true"/>
+	<territory name="Silthrim"/>
+	<territory name="Urgal Settlements"/>
+	<territory name="Cithri"/>
+	<territory name="Anora River"/>
+	<territory name="Gaena River"/>
+	<territory name="Western Foothills of Beor"/>
+	<territory name="Woadark"/>
+	<territory name="Aberon"/>
+	<territory name="Iron Cliffs"/>
+	<territory name="Central Beor Mountains"/>
+	<territory name="Reavstone"/>
+	<territory name="Eastcroft"/>
+	<territory name="Gilead"/>
+	<territory name="Ragni Darmn"/>
+	<territory name="Sharktooth"/>
+	<territory name="Coast of Isenstar"/>
+	<territory name="Ceris"/>
+	<territory name="Therinsford"/>
+	<territory name="Farthen Dur"/>
+	<territory name="Northern Du Weldenwarden"/>
+	<territory name="Tarnag"/>
+	<territory name="Leona Lake" water="true"/>
+	<territory name="Moldun the Proud"/>
+	<territory name="The Spine"/>
+	<territory name="Kirtan"/>
+	<territory name="Beartooth River"/>
+	<territory name="Western Edge of Hadarac"/>
+	<territory name="Ceunon"/>
+	<territory name="Petrovya"/>
+	<territory name="Central Du Weldenwarden"/>
+	<territory name="Yazuac"/>
+	<territory name="Flam"/>
+	<territory name="Northwestern Foothills of Beor"/>
+	<territory name="Southern Edge of Hadarac"/>
+	<territory name="Northern Central Plains"/>
+	<territory name="Bregan Hold"/>
+	<territory name="Mountains of Du Weldenwarden"/>
+	<territory name="Du Weldenwarden"/>
+	<territory name="Carvahall"/>
+	<territory name="Northern Ramr River"/>
+	<territory name="Northern Foothills of Beor"/>
+	<territory name="Narda"/>
+	<territory name="Hadarac Desert"/>
+	<territory name="Toark River"/>
+	<territory name="Feinster"/>
+	<territory name="Ninor River"/>
+	<territory name="Mount Thardur"/>
+	<territory name="Isenstar Lake" water="true"/>
+	<territory name="Southern Urgal Settlements"/>
+	<territory name="Furnost"/>
+	<territory name="Southern Central Plains"/>
+	<territory name="Helgrind"/>
+	<territory name="Crags of Telnaeir"/>
+	<territory name="Southwestern Edge of Hadarac"/>
+	<territory name="Dras Leona"/>
+	<territory name="Eldor" water="true"/>
+	<territory name="Valley of Beor Mountains"/>
+	<territory name="Sea 14" water="true"/>
+	<territory name="Sea 15" water="true"/>
+	<territory name="Sea 12" water="true"/>
+	<territory name="Sea 13" water="true"/>
+	<territory name="Beor Mountains"/>
+	<territory name="Sea 10" water="true"/>
+	<territory name="Fasaloft"/>
+	<territory name="Sea 11" water="true"/>
+	<territory name="Deldarad"/>
+	<territory name="Nalsvrid Merna"/>
+	<territory name="Northern Spine"/>
+	<territory name="Southeastern Du Weldenwarden"/>
+	<territory name="Rona" water="true"/>
+	<territory name="Edur Naroch"/>
+	<territory name="Peaks of Tarnag"/>
+    <!-- Territory Connections -->
+	<connection t1="Aberon" t2="Central Surda"/>
+	<connection t1="Aberon" t2="Lithgow"/>
+	<connection t1="Aberon" t2="Reavstone"/>
+	<connection t1="Aberon" t2="Sea 15"/>
+	<connection t1="Aberon" t2="Western Beor Mountains"/>
+	<connection t1="Anora River" t2="Ceunon"/>
+	<connection t1="Anora River" t2="Mountains of Du Weldenwarden"/>
+	<connection t1="Anora River" t2="Northern Spine"/>
+	<connection t1="Anora River" t2="Sea 1"/>
+	<connection t1="Anora River" t2="Therinsford"/>
+	<connection t1="Anora River" t2="Yazuac"/>
+	<connection t1="Ardwen" t2="Eastern Du Weldenwarden"/>
+	<connection t1="Ardwen" t2="Gaena River"/>
+	<connection t1="Ardwen" t2="Nadindel"/>
+	<connection t1="Ardwen" t2="Silthrim"/>
+	<connection t1="Ardwen" t2="Southeastern Du Weldenwarden"/>
+	<connection t1="Aroughs" t2="Dauth"/>
+	<connection t1="Aroughs" t2="Fenmark"/>
+	<connection t1="Aroughs" t2="Sea 10"/>
+	<connection t1="Aroughs" t2="Sea 13"/>
+	<connection t1="Az Ragni" t2="Eastern Beor Mountains"/>
+	<connection t1="Az Ragni" t2="Edda River"/>
+	<connection t1="Az Ragni" t2="Hadarac Desert"/>
+	<connection t1="Az Ragni" t2="Hedarth"/>
+	<connection t1="Az Ragni" t2="Moldun the Proud"/>
+	<connection t1="Az Ragni" t2="Northern Foothills of Beor"/>
+	<connection t1="Az Ragni" t2="Peaks of Tarnag"/>
+	<connection t1="Az Ragni" t2="Ragni Darmn"/>
+	<connection t1="Az Ragni" t2="Tarnag"/>
+	<connection t1="Beartooth River" t2="Beor Mountains"/>
+	<connection t1="Beartooth River" t2="Central Beor Mountains"/>
+	<connection t1="Beartooth River" t2="Kostha Merna"/>
+	<connection t1="Beartooth River" t2="Mount Thardur"/>
+	<connection t1="Beartooth River" t2="Northern Beor Mountains"/>
+	<connection t1="Beartooth River" t2="Northwestern Beor Mountains"/>
+	<connection t1="Beartooth River" t2="Orthiad"/>
+	<connection t1="Beartooth River" t2="Valley of Beor Mountains"/>
+	<connection t1="Belatona" t2="Feinster"/>
+	<connection t1="Belatona" t2="Iron Cliffs"/>
+	<connection t1="Belatona" t2="Jiet River"/>
+	<connection t1="Belatona" t2="Leona Lake"/>
+	<connection t1="Belatona" t2="Southern Spine"/>
+	<connection t1="Beor Mountains" t2="Dalgon"/>
+	<connection t1="Beor Mountains" t2="Mount Thardur"/>
+	<connection t1="Beor Mountains" t2="Orthiad"/>
+	<connection t1="Boars Eye" t2="Eoam"/>
+	<connection t1="Boars Eye" t2="Sea 10"/>
+	<connection t1="Boars Eye" t2="Sea 11"/>
+	<connection t1="Boars Eye" t2="Sea 12"/>
+	<connection t1="Boars Eye" t2="Sea 13"/>
+	<connection t1="Bregan Hold" t2="Central Beor Mountains"/>
+	<connection t1="Bregan Hold" t2="Dalgon"/>
+	<connection t1="Bregan Hold" t2="Mount Thardur"/>
+	<connection t1="Bregan Hold" t2="Nalsvrid Merna"/>
+	<connection t1="Bullridge" t2="Eastern Central Plains"/>
+	<connection t1="Bullridge" t2="Hadarac Desert"/>
+	<connection t1="Bullridge" t2="Marna"/>
+	<connection t1="Bullridge" t2="Northern Ramr River"/>
+	<connection t1="Bullridge" t2="Southern Ramr River"/>
+	<connection t1="Buragh" t2="Northern Beor Mountains"/>
+	<connection t1="Buragh" t2="Northern Foothills of Beor"/>
+	<connection t1="Buragh" t2="Peaks of Tarnag"/>
+	<connection t1="Buragh" t2="Tarnag"/>
+	<connection t1="Carvahall" t2="Northern Spine"/>
+	<connection t1="Carvahall" t2="Palancar Valley"/>
+	<connection t1="Central Beor Mountains" t2="Farthen Dur"/>
+	<connection t1="Central Beor Mountains" t2="Kostha Merna"/>
+	<connection t1="Central Beor Mountains" t2="Mount Thardur"/>
+	<connection t1="Central Beor Mountains" t2="Nalsvrid Merna"/>
+	<connection t1="Central Du Weldenwarden" t2="Crags of Telnaeir"/>
+	<connection t1="Central Du Weldenwarden" t2="Ellesmera"/>
+	<connection t1="Central Du Weldenwarden" t2="Fionula"/>
+	<connection t1="Central Du Weldenwarden" t2="Northern Du Weldenwarden"/>
+	<connection t1="Central Du Weldenwarden" t2="Osilon"/>
+	<connection t1="Central Du Weldenwarden" t2="Southwestern Du Weldenwarden"/>
+	<connection t1="Central Surda" t2="Deldarad"/>
+	<connection t1="Central Surda" t2="Lithgow"/>
+	<connection t1="Central Surda" t2="Reavstone"/>
+	<connection t1="Central Surda" t2="Sea 14"/>
+	<connection t1="Central Surda" t2="Thun"/>
+	<connection t1="Ceris" t2="Edda River"/>
+	<connection t1="Ceris" t2="Eldor"/>
+	<connection t1="Ceris" t2="Gaena River"/>
+	<connection t1="Ceris" t2="Ilia Feon"/>
+	<connection t1="Ceris" t2="Southeastern Du Weldenwarden"/>
+	<connection t1="Ceunon" t2="Mountains of Du Weldenwarden"/>
+	<connection t1="Ceunon" t2="Northern Du Weldenwarden"/>
+	<connection t1="Ceunon" t2="Osilon"/>
+	<connection t1="Ceunon" t2="Sea 1"/>
+	<connection t1="Cithri" t2="Coast of Tudosten"/>
+	<connection t1="Cithri" t2="Deldarad"/>
+	<connection t1="Cithri" t2="Lake Tudosten"/>
+	<connection t1="Cithri" t2="The Burning Plains"/>
+	<connection t1="Cithri" t2="Thun"/>
+	<connection t1="Coast of Isenstar" t2="Hadarac Desert"/>
+	<connection t1="Coast of Isenstar" t2="Isenstar Lake"/>
+	<connection t1="Coast of Isenstar" t2="Marna"/>
+	<connection t1="Coast of Isenstar" t2="Mountains of Du Weldenwarden"/>
+	<connection t1="Coast of Isenstar" t2="Southwestern Du Weldenwarden"/>
+	<connection t1="Coast of Leona" t2="Helgrind"/>
+	<connection t1="Coast of Leona" t2="Jiet River"/>
+	<connection t1="Coast of Leona" t2="Leona Lake"/>
+	<connection t1="Coast of Leona" t2="Melian"/>
+	<connection t1="Coast of Leona" t2="Southern Gray Heath"/>
+	<connection t1="Coast of Tudosten" t2="Furnost"/>
+	<connection t1="Coast of Tudosten" t2="Lake Tudosten"/>
+	<connection t1="Coast of Tudosten" t2="Melian"/>
+	<connection t1="Coast of Tudosten" t2="Southern Gray Heath"/>
+	<connection t1="Coast of Tudosten" t2="The Burning Plains"/>
+	<connection t1="Crags of Telnaeir" t2="Du Weldenwarden"/>
+	<connection t1="Crags of Telnaeir" t2="Ellesmera"/>
+	<connection t1="Crags of Telnaeir" t2="Northern Du Weldenwarden"/>
+	<connection t1="Dalgon" t2="Mount Thardur"/>
+	<connection t1="Dalgon" t2="Orthiad"/>
+	<connection t1="Dalgon" t2="Western Beor Mountains"/>
+	<connection t1="Daret" t2="Flam"/>
+	<connection t1="Daret" t2="Gilead"/>
+	<connection t1="Daret" t2="Ninor River"/>
+	<connection t1="Daret" t2="Northern Central Plains"/>
+	<connection t1="Daret" t2="Utgard"/>
+	<connection t1="Daret" t2="Yazuac"/>
+	<connection t1="Dauth" t2="Deldarad"/>
+	<connection t1="Dauth" t2="Fenmark"/>
+	<connection t1="Dauth" t2="Sea 13"/>
+	<connection t1="Dauth" t2="Sea 14"/>
+	<connection t1="Dauth" t2="The Burning Plains"/>
+	<connection t1="Deldarad" t2="Sea 14"/>
+	<connection t1="Deldarad" t2="The Burning Plains"/>
+	<connection t1="Deldarad" t2="Thun"/>
+	<connection t1="Dras Leona" t2="Eastcroft"/>
+	<connection t1="Dras Leona" t2="Fasaloft"/>
+	<connection t1="Dras Leona" t2="Helgrind"/>
+	<connection t1="Dras Leona" t2="Leona Lake"/>
+	<connection t1="Dras Leona" t2="Southern Central Plains"/>
+	<connection t1="Dras Leona" t2="Urubaen"/>
+	<connection t1="Du Weldenwarden" t2="Ellesmera"/>
+	<connection t1="Du Weldenwarden" t2="Fionula"/>
+	<connection t1="Du Weldenwarden" t2="Kirtan"/>
+	<connection t1="Du Weldenwarden" t2="Nadindel"/>
+	<connection t1="Du Weldenwarden" t2="Silthrim"/>
+	<connection t1="Du Weldenwarden" t2="Southeastern Du Weldenwarden"/>
+	<connection t1="Eastcroft" t2="Helgrind"/>
+	<connection t1="Eastcroft" t2="Northern Gray Heath"/>
+	<connection t1="Eastcroft" t2="Urubaen"/>
+	<connection t1="Eastern Beor Mountains" t2="Farthen Dur"/>
+	<connection t1="Eastern Beor Mountains" t2="Fernoth Merna"/>
+	<connection t1="Eastern Beor Mountains" t2="Galfni"/>
+	<connection t1="Eastern Beor Mountains" t2="Hedarth"/>
+	<connection t1="Eastern Beor Mountains" t2="Odred Valley"/>
+	<connection t1="Eastern Beor Mountains" t2="Ragni Darmn"/>
+	<connection t1="Eastern Central Plains" t2="Gilead"/>
+	<connection t1="Eastern Central Plains" t2="Northern Central Plains"/>
+	<connection t1="Eastern Central Plains" t2="Northern Ramr River"/>
+	<connection t1="Eastern Central Plains" t2="Southern Central Plains"/>
+	<connection t1="Eastern Central Plains" t2="Southern Ramr River"/>
+	<connection t1="Eastern Du Weldenwarden" t2="Gaena River"/>
+	<connection t1="Eastern Du Weldenwarden" t2="Nadindel"/>
+	<connection t1="Eastern Du Weldenwarden" t2="Rona"/>
+	<connection t1="Edda River" t2="Eldor"/>
+	<connection t1="Edda River" t2="Gaena River"/>
+	<connection t1="Edda River" t2="Hadarac Desert"/>
+	<connection t1="Edda River" t2="Hedarth"/>
+	<connection t1="Edda River" t2="Ilia Feon"/>
+	<connection t1="Edur Naroch" t2="Furnost"/>
+	<connection t1="Edur Naroch" t2="Lake Tudosten"/>
+	<connection t1="Edur Naroch" t2="Silverwood Forest"/>
+	<connection t1="Edur Naroch" t2="Southwestern Edge of Hadarac"/>
+	<connection t1="Edur Naroch" t2="Western Edge of Hadarac"/>
+	<connection t1="Eldor" t2="Gaena River"/>
+	<connection t1="Ellesmera" t2="Fionula"/>
+	<connection t1="Eoam" t2="Sea 11"/>
+	<connection t1="Eoam" t2="Sea 12"/>
+	<connection t1="Eoam" t2="Sea 10"/>
+	<connection t1="Eoam" t2="Sea 13"/>
+	<connection t1="Farthen Dur" t2="Fernoth Merna"/>
+	<connection t1="Farthen Dur" t2="Galfni"/>
+	<connection t1="Farthen Dur" t2="Kostha Merna"/>
+	<connection t1="Farthen Dur" t2="Moldun the Proud"/>
+	<connection t1="Farthen Dur" t2="Nalsvrid Merna"/>
+	<connection t1="Farthen Dur" t2="Northern Beor Mountains"/>
+	<connection t1="Farthen Dur" t2="Tarnag"/>
+	<connection t1="Fasaloft" t2="Leona Lake"/>
+	<connection t1="Fasaloft" t2="Southern Central Plains"/>
+	<connection t1="Fasaloft" t2="Toark River"/>
+	<connection t1="Fasaloft" t2="Western Central Plains"/>
+	<connection t1="Feinster" t2="Fenmark"/>
+	<connection t1="Feinster" t2="Iron Cliffs"/>
+	<connection t1="Feinster" t2="Jiet River"/>
+	<connection t1="Feinster" t2="Sea 10"/>
+	<connection t1="Feinster" t2="The Burning Plains"/>
+	<connection t1="Fenmark" t2="Sea 10"/>
+	<connection t1="Fenmark" t2="The Burning Plains"/>
+	<connection t1="Fernoth Merna" t2="Moldun the Proud"/>
+	<connection t1="Fernoth Merna" t2="Odred Valley"/>
+	<connection t1="Fionula" t2="Hadarac Desert"/>
+	<connection t1="Fionula" t2="Kirtan"/>
+	<connection t1="Fionula" t2="Southwestern Du Weldenwarden"/>
+	<connection t1="Flam" t2="Northern Central Plains"/>
+	<connection t1="Flam" t2="Northern Urgal Settlements"/>
+	<connection t1="Flam" t2="The Spine"/>
+	<connection t1="Flam" t2="Utgard"/>
+	<connection t1="Flam" t2="Western Central Plains"/>
+	<connection t1="Furnost" t2="Lake Tudosten"/>
+	<connection t1="Furnost" t2="Northern Gray Heath"/>
+	<connection t1="Furnost" t2="Southern Gray Heath"/>
+	<connection t1="Furnost" t2="Urubaen"/>
+	<connection t1="Furnost" t2="Western Edge of Hadarac"/>
+	<connection t1="Gaena River" t2="Southeastern Du Weldenwarden"/>
+	<connection t1="Galfni" t2="Nalsvrid Merna"/>
+	<connection t1="Gilead" t2="Isenstar Lake"/>
+	<connection t1="Gilead" t2="Ninor River"/>
+	<connection t1="Gilead" t2="Northern Central Plains"/>
+	<connection t1="Gilead" t2="Northern Ramr River"/>
+	<connection t1="Hadarac Desert" t2="Ilia Feon"/>
+	<connection t1="Hadarac Desert" t2="Kirtan"/>
+	<connection t1="Hadarac Desert" t2="Marna"/>
+	<connection t1="Hadarac Desert" t2="Northern Foothills of Beor"/>
+	<connection t1="Hadarac Desert" t2="Southeastern Du Weldenwarden"/>
+	<connection t1="Hadarac Desert" t2="Southern Edge of Hadarac"/>
+	<connection t1="Hadarac Desert" t2="Southern Ramr River"/>
+	<connection t1="Hadarac Desert" t2="Southwestern Du Weldenwarden"/>
+	<connection t1="Hadarac Desert" t2="Southwestern Edge of Hadarac"/>
+	<connection t1="Hadarac Desert" t2="Valley of Beor Mountains"/>
+	<connection t1="Hadarac Desert" t2="Western Edge of Hadarac"/>
+	<connection t1="Helgrind" t2="Leona Lake"/>
+	<connection t1="Helgrind" t2="Northern Gray Heath"/>
+	<connection t1="Helgrind" t2="Southern Gray Heath"/>
+	<connection t1="Ilia Feon" t2="Southeastern Du Weldenwarden"/>
+	<connection t1="Iron Cliffs" t2="Kuasta"/>
+	<connection t1="Iron Cliffs" t2="Sea 7"/>
+	<connection t1="Iron Cliffs" t2="Sea 8"/>
+	<connection t1="Iron Cliffs" t2="Sea 9"/>
+	<connection t1="Iron Cliffs" t2="Sea 10"/>
+	<connection t1="Iron Cliffs" t2="Southern Spine"/>
+	<connection t1="Isenstar Lake" t2="Marna"/>
+	<connection t1="Isenstar Lake" t2="Mountains of Du Weldenwarden"/>
+	<connection t1="Isenstar Lake" t2="Ninor River"/>
+	<connection t1="Isenstar Lake" t2="Northern Ramr River"/>
+	<connection t1="Jiet River" t2="Leona Lake"/>
+	<connection t1="Jiet River" t2="Melian"/>
+	<connection t1="Jiet River" t2="The Burning Plains"/>
+	<connection t1="Kirtan" t2="Southeastern Du Weldenwarden"/>
+	<connection t1="Kostha Merna" t2="Northern Beor Mountains"/>
+	<connection t1="Kuasta" t2="Sea 7"/>
+	<connection t1="Kuasta" t2="Southern Spine"/>
+	<connection t1="Lake Tudosten" t2="Petrovya"/>
+	<connection t1="Lake Tudosten" t2="Silverwood Forest"/>
+	<connection t1="Lake Tudosten" t2="Thun"/>
+	<connection t1="Leona Lake" t2="Southern Spine"/>
+	<connection t1="Leona Lake" t2="Toark River"/>
+	<connection t1="Lithgow" t2="Petrovya"/>
+	<connection t1="Lithgow" t2="Thun"/>
+	<connection t1="Lithgow" t2="Western Beor Mountains"/>
+	<connection t1="Lithgow" t2="Western Foothills of Beor"/>
+	<connection t1="Marna" t2="Northern Ramr River"/>
+	<connection t1="Melian" t2="Southern Gray Heath"/>
+	<connection t1="Melian" t2="The Burning Plains"/>
+	<connection t1="Moldun the Proud" t2="Odred Valley"/>
+	<connection t1="Moldun the Proud" t2="Ragni Darmn"/>
+	<connection t1="Moldun the Proud" t2="Tarnag"/>
+	<connection t1="Mountains of Du Weldenwarden" t2="Ninor River"/>
+	<connection t1="Mountains of Du Weldenwarden" t2="Osilon"/>
+	<connection t1="Mountains of Du Weldenwarden" t2="Southwestern Du Weldenwarden"/>
+	<connection t1="Mountains of Du Weldenwarden" t2="Yazuac"/>
+	<connection t1="Nadindel" t2="Rona"/>
+	<connection t1="Nadindel" t2="Silthrim"/>
+	<connection t1="Narda" t2="Northern Spine"/>
+	<connection t1="Narda" t2="Sea 3"/>
+	<connection t1="Narda" t2="Sea 5"/>
+	<connection t1="Narda" t2="Terim"/>
+	<connection t1="Narda" t2="The Spine"/>
+	<connection t1="Narda" t2="Utgard"/>
+	<connection t1="Ninor River" t2="Yazuac"/>
+	<connection t1="Northern Beor Mountains" t2="Northern Foothills of Beor"/>
+	<connection t1="Northern Beor Mountains" t2="Tarnag"/>
+	<connection t1="Northern Beor Mountains" t2="Valley of Beor Mountains"/>
+	<connection t1="Northern Central Plains" t2="Southern Central Plains"/>
+	<connection t1="Northern Central Plains" t2="Western Central Plains"/>
+	<connection t1="Northern Du Weldenwarden" t2="Osilon"/>
+	<connection t1="Northern Foothills of Beor" t2="Peaks of Tarnag"/>
+	<connection t1="Northern Foothills of Beor" t2="Valley of Beor Mountains"/>
+	<connection t1="Northern Gray Heath" t2="Southern Gray Heath"/>
+	<connection t1="Northern Gray Heath" t2="Urubaen"/>
+	<connection t1="Northern Spine" t2="Sea 2"/>
+	<connection t1="Northern Spine" t2="Palancar Valley"/>
+	<connection t1="Northern Spine" t2="Sea 1"/>
+	<connection t1="Northern Spine" t2="Sea 3"/>
+	<connection t1="Northern Spine" t2="Therinsford"/>
+	<connection t1="Northern Spine" t2="Utgard"/>
+	<connection t1="Northern Urgal Settlements" t2="The Spine"/>
+	<connection t1="Northern Urgal Settlements" t2="Utgard"/>
+	<connection t1="Northwestern Beor Mountains" t2="Northwestern Foothills of Beor"/>
+	<connection t1="Northwestern Beor Mountains" t2="Orthiad"/>
+	<connection t1="Northwestern Beor Mountains" t2="Southern Edge of Hadarac"/>
+	<connection t1="Northwestern Beor Mountains" t2="Valley of Beor Mountains"/>
+	<connection t1="Northwestern Foothills of Beor" t2="Orthiad"/>
+	<connection t1="Northwestern Foothills of Beor" t2="Silverwood Forest"/>
+	<connection t1="Northwestern Foothills of Beor" t2="Southern Edge of Hadarac"/>
+	<connection t1="Northwestern Foothills of Beor" t2="Southwestern Edge of Hadarac"/>
+	<connection t1="Northwestern Foothills of Beor" t2="Western Beor Mountains"/>
+	<connection t1="Northwestern Foothills of Beor" t2="Western Foothills of Beor"/>
+	<connection t1="Odred Valley" t2="Ragni Darmn"/>
+	<connection t1="Orthiad" t2="Western Beor Mountains"/>
+	<connection t1="Osilon" t2="Southwestern Du Weldenwarden"/>
+	<connection t1="Palancar Valley" t2="Therinsford"/>
+	<connection t1="Palancar Valley" t2="Utgard"/>
+	<connection t1="Peaks of Tarnag" t2="Tarnag"/>
+	<connection t1="Petrovya" t2="Silverwood Forest"/>
+	<connection t1="Petrovya" t2="Thun"/>
+	<connection t1="Petrovya" t2="Western Foothills of Beor"/>
+	<connection t1="Reavstone" t2="Sea 14"/>
+	<connection t1="Reavstone" t2="Sea 15"/>
+	<connection t1="Sea 2" t2="Sea 3"/>
+	<connection t1="Sea 2" t2="Sea 4"/>
+	<connection t1="Sea 2" t2="Vroengard"/>
+	<connection t1="Sea 3" t2="Sea 4"/>
+	<connection t1="Sea 3" t2="Sea 5"/>
+	<connection t1="Sea 3" t2="Vroengard"/>
+	<connection t1="Sea 4" t2="Sea 5"/>
+	<connection t1="Sea 4" t2="Sea 6"/>
+	<connection t1="Sea 4" t2="Vroengard"/>
+	<connection t1="Sea 5" t2="Sea 6"/>
+	<connection t1="Sea 5" t2="Sea 7"/>
+	<connection t1="Sea 5" t2="Sharktooth"/>
+	<connection t1="Sea 5" t2="Terim"/>
+	<connection t1="Sea 6" t2="Sea 7"/>
+	<connection t1="Sea 6" t2="Sea 8"/>
+	<connection t1="Sea 7" t2="Sharktooth"/>
+	<connection t1="Sea 7" t2="Southern Spine"/>
+	<connection t1="Sea 7" t2="Terim"/>
+	<connection t1="Sea 8" t2="Sea 7"/>
+	<connection t1="Sea 8" t2="Sea 9"/>
+	<connection t1="Sea 9" t2="Sea 10"/>
+	<connection t1="Sea 9" t2="Sea 11"/>
+	<connection t1="Sea 10" t2="Sea 11"/>
+	<connection t1="Sea 10" t2="Sea 13"/>
+	<connection t1="Sea 11" t2="Sea 12"/>
+	<connection t1="Sea 12" t2="Sea 13"/>
+	<connection t1="Sea 13" t2="Sea 14"/>
+	<connection t1="Sea 14" t2="Sea 15"/>
+	<connection t1="Sea 15" t2="Western Beor Mountains"/>
+	<connection t1="Silthrim" t2="Southeastern Du Weldenwarden"/>
+	<connection t1="Silverwood Forest" t2="Southwestern Edge of Hadarac"/>
+	<connection t1="Silverwood Forest" t2="Western Foothills of Beor"/>
+	<connection t1="Southern Central Plains" t2="Southern Ramr River"/>
+	<connection t1="Southern Central Plains" t2="Urubaen"/>
+	<connection t1="Southern Central Plains" t2="Western Central Plains"/>
+	<connection t1="Southern Edge of Hadarac" t2="Southwestern Edge of Hadarac"/>
+	<connection t1="Southern Edge of Hadarac" t2="Valley of Beor Mountains"/>
+	<connection t1="Southern Ramr River" t2="Urubaen"/>
+	<connection t1="Southern Ramr River" t2="Western Edge of Hadarac"/>
+	<connection t1="Southern Spine" t2="Southern Urgal Settlements"/>
+	<connection t1="Southern Spine" t2="Terim"/>
+	<connection t1="Southern Spine" t2="Toark River"/>
+	<connection t1="Southern Spine" t2="Toark Valley"/>
+	<connection t1="Southern Spine" t2="Woadark"/>
+	<connection t1="Southern Urgal Settlements" t2="Toark Valley"/>
+	<connection t1="Southern Urgal Settlements" t2="Woadark"/>
+	<connection t1="Southwestern Edge of Hadarac" t2="Western Edge of Hadarac"/>
+	<connection t1="Terim" t2="The Spine"/>
+	<connection t1="Terim" t2="Toark Valley"/>
+	<connection t1="Terim" t2="Urgal Settlements"/>
+	<connection t1="The Spine" t2="Toark Valley"/>
+	<connection t1="The Spine" t2="Utgard"/>
+	<connection t1="The Spine" t2="Western Central Plains"/>
+	<connection t1="The Spine" t2="Woadark"/>
+	<connection t1="Therinsford" t2="Utgard"/>
+	<connection t1="Therinsford" t2="Yazuac"/>
+	<connection t1="Toark River" t2="Western Central Plains"/>
+	<connection t1="Toark River" t2="Woadark"/>
+	<connection t1="Toark Valley" t2="Woadark"/>
+	<connection t1="Urgal Settlements" t2="The Spine"/>
+	<connection t1="Urubaen" t2="Western Edge of Hadarac"/>
+	<connection t1="Utgard" t2="Yazuac"/>
+	<connection t1="Western Beor Mountains" t2="Western Foothills of Beor"/>
+	<connection t1="Western Central Plains" t2="Woadark"/>
+
+  </map>
+  <resourceList>
+    <resource name="PUs" />
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Empire" optional="false" canBeDisabled="false" />
+    <player name="Varden" optional="false" canBeDisabled="false" />
+    <alliance player="Empire" alliance="Empire" />
+    <alliance player="Varden" alliance="Varden" />
+  </playerList>
+  <unitList>
+    <unit name="city" />
+    <unit name="human" />
+	<unit name="laughing_dead" />
+    <unit name="cavalry" />
+    <unit name="dwarf" />
+    <unit name="feldunost_rider" />
+	<unit name="werecat" />
+    <unit name="elf" />
+    <unit name="urgal" />
+    <unit name="kull" />
+    <unit name="mage" />
+    <unit name="elven_spellweaver" />
+    <unit name="shade" />
+    <unit name="dragon_rider" />
+	<unit name="razac" />
+	<unit name="ship" />
+	<unit name="wall" />
+  </unitList>
+  <territoryEffectList>
+    <territoryEffect name="plains" />
+  </territoryEffectList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates" />
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat" />
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move" />
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units" />
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units" />
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete" />
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete" />
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1" />
+      <step name="EmpirePurchase" delegate="purchase" player="Empire" />
+      <step name="EmpireCombatMove" delegate="move" player="Empire" />
+      <step name="EmpireBattle" delegate="battle" player="Empire" />
+      <step name="EmpireNonCombatMove" delegate="move" player="Empire" display="Non Combat Move" />
+      <step name="EmpirePlace" delegate="place" player="Empire" />
+      <step name="EmpireEndTurn" delegate="endTurn" player="Empire" />
+	  
+	  <step name="VardenPurchase" delegate="purchase" player="Varden" />
+      <step name="VardenCombatMove" delegate="move" player="Varden" />
+      <step name="VardenBattle" delegate="battle" player="Varden" />
+      <step name="VardenNonCombatMove" delegate="move" player="Varden" display="Non Combat Move" />
+      <step name="VardenPlace" delegate="place" player="Varden" />
+      <step name="VardenEndTurn" delegate="endTurn" player="Varden" />
+    </sequence>
+    <offset round="0" />
+  </gamePlay>
+  <production>
+    <productionRule name="buy_city">
+      <cost resource="PUs" quantity="12" />
+      <result resourceOrUnit="city" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_human">
+      <cost resource="PUs" quantity="4" />
+      <result resourceOrUnit="human" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_laughing_dead">
+      <cost resource="PUs" quantity="7" />
+      <result resourceOrUnit="laughing_dead" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_cavalry">
+      <cost resource="PUs" quantity="8" />
+      <result resourceOrUnit="cavalry" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_dwarf">
+      <cost resource="PUs" quantity="5" />
+      <result resourceOrUnit="dwarf" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_feldunost_rider">
+      <cost resource="PUs" quantity="8" />
+      <result resourceOrUnit="feldunost_rider" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_urgal">
+      <cost resource="PUs" quantity="7" />
+      <result resourceOrUnit="urgal" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_kull">
+      <cost resource="PUs" quantity="10" />
+      <result resourceOrUnit="kull" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_elf">
+      <cost resource="PUs" quantity="8" />
+      <result resourceOrUnit="elf" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_werecat">
+      <cost resource="PUs" quantity="6" />
+      <result resourceOrUnit="werecat" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_mage">
+      <cost resource="PUs" quantity="8" />
+      <result resourceOrUnit="mage" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_elven_spellweaver">
+      <cost resource="PUs" quantity="11" />
+      <result resourceOrUnit="elven_spellweaver" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_shade">
+      <cost resource="PUs" quantity="17" />
+      <result resourceOrUnit="shade" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_dragon_rider">
+      <cost resource="PUs" quantity="42" />
+      <result resourceOrUnit="dragon_rider" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_razac">
+      <cost resource="PUs" quantity="13" />
+      <result resourceOrUnit="razac" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_ship">
+      <cost resource="PUs" quantity="12" />
+      <result resourceOrUnit="ship" quantity="1" />
+    </productionRule>
+	<productionRule name="buy_wall">
+      <cost resource="PUs" quantity="8" />
+      <result resourceOrUnit="wall" quantity="1" />
+    </productionRule>
+    
+
+    <productionFrontier name="EmpireFrontier">
+      <frontierRules name="buy_human" />
+	  <frontierRules name="buy_laughing_dead" />
+	  <frontierRules name="buy_urgal" />
+	  <frontierRules name="buy_kull" />
+	  <frontierRules name="buy_mage" />
+	  <frontierRules name="buy_shade" />
+	  <frontierRules name="buy_razac" />
+	  <frontierRules name="buy_dragon_rider" />
+	  <frontierRules name="buy_wall" />
+	  <frontierRules name="buy_ship" />
+	  <frontierRules name="buy_city" />
+    </productionFrontier>
+	<productionFrontier name="VardenFrontier">
+      <frontierRules name="buy_human" />
+	  <frontierRules name="buy_dwarf" />
+	  <frontierRules name="buy_cavalry" />
+	  <frontierRules name="buy_feldunost_rider" />
+	  <frontierRules name="buy_werecat" />
+	  <frontierRules name="buy_elf" />
+	  <frontierRules name="buy_elven_spellweaver" />
+	  <frontierRules name="buy_mage" />
+	  <frontierRules name="buy_dragon_rider" />
+	  <frontierRules name="buy_wall" />
+	  <frontierRules name="buy_ship" />
+	  <frontierRules name="buy_city" />
+    </productionFrontier>
+
+    <playerProduction player="Empire" frontier="EmpireFrontier" />
+    <playerProduction player="Varden" frontier="VardenFrontier" />
+  </production>
+  <technology>
+  </technology>
+  <attachmentList>
+    <attachment name="unitAttachment" attachTo="city" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true" />
+    </attachment>
+    <attachment name="unitAttachment" attachTo="human" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="1" />
+      <option name="attack" value="1" />
+      <option name="defense" value="2" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="laughing_dead" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="1" />
+      <option name="attack" value="1" />
+      <option name="defense" value="2" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="cavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="2" />
+      <option name="attack" value="2" />
+      <option name="defense" value="2" />
+	  
+	  <option name="targetsAA" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+	  <option name="typeAA" value="charge" />
+      <option name="attackAA" value="0" />
+      <option name="offensiveAttackAA" value="3" />
+      <option name="isAAforCombatOnly" value="true" />
+      <option name="mayOverStackAA" value="true" />
+      <option name="damageableAA" value="true" />
+      <option name="maxAAattacks" value="1" />
+      <option name="maxRoundsAA" value="1" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="dwarf" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="1" />
+      <option name="attack" value="1" />
+      <option name="defense" value="4" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="feldunost_rider" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="2" />
+      <option name="attack" value="3" />
+      <option name="defense" value="2" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="werecat" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="1" />
+      <option name="attack" value="3" />
+      <option name="defense" value="3" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="urgal" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="2" />
+      <option name="attack" value="2" />
+      <option name="defense" value="2" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="kull" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="2" />
+      <option name="attack" value="4" />
+      <option name="defense" value="3" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="mage" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="1" />
+      <option name="attack" value="3" />
+	  <option name="attackRolls" value="2" />
+      <option name="defense" value="3" />
+	  <option name="defenseRolls" value="2" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="elf" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="2" />
+      <option name="attack" value="3" />
+      <option name="defense" value="4" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="elven_spellweaver" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="2" />
+      <option name="attack" value="4" />
+	  <option name="attackRolls" value="2" />
+      <option name="defense" value="5" />
+	  <option name="defenseRolls" value="2" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="shade" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCost" value="1" />
+      <option name="movement" value="1" />
+      <option name="attack" value="5" />
+	  <option name="attackRolls" value="3" />
+      <option name="defense" value="3" />
+	  <option name="defenseRolls" value="3" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="dragon_rider" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+	  <option name="isAir" value="true" />
+      <option name="movement" value="4" />
+      <option name="attack" value="5" />
+	  <option name="attackRolls" value="4" />
+      <option name="defense" value="5" />
+	  <option name="defenseRolls" value="4" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="razac" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+	  <option name="isAir" value="true" />
+      <option name="movement" value="4" />
+      <option name="attack" value="5" />
+      <option name="defense" value="2" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="ship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="transportCapacity" value="2" />
+	  <option name="isSea" value="true" />
+      <option name="movement" value="2" />
+      <option name="attack" value="2" />
+      <option name="defense" value="2" />
+    </attachment>
+	<attachment name="unitAttachment" attachTo="wall" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="defense" value="2" />
+    </attachment>
+    
+    <!--TERRITORY ATTACHMENTS-->
+    <attachment name="territoryAttachment" attachTo="Dauth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Nadindel" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="4" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Melian" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Hedarth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="4" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Buragh" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Lithgow" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="4" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Daret" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Thun" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Fernoth Merna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Aroughs" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Toark Valley" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Palancar Valley" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Osilon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Silverwood Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Urubaen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="8" />
+		<option name="capital" value="Empire" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Kostha Merna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Fionula" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Marna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Az Ragni" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Orthiad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Coast of Leona" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Galfni" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Central Surda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Eastern Beor Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Western Central Plains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northern Beor Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Dalgon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="4" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Vroengard" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southwestern Du Weldenwarden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Terim" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Bullridge" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Coast of Tudosten" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Ardwen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="The Burning Plains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Fenmark" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northern Gray Heath" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Eastern Du Weldenwarden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Kuasta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Boars Eye" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Ilia Feon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Belatona" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="6" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southern Ramr River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Edda River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Odred Valley" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southern Spine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Eastern Central Plains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Ellesmera" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="7" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Utgard" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Eoam" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Western Beor Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southern Gray Heath" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northwestern Beor Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northern Urgal Settlements" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Jiet River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Lake Tudosten" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Silthrim" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Urgal Settlements" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Cithri" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Anora River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Gaena River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Western Foothills of Beor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Woadark" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Aberon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="6" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Iron Cliffs" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Central Beor Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Reavstone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="4" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Eastcroft" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Gilead" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="6" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Ragni Darmn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sharktooth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Coast of Isenstar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Ceris" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="4" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Therinsford" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Farthen Dur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="8" />
+		<option name="capital" value="Varden" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northern Du Weldenwarden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Tarnag" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Leona Lake" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Moldun the Proud" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="The Spine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Kirtan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Beartooth River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Western Edge of Hadarac" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Ceunon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="6" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Petrovya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="4" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Central Du Weldenwarden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Yazuac" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Flam" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northwestern Foothills of Beor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southern Edge of Hadarac" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northern Central Plains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Bregan Hold" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="6" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Mountains of Du Weldenwarden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Du Weldenwarden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Carvahall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northern Ramr River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northern Foothills of Beor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Narda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Hadarac Desert" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Toark River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Feinster" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="5" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Ninor River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Mount Thardur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Isenstar Lake" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southern Urgal Settlements" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Furnost" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="4" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southern Central Plains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Helgrind" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="3" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Crags of Telnaeir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southwestern Edge of Hadarac" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Dras Leona" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="7" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Eldor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Valley of Beor Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 14" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 15" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 12" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 13" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Beor Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Fasaloft" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="1" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Sea 11" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Deldarad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Nalsvrid Merna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Northern Spine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Southeastern Du Weldenwarden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Rona" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Edur Naroch" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="2" />
+	</attachment>
+	<attachment name="territoryAttachment" attachTo="Peaks of Tarnag" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+		<option name="production" value="0" />
+		<option name="isImpassable" value="true" />
+	</attachment>
+    <!--TERRITORY EFFECTS-->
+    <attachment name="territoryEffectAttachment" attachTo="plains" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
+      <option name="combatOffenseEffect" value="human" count="0" />
+      <option name="combatDefenseEffect" value="human" count="0" />
+    </attachment>
+    <!--SUPPORT ATTACHMENTS-->
+    <attachment name="supportAttachment_mage_low_ward" attachTo="mage" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="mage:elven_spellweaver:shade:dragon_rider" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="roll" />
+      <option name="bonus" value="-1" />
+      <option name="number" value="2" />
+      <option name="bonusType" value="low_level_ward" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_elven_spellweaver_low_ward" attachTo="elven_spellweaver" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="mage:elven_spellweaver:shade:dragon_rider" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="roll" />
+      <option name="bonus" value="-1" />
+      <option name="number" value="2" />
+      <option name="bonusType" value="low_level_ward" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_shade_low_ward" attachTo="shade" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="mage:elven_spellweaver:shade:dragon_rider" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="roll" />
+      <option name="bonus" value="-1" />
+      <option name="number" value="2" />
+      <option name="bonusType" value="low_level_ward" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_dragon_rider_low_ward" attachTo="dragon_rider" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="mage:elven_spellweaver:shade:dragon_rider" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="roll" />
+      <option name="bonus" value="-1" />
+      <option name="number" value="2" />
+      <option name="bonusType" value="low_level_ward" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	
+	<attachment name="supportAttachment_shade_high_ward" attachTo="shade" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="shade:dragon_rider" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="roll" />
+      <option name="bonus" value="-1" />
+      <option name="number" value="2" />
+      <option name="bonusType" value="high_level_ward" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_dragon_rider_high_ward" attachTo="dragon_rider" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="shade:dragon_rider" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="roll" />
+      <option name="bonus" value="-1" />
+      <option name="number" value="2" />
+      <option name="bonusType" value="high_level_ward" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	
+	<attachment name="supportAttachment_urgal_toughness" attachTo="urgal" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="strength" />
+      <option name="bonus" value="-1" />
+      <option name="number" value="1" />
+      <option name="bonusType" value="toughness" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_kull_toughness" attachTo="kull" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="strength" />
+      <option name="bonus" value="-2" />
+      <option name="number" value="1" />
+      <option name="bonusType" value="toughness" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_feldunost_rider_toughness" attachTo="feldunost_rider" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="strength" />
+      <option name="bonus" value="-2" />
+      <option name="number" value="1" />
+      <option name="bonusType" value="toughness" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_dragon_rider_toughness" attachTo="dragon_rider" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="strength" />
+      <option name="bonus" value="-6" />
+      <option name="number" value="1" />
+      <option name="bonusType" value="toughness" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_wall_toughness" attachTo="wall" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="strength" />
+      <option name="bonus" value="-3" />
+      <option name="number" value="1" />
+      <option name="bonusType" value="toughness" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_razac_toughness" attachTo="razac" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="strength" />
+      <option name="bonus" value="-1" />
+      <option name="number" value="1" />
+      <option name="bonusType" value="toughness" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	<attachment name="supportAttachment_laughing_dead_toughness" attachTo="laughing_dead" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+      <option name="faction" value="enemy" />
+      <option name="side" value="offence:defence" />
+      <option name="dice" value="strength" />
+      <option name="bonus" value="-3" />
+      <option name="number" value="1" />
+      <option name="bonusType" value="toughness" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	
+	<attachment name="supportAttachment_wall_fortification" attachTo="wall" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="human:laughing_dead:cavalry:dwarf:feldunost_rider:werecat:urgal:kull:elf" />
+      <option name="faction" value="allied" />
+      <option name="side" value="defence" />
+      <option name="dice" value="strength" />
+      <option name="bonus" value="2" />
+      <option name="number" value="2" />
+      <option name="bonusType" value="wall" />
+      <option name="impArtTech" value="false" />
+      <option name="players" value="Empire:Varden" />
+    </attachment>
+	
+	
+	
+	<attachment name="conditionAttachment_LimitedDragonRiders" attachTo="Empire" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+	  <option name="gameProperty" value="Limited Dragon Riders"/>
+	</attachment>
+	<attachment name="triggerAttachment_Empire_LimitedDragonRiders" attachTo="Empire" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+	  <option name="conditions" value="conditionAttachment_LimitedDragonRiders"/>
+	  <option name="when" value="before:EmpirePurchase"/>
+	  <option name="productionRule" value="EmpireFrontier:-buy_dragon_rider"/>
+	  <option name="uses" value="1"/>
+	</attachment>
+	<attachment name="triggerAttachment_Varden_LimitedDragonRiders" attachTo="Varden" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+	  <option name="conditions" value="conditionAttachment_LimitedDragonRiders"/>
+	  <option name="when" value="before:EmpirePurchase"/>
+	  <option name="productionRule" value="VardenFrontier:-buy_dragon_rider"/>
+	  <option name="uses" value="1"/>
+	</attachment>
+	
+	<attachment name="conditionAttachment_UnrestrictedWallPlacement" attachTo="Empire" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+	  <option name="gameProperty" value="Unrestricted Wall Placement"/>
+	</attachment>
+	<attachment name="triggerAttachment_Varden_LimitedDragonRiders" attachTo="Empire" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+	  <option name="conditions" value="conditionAttachment_UnrestrictedWallPlacement"/>
+	  <option name="when" value="before:EmpirePurchase"/>
+	  <option name="unitType" value="wall"/>
+	  <option name="unitProperty" value="isConstruction" count="true"/>
+	  <option name="unitProperty" value="constructionType" count="wall_constructiontype"/>
+	  <option name="unitProperty" value="constructionsPerTerrPerTypePerTurn" count="1"/>
+	  <option name="unitProperty" value="maxConstructionsPerTypePerTerr" count="10000"/>
+	  <option name="uses" value="1"/>
+	</attachment>
+	
+	
+    
+    <attachment name="rulesAttachment" attachTo="Empire" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="unlimitedProduction" value="true" />
+    </attachment>
+    <attachment name="rulesAttachment" attachTo="Varden" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
+      <option name="unlimitedProduction" value="true" />
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+			<territoryOwner territory="Dauth" owner="Varden"/>
+            <territoryOwner territory="Nadindel" owner="Varden"/>
+            <territoryOwner territory="Melian" owner="Empire"/>
+            <territoryOwner territory="Hedarth" owner="Varden"/>
+            <territoryOwner territory="Buragh" owner="Varden"/>
+            <territoryOwner territory="Lithgow" owner="Varden"/>
+            <territoryOwner territory="Daret" owner="Empire"/>
+            <territoryOwner territory="Thun" owner="Varden"/>
+            <territoryOwner territory="Fernoth Merna" owner="Varden"/>
+            <territoryOwner territory="Aroughs" owner="Empire"/>
+            <territoryOwner territory="Toark Valley" owner="Empire"/>
+            <territoryOwner territory="Palancar Valley" owner="Empire"/>
+            <territoryOwner territory="Osilon" owner="Varden"/>
+            <territoryOwner territory="Silverwood Forest" owner="Empire"/>
+            <territoryOwner territory="Urubaen" owner="Empire"/>
+            <territoryOwner territory="Kostha Merna" owner="Varden"/>
+            <territoryOwner territory="Fionula" owner="Varden"/>
+            <territoryOwner territory="Marna" owner="Empire"/>
+            <territoryOwner territory="Az Ragni" owner="Varden"/>
+            <territoryOwner territory="Orthiad" owner="Empire"/>
+            <territoryOwner territory="Coast of Leona" owner="Empire"/>
+            <territoryOwner territory="Galfni" owner="Varden"/>
+            <territoryOwner territory="Central Surda" owner="Varden"/>
+            <territoryOwner territory="Western Central Plains" owner="Empire"/>
+            <territoryOwner territory="Dalgon" owner="Varden"/>
+            <territoryOwner territory="Vroengard" owner="Empire"/>
+            <territoryOwner territory="Southwestern Du Weldenwarden" owner="Varden"/>
+            <territoryOwner territory="Terim" owner="Empire"/>
+            <territoryOwner territory="Bullridge" owner="Empire"/>
+            <territoryOwner territory="Coast of Tudosten" owner="Empire"/>
+            <territoryOwner territory="The Burning Plains" owner="Empire"/>
+            <territoryOwner territory="Fenmark" owner="Empire"/>
+            <territoryOwner territory="Northern Gray Heath" owner="Empire"/>
+            <territoryOwner territory="Eastern Du Weldenwarden" owner="Varden"/>
+            <territoryOwner territory="Kuasta" owner="Empire"/>
+            <territoryOwner territory="Ilia Feon" owner="Varden"/>
+            <territoryOwner territory="Belatona" owner="Empire"/>
+            <territoryOwner territory="Southern Ramr River" owner="Empire"/>
+            <territoryOwner territory="Edda River" owner="Varden"/>
+            <territoryOwner territory="Odred Valley" owner="Varden"/>
+            <territoryOwner territory="Eastern Central Plains" owner="Empire"/>
+            <territoryOwner territory="Ellesmera" owner="Varden"/>
+            <territoryOwner territory="Eoam" owner="Empire"/>
+            <territoryOwner territory="Southern Gray Heath" owner="Empire"/>
+            <territoryOwner territory="Northern Urgal Settlements" owner="Empire"/>
+            <territoryOwner territory="Jiet River" owner="Empire"/>
+            <territoryOwner territory="Silthrim" owner="Varden"/>
+            <territoryOwner territory="Urgal Settlements" owner="Empire"/>
+            <territoryOwner territory="Cithri" owner="Varden"/>
+            <territoryOwner territory="Anora River" owner="Empire"/>
+            <territoryOwner territory="Gaena River" owner="Varden"/>
+            <territoryOwner territory="Western Foothills of Beor" owner="Empire"/>
+            <territoryOwner territory="Woadark" owner="Empire"/>
+            <territoryOwner territory="Aberon" owner="Varden"/>
+            <territoryOwner territory="Reavstone" owner="Varden"/>
+            <territoryOwner territory="Eastcroft" owner="Empire"/>
+            <territoryOwner territory="Gilead" owner="Empire"/>
+            <territoryOwner territory="Ragni Darmn" owner="Varden"/>
+            <territoryOwner territory="Sharktooth" owner="Empire"/>
+            <territoryOwner territory="Coast of Isenstar" owner="Varden"/>
+            <territoryOwner territory="Ceris" owner="Varden"/>
+            <territoryOwner territory="Therinsford" owner="Empire"/>
+            <territoryOwner territory="Farthen Dur" owner="Varden"/>
+            <territoryOwner territory="Northern Du Weldenwarden" owner="Varden"/>
+            <territoryOwner territory="Tarnag" owner="Varden"/>
+            <territoryOwner territory="Kirtan" owner="Varden"/>
+            <territoryOwner territory="Beartooth River" owner="Empire"/>
+            <territoryOwner territory="Western Edge of Hadarac" owner="Empire"/>
+            <territoryOwner territory="Ceunon" owner="Empire"/>
+            <territoryOwner territory="Petrovya" owner="Varden"/>
+            <territoryOwner territory="Central Du Weldenwarden" owner="Varden"/>
+            <territoryOwner territory="Yazuac" owner="Empire"/>
+            <territoryOwner territory="Flam" owner="Empire"/>
+            <territoryOwner territory="Northwestern Foothills of Beor" owner="Empire"/>
+            <territoryOwner territory="Southern Edge of Hadarac" owner="Empire"/>
+            <territoryOwner territory="Northern Central Plains" owner="Empire"/>
+            <territoryOwner territory="Bregan Hold" owner="Varden"/>
+            <territoryOwner territory="Mountains of Du Weldenwarden" owner="Varden"/>
+            <territoryOwner territory="Du Weldenwarden" owner="Varden"/>
+            <territoryOwner territory="Carvahall" owner="Empire"/>
+            <territoryOwner territory="Northern Ramr River" owner="Empire"/>
+            <territoryOwner territory="Northern Foothills of Beor" owner="Varden"/>
+            <territoryOwner territory="Narda" owner="Empire"/>
+            <territoryOwner territory="Toark River" owner="Empire"/>
+            <territoryOwner territory="Feinster" owner="Empire"/>
+            <territoryOwner territory="Ninor River" owner="Empire"/>
+            <territoryOwner territory="Mount Thardur" owner="Varden"/>
+            <territoryOwner territory="Southern Urgal Settlements" owner="Empire"/>
+            <territoryOwner territory="Furnost" owner="Empire"/>
+            <territoryOwner territory="Southern Central Plains" owner="Empire"/>
+            <territoryOwner territory="Helgrind" owner="Empire"/>
+            <territoryOwner territory="Crags of Telnaeir" owner="Varden"/>
+            <territoryOwner territory="Southwestern Edge of Hadarac" owner="Empire"/>
+            <territoryOwner territory="Dras Leona" owner="Empire"/>
+            <territoryOwner territory="Valley of Beor Mountains" owner="Empire"/>
+            <territoryOwner territory="Fasaloft" owner="Empire"/>
+            <territoryOwner territory="Deldarad" owner="Varden"/>
+            <territoryOwner territory="Nalsvrid Merna" owner="Varden"/>
+            <territoryOwner territory="Southeastern Du Weldenwarden" owner="Varden"/>
+            <territoryOwner territory="Edur Naroch" owner="Empire"/>
+    </ownerInitialize>
+    <unitInitialize>
+			<unitPlacement unitType="human" territory="Dauth" quantity="5" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Dauth" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Dauth" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="cavalry" territory="Dauth" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elf" territory="Nadindel" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Nadindel" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Nadindel" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Melian" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Melian" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Melian" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="dwarf" territory="Hedarth" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="dwarf" territory="Buragh" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Buragh" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Lithgow" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Lithgow" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="cavalry" territory="Lithgow" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Lithgow" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Daret" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="urgal" territory="Daret" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Thun" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="cavalry" territory="Thun" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Aroughs" quantity="4" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Aroughs" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Aroughs" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Aroughs" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="elf" territory="Osilon" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Osilon" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Osilon" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="city" territory="Osilon" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Silverwood Forest" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Urubaen" quantity="1" owner="Empire"/>
+			<unitPlacement unitType="wall" territory="Urubaen" quantity="4" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Urubaen" quantity="7" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Urubaen" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="dragon_rider" territory="Urubaen" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="dwarf" territory="Kostha Merna" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Kostha Merna" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Marna" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="urgal" territory="Marna" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="dwarf" territory="Az Ragni" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Az Ragni" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="urgal" territory="Orthiad" quantity="8" owner="Empire"/>
+            <unitPlacement unitType="kull" territory="Orthiad" quantity="5" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Orthiad" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="shade" territory="Orthiad" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Orthiad" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Orthiad" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="laughing_dead" territory="Coast of Leona" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="dwarf" territory="Galfni" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Central Surda" quantity="8" owner="Varden"/>
+            <unitPlacement unitType="cavalry" territory="Central Surda" quantity="4" owner="Varden"/>
+            <unitPlacement unitType="werecat" territory="Central Surda" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="dragon_rider" territory="Central Surda" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Central Surda" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Western Central Plains" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="dwarf" territory="Dalgon" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="feldunost_rider" territory="Dalgon" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Dalgon" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elf" territory="Southwestern Du Weldenwarden" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Southwestern Du Weldenwarden" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Terim" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Terim" quantity="5" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Terim" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Bullridge" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="urgal" territory="Bullridge" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Coast of Tudosten" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="human" territory="The Burning Plains" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Fenmark" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Kuasta" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Kuasta" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Kuasta" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="elf" territory="Ilia Feon" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Ilia Feon" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Ilia Feon" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Belatona" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Belatona" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="dwarf" territory="Odred Valley" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="feldunost_rider" territory="Odred Valley" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="ship" territory="Sea 5" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="ship" territory="Sea 7" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="elf" territory="Ellesmera" quantity="6" owner="Varden"/>
+            <unitPlacement unitType="werecat" territory="Ellesmera" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Ellesmera" quantity="4" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Ellesmera" quantity="4" owner="Varden"/>
+            <unitPlacement unitType="city" territory="Ellesmera" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Eoam" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Southern Gray Heath" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="laughing_dead" territory="Southern Gray Heath" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="urgal" territory="Northern Urgal Settlements" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="kull" territory="Northern Urgal Settlements" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Jiet River" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="laughing_dead" territory="Jiet River" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Jiet River" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="elf" territory="Silthrim" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Silthrim" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Silthrim" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="urgal" territory="Urgal Settlements" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="kull" territory="Urgal Settlements" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Urgal Settlements" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Cithri" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Cithri" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Cithri" quantity="6" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Cithri" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Anora River" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Western Foothills of Beor" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Aberon" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Aberon" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Aberon" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="cavalry" territory="Aberon" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Reavstone" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Reavstone" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="cavalry" territory="Reavstone" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="laughing_dead" territory="Eastcroft" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Gilead" quantity="5" owner="Empire"/>
+            <unitPlacement unitType="urgal" territory="Gilead" quantity="4" owner="Empire"/>
+            <unitPlacement unitType="kull" territory="Gilead" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Gilead" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Gilead" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Gilead" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="elf" territory="Coast of Isenstar" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Coast of Isenstar" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Ceris" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Ceris" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Farthen Dur" quantity="4" owner="Varden"/>
+            <unitPlacement unitType="city" territory="Farthen Dur" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="dwarf" territory="Farthen Dur" quantity="6" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Farthen Dur" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="elf" territory="Northern Du Weldenwarden" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="dwarf" territory="Tarnag" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="feldunost_rider" territory="Tarnag" quantity="4" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Tarnag" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="city" territory="Tarnag" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elf" territory="Kirtan" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Kirtan" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="urgal" territory="Beartooth River" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Ceunon" quantity="6" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Ceunon" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Ceunon" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Ceunon" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Petrovya" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Petrovya" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="mage" territory="Petrovya" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="urgal" territory="Yazuac" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Northwestern Foothills of Beor" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="urgal" territory="Northwestern Foothills of Beor" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="kull" territory="Northwestern Foothills of Beor" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Northwestern Foothills of Beor" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="dwarf" territory="Bregan Hold" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="feldunost_rider" territory="Bregan Hold" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="wall" territory="Bregan Hold" quantity="3" owner="Varden"/>
+            <unitPlacement unitType="city" territory="Bregan Hold" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="elf" territory="Mountains of Du Weldenwarden" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="dwarf" territory="Northern Foothills of Beor" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Narda" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Narda" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Feinster" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Feinster" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Feinster" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Ninor River" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="dwarf" territory="Mount Thardur" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="urgal" territory="Southern Urgal Settlements" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="kull" territory="Southern Urgal Settlements" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="human" territory="Furnost" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="urgal" territory="Furnost" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Furnost" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Furnost" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="razac" territory="Helgrind" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="mage" territory="Helgrind" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Helgrind" quantity="4" owner="Empire"/>
+            <unitPlacement unitType="elven_spellweaver" territory="Crags of Telnaeir" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="dragon_rider" territory="Crags of Telnaeir" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Dras Leona" quantity="2" owner="Empire"/>
+            <unitPlacement unitType="razac" territory="Dras Leona" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="wall" territory="Dras Leona" quantity="3" owner="Empire"/>
+            <unitPlacement unitType="city" territory="Dras Leona" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="urgal" territory="Valley of Beor Mountains" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="kull" territory="Valley of Beor Mountains" quantity="1" owner="Empire"/>
+            <unitPlacement unitType="ship" territory="Sea 14" quantity="2" owner="Varden"/>
+            <unitPlacement unitType="human" territory="Deldarad" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="dwarf" territory="Nalsvrid Merna" quantity="1" owner="Varden"/>
+            <unitPlacement unitType="feldunost_rider" territory="Nalsvrid Merna" quantity="1" owner="Varden"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Empire" resource="PUs" quantity="148" />
+      <resourceGiven player="Varden" resource="PUs" quantity="142" />
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- victory options -->
+    <property name="Projection of Power" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Honorable Surrender" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Total Victory" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Axis Total Victory VCs" value="15" editable="false">
+      <number min="10" max="15" />
+    </property>
+    <property name="Allies Total Victory VCs" value="15" editable="false">
+      <number min="10" max="15" />
+    </property>
+    <property name="Economic Victory" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Triggered Victory" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- End of Victory Conditions, rest of typical changed properties below -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean />
+    </property>
+    <property name="Low Luck for AntiAircraft" value="false" editable="true">
+      <boolean />
+    </property>
+    <property name="Low Luck for Technology" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Low Luck for Bombing and Territory Damage" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Use Politics" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- If this is set, it adds or subtracks from any conditions that require a relationship to last for X rounds -->
+    <property name="Relationships Last Extra Rounds" value="0" editable="false">
+      <number min="-1" max="2" />
+    </property>
+    <property name="Alliances Can Chain Together" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="National Objectives" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Use Triggers" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Tech Development" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Remove All Tech Tokens At End Of Turn" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Super Sub Defence Bonus" value="0" editable="false">
+      <number min="0" max="1" />
+    </property>
+    <!-- All units with multiple dice rolls, will be forced to select the best die rolled instead of using all dice. -->
+    <property name="LHTR Heavy Bombers" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="3" />
+    </property>
+    <property name="Paratroopers Can Move During Non Combat" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Paratroopers Can Attack Deep Into Enemy Territory" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Always on AA" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Kamikaze Airplanes will allow all air units on the map to use all their movement to get to a battle -->
+    <property name="Kamikaze Airplanes" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Use Kamikaze Suicide Attacks allows a player to use resources designated in player attachments to make special attacks -->
+    <property name="Use Kamikaze Suicide Attacks" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Kamikaze Suicide Attacks Done By Current Territory Owner allows you to have the current owner perform the suicide attacks, instead of the original owner -->
+    <property name="Kamikaze Suicide Attacks Done By Current Territory Owner" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Kamikaze Suicide Attacks Only Where Battles Are has the attacks only occur only when there are amphibious battles from that territory, or a battle in that territory -->
+    <property name="Kamikaze Suicide Attacks Only Where Battles Are" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Units Repair Hits Start Turn" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- in order to repair, a unit must in the presence of a unit with "repairsUnits" unit attachment -->
+    <property name="Two HitPoint Units Require Repair Facilities" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Display Options -->
+    <!-- Multiply PUs will multiply all PUs gained or lost during a turn. It will not yet multiply costs of units or any other costs, or starting PUs -->
+    <property name="Multiply PUs" value="1" editable="false">
+      <number min="1" max="10" />
+    </property>
+    <property name="Selectable Zero Movement Units" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- END OF TYPICAL OPTIONAL PROPERTIES -->
+    <!-- rules and tech -->
+    <!-- ww2v2 rules override many individual rules to create revised rules
+				<property name="WW2V2" value="false" editable="false">
+						<boolean/>
+				</property> -->
+    <!-- Unlike the WW2V2 option, WW2V3 actually sets very little: If no techs specified then it will create WW2V3 default techs,
+										and if a game is not WW2V2 and not WW2V3, then it must be 'classic' rules [this is applicable for when rockets fire, and how aa guns may stack, the default win conditions for classic games, and that air units create retreat paths for ground/sea units]-->
+    <property name="WW2V3" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="WW2V3 Tech Model" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Selectable Tech Roll" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Use Shipyards turns on the shipyards tech's old way of doing things, which requires that all nations use the same production frontiers. A new way of doing shipywards will require triggers and is currently being coded -->
+    <property name="Use Shipyards" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- For use with RandomStartDelegate -->
+    <property name="Territories Are Assigned Randomly" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- If any players are disabled and unused, then all their units, money, etc, gets deleted at the start of the game during initialization delegate. -->
+    <property name="Disabled Players Assets Deleted" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Scramble Rules In Effect" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Scrambled Units Return To Base" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Scramble To Sea Only" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Scramble From Island Only" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Scramble To Any Amphibious Assault" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Can Scramble Into Air Battles" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Airborne Attacks Only In Existing Battles" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Airborne Attacks Only In Enemy Territories" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- if true we will not use the "classic" rule of getting a single rocket attack for the whole round, and instead get a rocket attack for each rocket we have -->
+    <property name="All Rockets Attack" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- if true allows infinite attacks against a factory by many rockets, if false,will only allow a max of 1 rocket to attack each factory -->
+    <property name="Rocket Attacks Per Factory Infinite" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Do we charge for fuel when we move units? -->
+    <property name="Use Fuel Cost" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- These require an associated value in the attachments section above-->
+    <property name="Movement By Territory Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Production Per X Territories Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- only territories with a production value of 1 or more may count towards the production per x territories -->
+    <property name="Production Per Valued Territory Restricted" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Unit Placement Per Territory Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Place in Any Territory" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Unplaced units live when not placed" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- allows a player to give units to another player if true. units must have canBeGivenByTerritory and territories must have changeUnitOwners and the players must have the player attachment giveUnitControl -->
+    <property name="Give Units By Territory" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- allows a player to let its units be captured by another player if true, when the territory is captured. units must have canBeCapturedOnEnteringBy and territories must have captureUnitOnEnteringBy and the players must have the player attachment captureUnitOnEnteringBy -->
+    <property name="Capture Units On Entering Territory" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- if "Capture Units On Entering Territory" is true, then the units can either be captured (default) or destroyed (only if this property below is true: "On Entering Units Destroyed Instead Of Captured") -->
+    <property name="On Entering Units Destroyed Instead Of Captured" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- specific rules -->
+    <!-- land related -->
+    <!-- if true, units with destroyedWhenCapturedBy will be destroyed instead of captured. only applies to non-combat units, since combat units die in combat -->
+    <property name="Units Can Be Destroyed Instead Of Captured" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- allows units to change into other units using the whenCapturedChangesInto ability -->
+    <property name="Units Can Be Changed On Capture" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- if true you may have a number of constructions up to the value of the territory, in territories with factories -->
+    <property name="More Constructions with Factory" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- if true you may have a number of constructions up to the value of the territory, in territories without factories -->
+    <property name="More Constructions without Factory" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Unlimited Constructions" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- will roll dice for each type of aircraft separately -->
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- random aa casualties lets the engine choose casualties randomly, and allows you to lose 2 bombers if you attack with 2 bombers and some fighters. I do not recommend using this property
+				<property name="Random AA Casualties" value="false" editable="false">
+						<boolean/>
+				</property>-->
+    <property name="Choose AA Casualties" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- will only roll aa if aaGun is in the territory getting attacked or bombed -->
+    <property name="AA Territory Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- will cause the isAAforFlyOverOnly to shoot for the last step in a movement, instead of just everything but the end. -->
+    <property name="Force AA Attacks For Last Step Of Fly Over" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Multiple AA Per Territory" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- if false, (all property default to false), then units killed by suicide units can return fire.  if true, they can not return fire -->
+    <property name="Suicide and Munition Casualties Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- if suicide units act like normal units on defense, except that they can not die to attacks by other suicide units -->
+    <property name="Defending Suicide and Munition Units Do Not Fire" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Units May Give Bonus Movement allows units with givesMovement to give other units bonus movement-->
+    <property name="Units May Give Bonus Movement" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- sea related -->
+    <property name="Partial Amphibious Retreat" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- a subset of partial amphibious retreat, allows attacker to withdraw planes -->
+    <property name="Attacker Retreat Planes" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Despite what this one says, it means the opposite.  If true, casualties from naval bombard will get to return fire. -->
+    <property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- if true, allied air on your carriers will participate in an attack -->
+    <property name="Allied Air Independent" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Surviving Air Move To Land" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Air Attack Sub Restricted" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- transports may not unload to multiple territories -->
+    <property name="Transport Restricted Unload" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Ignore Transport In Movement" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Transport Casualties Restricted" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- If enabled, transports can capture convoy zones. -->
+    <property name="Transport Control Sea Zone" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Submarines stop transports from doing amphibious assault unless there is at least 1 owned warship in the sea zone -->
+    <property name="Submarines Prevent Unescorted Amphibious Assaults" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Ignore Sub In Movement" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Defending Subs Sneak Attack" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Sub Retreat Before Battle" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Submarines Defending May Submerge Or Retreat will allow defending submarines to retreat to friendly sea zones or submerge -->
+    <property name="Submarines Defending May Submerge Or Retreat" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Sub Control Sea Zone Restricted should be FALSE if there are any convoy zones! If true, subs will not be able to capture convoy zones. -->
+    <property name="Sub Control Sea Zone Restricted" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Subs Can End NonCombat Move With Enemies allows submarines to end their noncombat movement in a sea zone containing any enemy units, including enemy subs -->
+    <property name="Subs Can End NonCombat Move With Enemies" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- if true, naval units may not move into convoy zones or controlled sea zones during non-combat moves -->
+    <property name="Naval Units May Not NonCombat Move Into Controlled Sea Zones" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Only affects units exactly called "battleship" -->
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- If false, blockades will deal set amount of damage per unit. If true, a 6 sided die will be rolled for each damage point, with that being the damage, except rolls higher than 3 will be ignored -->
+    <property name="Convoy Blockades Roll Dice For Cost" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- production related -->
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Produce new fighters on old carriers" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Move existing fighters to new carriers" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Land existing fighters on new carriers" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- LHTR Carrier rules enable 'Produce fighters on carriers', and 'Produce new fighters on old carriers', and 'Land existing fighters on new carriers', AND it will disable 'Move existing fighters to new carriers' -->
+    <property name="LHTR Carrier production rules" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Unit Placement In Enemy Seas" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- used to add destroyers and artillery to the ww2v1 map
+				<property name="Use Destroyers and Artillery" value="false" editable="false">
+						<boolean/>
+				</property>-->
+    <!-- Any territory that contains enemy units will not produce any income or resources -->
+    <property name="Contested Territories Produce No Income" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Any territory abandoned may be taken over by the remaining units on the same turn it was abandoned on. Also includes if a territory is attacked and both all the attackers and all defenders die, then any other player with combat units will take over the territory. -->
+    <property name="Abandoned Territories May Be Taken Over Immediately" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- may only bomb or rocket a factory to a max of its territory value per turn (the individual two parts are below) -->
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Limit SBR Damage Per Turn" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Limit Rocket Damage Per Turn" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="maxFactoriesPerTerritory" value="1" editable="false">
+      <number min="1" max="100" />
+    </property>
+    <!-- Placement Restricted By Factory warns the player whenever they try to produce more units than their factories can handle (can be turned off for individual players using rules attachments for unlimitedProduction -->
+    <property name="Placement Restricted By Factory" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Unit Placement Restrictions are restrictions on the placement of units: unitPlacementRestrictions, unitPlacementOnlyAllowedIn, canOnlyBePlacedInTerritoryValuedAtX, requiresUnits, -->
+    <property name="Unit Placement Restrictions" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Attacker is given the option not to create a battle for sea battles -->
+    <property name="Sea Battles May Be Ignored" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Land Battle Rounds means the number of rounds that a normal Battle goes on for (land). Default is -1, and if negative, the battle continues forever until 1 side is eliminated. -->
+    <property name="Land Battle Rounds" value="10" editable="false">
+      <number min="-1" max="100" />
+    </property>
+    <!-- Sea Battle Rounds means the number of rounds that a normal Battle goes on for (sea). Default is -1, and if negative, the battle continues forever until 1 side is eliminated. -->
+    <property name="Sea Battle Rounds" value="10" editable="false">
+      <number min="-1" max="100" />
+    </property>
+    <!-- Air Battle Rounds means the number of rounds that an Air Battle goes on for. If negative, the battle continues forever until 1 side is eliminated. Default is 1, meaning the battle ends after the first round of combat. -->
+    <property name="Air Battle Rounds" value="1" editable="false">
+      <number min="-1" max="100" />
+    </property>
+    <!-- Retreating Units Remain In Place means units retreat to the same territory as the battle territory, both both land and sea territories -->
+    <property name="Retreating Units Remain In Place" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Air Battle Attackers Can Retreat" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Air Battle Defenders Can Retreat" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Allows normal battles to have Escort aircraft and also be Intercepted by the defender -->
+    <property name="Battles May Be Preceeded By Air Battles" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- Allows Strategic Bombing Raids to have Escort aircraft and also be Intercepted by the defender -->
+    <property name="Raids May Be Preceeded By Air Battles" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- Allows all units that cause strategic bombing raid or rocket damage, to use "bombingMaxDieSides" and "bombingBonus" -->
+    <property name="Use Bombing Max Dice Sides And Bonus" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- similar to TTL, except that it is per rocket/aircraft instead of per turn -->
+    <property name="Limit SBR Damage To Factory Production" value="false" editable="false">
+      <boolean />
+    </property>
+    <!-- allows the loss of a victory point for every 10 sbr damage per turn
+				<property name="SBR Victory Points" value="false" editable="false">
+						<boolean/>
+				</property>-->
+    <!-- Neutrals related -->
+    <property name="neutralCharge" value="0" editable="false">
+      <number min="0" max="9999999" />
+    </property>
+    <property name="Neutrals Are Impassable" value="false" editable="false">
+      <boolean />
+    </property>
+    <property name="Neutrals Are Blitzable" value="true" editable="false">
+      <boolean />
+    </property>
+    <property name="Neutral Flyover Allowed" value="true" editable="false">
+      <boolean />
+    </property>
+    <!-- AI related -->
+    <property name="AI Bonus Income Flat Rate" value="0" editable="true">
+      <number min="-10" max="30" />
+    </property>
+    <property name="AI Bonus Income Percentage" value="0" editable="true">
+      <number min="-30" max="120" />
+    </property>
+    <property name="AI Bonus Attack" value="0" editable="true">
+      <number min="0" max="2" />
+    </property>
+    <property name="AI Bonus Defense" value="0" editable="true">
+      <number min="0" max="2" />
+    </property>
+	<property name="Limited Dragon Riders" value="false" editable="true">
+      <boolean />
+    </property>
+	<property name="Unrestricted Wall Placement" value="false" editable="true">
+      <boolean />
+    </property>
+    <property name="mapName" value="alagaesia" editable="false">
+      <string />
+    </property>
+    <property name="notes">
+      <string />
+      <value><![CDATA[
+<html>
+	<body bgcolor="#a0a0f0"> 
+		<table border="0" bgcolor="#a0a0f0">
+		<tr><td>
+			<center> <img src="title.png"/> </center>
+		</td></tr>
+		<tr><td>
+			<p bgcolor="#a0a0f0" >&nbsp;</p>
+			<p bgcolor="#a0a0f0" style="font: 11px;">The Urgals are gathering on a march against Farthen Dûr bound by the spells of the Shade Durza. In the meantime, with the young Dragon Rider Eragon on her side, Nasuada, leader of the Varden, prepares to launch an invasion of the Empire of the evil Rider, King Galbatorix, using Surda as a base. Finally seeing a hope to dethrone the immortal Rider-King, Elves and Dwarves reveal their hidden realms and join forces with the Varden to strike at Galbatorix from all sides...</p>
+			<p bgcolor="#a0a0f0" >&nbsp;</p>
+			<p bgcolor="#a0a0f0" style="font: 11px;">Lead the armies of the Varden to victory against Galbatorix - or crush all remaining resistance against your Empire, securing your rule forever... It is your time to decide the fate of Alagaësia in this scenario based on the Inheritance Cycle by Christopher Paolini.</p>
+			<h1 bgcolor="#a0a0f0" >Units</h1>
+			<table style="background-color: #404080; font: bold 10px;" border="1">
+				<tbody>
+				<tr>
+				<td style="width: 35px; background-color: #8080a0;">&nbsp;</td>
+				<td style="width: 82px; background-color: #8080a0;">NAME</td>
+				<td style="background-color: #8080a0;">COST</td>
+				<td style="background-color: #8080a0;">MOVE</td>
+				<td style="background-color: #8080a0;">ATTACK</td>
+				<td style="background-color: #8080a0;">DEFENSE</td>
+				<td style="background-color: #8080a0;">SPECIAL</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="human.png"/></td>
+				<td style="background-color: #40a0a0;">human</td>
+				<td style="background-color: #40a0a0;">4</td>
+				<td style="background-color: #40a0a0;">1</td>
+				<td style="background-color: #40a0a0;">1</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">&nbsp;</td>
+				</tr>
+				<tr>
+				<td style="background-color: #8080a0;"><img src="dwarf.png"/></td>
+				<td style="background-color: #8080a0;">dwarf</td>
+				<td style="background-color: #8080a0;">5</td>
+				<td style="background-color: #8080a0;">1</td>
+				<td style="background-color: #8080a0;">1</td>
+				<td style="background-color: #8080a0;">4</td>
+				<td style="background-color: #8080a0;">&nbsp;</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="urgal.png"/></td>
+				<td style="background-color: #40a0a0;">urgal</td>
+				<td style="background-color: #40a0a0;">7</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">1 toughness</td>
+				</tr>
+				<tr>
+				<td style="background-color: #8080a0;"><img src="kull.png"/></td>
+				<td style="background-color: #8080a0;">kull</td>
+				<td style="background-color: #8080a0;">10</td>
+				<td style="background-color: #8080a0;">2</td>
+				<td style="background-color: #8080a0;">4</td>
+				<td style="background-color: #8080a0;">3</td>
+				<td style="background-color: #8080a0;">2 toughness</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="elf.png"/></td>
+				<td style="background-color: #40a0a0;">elf</td>
+				<td style="background-color: #40a0a0;">8</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">3</td>
+				<td style="background-color: #40a0a0;">4</td>
+				<td style="background-color: #40a0a0;">&nbsp;</td>
+				</tr>
+				<tr>
+				<td style="background-color: #8080a0;"><img src="cavalry.png"/></td>
+				<td style="background-color: #8080a0;">cavalry</td>
+				<td style="background-color: #8080a0;">8</td>
+				<td style="background-color: #8080a0;">2</td>
+				<td style="background-color: #8080a0;">2</td>
+				<td style="background-color: #8080a0;">2</td>
+				<td style="background-color: #8080a0;">3 charge</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="feldunost_rider.png"/></td>
+				<td style="background-color: #40a0a0;">feldunost_rider</td>
+				<td style="background-color: #40a0a0;">8</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">3</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">2 toughness</td>
+				</tr>
+				<tr>
+				<td style="background-color: #8080a0;"><img src="werecat.png"/></td>
+				<td style="background-color: #8080a0;">werecat</td>
+				<td style="background-color: #8080a0;">6</td>
+				<td style="background-color: #8080a0;">1</td>
+				<td style="background-color: #8080a0;">3</td>
+				<td style="background-color: #8080a0;">3</td>
+				<td style="background-color: #8080a0;">&nbsp;</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="laughing_dead.png"/></td>
+				<td style="background-color: #40a0a0;">laughing_dead</td>
+				<td style="background-color: #40a0a0;">7</td>
+				<td style="background-color: #40a0a0;">1</td>
+				<td style="background-color: #40a0a0;">1</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">3 toughness</td>
+				</tr>
+				<tr>
+				<td style="background-color: #8080a0;"><img src="mage.png"/></td>
+				<td style="background-color: #8080a0;">mage*</td>
+				<td style="background-color: #8080a0;">8</td>
+				<td style="background-color: #8080a0;">1</td>
+				<td style="background-color: #8080a0;">3,3</td>
+				<td style="background-color: #8080a0;">3,3</td>
+				<td style="background-color: #8080a0;">low level caster</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="elven_spellweaver.png"/></td>
+				<td style="background-color: #40a0a0;">elven_spellweaver*</td>
+				<td style="background-color: #40a0a0;">11</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">4,4</td>
+				<td style="background-color: #40a0a0;">5,5</td>
+				<td style="background-color: #40a0a0;">low level caster</td>
+				</tr>
+				<tr>
+				<td style="background-color: #8080a0;"><img src="shade.png"/></td>
+				<td style="background-color: #8080a0;">shade*</td>
+				<td style="background-color: #8080a0;">17</td>
+				<td style="background-color: #8080a0;">1</td>
+				<td style="background-color: #8080a0;">5,5,5</td>
+				<td style="background-color: #8080a0;">3,3,3</td>
+				<td style="background-color: #8080a0;">high level caster</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="razac.png"/></td>
+				<td style="background-color: #40a0a0;">razac*</td>
+				<td style="background-color: #40a0a0;">13</td>
+				<td style="background-color: #40a0a0;">4 air</td>
+				<td style="background-color: #40a0a0;">5</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">1 toughness</td>
+				</tr>
+				<tr>
+				<td style="background-color: #8080a0;"><img src="dragon_rider.png"/></td>
+				<td style="background-color: #8080a0;">dragon_rider*</td>
+				<td style="background-color: #8080a0;">42</td>
+				<td style="background-color: #8080a0;">4 air</td>
+				<td style="background-color: #8080a0;">5,5,5,5</td>
+				<td style="background-color: #8080a0;">5,5,5,5</td>
+				<td style="background-color: #8080a0;">high level caster, 6 toughness</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="ship.png"/></td>
+				<td style="background-color: #40a0a0;">ship*</td>
+				<td style="background-color: #40a0a0;">12</td>
+				<td style="background-color: #40a0a0;">2 sea</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">2</td>
+				<td style="background-color: #40a0a0;">2 transport capacity</td>
+				</tr>
+				<tr>
+				<td style="background-color: #8080a0;"><img src="wall.png"/></td>
+				<td style="background-color: #8080a0;">wall*</td>
+				<td style="background-color: #8080a0;">8</td>
+				<td style="background-color: #8080a0;">-</td>
+				<td style="background-color: #8080a0;">-</td>
+				<td style="background-color: #8080a0;">2</td>
+				<td style="background-color: #8080a0;">3 toughness, 2,2 fortification (x2)</td>
+				</tr>
+				<tr>
+				<td style="background-color: #40a0a0;"><img src="city.png"/></td>
+				<td style="background-color: #40a0a0;">city*</td>
+				<td style="background-color: #40a0a0;">12</td>
+				<td style="background-color: #40a0a0;">-</td>
+				<td style="background-color: #40a0a0;">-</td>
+				<td style="background-color: #40a0a0;">-</td>
+				<td style="background-color: #40a0a0;">can produce units</td>
+				</tr>
+				</tbody>
+			</table>
+		</td></tr>
+		<tr><td>
+			<h1>Special unit abilities</h1>
+			<h2>Toughness</h2>
+			<p>Toughness reduces the strength of enemy units. Units marked with a star in the table above are unaffected. The strength of a unit can only be reduced once.</p>
+			<h2>Charge</h2>
+			<p>Cavalry gets a first strike at the beginning of the battle. Charge only activates when attacking. Charge can NOT kill units marked with a star in the table above.</p>
+			<h2>Fortification</h2>
+			<p>Walls give a +2 defensive bonus to up to 2 units. Units marked with a star in the table above can NOT recieve bonus.</p>
+			<h2>Wards</h2>
+			<p>Magic users are absolutely devastating unless the opponent has their own casters doing countermagic. All casters (regardless of level) ward against up to 2 enemy casters, reducing the number of dice they roll by one.</p>
+			<h2>Super-Wards</h2>
+			<p>High level casters have advanced magic capabilities, and when they meet on the battlefield, they engage each other in highly advanced magic-countermagic duels. In addition to the wards mentioned above, all high level casters can use super-wards against up to 2 high level casters, reducing the number of dice they roll by one. Super-wards stack with wards (so high level casters can lose up to 2 rolls, if both warded and super-warded against).</p>
+		</td></tr>
+		<tr><td>
+			<h1>Map options</h1>
+			<h2>Low Luck</h2>
+			<p>Low Luck for AntiAircraft should be turned on too - cavalry charge is governed by that option.</p>
+			<h2>Limited Dragon Riders</h2>
+			<p>No new dragon riders can be purchased, lost riders can not be replaced.</p>
+			<h2>Unrestricted Wall Placement</h2>
+			<p>Wall placement is not restricted by cities - they can be placed in any territory owned at the start of your turn. However, only 1 wall can be placed per territory in one turn, even in cities.</p>
+		</td></tr>
+		<tr><td>
+			<h1>Version information</h1>
+			<h2>Changelog</h2>
+			<p>Version 1.0 - released</p>
+			<h2>Forums</h2>
+			<p>Official thread: https://forums.triplea-game.org/topic/710/alagaësia</p>
+			<h2>Credits</h2>
+			<p>Created by alkexr.</p>
+			<p>Thanks to the members of the TripleA forum, especially to General_Zod, for playtesting, ideas and feedback during beta development.</p>
+			<p>Map art is the hand-drawn map of Alagaësia by Cristopher Paolini.</p>
+		</td></tr>
+		</table>
+	</body>
+</html>
+						]]></value>
+    </property>
+  </propertyList>
+</game>

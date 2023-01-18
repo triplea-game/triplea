@@ -1,0 +1,908 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Small Balanced 2 Player across" version="1.3"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Moscow"/>
+    <territory name="St. Petersburg"/>
+    <territory name="Berlin"/>
+    <territory name="Frankfurt"/>
+    <territory name="Tokyo"/>
+    <territory name="Osaka"/>
+    <territory name="New York"/>
+    <territory name="Washington"/>
+    <territory name="Sea Zone NE2" water="true"/>
+    <territory name="Sea Zone SSE1" water="true"/>
+    <territory name="SE Beach"/>
+    <territory name="Sea Zone NWW4" water="true"/>
+    <territory name="Sea Zone NWW3" water="true"/>
+    <territory name="Sea Zone NW2" water="true"/>
+    <territory name="Sea Zone NWW2" water="true"/>
+    <territory name="Sea Zone NWW1" water="true"/>
+    <territory name="Sea Zone SEE4" water="true"/>
+    <territory name="Sea Zone NW1" water="true"/>
+    <territory name="Sea Zone SEE3" water="true"/>
+    <territory name="Sea Zone SEE2" water="true"/>
+    <territory name="Sea Zone SEE1" water="true"/>
+    <territory name="Sea Zone NNE1" water="true"/>
+    <territory name="Sea Zone NE1" water="true"/>
+    <territory name="Sea Zone NNE2" water="true"/>
+    <territory name="Sea Zone NNE3" water="true"/>
+    <territory name="Sea Zone NNE4" water="true"/>
+    <territory name="West Beach"/>
+    <territory name="Sea Zone SSW2" water="true"/>
+    <territory name="Sea Zone SSW3" water="true"/>
+    <territory name="Sea Zone SSW1" water="true"/>
+    <territory name="North Beach"/>
+    <territory name="Sea Zone SSE2" water="true"/>
+    <territory name="Sea Zone NNW3" water="true"/>
+    <territory name="Sea Zone SSE3" water="true"/>
+    <territory name="Sea Zone NNW2" water="true"/>
+    <territory name="Sea Zone SSE4" water="true"/>
+    <territory name="Sea Zone NNW1" water="true"/>
+    <territory name="NW Corridor"/>
+    <territory name="Sea Zone NNW4" water="true"/>
+    <territory name="Sea Zone NEE3" water="true"/>
+    <territory name="Sea Zone NEE4" water="true"/>
+    <territory name="SE Corridor"/>
+    <territory name="Sea Zone NEE1" water="true"/>
+    <territory name="Sea Zone NEE2" water="true"/>
+    <territory name="Sea Zone SE2" water="true"/>
+    <territory name="Sea Zone SE1" water="true"/>
+    <territory name="South Beach"/>
+    <territory name="East Beach"/>
+    <territory name="SW Beach"/>
+    <territory name="NE Beach"/>
+    <territory name="Sea Zone SSW4" water="true"/>
+    <territory name="NE Corridor"/>
+    <territory name="Sea Zone SWW2" water="true"/>
+    <territory name="NW Beach"/>
+    <territory name="Sea Zone SWW3" water="true"/>
+    <territory name="Sea Zone SW2" water="true"/>
+    <territory name="Sea Zone SW1" water="true"/>
+    <territory name="Sea Zone SWW1" water="true"/>
+    <territory name="The Center"/>
+    <territory name="Sea Zone SWW4" water="true"/>
+    <territory name="SW Corridor"/>
+    <!-- Territory Connections -->
+    <connection t1="Moscow" t2="St. Petersburg"/>
+    <connection t1="St. Petersburg" t2="Sea Zone NW1"/>
+    <connection t1="Berlin" t2="Frankfurt"/>
+    <connection t1="Berlin" t2="Sea Zone SWW1"/>
+    <connection t1="Frankfurt" t2="Sea Zone SWW1"/>
+    <connection t1="Frankfurt" t2="Sea Zone SW1"/>
+    <connection t1="Tokyo" t2="Sea Zone NEE1"/>
+    <connection t1="Tokyo" t2="Osaka"/>
+    <connection t1="New York" t2="Washington"/>
+    <connection t1="New York" t2="Sea Zone SE1"/>
+    <connection t1="Sea Zone NE2" t2="Sea Zone NE1"/>
+    <connection t1="Sea Zone NE2" t2="Sea Zone NNE3"/>
+    <connection t1="Sea Zone NE2" t2="Sea Zone NEE3"/>
+    <connection t1="Sea Zone NE2" t2="NE Beach"/>
+    <connection t1="Sea Zone SSE1" t2="Sea Zone SSE2"/>
+    <connection t1="Sea Zone SSE1" t2="New York"/>
+    <connection t1="Sea Zone SSE1" t2="Sea Zone SE1"/>
+    <connection t1="Sea Zone SSE1" t2="Washington"/>
+    <connection t1="SE Beach" t2="Sea Zone SEE4"/>
+    <connection t1="SE Beach" t2="Sea Zone SEE3"/>
+    <connection t1="SE Beach" t2="Sea Zone SSE3"/>
+    <connection t1="SE Beach" t2="Sea Zone SSE4"/>
+    <connection t1="SE Beach" t2="SE Corridor"/>
+    <connection t1="SE Beach" t2="Sea Zone SE2"/>
+    <connection t1="Sea Zone NWW4" t2="Sea Zone NWW3"/>
+    <connection t1="Sea Zone NWW4" t2="West Beach"/>
+    <connection t1="Sea Zone NWW4" t2="NW Beach"/>
+    <connection t1="Sea Zone NWW4" t2="Sea Zone SWW4"/>
+    <connection t1="Sea Zone NWW3" t2="Sea Zone NWW2"/>
+    <connection t1="Sea Zone NWW3" t2="Sea Zone NW2"/>
+    <connection t1="Sea Zone NWW3" t2="NW Beach"/>
+    <connection t1="Sea Zone NW2" t2="Sea Zone NW1"/>
+    <connection t1="Sea Zone NW2" t2="Sea Zone NNW3"/>
+    <connection t1="Sea Zone NW2" t2="NW Beach"/>
+    <connection t1="Sea Zone NWW2" t2="Sea Zone NWW1"/>
+    <connection t1="Sea Zone NWW1" t2="Sea Zone NW1"/>
+    <connection t1="Sea Zone NWW1" t2="Moscow"/>
+    <connection t1="Sea Zone NWW1" t2="St. Petersburg"/>
+    <connection t1="Sea Zone SEE4" t2="Sea Zone SEE3"/>
+    <connection t1="Sea Zone SEE4" t2="East Beach"/>
+    <connection t1="Sea Zone NW1" t2="Sea Zone NNW1"/>
+    <connection t1="Sea Zone SEE3" t2="Sea Zone SEE2"/>
+    <connection t1="Sea Zone SEE3" t2="Sea Zone SE2"/>
+    <connection t1="Sea Zone SEE2" t2="Sea Zone SEE1"/>
+    <connection t1="Sea Zone SEE2" t2="Sea Zone NEE2"/>
+    <connection t1="Sea Zone SEE1" t2="New York"/>
+    <connection t1="Sea Zone SEE1" t2="Sea Zone SE1"/>
+    <connection t1="Sea Zone SEE1" t2="Washington"/>
+    <connection t1="Sea Zone NNE1" t2="Sea Zone NE1"/>
+    <connection t1="Sea Zone NNE1" t2="Sea Zone NNE2"/>
+    <connection t1="Sea Zone NNE1" t2="Tokyo"/>
+    <connection t1="Sea Zone NNE1" t2="Osaka"/>
+    <connection t1="Sea Zone NE1" t2="Sea Zone NEE1"/>
+    <connection t1="Sea Zone NE1" t2="Osaka"/>
+    <connection t1="Sea Zone NNE2" t2="Sea Zone NNE3"/>
+    <connection t1="Sea Zone NNE2" t2="Sea Zone NNW2"/>
+    <connection t1="Sea Zone NNE3" t2="Sea Zone NNE4"/>
+    <connection t1="Sea Zone NNE3" t2="NE Beach"/>
+    <connection t1="Sea Zone NNE4" t2="North Beach"/>
+    <connection t1="Sea Zone NNE4" t2="NE Beach"/>
+    <connection t1="Sea Zone NNE4" t2="Sea Zone NNW4"/>
+    <connection t1="West Beach" t2="NW Corridor"/>
+    <connection t1="West Beach" t2="The Center"/>
+    <connection t1="West Beach" t2="Sea Zone SWW4"/>
+    <connection t1="West Beach" t2="SW Corridor"/>
+    <connection t1="Sea Zone SSW2" t2="Sea Zone SSW3"/>
+    <connection t1="Sea Zone SSW2" t2="Sea Zone SSW1"/>
+    <connection t1="Sea Zone SSW2" t2="Sea Zone SSE2"/>
+    <connection t1="Sea Zone SSW3" t2="SW Beach"/>
+    <connection t1="Sea Zone SSW3" t2="Sea Zone SSW4"/>
+    <connection t1="Sea Zone SSW3" t2="Sea Zone SW2"/>
+    <connection t1="Sea Zone SSW1" t2="Berlin"/>
+    <connection t1="Sea Zone SSW1" t2="Frankfurt"/>
+    <connection t1="Sea Zone SSW1" t2="Sea Zone SW1"/>
+    <connection t1="North Beach" t2="NW Corridor"/>
+    <connection t1="North Beach" t2="Sea Zone NNW4"/>
+    <connection t1="North Beach" t2="NE Corridor"/>
+    <connection t1="North Beach" t2="The Center"/>
+    <connection t1="Sea Zone SSE2" t2="Sea Zone SSE3"/>
+    <connection t1="Sea Zone NNW3" t2="Sea Zone NNW2"/>
+    <connection t1="Sea Zone NNW3" t2="Sea Zone NNW4"/>
+    <connection t1="Sea Zone NNW3" t2="NW Beach"/>
+    <connection t1="Sea Zone SSE3" t2="Sea Zone SSE4"/>
+    <connection t1="Sea Zone SSE3" t2="Sea Zone SE2"/>
+    <connection t1="Sea Zone NNW2" t2="Sea Zone NNW1"/>
+    <connection t1="Sea Zone SSE4" t2="South Beach"/>
+    <connection t1="Sea Zone SSE4" t2="Sea Zone SSW4"/>
+    <connection t1="Sea Zone NNW1" t2="Moscow"/>
+    <connection t1="Sea Zone NNW1" t2="St. Petersburg"/>
+    <connection t1="NW Corridor" t2="NW Beach"/>
+    <connection t1="NW Corridor" t2="The Center"/>
+    <connection t1="Sea Zone NNW4" t2="NW Beach"/>
+    <connection t1="Sea Zone NEE3" t2="Sea Zone NEE4"/>
+    <connection t1="Sea Zone NEE3" t2="Sea Zone NEE2"/>
+    <connection t1="Sea Zone NEE3" t2="NE Beach"/>
+    <connection t1="Sea Zone NEE4" t2="East Beach"/>
+    <connection t1="Sea Zone NEE4" t2="NE Beach"/>
+    <connection t1="Sea Zone NEE4" t2="Sea Zone SEE4"/>
+    <connection t1="SE Corridor" t2="South Beach"/>
+    <connection t1="SE Corridor" t2="East Beach"/>
+    <connection t1="SE Corridor" t2="The Center"/>
+    <connection t1="Sea Zone NEE1" t2="Sea Zone NEE2"/>
+    <connection t1="Sea Zone NEE1" t2="Osaka"/>
+    <connection t1="Sea Zone SE2" t2="Sea Zone SE1"/>
+    <connection t1="South Beach" t2="Sea Zone SSW4"/>
+    <connection t1="South Beach" t2="The Center"/>
+    <connection t1="South Beach" t2="SW Corridor"/>
+    <connection t1="East Beach" t2="NE Corridor"/>
+    <connection t1="East Beach" t2="The Center"/>
+    <connection t1="SW Beach" t2="Sea Zone SSW4"/>
+    <connection t1="SW Beach" t2="Sea Zone SWW3"/>
+    <connection t1="SW Beach" t2="Sea Zone SW2"/>
+    <connection t1="SW Beach" t2="Sea Zone SWW4"/>
+    <connection t1="SW Beach" t2="SW Corridor"/>
+    <connection t1="NE Beach" t2="NE Corridor"/>
+    <connection t1="NE Corridor" t2="The Center"/>
+    <connection t1="Sea Zone SWW2" t2="Sea Zone SWW3"/>
+    <connection t1="Sea Zone SWW2" t2="Sea Zone SWW1"/>
+    <connection t1="Sea Zone SWW2" t2="Sea Zone NWW2"/>
+    <connection t1="Sea Zone SWW3" t2="Sea Zone SW2"/>
+    <connection t1="Sea Zone SWW3" t2="Sea Zone SWW4"/>
+    <connection t1="Sea Zone SW2" t2="Sea Zone SW1"/>
+    <connection t1="Sea Zone SWW1" t2="Sea Zone SW1"/>
+    <connection t1="The Center" t2="SW Corridor"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+    <resource name="techTokens"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Russians" optional="false"/>
+    <player name="Americans" optional="false"/>
+    <alliance player="Russians" alliance="Russians"/>
+    <alliance player="Americans" alliance="Americans"/>
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="artillery"/>
+    <unit name="armour"/>
+    <unit name="fighter"/>
+    <unit name="bomber"/>
+    <unit name="transport"/>
+    <unit name="carrier"/>
+    <unit name="destroyer"/>
+    <unit name="battleship"/>
+    <unit name="submarine"/>
+    <unit name="factory"/>
+    <unit name="aaGun"/>
+    <unit name="cruiser"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
+      <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+      <step name="americanBid" delegate="bid" player="Americans" maxRunCount="1"/>
+      <step name="americanBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
+      <step name="russianTech" delegate="tech" player="Russians" maxRunCount="1000"/>
+      <step name="russianPurchase" delegate="purchase" player="Russians" maxRunCount="1000"/>
+      <step name="russianCombatMove" delegate="move" player="Russians" maxRunCount="1000"/>
+      <step name="russianBattle" delegate="battle" player="Russians" maxRunCount="1000"/>
+      <step name="russianNonCombatMove" delegate="move" player="Russians" maxRunCount="1000" display="Non Combat Move"/>
+      <step name="russianPlace" delegate="place" player="Russians" maxRunCount="1000"/>
+      <step name="russianTechActivation" delegate="tech_activation" player="Russians" maxRunCount="1000"/>
+      <step name="russianEndTurn" delegate="endTurn" player="Russians" maxRunCount="1000"/>
+      <step name="americanTech" delegate="tech" player="Americans" maxRunCount="1000"/>
+      <step name="americanPurchase" delegate="purchase" player="Americans" maxRunCount="1000"/>
+      <step name="americanCombatMove" delegate="move" player="Americans" maxRunCount="1000"/>
+      <step name="americanBattle" delegate="battle" player="Americans" maxRunCount="1000"/>
+      <step name="americanNonCombatMove" delegate="move" player="Americans" maxRunCount="1000" display="Non Combat Move"/>
+      <step name="americanPlace" delegate="place" player="Americans" maxRunCount="1000"/>
+      <step name="americanTechActivation" delegate="tech_activation" player="Americans" maxRunCount="1000"/>
+      <step name="americanEndTurn" delegate="endTurn" player="Americans" maxRunCount="1000"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransport">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrier">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyer">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCruiser">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="cruiser" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleship">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarine">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactory">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyInfantryIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtilleryIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmourIndustrialTechnology">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomberIndustrialTechnology">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransportIndustrialTechnology">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrierIndustrialTechnology">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyerIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCruiserIndustrialTechnology">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleshipIndustrialTechnology">
+      <cost resource="PUs" quantity="17"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarineIndustrialTechnology">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGunIndustrialTechnology">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransportShipyards">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrierShipyards">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyerShipyards">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCruiserShipyards">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="cruiser" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleshipShipyards">
+      <cost resource="PUs" quantity="17"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarineShipyards">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <repairRule name="repairFactory">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </repairRule>
+    <repairRule name="repairFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="factory" quantity="2"/>
+    </repairRule>
+    <repairFrontier name="repair">
+      <repairRules name="repairFactory"/>
+    </repairFrontier>
+    <repairFrontier name="repairIndustrialTechnology">
+      <repairRules name="repairFactoryIndustrialTechnology"/>
+    </repairFrontier>
+    <productionFrontier name="productionIndustrialTechnology">
+      <frontierRules name="buyInfantryIndustrialTechnology"/>
+      <frontierRules name="buyArtilleryIndustrialTechnology"/>
+      <frontierRules name="buyArmourIndustrialTechnology"/>
+      <frontierRules name="buyFighterIndustrialTechnology"/>
+      <frontierRules name="buyBomberIndustrialTechnology"/>
+      <frontierRules name="buyTransportIndustrialTechnology"/>
+      <frontierRules name="buySubmarineIndustrialTechnology"/>
+      <frontierRules name="buyCarrierIndustrialTechnology"/>
+      <frontierRules name="buyDestroyerIndustrialTechnology"/>
+      <frontierRules name="buyCruiserIndustrialTechnology"/>
+      <frontierRules name="buyBattleshipIndustrialTechnology"/>
+      <frontierRules name="buyAAGunIndustrialTechnology"/>
+      <frontierRules name="buyFactoryIndustrialTechnology"/>
+    </productionFrontier>
+    <productionFrontier name="productionShipyards">
+      <frontierRules name="buyTransportShipyards"/>
+      <frontierRules name="buySubmarineShipyards"/>
+      <frontierRules name="buyCarrierShipyards"/>
+      <frontierRules name="buyDestroyerShipyards"/>
+      <frontierRules name="buyCruiserShipyards"/>
+      <frontierRules name="buyBattleshipShipyards"/>
+    </productionFrontier>
+    <!--
+				<productionFrontier name="RussiansFrontier">
+                        <frontierRules name="buyInfantry"/>
+                        <frontierRules name="buyArtillery"/>
+                        <frontierRules name="buyArmour"/>
+                        <frontierRules name="buyFighter"/>
+                        <frontierRules name="buyBomber"/>
+                        <frontierRules name="buyTransport"/>
+                        <frontierRules name="buyCarrier"/>
+                        <frontierRules name="buyDestroyer"/>
+                        <frontierRules name="buyCruiser"/>
+                        <frontierRules name="buyBattleship"/>
+                        <frontierRules name="buySubmarine"/>
+                        <frontierRules name="buyFactory"/>
+                        <frontierRules name="buyAAGun"/>
+                </productionFrontier>
+                
+                <productionFrontier name="AmericansFrontier">
+                        <frontierRules name="buyInfantry"/>
+                        <frontierRules name="buyArtillery"/>
+                        <frontierRules name="buyArmour"/>
+                        <frontierRules name="buyFighter"/>
+                        <frontierRules name="buyBomber"/>
+                        <frontierRules name="buyTransport"/>
+                        <frontierRules name="buyCarrier"/>
+                        <frontierRules name="buyDestroyer"/>
+                        <frontierRules name="buyCruiser"/>
+                        <frontierRules name="buyBattleship"/>
+                        <frontierRules name="buySubmarine"/>
+                        <frontierRules name="buyFactory"/>
+                        <frontierRules name="buyAAGun"/>
+                </productionFrontier> -->
+    <productionFrontier name="production">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyCruiser"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <playerProduction player="Russians" frontier="production"/>
+    <playerProduction player="Americans" frontier="production"/>
+    <!--
+                <playerProduction player="Russians" frontier="RussiansFrontier"/>
+                <playerProduction player="Americans" frontier="AmericansFrontier"/> -->
+    <playerRepair player="Russians" frontier="repair"/>
+    <playerRepair player="Americans" frontier="repair"/>
+  </production>
+  <attachmentList>
+    <attachment name="techAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="shipyards" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="shipyards" value="false"/>
+      <option name="aARadar" value="false"/>
+      <option name="longRangeAir" value="false"/>
+      <option name="heavyBomber" value="false"/>
+      <option name="improvedArtillerySupport" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="paratroopers" value="false"/>
+      <option name="increasedFactoryProduction" value="false"/>
+      <option name="warBonds" value="false"/>
+      <option name="mechanizedInfantry" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="isInfantry" value="true"/>
+      <option name="isAirTransportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="isLandTransport" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="isAir" value="true"/>
+      <option name="transportCapacity" value="2"/>
+      <option name="isAirTransport" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="isSea" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="carrierCapacity" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="isDestroyer" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="cruiser" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="canBombard" value="true"/>
+      <option name="hitPoints" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="canBombard" value="true"/>
+      <option name="isSea" value="true"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="isSea" value="true"/>
+      <option name="isSub" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="3"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Moscow" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Russians"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="St. Petersburg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="20"/>
+      <option name="unitProduction" value="20"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Berlin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Frankfurt" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tokyo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Osaka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New York" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="20"/>
+      <option name="unitProduction" value="20"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Washington" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Americans"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="SE Beach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="West Beach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Beach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="NW Corridor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="SE Corridor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Beach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="East Beach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="SW Beach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="NE Beach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="NE Corridor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="NW Beach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="The Center" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="victoryCity" value="1"/>
+      <option name="unitProduction" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="SW Corridor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="Moscow" owner="Russians"/>
+      <territoryOwner territory="St. Petersburg" owner="Russians"/>
+      <territoryOwner territory="New York" owner="Americans"/>
+      <territoryOwner territory="Washington" owner="Americans"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <unitPlacement unitType="infantry" territory="Moscow" quantity="2" owner="Russians"/>
+      <unitPlacement unitType="aaGun" territory="Moscow" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="St. Petersburg" quantity="2" owner="Russians"/>
+      <unitPlacement unitType="factory" territory="St. Petersburg" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Berlin" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Frankfurt" quantity="2"/>
+      <unitPlacement unitType="factory" territory="Frankfurt" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Tokyo" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Osaka" quantity="2"/>
+      <unitPlacement unitType="factory" territory="Osaka" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="New York" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="New York" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Washington" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="aaGun" territory="Washington" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="SE Beach" quantity="1"/>
+      <unitPlacement unitType="transport" territory="Sea Zone NW1" quantity="2" owner="Russians"/>
+      <unitPlacement unitType="cruiser" territory="Sea Zone NW1" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="cruiser" territory="Sea Zone SE1" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="West Beach" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="North Beach" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="NW Corridor" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="SE Corridor" quantity="1"/>
+      <unitPlacement unitType="transport" territory="Sea Zone SE1" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="South Beach" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="East Beach" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="SW Beach" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="NE Beach" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="NE Corridor" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="NW Beach" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="The Center" quantity="2"/>
+      <unitPlacement unitType="artillery" territory="The Center" quantity="1"/>
+      <unitPlacement unitType="armour" territory="The Center" quantity="1"/>
+      <unitPlacement unitType="fighter" territory="The Center" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="SW Corridor" quantity="1"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Russians" resource="PUs" quantity="0"/>
+      <resourceGiven player="Americans" resource="PUs" quantity="0"/>
+      <resourceGiven player="Russians" resource="techTokens" quantity="0"/>
+      <resourceGiven player="Americans" resource="techTokens" quantity="0"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Bids -->
+    <property name="Russians bid" value="130" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Americans bid" value="135" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- OPTIONAL PROPERTIES -->
+    <!-- victory options -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for AntiAircraft" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Technology" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Super Sub Defence Bonus" value="0" editable="true">
+      <number min="0" max="1"/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+      <number min="2" max="3"/>
+    </property>
+    <property name="Always on AA" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits Start Turn" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- END OF OPTIONAL PROPERTIES -->
+    <!-- rules and tech -->
+    <property name="WW2V3" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="WW2V3 Tech Model" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Use Shipyards" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="All Rockets Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+      <boolean/>
+    </property>
+    <!-- specific rules -->
+    <!-- land related -->
+    <property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="AA Territory Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Multiple AA Per Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- sea related -->
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Previous Units Fight" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Partial Amphibious Retreat" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Naval Bombard Casualties Return Fire" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Hari-Kari Units" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Surviving Air Move To Land" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Air Attack Sub Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Transport In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Transport Casualties Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unescorted Transport Dies" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Sub In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Defending Subs Sneak Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Retreat Before Battle" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- production related -->
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce new fighters on old carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Land existing fighters on new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- should not need if above 4 properties work correctly: 
+                <property name="LHTR Carrier production rules" value="true" editable="false">
+                        <boolean/>
+                </property> -->
+    <property name="Unit Placement In Enemy Seas" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Placement Restricted By Factory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- to do with neutrals -->
+    <property name="neutralCharge" value="0"/>
+    <property name="Neutrals Are Impassable" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Blitzable" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="mapName" value="small_balanced_2_or_4_player" editable="false"/>
+    <property name="notes" value="A simple symmetrical map made for 2 players, across from each other.   &lt;br&gt;Meant to be a quick and simple game (0.5-2 hours). &lt;br&gt;Bids increase to balance out the advantage of moving first. &lt;br&gt;Same rules as World War 2 v4, except with addition of WW2v3 tech, and Larry Harris Tournament rules for Heavy Bombers and tech activation happens at the end of your turn. &lt;br&gt; &lt;br&gt;There are only 2 rules NOT built into the game: &lt;br&gt;#1. You may buy a MAXIMUM of 1 Battleship with your bid money, no more! &lt;br&gt;#2. And any Naval Bid purchases must be placed NEXT TO your territory with a Factory! &lt;br&gt; &lt;br&gt;Created by Veqryn. &lt;br&gt; &lt;br&gt;"/>
+  </propertyList>
+</game>
