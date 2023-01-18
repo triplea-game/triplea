@@ -1,0 +1,2590 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Age_Of_The_Sturlungs_0.0.2" version="0.0.2"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Fljotshlidarhreppur"/>
+    <territory name="Emstrur"/>
+    <territory name="Landmannaafrettur"/>
+    <territory name="Rangarvallahreppur"/>
+    <territory name="Vestur-Landeyjar"/>
+    <territory name="Holtamannaafrettur"/>
+    <territory name="Hvolhreppur"/>
+    <territory name="Vestur-Eyjafjallahreppur"/>
+    <territory name="Austur-Landeyjar"/>
+    <territory name="Vestmannaeyjar"/>
+    <territory name="Holtamannahreppur"/>
+    <territory name="Afrettur Fljotshlidinga"/>
+    <territory name="Austur-Eyjafjallahreppur"/>
+    <territory name="Thorsmork"/>
+    <territory name="Rangarvallaafrettur"/>
+    <territory name="Landmannahreppur"/>
+    <territory name="Grimsey"/>
+    <territory name="Blonduhlidarhreppur"/>
+    <territory name="Thoroddsstadahreppur"/>
+    <territory name="Vindhaelishreppur"/>
+    <territory name="Fljotahreppur"/>
+    <territory name="A-Eyvindarstadaheidi"/>
+    <territory name="Seiluhreppur"/>
+    <territory name="V-Eyvindarstadaheidi"/>
+    <territory name="Holahreppur"/>
+    <territory name="Skefilsstadahreppur"/>
+    <territory name="Torfalaekjarhreppur"/>
+    <territory name="Sveinsstadahreppur"/>
+    <territory name="Ripurhreppur"/>
+    <territory name="Ashreppur"/>
+    <territory name="Svinadalshreppur"/>
+    <territory name="Vidvikurhreppur"/>
+    <territory name="Grimstunguheidi"/>
+    <territory name="Hofsafrett"/>
+    <territory name="Silfrastadaafrettur"/>
+    <territory name="Engihlidarhreppur"/>
+    <territory name="Skagahreppur"/>
+    <territory name="Reynistadarhreppur"/>
+    <territory name="Nyjabaejarafrettur"/>
+    <territory name="Saudarhreppur"/>
+    <territory name="Hofdastrandarhreppur"/>
+    <territory name="Bolstadarhlidarhreppur"/>
+    <territory name="Lytingsstadahreppur"/>
+    <territory name="Sigluneshreppur"/>
+    <territory name="Audkuluheidi"/>
+    <territory name="Sugandafjardarhreppur"/>
+    <territory name="Haukadalshreppur"/>
+    <territory name="Hvammssveit"/>
+    <territory name="Sudurfjardasveit"/>
+    <territory name="Raudasandshreppur"/>
+    <territory name="Saurbaejarsveit"/>
+    <territory name="Skalmarnesmulahreppur"/>
+    <territory name="Fellsstrandarhreppur"/>
+    <territory name="Nordur-Dyrafjardarhreppur"/>
+    <territory name="Hordudalshreppur"/>
+    <territory name="Middalahreppur"/>
+    <territory name="Talknafjardarhreppur"/>
+    <territory name="Onundarfjardarhreppur"/>
+    <territory name="Skardsstrandarhreppur"/>
+    <territory name="Kroksfjardarhreppur"/>
+    <territory name="Laxardalshreppur"/>
+    <territory name="Bardastrandarhreppur"/>
+    <territory name="Vestur-Dyrafjardarhreppur"/>
+    <territory name="Arnarfjardarhreppur"/>
+    <territory name="Dalasveit"/>
+    <territory name="Gufudalshreppur"/>
+    <territory name="Kelduneshreppur"/>
+    <territory name="Hvammshreppur"/>
+    <territory name="Svalbardshreppur"/>
+    <territory name="Afrettur Skutustada"/>
+    <territory name="Holsfjoll"/>
+    <territory name="Bardardalur"/>
+    <territory name="Ljosavatnshreppur"/>
+    <territory name="Halshreppur"/>
+    <territory name="Flateyjardalsheidi"/>
+    <territory name="Oxfirdingaafrettur"/>
+    <territory name="Myvatnssveit"/>
+    <territory name="Fjollin"/>
+    <territory name="Saudaneshreppur"/>
+    <territory name="Vesturafrettur Barddaela"/>
+    <territory name="Tjorneshreppur"/>
+    <territory name="Skriduhreppur"/>
+    <territory name="Sudurafrettur Fnjoskdaela"/>
+    <territory name="Helgastadahreppur"/>
+    <territory name="Ongulstadahreppur"/>
+    <territory name="Hrisey"/>
+    <territory name="Saurbaejarhreppur"/>
+    <territory name="Oxnadalshreppur"/>
+    <territory name="Austurafrettur Barddaela"/>
+    <territory name="Grytubakkahreppur"/>
+    <territory name="Prestholahreppur"/>
+    <territory name="Svalbardsstrandarhreppur"/>
+    <territory name="Glaesibaejarhreppur"/>
+    <territory name="Aerlaekjarheppur"/>
+    <territory name="Odadahraun"/>
+    <territory name="Hrafnagilshreppur"/>
+    <territory name="Svarfadardalshreppur"/>
+    <territory name="Grimsnesafrettur"/>
+    <territory name="Biskupstungnahreppur"/>
+    <territory name="Gnupverjahreppur"/>
+    <territory name="Kaldnesingahreppur"/>
+    <territory name="Grimsneshreppur"/>
+    <territory name="Olfushreppur"/>
+    <territory name="Floa- og Skeidamannaafr"/>
+    <territory name="Gnupverjaafrettur"/>
+    <territory name="Hrunamannahreppur"/>
+    <territory name="Biskupstungnaafrettur"/>
+    <territory name="Stokkseyrarhreppur"/>
+    <territory name="Hraungerdishreppur"/>
+    <territory name="Laugardalsafrettur"/>
+    <territory name="Hrunamannaafrettur"/>
+    <territory name="Gaulverjahreppur"/>
+    <territory name="Laugardalshreppur"/>
+    <territory name="Villingaholtshreppur"/>
+    <territory name="Selvogshreppur"/>
+    <territory name="Grafningshreppur"/>
+    <territory name="Thingvallahreppur"/>
+    <territory name="Skeidahreppur"/>
+    <territory name="Sidumannaafrettur"/>
+    <territory name="Fljotshverfi, afrettur"/>
+    <territory name="Holtahreppur"/>
+    <territory name="Litlaherad"/>
+    <territory name="Skaftartunga"/>
+    <territory name="Dyrholahreppur"/>
+    <territory name="Alftaver"/>
+    <territory name="Sudursveit"/>
+    <territory name="Kleifahreppur"/>
+    <territory name="Alftaversafrettur"/>
+    <territory name="Skaftartunguafrettur"/>
+    <territory name="Leidvallarhreppur"/>
+    <territory name="Thverarhreppur"/>
+    <territory name="Neshreppur"/>
+    <territory name="Torfustadahreppur"/>
+    <territory name="Nordurardalshreppur"/>
+    <territory name="Miklaholtshreppur"/>
+    <territory name="Mela- Leirarsveit"/>
+    <territory name="Kalmanstunga"/>
+    <territory name="Eyrarsveit"/>
+    <territory name="Alftaneshreppur"/>
+    <territory name="Oddstadaafrett"/>
+    <territory name="Stafholtstungnahreppur"/>
+    <territory name="Arnarvatnsheidi"/>
+    <territory name="Thverarhlidarhreppur"/>
+    <territory name="Reykholtsdalshreppur"/>
+    <territory name="Thorkelsholshreppur"/>
+    <territory name="Skilmanna- og Akraneshreppur"/>
+    <territory name="Vatnsleysustrandarhreppur"/>
+    <territory name="Geitland"/>
+    <territory name="Andakilshreppur"/>
+    <territory name="Hafnahreppur"/>
+    <territory name="Stadarsveit"/>
+    <territory name="Vididalstunguheidi"/>
+    <territory name="Stadarhreppur"/>
+    <territory name="Hvalfjardarstrandarhreppur"/>
+    <territory name="Afrettur Midfirdinga"/>
+    <territory name="Skogarstrandarhreppur"/>
+    <territory name="Thverarrett"/>
+    <territory name="Hraunhreppur"/>
+    <territory name="Alftaneshreppur i Myrum"/>
+    <territory name="Krysuvik"/>
+    <territory name="Asasveit"/>
+    <territory name="Lundarreykjadalshreppur"/>
+    <territory name="Borgarhreppur"/>
+    <territory name="Hrutafjardarhreppur"/>
+    <territory name="Skorradalshreppur"/>
+    <territory name="Vatnsneshreppur"/>
+    <territory name="Helgafellssveit"/>
+    <territory name="Eyjahreppur"/>
+    <territory name="Hvitarsiduhreppur"/>
+    <territory name="Broddaneshreppur"/>
+    <territory name="Breiduvikurhreppur"/>
+    <territory name="Rosmhvalaneshreppur"/>
+    <territory name="Grindavikurhreppur"/>
+    <territory name="Hrofbergshreppur"/>
+    <territory name="Kaldrananeshreppur"/>
+    <territory name="Langadalsstrond"/>
+    <territory name="Trekyllisvikurhreppur"/>
+    <territory name="Skutulsfjardarhreppur"/>
+    <territory name="Sudavikurhreppur"/>
+    <territory name="Slettuhreppur"/>
+    <territory name="Vatnsfjardarsveit"/>
+    <territory name="Holshreppur"/>
+    <territory name="Ogurhreppur"/>
+    <territory name="Snaefjallastrandarhreppur"/>
+    <territory name="Trollatunguhreppur"/>
+    <territory name="Grunnavikursveit"/>
+    <territory name="Lodmundarfjardarhreppur"/>
+    <territory name="Reydarfjardarhreppur"/>
+    <territory name="Breiddalshreppur"/>
+    <territory name="Mjoafjardarhreppur"/>
+    <territory name="Nordfjardarhreppur"/>
+    <territory name="Fellahreppur"/>
+    <territory name="Vallnahreppur"/>
+    <territory name="Muli, Sudurfell"/>
+    <territory name="Fljotsdalsheidi"/>
+    <territory name="Krepputunga"/>
+    <territory name="Fljotsdalshreppur"/>
+    <territory name="Skeggjastadahreppur"/>
+    <territory name="Jokuldalsheidi"/>
+    <territory name="Beruneshreppur"/>
+    <territory name="Vesturoraefi"/>
+    <territory name="Modrudalsoraefi"/>
+    <territory name="Hofteigsheidi"/>
+    <territory name="Jokuldalshreppur"/>
+    <territory name="Bruaroraefi"/>
+    <territory name="Skriddalshreppur"/>
+    <territory name="Vopnafjardarhreppur"/>
+    <territory name="Borgarfjardarhreppur"/>
+    <territory name="Tunguhreppur"/>
+    <territory name="Alftafjardarhreppur"/>
+    <territory name="Seydisfjardarhreppur"/>
+    <territory name="Faskrudsfjardarhreppur"/>
+    <territory name="SZ28 Gerpisgrunn" water="true"/>
+    <territory name="SZ38 Grindavikurdjup" water="true"/>
+    <territory name="SZ33 Sidugrunn" water="true"/>
+    <territory name="SZ31 Myragrunn" water="true"/>
+    <territory name="Tindafjallajokull"/>
+    <territory name="SZ39 Eldeyjarbanki" water="true"/>
+    <territory name="Hofsjokull"/>
+    <territory name="Kjalarneshreppur"/>
+    <territory name="SZ05 Driftvikurgrunn" water="true"/>
+    <territory name="SZ29 Breiddalsgrunn" water="true"/>
+    <territory name="SZ10 Latrarost" water="true"/>
+    <territory name="SZ26 Bakkafloi" water="true"/>
+    <territory name="Eyjafjallajokull"/>
+    <territory name="Langjokull"/>
+    <territory name="SZ13 Isafjardardjup" water="true"/>
+    <territory name="Mosfellssveit"/>
+    <territory name="SZ23 Skjalfandafloi" water="true"/>
+    <territory name="SZ27 Heradsfloi" water="true"/>
+    <territory name="SZ12 Bardagrunn" water="true"/>
+    <territory name="SZ14 Horngrunn" water="true"/>
+    <territory name="SZ22 Grimseyjarsund" water="true"/>
+    <territory name="SZ24 Oxarfjordur" water="true"/>
+    <territory name="Torfajokull"/>
+    <territory name="Kolbeinsstadahreppur"/>
+    <territory name="Seltjarnarneshreppur"/>
+    <territory name="SZ32 Oraefagrunn" water="true"/>
+    <territory name="SZ11 Kopanesgrunn" water="true"/>
+    <territory name="SZ04 Faxafloi" water="true"/>
+    <territory name="SZ30 Stokknesgrunn" water="true"/>
+    <territory name="Tungnafellsjokull"/>
+    <territory name="SZ01 Faxafloi" water="true"/>
+    <territory name="SZ18 Skagagrunn" water="true"/>
+    <territory name="SZ35 Eyjafjalladjup" water="true"/>
+    <territory name="SZ16 Hunafloi" water="true"/>
+    <territory name="SZ06 Nesbrun" water="true"/>
+    <territory name="SZ36 Eyrarbakkabugur" water="true"/>
+    <territory name="Drangajokull"/>
+    <territory name="SZ17 Hunafloi" water="true"/>
+    <territory name="Vatnajokull"/>
+    <territory name="SZ02 Faxafloi" water="true"/>
+    <territory name="SZ20 Siglunesgrunn" water="true"/>
+    <territory name="SZ09 Breidafjordur" water="true"/>
+    <territory name="SZ25 Thistilfjordur" water="true"/>
+    <territory name="SZ19 Skagafjordur" water="true"/>
+    <territory name="SZ03 Faxafloi" water="true"/>
+    <territory name="SZ37 Selvogsbanki" water="true"/>
+    <territory name="Ok"/>
+    <territory name="Thorisjokull"/>
+    <territory name="SZ34 Kotlugrunn" water="true"/>
+    <territory name="Kjosarhreppur"/>
+    <territory name="SZ08 Breidafjordur" water="true"/>
+    <territory name="SZ21 Eyjafjordur" water="true"/>
+    <territory name="Eiriksjokull"/>
+    <territory name="Snaefellsjokull"/>
+    <territory name="SZ07 Breidafjordur" water="true"/>
+    <territory name="Myrdalsjokull"/>
+    <territory name="SZ15 Strandabrekar" water="true"/>
+    <!-- Territory Connections -->
+    <connection t1="Fljotshlidarhreppur" t2="Rangarvallahreppur"/>
+    <connection t1="Fljotshlidarhreppur" t2="Vestur-Landeyjar"/>
+    <connection t1="Fljotshlidarhreppur" t2="Hvolhreppur"/>
+    <connection t1="Fljotshlidarhreppur" t2="Vestur-Eyjafjallahreppur"/>
+    <connection t1="Fljotshlidarhreppur" t2="Austur-Landeyjar"/>
+    <connection t1="Fljotshlidarhreppur" t2="Afrettur Fljotshlidinga"/>
+    <connection t1="Fljotshlidarhreppur" t2="Rangarvallaafrettur"/>
+    <connection t1="Emstrur" t2="Afrettur Fljotshlidinga"/>
+    <connection t1="Emstrur" t2="Thorsmork"/>
+    <connection t1="Emstrur" t2="Rangarvallaafrettur"/>
+    <connection t1="Emstrur" t2="Myrdalsjokull"/>
+    <connection t1="Landmannaafrettur" t2="Torfajokull"/>
+    <connection t1="Landmannaafrettur" t2="Holtamannaafrettur"/>
+    <connection t1="Landmannaafrettur" t2="Gnupverjaafrettur"/>
+    <connection t1="Landmannaafrettur" t2="Skaftartunguafrettur"/>
+    <connection t1="Landmannaafrettur" t2="Rangarvallaafrettur"/>
+    <connection t1="Landmannaafrettur" t2="Landmannahreppur"/>
+    <connection t1="Rangarvallahreppur" t2="Vestur-Landeyjar"/>
+    <connection t1="Rangarvallahreppur" t2="Hvolhreppur"/>
+    <connection t1="Rangarvallahreppur" t2="Holtamannahreppur"/>
+    <connection t1="Rangarvallahreppur" t2="Rangarvallaafrettur"/>
+    <connection t1="Rangarvallahreppur" t2="Landmannahreppur"/>
+    <connection t1="Vestur-Landeyjar" t2="Hvolhreppur"/>
+    <connection t1="Vestur-Landeyjar" t2="SZ36 Eyrarbakkabugur"/>
+    <connection t1="Vestur-Landeyjar" t2="Austur-Landeyjar"/>
+    <connection t1="Vestur-Landeyjar" t2="Holtamannahreppur"/>
+    <connection t1="Holtamannaafrettur" t2="Fjollin"/>
+    <connection t1="Holtamannaafrettur" t2="Gnupverjaafrettur"/>
+    <connection t1="Holtamannaafrettur" t2="Vesturafrettur Barddaela"/>
+    <connection t1="Holtamannaafrettur" t2="Vatnajokull"/>
+    <connection t1="Holtamannaafrettur" t2="Skaftartunguafrettur"/>
+    <connection t1="Vestur-Eyjafjallahreppur" t2="Austur-Landeyjar"/>
+    <connection t1="Vestur-Eyjafjallahreppur" t2="Afrettur Fljotshlidinga"/>
+    <connection t1="Vestur-Eyjafjallahreppur" t2="Austur-Eyjafjallahreppur"/>
+    <connection t1="Vestur-Eyjafjallahreppur" t2="Thorsmork"/>
+    <connection t1="Austur-Landeyjar" t2="SZ37 Selvogsbanki"/>
+    <connection t1="Vestmannaeyjar" t2="SZ37 Selvogsbanki"/>
+    <connection t1="Holtamannahreppur" t2="Gaulverjahreppur"/>
+    <connection t1="Holtamannahreppur" t2="Villingaholtshreppur"/>
+    <connection t1="Holtamannahreppur" t2="Skeidahreppur"/>
+    <connection t1="Holtamannahreppur" t2="Landmannahreppur"/>
+    <connection t1="Afrettur Fljotshlidinga" t2="Thorsmork"/>
+    <connection t1="Afrettur Fljotshlidinga" t2="Rangarvallaafrettur"/>
+    <connection t1="Austur-Eyjafjallahreppur" t2="Thorsmork"/>
+    <connection t1="Austur-Eyjafjallahreppur" t2="Myrdalsjokull"/>
+    <connection t1="Thorsmork" t2="Myrdalsjokull"/>
+    <connection t1="Rangarvallaafrettur" t2="Landmannahreppur"/>
+    <connection t1="Rangarvallaafrettur" t2="Myrdalsjokull"/>
+    <connection t1="Blonduhlidarhreppur" t2="Seiluhreppur"/>
+    <connection t1="Blonduhlidarhreppur" t2="Holahreppur"/>
+    <connection t1="Blonduhlidarhreppur" t2="Ripurhreppur"/>
+    <connection t1="Blonduhlidarhreppur" t2="Vidvikurhreppur"/>
+    <connection t1="Blonduhlidarhreppur" t2="Silfrastadaafrettur"/>
+    <connection t1="Blonduhlidarhreppur" t2="Nyjabaejarafrettur"/>
+    <connection t1="Blonduhlidarhreppur" t2="Lytingsstadahreppur"/>
+    <connection t1="Thoroddsstadahreppur" t2="Fljotahreppur"/>
+    <connection t1="Thoroddsstadahreppur" t2="SZ21 Eyjafjordur"/>
+    <connection t1="Thoroddsstadahreppur" t2="Svarfadardalshreppur"/>
+    <connection t1="Thoroddsstadahreppur" t2="Sigluneshreppur"/>
+    <connection t1="Vindhaelishreppur" t2="Skefilsstadahreppur"/>
+    <connection t1="Vindhaelishreppur" t2="SZ17 Hunafloi"/>
+    <connection t1="Vindhaelishreppur" t2="Engihlidarhreppur"/>
+    <connection t1="Vindhaelishreppur" t2="Skagahreppur"/>
+    <connection t1="Vindhaelishreppur" t2="Reynistadarhreppur"/>
+    <connection t1="Fljotahreppur" t2="SZ20 Siglunesgrunn"/>
+    <connection t1="Fljotahreppur" t2="SZ19 Skagafjordur"/>
+    <connection t1="Fljotahreppur" t2="Hofdastrandarhreppur"/>
+    <connection t1="Fljotahreppur" t2="Svarfadardalshreppur"/>
+    <connection t1="Fljotahreppur" t2="Sigluneshreppur"/>
+    <connection t1="A-Eyvindarstadaheidi" t2="V-Eyvindarstadaheidi"/>
+    <connection t1="A-Eyvindarstadaheidi" t2="Hofsafrett"/>
+    <connection t1="A-Eyvindarstadaheidi" t2="Lytingsstadahreppur"/>
+    <connection t1="A-Eyvindarstadaheidi" t2="Bolstadarhlidarhreppur"/>
+    <connection t1="Seiluhreppur" t2="Ripurhreppur"/>
+    <connection t1="Seiluhreppur" t2="Reynistadarhreppur"/>
+    <connection t1="Seiluhreppur" t2="Lytingsstadahreppur"/>
+    <connection t1="Seiluhreppur" t2="Bolstadarhlidarhreppur"/>
+    <connection t1="V-Eyvindarstadaheidi" t2="Biskupstungnaafrettur"/>
+    <connection t1="V-Eyvindarstadaheidi" t2="Bolstadarhlidarhreppur"/>
+    <connection t1="V-Eyvindarstadaheidi" t2="Audkuluheidi"/>
+    <connection t1="Holahreppur" t2="Skriduhreppur"/>
+    <connection t1="Holahreppur" t2="Vidvikurhreppur"/>
+    <connection t1="Holahreppur" t2="Silfrastadaafrettur"/>
+    <connection t1="Holahreppur" t2="Hofdastrandarhreppur"/>
+    <connection t1="Holahreppur" t2="Svarfadardalshreppur"/>
+    <connection t1="Skefilsstadahreppur" t2="SZ19 Skagafjordur"/>
+    <connection t1="Skefilsstadahreppur" t2="Skagahreppur"/>
+    <connection t1="Skefilsstadahreppur" t2="Reynistadarhreppur"/>
+    <connection t1="Skefilsstadahreppur" t2="Saudarhreppur"/>
+    <connection t1="Torfalaekjarhreppur" t2="Sveinsstadahreppur"/>
+    <connection t1="Torfalaekjarhreppur" t2="Ashreppur"/>
+    <connection t1="Torfalaekjarhreppur" t2="SZ17 Hunafloi"/>
+    <connection t1="Torfalaekjarhreppur" t2="Svinadalshreppur"/>
+    <connection t1="Torfalaekjarhreppur" t2="Engihlidarhreppur"/>
+    <connection t1="Sveinsstadahreppur" t2="Ashreppur"/>
+    <connection t1="Sveinsstadahreppur" t2="SZ17 Hunafloi"/>
+    <connection t1="Ripurhreppur" t2="Vidvikurhreppur"/>
+    <connection t1="Ripurhreppur" t2="SZ19 Skagafjordur"/>
+    <connection t1="Ripurhreppur" t2="Reynistadarhreppur"/>
+    <connection t1="Ripurhreppur" t2="Saudarhreppur"/>
+    <connection t1="Ashreppur" t2="Svinadalshreppur"/>
+    <connection t1="Ashreppur" t2="Grimstunguheidi"/>
+    <connection t1="Ashreppur" t2="Audkuluheidi"/>
+    <connection t1="Svinadalshreppur" t2="Engihlidarhreppur"/>
+    <connection t1="Svinadalshreppur" t2="Bolstadarhlidarhreppur"/>
+    <connection t1="Svinadalshreppur" t2="Audkuluheidi"/>
+    <connection t1="Vidvikurhreppur" t2="SZ19 Skagafjordur"/>
+    <connection t1="Vidvikurhreppur" t2="Hofdastrandarhreppur"/>
+    <connection t1="Grimstunguheidi" t2="Audkuluheidi"/>
+    <connection t1="Hofsafrett" t2="Nyjabaejarafrettur"/>
+    <connection t1="Hofsafrett" t2="Lytingsstadahreppur"/>
+    <connection t1="Engihlidarhreppur" t2="Reynistadarhreppur"/>
+    <connection t1="Engihlidarhreppur" t2="Bolstadarhlidarhreppur"/>
+    <connection t1="Reynistadarhreppur" t2="Saudarhreppur"/>
+    <connection t1="Reynistadarhreppur" t2="Bolstadarhlidarhreppur"/>
+    <connection t1="Nyjabaejarafrettur" t2="Silfrastadaafrettur"/>
+    <connection t1="Nyjabaejarafrettur" t2="Lytingsstadahreppur"/>
+    <connection t1="Hofdastrandarhreppur" t2="Svarfadardalshreppur"/>
+    <connection t1="Bolstadarhlidarhreppur" t2="Audkuluheidi"/>
+    <connection t1="Lytingsstadahreppur" t2="Bolstadarhlidarhreppur"/>
+    <connection t1="Sugandafjardarhreppur" t2="SZ11 Kopanesgrunn"/>
+    <connection t1="Sugandafjardarhreppur" t2="Skutulsfjardarhreppur"/>
+    <connection t1="Sugandafjardarhreppur" t2="Onundarfjardarhreppur"/>
+    <connection t1="Sugandafjardarhreppur" t2="Holshreppur"/>
+    <connection t1="Haukadalshreppur" t2="Nordurardalshreppur"/>
+    <connection t1="Haukadalshreppur" t2="Middalahreppur"/>
+    <connection t1="Haukadalshreppur" t2="Laxardalshreppur"/>
+    <connection t1="Haukadalshreppur" t2="Hrutafjardarhreppur"/>
+    <connection t1="Hvammssveit" t2="Saurbaejarsveit"/>
+    <connection t1="Hvammssveit" t2="Fellsstrandarhreppur"/>
+    <connection t1="Hvammssveit" t2="Skardsstrandarhreppur"/>
+    <connection t1="Hvammssveit" t2="Laxardalshreppur"/>
+    <connection t1="Hvammssveit" t2="SZ07 Breidafjordur"/>
+    <connection t1="Sudurfjardasveit" t2="SZ11 Kopanesgrunn"/>
+    <connection t1="Sudurfjardasveit" t2="Talknafjardarhreppur"/>
+    <connection t1="Sudurfjardasveit" t2="Bardastrandarhreppur"/>
+    <connection t1="Sudurfjardasveit" t2="Arnarfjardarhreppur"/>
+    <connection t1="Sudurfjardasveit" t2="Dalasveit"/>
+    <connection t1="Raudasandshreppur" t2="Talknafjardarhreppur"/>
+    <connection t1="Raudasandshreppur" t2="Bardastrandarhreppur"/>
+    <connection t1="Saurbaejarsveit" t2="Skardsstrandarhreppur"/>
+    <connection t1="Saurbaejarsveit" t2="Kroksfjardarhreppur"/>
+    <connection t1="Saurbaejarsveit" t2="Laxardalshreppur"/>
+    <connection t1="Saurbaejarsveit" t2="SZ08 Breidafjordur"/>
+    <connection t1="Saurbaejarsveit" t2="Broddaneshreppur"/>
+    <connection t1="Skalmarnesmulahreppur" t2="SZ09 Breidafjordur"/>
+    <connection t1="Skalmarnesmulahreppur" t2="Vatnsfjardarsveit"/>
+    <connection t1="Skalmarnesmulahreppur" t2="Bardastrandarhreppur"/>
+    <connection t1="Skalmarnesmulahreppur" t2="SZ08 Breidafjordur"/>
+    <connection t1="Skalmarnesmulahreppur" t2="Gufudalshreppur"/>
+    <connection t1="Fellsstrandarhreppur" t2="Skardsstrandarhreppur"/>
+    <connection t1="Fellsstrandarhreppur" t2="SZ07 Breidafjordur"/>
+    <connection t1="Nordur-Dyrafjardarhreppur" t2="Onundarfjardarhreppur"/>
+    <connection t1="Nordur-Dyrafjardarhreppur" t2="Sudavikurhreppur"/>
+    <connection t1="Nordur-Dyrafjardarhreppur" t2="Vestur-Dyrafjardarhreppur"/>
+    <connection t1="Hordudalshreppur" t2="Middalahreppur"/>
+    <connection t1="Hordudalshreppur" t2="Skogarstrandarhreppur"/>
+    <connection t1="Hordudalshreppur" t2="Hraunhreppur"/>
+    <connection t1="Hordudalshreppur" t2="Borgarhreppur"/>
+    <connection t1="Hordudalshreppur" t2="SZ07 Breidafjordur"/>
+    <connection t1="Middalahreppur" t2="Laxardalshreppur"/>
+    <connection t1="Middalahreppur" t2="SZ07 Breidafjordur"/>
+    <connection t1="Talknafjardarhreppur" t2="Dalasveit"/>
+    <connection t1="Onundarfjardarhreppur" t2="Sudavikurhreppur"/>
+    <connection t1="Skardsstrandarhreppur" t2="SZ08 Breidafjordur"/>
+    <connection t1="Skardsstrandarhreppur" t2="SZ07 Breidafjordur"/>
+    <connection t1="Kroksfjardarhreppur" t2="SZ08 Breidafjordur"/>
+    <connection t1="Kroksfjardarhreppur" t2="Broddaneshreppur"/>
+    <connection t1="Kroksfjardarhreppur" t2="Trollatunguhreppur"/>
+    <connection t1="Kroksfjardarhreppur" t2="Gufudalshreppur"/>
+    <connection t1="Laxardalshreppur" t2="Hrutafjardarhreppur"/>
+    <connection t1="Laxardalshreppur" t2="Broddaneshreppur"/>
+    <connection t1="Laxardalshreppur" t2="SZ07 Breidafjordur"/>
+    <connection t1="Bardastrandarhreppur" t2="Arnarfjardarhreppur"/>
+    <connection t1="Vestur-Dyrafjardarhreppur" t2="Arnarfjardarhreppur"/>
+    <connection t1="Kelduneshreppur" t2="SZ24 Oxarfjordur"/>
+    <connection t1="Kelduneshreppur" t2="Oxfirdingaafrettur"/>
+    <connection t1="Kelduneshreppur" t2="Myvatnssveit"/>
+    <connection t1="Kelduneshreppur" t2="Tjorneshreppur"/>
+    <connection t1="Kelduneshreppur" t2="Helgastadahreppur"/>
+    <connection t1="Kelduneshreppur" t2="Aerlaekjarheppur"/>
+    <connection t1="Kelduneshreppur" t2="Odadahraun"/>
+    <connection t1="Hvammshreppur" t2="Skriduhreppur"/>
+    <connection t1="Hvammshreppur" t2="SZ21 Eyjafjordur"/>
+    <connection t1="Hvammshreppur" t2="Glaesibaejarhreppur"/>
+    <connection t1="Hvammshreppur" t2="Svarfadardalshreppur"/>
+    <connection t1="Svalbardshreppur" t2="Holsfjoll"/>
+    <connection t1="Svalbardshreppur" t2="Saudaneshreppur"/>
+    <connection t1="Svalbardshreppur" t2="SZ25 Thistilfjordur"/>
+    <connection t1="Svalbardshreppur" t2="Prestholahreppur"/>
+    <connection t1="Svalbardshreppur" t2="Aerlaekjarheppur"/>
+    <connection t1="Afrettur Skutustada" t2="Myvatnssveit"/>
+    <connection t1="Afrettur Skutustada" t2="Vatnajokull"/>
+    <connection t1="Afrettur Skutustada" t2="Austurafrettur Barddaela"/>
+    <connection t1="Afrettur Skutustada" t2="Odadahraun"/>
+    <connection t1="Holsfjoll" t2="Oxfirdingaafrettur"/>
+    <connection t1="Holsfjoll" t2="Modrudalsoraefi"/>
+    <connection t1="Holsfjoll" t2="Vopnafjardarhreppur"/>
+    <connection t1="Holsfjoll" t2="Aerlaekjarheppur"/>
+    <connection t1="Bardardalur" t2="Ljosavatnshreppur"/>
+    <connection t1="Bardardalur" t2="Halshreppur"/>
+    <connection t1="Bardardalur" t2="Myvatnssveit"/>
+    <connection t1="Bardardalur" t2="Vesturafrettur Barddaela"/>
+    <connection t1="Bardardalur" t2="Sudurafrettur Fnjoskdaela"/>
+    <connection t1="Bardardalur" t2="Helgastadahreppur"/>
+    <connection t1="Bardardalur" t2="Austurafrettur Barddaela"/>
+    <connection t1="Ljosavatnshreppur" t2="Halshreppur"/>
+    <connection t1="Ljosavatnshreppur" t2="SZ23 Skjalfandafloi"/>
+    <connection t1="Ljosavatnshreppur" t2="Flateyjardalsheidi"/>
+    <connection t1="Ljosavatnshreppur" t2="Helgastadahreppur"/>
+    <connection t1="Halshreppur" t2="Flateyjardalsheidi"/>
+    <connection t1="Halshreppur" t2="Sudurafrettur Fnjoskdaela"/>
+    <connection t1="Halshreppur" t2="Ongulstadahreppur"/>
+    <connection t1="Halshreppur" t2="Grytubakkahreppur"/>
+    <connection t1="Halshreppur" t2="Svalbardsstrandarhreppur"/>
+    <connection t1="Flateyjardalsheidi" t2="Grytubakkahreppur"/>
+    <connection t1="Oxfirdingaafrettur" t2="Modrudalsoraefi"/>
+    <connection t1="Oxfirdingaafrettur" t2="Aerlaekjarheppur"/>
+    <connection t1="Oxfirdingaafrettur" t2="Odadahraun"/>
+    <connection t1="Myvatnssveit" t2="Helgastadahreppur"/>
+    <connection t1="Myvatnssveit" t2="Odadahraun"/>
+    <connection t1="Fjollin" t2="Gnupverjaafrettur"/>
+    <connection t1="Fjollin" t2="Vesturafrettur Barddaela"/>
+    <connection t1="Fjollin" t2="Sudurafrettur Fnjoskdaela"/>
+    <connection t1="Fjollin" t2="Ongulstadahreppur"/>
+    <connection t1="Fjollin" t2="Saurbaejarhreppur"/>
+    <connection t1="Fjollin" t2="Nyjabaejarafrettur"/>
+    <connection t1="Saudaneshreppur" t2="Skeggjastadahreppur"/>
+    <connection t1="Saudaneshreppur" t2="SZ25 Thistilfjordur"/>
+    <connection t1="Saudaneshreppur" t2="Vopnafjardarhreppur"/>
+    <connection t1="Vesturafrettur Barddaela" t2="Sudurafrettur Fnjoskdaela"/>
+    <connection t1="Vesturafrettur Barddaela" t2="Vatnajokull"/>
+    <connection t1="Vesturafrettur Barddaela" t2="Austurafrettur Barddaela"/>
+    <connection t1="Tjorneshreppur" t2="Helgastadahreppur"/>
+    <connection t1="Skriduhreppur" t2="Silfrastadaafrettur"/>
+    <connection t1="Skriduhreppur" t2="Glaesibaejarhreppur"/>
+    <connection t1="Skriduhreppur" t2="Svarfadardalshreppur"/>
+    <connection t1="Skriduhreppur" t2="Oxnadalshreppur"/>
+    <connection t1="Sudurafrettur Fnjoskdaela" t2="Ongulstadahreppur"/>
+    <connection t1="Ongulstadahreppur" t2="Saurbaejarhreppur"/>
+    <connection t1="Ongulstadahreppur" t2="Svalbardsstrandarhreppur"/>
+    <connection t1="Ongulstadahreppur" t2="Hrafnagilshreppur"/>
+    <connection t1="Hrisey" t2="SZ21 Eyjafjordur"/>
+    <connection t1="Saurbaejarhreppur" t2="Nyjabaejarafrettur"/>
+    <connection t1="Saurbaejarhreppur" t2="Hrafnagilshreppur"/>
+    <connection t1="Oxnadalshreppur" t2="Nyjabaejarafrettur"/>
+    <connection t1="Oxnadalshreppur" t2="Saurbaejarhreppur"/>
+    <connection t1="Oxnadalshreppur" t2="Silfrastadaafrettur"/>
+    <connection t1="Oxnadalshreppur" t2="Hrafnagilshreppur"/>
+    <connection t1="Oxnadalshreppur" t2="Glaesibaejarhreppur"/>
+    <connection t1="Grytubakkahreppur" t2="Svalbardsstrandarhreppur"/>
+    <connection t1="Grytubakkahreppur" t2="SZ21 Eyjafjordur"/>
+    <connection t1="Prestholahreppur" t2="Aerlaekjarheppur"/>
+    <connection t1="Svalbardsstrandarhreppur" t2="SZ21 Eyjafjordur"/>
+    <connection t1="Glaesibaejarhreppur" t2="Hrafnagilshreppur"/>
+    <connection t1="Grimsnesafrettur" t2="Langjokull"/>
+    <connection t1="Grimsnesafrettur" t2="Oddstadaafrett"/>
+    <connection t1="Grimsnesafrettur" t2="Laugardalsafrettur"/>
+    <connection t1="Grimsnesafrettur" t2="Laugardalshreppur"/>
+    <connection t1="Grimsnesafrettur" t2="Asasveit"/>
+    <connection t1="Grimsnesafrettur" t2="Thorisjokull"/>
+    <connection t1="Grimsnesafrettur" t2="Thingvallahreppur"/>
+    <connection t1="Biskupstungnahreppur" t2="Langjokull"/>
+    <connection t1="Biskupstungnahreppur" t2="Grimsneshreppur"/>
+    <connection t1="Biskupstungnahreppur" t2="Hrunamannahreppur"/>
+    <connection t1="Biskupstungnahreppur" t2="Biskupstungnaafrettur"/>
+    <connection t1="Biskupstungnahreppur" t2="Laugardalsafrettur"/>
+    <connection t1="Biskupstungnahreppur" t2="Hrunamannaafrettur"/>
+    <connection t1="Biskupstungnahreppur" t2="Laugardalshreppur"/>
+    <connection t1="Biskupstungnahreppur" t2="Skeidahreppur"/>
+    <connection t1="Gnupverjahreppur" t2="Landmannaafrettur"/>
+    <connection t1="Gnupverjahreppur" t2="Floa- og Skeidamannaafr"/>
+    <connection t1="Gnupverjahreppur" t2="Gnupverjaafrettur"/>
+    <connection t1="Gnupverjahreppur" t2="Hrunamannahreppur"/>
+    <connection t1="Gnupverjahreppur" t2="Holtamannahreppur"/>
+    <connection t1="Gnupverjahreppur" t2="Skeidahreppur"/>
+    <connection t1="Gnupverjahreppur" t2="Landmannahreppur"/>
+    <connection t1="Kaldnesingahreppur" t2="Olfushreppur"/>
+    <connection t1="Kaldnesingahreppur" t2="Stokkseyrarhreppur"/>
+    <connection t1="Kaldnesingahreppur" t2="Hraungerdishreppur"/>
+    <connection t1="Kaldnesingahreppur" t2="Gaulverjahreppur"/>
+    <connection t1="Grimsneshreppur" t2="Olfushreppur"/>
+    <connection t1="Grimsneshreppur" t2="Hraungerdishreppur"/>
+    <connection t1="Grimsneshreppur" t2="Laugardalshreppur"/>
+    <connection t1="Grimsneshreppur" t2="Grafningshreppur"/>
+    <connection t1="Grimsneshreppur" t2="Thingvallahreppur"/>
+    <connection t1="Grimsneshreppur" t2="Skeidahreppur"/>
+    <connection t1="Olfushreppur" t2="Stokkseyrarhreppur"/>
+    <connection t1="Olfushreppur" t2="SZ36 Eyrarbakkabugur"/>
+    <connection t1="Olfushreppur" t2="Hraungerdishreppur"/>
+    <connection t1="Olfushreppur" t2="Selvogshreppur"/>
+    <connection t1="Olfushreppur" t2="Grafningshreppur"/>
+    <connection t1="Floa- og Skeidamannaafr" t2="Gnupverjaafrettur"/>
+    <connection t1="Floa- og Skeidamannaafr" t2="Hrunamannahreppur"/>
+    <connection t1="Floa- og Skeidamannaafr" t2="Hrunamannaafrettur"/>
+    <connection t1="Gnupverjaafrettur" t2="Nyjabaejarafrettur"/>
+    <connection t1="Hrunamannahreppur" t2="Hrunamannaafrettur"/>
+    <connection t1="Hrunamannahreppur" t2="Skeidahreppur"/>
+    <connection t1="Biskupstungnaafrettur" t2="Hrunamannaafrettur"/>
+    <connection t1="Biskupstungnaafrettur" t2="Audkuluheidi"/>
+    <connection t1="Stokkseyrarhreppur" t2="SZ36 Eyrarbakkabugur"/>
+    <connection t1="Stokkseyrarhreppur" t2="Gaulverjahreppur"/>
+    <connection t1="Hraungerdishreppur" t2="Gaulverjahreppur"/>
+    <connection t1="Hraungerdishreppur" t2="Villingaholtshreppur"/>
+    <connection t1="Hraungerdishreppur" t2="Skeidahreppur"/>
+    <connection t1="Laugardalsafrettur" t2="Laugardalshreppur"/>
+    <connection t1="Gaulverjahreppur" t2="Villingaholtshreppur"/>
+    <connection t1="Villingaholtshreppur" t2="Skeidahreppur"/>
+    <connection t1="Selvogshreppur" t2="Grindavikurhreppur"/>
+    <connection t1="Grafningshreppur" t2="Thingvallahreppur"/>
+    <connection t1="Sidumannaafrettur" t2="Fljotshverfi, afrettur"/>
+    <connection t1="Sidumannaafrettur" t2="Skaftartunga"/>
+    <connection t1="Sidumannaafrettur" t2="Vatnajokull"/>
+    <connection t1="Sidumannaafrettur" t2="Kleifahreppur"/>
+    <connection t1="Sidumannaafrettur" t2="Skaftartunguafrettur"/>
+    <connection t1="Fljotshverfi, afrettur" t2="Vatnajokull"/>
+    <connection t1="Fljotshverfi, afrettur" t2="Kleifahreppur"/>
+    <connection t1="Holtahreppur" t2="SZ30 Stokknesgrunn"/>
+    <connection t1="Holtahreppur" t2="Vatnajokull"/>
+    <connection t1="Holtahreppur" t2="Sudursveit"/>
+    <connection t1="Holtahreppur" t2="Alftafjardarhreppur"/>
+    <connection t1="Litlaherad" t2="Vatnajokull"/>
+    <connection t1="Litlaherad" t2="Sudursveit"/>
+    <connection t1="Litlaherad" t2="Kleifahreppur"/>
+    <connection t1="Skaftartunga" t2="Alftaver"/>
+    <connection t1="Skaftartunga" t2="Kleifahreppur"/>
+    <connection t1="Skaftartunga" t2="Alftaversafrettur"/>
+    <connection t1="Skaftartunga" t2="Skaftartunguafrettur"/>
+    <connection t1="Skaftartunga" t2="Leidvallarhreppur"/>
+    <connection t1="Dyrholahreppur" t2="Alftaver"/>
+    <connection t1="Dyrholahreppur" t2="Austur-Eyjafjallahreppur"/>
+    <connection t1="Dyrholahreppur" t2="SZ34 Kotlugrunn"/>
+    <connection t1="Dyrholahreppur" t2="Myrdalsjokull"/>
+    <connection t1="Alftaver" t2="Alftaversafrettur"/>
+    <connection t1="Alftaver" t2="SZ34 Kotlugrunn"/>
+    <connection t1="Alftaver" t2="Myrdalsjokull"/>
+    <connection t1="Alftaver" t2="Leidvallarhreppur"/>
+    <connection t1="Kleifahreppur" t2="Leidvallarhreppur"/>
+    <connection t1="Alftaversafrettur" t2="Skaftartunguafrettur"/>
+    <connection t1="Alftaversafrettur" t2="Rangarvallaafrettur"/>
+    <connection t1="Alftaversafrettur" t2="Myrdalsjokull"/>
+    <connection t1="Thverarhreppur" t2="Thorkelsholshreppur"/>
+    <connection t1="Thverarhreppur" t2="Sveinsstadahreppur"/>
+    <connection t1="Thverarhreppur" t2="SZ17 Hunafloi"/>
+    <connection t1="Thverarhreppur" t2="Vatnsneshreppur"/>
+    <connection t1="Neshreppur" t2="Eyrarsveit"/>
+    <connection t1="Neshreppur" t2="SZ06 Nesbrun"/>
+    <connection t1="Neshreppur" t2="Stadarsveit"/>
+    <connection t1="Neshreppur" t2="Breiduvikurhreppur"/>
+    <connection t1="Neshreppur" t2="Snaefellsjokull"/>
+    <connection t1="Torfustadahreppur" t2="Thorkelsholshreppur"/>
+    <connection t1="Torfustadahreppur" t2="SZ16 Hunafloi"/>
+    <connection t1="Torfustadahreppur" t2="Vididalstunguheidi"/>
+    <connection t1="Torfustadahreppur" t2="Stadarhreppur"/>
+    <connection t1="Torfustadahreppur" t2="Afrettur Midfirdinga"/>
+    <connection t1="Torfustadahreppur" t2="Vatnsneshreppur"/>
+    <connection t1="Nordurardalshreppur" t2="Stafholtstungnahreppur"/>
+    <connection t1="Nordurardalshreppur" t2="Thverarhlidarhreppur"/>
+    <connection t1="Nordurardalshreppur" t2="Hordudalshreppur"/>
+    <connection t1="Nordurardalshreppur" t2="Middalahreppur"/>
+    <connection t1="Nordurardalshreppur" t2="Thverarrett"/>
+    <connection t1="Nordurardalshreppur" t2="Borgarhreppur"/>
+    <connection t1="Nordurardalshreppur" t2="Hrutafjardarhreppur"/>
+    <connection t1="Miklaholtshreppur" t2="SZ04 Faxafloi"/>
+    <connection t1="Miklaholtshreppur" t2="Stadarsveit"/>
+    <connection t1="Miklaholtshreppur" t2="Skogarstrandarhreppur"/>
+    <connection t1="Miklaholtshreppur" t2="Helgafellssveit"/>
+    <connection t1="Miklaholtshreppur" t2="Eyjahreppur"/>
+    <connection t1="Mela- Leirarsveit" t2="Skilmanna- og Akraneshreppur"/>
+    <connection t1="Mela- Leirarsveit" t2="Andakilshreppur"/>
+    <connection t1="Mela- Leirarsveit" t2="Hvalfjardarstrandarhreppur"/>
+    <connection t1="Mela- Leirarsveit" t2="SZ03 Faxafloi"/>
+    <connection t1="Mela- Leirarsveit" t2="Skorradalshreppur"/>
+    <connection t1="Kalmanstunga" t2="Arnarvatnsheidi"/>
+    <connection t1="Kalmanstunga" t2="Geitland"/>
+    <connection t1="Kalmanstunga" t2="Hvitarsiduhreppur"/>
+    <connection t1="Kalmanstunga" t2="Eiriksjokull"/>
+    <connection t1="Eyrarsveit" t2="SZ06 Nesbrun"/>
+    <connection t1="Eyrarsveit" t2="Stadarsveit"/>
+    <connection t1="Eyrarsveit" t2="Helgafellssveit"/>
+    <connection t1="Eyrarsveit" t2="SZ07 Breidafjordur"/>
+    <connection t1="Alftaneshreppur" t2="Seltjarnarneshreppur"/>
+    <connection t1="Alftaneshreppur" t2="Vatnsleysustrandarhreppur"/>
+    <connection t1="Alftaneshreppur" t2="SZ02 Faxafloi"/>
+    <connection t1="Alftaneshreppur" t2="Selvogshreppur"/>
+    <connection t1="Alftaneshreppur" t2="Grindavikurhreppur"/>
+    <connection t1="Oddstadaafrett" t2="Reykholtsdalshreppur"/>
+    <connection t1="Oddstadaafrett" t2="Ok"/>
+    <connection t1="Oddstadaafrett" t2="Asasveit"/>
+    <connection t1="Oddstadaafrett" t2="Lundarreykjadalshreppur"/>
+    <connection t1="Oddstadaafrett" t2="Thingvallahreppur"/>
+    <connection t1="Stafholtstungnahreppur" t2="Thverarhlidarhreppur"/>
+    <connection t1="Stafholtstungnahreppur" t2="Reykholtsdalshreppur"/>
+    <connection t1="Stafholtstungnahreppur" t2="Andakilshreppur"/>
+    <connection t1="Stafholtstungnahreppur" t2="Borgarhreppur"/>
+    <connection t1="Stafholtstungnahreppur" t2="Hvitarsiduhreppur"/>
+    <connection t1="Arnarvatnsheidi" t2="Vididalstunguheidi"/>
+    <connection t1="Arnarvatnsheidi" t2="Grimstunguheidi"/>
+    <connection t1="Arnarvatnsheidi" t2="Afrettur Midfirdinga"/>
+    <connection t1="Arnarvatnsheidi" t2="Thverarrett"/>
+    <connection t1="Arnarvatnsheidi" t2="Hvitarsiduhreppur"/>
+    <connection t1="Arnarvatnsheidi" t2="Audkuluheidi"/>
+    <connection t1="Thverarhlidarhreppur" t2="Thverarrett"/>
+    <connection t1="Thverarhlidarhreppur" t2="Hvitarsiduhreppur"/>
+    <connection t1="Reykholtsdalshreppur" t2="Andakilshreppur"/>
+    <connection t1="Reykholtsdalshreppur" t2="Asasveit"/>
+    <connection t1="Reykholtsdalshreppur" t2="Lundarreykjadalshreppur"/>
+    <connection t1="Reykholtsdalshreppur" t2="Hvitarsiduhreppur"/>
+    <connection t1="Thorkelsholshreppur" t2="Sveinsstadahreppur"/>
+    <connection t1="Thorkelsholshreppur" t2="Ashreppur"/>
+    <connection t1="Thorkelsholshreppur" t2="Vididalstunguheidi"/>
+    <connection t1="Thorkelsholshreppur" t2="Grimstunguheidi"/>
+    <connection t1="Thorkelsholshreppur" t2="Vatnsneshreppur"/>
+    <connection t1="Skilmanna- og Akraneshreppur" t2="Hvalfjardarstrandarhreppur"/>
+    <connection t1="Skilmanna- og Akraneshreppur" t2="SZ02 Faxafloi"/>
+    <connection t1="Skilmanna- og Akraneshreppur" t2="SZ03 Faxafloi"/>
+    <connection t1="Vatnsleysustrandarhreppur" t2="Hafnahreppur"/>
+    <connection t1="Vatnsleysustrandarhreppur" t2="SZ02 Faxafloi"/>
+    <connection t1="Vatnsleysustrandarhreppur" t2="Grindavikurhreppur"/>
+    <connection t1="Geitland" t2="Asasveit"/>
+    <connection t1="Geitland" t2="Hvitarsiduhreppur"/>
+    <connection t1="Geitland" t2="Eiriksjokull"/>
+    <connection t1="Andakilshreppur" t2="SZ03 Faxafloi"/>
+    <connection t1="Andakilshreppur" t2="Lundarreykjadalshreppur"/>
+    <connection t1="Andakilshreppur" t2="Borgarhreppur"/>
+    <connection t1="Andakilshreppur" t2="Skorradalshreppur"/>
+    <connection t1="Hafnahreppur" t2="SZ02 Faxafloi"/>
+    <connection t1="Hafnahreppur" t2="Rosmhvalaneshreppur"/>
+    <connection t1="Hafnahreppur" t2="Grindavikurhreppur"/>
+    <connection t1="Stadarsveit" t2="Helgafellssveit"/>
+    <connection t1="Stadarsveit" t2="Breiduvikurhreppur"/>
+    <connection t1="Vididalstunguheidi" t2="Grimstunguheidi"/>
+    <connection t1="Vididalstunguheidi" t2="Afrettur Midfirdinga"/>
+    <connection t1="Stadarhreppur" t2="Afrettur Midfirdinga"/>
+    <connection t1="Stadarhreppur" t2="Thverarrett"/>
+    <connection t1="Stadarhreppur" t2="Hrutafjardarhreppur"/>
+    <connection t1="Hvalfjardarstrandarhreppur" t2="SZ02 Faxafloi"/>
+    <connection t1="Hvalfjardarstrandarhreppur" t2="Lundarreykjadalshreppur"/>
+    <connection t1="Hvalfjardarstrandarhreppur" t2="Kjosarhreppur"/>
+    <connection t1="Hvalfjardarstrandarhreppur" t2="Skorradalshreppur"/>
+    <connection t1="Hvalfjardarstrandarhreppur" t2="Thingvallahreppur"/>
+    <connection t1="Afrettur Midfirdinga" t2="Thverarrett"/>
+    <connection t1="Skogarstrandarhreppur" t2="Helgafellssveit"/>
+    <connection t1="Skogarstrandarhreppur" t2="Eyjahreppur"/>
+    <connection t1="Skogarstrandarhreppur" t2="SZ07 Breidafjordur"/>
+    <connection t1="Thverarrett" t2="Hrutafjardarhreppur"/>
+    <connection t1="Thverarrett" t2="Hvitarsiduhreppur"/>
+    <connection t1="Hraunhreppur" t2="Alftaneshreppur i Myrum"/>
+    <connection t1="Hraunhreppur" t2="SZ03 Faxafloi"/>
+    <connection t1="Hraunhreppur" t2="Borgarhreppur"/>
+    <connection t1="Alftaneshreppur i Myrum" t2="SZ03 Faxafloi"/>
+    <connection t1="Alftaneshreppur i Myrum" t2="Borgarhreppur"/>
+    <connection t1="Krysuvik" t2="Grindavikurhreppur"/>
+    <connection t1="Asasveit" t2="Thorisjokull"/>
+    <connection t1="Asasveit" t2="Hvitarsiduhreppur"/>
+    <connection t1="Lundarreykjadalshreppur" t2="Skorradalshreppur"/>
+    <connection t1="Lundarreykjadalshreppur" t2="Thingvallahreppur"/>
+    <connection t1="Hrutafjardarhreppur" t2="Broddaneshreppur"/>
+    <connection t1="Helgafellssveit" t2="SZ07 Breidafjordur"/>
+    <connection t1="Broddaneshreppur" t2="Trollatunguhreppur"/>
+    <connection t1="Breiduvikurhreppur" t2="Snaefellsjokull"/>
+    <connection t1="Hrofbergshreppur" t2="Kaldrananeshreppur"/>
+    <connection t1="Hrofbergshreppur" t2="Langadalsstrond"/>
+    <connection t1="Hrofbergshreppur" t2="SZ16 Hunafloi"/>
+    <connection t1="Hrofbergshreppur" t2="Trekyllisvikurhreppur"/>
+    <connection t1="Hrofbergshreppur" t2="Kroksfjardarhreppur"/>
+    <connection t1="Hrofbergshreppur" t2="Trollatunguhreppur"/>
+    <connection t1="Kaldrananeshreppur" t2="SZ16 Hunafloi"/>
+    <connection t1="Kaldrananeshreppur" t2="Trekyllisvikurhreppur"/>
+    <connection t1="Langadalsstrond" t2="Skalmarnesmulahreppur"/>
+    <connection t1="Langadalsstrond" t2="Drangajokull"/>
+    <connection t1="Langadalsstrond" t2="Trekyllisvikurhreppur"/>
+    <connection t1="Langadalsstrond" t2="Vatnsfjardarsveit"/>
+    <connection t1="Langadalsstrond" t2="Kroksfjardarhreppur"/>
+    <connection t1="Langadalsstrond" t2="Snaefjallastrandarhreppur"/>
+    <connection t1="Langadalsstrond" t2="Gufudalshreppur"/>
+    <connection t1="Trekyllisvikurhreppur" t2="SZ15 Strandabrekar"/>
+    <connection t1="Trekyllisvikurhreppur" t2="Grunnavikursveit"/>
+    <connection t1="Skutulsfjardarhreppur" t2="Onundarfjardarhreppur"/>
+    <connection t1="Skutulsfjardarhreppur" t2="Sudavikurhreppur"/>
+    <connection t1="Skutulsfjardarhreppur" t2="Holshreppur"/>
+    <connection t1="Sudavikurhreppur" t2="Ogurhreppur"/>
+    <connection t1="Slettuhreppur" t2="Grunnavikursveit"/>
+    <connection t1="Vatnsfjardarsveit" t2="Ogurhreppur"/>
+    <connection t1="Ogurhreppur" t2="Arnarfjardarhreppur"/>
+    <connection t1="Snaefjallastrandarhreppur" t2="Grunnavikursveit"/>
+    <connection t1="Lodmundarfjardarhreppur" t2="Vallnahreppur"/>
+    <connection t1="Lodmundarfjardarhreppur" t2="Borgarfjardarhreppur"/>
+    <connection t1="Lodmundarfjardarhreppur" t2="Seydisfjardarhreppur"/>
+    <connection t1="Reydarfjardarhreppur" t2="Breiddalshreppur"/>
+    <connection t1="Reydarfjardarhreppur" t2="Nordfjardarhreppur"/>
+    <connection t1="Reydarfjardarhreppur" t2="Vallnahreppur"/>
+    <connection t1="Reydarfjardarhreppur" t2="Skriddalshreppur"/>
+    <connection t1="Reydarfjardarhreppur" t2="Faskrudsfjardarhreppur"/>
+    <connection t1="Breiddalshreppur" t2="SZ29 Breiddalsgrunn"/>
+    <connection t1="Breiddalshreppur" t2="Beruneshreppur"/>
+    <connection t1="Breiddalshreppur" t2="Skriddalshreppur"/>
+    <connection t1="Breiddalshreppur" t2="Faskrudsfjardarhreppur"/>
+    <connection t1="Mjoafjardarhreppur" t2="Nordfjardarhreppur"/>
+    <connection t1="Mjoafjardarhreppur" t2="Vallnahreppur"/>
+    <connection t1="Mjoafjardarhreppur" t2="Seydisfjardarhreppur"/>
+    <connection t1="Nordfjardarhreppur" t2="Vallnahreppur"/>
+    <connection t1="Fellahreppur" t2="Vallnahreppur"/>
+    <connection t1="Fellahreppur" t2="Fljotsdalshreppur"/>
+    <connection t1="Fellahreppur" t2="Jokuldalshreppur"/>
+    <connection t1="Fellahreppur" t2="Tunguhreppur"/>
+    <connection t1="Vallnahreppur" t2="Fljotsdalshreppur"/>
+    <connection t1="Vallnahreppur" t2="Skriddalshreppur"/>
+    <connection t1="Vallnahreppur" t2="Tunguhreppur"/>
+    <connection t1="Vallnahreppur" t2="Seydisfjardarhreppur"/>
+    <connection t1="Muli, Sudurfell" t2="Fljotsdalsheidi"/>
+    <connection t1="Muli, Sudurfell" t2="Holtahreppur"/>
+    <connection t1="Muli, Sudurfell" t2="Fljotsdalshreppur"/>
+    <connection t1="Muli, Sudurfell" t2="Vatnajokull"/>
+    <connection t1="Muli, Sudurfell" t2="Alftafjardarhreppur"/>
+    <connection t1="Fljotsdalsheidi" t2="Fljotsdalshreppur"/>
+    <connection t1="Fljotsdalsheidi" t2="Jokuldalsheidi"/>
+    <connection t1="Fljotsdalsheidi" t2="Vesturoraefi"/>
+    <connection t1="Fljotsdalsheidi" t2="Jokuldalshreppur"/>
+    <connection t1="Fljotsdalsheidi" t2="Vatnajokull"/>
+    <connection t1="Fljotsdalsheidi" t2="Bruaroraefi"/>
+    <connection t1="Krepputunga" t2="Modrudalsoraefi"/>
+    <connection t1="Krepputunga" t2="Vatnajokull"/>
+    <connection t1="Krepputunga" t2="Bruaroraefi"/>
+    <connection t1="Krepputunga" t2="Odadahraun"/>
+    <connection t1="Vallnahreppur" t2="Borgarfjardarhreppur"/>
+    <connection t1="Fljotsdalshreppur" t2="Jokuldalshreppur"/>
+    <connection t1="Fljotsdalshreppur" t2="Skriddalshreppur"/>
+    <connection t1="Fljotsdalshreppur" t2="Alftafjardarhreppur"/>
+    <connection t1="Skeggjastadahreppur" t2="Vopnafjardarhreppur"/>
+    <connection t1="Jokuldalsheidi" t2="Modrudalsoraefi"/>
+    <connection t1="Jokuldalsheidi" t2="Hofteigsheidi"/>
+    <connection t1="Jokuldalsheidi" t2="Jokuldalshreppur"/>
+    <connection t1="Jokuldalsheidi" t2="Bruaroraefi"/>
+    <connection t1="Jokuldalsheidi" t2="Vopnafjardarhreppur"/>
+    <connection t1="Beruneshreppur" t2="Skriddalshreppur"/>
+    <connection t1="Beruneshreppur" t2="Alftafjardarhreppur"/>
+    <connection t1="Vesturoraefi" t2="Vatnajokull"/>
+    <connection t1="Vesturoraefi" t2="Bruaroraefi"/>
+    <connection t1="Modrudalsoraefi" t2="Bruaroraefi"/>
+    <connection t1="Modrudalsoraefi" t2="Vopnafjardarhreppur"/>
+    <connection t1="Modrudalsoraefi" t2="Odadahraun"/>
+    <connection t1="Hofteigsheidi" t2="Jokuldalshreppur"/>
+    <connection t1="Hofteigsheidi" t2="Vopnafjardarhreppur"/>
+    <connection t1="Jokuldalshreppur" t2="Vopnafjardarhreppur"/>
+    <connection t1="Jokuldalshreppur" t2="Tunguhreppur"/>
+    <connection t1="Skriddalshreppur" t2="Alftafjardarhreppur"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="Lodmundarfjardarhreppur"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="Reydarfjardarhreppur"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="Mjoafjardarhreppur"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="Nordfjardarhreppur"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="SZ29 Breiddalsgrunn"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="SZ27 Heradsfloi"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="Borgarfjardarhreppur"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="Seydisfjardarhreppur"/>
+    <connection t1="SZ28 Gerpisgrunn" t2="Faskrudsfjardarhreppur"/>
+    <connection t1="SZ38 Grindavikurdjup" t2="SZ39 Eldeyjarbanki"/>
+    <connection t1="SZ38 Grindavikurdjup" t2="SZ36 Eyrarbakkabugur"/>
+    <connection t1="SZ38 Grindavikurdjup" t2="Krysuvik"/>
+    <connection t1="SZ38 Grindavikurdjup" t2="SZ37 Selvogsbanki"/>
+    <connection t1="SZ38 Grindavikurdjup" t2="Selvogshreppur"/>
+    <connection t1="SZ38 Grindavikurdjup" t2="Grindavikurhreppur"/>
+    <connection t1="SZ33 Sidugrunn" t2="SZ32 Oraefagrunn"/>
+    <connection t1="SZ33 Sidugrunn" t2="Litlaherad"/>
+    <connection t1="SZ33 Sidugrunn" t2="Kleifahreppur"/>
+    <connection t1="SZ33 Sidugrunn" t2="SZ34 Kotlugrunn"/>
+    <connection t1="SZ33 Sidugrunn" t2="Leidvallarhreppur"/>
+    <connection t1="SZ31 Myragrunn" t2="Holtahreppur"/>
+    <connection t1="SZ31 Myragrunn" t2="SZ30 Stokknesgrunn"/>
+    <connection t1="SZ31 Myragrunn" t2="Sudursveit"/>
+    <connection t1="Tindafjallajokull" t2="Fljotshlidarhreppur"/>
+    <connection t1="Tindafjallajokull" t2="Afrettur Fljotshlidinga"/>
+    <connection t1="Tindafjallajokull" t2="Rangarvallaafrettur"/>
+    <connection t1="SZ39 Eldeyjarbanki" t2="Hafnahreppur"/>
+    <connection t1="SZ39 Eldeyjarbanki" t2="Rosmhvalaneshreppur"/>
+    <connection t1="SZ39 Eldeyjarbanki" t2="Grindavikurhreppur"/>
+    <connection t1="SZ39 Eldeyjarbanki" t2="SZ01 Faxafloi"/>
+    <connection t1="Hofsjokull" t2="A-Eyvindarstadaheidi"/>
+    <connection t1="Hofsjokull" t2="V-Eyvindarstadaheidi"/>
+    <connection t1="Hofsjokull" t2="Floa- og Skeidamannaafr"/>
+    <connection t1="Hofsjokull" t2="Gnupverjaafrettur"/>
+    <connection t1="Hofsjokull" t2="Biskupstungnaafrettur"/>
+    <connection t1="Hofsjokull" t2="Hrunamannaafrettur"/>
+    <connection t1="Hofsjokull" t2="Hofsafrett"/>
+    <connection t1="Hofsjokull" t2="Nyjabaejarafrettur"/>
+    <connection t1="Kjalarneshreppur" t2="Mosfellssveit"/>
+    <connection t1="Kjalarneshreppur" t2="SZ02 Faxafloi"/>
+    <connection t1="Kjalarneshreppur" t2="Kjosarhreppur"/>
+    <connection t1="Kjalarneshreppur" t2="Thingvallahreppur"/>
+    <connection t1="SZ05 Driftvikurgrunn" t2="SZ04 Faxafloi"/>
+    <connection t1="SZ05 Driftvikurgrunn" t2="SZ01 Faxafloi"/>
+    <connection t1="SZ05 Driftvikurgrunn" t2="SZ06 Nesbrun"/>
+    <connection t1="SZ05 Driftvikurgrunn" t2="SZ03 Faxafloi"/>
+    <connection t1="SZ05 Driftvikurgrunn" t2="Breiduvikurhreppur"/>
+    <connection t1="SZ29 Breiddalsgrunn" t2="Holtahreppur"/>
+    <connection t1="SZ29 Breiddalsgrunn" t2="SZ30 Stokknesgrunn"/>
+    <connection t1="SZ29 Breiddalsgrunn" t2="Beruneshreppur"/>
+    <connection t1="SZ29 Breiddalsgrunn" t2="Alftafjardarhreppur"/>
+    <connection t1="SZ29 Breiddalsgrunn" t2="Faskrudsfjardarhreppur"/>
+    <connection t1="SZ10 Latrarost" t2="Raudasandshreppur"/>
+    <connection t1="SZ10 Latrarost" t2="SZ11 Kopanesgrunn"/>
+    <connection t1="SZ10 Latrarost" t2="SZ06 Nesbrun"/>
+    <connection t1="SZ10 Latrarost" t2="Talknafjardarhreppur"/>
+    <connection t1="SZ10 Latrarost" t2="SZ09 Breidafjordur"/>
+    <connection t1="SZ10 Latrarost" t2="Bardastrandarhreppur"/>
+    <connection t1="SZ10 Latrarost" t2="Dalasveit"/>
+    <connection t1="SZ26 Bakkafloi" t2="SZ27 Heradsfloi"/>
+    <connection t1="SZ26 Bakkafloi" t2="Saudaneshreppur"/>
+    <connection t1="SZ26 Bakkafloi" t2="Skeggjastadahreppur"/>
+    <connection t1="SZ26 Bakkafloi" t2="SZ25 Thistilfjordur"/>
+    <connection t1="Eyjafjallajokull" t2="Vestur-Eyjafjallahreppur"/>
+    <connection t1="Eyjafjallajokull" t2="Austur-Eyjafjallahreppur"/>
+    <connection t1="Eyjafjallajokull" t2="Thorsmork"/>
+    <connection t1="Langjokull" t2="Kalmanstunga"/>
+    <connection t1="Langjokull" t2="Arnarvatnsheidi"/>
+    <connection t1="Langjokull" t2="Biskupstungnaafrettur"/>
+    <connection t1="Langjokull" t2="Geitland"/>
+    <connection t1="Langjokull" t2="Laugardalsafrettur"/>
+    <connection t1="Langjokull" t2="Asasveit"/>
+    <connection t1="Langjokull" t2="Audkuluheidi"/>
+    <connection t1="SZ13 Isafjardardjup" t2="SZ12 Bardagrunn"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Langadalsstrond"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Skutulsfjardarhreppur"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Sudavikurhreppur"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Slettuhreppur"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Vatnsfjardarsveit"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Holshreppur"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Ogurhreppur"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Snaefjallastrandarhreppur"/>
+    <connection t1="SZ13 Isafjardardjup" t2="Grunnavikursveit"/>
+    <connection t1="Mosfellssveit" t2="Seltjarnarneshreppur"/>
+    <connection t1="Mosfellssveit" t2="Olfushreppur"/>
+    <connection t1="Mosfellssveit" t2="SZ02 Faxafloi"/>
+    <connection t1="Mosfellssveit" t2="Grafningshreppur"/>
+    <connection t1="Mosfellssveit" t2="Thingvallahreppur"/>
+    <connection t1="SZ23 Skjalfandafloi" t2="SZ22 Grimseyjarsund"/>
+    <connection t1="SZ23 Skjalfandafloi" t2="Flateyjardalsheidi"/>
+    <connection t1="SZ23 Skjalfandafloi" t2="Tjorneshreppur"/>
+    <connection t1="SZ23 Skjalfandafloi" t2="Helgastadahreppur"/>
+    <connection t1="SZ23 Skjalfandafloi" t2="Grytubakkahreppur"/>
+    <connection t1="SZ23 Skjalfandafloi" t2="SZ21 Eyjafjordur"/>
+    <connection t1="SZ23 Skjalfandafloi" t2="SZ24 Oxarfjordur"/>
+    <connection t1="SZ27 Heradsfloi" t2="Vallnahreppur"/>
+    <connection t1="SZ27 Heradsfloi" t2="Skeggjastadahreppur"/>
+    <connection t1="SZ27 Heradsfloi" t2="Jokuldalshreppur"/>
+    <connection t1="SZ27 Heradsfloi" t2="Vopnafjardarhreppur"/>
+    <connection t1="SZ27 Heradsfloi" t2="Borgarfjardarhreppur"/>
+    <connection t1="SZ27 Heradsfloi" t2="Tunguhreppur"/>
+    <connection t1="SZ12 Bardagrunn" t2="SZ14 Horngrunn"/>
+    <connection t1="SZ12 Bardagrunn" t2="SZ11 Kopanesgrunn"/>
+    <connection t1="SZ12 Bardagrunn" t2="Slettuhreppur"/>
+    <connection t1="SZ12 Bardagrunn" t2="Holshreppur"/>
+    <connection t1="SZ14 Horngrunn" t2="Slettuhreppur"/>
+    <connection t1="SZ14 Horngrunn" t2="SZ15 Strandabrekar"/>
+    <connection t1="SZ14 Horngrunn" t2="Grunnavikursveit"/>
+    <connection t1="SZ22 Grimseyjarsund" t2="SZ24 Oxarfjordur"/>
+    <connection t1="SZ22 Grimseyjarsund" t2="SZ20 Siglunesgrunn"/>
+    <connection t1="SZ22 Grimseyjarsund" t2="SZ21 Eyjafjordur"/>
+    <connection t1="SZ22 Grimseyjarsund" t2="Grimsey"/>
+    <connection t1="SZ24 Oxarfjordur" t2="Tjorneshreppur"/>
+    <connection t1="SZ24 Oxarfjordur" t2="SZ25 Thistilfjordur"/>
+    <connection t1="SZ24 Oxarfjordur" t2="Prestholahreppur"/>
+    <connection t1="SZ24 Oxarfjordur" t2="Aerlaekjarheppur"/>
+    <connection t1="Torfajokull" t2="Skaftartunguafrettur"/>
+    <connection t1="Torfajokull" t2="Rangarvallaafrettur"/>
+    <connection t1="Kolbeinsstadahreppur" t2="SZ04 Faxafloi"/>
+    <connection t1="Kolbeinsstadahreppur" t2="Hordudalshreppur"/>
+    <connection t1="Kolbeinsstadahreppur" t2="Skogarstrandarhreppur"/>
+    <connection t1="Kolbeinsstadahreppur" t2="Hraunhreppur"/>
+    <connection t1="Kolbeinsstadahreppur" t2="Eyjahreppur"/>
+    <connection t1="Seltjarnarneshreppur" t2="Olfushreppur"/>
+    <connection t1="Seltjarnarneshreppur" t2="SZ02 Faxafloi"/>
+    <connection t1="Seltjarnarneshreppur" t2="Selvogshreppur"/>
+    <connection t1="SZ32 Oraefagrunn" t2="Litlaherad"/>
+    <connection t1="SZ32 Oraefagrunn" t2="Sudursveit"/>
+    <connection t1="SZ32 Oraefagrunn" t2="SZ31 Myragrunn"/>
+    <connection t1="SZ11 Kopanesgrunn" t2="Nordur-Dyrafjardarhreppur"/>
+    <connection t1="SZ11 Kopanesgrunn" t2="Onundarfjardarhreppur"/>
+    <connection t1="SZ11 Kopanesgrunn" t2="Holshreppur"/>
+    <connection t1="SZ11 Kopanesgrunn" t2="Vestur-Dyrafjardarhreppur"/>
+    <connection t1="SZ11 Kopanesgrunn" t2="Arnarfjardarhreppur"/>
+    <connection t1="SZ11 Kopanesgrunn" t2="Dalasveit"/>
+    <connection t1="SZ04 Faxafloi" t2="Stadarsveit"/>
+    <connection t1="SZ04 Faxafloi" t2="Hraunhreppur"/>
+    <connection t1="SZ04 Faxafloi" t2="Eyjahreppur"/>
+    <connection t1="SZ04 Faxafloi" t2="Breiduvikurhreppur"/>
+    <connection t1="Tungnafellsjokull" t2="Vesturafrettur Barddaela"/>
+    <connection t1="SZ01 Faxafloi" t2="SZ02 Faxafloi"/>
+    <connection t1="SZ01 Faxafloi" t2="Rosmhvalaneshreppur"/>
+    <connection t1="SZ01 Faxafloi" t2="SZ03 Faxafloi"/>
+    <connection t1="SZ18 Skagagrunn" t2="SZ17 Hunafloi"/>
+    <connection t1="SZ18 Skagagrunn" t2="SZ20 Siglunesgrunn"/>
+    <connection t1="SZ18 Skagagrunn" t2="SZ19 Skagafjordur"/>
+    <connection t1="SZ18 Skagagrunn" t2="Skagahreppur"/>
+    <connection t1="SZ18 Skagagrunn" t2="SZ15 Strandabrekar"/>
+    <connection t1="SZ35 Eyjafjalladjup" t2="Vestur-Eyjafjallahreppur"/>
+    <connection t1="SZ35 Eyjafjalladjup" t2="Dyrholahreppur"/>
+    <connection t1="SZ35 Eyjafjalladjup" t2="SZ37 Selvogsbanki"/>
+    <connection t1="SZ35 Eyjafjalladjup" t2="Austur-Eyjafjallahreppur"/>
+    <connection t1="SZ35 Eyjafjalladjup" t2="SZ34 Kotlugrunn"/>
+    <connection t1="SZ16 Hunafloi" t2="Trekyllisvikurhreppur"/>
+    <connection t1="SZ16 Hunafloi" t2="Stadarhreppur"/>
+    <connection t1="SZ16 Hunafloi" t2="Hrutafjardarhreppur"/>
+    <connection t1="SZ16 Hunafloi" t2="Vatnsneshreppur"/>
+    <connection t1="SZ16 Hunafloi" t2="Broddaneshreppur"/>
+    <connection t1="SZ16 Hunafloi" t2="Trollatunguhreppur"/>
+    <connection t1="SZ16 Hunafloi" t2="SZ15 Strandabrekar"/>
+    <connection t1="SZ16 Hunafloi" t2="SZ17 Hunafloi"/>
+    <connection t1="SZ06 Nesbrun" t2="Breiduvikurhreppur"/>
+    <connection t1="SZ06 Nesbrun" t2="SZ07 Breidafjordur"/>
+    <connection t1="SZ06 Nesbrun" t2="SZ09 Breidafjordur"/>
+    <connection t1="SZ36 Eyrarbakkabugur" t2="Austur-Landeyjar"/>
+    <connection t1="SZ36 Eyrarbakkabugur" t2="Holtamannahreppur"/>
+    <connection t1="SZ36 Eyrarbakkabugur" t2="Gaulverjahreppur"/>
+    <connection t1="SZ36 Eyrarbakkabugur" t2="Selvogshreppur"/>
+    <connection t1="Drangajokull" t2="Trekyllisvikurhreppur"/>
+    <connection t1="Drangajokull" t2="Snaefjallastrandarhreppur"/>
+    <connection t1="Drangajokull" t2="Grunnavikursveit"/>
+    <connection t1="SZ17 Hunafloi" t2="Engihlidarhreppur"/>
+    <connection t1="SZ17 Hunafloi" t2="Skagahreppur"/>
+    <connection t1="SZ17 Hunafloi" t2="Vatnsneshreppur"/>
+    <connection t1="SZ17 Hunafloi" t2="SZ15 Strandabrekar"/>
+    <connection t1="Vatnajokull" t2="Bruaroraefi"/>
+    <connection t1="Vatnajokull" t2="Sudursveit"/>
+    <connection t1="Vatnajokull" t2="Kleifahreppur"/>
+    <connection t1="Vatnajokull" t2="Austurafrettur Barddaela"/>
+    <connection t1="Vatnajokull" t2="Skaftartunguafrettur"/>
+    <connection t1="Vatnajokull" t2="Odadahraun"/>
+    <connection t1="SZ02 Faxafloi" t2="Kjosarhreppur"/>
+    <connection t1="SZ02 Faxafloi" t2="Rosmhvalaneshreppur"/>
+    <connection t1="SZ02 Faxafloi" t2="SZ03 Faxafloi"/>
+    <connection t1="SZ20 Siglunesgrunn" t2="Sigluneshreppur"/>
+    <connection t1="SZ09 Breidafjordur" t2="Bardastrandarhreppur"/>
+    <connection t1="SZ09 Breidafjordur" t2="SZ08 Breidafjordur"/>
+    <connection t1="SZ25 Thistilfjordur" t2="Prestholahreppur"/>
+    <connection t1="SZ19 Skagafjordur" t2="Skagahreppur"/>
+    <connection t1="SZ19 Skagafjordur" t2="Saudarhreppur"/>
+    <connection t1="SZ19 Skagafjordur" t2="Hofdastrandarhreppur"/>
+    <connection t1="SZ19 Skagafjordur" t2="SZ20 Siglunesgrunn"/>
+    <connection t1="SZ03 Faxafloi" t2="Borgarhreppur"/>
+    <connection t1="SZ03 Faxafloi" t2="SZ04 Faxafloi"/>
+    <connection t1="SZ37 Selvogsbanki" t2="SZ36 Eyrarbakkabugur"/>
+    <connection t1="Ok" t2="Asasveit"/>
+    <connection t1="SZ34 Kotlugrunn" t2="Leidvallarhreppur"/>
+    <connection t1="Kjosarhreppur" t2="Thingvallahreppur"/>
+    <connection t1="SZ08 Breidafjordur" t2="Gufudalshreppur"/>
+    <connection t1="SZ08 Breidafjordur" t2="SZ07 Breidafjordur"/>
+    <connection t1="SZ21 Eyjafjordur" t2="Glaesibaejarhreppur"/>
+    <connection t1="SZ21 Eyjafjordur" t2="Hrafnagilshreppur"/>
+    <connection t1="SZ21 Eyjafjordur" t2="Svarfadardalshreppur"/>
+    <connection t1="SZ21 Eyjafjordur" t2="Sigluneshreppur"/>
+    <connection t1="SZ21 Eyjafjordur" t2="SZ20 Siglunesgrunn"/>
+    <connection t1="SZ07 Breidafjordur" t2="SZ09 Breidafjordur"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Oddaverjar" optional="false"/>
+    <player name="Asbirningar" optional="false"/>
+    <player name="Dala-Sturlungar" optional="false"/>
+    <player name="Nordur-Sturlungar" optional="false"/>
+    <player name="Haukdaelir" optional="false"/>
+    <player name="Skaftafells-Svinfellingar" optional="false"/>
+    <player name="Vestur-Sturlungar" optional="false"/>
+    <player name="Vatnsfirdingar" optional="false"/>
+    <player name="Mula-Svinfellingar" optional="false"/>
+    <alliance player="Oddaverjar" alliance="Sturlunga Alliance"/>
+    <alliance player="Asbirningar" alliance="District-States"/>
+    <alliance player="Dala-Sturlungar" alliance="Sturlunga Alliance"/>
+    <alliance player="Nordur-Sturlungar" alliance="Sturlunga Alliance"/>
+    <alliance player="Haukdaelir" alliance="District-States"/>
+    <alliance player="Skaftafells-Svinfellingar" alliance="District-States"/>
+    <alliance player="Vestur-Sturlungar" alliance="Sturlunga Alliance"/>
+    <alliance player="Vatnsfirdingar" alliance="District-States"/>
+    <alliance player="Mula-Svinfellingar" alliance="District-States"/>
+  </playerList>
+  <unitList>
+    <unit name="axeman"/>
+    <unit name="archer"/>
+    <unit name="horseman"/>
+    <unit name="spearman"/>
+    <unit name="swordman"/>
+    <unit name="rockthrower"/>
+    <unit name="skuta"/>
+    <unit name="knorr"/>
+    <unit name="longship"/>
+    <unit name="church"/>
+    <unit name="fortress"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <step name="AsbirningarBid" delegate="bid" player="Asbirningar" maxRunCount="1"/>
+      <step name="AsbirningarBidPlace" delegate="placeBid" player="Asbirningar" maxRunCount="1"/>
+      <step name="Nordur-SturlungarBid" delegate="bid" player="Nordur-Sturlungar" maxRunCount="1"/>
+      <step name="Nordur-SturlungarBidPlace" delegate="placeBid" player="Nordur-Sturlungar" maxRunCount="1"/>
+      <step name="HaukdaelirBid" delegate="bid" player="Haukdaelir" maxRunCount="1"/>
+      <step name="HaukdaelirBidPlace" delegate="placeBid" player="Haukdaelir" maxRunCount="1"/>
+      <step name="Vestur-SturlungarBid" delegate="bid" player="Vestur-Sturlungar" maxRunCount="1"/>
+      <step name="Vestur-SturlungarBidPlace" delegate="placeBid" player="Vestur-Sturlungar" maxRunCount="1"/>
+      <step name="Skaftafells-SvinfellingarBid" delegate="bid" player="Skaftafells-Svinfellingar" maxRunCount="1"/>
+      <step name="Skaftafells-SvinfellingarBidPlace" delegate="placeBid" player="Skaftafells-Svinfellingar" maxRunCount="1"/>
+      <step name="Mula-SvinfellingarBid" delegate="bid" player="Mula-Svinfellingar" maxRunCount="1"/>
+      <step name="Mula-SvinfellingarBidPlace" delegate="placeBid" player="Mula-Svinfellingar" maxRunCount="1"/>
+      <step name="OddaverjarBid" delegate="bid" player="Oddaverjar" maxRunCount="1"/>
+      <step name="OddaverjarBidPlace" delegate="placeBid" player="Oddaverjar" maxRunCount="1"/>
+      <step name="VatnsfirdingarBid" delegate="bid" player="Vatnsfirdingar" maxRunCount="1"/>
+      <step name="VatnsfirdingarBidPlace" delegate="placeBid" player="Oddaverjar" maxRunCount="1"/>
+      <step name="Dala-SturlungarBid" delegate="bid" player="Dala-Sturlungar" maxRunCount="1"/>
+      <step name="Dala-SturlungarBidPlace" delegate="placeBid" player="Dala-Sturlungar" maxRunCount="1"/>
+      <step name="AsbirningarPurchase" delegate="purchase" player="Asbirningar"/>
+      <step name="AsbirningarCombatMove" delegate="move" player="Asbirningar"/>
+      <step name="AsbirningarBattle" delegate="battle" player="Asbirningar"/>
+      <step name="AsbirningarNonCombatMove" delegate="move" player="Asbirningar" display="Non Combat Move"/>
+      <step name="AsbirningarPlace" delegate="place" player="Asbirningar"/>
+      <step name="AsbirningarEndTurn" delegate="endTurn" player="Asbirningar"/>
+      <step name="Nordur-SturlungarPurchase" delegate="purchase" player="Nordur-Sturlungar"/>
+      <step name="Nordur-SturlungarCombatMove" delegate="move" player="Nordur-Sturlungar"/>
+      <step name="Nordur-SturlungarBattle" delegate="battle" player="Nordur-Sturlungar"/>
+      <step name="Nordur-SturlungarNonCombatMove" delegate="move" player="Nordur-Sturlungar" display="Non Combat Move"/>
+      <step name="Nordur-SturlungarPlace" delegate="place" player="Nordur-Sturlungar"/>
+      <step name="Nordur-SturlungarEndTurn" delegate="endTurn" player="Nordur-Sturlungar"/>
+      <step name="HaukdaelirPurchase" delegate="purchase" player="Haukdaelir"/>
+      <step name="HaukdaelirCombatMove" delegate="move" player="Haukdaelir"/>
+      <step name="HaukdaelirBattle" delegate="battle" player="Haukdaelir"/>
+      <step name="HaukdaelirNonCombatMove" delegate="move" player="Haukdaelir" display="Non Combat Move"/>
+      <step name="HaukdaelirPlace" delegate="place" player="Haukdaelir"/>
+      <step name="HaukdaelirEndTurn" delegate="endTurn" player="Haukdaelir"/>
+      <step name="Vestur-SturlungarPurchase" delegate="purchase" player="Vestur-Sturlungar"/>
+      <step name="Vestur-SturlungarCombatMove" delegate="move" player="Vestur-Sturlungar"/>
+      <step name="Vestur-SturlungarBattle" delegate="battle" player="Vestur-Sturlungar"/>
+      <step name="Vestur-SturlungarNonCombatMove" delegate="move" player="Vestur-Sturlungar" display="Non Combat Move"/>
+      <step name="Vestur-SturlungarPlace" delegate="place" player="Vestur-Sturlungar"/>
+      <step name="Vestur-SturlungarEndTurn" delegate="endTurn" player="Vestur-Sturlungar"/>
+      <step name="Skaftafells-SvinfellingarPurchase" delegate="purchase" player="Skaftafells-Svinfellingar"/>
+      <step name="Skaftafells-SvinfellingarCombatMove" delegate="move" player="Skaftafells-Svinfellingar"/>
+      <step name="Skaftafells-SvinfellingarBattle" delegate="battle" player="Skaftafells-Svinfellingar"/>
+      <step name="Skaftafells-SvinfellingarNonCombatMove" delegate="move" player="Skaftafells-Svinfellingar" display="Non Combat Move"/>
+      <step name="Skaftafells-SvinfellingarPlace" delegate="place" player="Skaftafells-Svinfellingar"/>
+      <step name="Skaftafells-SvinfellingarEndTurn" delegate="endTurn" player="Skaftafells-Svinfellingar"/>
+      <step name="Mula-SvinfellingarPurchase" delegate="purchase" player="Mula-Svinfellingar"/>
+      <step name="Mula-SvinfellingarCombatMove" delegate="move" player="Mula-Svinfellingar"/>
+      <step name="Mula-SvinfellingarBattle" delegate="battle" player="Mula-Svinfellingar"/>
+      <step name="Mula-SvinfellingarNonCombatMove" delegate="move" player="Mula-Svinfellingar" display="Non Combat Move"/>
+      <step name="Mula-SvinfellingarPlace" delegate="place" player="Mula-Svinfellingar"/>
+      <step name="Mula-SvinfellingarEndTurn" delegate="endTurn" player="Mula-Svinfellingar"/>
+      <step name="OddaverjarPurchase" delegate="purchase" player="Oddaverjar"/>
+      <step name="OddaverjarCombatMove" delegate="move" player="Oddaverjar"/>
+      <step name="OddaverjarBattle" delegate="battle" player="Oddaverjar"/>
+      <step name="OddaverjarNonCombatMove" delegate="move" player="Oddaverjar" display="Non Combat Move"/>
+      <step name="OddaverjarPlace" delegate="place" player="Oddaverjar"/>
+      <step name="OddaverjarEndTurn" delegate="endTurn" player="Oddaverjar"/>
+      <step name="VatnsfirdingarPurchase" delegate="purchase" player="Vatnsfirdingar"/>
+      <step name="VatnsfirdingarCombatMove" delegate="move" player="Vatnsfirdingar"/>
+      <step name="VatnsfirdingarBattle" delegate="battle" player="Vatnsfirdingar"/>
+      <step name="VatnsfirdingarNonCombatMove" delegate="move" player="Vatnsfirdingar" display="Non Combat Move"/>
+      <step name="VatnsfirdingarPlace" delegate="place" player="Vatnsfirdingar"/>
+      <step name="VatnsfirdingarEndTurn" delegate="endTurn" player="Vatnsfirdingar"/>
+      <step name="Dala-SturlungarPurchase" delegate="purchase" player="Dala-Sturlungar"/>
+      <step name="Dala-SturlungarCombatMove" delegate="move" player="Dala-Sturlungar"/>
+      <step name="Dala-SturlungarBattle" delegate="battle" player="Dala-Sturlungar"/>
+      <step name="Dala-SturlungarNonCombatMove" delegate="move" player="Dala-Sturlungar" display="Non Combat Move"/>
+      <step name="Dala-SturlungarPlace" delegate="place" player="Dala-Sturlungar"/>
+      <step name="Dala-SturlungarEndTurn" delegate="endTurn" player="Dala-Sturlungar"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyaxeman">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="axeman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyarcher">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="archer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyhorseman">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="horseman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyspearman">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="spearman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyswordman">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="swordman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyrockthrower">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="rockthrower" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyskuta">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="skuta" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyknorr">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="knorr" quantity="1"/>
+    </productionRule>
+    <productionRule name="buylongship">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="longship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buychurch">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="church" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyfortress">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="fortress" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="Dala-SturlungarFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <productionFrontier name="OddaverjarFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <productionFrontier name="AsbirningarFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <productionFrontier name="Nordur-SturlungarFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <productionFrontier name="Vestur-SturlungarFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <productionFrontier name="HaukdaelirFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <productionFrontier name="Skaftafells-SvinfellingarFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <productionFrontier name="VatnsfirdingarFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <productionFrontier name="Mula-SvinfellingarFrontier">
+      <frontierRules name="buyaxeman"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buyhorseman"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buyswordman"/>
+      <frontierRules name="buyrockthrower"/>
+      <frontierRules name="buyknorr"/>
+      <frontierRules name="buyskuta"/>
+      <frontierRules name="buylongship"/>
+      <frontierRules name="buychurch"/>
+      <frontierRules name="buyfortress"/>
+    </productionFrontier>
+    <playerProduction player="Dala-Sturlungar" frontier="Dala-SturlungarFrontier"/>
+    <playerProduction player="Oddaverjar" frontier="OddaverjarFrontier"/>
+    <playerProduction player="Asbirningar" frontier="AsbirningarFrontier"/>
+    <playerProduction player="Nordur-Sturlungar" frontier="Nordur-SturlungarFrontier"/>
+    <playerProduction player="Vestur-Sturlungar" frontier="Vestur-SturlungarFrontier"/>
+    <playerProduction player="Haukdaelir" frontier="HaukdaelirFrontier"/>
+    <playerProduction player="Skaftafells-Svinfellingar" frontier="Skaftafells-SvinfellingarFrontier"/>
+    <playerProduction player="Vatnsfirdingar" frontier="VatnsfirdingarFrontier"/>
+    <playerProduction player="Mula-Svinfellingar" frontier="Mula-SvinfellingarFrontier"/>
+  </production>
+  <attachmentList>
+    <attachment name="unitAttachment" attachTo="axeman" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="archer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="horseman" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="spearman" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="swordman" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="rockthrower" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="skuta" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="4"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="knorr" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="8"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="longship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="church" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fortress" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="4"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fljotshlidarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Emstrur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Landmannaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rangarvallahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Oddaverjar"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vestur-Landeyjar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Holtamannaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hvolhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vestur-Eyjafjallahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Austur-Landeyjar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vestmannaeyjar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Holtamannahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Afrettur Fljotshlidinga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Austur-Eyjafjallahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thorsmork" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rangarvallaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Landmannahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grimsey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Blonduhlidarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="12"/>
+      <option name="capital" value="Asbirningar"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thoroddsstadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vindhaelishreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fljotahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="A-Eyvindarstadaheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Seiluhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="V-Eyvindarstadaheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Holahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skefilsstadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Torfalaekjarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sveinsstadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ripurhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ashreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Svinadalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vidvikurhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grimstunguheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hofsafrett" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Silfrastadaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Engihlidarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skagahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Reynistadarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nyjabaejarafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Saudarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hofdastrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bolstadarhlidarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lytingsstadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sigluneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Audkuluheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sugandafjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Haukadalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hvammssveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sudurfjardasveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Raudasandshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Saurbaejarsveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skalmarnesmulahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fellsstrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nordur-Dyrafjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hordudalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Middalahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Dala-Sturlungar"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Talknafjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Onundarfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skardsstrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kroksfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Laxardalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bardastrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vestur-Dyrafjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arnarfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dalasveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gufudalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kelduneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hvammshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Svalbardshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Afrettur Skutustada" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Holsfjoll" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bardardalur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ljosavatnshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Halshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Flateyjardalsheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oxfirdingaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Myvatnssveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fjollin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Saudaneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vesturafrettur Barddaela" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tjorneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skriduhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sudurafrettur Fnjoskdaela" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Helgastadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ongulstadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hrisey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Saurbaejarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oxnadalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Austurafrettur Barddaela" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grytubakkahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Prestholahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Svalbardsstrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Glaesibaejarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aerlaekjarheppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Odadahraun" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hrafnagilshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="12"/>
+      <option name="capital" value="Nordur-Sturlungar"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Svarfadardalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grimsnesafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Biskupstungnahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="12"/>
+      <option name="capital" value="Haukdaelir"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gnupverjahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kaldnesingahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grimsneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Olfushreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Floa- og Skeidamannaafr" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gnupverjaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hrunamannahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Biskupstungnaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stokkseyrarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hraungerdishreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Laugardalsafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hrunamannaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gaulverjahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Laugardalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Villingaholtshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Selvogshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grafningshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thingvallahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skeidahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sidumannaafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fljotshverfi, afrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Holtahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Litlaherad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Skaftafells-Svinfellingar"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skaftartunga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dyrholahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alftaver" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sudursveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kleifahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alftaversafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skaftartunguafrettur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Leidvallarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thverarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Neshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Torfustadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nordurardalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Miklaholtshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mela- Leirarsveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kalmanstunga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eyrarsveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alftaneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oddstadaafrett" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stafholtstungnahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arnarvatnsheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thverarhlidarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Reykholtsdalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="12"/>
+      <option name="capital" value="Vestur-Sturlungar"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thorkelsholshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skilmanna- og Akraneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vatnsleysustrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Geitland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Andakilshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hafnahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stadarsveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vididalstunguheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stadarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hvalfjardarstrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Afrettur Midfirdinga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skogarstrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thverarrett" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hraunhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alftaneshreppur i Myrum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Krysuvik" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Asasveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lundarreykjadalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Borgarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hrutafjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skorradalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vatnsneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Helgafellssveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eyjahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hvitarsiduhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Broddaneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Breiduvikurhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rosmhvalaneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grindavikurhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hrofbergshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kaldrananeshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Langadalsstrond" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Trekyllisvikurhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skutulsfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sudavikurhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Slettuhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vatnsfjardarsveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Vatnsfirdingar"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Holshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ogurhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Snaefjallastrandarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Trollatunguhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grunnavikursveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lodmundarfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Reydarfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Breiddalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mjoafjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nordfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fellahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vallnahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Muli, Sudurfell" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fljotsdalsheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Krepputunga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fljotsdalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Mula-Svinfellingar"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skeggjastadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jokuldalsheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Beruneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vesturoraefi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Modrudalsoraefi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hofteigsheidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jokuldalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bruaroraefi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Skriddalshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vopnafjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Borgarfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tunguhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alftafjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Seydisfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Faskrudsfjardarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tindafjallajokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hofsjokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kjalarneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eyjafjallajokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Langjokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mosfellssveit" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Torfajokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kolbeinsstadahreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Seltjarnarneshreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tungnafellsjokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Drangajokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vatnajokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ok" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thorisjokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kjosarhreppur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eiriksjokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Snaefellsjokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Myrdalsjokull" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="Fljotshlidarhreppur" owner="Oddaverjar"/>
+      <territoryOwner territory="Emstrur" owner="Oddaverjar"/>
+      <territoryOwner territory="Landmannaafrettur" owner="Oddaverjar"/>
+      <territoryOwner territory="Rangarvallahreppur" owner="Oddaverjar"/>
+      <territoryOwner territory="Vestur-Landeyjar" owner="Oddaverjar"/>
+      <territoryOwner territory="Holtamannaafrettur" owner="Oddaverjar"/>
+      <territoryOwner territory="Hvolhreppur" owner="Oddaverjar"/>
+      <territoryOwner territory="Vestur-Eyjafjallahreppur" owner="Oddaverjar"/>
+      <territoryOwner territory="Austur-Landeyjar" owner="Oddaverjar"/>
+      <territoryOwner territory="Vestmannaeyjar" owner="Oddaverjar"/>
+      <territoryOwner territory="Holtamannahreppur" owner="Oddaverjar"/>
+      <territoryOwner territory="Afrettur Fljotshlidinga" owner="Oddaverjar"/>
+      <territoryOwner territory="Austur-Eyjafjallahreppur" owner="Oddaverjar"/>
+      <territoryOwner territory="Thorsmork" owner="Oddaverjar"/>
+      <territoryOwner territory="Rangarvallaafrettur" owner="Oddaverjar"/>
+      <territoryOwner territory="Landmannahreppur" owner="Oddaverjar"/>
+      <territoryOwner territory="Grimsey" owner="Asbirningar"/>
+      <territoryOwner territory="Blonduhlidarhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Vindhaelishreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Fljotahreppur" owner="Asbirningar"/>
+      <territoryOwner territory="A-Eyvindarstadaheidi" owner="Asbirningar"/>
+      <territoryOwner territory="Seiluhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="V-Eyvindarstadaheidi" owner="Asbirningar"/>
+      <territoryOwner territory="Holahreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Skefilsstadahreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Torfalaekjarhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Sveinsstadahreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Ripurhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Ashreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Svinadalshreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Vidvikurhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Grimstunguheidi" owner="Asbirningar"/>
+      <territoryOwner territory="Hofsafrett" owner="Asbirningar"/>
+      <territoryOwner territory="Silfrastadaafrettur" owner="Asbirningar"/>
+      <territoryOwner territory="Engihlidarhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Skagahreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Reynistadarhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Nyjabaejarafrettur" owner="Asbirningar"/>
+      <territoryOwner territory="Saudarhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Hofdastrandarhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Bolstadarhlidarhreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Lytingsstadahreppur" owner="Asbirningar"/>
+      <territoryOwner territory="Audkuluheidi" owner="Asbirningar"/>
+      <territoryOwner territory="Sugandafjardarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Haukadalshreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Hvammssveit" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Sudurfjardasveit" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Raudasandshreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Saurbaejarsveit" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Skalmarnesmulahreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Fellsstrandarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Nordur-Dyrafjardarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Hordudalshreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Middalahreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Talknafjardarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Onundarfjardarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Skardsstrandarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Kroksfjardarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Laxardalshreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Bardastrandarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Vestur-Dyrafjardarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Arnarfjardarhreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Dalasveit" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Gufudalshreppur" owner="Dala-Sturlungar"/>
+      <territoryOwner territory="Kelduneshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Hvammshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Svalbardshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Afrettur Skutustada" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Holsfjoll" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Bardardalur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Ljosavatnshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Halshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Flateyjardalsheidi" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Oxfirdingaafrettur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Myvatnssveit" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Fjollin" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Saudaneshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Vesturafrettur Barddaela" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Tjorneshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Skriduhreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Sudurafrettur Fnjoskdaela" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Helgastadahreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Ongulstadahreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Hrisey" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Saurbaejarhreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Oxnadalshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Austurafrettur Barddaela" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Grytubakkahreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Prestholahreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Svalbardsstrandarhreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Thoroddsstadahreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Sigluneshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Glaesibaejarhreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Aerlaekjarheppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Odadahraun" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Hrafnagilshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Svarfadardalshreppur" owner="Nordur-Sturlungar"/>
+      <territoryOwner territory="Grimsnesafrettur" owner="Haukdaelir"/>
+      <territoryOwner territory="Biskupstungnahreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Gnupverjahreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Kaldnesingahreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Grimsneshreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Olfushreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Floa- og Skeidamannaafr" owner="Haukdaelir"/>
+      <territoryOwner territory="Gnupverjaafrettur" owner="Haukdaelir"/>
+      <territoryOwner territory="Hrunamannahreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Biskupstungnaafrettur" owner="Haukdaelir"/>
+      <territoryOwner territory="Stokkseyrarhreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Hraungerdishreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Laugardalsafrettur" owner="Haukdaelir"/>
+      <territoryOwner territory="Hrunamannaafrettur" owner="Haukdaelir"/>
+      <territoryOwner territory="Gaulverjahreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Laugardalshreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Villingaholtshreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Selvogshreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Grafningshreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Thingvallahreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Skeidahreppur" owner="Haukdaelir"/>
+      <territoryOwner territory="Sidumannaafrettur" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Fljotshverfi, afrettur" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Holtahreppur" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Litlaherad" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Skaftartunga" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Dyrholahreppur" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Alftaver" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Sudursveit" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Kleifahreppur" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Alftaversafrettur" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Skaftartunguafrettur" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Leidvallarhreppur" owner="Skaftafells-Svinfellingar"/>
+      <territoryOwner territory="Thverarhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Neshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Torfustadahreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Nordurardalshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Miklaholtshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Mela- Leirarsveit" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Kalmanstunga" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Eyrarsveit" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Alftaneshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Oddstadaafrett" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Stafholtstungnahreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Arnarvatnsheidi" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Thverarhlidarhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Reykholtsdalshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Thorkelsholshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Skilmanna- og Akraneshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Vatnsleysustrandarhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Geitland" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Andakilshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Hafnahreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Stadarsveit" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Vididalstunguheidi" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Stadarhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Hvalfjardarstrandarhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Afrettur Midfirdinga" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Skogarstrandarhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Thverarrett" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Hraunhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Alftaneshreppur i Myrum" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Krysuvik" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Asasveit" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Lundarreykjadalshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Borgarhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Hrutafjardarhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Skorradalshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Vatnsneshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Helgafellssveit" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Eyjahreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Hvitarsiduhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Broddaneshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Breiduvikurhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Rosmhvalaneshreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Grindavikurhreppur" owner="Vestur-Sturlungar"/>
+      <territoryOwner territory="Hrofbergshreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Kaldrananeshreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Langadalsstrond" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Trekyllisvikurhreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Skutulsfjardarhreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Sudavikurhreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Slettuhreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Vatnsfjardarsveit" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Holshreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Ogurhreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Snaefjallastrandarhreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Trollatunguhreppur" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Grunnavikursveit" owner="Vatnsfirdingar"/>
+      <territoryOwner territory="Lodmundarfjardarhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Reydarfjardarhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Breiddalshreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Mjoafjardarhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Nordfjardarhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Fellahreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Vallnahreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Muli, Sudurfell" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Fljotsdalsheidi" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Krepputunga" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Fljotsdalshreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Skeggjastadahreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Jokuldalsheidi" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Beruneshreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Vesturoraefi" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Modrudalsoraefi" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Hofteigsheidi" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Jokuldalshreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Bruaroraefi" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Skriddalshreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Vopnafjardarhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Borgarfjardarhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Tunguhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Alftafjardarhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Seydisfjardarhreppur" owner="Mula-Svinfellingar"/>
+      <territoryOwner territory="Faskrudsfjardarhreppur" owner="Mula-Svinfellingar"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <unitPlacement unitType="spearman" territory="Fljotshlidarhreppur" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="rockthrower" territory="Emstrur" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="axeman" territory="Landmannaafrettur" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="archer" territory="Rangarvallahreppur" quantity="2" owner="Oddaverjar"/>
+      <unitPlacement unitType="church" territory="Rangarvallahreppur" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="rockthrower" territory="Vestur-Landeyjar" quantity="2" owner="Oddaverjar"/>
+      <unitPlacement unitType="spearman" territory="Austur-Landeyjar" quantity="2" owner="Oddaverjar"/>
+      <unitPlacement unitType="swordman" territory="Austur-Landeyjar" quantity="2" owner="Oddaverjar"/>
+      <unitPlacement unitType="church" territory="Austur-Landeyjar" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="spearman" territory="Holtamannahreppur" quantity="2" owner="Oddaverjar"/>
+      <unitPlacement unitType="spearman" territory="Austur-Eyjafjallahreppur" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="spearman" territory="Rangarvallaafrettur" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="rockthrower" territory="Rangarvallaafrettur" quantity="3" owner="Oddaverjar"/>
+      <unitPlacement unitType="axeman" territory="Landmannahreppur" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="horseman" territory="Blonduhlidarhreppur" quantity="1" owner="Asbirningar"/>
+      <unitPlacement unitType="spearman" territory="Blonduhlidarhreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="swordman" territory="Blonduhlidarhreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="church" territory="Blonduhlidarhreppur" quantity="1" owner="Asbirningar"/>
+      <unitPlacement unitType="axeman" territory="Holahreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="archer" territory="Holahreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="church" territory="Torfalaekjarhreppur" quantity="1" owner="Asbirningar"/>
+      <unitPlacement unitType="axeman" territory="Sveinsstadahreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="archer" territory="Sveinsstadahreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="spearman" territory="Ashreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="church" territory="Ashreppur" quantity="1" owner="Asbirningar"/>
+      <unitPlacement unitType="horseman" territory="Grimstunguheidi" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="axeman" territory="Skagahreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="archer" territory="Skagahreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="axeman" territory="Hofdastrandarhreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="church" territory="Hofdastrandarhreppur" quantity="1" owner="Asbirningar"/>
+      <unitPlacement unitType="axeman" territory="Bolstadarhlidarhreppur" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="rockthrower" territory="Haukadalshreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Hvammssveit" quantity="4" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="swordman" territory="Hvammssveit" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Hvammssveit" quantity="1" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Saurbaejarsveit" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Middalahreppur" quantity="1" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="swordman" territory="Middalahreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Middalahreppur" quantity="1" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Talknafjardarhreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="axeman" territory="Skardsstrandarhreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="rockthrower" territory="Laxardalshreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="rockthrower" territory="Bardastrandarhreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Vestur-Dyrafjardarhreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="swordman" territory="Vestur-Dyrafjardarhreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Vestur-Dyrafjardarhreppur" quantity="1" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Dalasveit" quantity="1" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="horseman" territory="Gufudalshreppur" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="axeman" territory="Hvammshreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Hvammshreppur" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="rockthrower" territory="Svalbardshreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Ljosavatnshreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="rockthrower" territory="Myvatnssveit" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Tjorneshreppur" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Helgastadahreppur" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Helgastadahreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="axeman" territory="Saurbaejarhreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="archer" territory="Saurbaejarhreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="axeman" territory="Oxnadalshreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="rockthrower" territory="Prestholahreppur" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Prestholahreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Glaesibaejarhreppur" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Aerlaekjarheppur" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="axeman" territory="Hrafnagilshreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Hrafnagilshreppur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="axeman" territory="Grimsnesafrettur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="axeman" territory="Biskupstungnahreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="swordman" territory="Biskupstungnahreppur" quantity="2" owner="Haukdaelir"/>
+      <unitPlacement unitType="rockthrower" territory="Biskupstungnahreppur" quantity="3" owner="Haukdaelir"/>
+      <unitPlacement unitType="church" territory="Biskupstungnahreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="axeman" territory="Gnupverjahreppur" quantity="2" owner="Haukdaelir"/>
+      <unitPlacement unitType="archer" territory="Kaldnesingahreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="spearman" territory="Grimsneshreppur" quantity="2" owner="Haukdaelir"/>
+      <unitPlacement unitType="church" territory="Grimsneshreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="horseman" territory="Olfushreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="church" territory="Olfushreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="spearman" territory="Hrunamannahreppur" quantity="2" owner="Haukdaelir"/>
+      <unitPlacement unitType="axeman" territory="Stokkseyrarhreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="spearman" territory="Stokkseyrarhreppur" quantity="2" owner="Haukdaelir"/>
+      <unitPlacement unitType="church" territory="Stokkseyrarhreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="horseman" territory="Selvogshreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="rockthrower" territory="Selvogshreppur" quantity="2" owner="Haukdaelir"/>
+      <unitPlacement unitType="archer" territory="Thingvallahreppur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="spearman" territory="Skeidahreppur" quantity="2" owner="Haukdaelir"/>
+      <unitPlacement unitType="horseman" territory="Litlaherad" quantity="1" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="spearman" territory="Litlaherad" quantity="2" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="church" territory="Litlaherad" quantity="1" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="spearman" territory="Skaftartunga" quantity="2" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="rockthrower" territory="Skaftartunga" quantity="2" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="spearman" territory="Alftaver" quantity="1" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="spearman" territory="Kleifahreppur" quantity="2" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="horseman" territory="Leidvallarhreppur" quantity="1" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="church" territory="Leidvallarhreppur" quantity="1" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="spearman" territory="Thverarhreppur" quantity="2" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Torfustadahreppur" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="rockthrower" territory="Torfustadahreppur" quantity="2" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Kalmanstunga" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Alftaneshreppur" quantity="2" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="swordman" territory="Reykholtsdalshreppur" quantity="3" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="rockthrower" territory="Reykholtsdalshreppur" quantity="4" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Reykholtsdalshreppur" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Stadarsveit" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Afrettur Midfirdinga" quantity="2" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="axeman" territory="Thverarrett" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Thverarrett" quantity="2" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="axeman" territory="Lundarreykjadalshreppur" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="archer" territory="Borgarhreppur" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Borgarhreppur" quantity="2" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Borgarhreppur" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="rockthrower" territory="Vatnsneshreppur" quantity="2" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="church" territory="Vatnsneshreppur" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Hvitarsiduhreppur" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Trekyllisvikurhreppur" quantity="2" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="swordman" territory="Trekyllisvikurhreppur" quantity="1" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="archer" territory="Skutulsfjardarhreppur" quantity="2" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="spearman" territory="Sudavikurhreppur" quantity="2" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="horseman" territory="Slettuhreppur" quantity="1" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="axeman" territory="Vatnsfjardarsveit" quantity="2" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="swordman" territory="Vatnsfjardarsveit" quantity="2" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="church" territory="Vatnsfjardarsveit" quantity="1" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="rockthrower" territory="Ogurhreppur" quantity="2" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="horseman" territory="Snaefjallastrandarhreppur" quantity="2" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="spearman" territory="Grunnavikursveit" quantity="2" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="church" territory="Fljotsdalshreppur" quantity="1" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="rockthrower" territory="Skeggjastadahreppur" quantity="2" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="rockthrower" territory="Modrudalsoraefi" quantity="2" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="rockthrower" territory="Hofteigsheidi" quantity="2" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="rockthrower" territory="Bruaroraefi" quantity="1" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="horseman" territory="Vopnafjardarhreppur" quantity="1" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="swordman" territory="Vopnafjardarhreppur" quantity="2" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="church" territory="Vopnafjardarhreppur" quantity="1" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="skuta" territory="SZ38 Grindavikurdjup" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="knorr" territory="SZ38 Grindavikurdjup" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="skuta" territory="SZ33 Sidugrunn" quantity="2" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="longship" territory="SZ33 Sidugrunn" quantity="1" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="spearman" territory="Kjalarneshreppur" quantity="5"/>
+      <unitPlacement unitType="longship" territory="SZ10 Latrarost" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="knorr" territory="SZ13 Isafjardardjup" quantity="3" owner="Vatnsfirdingar"/>
+      <unitPlacement unitType="spearman" territory="Mosfellssveit" quantity="5"/>
+      <unitPlacement unitType="knorr" territory="SZ23 Skjalfandafloi" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="longship" territory="SZ23 Skjalfandafloi" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="knorr" territory="SZ27 Heradsfloi" quantity="1" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="longship" territory="SZ27 Heradsfloi" quantity="1" owner="Mula-Svinfellingar"/>
+      <unitPlacement unitType="knorr" territory="SZ24 Oxarfjordur" quantity="1" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="spearman" territory="Kolbeinsstadahreppur" quantity="5"/>
+      <unitPlacement unitType="spearman" territory="Seltjarnarneshreppur" quantity="5"/>
+      <unitPlacement unitType="knorr" territory="SZ32 Oraefagrunn" quantity="3" owner="Skaftafells-Svinfellingar"/>
+      <unitPlacement unitType="knorr" territory="SZ11 Kopanesgrunn" quantity="2" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="longship" territory="SZ04 Faxafloi" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="longship" territory="SZ18 Skagagrunn" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="skuta" territory="SZ36 Eyrarbakkabugur" quantity="1" owner="Haukdaelir"/>
+      <unitPlacement unitType="knorr" territory="SZ17 Hunafloi" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="longship" territory="SZ17 Hunafloi" quantity="2" owner="Asbirningar"/>
+      <unitPlacement unitType="knorr" territory="SZ19 Skagafjordur" quantity="1" owner="Asbirningar"/>
+      <unitPlacement unitType="longship" territory="SZ19 Skagafjordur" quantity="1" owner="Asbirningar"/>
+      <unitPlacement unitType="knorr" territory="SZ03 Faxafloi" quantity="1" owner="Vestur-Sturlungar"/>
+      <unitPlacement unitType="skuta" territory="SZ37 Selvogsbanki" quantity="1" owner="Oddaverjar"/>
+      <unitPlacement unitType="knorr" territory="SZ37 Selvogsbanki" quantity="2" owner="Oddaverjar"/>
+      <unitPlacement unitType="spearman" territory="Kjosarhreppur" quantity="5"/>
+      <unitPlacement unitType="knorr" territory="SZ08 Breidafjordur" quantity="1" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="skuta" territory="SZ21 Eyjafjordur" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="longship" territory="SZ21 Eyjafjordur" quantity="2" owner="Nordur-Sturlungar"/>
+      <unitPlacement unitType="knorr" territory="SZ07 Breidafjordur" quantity="1" owner="Dala-Sturlungar"/>
+      <unitPlacement unitType="longship" territory="SZ15 Strandabrekar" quantity="2" owner="Vatnsfirdingar"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Oddaverjar" resource="PUs" quantity="37"/>
+      <resourceGiven player="Asbirningar" resource="PUs" quantity="62"/>
+      <resourceGiven player="Dala-Sturlungar" resource="PUs" quantity="56"/>
+      <resourceGiven player="Nordur-Sturlungar" resource="PUs" quantity="77"/>
+      <resourceGiven player="Haukdaelir" resource="PUs" quantity="57"/>
+      <resourceGiven player="Skaftafells-Svinfellingar" resource="PUs" quantity="25"/>
+      <resourceGiven player="Vestur-Sturlungar" resource="PUs" quantity="85"/>
+      <resourceGiven player="Vatnsfirdingar" resource="PUs" quantity="31"/>
+      <resourceGiven player="Mula-Svinfellingar" resource="PUs" quantity="41"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Dala-Sturlungar bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Nordur-Sturlungar bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Vestur-Sturlungar bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Haukdaelir bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Skaftafells-Svinfellingar bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Mula-Svinfellingar bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Asbirningar bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Oddaverjar bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Vatnsfirdingar bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="mapName" value="age_of_the_sturlungs" editable="false"/>
+    <property name="notes" value="         &lt;b&gt;Age Of the Strulungs(1220-1264) &lt;/b&gt; &lt;br&gt;      &lt;b&gt; Created by: StefanA &lt;/b&gt; &lt;br&gt;           this scenario loosely based somewhere around  the year 1226 &lt;br&gt;     it is in  an early part of a bloody civil war in Iceland.&lt;br&gt;     In 1218 Snorri Sturluson (chieftain of the vestur-Sturlugar) became a vassal of King Hakon of Norway.  After Snorri returned  home to Iceland he quickly began, expending his rule of domain and/or trying to bring Iceland under the sovereignty of the king of Norway.&lt;br&gt;&lt;br&gt;                === Sturlunga Alliance  Powers === &lt;br&gt;      Nordur-Sturlungar (capitol: Hrafnagilshreppur)&lt;br&gt;     Vestur-Sturlungar  (capitol: Reykholtsdalshreppur)&lt;br&gt;     Dala-Sturlungar  (capitol: Middalahreppur)&lt;br&gt;     Oddaverjar  (capitol: Rangarvallarhreppur )&lt;br&gt;&lt;br&gt;      === District-States Powers === &lt;br&gt;                                                                            Asbirningar  (capitol: Blonduhlidarhreppur) &lt;br&gt;     Haukdaelir  (capitol: Biskupstungnahreppur) &lt;br&gt;     Vatnsfirdingar (capitol: Vatnsfjardarsveit)  &lt;br&gt;     Mula-Svinfellingar (capitol: Fljotsdalshreppur)  &lt;br&gt;     Skaftafells-Svinfellingar (capitol: Litlaherad) &lt;br&gt;&lt;br&gt;      === Unit definitions  (attack, defend, movement, cost, extra) === &lt;br&gt;                                                                             rockthrower:  1,1,1,2  (transportCost 2)&lt;br&gt;     spearman: 1,2,1,3 (artillery supportable,  transportCost 2) &lt;br&gt;     archer:   1,2.1, 4 (artillery,  transportCost 2 )&lt;br&gt;     axeman:   2, 2, 1, 4 (artillery supportable, transportCost 2)&lt;br&gt;      swordman: 3,3,1,5  (transportCost 2) &lt;br&gt;     horseman:  1,1,2, 3 (can blitz, transportCost 3) &lt;br&gt;     skuta:1,1,2,6 (transportCap 4) &lt;br&gt;     knorr: 1,2,2, 8 (transportCap 8) &lt;br&gt;     longship: 3,2,2, 14 (is twohit) &lt;br&gt;     fortress: 0,4,0, 12 (is twohit) &lt;br&gt;     church: 0,0,0,15 (can build) &lt;br&gt;&lt;br&gt;  &lt;b&gt;=== Historical Overview ===&lt;/b&gt; &lt;br&gt;   The Age of the Sturlungs or the Sturlung Era was a 42-44 year period of internal strife in mid 13th century. It may also have been the bloodiest and most violent period  in Icelandic history. It is documented in the Sturlunga saga.&lt;br&gt;&lt;br&gt;  This period is marked by the conflicts of powerful chieftains, godar, who amassed followers and did  battle, and is named for the Sturlungs, the most powerful family clan in Iceland at the time. At the end of the era, the Icelandic Commonwealth ceased to exist; Iceland  became a vassal of Norway &lt;br&gt;&lt;br&gt;  Historians generally regard the year 1220 as the first year of the Age of the Sturlungs, although some wish to place its beginning at an earlier date because of the  Battle of Vidines.&lt;br&gt; Power in the country had consolidated within the grasp of a few family clans&lt;br&gt;&lt;br&gt;       At this time, Haakon The Old  IV of Norway, was trying to extend his influence in Iceland. Many Icelandic chieftains became his vassals and were obliged to do his  bidding -- in exchange they received gifts, followers and a status of respect. Consequently, the greatest Icelandic chieftains were soon affiliated with the King of  Norway in one way or the other.&lt;br&gt;       &lt;br&gt;       "/>
+  </propertyList>
+</game>

@@ -1,0 +1,543 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<!-- 
+	========================================================== 
+	4 Player CAPTURE THE FLAG map compiled by IC for TripleA 
+	==========================================================
+-->
+<game>
+  <info name="Capture The Flag" version="1.0.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <triplea minimumVersion="1.8"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="RussianBase"/>
+    <territory name="ItalianBase"/>
+    <territory name="GermanBase"/>
+    <territory name="ChineseBase"/>
+    <territory name="Flag"/>
+    <territory name="TopBar"/>
+    <territory name="BottomBar"/>
+    <territory name="LeftBar"/>
+    <territory name="RightBar"/>
+    <territory name="RussianStart"/>
+    <territory name="RussianStartLeft"/>
+    <territory name="RussianStartRight"/>
+    <territory name="RussianStepOne"/>
+    <territory name="RussianStepTwo"/>
+    <territory name="ItalianStart"/>
+    <territory name="ItalianStartLeft"/>
+    <territory name="ItalianStartRight"/>
+    <territory name="ItalianStepOne"/>
+    <territory name="ItalianStepTwo"/>
+    <territory name="GermanStart"/>
+    <territory name="GermanStartLeft"/>
+    <territory name="GermanStartRight"/>
+    <territory name="GermanStepOne"/>
+    <territory name="GermanStepTwo"/>
+    <territory name="ChineseStart"/>
+    <territory name="ChineseStartLeft"/>
+    <territory name="ChineseStartRight"/>
+    <territory name="ChineseStepOne"/>
+    <territory name="ChineseStepTwo"/>
+    <!-- Sea Zone Declarations -->
+    <!-- Territory Connections -->
+    <connection t1="RussianBase" t2="RussianStart"/>
+    <connection t1="RussianStart" t2="RussianStartLeft"/>
+    <connection t1="RussianStart" t2="RussianStartRight"/>
+    <connection t1="RussianStart" t2="RussianStepOne"/>
+    <connection t1="RussianStepOne" t2="RussianStepTwo"/>
+    <connection t1="ItalianBase" t2="ItalianStart"/>
+    <connection t1="ItalianStart" t2="ItalianStartLeft"/>
+    <connection t1="ItalianStart" t2="ItalianStartRight"/>
+    <connection t1="ItalianStart" t2="ItalianStepOne"/>
+    <connection t1="ItalianStepOne" t2="ItalianStepTwo"/>
+    <connection t1="GermanBase" t2="GermanStart"/>
+    <connection t1="GermanStart" t2="GermanStartLeft"/>
+    <connection t1="GermanStart" t2="GermanStartRight"/>
+    <connection t1="GermanStart" t2="GermanStepOne"/>
+    <connection t1="GermanStepOne" t2="GermanStepTwo"/>
+    <connection t1="ChineseBase" t2="ChineseStart"/>
+    <connection t1="ChineseStart" t2="ChineseStartLeft"/>
+    <connection t1="ChineseStart" t2="ChineseStartRight"/>
+    <connection t1="ChineseStart" t2="ChineseStepOne"/>
+    <connection t1="ChineseStepOne" t2="ChineseStepTwo"/>
+    <!-- Flag (In the Center) -->
+    <connection t1="Flag" t2="RussianStepTwo"/>
+    <connection t1="Flag" t2="ItalianStepTwo"/>
+    <connection t1="Flag" t2="GermanStepTwo"/>
+    <connection t1="Flag" t2="ChineseStepTwo"/>
+    <!-- Bars (Stretched Ovals) -->
+    <connection t1="TopBar" t2="RussianStartLeft"/>
+    <connection t1="TopBar" t2="ItalianStartRight"/>
+    <connection t1="LeftBar" t2="RussianStartRight"/>
+    <connection t1="LeftBar" t2="ChineseStartLeft"/>
+    <connection t1="BottomBar" t2="ChineseStartRight"/>
+    <connection t1="BottomBar" t2="GermanStartLeft"/>
+    <connection t1="RightBar" t2="ItalianStartLeft"/>
+    <connection t1="RightBar" t2="GermanStartRight"/>
+    <!-- Flag connections -->
+    <connection t1="Flag" t2="RussianStepTwo"/>
+    <connection t1="Flag" t2="ItalianStepTwo"/>
+    <connection t1="Flag" t2="GermanStepTwo"/>
+    <connection t1="Flag" t2="ChineseStepTwo"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Russians" optional="false" canBeDisabled="true"/>
+    <player name="Italians" optional="false" canBeDisabled="true"/>
+    <player name="Germans" optional="false" canBeDisabled="true"/>
+    <player name="Chinese" optional="false" canBeDisabled="true"/>
+    <alliance player="Russians" alliance="Russians"/>
+    <alliance player="Italians" alliance="Italians"/>
+    <alliance player="Germans" alliance="Germans"/>
+    <alliance player="Chinese" alliance="Chinese"/>
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="armour"/>
+    <unit name="fighter"/>
+    <unit name="bomber"/>
+    <unit name="transport"/>
+    <unit name="battleship"/>
+    <unit name="carrier"/>
+    <unit name="submarine"/>
+    <unit name="factory"/>
+    <unit name="aaGun"/>
+    <unit name="artillery"/>
+    <unit name="destroyer"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
+      <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+      <step name="italianBid" delegate="bid" player="Italians" maxRunCount="1"/>
+      <step name="italianBidPlace" delegate="placeBid" player="Italians" maxRunCount="1"/>
+      <step name="germanBid" delegate="bid" player="Germans" maxRunCount="1"/>
+      <step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
+      <step name="chineseBid" delegate="bid" player="Chinese" maxRunCount="1"/>
+      <step name="chineseBidPlace" delegate="placeBid" player="Chinese" maxRunCount="1"/>
+      <!-- Russians Game Sequence -->
+      <step name="russianPurchase" delegate="purchase" player="Russians"/>
+      <step name="russianCombatMove" delegate="move" player="Russians"/>
+      <step name="russianBattle" delegate="battle" player="Russians"/>
+      <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
+      <step name="russianPlace" delegate="place" player="Russians"/>
+      <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
+      <!-- <step name="italianTech" delegate="tech" player="British"/> -->
+      <step name="italianPurchase" delegate="purchase" player="Italians"/>
+      <step name="italianCombatMove" delegate="move" player="Italians"/>
+      <step name="italianBattle" delegate="battle" player="Italians"/>
+      <step name="italianNonCombatMove" delegate="move" player="Italians" display="Non Combat Move"/>
+      <step name="italianPlace" delegate="place" player="Italians"/>
+      <step name="italianEndTurn" delegate="endTurn" player="Italians"/>
+      <!--<step name="germanTech" delegate="tech" player="Germans"/>-->
+      <step name="germanPurchase" delegate="purchase" player="Germans"/>
+      <step name="germanCombatMove" delegate="move" player="Germans"/>
+      <step name="germanBattle" delegate="battle" player="Germans"/>
+      <step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
+      <step name="germanPlace" delegate="place" player="Germans"/>
+      <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
+      <!-- <step name="americanTech" delegate="tech" player="Americans"/> -->
+      <step name="chinesePurchase" delegate="purchase" player="Chinese"/>
+      <step name="chineseCombatMove" delegate="move" player="Chinese"/>
+      <step name="chineseBattle" delegate="battle" player="Chinese"/>
+      <step name="chineseNonCombatMove" delegate="move" player="Chinese" display="Non Combat Move"/>
+      <step name="chinesePlace" delegate="place" player="Chinese"/>
+      <step name="chineseEndTurn" delegate="endTurn" player="Chinese"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <!-- advanced industrial production -->
+    <productionFrontier name="production">
+      <frontierRules name="buyInfantry"/>
+      <!-- -->
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyAAGun"/>
+    </productionFrontier>
+    <playerProduction player="Russians" frontier="production"/>
+    <playerProduction player="Italians" frontier="production"/>
+    <playerProduction player="Germans" frontier="production"/>
+    <playerProduction player="Chinese" frontier="production"/>
+  </production>
+  <attachmentList>
+    <!-- Tech Attachements here for compatibility reasons with .5.1 -->
+    <!-- Russians -->
+    <attachment name="techAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <!-- Italians -->
+    <attachment name="techAttachment" attachTo="Italians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <!-- Germans -->
+    <attachment name="techAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <!-- Chinese -->
+    <attachment name="techAttachment" attachTo="Chinese" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="isInfantry" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="isDestroyer" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="canBombard" value="true"/>
+      <option name="hitPoints" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="carrierCapacity" value="2"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isSub" value="true"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="2"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <!-- Army Bases IC -->
+    <attachment name="territoryAttachment" attachTo="RussianBase" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="originalFactory" value="true"/>
+      <option name="capital" value="Russians"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ItalianBase" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="originalFactory" value="true"/>
+      <option name="capital" value="Italians"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="GermanBase" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="originalFactory" value="true"/>
+      <option name="capital" value="Germans"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ChineseBase" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="originalFactory" value="true"/>
+      <option name="capital" value="Chinese"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <!-- Flag -->
+    <attachment name="territoryAttachment" attachTo="Flag" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="15"/>
+    </attachment>
+    <!-- Bar Territories -->
+    <attachment name="territoryAttachment" attachTo="TopBar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="LeftBar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="BottomBar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="RightBar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <!-- Russian Territories -->
+    <attachment name="territoryAttachment" attachTo="RussianStart" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="RussianStartRight" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="RussianStartLeft" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="RussianStepOne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="RussianStepTwo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <!-- Italian Territories -->
+    <attachment name="territoryAttachment" attachTo="ItalianStart" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ItalianStartRight" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ItalianStartLeft" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ItalianStepOne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ItalianStepTwo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <!-- German Territories -->
+    <attachment name="territoryAttachment" attachTo="GermanStart" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="GermanStartRight" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="GermanStartLeft" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="GermanStepOne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="GermanStepTwo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <!-- Chinese Territories -->
+    <attachment name="territoryAttachment" attachTo="ChineseStart" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ChineseStartRight" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ChineseStartLeft" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ChineseStepOne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ChineseStepTwo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- Russian Owned Territories -->
+      <territoryOwner territory="RussianBase" owner="Russians"/>
+      <territoryOwner territory="RussianStart" owner="Russians"/>
+      <!-- Italian Owned Territories -->
+      <territoryOwner territory="ItalianBase" owner="Italians"/>
+      <territoryOwner territory="ItalianStart" owner="Italians"/>
+      <!-- German Owned Territories -->
+      <territoryOwner territory="GermanBase" owner="Germans"/>
+      <territoryOwner territory="GermanStart" owner="Germans"/>
+      <!-- Chinese Owned Territories -->
+      <territoryOwner territory="ChineseBase" owner="Chinese"/>
+      <territoryOwner territory="ChineseStart" owner="Chinese"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Neutral Starting Units -->
+      <unitPlacement unitType="infantry" territory="Flag" quantity="3"/>
+      <!-- Russian Starting Units -->
+      <unitPlacement unitType="factory" territory="RussianBase" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="RussianBase" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="RussianStart" quantity="2" owner="Russians"/>
+      <!-- Italian Starting Units -->
+      <unitPlacement unitType="factory" territory="ItalianBase" quantity="1" owner="Italians"/>
+      <unitPlacement unitType="armour" territory="ItalianBase" quantity="1" owner="Italians"/>
+      <unitPlacement unitType="infantry" territory="ItalianStart" quantity="2" owner="Italians"/>
+      <!-- German Starting Units -->
+      <unitPlacement unitType="factory" territory="GermanBase" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="armour" territory="GermanBase" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="infantry" territory="GermanStart" quantity="2" owner="Germans"/>
+      <!-- Chinese Starting Units -->
+      <unitPlacement unitType="factory" territory="ChineseBase" quantity="1" owner="Chinese"/>
+      <unitPlacement unitType="armour" territory="ChineseBase" quantity="1" owner="Chinese"/>
+      <unitPlacement unitType="infantry" territory="ChineseStart" quantity="2" owner="Chinese"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Russians" resource="PUs" quantity="12"/>
+      <resourceGiven player="Italians" resource="PUs" quantity="15"/>
+      <resourceGiven player="Germans" resource="PUs" quantity="18"/>
+      <resourceGiven player="Chinese" resource="PUs" quantity="21"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <property name="Russians bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Italians bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Germans bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Chinese bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Total Victory" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Russians Total Victory VCs" value="4" editable="false">
+      <number min="2" max="4"/>
+    </property>
+    <property name="Italians Total Victory VCs" value="4" editable="false">
+      <number min="2" max="4"/>
+    </property>
+    <property name="Germans Total Victory VCs" value="4" editable="false">
+      <number min="2" max="4"/>
+    </property>
+    <property name="Chinese Total Victory VCs" value="4" editable="false">
+      <number min="2" max="4"/>
+    </property>
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for AntiAircraft" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Technology" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Bombing and Territory Damage" value="false" editable="false">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Use Destroyers and Artillery" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Battleships repair at end of round" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="mapName" value="capture_the_flag" editable="false"/>
+    <!-- notes appear in the notes menu in the main screen, format as html -->
+    <property name="notes" value="Order goes in clockwise direction starting with Russia &lt;br&gt; &lt;br&gt;      Each white territory is neutral, but costs no PUs to invade  &lt;br&gt; &lt;br&gt;      When a player loses his base, he is out for good unless he can reliberate it himself &lt;br&gt; &lt;br&gt;      First player starts with 12 PUs of production, and each player after this gets 3 more than the last player. &lt;br&gt; &lt;br&gt;    Last man, or Team standing wins (if playing a team, territory can not be shared) &lt;br&gt; &lt;br&gt;        Credits: Puff the Magic Dragon..."/>
+  </propertyList>
+</game>

@@ -1,0 +1,2189 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="=TC.FRONT=" version="1.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Base A"/>
+    <territory name="Base B"/>
+    <territory name="Base C"/>
+    <territory name="Base D"/>
+    <territory name="Base E"/>
+    <territory name="Base F"/>
+    <territory name="Base G"/>
+    <territory name="Base H"/>
+    <territory name="1"/>
+    <territory name="2"/>
+    <territory name="3"/>
+    <territory name="4"/>
+    <territory name="5"/>
+    <territory name="6"/>
+    <territory name="7"/>
+    <territory name="8"/>
+    <territory name="9"/>
+    <territory name="10"/>
+    <territory name="11"/>
+    <territory name="12"/>
+    <territory name="13"/>
+    <territory name="14"/>
+    <territory name="15"/>
+    <territory name="16"/>
+    <territory name="17"/>
+    <territory name="18"/>
+    <territory name="19"/>
+    <territory name="20"/>
+    <territory name="21"/>
+    <territory name="22"/>
+    <territory name="23"/>
+    <territory name="24"/>
+    <territory name="25"/>
+    <territory name="26"/>
+    <territory name="27"/>
+    <territory name="28"/>
+    <territory name="29"/>
+    <territory name="30"/>
+    <territory name="31"/>
+    <territory name="32"/>
+    <territory name="33"/>
+    <territory name="34"/>
+    <territory name="35"/>
+    <territory name="36"/>
+    <territory name="37"/>
+    <territory name="38"/>
+    <territory name="39"/>
+    <territory name="40"/>
+    <territory name="41"/>
+    <territory name="42"/>
+    <territory name="43"/>
+    <territory name="44"/>
+    <territory name="45"/>
+    <territory name="46"/>
+    <territory name="47"/>
+    <territory name="48"/>
+    <territory name="49"/>
+    <territory name="50"/>
+    <territory name="51"/>
+    <territory name="52"/>
+    <territory name="53"/>
+    <territory name="54"/>
+    <territory name="55"/>
+    <territory name="56"/>
+    <territory name="57"/>
+    <territory name="58"/>
+    <territory name="59"/>
+    <territory name="60"/>
+    <territory name="61"/>
+    <territory name="62"/>
+    <territory name="63"/>
+    <territory name="64"/>
+    <territory name="65"/>
+    <territory name="66"/>
+    <territory name="67"/>
+    <territory name="68"/>
+    <territory name="69"/>
+    <territory name="70"/>
+    <territory name="71"/>
+    <territory name="72"/>
+    <territory name="73"/>
+    <territory name="74"/>
+    <territory name="75"/>
+    <territory name="76"/>
+    <territory name="77"/>
+    <territory name="78"/>
+    <territory name="79"/>
+    <territory name="80"/>
+    <territory name="81"/>
+    <territory name="82"/>
+    <territory name="83"/>
+    <territory name="84"/>
+    <territory name="85"/>
+    <territory name="86"/>
+    <territory name="87"/>
+    <territory name="88"/>
+    <territory name="89"/>
+    <territory name="90"/>
+    <territory name="91"/>
+    <territory name="92"/>
+    <territory name="93"/>
+    <territory name="94"/>
+    <territory name="95"/>
+    <territory name="96"/>
+    <territory name="97"/>
+    <territory name="98"/>
+    <territory name="99"/>
+    <territory name="100"/>
+    <territory name="101"/>
+    <territory name="102"/>
+    <territory name="103"/>
+    <territory name="104"/>
+    <territory name="105"/>
+    <territory name="106"/>
+    <territory name="107"/>
+    <territory name="108"/>
+    <territory name="109"/>
+    <territory name="110"/>
+    <territory name="111"/>
+    <territory name="112"/>
+    <territory name="113"/>
+    <territory name="114"/>
+    <territory name="115"/>
+    <territory name="116"/>
+    <territory name="117"/>
+    <territory name="118"/>
+    <territory name="119"/>
+    <territory name="120"/>
+    <territory name="121"/>
+    <territory name="122"/>
+    <territory name="123"/>
+    <territory name="124"/>
+    <territory name="125"/>
+    <territory name="126"/>
+    <territory name="127"/>
+    <territory name="128"/>
+    <territory name="129"/>
+    <territory name="130"/>
+    <territory name="131"/>
+    <territory name="132"/>
+    <territory name="133"/>
+    <territory name="134"/>
+    <territory name="135"/>
+    <territory name="136"/>
+    <territory name="137"/>
+    <territory name="138"/>
+    <territory name="139"/>
+    <territory name="140"/>
+    <territory name="141"/>
+    <territory name="142"/>
+    <territory name="143"/>
+    <territory name="144"/>
+    <territory name="145"/>
+    <territory name="146"/>
+    <territory name="147"/>
+    <territory name="148"/>
+    <territory name="149"/>
+    <territory name="150"/>
+    <territory name="151"/>
+    <territory name="152"/>
+    <territory name="153"/>
+    <territory name="154"/>
+    <territory name="155"/>
+    <territory name="156"/>
+    <territory name="157"/>
+    <territory name="158"/>
+    <territory name="159"/>
+    <territory name="160"/>
+    <territory name="161"/>
+    <territory name="162"/>
+    <territory name="163"/>
+    <territory name="164"/>
+    <territory name="165"/>
+    <territory name="166"/>
+    <territory name="167"/>
+    <territory name="168"/>
+    <territory name="169"/>
+    <territory name="170"/>
+    <territory name="171"/>
+    <territory name="172"/>
+    <territory name="173"/>
+    <territory name="174"/>
+    <territory name="175"/>
+    <territory name="176"/>
+    <territory name="177"/>
+    <territory name="178"/>
+    <territory name="179"/>
+    <territory name="180"/>
+    <territory name="181"/>
+    <territory name="182"/>
+    <territory name="183"/>
+    <territory name="184"/>
+    <territory name="185"/>
+    <territory name="186"/>
+    <territory name="187"/>
+    <territory name="188"/>
+    <territory name="189"/>
+    <territory name="190"/>
+    <territory name="191"/>
+    <territory name="192"/>
+    <territory name="193"/>
+    <territory name="194"/>
+    <territory name="195"/>
+    <territory name="196"/>
+    <territory name="197"/>
+    <territory name="198"/>
+    <territory name="199"/>
+    <territory name="200"/>
+    <territory name="201"/>
+    <territory name="202"/>
+    <territory name="203"/>
+    <territory name="204"/>
+    <territory name="205"/>
+    <territory name="206"/>
+    <territory name="207"/>
+    <territory name="208"/>
+    <territory name="209"/>
+    <territory name="210"/>
+    <territory name="211"/>
+    <territory name="212"/>
+    <!-- Territory Connects -->
+    <connection t1="1" t2="2"/>
+    <connection t1="1" t2="14"/>
+    <connection t1="1" t2="13"/>
+    <connection t1="2" t2="15"/>
+    <connection t1="2" t2="14"/>
+    <connection t1="2" t2="3"/>
+    <connection t1="3" t2="15"/>
+    <connection t1="3" t2="16"/>
+    <connection t1="3" t2="4"/>
+    <connection t1="4" t2="17"/>
+    <connection t1="4" t2="16"/>
+    <connection t1="4" t2="5"/>
+    <connection t1="5" t2="17"/>
+    <connection t1="5" t2="18"/>
+    <connection t1="5" t2="6"/>
+    <connection t1="6" t2="19"/>
+    <connection t1="6" t2="18"/>
+    <connection t1="6" t2="7"/>
+    <connection t1="7" t2="19"/>
+    <connection t1="7" t2="20"/>
+    <connection t1="7" t2="8"/>
+    <connection t1="8" t2="21"/>
+    <connection t1="8" t2="20"/>
+    <connection t1="8" t2="9"/>
+    <connection t1="9" t2="22"/>
+    <connection t1="9" t2="21"/>
+    <connection t1="9" t2="10"/>
+    <connection t1="10" t2="22"/>
+    <connection t1="10" t2="23"/>
+    <connection t1="10" t2="11"/>
+    <connection t1="11" t2="24"/>
+    <connection t1="11" t2="23"/>
+    <connection t1="11" t2="12"/>
+    <connection t1="12" t2="24"/>
+    <connection t1="12" t2="25"/>
+    <connection t1="26" t2="13"/>
+    <connection t1="26" t2="14"/>
+    <connection t1="26" t2="27"/>
+    <connection t1="26" t2="38"/>
+    <connection t1="26" t2="39"/>
+    <connection t1="27" t2="14"/>
+    <connection t1="27" t2="15"/>
+    <connection t1="27" t2="28"/>
+    <connection t1="27" t2="39"/>
+    <connection t1="27" t2="40"/>
+    <connection t1="28" t2="16"/>
+    <connection t1="28" t2="15"/>
+    <connection t1="28" t2="29"/>
+    <connection t1="28" t2="41"/>
+    <connection t1="28" t2="40"/>
+    <connection t1="29" t2="16"/>
+    <connection t1="29" t2="17"/>
+    <connection t1="29" t2="30"/>
+    <connection t1="29" t2="41"/>
+    <connection t1="29" t2="42"/>
+    <connection t1="30" t2="18"/>
+    <connection t1="30" t2="17"/>
+    <connection t1="30" t2="31"/>
+    <connection t1="30" t2="43"/>
+    <connection t1="30" t2="42"/>
+    <connection t1="31" t2="18"/>
+    <connection t1="31" t2="19"/>
+    <connection t1="31" t2="32"/>
+    <connection t1="31" t2="43"/>
+    <connection t1="31" t2="44"/>
+    <connection t1="32" t2="20"/>
+    <connection t1="32" t2="19"/>
+    <connection t1="32" t2="33"/>
+    <connection t1="32" t2="45"/>
+    <connection t1="32" t2="44"/>
+    <connection t1="33" t2="20"/>
+    <connection t1="33" t2="21"/>
+    <connection t1="33" t2="34"/>
+    <connection t1="33" t2="45"/>
+    <connection t1="33" t2="46"/>
+    <connection t1="34" t2="22"/>
+    <connection t1="34" t2="21"/>
+    <connection t1="34" t2="35"/>
+    <connection t1="34" t2="47"/>
+    <connection t1="34" t2="46"/>
+    <connection t1="35" t2="22"/>
+    <connection t1="35" t2="23"/>
+    <connection t1="35" t2="36"/>
+    <connection t1="35" t2="47"/>
+    <connection t1="35" t2="48"/>
+    <connection t1="36" t2="24"/>
+    <connection t1="36" t2="23"/>
+    <connection t1="36" t2="37"/>
+    <connection t1="36" t2="49"/>
+    <connection t1="36" t2="48"/>
+    <connection t1="37" t2="24"/>
+    <connection t1="37" t2="25"/>
+    <connection t1="37" t2="49"/>
+    <connection t1="37" t2="50"/>
+    <connection t1="51" t2="38"/>
+    <connection t1="51" t2="52"/>
+    <connection t1="51" t2="63"/>
+    <connection t1="51" t2="64"/>
+    <connection t1="52" t2="39"/>
+    <connection t1="52" t2="40"/>
+    <connection t1="52" t2="53"/>
+    <connection t1="52" t2="65"/>
+    <connection t1="52" t2="64"/>
+    <connection t1="53" t2="40"/>
+    <connection t1="53" t2="41"/>
+    <connection t1="53" t2="54"/>
+    <connection t1="53" t2="65"/>
+    <connection t1="53" t2="66"/>
+    <connection t1="54" t2="42"/>
+    <connection t1="54" t2="41"/>
+    <connection t1="54" t2="55"/>
+    <connection t1="54" t2="67"/>
+    <connection t1="54" t2="66"/>
+    <connection t1="55" t2="42"/>
+    <connection t1="55" t2="43"/>
+    <connection t1="55" t2="56"/>
+    <connection t1="55" t2="67"/>
+    <connection t1="55" t2="68"/>
+    <connection t1="56" t2="44"/>
+    <connection t1="56" t2="43"/>
+    <connection t1="56" t2="57"/>
+    <connection t1="56" t2="69"/>
+    <connection t1="56" t2="68"/>
+    <connection t1="57" t2="44"/>
+    <connection t1="57" t2="45"/>
+    <connection t1="57" t2="58"/>
+    <connection t1="57" t2="69"/>
+    <connection t1="57" t2="70"/>
+    <connection t1="58" t2="46"/>
+    <connection t1="58" t2="45"/>
+    <connection t1="58" t2="59"/>
+    <connection t1="58" t2="71"/>
+    <connection t1="58" t2="70"/>
+    <connection t1="59" t2="46"/>
+    <connection t1="59" t2="47"/>
+    <connection t1="59" t2="60"/>
+    <connection t1="59" t2="71"/>
+    <connection t1="59" t2="72"/>
+    <connection t1="60" t2="48"/>
+    <connection t1="60" t2="47"/>
+    <connection t1="60" t2="61"/>
+    <connection t1="60" t2="73"/>
+    <connection t1="60" t2="72"/>
+    <connection t1="61" t2="48"/>
+    <connection t1="61" t2="49"/>
+    <connection t1="61" t2="62"/>
+    <connection t1="61" t2="73"/>
+    <connection t1="61" t2="74"/>
+    <connection t1="62" t2="50"/>
+    <connection t1="62" t2="49"/>
+    <connection t1="62" t2="75"/>
+    <connection t1="62" t2="74"/>
+    <connection t1="76" t2="63"/>
+    <connection t1="76" t2="64"/>
+    <connection t1="76" t2="77"/>
+    <connection t1="76" t2="88"/>
+    <connection t1="76" t2="89"/>
+    <connection t1="77" t2="64"/>
+    <connection t1="77" t2="65"/>
+    <connection t1="77" t2="78"/>
+    <connection t1="77" t2="89"/>
+    <connection t1="77" t2="90"/>
+    <connection t1="78" t2="65"/>
+    <connection t1="78" t2="66"/>
+    <connection t1="78" t2="79"/>
+    <connection t1="78" t2="90"/>
+    <connection t1="78" t2="91"/>
+    <connection t1="79" t2="67"/>
+    <connection t1="79" t2="66"/>
+    <connection t1="79" t2="80"/>
+    <connection t1="79" t2="91"/>
+    <connection t1="79" t2="92"/>
+    <connection t1="80" t2="67"/>
+    <connection t1="80" t2="68"/>
+    <connection t1="80" t2="81"/>
+    <connection t1="80" t2="93"/>
+    <connection t1="80" t2="92"/>
+    <connection t1="81" t2="69"/>
+    <connection t1="81" t2="68"/>
+    <connection t1="81" t2="82"/>
+    <connection t1="81" t2="93"/>
+    <connection t1="81" t2="94"/>
+    <connection t1="82" t2="69"/>
+    <connection t1="82" t2="70"/>
+    <connection t1="82" t2="83"/>
+    <connection t1="82" t2="94"/>
+    <connection t1="82" t2="95"/>
+    <connection t1="83" t2="71"/>
+    <connection t1="83" t2="70"/>
+    <connection t1="83" t2="84"/>
+    <connection t1="83" t2="95"/>
+    <connection t1="83" t2="96"/>
+    <connection t1="84" t2="71"/>
+    <connection t1="84" t2="72"/>
+    <connection t1="84" t2="85"/>
+    <connection t1="84" t2="97"/>
+    <connection t1="84" t2="96"/>
+    <connection t1="85" t2="73"/>
+    <connection t1="85" t2="72"/>
+    <connection t1="85" t2="86"/>
+    <connection t1="85" t2="97"/>
+    <connection t1="85" t2="98"/>
+    <connection t1="86" t2="73"/>
+    <connection t1="86" t2="74"/>
+    <connection t1="86" t2="87"/>
+    <connection t1="86" t2="99"/>
+    <connection t1="86" t2="98"/>
+    <connection t1="87" t2="75"/>
+    <connection t1="87" t2="74"/>
+    <connection t1="87" t2="99"/>
+    <connection t1="87" t2="100"/>
+    <connection t1="101" t2="89"/>
+    <connection t1="101" t2="88"/>
+    <connection t1="101" t2="102"/>
+    <connection t1="101" t2="114"/>
+    <connection t1="101" t2="113"/>
+    <connection t1="114" t2="113"/>
+    <connection t1="102" t2="89"/>
+    <connection t1="102" t2="90"/>
+    <connection t1="102" t2="103"/>
+    <connection t1="102" t2="114"/>
+    <connection t1="102" t2="115"/>
+    <connection t1="103" t2="91"/>
+    <connection t1="103" t2="90"/>
+    <connection t1="103" t2="104"/>
+    <connection t1="103" t2="116"/>
+    <connection t1="103" t2="115"/>
+    <connection t1="104" t2="91"/>
+    <connection t1="104" t2="92"/>
+    <connection t1="104" t2="105"/>
+    <connection t1="104" t2="116"/>
+    <connection t1="104" t2="117"/>
+    <connection t1="105" t2="92"/>
+    <connection t1="105" t2="93"/>
+    <connection t1="105" t2="106"/>
+    <connection t1="105" t2="117"/>
+    <connection t1="105" t2="118"/>
+    <connection t1="106" t2="94"/>
+    <connection t1="106" t2="93"/>
+    <connection t1="106" t2="107"/>
+    <connection t1="106" t2="119"/>
+    <connection t1="106" t2="118"/>
+    <connection t1="107" t2="94"/>
+    <connection t1="107" t2="95"/>
+    <connection t1="107" t2="108"/>
+    <connection t1="107" t2="119"/>
+    <connection t1="107" t2="120"/>
+    <connection t1="108" t2="96"/>
+    <connection t1="108" t2="95"/>
+    <connection t1="108" t2="109"/>
+    <connection t1="108" t2="120"/>
+    <connection t1="108" t2="121"/>
+    <connection t1="109" t2="96"/>
+    <connection t1="109" t2="97"/>
+    <connection t1="109" t2="110"/>
+    <connection t1="109" t2="122"/>
+    <connection t1="109" t2="121"/>
+    <connection t1="110" t2="98"/>
+    <connection t1="110" t2="97"/>
+    <connection t1="110" t2="111"/>
+    <connection t1="110" t2="122"/>
+    <connection t1="110" t2="123"/>
+    <connection t1="111" t2="98"/>
+    <connection t1="111" t2="99"/>
+    <connection t1="111" t2="112"/>
+    <connection t1="111" t2="124"/>
+    <connection t1="111" t2="123"/>
+    <connection t1="112" t2="100"/>
+    <connection t1="112" t2="99"/>
+    <connection t1="112" t2="113"/>
+    <connection t1="112" t2="125"/>
+    <connection t1="112" t2="124"/>
+    <connection t1="113" t2="100"/>
+    <connection t1="113" t2="101"/>
+    <connection t1="113" t2="125"/>
+    <connection t1="113" t2="126"/>
+    <connection t1="127" t2="114"/>
+    <connection t1="127" t2="115"/>
+    <connection t1="127" t2="128"/>
+    <connection t1="127" t2="140"/>
+    <connection t1="127" t2="139"/>
+    <connection t1="128" t2="116"/>
+    <connection t1="128" t2="115"/>
+    <connection t1="128" t2="129"/>
+    <connection t1="128" t2="140"/>
+    <connection t1="128" t2="141"/>
+    <connection t1="129" t2="116"/>
+    <connection t1="129" t2="117"/>
+    <connection t1="129" t2="130"/>
+    <connection t1="129" t2="142"/>
+    <connection t1="129" t2="141"/>
+    <connection t1="130" t2="118"/>
+    <connection t1="130" t2="117"/>
+    <connection t1="130" t2="131"/>
+    <connection t1="130" t2="142"/>
+    <connection t1="130" t2="143"/>
+    <connection t1="131" t2="118"/>
+    <connection t1="131" t2="119"/>
+    <connection t1="131" t2="132"/>
+    <connection t1="131" t2="144"/>
+    <connection t1="131" t2="143"/>
+    <connection t1="132" t2="120"/>
+    <connection t1="132" t2="119"/>
+    <connection t1="132" t2="133"/>
+    <connection t1="132" t2="144"/>
+    <connection t1="132" t2="145"/>
+    <connection t1="133" t2="120"/>
+    <connection t1="133" t2="121"/>
+    <connection t1="133" t2="134"/>
+    <connection t1="133" t2="146"/>
+    <connection t1="133" t2="145"/>
+    <connection t1="134" t2="122"/>
+    <connection t1="134" t2="121"/>
+    <connection t1="134" t2="135"/>
+    <connection t1="134" t2="146"/>
+    <connection t1="134" t2="147"/>
+    <connection t1="135" t2="122"/>
+    <connection t1="135" t2="123"/>
+    <connection t1="135" t2="136"/>
+    <connection t1="135" t2="148"/>
+    <connection t1="135" t2="147"/>
+    <connection t1="136" t2="124"/>
+    <connection t1="136" t2="123"/>
+    <connection t1="136" t2="137"/>
+    <connection t1="136" t2="148"/>
+    <connection t1="136" t2="149"/>
+    <connection t1="137" t2="124"/>
+    <connection t1="137" t2="125"/>
+    <connection t1="137" t2="138"/>
+    <connection t1="137" t2="150"/>
+    <connection t1="137" t2="149"/>
+    <connection t1="138" t2="126"/>
+    <connection t1="138" t2="139"/>
+    <connection t1="138" t2="151"/>
+    <connection t1="151" t2="139"/>
+    <connection t1="151" t2="138"/>
+    <connection t1="151" t2="152"/>
+    <connection t1="151" t2="163"/>
+    <connection t1="151" t2="164"/>
+    <connection t1="152" t2="139"/>
+    <connection t1="152" t2="140"/>
+    <connection t1="152" t2="153"/>
+    <connection t1="152" t2="165"/>
+    <connection t1="152" t2="164"/>
+    <connection t1="153" t2="141"/>
+    <connection t1="153" t2="140"/>
+    <connection t1="153" t2="154"/>
+    <connection t1="153" t2="165"/>
+    <connection t1="153" t2="166"/>
+    <connection t1="154" t2="141"/>
+    <connection t1="154" t2="142"/>
+    <connection t1="154" t2="155"/>
+    <connection t1="154" t2="167"/>
+    <connection t1="154" t2="166"/>
+    <connection t1="155" t2="143"/>
+    <connection t1="155" t2="142"/>
+    <connection t1="155" t2="156"/>
+    <connection t1="155" t2="167"/>
+    <connection t1="155" t2="168"/>
+    <connection t1="156" t2="143"/>
+    <connection t1="156" t2="144"/>
+    <connection t1="156" t2="157"/>
+    <connection t1="156" t2="169"/>
+    <connection t1="156" t2="168"/>
+    <connection t1="157" t2="145"/>
+    <connection t1="157" t2="144"/>
+    <connection t1="157" t2="158"/>
+    <connection t1="157" t2="169"/>
+    <connection t1="157" t2="170"/>
+    <connection t1="158" t2="145"/>
+    <connection t1="158" t2="146"/>
+    <connection t1="158" t2="159"/>
+    <connection t1="158" t2="171"/>
+    <connection t1="158" t2="170"/>
+    <connection t1="159" t2="147"/>
+    <connection t1="159" t2="146"/>
+    <connection t1="159" t2="160"/>
+    <connection t1="159" t2="171"/>
+    <connection t1="159" t2="172"/>
+    <connection t1="160" t2="147"/>
+    <connection t1="160" t2="148"/>
+    <connection t1="160" t2="161"/>
+    <connection t1="160" t2="173"/>
+    <connection t1="160" t2="172"/>
+    <connection t1="161" t2="149"/>
+    <connection t1="161" t2="148"/>
+    <connection t1="161" t2="162"/>
+    <connection t1="161" t2="173"/>
+    <connection t1="161" t2="174"/>
+    <connection t1="162" t2="149"/>
+    <connection t1="162" t2="150"/>
+    <connection t1="162" t2="163"/>
+    <connection t1="162" t2="175"/>
+    <connection t1="162" t2="174"/>
+    <connection t1="163" t2="151"/>
+    <connection t1="163" t2="164"/>
+    <connection t1="163" t2="176"/>
+    <connection t1="176" t2="164"/>
+    <connection t1="176" t2="163"/>
+    <connection t1="176" t2="177"/>
+    <connection t1="176" t2="188"/>
+    <connection t1="176" t2="189"/>
+    <connection t1="177" t2="164"/>
+    <connection t1="177" t2="165"/>
+    <connection t1="177" t2="178"/>
+    <connection t1="177" t2="190"/>
+    <connection t1="177" t2="189"/>
+    <connection t1="178" t2="166"/>
+    <connection t1="178" t2="165"/>
+    <connection t1="178" t2="179"/>
+    <connection t1="178" t2="190"/>
+    <connection t1="178" t2="191"/>
+    <connection t1="179" t2="166"/>
+    <connection t1="179" t2="167"/>
+    <connection t1="179" t2="180"/>
+    <connection t1="179" t2="191"/>
+    <connection t1="179" t2="192"/>
+    <connection t1="180" t2="168"/>
+    <connection t1="180" t2="167"/>
+    <connection t1="180" t2="181"/>
+    <connection t1="180" t2="193"/>
+    <connection t1="180" t2="192"/>
+    <connection t1="181" t2="168"/>
+    <connection t1="181" t2="169"/>
+    <connection t1="181" t2="182"/>
+    <connection t1="181" t2="193"/>
+    <connection t1="181" t2="194"/>
+    <connection t1="182" t2="170"/>
+    <connection t1="182" t2="169"/>
+    <connection t1="182" t2="183"/>
+    <connection t1="182" t2="195"/>
+    <connection t1="182" t2="194"/>
+    <connection t1="183" t2="170"/>
+    <connection t1="183" t2="171"/>
+    <connection t1="183" t2="184"/>
+    <connection t1="183" t2="195"/>
+    <connection t1="183" t2="196"/>
+    <connection t1="184" t2="172"/>
+    <connection t1="184" t2="171"/>
+    <connection t1="184" t2="185"/>
+    <connection t1="184" t2="197"/>
+    <connection t1="184" t2="196"/>
+    <connection t1="185" t2="172"/>
+    <connection t1="185" t2="173"/>
+    <connection t1="185" t2="186"/>
+    <connection t1="185" t2="198"/>
+    <connection t1="185" t2="197"/>
+    <connection t1="186" t2="174"/>
+    <connection t1="186" t2="173"/>
+    <connection t1="186" t2="187"/>
+    <connection t1="186" t2="198"/>
+    <connection t1="186" t2="199"/>
+    <connection t1="187" t2="174"/>
+    <connection t1="187" t2="175"/>
+    <connection t1="187" t2="199"/>
+    <connection t1="187" t2="200"/>
+    <connection t1="188" t2="176"/>
+    <connection t1="188" t2="189"/>
+    <connection t1="188" t2="201"/>
+    <connection t1="189" t2="190"/>
+    <connection t1="189" t2="176"/>
+    <connection t1="189" t2="177"/>
+    <connection t1="189" t2="202"/>
+    <connection t1="189" t2="201"/>
+    <connection t1="201" t2="188"/>
+    <connection t1="201" t2="189"/>
+    <connection t1="201" t2="202"/>
+    <connection t1="202" t2="189"/>
+    <connection t1="202" t2="190"/>
+    <connection t1="202" t2="203"/>
+    <connection t1="203" t2="190"/>
+    <connection t1="203" t2="191"/>
+    <connection t1="203" t2="204"/>
+    <connection t1="204" t2="191"/>
+    <connection t1="204" t2="192"/>
+    <connection t1="204" t2="205"/>
+    <connection t1="205" t2="193"/>
+    <connection t1="205" t2="192"/>
+    <connection t1="205" t2="206"/>
+    <connection t1="206" t2="193"/>
+    <connection t1="206" t2="194"/>
+    <connection t1="206" t2="207"/>
+    <connection t1="207" t2="195"/>
+    <connection t1="207" t2="194"/>
+    <connection t1="207" t2="208"/>
+    <connection t1="208" t2="195"/>
+    <connection t1="208" t2="196"/>
+    <connection t1="208" t2="209"/>
+    <connection t1="209" t2="197"/>
+    <connection t1="209" t2="196"/>
+    <connection t1="209" t2="210"/>
+    <connection t1="210" t2="197"/>
+    <connection t1="210" t2="198"/>
+    <connection t1="210" t2="211"/>
+    <connection t1="211" t2="199"/>
+    <connection t1="211" t2="198"/>
+    <connection t1="211" t2="212"/>
+    <connection t1="212" t2="199"/>
+    <connection t1="212" t2="200"/>
+    <connection t1="13" t2="14"/>
+    <connection t1="15" t2="14"/>
+    <connection t1="15" t2="16"/>
+    <connection t1="17" t2="16"/>
+    <connection t1="17" t2="18"/>
+    <connection t1="19" t2="18"/>
+    <connection t1="19" t2="20"/>
+    <connection t1="21" t2="20"/>
+    <connection t1="21" t2="22"/>
+    <connection t1="23" t2="22"/>
+    <connection t1="23" t2="24"/>
+    <connection t1="25" t2="24"/>
+    <connection t1="38" t2="39"/>
+    <connection t1="40" t2="39"/>
+    <connection t1="40" t2="41"/>
+    <connection t1="42" t2="41"/>
+    <connection t1="42" t2="43"/>
+    <connection t1="44" t2="43"/>
+    <connection t1="44" t2="45"/>
+    <connection t1="46" t2="45"/>
+    <connection t1="46" t2="47"/>
+    <connection t1="48" t2="47"/>
+    <connection t1="48" t2="49"/>
+    <connection t1="50" t2="49"/>
+    <connection t1="63" t2="64"/>
+    <connection t1="65" t2="64"/>
+    <connection t1="66" t2="65"/>
+    <connection t1="66" t2="67"/>
+    <connection t1="68" t2="67"/>
+    <connection t1="68" t2="69"/>
+    <connection t1="70" t2="69"/>
+    <connection t1="70" t2="71"/>
+    <connection t1="72" t2="71"/>
+    <connection t1="72" t2="73"/>
+    <connection t1="74" t2="73"/>
+    <connection t1="74" t2="75"/>
+    <connection t1="89" t2="90"/>
+    <connection t1="91" t2="90"/>
+    <connection t1="91" t2="92"/>
+    <connection t1="93" t2="92"/>
+    <connection t1="93" t2="94"/>
+    <connection t1="95" t2="94"/>
+    <connection t1="95" t2="96"/>
+    <connection t1="97" t2="96"/>
+    <connection t1="97" t2="98"/>
+    <connection t1="99" t2="98"/>
+    <connection t1="99" t2="100"/>
+    <connection t1="101" t2="100"/>
+    <connection t1="114" t2="115"/>
+    <connection t1="116" t2="115"/>
+    <connection t1="116" t2="117"/>
+    <connection t1="118" t2="117"/>
+    <connection t1="118" t2="119"/>
+    <connection t1="120" t2="119"/>
+    <connection t1="120" t2="121"/>
+    <connection t1="122" t2="121"/>
+    <connection t1="122" t2="123"/>
+    <connection t1="124" t2="123"/>
+    <connection t1="124" t2="125"/>
+    <connection t1="126" t2="125"/>
+    <connection t1="139" t2="140"/>
+    <connection t1="141" t2="140"/>
+    <connection t1="141" t2="142"/>
+    <connection t1="143" t2="142"/>
+    <connection t1="143" t2="144"/>
+    <connection t1="145" t2="144"/>
+    <connection t1="145" t2="146"/>
+    <connection t1="147" t2="146"/>
+    <connection t1="147" t2="148"/>
+    <connection t1="149" t2="148"/>
+    <connection t1="149" t2="150"/>
+    <connection t1="151" t2="150"/>
+    <connection t1="164" t2="165"/>
+    <connection t1="166" t2="165"/>
+    <connection t1="166" t2="167"/>
+    <connection t1="168" t2="167"/>
+    <connection t1="168" t2="169"/>
+    <connection t1="170" t2="169"/>
+    <connection t1="170" t2="171"/>
+    <connection t1="172" t2="171"/>
+    <connection t1="172" t2="173"/>
+    <connection t1="174" t2="173"/>
+    <connection t1="174" t2="175"/>
+    <connection t1="176" t2="175"/>
+    <connection t1="190" t2="191"/>
+    <connection t1="192" t2="191"/>
+    <connection t1="192" t2="193"/>
+    <connection t1="194" t2="193"/>
+    <connection t1="194" t2="195"/>
+    <connection t1="196" t2="195"/>
+    <connection t1="196" t2="197"/>
+    <connection t1="198" t2="197"/>
+    <connection t1="198" t2="199"/>
+    <connection t1="200" t2="199"/>
+    <connection t1="200" t2="201"/>
+    <connection t1="201" t2="202"/>
+    <connection t1="139" t2="126"/>
+    <connection t1="142" t2="143"/>
+    <connection t1="126" t2="127"/>
+    <connection t1="88" t2="89"/>
+    <connection t1="39" t2="90"/>
+    <connection t1="102" t2="90"/>
+    <connection t1="77" t2="90"/>
+    <connection t1="39" t2="51"/>
+    <connection t1="126" t2="114"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Russians" optional="false"/>
+    <player name="Germans" optional="false"/>
+    <player name="AI" optional="false"/>
+  </playerList>
+  <unitList>
+    <unit name="Infantry"/>
+    <unit name="Elite"/>
+    <unit name="Truck"/>
+    <unit name="Armour"/>
+    <unit name="Bigarmour"/>
+    <unit name="Halftrack"/>
+    <unit name="Katyusha"/>
+    <unit name="Scout"/>
+    <unit name="Fighter"/>
+    <unit name="EarlyFighter"/>
+    <unit name="Me262"/>
+    <unit name="Bomber"/>
+    <unit name="Lancaster"/>
+    <unit name="B29"/>
+    <unit name="Factory"/>
+    <unit name="AAGun"/>
+    <unit name="Bunker"/>
+    <unit name="Artillery"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.twoIfBySea.delegate.InitDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.twoIfBySea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="germanBid" delegate="bid" player="Germans" maxRunCount="1"/>
+      <step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
+      <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
+      <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+      <step name="AIBid" delegate="bid" player="AI" maxRunCount="1"/>
+      <step name="AIBidPlace" delegate="placeBid" player="AI" maxRunCount="1"/>
+      <!-- Germans Game Sequence -->
+      <step name="germanTech" delegate="tech" player="Germans"/>
+      <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
+      <step name="germanPurchase" delegate="purchase" player="Germans"/>
+      <step name="germanCombatMove" delegate="move" player="Germans"/>
+      <step name="germanBattle" delegate="battle" player="Germans"/>
+      <step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
+      <step name="germanPlace" delegate="place" player="Germans"/>
+      <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
+      <!-- Russians Game Sequence -->
+      <step name="russianTech" delegate="tech" player="Russians"/>
+      <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
+      <step name="russianPurchase" delegate="purchase" player="Russians"/>
+      <step name="russianCombatMove" delegate="move" player="Russians"/>
+      <step name="russianBattle" delegate="battle" player="Russians"/>
+      <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
+      <step name="russianPlace" delegate="place" player="Russians"/>
+      <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
+      <!-- AI Game Sequence -->
+      <step name="AITech" delegate="tech" player="AI"/>
+      <step name="AITechActivation" delegate="tech_activation" player="AI"/>
+      <step name="AIPurchase" delegate="purchase" player="AI"/>
+      <step name="AICombatMove" delegate="move" player="AI"/>
+      <step name="AIBattle" delegate="battle" player="AI"/>
+      <step name="AINonCombatMove" delegate="move" player="AI" display="Non Combat Move"/>
+      <step name="AIPlace" delegate="place" player="AI"/>
+      <step name="AIEndTurn" delegate="endTurn" player="AI"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="Infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyElite">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="Elite" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTruck">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="Truck" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="Artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="Armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBigarmour">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="Bigarmour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHalftrack">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="Halftrack" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyKatyusha">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="Katyusha" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyScout">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="Scout" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="Fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyEarlyFighter">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="EarlyFighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyMe262">
+      <cost resource="PUs" quantity="13"/>
+      <result resourceOrUnit="Me262" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="Bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyLancaster">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="Lancaster" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyB29">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="B29" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBunker">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="Bunker" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactory">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="Factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="AAGun" quantity="1"/>
+    </productionRule>
+    <!-- Advanced Industrial Production -->
+    <productionRule name="buyInfantryIndustrialTechnology">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="Infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyEliteIndustrialTechnology">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="Elite" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTruckIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="Elite" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtilleryIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="Artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmourIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="Armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBigarmourIndustrialTechnology">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="Bigarmour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHalftrackIndustrialTechnology">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="Halftrack" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyKatyushaIndustrialTechnology">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="Katyusha" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyScoutIndustrialTechnology">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="Scout" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="Fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyEarlyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="Fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyMe262IndustrialTechnology">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="Fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomberIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="Bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyLancasterIndustrialTechnology">
+      <cost resource="PUs" quantity="17"/>
+      <result resourceOrUnit="Bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyB29IndustrialTechnology">
+      <cost resource="PUs" quantity="19"/>
+      <result resourceOrUnit="B29" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBunkerIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="Factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="Factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGunIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="AAGun" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="productionGermans">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyElite"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyTruck"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyBigarmour"/>
+      <frontierRules name="buyEarlyFighter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyMe262"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyBunker"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionRussians">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyElite"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyTruck"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyBigarmour"/>
+      <frontierRules name="buyKatyusha"/>
+      <frontierRules name="buyEarlyFighter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyBunker"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionAI">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyElite"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyTruck"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyEarlyFighter"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyBunker"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionIndustrialTechnology">
+      <frontierRules name="buyInfantryIndustrialTechnology"/>
+      <frontierRules name="buyEliteIndustrialTechnology"/>
+      <frontierRules name="buyArtilleryIndustrialTechnology"/>
+      <frontierRules name="buyTruckIndustrialTechnology"/>
+      <frontierRules name="buyArmourIndustrialTechnology"/>
+      <frontierRules name="buyBigarmourIndustrialTechnology"/>
+      <frontierRules name="buyHalftrackIndustrialTechnology"/>
+      <frontierRules name="buyKatyushaIndustrialTechnology"/>
+      <frontierRules name="buyScoutIndustrialTechnology"/>
+      <frontierRules name="buyFighterIndustrialTechnology"/>
+      <frontierRules name="buyEarlyFighterIndustrialTechnology"/>
+      <frontierRules name="buyMe262IndustrialTechnology"/>
+      <frontierRules name="buyBomberIndustrialTechnology"/>
+      <frontierRules name="buyBunkerIndustrialTechnology"/>
+      <frontierRules name="buyAAGunIndustrialTechnology"/>
+      <frontierRules name="buyFactoryIndustrialTechnology"/>
+    </productionFrontier>
+    <playerProduction player="Germans" frontier="productionGermans"/>
+    <playerProduction player="Russians" frontier="productionRussians"/>
+    <playerProduction player="AI" frontier="productionAI"/>
+  </production>
+  <attachmentList>
+    <attachment name="techAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="AI" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Elite" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Truck" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Bigarmour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Halftrack" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Katyusha" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="artillery" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Scout" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="EarlyFighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Me262" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="5"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Lancaster" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="8"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="B29" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="8"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+      <option name="transportCost" value="6"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="AAGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="3"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Bunker" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="0"/>
+      <option name="defense" value="3"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Base A" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="capital" value="Russians"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Base B" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="capital" value="AI"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Base C" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Base D" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="capital" value="Germans"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Base E" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Base F" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Base G" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Base H" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="1" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="2" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="3" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="4" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="5" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="6" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="7" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="8" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="9" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="10" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="11" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="12" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="13" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="14" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="15" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="16" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="17" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="18" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="19" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="20" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="21" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="22" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="23" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="24" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="25" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="26" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="27" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="28" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="29" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="30" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="31" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="32" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="33" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="34" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="35" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="36" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="37" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="38" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="39" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="40" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="41" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="42" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="43" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="44" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="45" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="46" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="47" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="48" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="49" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="50" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="51" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="52" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="53" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="54" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="55" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="56" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="57" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="58" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="59" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="60" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="61" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="62" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="63" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="64" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="65" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="66" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="67" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="68" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="69" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="70" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="71" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="72" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="73" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="74" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="75" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="76" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="77" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="78" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="79" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="80" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="81" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="82" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="83" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="84" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="85" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="86" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="87" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="89" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="90" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="91" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="92" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="93" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="94" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="95" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="96" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="97" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="98" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="99" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="100" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="101" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="102" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="103" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="104" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="105" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="106" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="107" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="108" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="109" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="110" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="111" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="112" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="113" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="114" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="115" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="116" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="117" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="118" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="119" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="120" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="121" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="122" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="123" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="124" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="125" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="126" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="127" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="128" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="129" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="130" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="131" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="132" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="133" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="134" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="135" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="136" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="137" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="138" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="139" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="140" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="141" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="142" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="143" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="144" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="145" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="146" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="147" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="148" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="149" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="150" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="151" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="152" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="153" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="154" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="155" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="156" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="157" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="158" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="159" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="160" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="161" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="162" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="163" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="164" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="165" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="166" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="167" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="168" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="169" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="170" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="171" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="172" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="173" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="174" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="175" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="176" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="177" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="178" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="179" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="180" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="181" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="182" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="183" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="184" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="185" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="186" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="187" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="189" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="190" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="191" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="192" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="193" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="194" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="195" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="196" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="197" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="198" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="199" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="201" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="202" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="203" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="204" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="205" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="206" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="207" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="208" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="209" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="210" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="211" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="212" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="200" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="88" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="188" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="200" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- Russian Owned Territories -->
+      <territoryOwner territory="Base A" owner="Russians"/>
+      <!-- German Owned Territories -->
+      <territoryOwner territory="Base D" owner="Germans"/>
+      <!-- AI Owned Territories -->
+      <territoryOwner territory="Base B" owner="AI"/>
+      <territoryOwner territory="38" owner="AI"/>
+      <territoryOwner territory="39" owner="AI"/>
+      <territoryOwner territory="40" owner="AI"/>
+      <territoryOwner territory="41" owner="AI"/>
+      <territoryOwner territory="42" owner="AI"/>
+      <territoryOwner territory="43" owner="AI"/>
+      <territoryOwner territory="44" owner="AI"/>
+      <territoryOwner territory="45" owner="AI"/>
+      <territoryOwner territory="46" owner="AI"/>
+      <territoryOwner territory="47" owner="AI"/>
+      <territoryOwner territory="48" owner="AI"/>
+      <territoryOwner territory="49" owner="AI"/>
+      <territoryOwner territory="50" owner="AI"/>
+      <territoryOwner territory="51" owner="AI"/>
+      <territoryOwner territory="52" owner="AI"/>
+      <territoryOwner territory="53" owner="AI"/>
+      <territoryOwner territory="54" owner="AI"/>
+      <territoryOwner territory="55" owner="AI"/>
+      <territoryOwner territory="56" owner="AI"/>
+      <territoryOwner territory="57" owner="AI"/>
+      <territoryOwner territory="58" owner="AI"/>
+      <territoryOwner territory="59" owner="AI"/>
+      <territoryOwner territory="60" owner="AI"/>
+      <territoryOwner territory="61" owner="AI"/>
+      <territoryOwner territory="62" owner="AI"/>
+      <territoryOwner territory="63" owner="AI"/>
+      <territoryOwner territory="64" owner="AI"/>
+      <territoryOwner territory="65" owner="AI"/>
+      <territoryOwner territory="66" owner="AI"/>
+      <territoryOwner territory="67" owner="AI"/>
+      <territoryOwner territory="68" owner="AI"/>
+      <territoryOwner territory="69" owner="AI"/>
+      <territoryOwner territory="70" owner="AI"/>
+      <territoryOwner territory="71" owner="AI"/>
+      <territoryOwner territory="72" owner="AI"/>
+      <territoryOwner territory="73" owner="AI"/>
+      <territoryOwner territory="74" owner="AI"/>
+      <territoryOwner territory="75" owner="AI"/>
+      <territoryOwner territory="76" owner="AI"/>
+      <territoryOwner territory="77" owner="AI"/>
+      <territoryOwner territory="78" owner="AI"/>
+      <territoryOwner territory="79" owner="AI"/>
+      <territoryOwner territory="80" owner="AI"/>
+      <territoryOwner territory="81" owner="AI"/>
+      <territoryOwner territory="82" owner="AI"/>
+      <territoryOwner territory="83" owner="AI"/>
+      <territoryOwner territory="84" owner="AI"/>
+      <territoryOwner territory="85" owner="AI"/>
+      <territoryOwner territory="86" owner="AI"/>
+      <territoryOwner territory="87" owner="AI"/>
+      <territoryOwner territory="88" owner="AI"/>
+      <territoryOwner territory="89" owner="AI"/>
+      <territoryOwner territory="90" owner="AI"/>
+      <territoryOwner territory="91" owner="AI"/>
+      <territoryOwner territory="92" owner="AI"/>
+      <territoryOwner territory="93" owner="AI"/>
+      <territoryOwner territory="94" owner="AI"/>
+      <territoryOwner territory="95" owner="AI"/>
+      <territoryOwner territory="96" owner="AI"/>
+      <territoryOwner territory="97" owner="AI"/>
+      <territoryOwner territory="98" owner="AI"/>
+      <territoryOwner territory="99" owner="AI"/>
+      <territoryOwner territory="100" owner="AI"/>
+      <territoryOwner territory="101" owner="AI"/>
+      <territoryOwner territory="102" owner="AI"/>
+      <territoryOwner territory="103" owner="AI"/>
+      <territoryOwner territory="104" owner="AI"/>
+      <territoryOwner territory="105" owner="AI"/>
+      <territoryOwner territory="106" owner="AI"/>
+      <territoryOwner territory="107" owner="AI"/>
+      <territoryOwner territory="108" owner="AI"/>
+      <territoryOwner territory="109" owner="AI"/>
+      <territoryOwner territory="110" owner="AI"/>
+      <territoryOwner territory="111" owner="AI"/>
+      <territoryOwner territory="112" owner="AI"/>
+      <territoryOwner territory="113" owner="AI"/>
+      <territoryOwner territory="114" owner="AI"/>
+      <territoryOwner territory="115" owner="AI"/>
+      <territoryOwner territory="116" owner="AI"/>
+      <territoryOwner territory="117" owner="AI"/>
+      <territoryOwner territory="118" owner="AI"/>
+      <territoryOwner territory="119" owner="AI"/>
+      <territoryOwner territory="120" owner="AI"/>
+      <territoryOwner territory="121" owner="AI"/>
+      <territoryOwner territory="122" owner="AI"/>
+      <territoryOwner territory="123" owner="AI"/>
+      <territoryOwner territory="124" owner="AI"/>
+      <territoryOwner territory="125" owner="AI"/>
+      <territoryOwner territory="126" owner="AI"/>
+      <territoryOwner territory="127" owner="AI"/>
+      <territoryOwner territory="128" owner="AI"/>
+      <territoryOwner territory="129" owner="AI"/>
+      <territoryOwner territory="130" owner="AI"/>
+      <territoryOwner territory="131" owner="AI"/>
+      <territoryOwner territory="132" owner="AI"/>
+      <territoryOwner territory="133" owner="AI"/>
+      <territoryOwner territory="134" owner="AI"/>
+      <territoryOwner territory="135" owner="AI"/>
+      <territoryOwner territory="136" owner="AI"/>
+      <territoryOwner territory="137" owner="AI"/>
+      <territoryOwner territory="138" owner="AI"/>
+      <territoryOwner territory="139" owner="AI"/>
+      <territoryOwner territory="140" owner="AI"/>
+      <territoryOwner territory="141" owner="AI"/>
+      <territoryOwner territory="142" owner="AI"/>
+      <territoryOwner territory="143" owner="AI"/>
+      <territoryOwner territory="144" owner="AI"/>
+      <territoryOwner territory="145" owner="AI"/>
+      <territoryOwner territory="146" owner="AI"/>
+      <territoryOwner territory="147" owner="AI"/>
+      <territoryOwner territory="148" owner="AI"/>
+      <territoryOwner territory="149" owner="AI"/>
+      <territoryOwner territory="150" owner="AI"/>
+      <territoryOwner territory="151" owner="AI"/>
+      <territoryOwner territory="152" owner="AI"/>
+      <territoryOwner territory="153" owner="AI"/>
+      <territoryOwner territory="154" owner="AI"/>
+      <territoryOwner territory="155" owner="AI"/>
+      <territoryOwner territory="156" owner="AI"/>
+      <territoryOwner territory="157" owner="AI"/>
+      <territoryOwner territory="158" owner="AI"/>
+      <territoryOwner territory="159" owner="AI"/>
+      <territoryOwner territory="160" owner="AI"/>
+      <territoryOwner territory="161" owner="AI"/>
+      <territoryOwner territory="162" owner="AI"/>
+      <territoryOwner territory="163" owner="AI"/>
+      <territoryOwner territory="164" owner="AI"/>
+      <territoryOwner territory="165" owner="AI"/>
+      <territoryOwner territory="166" owner="AI"/>
+      <territoryOwner territory="167" owner="AI"/>
+      <territoryOwner territory="168" owner="AI"/>
+      <territoryOwner territory="169" owner="AI"/>
+      <territoryOwner territory="170" owner="AI"/>
+      <territoryOwner territory="171" owner="AI"/>
+      <territoryOwner territory="172" owner="AI"/>
+      <territoryOwner territory="173" owner="AI"/>
+      <territoryOwner territory="174" owner="AI"/>
+      <territoryOwner territory="175" owner="AI"/>
+    </ownerInitialize>
+    <!-- Placements -->
+    <!-- AI Placements -->
+    <unitInitialize>
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+
+		</unitInitialize>
+    <!-- Resources PU -->
+    <resourceInitialize>
+      <resourceGiven player="Germans" resource="PUs" quantity="0"/>
+      <resourceGiven player="Russians" resource="PUs" quantity="0"/>
+      <resourceGiven player="AI" resource="PUs" quantity="50"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+      <number min="2" max="10"/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units repair at end of round" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="MaxFactoriesPerTerritory" value="1" editable="false">
+      <number min="1" max="10"/>
+    </property>
+    <property name="Sub Control Sea Zone Restricted" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- Bids -->
+    <property name="Germans bid" value="50" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Russians bid" value="50" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="AI bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="mapName" value="Tactics_Campaign" editable="false"/>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="Tactics_Campaign" editable="false"/>
+    <property name="notes" value=" &lt;br&gt;============================================ &lt;br&gt;&lt;H1&gt;__=TACTICS ~ CAMPAIGN=__&lt;/H1&gt; &lt; &lt;br&gt;============================================ &lt;br&gt;&lt;H1&gt;---------= BLITZKRIEG =---------&lt;/H1&gt; &lt; &lt;br&gt;====================1.0===================== &lt;br&gt;============================================ &lt;br&gt; &lt;br&gt;Bid Placement: Not More Then 2 Units Per Ter. &lt;br&gt; &lt;br&gt;Factorys: Every Factory Produces 5 &lt;br&gt; &lt;br&gt;Bunkers:  &lt;br&gt;-Only 1 A Round  &lt;br&gt;-Not More Then 3 Per Terretory &lt;br&gt;-Same Conditions As Factory  &lt;br&gt;-Use Edid To Place &lt;br&gt; &lt;br&gt; &lt;br&gt;===================Units==================== &lt;br&gt; &lt;br&gt;--------------Attack/Defend/Movement/Cost/Ability------------- &lt;br&gt; &lt;br&gt;----------------------------Land Units---------------------------- &lt;br&gt; &lt;br&gt;Infantry    - 1 / 2 / 1 / 2 &lt;br&gt;Elite       - 2 / 2 / 1 / 3 &lt;br&gt;Scout       - 2 / 1 / 2 / 3 Two Scouts One Trans. &lt;br&gt;Artillery   - 2 / 2 / 1 / 4 Support &lt;br&gt;Truck       - 1 / 2 / 3 / 4 &lt;br&gt;Halftrax    - 2 / 2 / 3 / 6 Support / Blitz &lt;br&gt;Armour      - 3 / 3 / 2 / 5 &lt;br&gt;Bunker      - 0 / 3 / 0 / 5 Two Hit &lt;br&gt;AAGun       - 0 / 1 / 0 / 5  &lt;br&gt;Factory     - 0 / 0 / 0 / 15 &lt;br&gt;  &lt;br&gt;-----------------------------Air Units----------------------------- &lt;br&gt; &lt;br&gt;EarlyFighter- 2 / 3 / 4 / 8 &lt;br&gt;Fighter     - 3 / 4 / 4 / 10 &lt;br&gt;LongrangeFighter- 3 / 4 / 6 / 12 &lt;br&gt;Bomber      - 4 / 1 / 6 / 15 Strat.Bomb &lt;br&gt;NakajimaG5N     - 5 / 2 / 8 / 20 Strat.Bomb (B29/Lancaster) &lt;br&gt; &lt;br&gt;-----------------------------Sea Units----------------------------- &lt;br&gt; &lt;br&gt;TorpedoBoat - 2 / 1 / 1 / 6 &lt;br&gt;Transport   - 0 / 1 / 2 / 8 &lt;br&gt;Big Transport   - 0 / 1 / 2 / 12  4 Inf/1Inf3Armour &lt;br&gt;Submarine   - 2 / 2 / 2 / 8 &lt;br&gt;Destroyer   - 3 / 3 / 2 / 12 &lt;br&gt;Carrier     - 1 / 3 / 2 / 16 &lt;br&gt;Big Carrier     - 1 / 3 / 2 / 25 3Fighters/ Two Hit &lt;br&gt;Cruiser     - 3 / 3 / 2 / 14 Bombard &lt;br&gt;Heavy Cruiser     - 4 / 4 / 2 / 18  &lt;br&gt;Battleship  - 4 / 4 / 2 / 24 Bombard / Two Hit &lt;br&gt; &lt;br&gt;=================Special Units================ &lt;br&gt; &lt;br&gt; &lt;br&gt;Big Armour - 4 / 3 / 2 / 7 &lt;br&gt;Super Sub  - 3 / 3 / 3 / 12  &lt;br&gt;Katyusha   - 3 / 1 / 3 / 6 Support / Blitz &lt;br&gt;Me262      - 4 / 2 / 5 / 13 Strat.Bomb / Land On Carrier &lt;br&gt;Lancaster  - 5 / 2 / 8 / 20 Strat.Bomb &lt;br&gt;B29        - 5 / 2 / 8 / 20 Strat.Bomb &lt;br&gt; &lt;br&gt; &lt;br&gt;=================Turn Order================== &lt;br&gt;   &lt;br&gt; &lt;br&gt; &lt;br&gt;================Let There Be War============== &lt;br&gt; &lt;br&gt;===================SIEG===================== &lt;br&gt; &lt;br&gt; "/>
+  </propertyList>
+</game>

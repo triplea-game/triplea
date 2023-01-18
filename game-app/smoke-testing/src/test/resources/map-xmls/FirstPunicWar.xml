@@ -1,0 +1,3073 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="First Punic War" version="1.0.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!--                 -->
+    <!-- Territory names -->
+    <!--                 -->
+    <!-- Territory names Afrika -->
+    <territory name="Desert"/>
+    <territory name="Hippo Regius"/>
+    <territory name="Tipasa"/>
+    <territory name="Thabraca"/>
+    <territory name="Sicca Veneria"/>
+    <territory name="Dhiarrhytus"/>
+    <territory name="Bulla"/>
+    <territory name="Thugga"/>
+    <territory name="Utica"/>
+    <territory name="Vaga"/>
+    <territory name="Medjer"/>
+    <territory name="Carthage"/>
+    <territory name="Kerkouane"/>
+    <territory name="Neapolis"/>
+    <territory name="Zama Regia"/>
+    <territory name="Zaghuwan"/>
+    <territory name="Tuburbum"/>
+    <territory name="Maktar"/>
+    <territory name="Hadrumetum"/>
+    <!-- Territory names West Islands -->
+    <territory name="Pelaghia"/>
+    <territory name="Cossyra"/>
+    <territory name="Gol"/>
+    <territory name="Malet"/>
+    <territory name="Capraria"/>
+    <territory name="Elba"/>
+    <territory name="Cosanus"/>
+    <territory name="Aegusa"/>
+    <territory name="Aenaria"/>
+    <territory name="Meliguni"/>
+    <!-- Territory names Sardinien -->
+    <territory name="Nora"/>
+    <territory name="Sulci"/>
+    <territory name="Caralis"/>
+    <territory name="Siddi"/>
+    <territory name="Tharros"/>
+    <territory name="Lacona"/>
+    <territory name="Tortolia"/>
+    <territory name="Macopsissa"/>
+    <territory name="Oris"/>
+    <territory name="Alguer"/>
+    <territory name="Tibula"/>
+    <territory name="Olbia"/>
+    <territory name="Talanis"/>
+    <!-- Territory names Korsika -->
+    <territory name="Soubasanoi"/>
+    <territory name="Pauca"/>
+    <territory name="Porta"/>
+    <territory name="Ajacia"/>
+    <territory name="Cargesa"/>
+    <territory name="Alalia"/>
+    <territory name="Corta"/>
+    <territory name="Calvia"/>
+    <territory name="Biguglia"/>
+    <!-- Territory names Sicilien -->
+    <territory name="Motya"/>
+    <territory name="Eryx"/>
+    <territory name="Lilybaeum"/>
+    <territory name="Segesta"/>
+    <territory name="Segesta Hills"/>
+    <territory name="Selinus"/>
+    <territory name="Selinus Hills"/>
+    <territory name="Panormus"/>
+    <territory name="Panormus Hills"/>
+    <territory name="Acragas"/>
+    <territory name="Soluntum"/>
+    <territory name="Pachi"/>
+    <territory name="Motyka"/>
+    <territory name="Neton"/>
+    <territory name="Kamarina"/>
+    <territory name="Galea"/>
+    <territory name="Bidi"/>
+    <territory name="Syrakusa"/>
+    <territory name="Syrakusa Hills"/>
+    <territory name="Leontinoni"/>
+    <territory name="Themae"/>
+    <territory name="Themae Hills"/>
+    <territory name="Acragas Hills"/>
+    <territory name="Phintias"/>
+    <territory name="Messene"/>
+    <territory name="Tauromenion"/>
+    <territory name="Tyndaris"/>
+    <territory name="Aidna"/>
+    <territory name="Katane"/>
+    <territory name="Adranon"/>
+    <territory name="Petra"/>
+    <territory name="Nicia"/>
+    <territory name="Kephaloidion"/>
+    <territory name="Calacte"/>
+    <territory name="Calacte Hills"/>
+    <territory name="Inessa"/>
+    <territory name="Henna"/>
+    <!-- Territory names ost Inseln -->
+    <territory name="Issa"/>
+    <territory name="Solta"/>
+    <territory name="Brac"/>
+    <territory name="Pharos"/>
+    <territory name="Korkyra"/>
+    <!-- Territory names Illien -->
+    <territory name="Aspalathos"/>
+    <territory name="Muccuros"/>
+    <territory name="Emania"/>
+    <territory name="Venta"/>
+    <territory name="Bastante River"/>
+    <territory name="Argenta"/>
+    <territory name="Narona"/>
+    <territory name="Sallunta"/>
+    <territory name="Naro River"/>
+    <territory name="Drinu River"/>
+    <territory name="Chersone"/>
+    <territory name="Slanos"/>
+    <territory name="Ragousa"/>
+    <territory name="Doclea"/>
+    <territory name="Scodra"/>
+    <territory name="Durrharchion"/>
+    <territory name="Taulant"/>
+    <!-- Territory names Italien -->
+    <territory name="Pupluna"/>
+    <territory name="Siena"/>
+    <territory name="Arezzo"/>
+    <territory name="Angon"/>
+    <territory name="Vetulonia"/>
+    <territory name="Clusium"/>
+    <territory name="Perusia"/>
+    <territory name="Foligium"/>
+    <territory name="Castrum Novum"/>
+    <territory name="Vulci"/>
+    <territory name="Tutere"/>
+    <territory name="Norcia"/>
+    <territory name="Pretuzi"/>
+    <territory name="Centumcellae"/>
+    <territory name="Roma"/>
+    <territory name="Reate"/>
+    <territory name="Sulmo"/>
+    <territory name="Histonium"/>
+    <territory name="Histonium Hills"/>
+    <territory name="Termola"/>
+    <territory name="Latium"/>
+    <territory name="Frusino"/>
+    <territory name="Formiae"/>
+    <territory name="Casinum"/>
+    <territory name="Rhegium"/>
+    <territory name="Aphricon"/>
+    <territory name="Medma"/>
+    <territory name="Hipponium"/>
+    <territory name="Kaulonia"/>
+    <territory name="Locri"/>
+    <territory name="Scylletium"/>
+    <territory name="Temese"/>
+    <territory name="Terina"/>
+    <territory name="Zarapotamo"/>
+    <territory name="Crotone"/>
+    <territory name="Petelia"/>
+    <territory name="Mesoraca"/>
+    <territory name="Cariates"/>
+    <territory name="Cosentia"/>
+    <territory name="Bisignanus"/>
+    <territory name="Cetraro"/>
+    <territory name="Laos"/>
+    <territory name="Thurium"/>
+    <territory name="Sybaris Ruines"/>
+    <territory name="Maratea"/>
+    <territory name="Rotunda"/>
+    <territory name="Heraclea"/>
+    <territory name="Callipolis"/>
+    <territory name="Lupiae"/>
+    <territory name="Brundisium"/>
+    <territory name="Tarentum"/>
+    <territory name="Mateola"/>
+    <territory name="Monopolis"/>
+    <territory name="Barium"/>
+    <territory name="Bilera"/>
+    <territory name="Genusia"/>
+    <territory name="Apameste"/>
+    <territory name="Apameste Coast"/>
+    <territory name="Luceria"/>
+    <territory name="Luceria Hills"/>
+    <territory name="Fovea"/>
+    <territory name="Sipontum"/>
+    <territory name="Neapo"/>
+    <territory name="Beneventum"/>
+    <territory name="Abellinum"/>
+    <territory name="Salernum"/>
+    <territory name="Aquilonia"/>
+    <territory name="Venusia"/>
+    <territory name="Bardulos"/>
+    <territory name="Paestum"/>
+    <territory name="Dianum"/>
+    <territory name="Potentia"/>
+    <territory name="Aceruntia"/>
+    <territory name="Silvium"/>
+    <territory name="Velia"/>
+    <territory name="Tegianum"/>
+    <territory name="Sinis"/>
+    <territory name="Triacronum"/>
+    <territory name="Matera"/>
+    <territory name="Camurus"/>
+    <territory name="Pollino"/>
+    <territory name="Metapontum"/>
+    <!-- Territory names water -->
+    <territory name="s001" water="true"/>
+    <territory name="s002" water="true"/>
+    <territory name="s003" water="true"/>
+    <territory name="s004" water="true"/>
+    <territory name="s005" water="true"/>
+    <territory name="s006" water="true"/>
+    <territory name="s007" water="true"/>
+    <territory name="s008" water="true"/>
+    <territory name="s009" water="true"/>
+    <territory name="s010" water="true"/>
+    <territory name="s011" water="true"/>
+    <territory name="s012" water="true"/>
+    <territory name="s013" water="true"/>
+    <territory name="s014" water="true"/>
+    <territory name="s015" water="true"/>
+    <territory name="s016" water="true"/>
+    <territory name="s017" water="true"/>
+    <territory name="s018" water="true"/>
+    <territory name="s019" water="true"/>
+    <territory name="s020" water="true"/>
+    <territory name="s021" water="true"/>
+    <territory name="s022" water="true"/>
+    <territory name="s023" water="true"/>
+    <territory name="s024" water="true"/>
+    <territory name="s025" water="true"/>
+    <territory name="s026" water="true"/>
+    <territory name="s027" water="true"/>
+    <territory name="s028" water="true"/>
+    <territory name="s029" water="true"/>
+    <territory name="s030" water="true"/>
+    <territory name="s031" water="true"/>
+    <territory name="s032" water="true"/>
+    <territory name="s033" water="true"/>
+    <territory name="s034" water="true"/>
+    <territory name="s035" water="true"/>
+    <territory name="s036" water="true"/>
+    <territory name="s037" water="true"/>
+    <territory name="s038" water="true"/>
+    <territory name="s039" water="true"/>
+    <territory name="s040" water="true"/>
+    <territory name="s041" water="true"/>
+    <territory name="s042" water="true"/>
+    <territory name="s043" water="true"/>
+    <territory name="s044" water="true"/>
+    <territory name="s045" water="true"/>
+    <territory name="s046" water="true"/>
+    <territory name="s047" water="true"/>
+    <territory name="s048" water="true"/>
+    <territory name="s049" water="true"/>
+    <territory name="s050" water="true"/>
+    <territory name="s051" water="true"/>
+    <territory name="s052" water="true"/>
+    <territory name="s053" water="true"/>
+    <territory name="s054" water="true"/>
+    <territory name="s055" water="true"/>
+    <territory name="s056" water="true"/>
+    <territory name="s057" water="true"/>
+    <territory name="s058" water="true"/>
+    <territory name="s059" water="true"/>
+    <territory name="s060" water="true"/>
+    <territory name="s061" water="true"/>
+    <territory name="s062" water="true"/>
+    <territory name="s063" water="true"/>
+    <territory name="s064" water="true"/>
+    <territory name="s065" water="true"/>
+    <territory name="s066" water="true"/>
+    <territory name="s067" water="true"/>
+    <territory name="s068" water="true"/>
+    <territory name="s069" water="true"/>
+    <territory name="s070" water="true"/>
+    <territory name="s071" water="true"/>
+    <territory name="s072" water="true"/>
+    <territory name="s073" water="true"/>
+    <territory name="s074" water="true"/>
+    <territory name="s075" water="true"/>
+    <territory name="s076" water="true"/>
+    <territory name="s077" water="true"/>
+    <territory name="s078" water="true"/>
+    <territory name="s079" water="true"/>
+    <territory name="s080" water="true"/>
+    <territory name="s081" water="true"/>
+    <territory name="s082" water="true"/>
+    <territory name="s083" water="true"/>
+    <territory name="s084" water="true"/>
+    <territory name="s085" water="true"/>
+    <territory name="s086" water="true"/>
+    <territory name="s087" water="true"/>
+    <territory name="s088" water="true"/>
+    <territory name="s089" water="true"/>
+    <territory name="s090" water="true"/>
+    <territory name="s091" water="true"/>
+    <territory name="s092" water="true"/>
+    <territory name="s093" water="true"/>
+    <territory name="s094" water="true"/>
+    <territory name="s095" water="true"/>
+    <territory name="s096" water="true"/>
+    <territory name="s097" water="true"/>
+    <territory name="s098" water="true"/>
+    <territory name="s099" water="true"/>
+    <territory name="s100" water="true"/>
+    <territory name="s101" water="true"/>
+    <territory name="s102" water="true"/>
+    <territory name="s103" water="true"/>
+    <territory name="s104" water="true"/>
+    <territory name="s105" water="true"/>
+    <territory name="s106" water="true"/>
+    <territory name="s107" water="true"/>
+    <territory name="s108" water="true"/>
+    <territory name="s109" water="true"/>
+    <territory name="s110" water="true"/>
+    <territory name="s111" water="true"/>
+    <territory name="s112" water="true"/>
+    <territory name="s113" water="true"/>
+    <territory name="s114" water="true"/>
+    <territory name="s115" water="true"/>
+    <territory name="s116" water="true"/>
+    <territory name="s117" water="true"/>
+    <territory name="s118" water="true"/>
+    <territory name="s119" water="true"/>
+    <territory name="s120" water="true"/>
+    <territory name="s121" water="true"/>
+    <territory name="s122" water="true"/>
+    <territory name="s123" water="true"/>
+    <territory name="s124" water="true"/>
+    <territory name="s125" water="true"/>
+    <territory name="s126" water="true"/>
+    <territory name="s127" water="true"/>
+    <territory name="s128" water="true"/>
+    <territory name="s129" water="true"/>
+    <territory name="s130" water="true"/>
+    <territory name="s131" water="true"/>
+    <territory name="s132" water="true"/>
+    <territory name="s133" water="true"/>
+    <territory name="s134" water="true"/>
+    <territory name="s135" water="true"/>
+    <territory name="s136" water="true"/>
+    <territory name="s137" water="true"/>
+    <territory name="s138" water="true"/>
+    <territory name="s139" water="true"/>
+    <territory name="s140" water="true"/>
+    <territory name="s141" water="true"/>
+    <territory name="s142" water="true"/>
+    <territory name="s143" water="true"/>
+    <territory name="s144" water="true"/>
+    <territory name="s145" water="true"/>
+    <territory name="s146" water="true"/>
+    <territory name="s147" water="true"/>
+    <territory name="s148" water="true"/>
+    <territory name="s149" water="true"/>
+    <territory name="s150" water="true"/>
+    <territory name="s151" water="true"/>
+    <territory name="s152" water="true"/>
+    <territory name="s153" water="true"/>
+    <territory name="s154" water="true"/>
+    <territory name="s155" water="true"/>
+    <territory name="s156" water="true"/>
+    <territory name="s157" water="true"/>
+    <territory name="s158" water="true"/>
+    <territory name="s159" water="true"/>
+    <territory name="s160" water="true"/>
+    <territory name="s161" water="true"/>
+    <territory name="s162" water="true"/>
+    <territory name="s163" water="true"/>
+    <territory name="s164" water="true"/>
+    <territory name="s165" water="true"/>
+    <territory name="s166" water="true"/>
+    <territory name="s167" water="true"/>
+    <territory name="s168" water="true"/>
+    <territory name="s169" water="true"/>
+    <territory name="s170" water="true"/>
+    <territory name="s171" water="true"/>
+    <territory name="s172" water="true"/>
+    <territory name="s173" water="true"/>
+    <territory name="s174" water="true"/>
+    <territory name="s175" water="true"/>
+    <territory name="s176" water="true"/>
+    <territory name="s177" water="true"/>
+    <territory name="s178" water="true"/>
+    <territory name="s179" water="true"/>
+    <territory name="s180" water="true"/>
+    <territory name="s181" water="true"/>
+    <territory name="s182" water="true"/>
+    <territory name="s183" water="true"/>
+    <territory name="s184" water="true"/>
+    <territory name="s185" water="true"/>
+    <territory name="s186" water="true"/>
+    <territory name="s187" water="true"/>
+    <territory name="s188" water="true"/>
+    <territory name="s189" water="true"/>
+    <territory name="s190" water="true"/>
+    <territory name="s191" water="true"/>
+    <territory name="s192" water="true"/>
+    <territory name="s193" water="true"/>
+    <territory name="s194" water="true"/>
+    <territory name="s195" water="true"/>
+    <territory name="s196" water="true"/>
+    <territory name="s197" water="true"/>
+    <territory name="s198" water="true"/>
+    <territory name="s199" water="true"/>
+    <territory name="s200" water="true"/>
+    <territory name="s201" water="true"/>
+    <territory name="s202" water="true"/>
+    <territory name="s203" water="true"/>
+    <territory name="s204" water="true"/>
+    <territory name="s205" water="true"/>
+    <territory name="s206" water="true"/>
+    <territory name="s207" water="true"/>
+    <territory name="s208" water="true"/>
+    <territory name="s209" water="true"/>
+    <territory name="s210" water="true"/>
+    <territory name="s211" water="true"/>
+    <territory name="s212" water="true"/>
+    <territory name="s213" water="true"/>
+    <territory name="s214" water="true"/>
+    <territory name="s215" water="true"/>
+    <territory name="s216" water="true"/>
+    <territory name="s217" water="true"/>
+    <territory name="s218" water="true"/>
+    <territory name="s219" water="true"/>
+    <territory name="s220" water="true"/>
+    <territory name="s221" water="true"/>
+    <territory name="s222" water="true"/>
+    <territory name="s223" water="true"/>
+    <territory name="s224" water="true"/>
+    <territory name="s225" water="true"/>
+    <territory name="s226" water="true"/>
+    <territory name="s227" water="true"/>
+    <territory name="s228" water="true"/>
+    <territory name="s229" water="true"/>
+    <territory name="s230" water="true"/>
+    <territory name="s231" water="true"/>
+    <!-- fuer Fehlerteufel -->
+    <territory name="s232" water="true"/>
+    <territory name="s233" water="true"/>
+    <territory name="s234" water="true"/>
+    <territory name="s235" water="true"/>
+    <territory name="s236" water="true"/>
+    <!--              -->
+    <!-- connections  -->
+    <!--              -->
+    <!-- connections Afrika -->
+    <connection t1="Tipasa" t2="Hippo Regius"/>
+    <connection t1="Tipasa" t2="Thabraca"/>
+    <connection t1="Tipasa" t2="Sicca Veneria"/>
+    <connection t1="Bulla" t2="Sicca Veneria"/>
+    <connection t1="Bulla" t2="Thabraca"/>
+    <connection t1="Bulla" t2="Dhiarrhytus"/>
+    <connection t1="Bulla" t2="Thugga"/>
+    <connection t1="Bulla" t2="Vaga"/>
+    <connection t1="Hippo Regius" t2="Thabraca"/>
+    <connection t1="Sicca Veneria" t2="Thabraca"/>
+    <connection t1="Sicca Veneria" t2="Thugga"/>
+    <connection t1="Vaga" t2="Dhiarrhytus"/>
+    <connection t1="Vaga" t2="Utica"/>
+    <connection t1="Vaga" t2="Carthage"/>
+    <connection t1="Vaga" t2="Medjer"/>
+    <connection t1="Vaga" t2="Thugga"/>
+    <connection t1="Dhiarrhytus" t2="Utica"/>
+    <connection t1="Dhiarrhytus" t2="Thabraca"/>
+    <connection t1="Medjer" t2="Thugga"/>
+    <connection t1="Medjer" t2="Carthage"/>
+    <connection t1="Medjer" t2="Zaghuwan"/>
+    <connection t1="Medjer" t2="Zama Regia"/>
+    <connection t1="Carthage" t2="Utica"/>
+    <connection t1="Carthage" t2="Kerkouane"/>
+    <connection t1="Carthage" t2="Zaghuwan"/>
+    <connection t1="Carthage" t2="Neapo"/>
+    <connection t1="Neapo" t2="Kerkouane"/>
+    <connection t1="Neapo" t2="Zaghuwan"/>
+    <connection t1="Tuburbum" t2="Zama Regia"/>
+    <connection t1="Tuburbum" t2="Zaghuwan"/>
+    <connection t1="Tuburbum" t2="Maktar"/>
+    <connection t1="Tuburbum" t2="Hadrumetum"/>
+    <connection t1="Maktar" t2="Hadrumetum"/>
+    <connection t1="Maktar" t2="Zama Regia"/>
+    <connection t1="Zama Regia" t2="Zaghuwan"/>
+    <!-- connections Afrika to water -->
+    <connection t1="Hippo Regius" t2="s115"/>
+    <connection t1="Thabraca" t2="s115"/>
+    <connection t1="Thabraca" t2="s116"/>
+    <connection t1="Dhiarrhytus" t2="s116"/>
+    <connection t1="Dhiarrhytus" t2="s117"/>
+    <connection t1="Utica" t2="s117"/>
+    <connection t1="Carthage" t2="s117"/>
+    <connection t1="Carthage" t2="s118"/>
+    <connection t1="Kerkouane" t2="s118"/>
+    <connection t1="Kerkouane" t2="s119"/>
+    <connection t1="Neapo" t2="s119"/>
+    <connection t1="Neapo" t2="s130"/>
+    <connection t1="Zaghuwan" t2="s130"/>
+    <connection t1="Tuburbum" t2="s130"/>
+    <connection t1="Hadrumetum" t2="s130"/>
+    <connection t1="Hadrumetum" t2="s131"/>
+    <connection t1="Hadrumetum" t2="s150"/>
+    <!-- connections West Islands -->
+    <connection t1="Gol" t2="Malet"/>
+    <!-- connections West Islands to water-->
+    <connection t1="Pelaghia" t2="s151"/>
+    <connection t1="Pelaghia" t2="s152"/>
+    <connection t1="Pelaghia" t2="s154"/>
+    <connection t1="Cossyra" t2="s108"/>
+    <connection t1="Cossyra" t2="s120"/>
+    <connection t1="Cossyra" t2="s133"/>
+    <connection t1="Cossyra" t2="s134"/>
+    <connection t1="Gol" t2="s145"/>
+    <connection t1="Gol" t2="s146"/>
+    <connection t1="Malet" t2="s147"/>
+    <connection t1="Malet" t2="s158"/>
+    <connection t1="Capraria" t2="s005"/>
+    <connection t1="Capraria" t2="s006"/>
+    <connection t1="Capraria" t2="s009"/>
+    <connection t1="Elba" t2="s009"/>
+    <connection t1="Elba" t2="s006"/>
+    <connection t1="Elba" t2="s013"/>
+    <connection t1="Cosanus" t2="s013"/>
+    <connection t1="Cosanus" t2="s018"/>
+    <connection t1="Aegusa" t2="s096"/>
+    <connection t1="Aenaria" t2="s037"/>
+    <connection t1="Aenaria" t2="s050"/>
+    <connection t1="Meliguni" t2="s089"/>
+    <!-- connections Sardinien -->
+    <connection t1="Caralis" t2="Siddi"/>
+    <connection t1="Caralis" t2="Nora"/>
+    <connection t1="Caralis" t2="Sulci"/>
+    <connection t1="Sulci" t2="Siddi"/>
+    <connection t1="Sulci" t2="Nora"/>
+    <connection t1="Sulci" t2="Tharros"/>
+    <connection t1="Lacona" t2="Tharros"/>
+    <connection t1="Lacona" t2="Siddi"/>
+    <connection t1="Lacona" t2="Tortolia"/>
+    <connection t1="Lacona" t2="Talanis"/>
+    <connection t1="Tortolia" t2="Siddi"/>
+    <connection t1="Tortolia" t2="Talanis"/>
+    <connection t1="Tharros" t2="Talanis"/>
+    <connection t1="Tharros" t2="Siddi"/>
+    <connection t1="Tharros" t2="Macopsissa"/>
+    <connection t1="Oris" t2="Talanis"/>
+    <connection t1="Oris" t2="Macopsissa"/>
+    <connection t1="Oris" t2="Tibula"/>
+    <connection t1="Oris" t2="Olbia"/>
+    <connection t1="Macopsissa" t2="Talanis"/>
+    <connection t1="Macopsissa" t2="Tibula"/>
+    <connection t1="Macopsissa" t2="Alguer"/>
+    <connection t1="Tibula" t2="Alguer"/>
+    <connection t1="Tibula" t2="Olbia"/>
+    <!-- connections Sardinien to water -->
+    <connection t1="Olbia" t2="s022"/>
+    <connection t1="Olbia" t2="s026"/>
+    <connection t1="Olbia" t2="s032"/>
+    <connection t1="Oris" t2="s032"/>
+    <connection t1="Talanis" t2="s040"/>
+    <connection t1="Tortolia" t2="s040"/>
+    <connection t1="Tortolia" t2="s057"/>
+    <connection t1="Siddi" t2="s057"/>
+    <connection t1="Caralis" t2="s057"/>
+    <connection t1="Caralis" t2="s069"/>
+    <connection t1="Caralis" t2="s070"/>
+    <connection t1="Nora" t2="s068"/>
+    <connection t1="Nora" t2="s069"/>
+    <connection t1="Sulci" t2="s068"/>
+    <connection t1="Sulci" t2="s039"/>
+    <connection t1="Tharros" t2="s039"/>
+    <connection t1="Macopsissa" t2="s039"/>
+    <connection t1="Alguer" t2="s020"/>
+    <connection t1="Alguer" t2="s021"/>
+    <connection t1="Alguer" t2="s031"/>
+    <connection t1="Tibula" t2="s022"/>
+    <!-- connections Korsika -->
+    <connection t1="Porta" t2="Soubasanoi"/>
+    <connection t1="Porta" t2="Pauca"/>
+    <connection t1="Porta" t2="Ajacia"/>
+    <connection t1="Porta" t2="Alalia"/>
+    <connection t1="Corta" t2="Alalia"/>
+    <connection t1="Corta" t2="Cargesa"/>
+    <connection t1="Corta" t2="Calvia"/>
+    <connection t1="Corta" t2="Biguglia"/>
+    <connection t1="Calvia" t2="Cargesa"/>
+    <connection t1="Calvia" t2="Biguglia"/>
+    <connection t1="Ajacia" t2="Pauca"/>
+    <connection t1="Ajacia" t2="Alalia"/>
+    <connection t1="Ajacia" t2="Cargesa"/>
+    <connection t1="Pauca" t2="Soubasanoi"/>
+    <connection t1="Cargesa" t2="Alalia"/>
+    <!-- connections Korsika to water -->
+    <connection t1="Biguglia" t2="s004"/>
+    <connection t1="Biguglia" t2="s005"/>
+    <connection t1="Biguglia" t2="s009"/>
+    <connection t1="Biguglia" t2="s012"/>
+    <connection t1="Corta" t2="s012"/>
+    <connection t1="Corta" t2="s016"/>
+    <connection t1="Alalia" t2="s016"/>
+    <connection t1="Porta" t2="s023"/>
+    <connection t1="Soubasanoi" t2="s023"/>
+    <connection t1="Soubasanoi" t2="s022"/>
+    <connection t1="Pauca" t2="s021"/>
+    <connection t1="Pauca" t2="s022"/>
+    <connection t1="Pauca" t2="s015"/>
+    <connection t1="Ajacia" t2="s015"/>
+    <connection t1="Cargesa" t2="s015"/>
+    <connection t1="Calvia" t2="s015"/>
+    <connection t1="Calvia" t2="s011"/>
+    <connection t1="Calvia" t2="s008"/>
+    <!-- connections Sizilien -->
+    <connection t1="Aidna" t2="Katane"/>
+    <connection t1="Aidna" t2="Adranon"/>
+    <connection t1="Aidna" t2="Tauromenion"/>
+    <connection t1="Aidna" t2="Tyndaris"/>
+    <connection t1="Syrakusa" t2="Leontinoni"/>
+    <connection t1="Syrakusa" t2="Syrakusa Hills"/>
+    <connection t1="Syrakusa" t2="Bidi"/>
+    <connection t1="Syrakusa" t2="Galea"/>
+    <connection t1="Syrakusa" t2="Kamarina"/>
+    <connection t1="Syrakusa" t2="Neton"/>
+    <connection t1="Motyka" t2="Neton"/>
+    <connection t1="Motyka" t2="Kamarina"/>
+    <connection t1="Motyka" t2="Pachi"/>
+    <connection t1="Pachi" t2="Neton"/>
+    <connection t1="Kamarina" t2="Neton"/>
+    <connection t1="Kamarina" t2="Galea"/>
+    <connection t1="Henna" t2="Syrakusa Hills"/>
+    <connection t1="Henna" t2="Bidi"/>
+    <connection t1="Henna" t2="Nicia"/>
+    <connection t1="Henna" t2="Inessa"/>
+    <connection t1="Henna" t2="Calacte Hills"/>
+    <connection t1="Nicia" t2="Bidi"/>
+    <connection t1="Nicia" t2="Galea"/>
+    <connection t1="Nicia" t2="Acragas Hills"/>
+    <connection t1="Nicia" t2="Themae Hills"/>
+    <connection t1="Nicia" t2="Phintias"/>
+    <connection t1="Nicia" t2="Calacte Hills"/>
+    <connection t1="Galea" t2="Phintias"/>
+    <connection t1="Galea" t2="Bidi"/>
+    <connection t1="Syrakusa Hills" t2="Bidi"/>
+    <connection t1="Syrakusa Hills" t2="Leontinoni"/>
+    <connection t1="Syrakusa Hills" t2="Katane"/>
+    <connection t1="Syrakusa Hills" t2="Inessa"/>
+    <connection t1="Acragas Hills" t2="Phintias"/>
+    <connection t1="Acragas Hills" t2="Themae Hills"/>
+    <connection t1="Acragas Hills" t2="Selinus Hills"/>
+    <connection t1="Acragas Hills" t2="Acragas"/>
+    <connection t1="Acragas" t2="Phintias"/>
+    <connection t1="Acragas" t2="Selinus Hills"/>
+    <connection t1="Acragas" t2="Selinus"/>
+    <connection t1="Panormus Hills" t2="Selinus"/>
+    <connection t1="Panormus Hills" t2="Selinus Hills"/>
+    <connection t1="Panormus Hills" t2="Themae"/>
+    <connection t1="Panormus Hills" t2="Themae Hills"/>
+    <connection t1="Panormus Hills" t2="Soluntum"/>
+    <connection t1="Panormus Hills" t2="Panormus"/>
+    <connection t1="Panormus Hills" t2="Segesta Hills"/>
+    <connection t1="Selinus Hills" t2="Selinus"/>
+    <connection t1="Selinus Hills" t2="Themae Hills"/>
+    <connection t1="Lilybaeum" t2="Selinus"/>
+    <connection t1="Lilybaeum" t2="Segesta Hills"/>
+    <connection t1="Lilybaeum" t2="Segesta"/>
+    <connection t1="Lilybaeum" t2="Motya"/>
+    <connection t1="Segesta Hills" t2="Segesta"/>
+    <connection t1="Segesta Hills" t2="Panormus"/>
+    <connection t1="Segesta Hills" t2="Selinus"/>
+    <connection t1="Eryx" t2="Segesta"/>
+    <connection t1="Eryx" t2="Motya"/>
+    <connection t1="Segesta" t2="Panormus"/>
+    <connection t1="Segesta" t2="Motya"/>
+    <connection t1="Soluntum" t2="Themae"/>
+    <connection t1="Soluntum" t2="Panormus"/>
+    <connection t1="Calacte Hills" t2="Themae"/>
+    <connection t1="Calacte Hills" t2="Themae Hills"/>
+    <connection t1="Calacte Hills" t2="Inessa"/>
+    <connection t1="Calacte Hills" t2="Calacte"/>
+    <connection t1="Calacte Hills" t2="Kephaloidion"/>
+    <connection t1="Themae" t2="Themae Hills"/>
+    <connection t1="Themae" t2="Kephaloidion"/>
+    <connection t1="Kephaloidion" t2="Calacte"/>
+    <connection t1="Adranon" t2="Calacte"/>
+    <connection t1="Adranon" t2="Inessa"/>
+    <connection t1="Adranon" t2="Katane"/>
+    <connection t1="Adranon" t2="Petra"/>
+    <connection t1="Adranon" t2="Tyndaris"/>
+    <connection t1="Katane" t2="Leontinoni"/>
+    <connection t1="Katane" t2="Inessa"/>
+    <connection t1="Katane" t2="Tauromenion"/>
+    <connection t1="Calacte" t2="Inessa"/>
+    <connection t1="Calacte" t2="Petra"/>
+    <connection t1="Tyndaris" t2="Tauromenion"/>
+    <connection t1="Tyndaris" t2="Petra"/>
+    <connection t1="Tyndaris" t2="Messene"/>
+    <connection t1="Messene" t2="Tauromenion"/>
+    <!-- connections Sizilien to water -->
+    <connection t1="Messene" t2="s090"/>
+    <connection t1="Messene" t2="s097"/>
+    <connection t1="Tauromenion" t2="s097"/>
+    <connection t1="Katane" t2="s111"/>
+    <connection t1="Leontinoni" t2="s111"/>
+    <connection t1="Syrakusa" t2="s111"/>
+    <connection t1="Syrakusa" t2="s125"/>
+    <connection t1="Syrakusa" t2="s126"/>
+    <connection t1="Neton" t2="s126"/>
+    <connection t1="Pachi" t2="s126"/>
+    <connection t1="Pachi" t2="s138"/>
+    <connection t1="Pachi" t2="s124"/>
+    <connection t1="Motyka" t2="s124"/>
+    <connection t1="Kamarina" t2="s124"/>
+    <connection t1="Galea" t2="s124"/>
+    <connection t1="Phintias" t2="s124"/>
+    <connection t1="Phintias" t2="s123"/>
+    <connection t1="Phintias" t2="s110"/>
+    <connection t1="Acragas" t2="s110"/>
+    <connection t1="Selinus" t2="s110"/>
+    <connection t1="Lilybaeum" t2="s110"/>
+    <connection t1="Lilybaeum" t2="s109"/>
+    <connection t1="Lilybaeum" t2="s104"/>
+    <connection t1="Lilybaeum" t2="s096"/>
+    <connection t1="Motya" t2="s096"/>
+    <connection t1="Eryx" t2="s096"/>
+    <connection t1="Eryx" t2="s086"/>
+    <connection t1="Segesta" t2="s086"/>
+    <connection t1="Panormus" t2="s086"/>
+    <connection t1="Panormus" t2="s087"/>
+    <connection t1="Soluntum" t2="s087"/>
+    <connection t1="Themae" t2="s087"/>
+    <connection t1="Kephaloidion" t2="s087"/>
+    <connection t1="Kephaloidion" t2="s088"/>
+    <connection t1="Calacte" t2="s088"/>
+    <connection t1="Petra" t2="s088"/>
+    <connection t1="Petra" t2="s089"/>
+    <connection t1="Tyndaris" t2="s089"/>
+    <connection t1="Tyndaris" t2="s090"/>
+    <!-- connections ost Inseln to water -->
+    <connection t1="Issa" t2="s166"/>
+    <connection t1="Issa" t2="s167"/>
+    <connection t1="Issa" t2="s171"/>
+    <connection t1="Issa" t2="s172"/>
+    <connection t1="Solta" t2="s163"/>
+    <connection t1="Brac" t2="s163"/>
+    <connection t1="Pharos" t2="s163"/>
+    <connection t1="Pharos" t2="s167"/>
+    <connection t1="Pharos" t2="s168"/>
+    <connection t1="Korkyra" t2="s167"/>
+    <connection t1="Korkyra" t2="s168"/>
+    <connection t1="Korkyra" t2="s173"/>
+    <connection t1="Korkyra" t2="s174"/>
+    <!-- connections Illien -->
+    <connection t1="Muccuros" t2="Aspalathos"/>
+    <connection t1="Muccuros" t2="Emania"/>
+    <connection t1="Muccuros" t2="Narona"/>
+    <connection t1="Sallunta" t2="Emania"/>
+    <connection t1="Sallunta" t2="Narona"/>
+    <connection t1="Sallunta" t2="Slanos"/>
+    <connection t1="Sallunta" t2="Ragousa"/>
+    <connection t1="Sallunta" t2="Naro River"/>
+    <connection t1="Sallunta" t2="Venta"/>
+    <connection t1="Slanos" t2="Narona"/>
+    <connection t1="Slanos" t2="Ragousa"/>
+    <connection t1="Slanos" t2="Chersone"/>
+    <connection t1="Venta" t2="Emania"/>
+    <connection t1="Venta" t2="Naro River"/>
+    <connection t1="Venta" t2="Bastante River"/>
+    <connection t1="Argenta" t2="Bastante River"/>
+    <connection t1="Argenta" t2="Naro River"/>
+    <connection t1="Argenta" t2="Drinu River"/>
+    <connection t1="Naro River" t2="Bastante River"/>
+    <connection t1="Naro River" t2="Drinu River"/>
+    <connection t1="Naro River" t2="Ragousa"/>
+    <connection t1="Naro River" t2="Doclea"/>
+    <connection t1="Doclea" t2="Drinu River"/>
+    <connection t1="Doclea" t2="Ragousa"/>
+    <connection t1="Doclea" t2="Scodra"/>
+    <connection t1="Scodra" t2="Durrharchion"/>
+    <connection t1="Scodra" t2="Ragousa"/>
+    <connection t1="Emania" t2="Narona"/>
+    <connection t1="Durrharchion" t2="Taulant"/>
+    <!-- connections Illien to water -->
+    <connection t1="Taulant" t2="s231"/>
+    <connection t1="Taulant" t2="s199"/>
+    <connection t1="Taulant" t2="s197"/>
+    <connection t1="Durrharchion" t2="s190"/>
+    <connection t1="Durrharchion" t2="s196"/>
+    <connection t1="Scodra" t2="s190"/>
+    <connection t1="Scodra" t2="s183"/>
+    <connection t1="Ragousa" t2="s175"/>
+    <connection t1="Ragousa" t2="s182"/>
+    <connection t1="Ragousa" t2="s183"/>
+    <connection t1="Slanos" t2="s175"/>
+    <connection t1="Slanos" t2="s168"/>
+    <connection t1="Chersone" t2="s168"/>
+    <connection t1="Chersone" t2="s175"/>
+    <connection t1="Narona" t2="s168"/>
+    <connection t1="Muccuros" t2="s168"/>
+    <connection t1="Muccuros" t2="s163"/>
+    <connection t1="Aspalathos" t2="s163"/>
+    <!-- connections Italien and to water -->
+    <connection t1="Pupluna" t2="s006"/>
+    <connection t1="Pupluna" t2="s013"/>
+    <connection t1="Vetulonia" t2="s013"/>
+    <connection t1="Vulci" t2="s013"/>
+    <connection t1="Vulci" t2="s018"/>
+    <connection t1="Vulci" t2="s019"/>
+    <connection t1="Centumcellae" t2="s019"/>
+    <connection t1="Roma" t2="s019"/>
+    <connection t1="Roma" t2="s029"/>
+    <connection t1="Roma" t2="s036"/>
+    <connection t1="Latium" t2="s036"/>
+    <connection t1="Latium" t2="s037"/>
+    <connection t1="Formiae" t2="s037"/>
+    <connection t1="Angon" t2="s161"/>
+    <connection t1="Angon" t2="Arezzo"/>
+    <connection t1="Angon" t2="s164"/>
+    <connection t1="Castrum Novum" t2="s164"/>
+    <connection t1="Castrum Novum" t2="s169"/>
+    <connection t1="Pretuzi" t2="s169"/>
+    <connection t1="Histonium" t2="s169"/>
+    <connection t1="Histonium" t2="s176"/>
+    <connection t1="Termola" t2="s176"/>
+    <connection t1="Siena" t2="Pupluna"/>
+    <connection t1="Siena" t2="Arezzo"/>
+    <connection t1="Siena" t2="Vetulonia"/>
+    <connection t1="Siena" t2="Clusium"/>
+    <connection t1="Perusia" t2="Clusium"/>
+    <connection t1="Perusia" t2="Arezzo"/>
+    <connection t1="Perusia" t2="Foligium"/>
+    <connection t1="Perusia" t2="Angon"/>
+    <connection t1="Perusia" t2="Tutere"/>
+    <connection t1="Tutere" t2="Clusium"/>
+    <connection t1="Tutere" t2="Foligium"/>
+    <connection t1="Tutere" t2="Vulci"/>
+    <connection t1="Tutere" t2="Centumcellae"/>
+    <connection t1="Tutere" t2="Roma"/>
+    <connection t1="Tutere" t2="Reate"/>
+    <connection t1="Tutere" t2="Norcia"/>
+    <connection t1="Vetulonia" t2="Clusium"/>
+    <connection t1="Vetulonia" t2="Vulci"/>
+    <connection t1="Vetulonia" t2="Pupluna"/>
+    <connection t1="Clusium" t2="Arezzo"/>
+    <connection t1="Clusium" t2="Vulci"/>
+    <connection t1="Centumcellae" t2="Roma"/>
+    <connection t1="Centumcellae" t2="Vulci"/>
+    <connection t1="Castrum Novum" t2="Foligium"/>
+    <connection t1="Castrum Novum" t2="Angon"/>
+    <connection t1="Castrum Novum" t2="Norcia"/>
+    <connection t1="Castrum Novum" t2="Pretuzi"/>
+    <connection t1="Foligium" t2="Angon"/>
+    <connection t1="Foligium" t2="Norcia"/>
+    <connection t1="Roma" t2="Reate"/>
+    <connection t1="Roma" t2="Latium"/>
+    <connection t1="Roma" t2="Frusino"/>
+    <connection t1="Sulmo" t2="Norcia"/>
+    <connection t1="Sulmo" t2="Pretuzi"/>
+    <connection t1="Sulmo" t2="Reate"/>
+    <connection t1="Sulmo" t2="Frusino"/>
+    <connection t1="Sulmo" t2="Histonium"/>
+    <connection t1="Sulmo" t2="Histonium Hills"/>
+    <connection t1="Sulmo" t2="Casinum"/>
+    <connection t1="Formiae" t2="Casinum"/>
+    <connection t1="Formiae" t2="Frusino"/>
+    <connection t1="Formiae" t2="Latium"/>
+    <connection t1="Frusino" t2="Latium"/>
+    <connection t1="Frusino" t2="Casinum"/>
+    <connection t1="Frusino" t2="Reate"/>
+    <connection t1="Norcia" t2="Reate"/>
+    <connection t1="Norcia" t2="Pretuzi"/>
+    <connection t1="Histonium Hills" t2="Histonium"/>
+    <connection t1="Histonium Hills" t2="Casinum"/>
+    <connection t1="Histonium Hills" t2="Termola"/>
+    <connection t1="Histonium" t2="Termola"/>
+    <connection t1="Histonium" t2="Pretuzi"/>
+    <connection t1="Formiae" t2="Neapolis"/>
+    <connection t1="Formiae" t2="Beneventum"/>
+    <connection t1="Casinum" t2="Luceria"/>
+    <connection t1="Casinum" t2="Beneventum"/>
+    <connection t1="Histonium Hills" t2="Luceria"/>
+    <connection t1="Termola" t2="Luceria"/>
+    <connection t1="Termola" t2="Apameste Coast"/>
+    <connection t1="Maratea" t2="s056"/>
+    <connection t1="Laos" t2="s056"/>
+    <connection t1="Cetraro" t2="s056"/>
+    <connection t1="Cetraro" t2="s065"/>
+    <connection t1="Cetraro" t2="s066"/>
+    <connection t1="Cosentia" t2="s066"/>
+    <connection t1="Terina" t2="s066"/>
+    <connection t1="Terina" t2="s078"/>
+    <connection t1="Temese" t2="s078"/>
+    <connection t1="Temese" t2="s214"/>
+    <connection t1="Scylletium" t2="s078"/>
+    <connection t1="Scylletium" t2="s214"/>
+    <connection t1="Hipponium" t2="s078"/>
+    <connection t1="Hipponium" t2="s090"/>
+    <connection t1="Medma" t2="s090"/>
+    <connection t1="Rhegium" t2="s097"/>
+    <connection t1="Rhegium" t2="s112"/>
+    <connection t1="Aphricon" t2="s113"/>
+    <connection t1="Locri" t2="s113"/>
+    <connection t1="Locri" t2="s218"/>
+    <connection t1="Kaulonia" t2="s218"/>
+    <connection t1="Kaulonia" t2="s214"/>
+    <connection t1="Zarapotamo" t2="s214"/>
+    <connection t1="Crotone" t2="s207"/>
+    <connection t1="Crotone" t2="s214"/>
+    <connection t1="Petelia" t2="s207"/>
+    <connection t1="Petelia" t2="s203"/>
+    <connection t1="Cariates" t2="s203"/>
+    <connection t1="Cariates" t2="s201"/>
+    <connection t1="Thurium" t2="s201"/>
+    <connection t1="Sybaris Ruines" t2="s201"/>
+    <connection t1="Rotunda" t2="s201"/>
+    <connection t1="Heraclea" t2="s201"/>
+    <connection t1="Heraclea" t2="s200"/>
+    <connection t1="Medma" t2="Aphricon"/>
+    <connection t1="Medma" t2="Rhegium"/>
+    <connection t1="Aphricon" t2="Rhegium"/>
+    <connection t1="Aphricon" t2="Locri"/>
+    <connection t1="Medma" t2="Locri"/>
+    <connection t1="Medma" t2="Hipponium"/>
+    <connection t1="Hipponium" t2="Locri"/>
+    <connection t1="Hipponium" t2="Scylletium"/>
+    <connection t1="Hipponium" t2="Kaulonia"/>
+    <connection t1="Kaulonia" t2="Locri"/>
+    <connection t1="Kaulonia" t2="Scylletium"/>
+    <connection t1="Temese" t2="Scylletium"/>
+    <connection t1="Temese" t2="Terina"/>
+    <connection t1="Temese" t2="Zarapotamo"/>
+    <connection t1="Zarapotamo" t2="Terina"/>
+    <connection t1="Zarapotamo" t2="Cosentia"/>
+    <connection t1="Zarapotamo" t2="Mesoraca"/>
+    <connection t1="Zarapotamo" t2="Crotone"/>
+    <connection t1="Zarapotamo" t2="Petelia"/>
+    <connection t1="Petelia" t2="Crotone"/>
+    <connection t1="Petelia" t2="Mesoraca"/>
+    <connection t1="Petelia" t2="Cariates"/>
+    <connection t1="Bisignanus" t2="Mesoraca"/>
+    <connection t1="Bisignanus" t2="Cariates"/>
+    <connection t1="Bisignanus" t2="Thurium"/>
+    <connection t1="Bisignanus" t2="Laos"/>
+    <connection t1="Bisignanus" t2="Cetraro"/>
+    <connection t1="Bisignanus" t2="Cosentia"/>
+    <connection t1="Cosentia" t2="Cetraro"/>
+    <connection t1="Cosentia" t2="Terina"/>
+    <connection t1="Cosentia" t2="Mesoraca"/>
+    <connection t1="Cariates" t2="Mesoraca"/>
+    <connection t1="Cariates" t2="Thurium"/>
+    <connection t1="Laos" t2="Cetraro"/>
+    <connection t1="Laos" t2="Thurium"/>
+    <connection t1="Laos" t2="Sybaris Ruines"/>
+    <connection t1="Laos" t2="Maratea"/>
+    <connection t1="Sybaris Ruines" t2="Thurium"/>
+    <connection t1="Sybaris Ruines" t2="Maratea"/>
+    <connection t1="Sybaris Ruines" t2="Rotunda"/>
+    <connection t1="Rotunda" t2="Maratea"/>
+    <connection t1="Rotunda" t2="Heraclea"/>
+    <connection t1="Heraclea" t2="Maratea"/>
+    <connection t1="Maratea" t2="Pollino"/>
+    <connection t1="Maratea" t2="Camurus"/>
+    <connection t1="Heraclea" t2="Pollino"/>
+    <connection t1="Heraclea" t2="Metapontum"/>
+    <connection t1="Lupiae" t2="Callipolis"/>
+    <connection t1="Lupiae" t2="Brundisium"/>
+    <connection t1="Brundisium" t2="Tarentum"/>
+    <connection t1="Monopolis" t2="Tarentum"/>
+    <connection t1="Monopolis" t2="Mateola"/>
+    <connection t1="Monopolis" t2="Barium"/>
+    <connection t1="Monopolis" t2="Bilera"/>
+    <connection t1="Mateola" t2="Bilera"/>
+    <connection t1="Mateola" t2="Genusia"/>
+    <connection t1="Mateola" t2="Tarentum"/>
+    <connection t1="Bilera" t2="Genusia"/>
+    <connection t1="Bilera" t2="Barium"/>
+    <connection t1="Barium" t2="Bardulos"/>
+    <connection t1="Barium" t2="Silvium"/>
+    <connection t1="Bilera" t2="Silvium"/>
+    <connection t1="Bilera" t2="Matera"/>
+    <connection t1="Genusia" t2="Matera"/>
+    <connection t1="Genusia" t2="Metapontum"/>
+    <connection t1="Genusia" t2="s200"/>
+    <connection t1="Mateola" t2="s200"/>
+    <connection t1="Tarentum" t2="s200"/>
+    <connection t1="Brundisium" t2="s202"/>
+    <connection t1="Lupiae" t2="s202"/>
+    <connection t1="Lupiae" t2="s204"/>
+    <connection t1="Callipolis" t2="s204"/>
+    <connection t1="Callipolis" t2="s205"/>
+    <connection t1="Callipolis" t2="s206"/>
+    <connection t1="Lupiae" t2="s206"/>
+    <connection t1="Lupiae" t2="s198"/>
+    <connection t1="Brundisium" t2="s198"/>
+    <connection t1="Brundisium" t2="s193"/>
+    <connection t1="Tarentum" t2="s193"/>
+    <connection t1="Monopolis" t2="s193"/>
+    <connection t1="Barium" t2="s191"/>
+    <connection t1="Barium" t2="s187"/>
+    <connection t1="Neapolis" t2="s037"/>
+    <connection t1="Neapolis" t2="s050"/>
+    <connection t1="Salernum" t2="s050"/>
+    <connection t1="Paestum" t2="s050"/>
+    <connection t1="Paestum" t2="s053"/>
+    <connection t1="Velia" t2="s053"/>
+    <connection t1="Velia" t2="s055"/>
+    <connection t1="Camurus" t2="s055"/>
+    <connection t1="Camurus" t2="s056"/>
+    <connection t1="Metapontum" t2="s200"/>
+    <connection t1="Apameste Coast" t2="s176"/>
+    <connection t1="Apameste Coast" t2="s177"/>
+    <connection t1="Apameste Coast" t2="s179"/>
+    <connection t1="Apameste" t2="s179"/>
+    <connection t1="Apameste" t2="s184"/>
+    <connection t1="Sipontum" t2="s184"/>
+    <connection t1="Bardulos" t2="s184"/>
+    <connection t1="Bardulos" t2="s187"/>
+    <connection t1="Apameste Coast" t2="Apameste"/>
+    <connection t1="Apameste Coast" t2="Fovea"/>
+    <connection t1="Apameste Coast" t2="Sipontum"/>
+    <connection t1="Apameste Coast" t2="Luceria"/>
+    <connection t1="Apameste Coast" t2="Luceria Hills"/>
+    <connection t1="Sipontum" t2="Apameste"/>
+    <connection t1="Sipontum" t2="Fovea"/>
+    <connection t1="Sipontum" t2="Bardulos"/>
+    <connection t1="Sipontum" t2="Venusia"/>
+    <connection t1="Aquilonia" t2="Fovea"/>
+    <connection t1="Aquilonia" t2="Venusia"/>
+    <connection t1="Aquilonia" t2="Beneventum"/>
+    <connection t1="Aquilonia" t2="Abellinum"/>
+    <connection t1="Aquilonia" t2="Dianum"/>
+    <connection t1="Aquilonia" t2="Potentia"/>
+    <connection t1="Fovea" t2="Venusia"/>
+    <connection t1="Fovea" t2="Luceria Hills"/>
+    <connection t1="Fovea" t2="Beneventum"/>
+    <connection t1="Bardulos" t2="Venusia"/>
+    <connection t1="Bardulos" t2="Aceruntia"/>
+    <connection t1="Bardulos" t2="Silvium"/>
+    <connection t1="Beneventum" t2="Luceria Hills"/>
+    <connection t1="Beneventum" t2="Luceria"/>
+    <connection t1="Beneventum" t2="Neapolis"/>
+    <connection t1="Beneventum" t2="Abellinum"/>
+    <connection t1="Luceria Hills" t2="Luceria"/>
+    <connection t1="Neapolis" t2="Abellinum"/>
+    <connection t1="Neapolis" t2="Salernum"/>
+    <connection t1="Salernum" t2="Abellinum"/>
+    <connection t1="Triacronum" t2="Silvium"/>
+    <connection t1="Triacronum" t2="Potentia"/>
+    <connection t1="Triacronum" t2="Aceruntia"/>
+    <connection t1="Triacronum" t2="Matera"/>
+    <connection t1="Triacronum" t2="Metapontum"/>
+    <connection t1="Triacronum" t2="Sinis"/>
+    <connection t1="Aceruntia" t2="Silvium"/>
+    <connection t1="Aceruntia" t2="Venusia"/>
+    <connection t1="Aceruntia" t2="Potentia"/>
+    <connection t1="Matera" t2="Silvium"/>
+    <connection t1="Matera" t2="Metapontum"/>
+    <connection t1="Sinis" t2="Potentia"/>
+    <connection t1="Sinis" t2="Metapontum"/>
+    <connection t1="Sinis" t2="Pollino"/>
+    <connection t1="Sinis" t2="Dianum"/>
+    <connection t1="Sinis" t2="Tegianum"/>
+    <connection t1="Pollino" t2="Metapontum"/>
+    <connection t1="Pollino" t2="Tegianum"/>
+    <connection t1="Pollino" t2="Camurus"/>
+    <connection t1="Potentia" t2="Dianum"/>
+    <connection t1="Potentia" t2="Venusia"/>
+    <connection t1="Dianum" t2="Salernum"/>
+    <connection t1="Dianum" t2="Abellinum"/>
+    <connection t1="Dianum" t2="Tegianum"/>
+    <connection t1="Dianum" t2="Paestum"/>
+    <connection t1="Dianum" t2="Velia"/>
+    <connection t1="Camurus" t2="Velia"/>
+    <connection t1="Camurus" t2="Tegianum"/>
+    <connection t1="Velia" t2="Tegianum"/>
+    <connection t1="Velia" t2="Paestum"/>
+    <connection t1="Paestum" t2="Salernum"/>
+    <!-- connections water to water -->
+    <connection t1="s001" t2="s002"/>
+    <connection t1="s001" t2="s007"/>
+    <connection t1="s002" t2="s003"/>
+    <connection t1="s002" t2="s007"/>
+    <connection t1="s003" t2="s004"/>
+    <connection t1="s003" t2="s008"/>
+    <connection t1="s004" t2="s005"/>
+    <connection t1="s004" t2="s008"/>
+    <connection t1="s005" t2="s006"/>
+    <connection t1="s005" t2="s009"/>
+    <connection t1="s006" t2="s009"/>
+    <connection t1="s006" t2="s013"/>
+    <connection t1="s007" t2="s008"/>
+    <connection t1="s007" t2="s010"/>
+    <connection t1="s007" t2="s011"/>
+    <connection t1="s008" t2="s011"/>
+    <connection t1="s010" t2="s011"/>
+    <connection t1="s010" t2="s014"/>
+    <connection t1="s010" t2="s020"/>
+    <connection t1="s011" t2="s014"/>
+    <connection t1="s011" t2="s015"/>
+    <connection t1="s014" t2="s015"/>
+    <connection t1="s014" t2="s020"/>
+    <connection t1="s014" t2="s021"/>
+    <connection t1="s015" t2="s021"/>
+    <connection t1="s020" t2="s021"/>
+    <connection t1="s020" t2="s030"/>
+    <connection t1="s020" t2="s031"/>
+    <connection t1="s021" t2="s022"/>
+    <connection t1="s030" t2="s031"/>
+    <connection t1="s030" t2="s038"/>
+    <connection t1="s030" t2="s039"/>
+    <connection t1="s031" t2="s039"/>
+    <connection t1="s038" t2="s039"/>
+    <connection t1="s038" t2="s067"/>
+    <connection t1="s038" t2="s068"/>
+    <connection t1="s039" t2="s068"/>
+    <connection t1="s009" t2="s012"/>
+    <connection t1="s009" t2="s013"/>
+    <connection t1="s012" t2="s013"/>
+    <connection t1="s012" t2="s016"/>
+    <connection t1="s012" t2="s017"/>
+    <connection t1="s013" t2="s017"/>
+    <connection t1="s013" t2="s018"/>
+    <connection t1="s016" t2="s017"/>
+    <connection t1="s016" t2="s023"/>
+    <connection t1="s016" t2="s024"/>
+    <connection t1="s017" t2="s018"/>
+    <connection t1="s017" t2="s024"/>
+    <connection t1="s017" t2="s025"/>
+    <connection t1="s018" t2="s019"/>
+    <connection t1="s018" t2="s025"/>
+    <connection t1="s023" t2="s022"/>
+    <connection t1="s023" t2="s024"/>
+    <connection t1="s023" t2="s026"/>
+    <connection t1="s022" t2="s026"/>
+    <connection t1="s024" t2="s025"/>
+    <connection t1="s024" t2="s026"/>
+    <connection t1="s024" t2="s027"/>
+    <connection t1="s019" t2="s025"/>
+    <connection t1="s019" t2="s029"/>
+    <connection t1="s025" t2="s027"/>
+    <connection t1="s025" t2="s028"/>
+    <connection t1="s025" t2="s029"/>
+    <connection t1="s026" t2="s027"/>
+    <connection t1="s026" t2="s032"/>
+    <connection t1="s026" t2="s033"/>
+    <connection t1="s027" t2="s028"/>
+    <connection t1="s027" t2="s033"/>
+    <connection t1="s028" t2="s029"/>
+    <connection t1="s028" t2="s033"/>
+    <connection t1="s028" t2="s034"/>
+    <connection t1="s028" t2="s035"/>
+    <connection t1="s032" t2="s033"/>
+    <connection t1="s032" t2="s040"/>
+    <connection t1="s032" t2="s041"/>
+    <connection t1="s033" t2="s034"/>
+    <connection t1="s033" t2="s041"/>
+    <connection t1="s029" t2="s035"/>
+    <connection t1="s029" t2="s036"/>
+    <connection t1="s034" t2="s035"/>
+    <connection t1="s034" t2="s041"/>
+    <connection t1="s034" t2="s042"/>
+    <connection t1="s035" t2="s036"/>
+    <connection t1="s035" t2="s042"/>
+    <connection t1="s035" t2="s043"/>
+    <connection t1="s036" t2="s037"/>
+    <connection t1="s036" t2="s043"/>
+    <connection t1="s041" t2="s040"/>
+    <connection t1="s041" t2="s042"/>
+    <connection t1="s041" t2="s044"/>
+    <connection t1="s041" t2="s045"/>
+    <connection t1="s042" t2="s043"/>
+    <connection t1="s042" t2="s045"/>
+    <connection t1="s042" t2="s046"/>
+    <connection t1="s043" t2="s037"/>
+    <connection t1="s043" t2="s046"/>
+    <connection t1="s043" t2="s047"/>
+    <connection t1="s043" t2="s048"/>
+    <connection t1="s037" t2="s048"/>
+    <connection t1="s037" t2="s049"/>
+    <connection t1="s037" t2="s050"/>
+    <connection t1="s050" t2="s049"/>
+    <connection t1="s067" t2="s068"/>
+    <connection t1="s067" t2="s079"/>
+    <connection t1="s068" t2="s069"/>
+    <connection t1="s068" t2="s079"/>
+    <connection t1="s068" t2="s080"/>
+    <connection t1="s079" t2="s080"/>
+    <connection t1="s079" t2="s091"/>
+    <connection t1="s079" t2="s092"/>
+    <connection t1="s040" t2="s044"/>
+    <connection t1="s040" t2="s057"/>
+    <connection t1="s044" t2="s045"/>
+    <connection t1="s044" t2="s057"/>
+    <connection t1="s044" t2="s058"/>
+    <connection t1="s045" t2="s046"/>
+    <connection t1="s046" t2="s047"/>
+    <connection t1="s047" t2="s048"/>
+    <connection t1="s048" t2="s049"/>
+    <connection t1="s069" t2="s070"/>
+    <connection t1="s069" t2="s080"/>
+    <connection t1="s069" t2="s081"/>
+    <connection t1="s069" t2="s082"/>
+    <connection t1="s091" t2="s092"/>
+    <connection t1="s091" t2="s098"/>
+    <connection t1="s080" t2="s081"/>
+    <connection t1="s080" t2="s092"/>
+    <connection t1="s098" t2="s092"/>
+    <connection t1="s098" t2="s099"/>
+    <connection t1="s098" t2="s105"/>
+    <connection t1="s092" t2="s081"/>
+    <connection t1="s092" t2="s099"/>
+    <connection t1="s092" t2="s100"/>
+    <connection t1="s105" t2="s099"/>
+    <connection t1="s105" t2="s115"/>
+    <connection t1="s099" t2="s100"/>
+    <connection t1="s099" t2="s115"/>
+    <connection t1="s099" t2="s116"/>
+    <connection t1="s115" t2="s116"/>
+    <connection t1="s056" t2="s065"/>
+    <connection t1="s058" t2="s057"/>
+    <connection t1="s058" t2="s059"/>
+    <connection t1="s058" t2="s070"/>
+    <connection t1="s058" t2="s071"/>
+    <connection t1="s060" t2="s059"/>
+    <connection t1="s060" t2="s061"/>
+    <connection t1="s060" t2="s072"/>
+    <connection t1="s060" t2="s073"/>
+    <connection t1="s070" t2="s057"/>
+    <connection t1="s070" t2="s071"/>
+    <connection t1="s070" t2="s082"/>
+    <connection t1="s066" t2="s065"/>
+    <connection t1="s066" t2="s078"/>
+    <connection t1="s066" t2="s077"/>
+    <connection t1="s066" t2="s064"/>
+    <connection t1="s064" t2="s063"/>
+    <connection t1="s064" t2="s065"/>
+    <connection t1="s064" t2="s076"/>
+    <connection t1="s064" t2="s077"/>
+    <connection t1="s077" t2="s076"/>
+    <connection t1="s077" t2="s078"/>
+    <connection t1="s077" t2="s089"/>
+    <connection t1="s077" t2="s090"/>
+    <connection t1="s090" t2="s078"/>
+    <connection t1="s090" t2="s089"/>
+    <connection t1="s090" t2="s097"/>
+    <connection t1="s081" t2="s082"/>
+    <connection t1="s081" t2="s093"/>
+    <connection t1="s081" t2="s100"/>
+    <connection t1="s071" t2="s059"/>
+    <connection t1="s071" t2="s072"/>
+    <connection t1="s071" t2="s082"/>
+    <connection t1="s071" t2="s083"/>
+    <connection t1="s071" t2="s084"/>
+    <connection t1="s083" t2="s082"/>
+    <connection t1="s083" t2="s093"/>
+    <connection t1="s083" t2="s084"/>
+    <connection t1="s083" t2="s094"/>
+    <connection t1="s093" t2="s082"/>
+    <connection t1="s093" t2="s100"/>
+    <connection t1="s093" t2="s101"/>
+    <connection t1="s093" t2="s094"/>
+    <connection t1="s095" t2="s094"/>
+    <connection t1="s095" t2="s085"/>
+    <connection t1="s095" t2="s086"/>
+    <connection t1="s095" t2="s096"/>
+    <connection t1="s095" t2="s102"/>
+    <connection t1="s095" t2="s103"/>
+    <connection t1="s095" t2="s104"/>
+    <connection t1="s072" t2="s059"/>
+    <connection t1="s072" t2="s073"/>
+    <connection t1="s072" t2="s084"/>
+    <connection t1="s072" t2="s085"/>
+    <connection t1="s094" t2="s084"/>
+    <connection t1="s094" t2="s101"/>
+    <connection t1="s094" t2="s102"/>
+    <connection t1="s085" t2="s084"/>
+    <connection t1="s085" t2="s073"/>
+    <connection t1="s085" t2="s086"/>
+    <connection t1="s085" t2="s096"/>
+    <connection t1="s061" t2="s062"/>
+    <connection t1="s061" t2="s073"/>
+    <connection t1="s061" t2="s074"/>
+    <connection t1="s062" t2="s063"/>
+    <connection t1="s062" t2="s074"/>
+    <connection t1="s062" t2="s075"/>
+    <connection t1="s087" t2="s074"/>
+    <connection t1="s087" t2="s075"/>
+    <connection t1="s087" t2="s086"/>
+    <connection t1="s087" t2="s088"/>
+    <connection t1="s073" t2="s074"/>
+    <connection t1="s073" t2="s086"/>
+    <connection t1="s075" t2="s074"/>
+    <connection t1="s075" t2="s063"/>
+    <connection t1="s075" t2="s076"/>
+    <connection t1="s075" t2="s088"/>
+    <connection t1="s086" t2="s074"/>
+    <connection t1="s086" t2="s096"/>
+    <connection t1="s096" t2="s104"/>
+    <connection t1="s076" t2="s063"/>
+    <connection t1="s076" t2="s088"/>
+    <connection t1="s076" t2="s089"/>
+    <connection t1="s076" t2="s088"/>
+    <connection t1="s089" t2="s076"/>
+    <connection t1="s089" t2="s088"/>
+    <connection t1="s097" t2="s111"/>
+    <connection t1="s097" t2="s112"/>
+    <connection t1="s100" t2="s101"/>
+    <connection t1="s100" t2="s106"/>
+    <connection t1="s100" t2="s116"/>
+    <connection t1="s117" t2="s116"/>
+    <connection t1="s117" t2="s118"/>
+    <connection t1="s117" t2="s106"/>
+    <connection t1="s117" t2="s107"/>
+    <connection t1="s106" t2="s101"/>
+    <connection t1="s106" t2="s107"/>
+    <connection t1="s106" t2="s116"/>
+    <connection t1="s101" t2="s107"/>
+    <connection t1="s102" t2="s101"/>
+    <connection t1="s102" t2="s107"/>
+    <connection t1="s102" t2="s103"/>
+    <connection t1="s107" t2="s103"/>
+    <connection t1="s107" t2="s118"/>
+    <connection t1="s118" t2="s103"/>
+    <connection t1="s118" t2="s119"/>
+    <connection t1="s119" t2="s103"/>
+    <connection t1="s119" t2="s108"/>
+    <connection t1="s119" t2="s130"/>
+    <connection t1="s119" t2="s131"/>
+    <connection t1="s119" t2="s132"/>
+    <connection t1="s119" t2="s133"/>
+    <connection t1="s104" t2="s103"/>
+    <connection t1="s104" t2="s108"/>
+    <connection t1="s104" t2="s109"/>
+    <connection t1="s108" t2="s103"/>
+    <connection t1="s108" t2="s109"/>
+    <connection t1="s108" t2="s120"/>
+    <connection t1="s108" t2="s133"/>
+    <connection t1="s109" t2="s110"/>
+    <connection t1="s109" t2="s120"/>
+    <connection t1="s109" t2="s121"/>
+    <connection t1="s131" t2="s130"/>
+    <connection t1="s131" t2="s132"/>
+    <connection t1="s131" t2="s141"/>
+    <connection t1="s131" t2="s150"/>
+    <connection t1="s132" t2="s133"/>
+    <connection t1="s132" t2="s142"/>
+    <connection t1="s132" t2="s141"/>
+    <connection t1="s141" t2="s142"/>
+    <connection t1="s141" t2="s152"/>
+    <connection t1="s141" t2="s150"/>
+    <connection t1="s141" t2="s151"/>
+    <connection t1="s151" t2="s150"/>
+    <connection t1="s151" t2="s152"/>
+    <connection t1="s142" t2="s133"/>
+    <connection t1="s142" t2="s134"/>
+    <connection t1="s142" t2="s136"/>
+    <connection t1="s142" t2="s143"/>
+    <connection t1="s142" t2="s152"/>
+    <connection t1="s134" t2="s133"/>
+    <connection t1="s134" t2="s120"/>
+    <connection t1="s134" t2="s121"/>
+    <connection t1="s134" t2="s122"/>
+    <connection t1="s134" t2="s135"/>
+    <connection t1="s134" t2="s136"/>
+    <connection t1="s152" t2="s143"/>
+    <connection t1="s152" t2="s153"/>
+    <connection t1="s152" t2="s154"/>
+    <connection t1="s109" t2="s110"/>
+    <connection t1="s109" t2="s120"/>
+    <connection t1="s109" t2="s121"/>
+    <connection t1="s121" t2="s120"/>
+    <connection t1="s121" t2="s110"/>
+    <connection t1="s121" t2="s122"/>
+    <connection t1="s122" t2="s110"/>
+    <connection t1="s122" t2="s123"/>
+    <connection t1="s122" t2="s135"/>
+    <connection t1="s123" t2="s110"/>
+    <connection t1="s123" t2="s124"/>
+    <connection t1="s123" t2="s135"/>
+    <connection t1="s154" t2="s153"/>
+    <connection t1="s154" t2="s155"/>
+    <connection t1="s154" t2="s156"/>
+    <connection t1="s124" t2="s135"/>
+    <connection t1="s124" t2="s137"/>
+    <connection t1="s124" t2="s146"/>
+    <connection t1="s124" t2="s138"/>
+    <connection t1="s135" t2="s136"/>
+    <connection t1="s135" t2="s137"/>
+    <connection t1="s136" t2="s143"/>
+    <connection t1="s136" t2="s144"/>
+    <connection t1="s136" t2="s137"/>
+    <connection t1="s143" t2="s144"/>
+    <connection t1="s143" t2="s153"/>
+    <connection t1="s155" t2="s156"/>
+    <connection t1="s155" t2="s157"/>
+    <connection t1="s155" t2="s153"/>
+    <connection t1="s155" t2="s144"/>
+    <connection t1="s155" t2="s145"/>
+    <connection t1="s144" t2="s137"/>
+    <connection t1="s144" t2="s145"/>
+    <connection t1="s144" t2="s153"/>
+    <connection t1="s146" t2="s137"/>
+    <connection t1="s146" t2="s145"/>
+    <connection t1="s146" t2="s138"/>
+    <connection t1="s146" t2="s147"/>
+    <connection t1="s145" t2="s137"/>
+    <connection t1="s145" t2="s157"/>
+    <connection t1="s157" t2="s156"/>
+    <connection t1="s157" t2="s158"/>
+    <connection t1="s158" t2="s147"/>
+    <connection t1="s158" t2="s148"/>
+    <connection t1="s158" t2="s159"/>
+    <connection t1="s159" t2="s148"/>
+    <connection t1="s159" t2="s149"/>
+    <connection t1="s159" t2="s160"/>
+    <connection t1="s149" t2="s160"/>
+    <connection t1="s149" t2="s139"/>
+    <connection t1="s149" t2="s140"/>
+    <connection t1="s149" t2="s148"/>
+    <connection t1="s148" t2="s147"/>
+    <connection t1="s148" t2="s138"/>
+    <connection t1="s148" t2="s139"/>
+    <connection t1="s138" t2="s126"/>
+    <connection t1="s138" t2="s147"/>
+    <connection t1="s138" t2="s139"/>
+    <connection t1="s140" t2="s139"/>
+    <connection t1="s140" t2="s127"/>
+    <connection t1="s140" t2="s128"/>
+    <connection t1="s127" t2="s139"/>
+    <connection t1="s127" t2="s126"/>
+    <connection t1="s127" t2="s125"/>
+    <connection t1="s127" t2="s128"/>
+    <connection t1="s126" t2="s139"/>
+    <connection t1="s126" t2="s125"/>
+    <connection t1="s125" t2="s111"/>
+    <connection t1="s125" t2="s112"/>
+    <connection t1="s125" t2="s114"/>
+    <connection t1="s125" t2="s128"/>
+    <connection t1="s112" t2="s111"/>
+    <connection t1="s112" t2="s113"/>
+    <connection t1="s112" t2="s114"/>
+    <connection t1="s114" t2="s113"/>
+    <connection t1="s114" t2="s218"/>
+    <connection t1="s114" t2="s223"/>
+    <connection t1="s114" t2="s129"/>
+    <connection t1="s114" t2="s128"/>
+    <connection t1="s129" t2="s128"/>
+    <connection t1="s129" t2="s223"/>
+    <connection t1="s129" t2="s225"/>
+    <connection t1="s129" t2="s228"/>
+    <connection t1="s113" t2="s218"/>
+    <connection t1="s161" t2="s162"/>
+    <connection t1="s161" t2="s164"/>
+    <connection t1="s161" t2="s165"/>
+    <connection t1="s165" t2="s162"/>
+    <connection t1="s165" t2="s166"/>
+    <connection t1="s165" t2="s171"/>
+    <connection t1="s165" t2="s170"/>
+    <connection t1="s165" t2="s164"/>
+    <connection t1="s165" t2="s169"/>
+    <connection t1="s169" t2="s164"/>
+    <connection t1="s169" t2="s170"/>
+    <connection t1="s169" t2="s176"/>
+    <connection t1="s162" t2="s163"/>
+    <connection t1="s162" t2="s166"/>
+    <connection t1="s176" t2="s177"/>
+    <connection t1="s176" t2="s170"/>
+    <connection t1="s177" t2="s170"/>
+    <connection t1="s177" t2="s172"/>
+    <connection t1="s177" t2="s178"/>
+    <connection t1="s177" t2="s179"/>
+    <connection t1="s170" t2="s171"/>
+    <connection t1="s170" t2="s172"/>
+    <connection t1="s166" t2="s163"/>
+    <connection t1="s166" t2="s167"/>
+    <connection t1="s166" t2="s171"/>
+    <connection t1="s172" t2="s171"/>
+    <connection t1="s172" t2="s167"/>
+    <connection t1="s172" t2="s173"/>
+    <connection t1="s172" t2="s178"/>
+    <connection t1="s163" t2="s167"/>
+    <connection t1="s163" t2="s168"/>
+    <connection t1="s168" t2="s167"/>
+    <connection t1="s168" t2="s174"/>
+    <connection t1="s168" t2="s175"/>
+    <connection t1="s173" t2="s167"/>
+    <connection t1="s173" t2="s174"/>
+    <connection t1="s173" t2="s178"/>
+    <connection t1="s173" t2="s180"/>
+    <connection t1="s179" t2="s178"/>
+    <connection t1="s179" t2="s180"/>
+    <connection t1="s179" t2="s184"/>
+    <connection t1="s180" t2="s178"/>
+    <connection t1="s180" t2="s174"/>
+    <connection t1="s180" t2="s181"/>
+    <connection t1="s180" t2="s185"/>
+    <connection t1="s180" t2="s184"/>
+    <connection t1="s184" t2="s185"/>
+    <connection t1="s184" t2="s187"/>
+    <connection t1="s181" t2="s174"/>
+    <connection t1="s181" t2="s175"/>
+    <connection t1="s181" t2="s182"/>
+    <connection t1="s181" t2="s186"/>
+    <connection t1="s181" t2="s185"/>
+    <connection t1="s175" t2="s174"/>
+    <connection t1="s175" t2="s182"/>
+    <connection t1="s185" t2="s186"/>
+    <connection t1="s185" t2="s187"/>
+    <connection t1="s185" t2="s188"/>
+    <connection t1="s191" t2="s187"/>
+    <connection t1="s191" t2="s188"/>
+    <connection t1="s191" t2="s192"/>
+    <connection t1="s191" t2="s193"/>
+    <connection t1="s188" t2="s186"/>
+    <connection t1="s188" t2="s187"/>
+    <connection t1="s188" t2="s192"/>
+    <connection t1="s182" t2="s183"/>
+    <connection t1="s182" t2="s186"/>
+    <connection t1="s182" t2="s189"/>
+    <connection t1="s189" t2="s186"/>
+    <connection t1="s189" t2="s190"/>
+    <connection t1="s189" t2="s192"/>
+    <connection t1="s189" t2="s195"/>
+    <connection t1="s189" t2="s196"/>
+    <connection t1="s189" t2="s183"/>
+    <connection t1="s190" t2="s183"/>
+    <connection t1="s190" t2="s196"/>
+    <connection t1="s192" t2="s186"/>
+    <connection t1="s192" t2="s193"/>
+    <connection t1="s192" t2="s194"/>
+    <connection t1="s192" t2="s195"/>
+    <connection t1="s197" t2="s194"/>
+    <connection t1="s197" t2="s195"/>
+    <connection t1="s197" t2="s196"/>
+    <connection t1="s197" t2="s198"/>
+    <connection t1="s197" t2="s199"/>
+    <connection t1="s195" t2="s194"/>
+    <connection t1="s195" t2="s196"/>
+    <connection t1="s193" t2="s194"/>
+    <connection t1="s193" t2="s198"/>
+    <connection t1="s198" t2="s194"/>
+    <connection t1="s198" t2="s199"/>
+    <connection t1="s198" t2="s206"/>
+    <connection t1="s199" t2="s206"/>
+    <connection t1="s199" t2="s231"/>
+    <connection t1="s201" t2="s200"/>
+    <connection t1="s201" t2="s202"/>
+    <connection t1="s201" t2="s203"/>
+    <connection t1="s202" t2="s200"/>
+    <connection t1="s202" t2="s203"/>
+    <connection t1="s202" t2="s204"/>
+    <connection t1="s205" t2="s231"/>
+    <connection t1="s205" t2="s206"/>
+    <connection t1="s205" t2="s210"/>
+    <connection t1="s205" t2="s209"/>
+    <connection t1="s205" t2="s204"/>
+    <connection t1="s231" t2="s206"/>
+    <connection t1="s231" t2="s210"/>
+    <connection t1="s204" t2="s203"/>
+    <connection t1="s204" t2="s208"/>
+    <connection t1="s204" t2="s209"/>
+    <connection t1="s209" t2="s208"/>
+    <connection t1="s209" t2="s210"/>
+    <connection t1="s209" t2="s211"/>
+    <connection t1="s209" t2="s212"/>
+    <connection t1="s209" t2="s213"/>
+    <connection t1="s213" t2="s210"/>
+    <connection t1="s213" t2="s212"/>
+    <connection t1="s213" t2="s217"/>
+    <connection t1="s213" t2="s222"/>
+    <connection t1="s208" t2="s203"/>
+    <connection t1="s208" t2="s207"/>
+    <connection t1="s208" t2="s211"/>
+    <connection t1="s207" t2="s203"/>
+    <connection t1="s207" t2="s211"/>
+    <connection t1="s207" t2="s214"/>
+    <connection t1="s207" t2="s215"/>
+    <connection t1="s207" t2="s216"/>
+    <connection t1="s214" t2="s215"/>
+    <connection t1="s214" t2="s218"/>
+    <connection t1="s214" t2="s219"/>
+    <connection t1="s212" t2="s211"/>
+    <connection t1="s212" t2="s216"/>
+    <connection t1="s212" t2="s217"/>
+    <connection t1="s211" t2="s216"/>
+    <connection t1="s217" t2="s216"/>
+    <connection t1="s217" t2="s221"/>
+    <connection t1="s217" t2="s222"/>
+    <connection t1="s215" t2="s216"/>
+    <connection t1="s215" t2="s219"/>
+    <connection t1="s215" t2="s220"/>
+    <connection t1="s220" t2="s216"/>
+    <connection t1="s220" t2="s221"/>
+    <connection t1="s220" t2="s227"/>
+    <connection t1="s220" t2="s226"/>
+    <connection t1="s220" t2="s224"/>
+    <connection t1="s220" t2="s219"/>
+    <connection t1="s221" t2="s216"/>
+    <connection t1="s221" t2="s222"/>
+    <connection t1="s221" t2="s227"/>
+    <connection t1="s227" t2="s222"/>
+    <connection t1="s227" t2="s226"/>
+    <connection t1="s227" t2="s230"/>
+    <connection t1="s229" t2="s230"/>
+    <connection t1="s229" t2="s226"/>
+    <connection t1="s229" t2="s228"/>
+    <connection t1="s226" t2="s230"/>
+    <connection t1="s226" t2="s224"/>
+    <connection t1="s226" t2="s225"/>
+    <connection t1="s226" t2="s228"/>
+    <connection t1="s225" t2="s228"/>
+    <connection t1="s225" t2="s223"/>
+    <connection t1="s225" t2="s224"/>
+    <connection t1="s223" t2="s218"/>
+    <connection t1="s223" t2="s219"/>
+    <connection t1="s223" t2="s224"/>
+    <connection t1="s219" t2="s218"/>
+    <connection t1="s219" t2="s224"/>
+    <!-- Korrektur -->
+    <connection t1="s051" t2="s044"/>
+    <connection t1="s051" t2="s045"/>
+    <connection t1="s051" t2="s232"/>
+    <connection t1="s051" t2="s233"/>
+    <connection t1="s051" t2="s059"/>
+    <connection t1="s051" t2="s058"/>
+    <connection t1="s052" t2="s049"/>
+    <connection t1="s052" t2="s053"/>
+    <connection t1="s052" t2="s054"/>
+    <connection t1="s052" t2="s063"/>
+    <connection t1="s052" t2="s062"/>
+    <connection t1="s052" t2="s235"/>
+    <connection t1="s053" t2="s049"/>
+    <connection t1="s053" t2="s050"/>
+    <connection t1="s053" t2="s055"/>
+    <connection t1="s053" t2="s054"/>
+    <connection t1="s054" t2="s055"/>
+    <connection t1="s054" t2="s065"/>
+    <connection t1="s054" t2="s064"/>
+    <connection t1="s054" t2="s063"/>
+    <connection t1="s055" t2="s056"/>
+    <connection t1="s055" t2="s065"/>
+    <connection t1="s232" t2="s045"/>
+    <connection t1="s232" t2="s046"/>
+    <connection t1="s232" t2="s047"/>
+    <connection t1="s232" t2="s234"/>
+    <connection t1="s232" t2="s233"/>
+    <connection t1="s233" t2="s234"/>
+    <connection t1="s233" t2="s060"/>
+    <connection t1="s233" t2="s059"/>
+    <connection t1="s234" t2="s047"/>
+    <connection t1="s234" t2="s048"/>
+    <connection t1="s234" t2="s235"/>
+    <connection t1="s234" t2="s236"/>
+    <connection t1="s234" t2="s061"/>
+    <connection t1="s234" t2="s060"/>
+    <connection t1="s235" t2="s048"/>
+    <connection t1="s235" t2="s049"/>
+    <connection t1="s235" t2="s062"/>
+    <connection t1="s235" t2="s236"/>
+    <connection t1="s236" t2="s062"/>
+    <connection t1="s236" t2="s061"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Roman" optional="false"/>
+    <player name="Illyrian" optional="false"/>
+    <player name="Carthage" optional="false"/>
+    <player name="Syracuse" optional="false"/>
+    <!-- Axis Alliances -->
+    <alliance player="Roman" alliance="Axis"/>
+    <!-- Allies Alliances -->
+    <alliance player="Illyrian" alliance="Allies"/>
+    <alliance player="Carthage" alliance="Allies"/>
+    <alliance player="Syracuse" alliance="Allies"/>
+  </playerList>
+  <unitList>
+    <unit name="city"/>
+    <unit name="legionaire"/>
+    <unit name="trireme"/>
+    <unit name="hoplite"/>
+    <unit name="archer"/>
+    <unit name="equites"/>
+    <unit name="cavalry"/>
+    <unit name="bireme"/>
+    <unit name="transport"/>
+    <unit name="luxury_trireme"/>
+    <unit name="consul"/>
+    <unit name="legatus"/>
+    <unit name="velites"/>
+    <unit name="onager"/>
+    <unit name="defense_agent"/>
+    <unit name="general"/>
+    <unit name="admiral"/>
+    <unit name="great_admiral"/>
+    <unit name="warelephant"/>
+    <unit name="peltasts"/>
+    <unit name="spearman"/>
+    <unit name="polemarchos"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="RomanBid" delegate="bid" player="Roman" maxRunCount="1"/>
+      <step name="RomanGroupBidPlace" delegate="placeBid" player="Roman" maxRunCount="1"/>
+      <step name="IllyrianBid" delegate="bid" player="Illyrian" maxRunCount="1"/>
+      <step name="IllyrianBidPlace" delegate="placeBid" player="Illyrian" maxRunCount="1"/>
+      <step name="CarthageArmyBid" delegate="bid" player="Carthage" maxRunCount="1"/>
+      <step name="CarthageBidPlace" delegate="placeBid" player="Carthage" maxRunCount="1"/>
+      <step name="SyracuseBid" delegate="bid" player="Syracuse" maxRunCount="1"/>
+      <step name="SyracuseBidPlace" delegate="placeBid" player="Syracuse" maxRunCount="1"/>
+      <!-- Roman Game Sequence -->
+      <step name="RomanPurchase" delegate="purchase" player="Roman"/>
+      <step name="RomanCombatMove" delegate="move" player="Roman"/>
+      <step name="RomanBattle" delegate="battle" player="Roman"/>
+      <step name="RomanNonCombatMove" delegate="move" player="Roman" display="Non Combat Move"/>
+      <step name="RomanPlace" delegate="place" player="Roman"/>
+      <step name="RomanEndTurn" delegate="endTurn" player="Roman"/>
+      <!-- Illyrian Game Sequence -->
+      <step name="IllyrianPurchase" delegate="purchase" player="Illyrian"/>
+      <step name="IllyrianCombatMove" delegate="move" player="Illyrian"/>
+      <step name="IllyrianBattle" delegate="battle" player="Illyrian"/>
+      <step name="IllyrianNonCombatMove" delegate="move" player="Illyrian" display="Non Combat Move"/>
+      <step name="IllyrianPlace" delegate="place" player="Illyrian"/>
+      <step name="IllyrianEndTurn" delegate="endTurn" player="Illyrian"/>
+      <!-- Carthage Game Sequence -->
+      <step name="CarthagePurchase" delegate="purchase" player="Carthage"/>
+      <step name="CarthageCombatMove" delegate="move" player="Carthage"/>
+      <step name="CarthageBattle" delegate="battle" player="Carthage"/>
+      <step name="CarthageNonCombatMove" delegate="move" player="Carthage" display="Non Combat Move"/>
+      <step name="CarthagePlace" delegate="place" player="Carthage"/>
+      <step name="CarthageEndTurn" delegate="endTurn" player="Carthage"/>
+      <!-- Syracuse Game Sequence -->
+      <step name="SyracusePurchase" delegate="purchase" player="Syracuse"/>
+      <step name="SyracuseCombatMove" delegate="move" player="Syracuse"/>
+      <step name="SyracuseBattle" delegate="battle" player="Syracuse"/>
+      <step name="SyracuseNonCombatMove" delegate="move" player="Syracuse" display="Non Combat Move"/>
+      <step name="SyracusePlace" delegate="place" player="Syracuse"/>
+      <step name="SyracuseEndTurn" delegate="endTurn" player="Syracuse"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buycity">
+      <cost resource="PUs" quantity="25"/>
+      <result resourceOrUnit="city" quantity="1"/>
+    </productionRule>
+    <productionRule name="buytrireme">
+      <cost resource="PUs" quantity="33"/>
+      <result resourceOrUnit="trireme" quantity="1"/>
+    </productionRule>
+    <productionRule name="buylegionaire">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="legionaire" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyhoplite">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="hoplite" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyarcher">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="archer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyequites">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="equites" quantity="1"/>
+    </productionRule>
+    <productionRule name="buycavalry">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="cavalry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buybireme">
+      <cost resource="PUs" quantity="24"/>
+      <result resourceOrUnit="bireme" quantity="1"/>
+    </productionRule>
+    <productionRule name="buytransport">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyluxury_trireme">
+      <cost resource="PUs" quantity="28"/>
+      <result resourceOrUnit="luxury_trireme" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyconsul">
+      <cost resource="PUs" quantity="23"/>
+      <result resourceOrUnit="consul" quantity="1"/>
+    </productionRule>
+    <productionRule name="buylegatus">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="legatus" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyvelites">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="velites" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyonager">
+      <cost resource="PUs" quantity="13"/>
+      <result resourceOrUnit="onager" quantity="1"/>
+    </productionRule>
+    <productionRule name="buydefense_agent">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="defense_agent" quantity="1"/>
+    </productionRule>
+    <productionRule name="buygeneral">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="general" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyadmiral">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="admiral" quantity="1"/>
+    </productionRule>
+    <productionRule name="buygreat_admiral">
+      <cost resource="PUs" quantity="23"/>
+      <result resourceOrUnit="great_admiral" quantity="1"/>
+    </productionRule>
+    <productionRule name="buywarelephant">
+      <cost resource="PUs" quantity="17"/>
+      <result resourceOrUnit="warelephant" quantity="1"/>
+    </productionRule>
+    <productionRule name="buypeltasts">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="peltasts" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyspearman">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="spearman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buypolemarchos">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="polemarchos" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="productionRoman">
+      <frontierRules name="buycity"/>
+      <frontierRules name="buyequites"/>
+      <frontierRules name="buybireme"/>
+      <frontierRules name="buylegionaire"/>
+      <frontierRules name="buytrireme"/>
+      <frontierRules name="buyvelites"/>
+      <frontierRules name="buyconsul"/>
+      <frontierRules name="buylegatus"/>
+      <frontierRules name="buytransport"/>
+      <frontierRules name="buyluxury_trireme"/>
+      <frontierRules name="buyonager"/>
+      <frontierRules name="buydefense_agent"/>
+    </productionFrontier>
+    <productionFrontier name="productionIllyrian">
+      <frontierRules name="buycity"/>
+      <frontierRules name="buycavalry"/>
+      <frontierRules name="buybireme"/>
+      <frontierRules name="buydefense_agent"/>
+      <frontierRules name="buygeneral"/>
+      <frontierRules name="buyhoplite"/>
+      <frontierRules name="buyluxury_trireme"/>
+      <frontierRules name="buypeltasts"/>
+      <frontierRules name="buytransport"/>
+      <frontierRules name="buytrireme"/>
+    </productionFrontier>
+    <productionFrontier name="productionCarthage">
+      <frontierRules name="buycity"/>
+      <frontierRules name="buycavalry"/>
+      <frontierRules name="buyhoplite"/>
+      <frontierRules name="buybireme"/>
+      <frontierRules name="buyadmiral"/>
+      <frontierRules name="buydefense_agent"/>
+      <frontierRules name="buygreat_admiral"/>
+      <frontierRules name="buyluxury_trireme"/>
+      <frontierRules name="buyspearman"/>
+      <frontierRules name="buytransport"/>
+      <frontierRules name="buytrireme"/>
+      <frontierRules name="buywarelephant"/>
+    </productionFrontier>
+    <productionFrontier name="productionSyracuse">
+      <frontierRules name="buycity"/>
+      <frontierRules name="buytrireme"/>
+      <frontierRules name="buyhoplite"/>
+      <frontierRules name="buyarcher"/>
+      <frontierRules name="buybireme"/>
+      <frontierRules name="buycavalry"/>
+      <frontierRules name="buydefense_agent"/>
+      <frontierRules name="buyluxury_trireme"/>
+      <frontierRules name="buypolemarchos"/>
+      <frontierRules name="buytransport"/>
+    </productionFrontier>
+    <!--				<productionFrontier name="production">
+                        <frontierRules name="buycity"/>
+                        <frontierRules name="buylegionaire"/>
+                        <frontierRules name="buyhoplite"/>
+                        <frontierRules name="buyarcher"/>
+                        <frontierRules name="buyswordman"/>
+                </productionFrontier>
+-->
+    <playerProduction player="Roman" frontier="productionRoman"/>
+    <playerProduction player="Illyrian" frontier="productionIllyrian"/>
+    <playerProduction player="Carthage" frontier="productionCarthage"/>
+    <playerProduction player="Syracuse" frontier="productionSyracuse"/>
+  </production>
+  <!--                 -->
+  <!-- territory value -->
+  <!--                 -->
+  <attachmentList>
+    <attachment name="unitAttachment" attachTo="city" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="trireme" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bireme" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="luxury_trireme" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="isSea" value="true"/>
+      <option name="carrierCapacity" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="cavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="equites" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="legionaire" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="hoplite" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="archer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="velites" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="onager" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="peltasts" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="spearman" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="warelephant" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="legatus" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="general" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="admiral" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="polemarchos" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="consul" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="5"/>
+      <option name="isAir" value="true"/>
+      <option name="carrierCost" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="4"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="great_admiral" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="5"/>
+      <option name="isAir" value="true"/>
+      <option name="carrierCost" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="4"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="defense_agent" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+    </attachment>
+    <!--   value Afrika    -->
+    <attachment name="territoryAttachment" attachTo="Desert" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hippo Regius" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tipasa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thabraca" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sicca Veneria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dhiarrhytus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bulla" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thugga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Utica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vaga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Medjer" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Carthage" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="Carthage"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kerkouane" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Neapo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zama Regia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zaghuwan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tuburbum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Maktar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hadrumetum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <!-- value West Islands -->
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pelaghia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cossyra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gol" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Malet" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Capraria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Elba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cosanus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aegusa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aenaria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Meliguni" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+      <!-- value Sardinien -->
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nora" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sulci" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Caralis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Siddi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tharros" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lacona" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tortolia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Macopsissa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oris" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alguer" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tibula" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Olbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Talanis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <!-- value Korsika -->
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Soubasanoi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pauca" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Porta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ajacia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Corta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Calvia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Biguglia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cargesa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alalia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <!-- value Sicilien -->
+    </attachment>
+    <!--    <attachment name="territoryAttachment" attachTo="Aidna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+	  <option name="isImpassable" value="true"/>
+    </attachment>-->
+    <attachment name="territoryAttachment" attachTo="Motya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eryx" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lilybaeum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Segesta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Segesta Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Selinus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Selinus Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Panormus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Panormus Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Acragas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Soluntum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pachi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Motyka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Neton" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kamarina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Galea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bidi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Syrakusa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="Syracuse"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Syrakusa Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Leontinoni" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Themae" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Themae Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Acragas Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Phintias" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Messene" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tauromenion" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tyndaris" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aidna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Katane" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Adranon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Petra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nicia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kephaloidion" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Calacte" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Calacte Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Inessa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Henna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <!-- value ost Inseln -->
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Issa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Solta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Brac" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pharos" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Korkyra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <!-- value Illien -->
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aspalathos" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="Illyrian"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Muccuros" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Emania" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Venta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bastante River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Argenta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Narona" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sallunta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Naro River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Drinu River" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chersone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Slanos" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ragousa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Doclea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Scodra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Durrharchion" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Taulant" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <!-- Territory names Italien -->
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pupluna" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Siena" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arezzo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Angon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vetulonia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Clusium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Perusia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Foligium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Castrum Novum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vulci" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tutere" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Norcia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pretuzi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Centumcellae" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Roma" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Roman"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Reate" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sulmo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Histonium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Histonium Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Termola" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Latium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Frusino" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Formiae" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Casinum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rhegium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aphricon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Medma" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hipponium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kaulonia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Locri" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Scylletium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Temese" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Terina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zarapotamo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Crotone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Petelia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mesoraca" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cariates" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cosentia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bisignanus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cetraro" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Laos" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thurium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sybaris Ruines" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Maratea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rotunda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Heraclea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Callipolis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lupiae" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Brundisium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tarentum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mateola" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Monopolis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Barium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bilera" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Genusia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Apameste" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Apameste Coast" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Luceria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Luceria Hills" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fovea" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sipontum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Neapolis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Beneventum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Abellinum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Salernum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aquilonia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Venusia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bardulos" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Paestum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dianum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Potentia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aceruntia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Silvium" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Velia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tegianum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sinis" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Triacronum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Matera" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Camurus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pollino" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Metapontum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!--        -->
+      <!-- Owners -->
+      <!--        -->
+      <!-- Roman Owners -->
+      <territoryOwner territory="Pupluna" owner="Roman"/>
+      <territoryOwner territory="Siena" owner="Roman"/>
+      <territoryOwner territory="Arezzo" owner="Roman"/>
+      <territoryOwner territory="Angon" owner="Roman"/>
+      <territoryOwner territory="Vetulonia" owner="Roman"/>
+      <territoryOwner territory="Clusium" owner="Roman"/>
+      <territoryOwner territory="Perusia" owner="Roman"/>
+      <territoryOwner territory="Foligium" owner="Roman"/>
+      <territoryOwner territory="Castrum Novum" owner="Roman"/>
+      <territoryOwner territory="Vulci" owner="Roman"/>
+      <territoryOwner territory="Tutere" owner="Roman"/>
+      <territoryOwner territory="Norcia" owner="Roman"/>
+      <territoryOwner territory="Pretuzi" owner="Roman"/>
+      <territoryOwner territory="Centumcellae" owner="Roman"/>
+      <territoryOwner territory="Roma" owner="Roman"/>
+      <territoryOwner territory="Reate" owner="Roman"/>
+      <territoryOwner territory="Sulmo" owner="Roman"/>
+      <territoryOwner territory="Histonium" owner="Roman"/>
+      <territoryOwner territory="Histonium Hills" owner="Roman"/>
+      <territoryOwner territory="Termola" owner="Roman"/>
+      <territoryOwner territory="Latium" owner="Roman"/>
+      <territoryOwner territory="Frusino" owner="Roman"/>
+      <territoryOwner territory="Formiae" owner="Roman"/>
+      <territoryOwner territory="Casinum" owner="Roman"/>
+      <territoryOwner territory="Rhegium" owner="Roman"/>
+      <territoryOwner territory="Aphricon" owner="Roman"/>
+      <territoryOwner territory="Medma" owner="Roman"/>
+      <territoryOwner territory="Hipponium" owner="Roman"/>
+      <territoryOwner territory="Kaulonia" owner="Roman"/>
+      <territoryOwner territory="Locri" owner="Roman"/>
+      <territoryOwner territory="Scylletium" owner="Roman"/>
+      <territoryOwner territory="Temese" owner="Roman"/>
+      <territoryOwner territory="Terina" owner="Roman"/>
+      <territoryOwner territory="Zarapotamo" owner="Roman"/>
+      <territoryOwner territory="Crotone" owner="Roman"/>
+      <territoryOwner territory="Petelia" owner="Roman"/>
+      <territoryOwner territory="Mesoraca" owner="Roman"/>
+      <territoryOwner territory="Cariates" owner="Roman"/>
+      <territoryOwner territory="Cosentia" owner="Roman"/>
+      <territoryOwner territory="Laos" owner="Roman"/>
+      <territoryOwner territory="Thurium" owner="Roman"/>
+      <territoryOwner territory="Sybaris Ruines" owner="Roman"/>
+      <territoryOwner territory="Maratea" owner="Roman"/>
+      <territoryOwner territory="Rotunda" owner="Roman"/>
+      <territoryOwner territory="Heraclea" owner="Roman"/>
+      <territoryOwner territory="Bisignanus" owner="Roman"/>
+      <territoryOwner territory="Cetraro" owner="Roman"/>
+      <territoryOwner territory="Callipolis" owner="Roman"/>
+      <territoryOwner territory="Lupiae" owner="Roman"/>
+      <territoryOwner territory="Brundisium" owner="Roman"/>
+      <territoryOwner territory="Tarentum" owner="Roman"/>
+      <territoryOwner territory="Mateola" owner="Roman"/>
+      <territoryOwner territory="Monopolis" owner="Roman"/>
+      <territoryOwner territory="Barium" owner="Roman"/>
+      <territoryOwner territory="Bilera" owner="Roman"/>
+      <territoryOwner territory="Genusia" owner="Roman"/>
+      <territoryOwner territory="Apameste" owner="Roman"/>
+      <territoryOwner territory="Apameste Coast" owner="Roman"/>
+      <territoryOwner territory="Luceria" owner="Roman"/>
+      <territoryOwner territory="Luceria Hills" owner="Roman"/>
+      <territoryOwner territory="Fovea" owner="Roman"/>
+      <territoryOwner territory="Sipontum" owner="Roman"/>
+      <territoryOwner territory="Neapolis" owner="Roman"/>
+      <territoryOwner territory="Beneventum" owner="Roman"/>
+      <territoryOwner territory="Abellinum" owner="Roman"/>
+      <territoryOwner territory="Salernum" owner="Roman"/>
+      <territoryOwner territory="Aquilonia" owner="Roman"/>
+      <territoryOwner territory="Venusia" owner="Roman"/>
+      <territoryOwner territory="Bardulos" owner="Roman"/>
+      <territoryOwner territory="Paestum" owner="Roman"/>
+      <territoryOwner territory="Dianum" owner="Roman"/>
+      <territoryOwner territory="Potentia" owner="Roman"/>
+      <territoryOwner territory="Aceruntia" owner="Roman"/>
+      <territoryOwner territory="Silvium" owner="Roman"/>
+      <territoryOwner territory="Velia" owner="Roman"/>
+      <territoryOwner territory="Tegianum" owner="Roman"/>
+      <territoryOwner territory="Sinis" owner="Roman"/>
+      <territoryOwner territory="Triacronum" owner="Roman"/>
+      <territoryOwner territory="Matera" owner="Roman"/>
+      <territoryOwner territory="Camurus" owner="Roman"/>
+      <territoryOwner territory="Pollino" owner="Roman"/>
+      <territoryOwner territory="Metapontum" owner="Roman"/>
+      <territoryOwner territory="Cosanus" owner="Roman"/>
+      <territoryOwner territory="Aenaria" owner="Roman"/>
+      <territoryOwner territory="Messene" owner="Roman"/>
+      <territoryOwner territory="Tauromenion" owner="Roman"/>
+      <!-- Illyrian Owners -->
+      <territoryOwner territory="Issa" owner="Illyrian"/>
+      <!--	<territoryOwner territory="Solta" owner="Illyrian"/>
+	<territoryOwner territory="Brac" owner="Illyrian"/> -->
+      <territoryOwner territory="Pharos" owner="Illyrian"/>
+      <territoryOwner territory="Korkyra" owner="Illyrian"/>
+      <territoryOwner territory="Aspalathos" owner="Illyrian"/>
+      <territoryOwner territory="Muccuros" owner="Illyrian"/>
+      <territoryOwner territory="Emania" owner="Illyrian"/>
+      <territoryOwner territory="Venta" owner="Illyrian"/>
+      <territoryOwner territory="Bastante River" owner="Illyrian"/>
+      <territoryOwner territory="Argenta" owner="Illyrian"/>
+      <territoryOwner territory="Narona" owner="Illyrian"/>
+      <territoryOwner territory="Sallunta" owner="Illyrian"/>
+      <territoryOwner territory="Naro River" owner="Illyrian"/>
+      <territoryOwner territory="Drinu River" owner="Illyrian"/>
+      <territoryOwner territory="Chersone" owner="Illyrian"/>
+      <territoryOwner territory="Slanos" owner="Illyrian"/>
+      <territoryOwner territory="Ragousa" owner="Illyrian"/>
+      <territoryOwner territory="Doclea" owner="Illyrian"/>
+      <territoryOwner territory="Scodra" owner="Illyrian"/>
+      <territoryOwner territory="Durrharchion" owner="Illyrian"/>
+      <territoryOwner territory="Taulant" owner="Illyrian"/>
+      <!-- Carthage Owners -->
+      <territoryOwner territory="Desert" owner="Carthage"/>
+      <territoryOwner territory="Hippo Regius" owner="Carthage"/>
+      <territoryOwner territory="Tipasa" owner="Carthage"/>
+      <territoryOwner territory="Thabraca" owner="Carthage"/>
+      <territoryOwner territory="Sicca Veneria" owner="Carthage"/>
+      <territoryOwner territory="Dhiarrhytus" owner="Carthage"/>
+      <territoryOwner territory="Bulla" owner="Carthage"/>
+      <territoryOwner territory="Thugga" owner="Carthage"/>
+      <territoryOwner territory="Utica" owner="Carthage"/>
+      <territoryOwner territory="Vaga" owner="Carthage"/>
+      <territoryOwner territory="Medjer" owner="Carthage"/>
+      <territoryOwner territory="Carthage" owner="Carthage"/>
+      <territoryOwner territory="Kerkouane" owner="Carthage"/>
+      <territoryOwner territory="Neapo" owner="Carthage"/>
+      <territoryOwner territory="Zama Regia" owner="Carthage"/>
+      <territoryOwner territory="Zaghuwan" owner="Carthage"/>
+      <territoryOwner territory="Tuburbum" owner="Carthage"/>
+      <territoryOwner territory="Maktar" owner="Carthage"/>
+      <territoryOwner territory="Hadrumetum" owner="Carthage"/>
+      <territoryOwner territory="Pelaghia" owner="Carthage"/>
+      <territoryOwner territory="Cossyra" owner="Carthage"/>
+      <territoryOwner territory="Gol" owner="Carthage"/>
+      <territoryOwner territory="Malet" owner="Carthage"/>
+      <territoryOwner territory="Capraria" owner="Carthage"/>
+      <territoryOwner territory="Elba" owner="Carthage"/>
+      <!--	<territoryOwner territory="Aegusa" owner="Carthage"/>
+	<territoryOwner territory="Meliguni" owner="Carthage"/>-->
+      <territoryOwner territory="Nora" owner="Carthage"/>
+      <territoryOwner territory="Sulci" owner="Carthage"/>
+      <territoryOwner territory="Caralis" owner="Carthage"/>
+      <territoryOwner territory="Siddi" owner="Carthage"/>
+      <territoryOwner territory="Tharros" owner="Carthage"/>
+      <territoryOwner territory="Lacona" owner="Carthage"/>
+      <territoryOwner territory="Tortolia" owner="Carthage"/>
+      <territoryOwner territory="Macopsissa" owner="Carthage"/>
+      <territoryOwner territory="Oris" owner="Carthage"/>
+      <territoryOwner territory="Alguer" owner="Carthage"/>
+      <territoryOwner territory="Tibula" owner="Carthage"/>
+      <territoryOwner territory="Olbia" owner="Carthage"/>
+      <territoryOwner territory="Talanis" owner="Carthage"/>
+      <territoryOwner territory="Soubasanoi" owner="Carthage"/>
+      <territoryOwner territory="Pauca" owner="Carthage"/>
+      <territoryOwner territory="Porta" owner="Carthage"/>
+      <territoryOwner territory="Ajacia" owner="Carthage"/>
+      <territoryOwner territory="Cargesa" owner="Carthage"/>
+      <territoryOwner territory="Alalia" owner="Carthage"/>
+      <territoryOwner territory="Corta" owner="Carthage"/>
+      <territoryOwner territory="Calvia" owner="Carthage"/>
+      <territoryOwner territory="Biguglia" owner="Carthage"/>
+      <territoryOwner territory="Motya" owner="Carthage"/>
+      <territoryOwner territory="Eryx" owner="Carthage"/>
+      <territoryOwner territory="Lilybaeum" owner="Carthage"/>
+      <territoryOwner territory="Segesta" owner="Carthage"/>
+      <territoryOwner territory="Segesta Hills" owner="Carthage"/>
+      <territoryOwner territory="Selinus" owner="Carthage"/>
+      <territoryOwner territory="Selinus Hills" owner="Carthage"/>
+      <territoryOwner territory="Panormus" owner="Carthage"/>
+      <territoryOwner territory="Panormus Hills" owner="Carthage"/>
+      <territoryOwner territory="Acragas" owner="Carthage"/>
+      <territoryOwner territory="Soluntum" owner="Carthage"/>
+      <territoryOwner territory="Themae" owner="Carthage"/>
+      <territoryOwner territory="Themae Hills" owner="Carthage"/>
+      <territoryOwner territory="Acragas Hills" owner="Carthage"/>
+      <territoryOwner territory="Phintias" owner="Carthage"/>
+      <territoryOwner territory="Tyndaris" owner="Carthage"/>
+      <!--	<territoryOwner territory="Aidna" owner="Carthage"/>-->
+      <territoryOwner territory="Adranon" owner="Carthage"/>
+      <territoryOwner territory="Petra" owner="Carthage"/>
+      <territoryOwner territory="Nicia" owner="Carthage"/>
+      <territoryOwner territory="Kephaloidion" owner="Carthage"/>
+      <territoryOwner territory="Calacte" owner="Carthage"/>
+      <territoryOwner territory="Calacte Hills" owner="Carthage"/>
+      <territoryOwner territory="Inessa" owner="Carthage"/>
+      <territoryOwner territory="Henna" owner="Carthage"/>
+      <!-- Syracuse Owners -->
+      <territoryOwner territory="Pachi" owner="Syracuse"/>
+      <territoryOwner territory="Motyka" owner="Syracuse"/>
+      <territoryOwner territory="Neton" owner="Syracuse"/>
+      <territoryOwner territory="Galea" owner="Syracuse"/>
+      <territoryOwner territory="Bidi" owner="Syracuse"/>
+      <territoryOwner territory="Syrakusa" owner="Syracuse"/>
+      <territoryOwner territory="Kamarina" owner="Syracuse"/>
+      <territoryOwner territory="Syrakusa Hills" owner="Syracuse"/>
+      <territoryOwner territory="Leontinoni" owner="Syracuse"/>
+      <territoryOwner territory="Katane" owner="Syracuse"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <unitPlacement unitType="city" territory="Roma" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="city" territory="Tarentum" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="city" territory="Neapolis" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="city" territory="Carthage" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="city" territory="Hadrumetum" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="city" territory="Alalia" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="city" territory="Tharros" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="city" territory="Aspalathos" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="city" territory="Syrakusa" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="polemarchos" territory="Syrakusa" quantity="2" owner="Syracuse"/>
+      <unitPlacement unitType="hoplite" territory="Syrakusa" quantity="2" owner="Syracuse"/>
+      <unitPlacement unitType="archer" territory="Syrakusa" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="cavalry" territory="Syrakusa" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="cavalry" territory="Pachi" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="cavalry" territory="Galea" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="defense_agent" territory="Syrakusa" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="transport" territory="s125" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="transport" territory="s225" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="hoplite" territory="Katane" quantity="1" owner="Syracuse"/>
+      <unitPlacement unitType="hoplite" territory="Chersone" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="general" territory="Aspalathos" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="defense_agent" territory="Aspalathos" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="hoplite" territory="Aspalathos" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="peltasts" territory="Aspalathos" quantity="2" owner="Illyrian"/>
+      <unitPlacement unitType="peltasts" territory="Durrharchion" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="cavalry" territory="Aspalathos" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="hoplite" territory="Ragousa" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="peltasts" territory="Ragousa" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="cavalry" territory="Ragousa" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="peltasts" territory="Argenta" quantity="2" owner="Illyrian"/>
+      <unitPlacement unitType="transport" territory="s163" quantity="1" owner="Illyrian"/>
+      <unitPlacement unitType="legionaire" territory="Matera" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Matera" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Apameste" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Callipolis" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Callipolis" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Beneventum" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Beneventum" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Luceria" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Luceria" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="equites" territory="Luceria" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Tutere" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="equites" territory="Tutere" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Arezzo" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Reate" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Brundisium" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Histonium" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Cosentia" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Siena" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Metapontum" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Roma" quantity="3" owner="Roman"/>
+      <unitPlacement unitType="consul" territory="Roma" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="defense_agent" territory="Roma" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legatus" territory="Roma" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Roma" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="defense_agent" territory="Neapolis" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Neapolis" quantity="3" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Neapolis" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Potentia" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Laos" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="equites" territory="Histonium" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="equites" territory="Barium" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="equites" territory="Tarentum" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Tarentum" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="defense_agent" territory="Tarentum" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Histonium" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Fovea" quantity="3" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Crotone" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Tauromenion" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="onager" territory="Tauromenion" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Tauromenion" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legatus" territory="Tauromenion" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="equites" territory="Messene" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Messene" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="consul" territory="Messene" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Hipponium" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Rhegium" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="velites" territory="Rhegium" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legionaire" territory="Tegianum" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="transport" territory="s176" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="transport" territory="s036" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="transport" territory="s200" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="transport" territory="s078" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="transport" territory="s055" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="transport" territory="s050" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="legatus" territory="s050" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="luxury_trireme" territory="s050" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="transport" territory="s018" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="bireme" territory="s018" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="transport" territory="s042" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="bireme" territory="s042" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="trireme" territory="s078" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="trireme" territory="s036" quantity="1" owner="Roman"/>
+      <unitPlacement unitType="bireme" territory="s078" quantity="2" owner="Roman"/>
+      <unitPlacement unitType="bireme" territory="s109" quantity="5" owner="Carthage"/>
+      <unitPlacement unitType="bireme" territory="s039" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="bireme" territory="s147" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="trireme" territory="s147" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="transport" territory="s096" quantity="3" owner="Carthage"/>
+      <unitPlacement unitType="luxury_trireme" territory="s109" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="admiral" territory="s109" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="trireme" territory="s109" quantity="3" owner="Carthage"/>
+      <unitPlacement unitType="luxury_trireme" territory="s118" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="admiral" territory="s118" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="bireme" territory="s118" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="trireme" territory="s118" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="transport" territory="s118" quantity="2" owner="Carthage"/>
+      <unitPlacement unitType="transport" territory="s022" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="bireme" territory="s022" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="trireme" territory="s016" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="transport" territory="s016" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="bireme" territory="s016" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="hoplite" territory="Alalia" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="defense_agent" territory="Alalia" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Tharros" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="defense_agent" territory="Tharros" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="defense_agent" territory="Hadrumetum" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="cavalry" territory="Hadrumetum" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="warelephant" territory="Acragas" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Panormus" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Motya" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="cavalry" territory="Petra" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="great_admiral" territory="Carthage" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="warelephant" territory="Carthage" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="defense_agent" territory="Carthage" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Carthage" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="hoplite" territory="Carthage" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Hippo Regius" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Malet" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Themae" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Selinus" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Olbia" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="spearman" territory="Utica" quantity="1" owner="Carthage"/>
+      <unitPlacement unitType="hoplite" territory="Utica" quantity="1" owner="Carthage"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Roman" resource="PUs" quantity="134"/>
+      <resourceGiven player="Illyrian" resource="PUs" quantity="36"/>
+      <resourceGiven player="Carthage" resource="PUs" quantity="91"/>
+      <resourceGiven player="Syracuse" resource="PUs" quantity="30"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <property name="Always on AA" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!--                  
+<property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+                        <number min="2" max="10"/>
+                </property>  
+				<property name="Units Repair Hits End Turn" value="true" editable="true">
+                        <boolean/>
+                </property>
+-->
+    <property name="Territory Turn Limit" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- Bids -->
+    <property name="Roman bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Illyrian bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Carthage bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Syracuse bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Use WW2V2 Rules
+				<property name="WW2V2" value="true" editable="false">
+                        <boolean/>
+                </property>-->
+    <!--               <property name="Submersible Subs" value="true" editable="false">
+                        <boolean/>
+                </property>
+
+                <property name="Two hit battleship" value="true" editable="false">
+                        <boolean/>
+                </property>
+ -->
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="9999999"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="first_punic_war" editable="false"/>
+  </propertyList>
+</game>

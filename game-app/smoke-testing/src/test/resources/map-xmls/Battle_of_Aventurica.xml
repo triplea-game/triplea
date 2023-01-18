@@ -1,0 +1,1219 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Battle of Aventurica" version="1.1.2"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Warunk"/>
+    <territory name="Andergast"/>
+    <territory name="Gareth"/>
+    <territory name="North Marches"/>
+    <territory name="Weiden"/>
+    <territory name="Brabak"/>
+    <territory name="Greifenfurt"/>
+    <territory name="Dapartien"/>
+    <territory name="Tobrien"/>
+    <territory name="Fasar"/>
+    <territory name="Farlorn"/>
+    <territory name="West Elves Land"/>
+    <territory name="Cyclops Islands"/>
+    <territory name="Almada"/>
+    <territory name="15 Sea Zone" water="true"/>
+    <territory name="27 Sea Zone" water="true"/>
+    <territory name="37 Sea Zone" water="true"/>
+    <territory name="24 Sea Zone" water="true"/>
+    <territory name="9 Sea Zone" water="true"/>
+    <territory name="Selem"/>
+    <territory name="Lowangen"/>
+    <territory name="South Aranien"/>
+    <territory name="4 Sea Zone" water="true"/>
+    <territory name="South Arivor"/>
+    <territory name="North Arivor"/>
+    <territory name="18 Sea Zone" water="true"/>
+    <territory name="Olport"/>
+    <territory name="Leskari"/>
+    <territory name="Khom"/>
+    <territory name="33 Sea Zone" water="true"/>
+    <territory name="Orcland"/>
+    <territory name="North Aranien"/>
+    <territory name="6 Sea Zone" water="true"/>
+    <territory name="26 Sea Zone" water="true"/>
+    <territory name="7 Sea Zone" water="true"/>
+    <territory name="38 Sea Zone" water="true"/>
+    <territory name="Al Anfa"/>
+    <territory name="29 Sea Zone" water="true"/>
+    <territory name="10 Sea Zone" water="true"/>
+    <territory name="31 Sea Zone" water="true"/>
+    <territory name="28 Sea Zone" water="true"/>
+    <territory name="23 Sea Zone" water="true"/>
+    <territory name="13 Sea Zone" water="true"/>
+    <territory name="25 Sea Zone" water="true"/>
+    <territory name="Yeti Land"/>
+    <territory name="3 Sea Zone" water="true"/>
+    <territory name="Iron Sword"/>
+    <territory name="Raschtulswall"/>
+    <territory name="Paavi"/>
+    <territory name="Tuzak"/>
+    <territory name="Thorwal"/>
+    <territory name="30 Sea Zone" water="true"/>
+    <territory name="11 Sea Zone" water="true"/>
+    <territory name="Riva"/>
+    <territory name="Nostria"/>
+    <territory name="Windhag"/>
+    <territory name="Altoum"/>
+    <territory name="Thalusa"/>
+    <territory name="East Elves Land"/>
+    <territory name="2 Sea Zone" water="true"/>
+    <territory name="17 Sea Zone" water="true"/>
+    <territory name="16 Sea Zone" water="true"/>
+    <territory name="12 Sea Zone" water="true"/>
+    <territory name="Jergan"/>
+    <territory name="5 Sea Zone" water="true"/>
+    <territory name="Albernia"/>
+    <territory name="Bornland"/>
+    <territory name="8 Sea Zone" water="true"/>
+    <territory name="32 Sea Zone" water="true"/>
+    <territory name="1 Sea Zone" water="true"/>
+    <territory name="Forest Islands"/>
+    <territory name="Stone Oaks Forest"/>
+    <territory name="Caliphate"/>
+    <territory name="39 Sea Zone" water="true"/>
+    <territory name="19 Sea Zone" water="true"/>
+    <territory name="14 Sea Zone" water="true"/>
+    <territory name="21 Sea Zone" water="true"/>
+    <territory name="20 Sea Zone" water="true"/>
+    <territory name="36 Sea Zone" water="true"/>
+    <territory name="Polar Ice"/>
+    <territory name="22 Sea Zone" water="true"/>
+    <territory name="34 Sea Zone" water="true"/>
+    <territory name="Olport Stones"/>
+    <territory name="35 Sea Zone" water="true"/>
+    <!-- Territory Connections -->
+    <connection t1="Iron Sword" t2="Bornland"/>
+    <connection t1="Iron Sword" t2="Paavi"/>
+    <connection t1="Iron Sword" t2="39 Sea Zone"/>
+    <connection t1="Iron Sword" t2="6 Sea Zone"/>
+    <connection t1="Iron Sword" t2="5 Sea Zone"/>
+    <connection t1="Warunk" t2="Bornland"/>
+    <connection t1="Warunk" t2="Tobrien"/>
+    <connection t1="Warunk" t2="Dapartien"/>
+    <connection t1="Andergast" t2="Nostria"/>
+    <connection t1="Andergast" t2="Greifenfurt"/>
+    <connection t1="Gareth" t2="Dapartien"/>
+    <connection t1="Gareth" t2="Greifenfurt"/>
+    <connection t1="Gareth" t2="North Marches"/>
+    <connection t1="Gareth" t2="Almada"/>
+    <connection t1="North Marches" t2="Greifenfurt"/>
+    <connection t1="North Marches" t2="Andergast"/>
+    <connection t1="North Marches" t2="Windhag"/>
+    <connection t1="Weiden" t2="East Elves Land"/>
+    <connection t1="Weiden" t2="Bornland"/>
+    <connection t1="Brabak" t2="19 Sea Zone"/>
+    <connection t1="Greifenfurt" t2="Lowangen"/>
+    <connection t1="Greifenfurt" t2="Weiden"/>
+    <connection t1="Dapartien" t2="Greifenfurt"/>
+    <connection t1="Dapartien" t2="Weiden"/>
+    <connection t1="Dapartien" t2="Tobrien"/>
+    <connection t1="Tobrien" t2="Weiden"/>
+    <connection t1="Tobrien" t2="Bornland"/>
+    <connection t1="Fasar" t2="North Aranien"/>
+    <connection t1="Farlorn" t2="Leskari"/>
+    <connection t1="West Elves Land" t2="9 Sea Zone"/>
+    <connection t1="West Elves Land" t2="East Elves Land"/>
+    <connection t1="West Elves Land" t2="Riva"/>
+    <connection t1="West Elves Land" t2="Weiden"/>
+    <connection t1="West Elves Land" t2="Lowangen"/>
+    <connection t1="Almada" t2="North Marches"/>
+    <connection t1="Almada" t2="North Arivor"/>
+    <connection t1="Almada" t2="Caliphate"/>
+    <connection t1="15 Sea Zone" t2="17 Sea Zone"/>
+    <connection t1="15 Sea Zone" t2="18 Sea Zone"/>
+    <connection t1="15 Sea Zone" t2="16 Sea Zone"/>
+    <connection t1="27 Sea Zone" t2="26 Sea Zone"/>
+    <connection t1="27 Sea Zone" t2="Altoum"/>
+    <connection t1="26 Sea Zone" t2="Altoum"/>
+    <connection t1="27 Sea Zone" t2="28 Sea Zone"/>
+    <connection t1="27 Sea Zone" t2="Forest Islands"/>
+    <connection t1="37 Sea Zone" t2="Warunk"/>
+    <connection t1="37 Sea Zone" t2="38 Sea Zone"/>
+    <connection t1="37 Sea Zone" t2="39 Sea Zone"/>
+    <connection t1="24 Sea Zone" t2="Al Anfa"/>
+    <connection t1="24 Sea Zone" t2="Selem"/>
+    <connection t1="24 Sea Zone" t2="25 Sea Zone"/>
+    <connection t1="9 Sea Zone" t2="Leskari"/>
+    <connection t1="9 Sea Zone" t2="Olport"/>
+    <connection t1="11 Sea Zone" t2="Olport"/>
+    <connection t1="9 Sea Zone" t2="Riva"/>
+    <connection t1="Selem" t2="25 Sea Zone"/>
+    <connection t1="Selem" t2="South Arivor"/>
+    <connection t1="Selem" t2="Al Anfa"/>
+    <connection t1="Lowangen" t2="Andergast"/>
+    <connection t1="Lowangen" t2="Weiden"/>
+    <connection t1="South Aranien" t2="Fasar"/>
+    <connection t1="4 Sea Zone" t2="Yeti Land"/>
+    <connection t1="4 Sea Zone" t2="Leskari"/>
+    <connection t1="4 Sea Zone" t2="Farlorn"/>
+    <connection t1="4 Sea Zone" t2="5 Sea Zone"/>
+    <connection t1="South Arivor" t2="Caliphate"/>
+    <connection t1="North Arivor" t2="Windhag"/>
+    <connection t1="North Arivor" t2="South Arivor"/>
+    <connection t1="18 Sea Zone" t2="17 Sea Zone"/>
+    <connection t1="18 Sea Zone" t2="19 Sea Zone"/>
+    <connection t1="Olport" t2="Riva"/>
+    <connection t1="Leskari" t2="West Elves Land"/>
+    <connection t1="Leskari" t2="East Elves Land"/>
+    <connection t1="Leskari" t2="Yeti Land"/>
+    <connection t1="Khom" t2="Selem"/>
+    <connection t1="Khom" t2="Fasar"/>
+    <connection t1="33 Sea Zone" t2="25 Sea Zone"/>
+    <connection t1="33 Sea Zone" t2="Selem"/>
+    <connection t1="33 Sea Zone" t2="35 Sea Zone"/>
+    <connection t1="33 Sea Zone" t2="Tuzak"/>
+    <connection t1="33 Sea Zone" t2="Jergan"/>
+    <connection t1="33 Sea Zone" t2="South Aranien"/>
+    <connection t1="25 Sea Zone" t2="Tuzak"/>
+    <connection t1="Orcland" t2="Olport"/>
+    <connection t1="Orcland" t2="Thorwal"/>
+    <connection t1="Orcland" t2="Lowangen"/>
+    <connection t1="North Aranien" t2="Dapartien"/>
+    <connection t1="North Aranien" t2="South Aranien"/>
+    <connection t1="6 Sea Zone" t2="Farlorn"/>
+    <connection t1="6 Sea Zone" t2="Paavi"/>
+    <connection t1="26 Sea Zone" t2="25 Sea Zone"/>
+    <connection t1="26 Sea Zone" t2="32 Sea Zone"/>
+    <connection t1="7 Sea Zone" t2="10 Sea Zone"/>
+    <connection t1="7 Sea Zone" t2="8 Sea Zone"/>
+    <connection t1="7 Sea Zone" t2="Olport Stones"/>
+    <connection t1="7 Sea Zone" t2="Olport"/>
+    <connection t1="38 Sea Zone" t2="39 Sea Zone"/>
+    <connection t1="38 Sea Zone" t2="Warunk"/>
+    <connection t1="Al Anfa" t2="18 Sea Zone"/>
+    <connection t1="Al Anfa" t2="Brabak"/>
+    <connection t1="Al Anfa" t2="South Arivor"/>
+    <connection t1="29 Sea Zone" t2="30 Sea Zone"/>
+    <connection t1="10 Sea Zone" t2="Olport Stones"/>
+    <connection t1="10 Sea Zone" t2="Olport"/>
+    <connection t1="10 Sea Zone" t2="11 Sea Zone"/>
+    <connection t1="31 Sea Zone" t2="Forest Islands"/>
+    <connection t1="31 Sea Zone" t2="30 Sea Zone"/>
+    <connection t1="31 Sea Zone" t2="26 Sea Zone"/>
+    <connection t1="31 Sea Zone" t2="32 Sea Zone"/>
+    <connection t1="28 Sea Zone" t2="Forest Islands"/>
+    <connection t1="28 Sea Zone" t2="26 Sea Zone"/>
+    <connection t1="28 Sea Zone" t2="31 Sea Zone"/>
+    <connection t1="28 Sea Zone" t2="29 Sea Zone"/>
+    <connection t1="23 Sea Zone" t2="24 Sea Zone"/>
+    <connection t1="23 Sea Zone" t2="Altoum"/>
+    <connection t1="23 Sea Zone" t2="Brabak"/>
+    <connection t1="23 Sea Zone" t2="Al Anfa"/>
+    <connection t1="23 Sea Zone" t2="25 Sea Zone"/>
+    <connection t1="23 Sea Zone" t2="26 Sea Zone"/>
+    <connection t1="13 Sea Zone" t2="15 Sea Zone"/>
+    <connection t1="13 Sea Zone" t2="14 Sea Zone"/>
+    <connection t1="25 Sea Zone" t2="32 Sea Zone"/>
+    <connection t1="3 Sea Zone" t2="8 Sea Zone"/>
+    <connection t1="3 Sea Zone" t2="Yeti Land"/>
+    <connection t1="3 Sea Zone" t2="Leskari"/>
+    <connection t1="3 Sea Zone" t2="4 Sea Zone"/>
+    <connection t1="Paavi" t2="Farlorn"/>
+    <connection t1="Paavi" t2="Bornland"/>
+    <connection t1="Paavi" t2="East Elves Land"/>
+    <connection t1="Paavi" t2="Leskari"/>
+    <connection t1="Thorwal" t2="Olport"/>
+    <connection t1="Thorwal" t2="Andergast"/>
+    <connection t1="30 Sea Zone" t2="Forest Islands"/>
+    <connection t1="30 Sea Zone" t2="32 Sea Zone"/>
+    <connection t1="11 Sea Zone" t2="Thorwal"/>
+    <connection t1="11 Sea Zone" t2="Olport Stones"/>
+    <connection t1="Riva" t2="Orcland"/>
+    <connection t1="Riva" t2="Lowangen"/>
+    <connection t1="Nostria" t2="Thorwal"/>
+    <connection t1="Nostria" t2="Albernia"/>
+    <connection t1="Windhag" t2="Almada"/>
+    <connection t1="Altoum" t2="Brabak"/>
+    <connection t1="Thalusa" t2="33 Sea Zone"/>
+    <connection t1="Thalusa" t2="Selem"/>
+    <connection t1="Thalusa" t2="South Aranien"/>
+    <connection t1="Thalusa" t2="Fasar"/>
+    <connection t1="Thalusa" t2="Khom"/>
+    <connection t1="East Elves Land" t2="Bornland"/>
+    <connection t1="2 Sea Zone" t2="8 Sea Zone"/>
+    <connection t1="2 Sea Zone" t2="7 Sea Zone"/>
+    <connection t1="2 Sea Zone" t2="3 Sea Zone"/>
+    <connection t1="17 Sea Zone" t2="20 Sea Zone"/>
+    <connection t1="16 Sea Zone" t2="18 Sea Zone"/>
+    <connection t1="16 Sea Zone" t2="Cyclops Islands"/>
+    <connection t1="16 Sea Zone" t2="North Arivor"/>
+    <connection t1="16 Sea Zone" t2="South Arivor"/>
+    <connection t1="12 Sea Zone" t2="11 Sea Zone"/>
+    <connection t1="12 Sea Zone" t2="Nostria"/>
+    <connection t1="12 Sea Zone" t2="13 Sea Zone"/>
+    <connection t1="12 Sea Zone" t2="14 Sea Zone"/>
+    <connection t1="Jergan" t2="Tuzak"/>
+    <connection t1="5 Sea Zone" t2="6 Sea Zone"/>
+    <connection t1="5 Sea Zone" t2="Farlorn"/>
+    <connection t1="Albernia" t2="12 Sea Zone"/>
+    <connection t1="Albernia" t2="Andergast"/>
+    <connection t1="Albernia" t2="North Marches"/>
+    <connection t1="Albernia" t2="Windhag"/>
+    <connection t1="Bornland" t2="38 Sea Zone"/>
+    <connection t1="8 Sea Zone" t2="Olport"/>
+    <connection t1="8 Sea Zone" t2="9 Sea Zone"/>
+    <connection t1="8 Sea Zone" t2="Leskari"/>
+    <connection t1="32 Sea Zone" t2="34 Sea Zone"/>
+    <connection t1="25 Sea Zone" t2="34 Sea Zone"/>
+    <connection t1="1 Sea Zone" t2="2 Sea Zone"/>
+    <connection t1="1 Sea Zone" t2="7 Sea Zone"/>
+    <connection t1="Caliphate" t2="Fasar"/>
+    <connection t1="Caliphate" t2="Khom"/>
+    <connection t1="Caliphate" t2="North Arivor"/>
+    <connection t1="Caliphate" t2="Selem"/>
+    <connection t1="39 Sea Zone" t2="36 Sea Zone"/>
+    <connection t1="19 Sea Zone" t2="17 Sea Zone"/>
+    <connection t1="19 Sea Zone" t2="Al Anfa"/>
+    <connection t1="14 Sea Zone" t2="Windhag"/>
+    <connection t1="14 Sea Zone" t2="North Arivor"/>
+    <connection t1="14 Sea Zone" t2="15 Sea Zone"/>
+    <connection t1="14 Sea Zone" t2="16 Sea Zone"/>
+    <connection t1="21 Sea Zone" t2="Brabak"/>
+    <connection t1="21 Sea Zone" t2="22 Sea Zone"/>
+    <connection t1="20 Sea Zone" t2="19 Sea Zone"/>
+    <connection t1="20 Sea Zone" t2="Brabak"/>
+    <connection t1="20 Sea Zone" t2="21 Sea Zone"/>
+    <connection t1="36 Sea Zone" t2="34 Sea Zone"/>
+    <connection t1="35 Sea Zone" t2="Jergan"/>
+    <connection t1="36 Sea Zone" t2="Jergan"/>
+    <connection t1="36 Sea Zone" t2="37 Sea Zone"/>
+    <connection t1="22 Sea Zone" t2="23 Sea Zone"/>
+    <connection t1="22 Sea Zone" t2="Altoum"/>
+    <connection t1="22 Sea Zone" t2="27 Sea Zone"/>
+    <connection t1="22 Sea Zone" t2="Brabak"/>
+    <connection t1="34 Sea Zone" t2="33 Sea Zone"/>
+    <connection t1="34 Sea Zone" t2="Tuzak"/>
+    <connection t1="35 Sea Zone" t2="36 Sea Zone"/>
+    <connection t1="35 Sea Zone" t2="South Aranien"/>
+    <connection t1="35 Sea Zone" t2="North Aranien"/>
+    <connection t1="35 Sea Zone" t2="Dapartien"/>
+    <connection t1="35 Sea Zone" t2="Warunk"/>
+    <connection t1="35 Sea Zone" t2="37 Sea Zone"/>
+    <connection t1="Almada" t2="Raschtulswall"/>
+    <connection t1="Gareth" t2="Raschtulswall"/>
+    <connection t1="Lowangen" t2="Stone Oaks Forest"/>
+    <connection t1="4 Sea Zone" t2="Polar Ice"/>
+    <connection t1="North Aranien" t2="Raschtulswall"/>
+    <connection t1="Yeti Land" t2="Polar Ice"/>
+    <connection t1="3 Sea Zone" t2="Polar Ice"/>
+    <connection t1="Raschtulswall" t2="Caliphate"/>
+    <connection t1="Raschtulswall" t2="Dapartien"/>
+    <connection t1="Thorwal" t2="Stone Oaks Forest"/>
+    <connection t1="2 Sea Zone" t2="Polar Ice"/>
+    <connection t1="5 Sea Zone" t2="Polar Ice"/>
+    <connection t1="Stone Oaks Forest" t2="Orcland"/>
+    <connection t1="Stone Oaks Forest" t2="Andergast"/>
+    <connection t1="Fasar" t2="Raschtulswall"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Imperial" optional="false"/>
+    <player name="Orcs" optional="false"/>
+    <player name="Thorwal" optional="false"/>
+    <player name="Borbarad" optional="false"/>
+    <player name="AlAnfa" optional="false"/>
+    <!-- Imperials Alliance -->
+    <alliance player="Imperial" alliance="Imperial Alliance"/>
+    <alliance player="Thorwal" alliance="Imperial Alliance"/>
+    <!-- Borbarads Alliance -->
+    <alliance player="Borbarad" alliance="Borbarad Alliance"/>
+    <alliance player="Orcs" alliance="Borbarad Alliance"/>
+    <alliance player="AlAnfa" alliance="Borbarad Alliance"/>
+  </playerList>
+  <unitList>
+    <unit name="GoblinInfantry"/>
+    <unit name="SkeletonInfantry"/>
+    <unit name="OrcDefense"/>
+    <unit name="OrcInfantry"/>
+    <unit name="SpearInfantry"/>
+    <unit name="KnightInfantry"/>
+    <unit name="ThorwalInfantry"/>
+    <unit name="DwarfInfantry"/>
+    <unit name="ElveInfantry"/>
+    <unit name="AchazInfantry"/>
+    <unit name="OgreInfantry"/>
+    <unit name="TrollInfantry"/>
+    <unit name="CyclopeInfantry"/>
+    <unit name="Catapult"/>
+    <unit name="LightCavalry"/>
+    <unit name="CamelCavalry"/>
+    <unit name="HeavyCavalry"/>
+    <unit name="Wizard"/>
+    <unit name="Heshthot"/>
+    <unit name="Demon"/>
+    <unit name="Dragon"/>
+    <unit name="GiantDragon"/>
+    <unit name="Raft"/>
+    <unit name="Caravel"/>
+    <unit name="Galleon"/>
+    <unit name="Otta"/>
+    <unit name="Clipper"/>
+    <unit name="Demonship"/>
+    <unit name="SunFortification"/>
+    <unit name="Castle"/>
+    <unit name="Prince-Brin"/>
+    <unit name="Tronde-Torbensson"/>
+    <unit name="Mizirion"/>
+    <unit name="Cuanu-ui-Bennain"/>
+    <unit name="Waldemar-of-Weiden"/>
+    <unit name="Demonmaster-Borbarad"/>
+    <unit name="Xeraan"/>
+    <unit name="Galotta"/>
+    <unit name="Sadrak-Whassoi"/>
+    <unit name="Tar-Honak"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <step name="imperialBid" delegate="bid" player="Imperial" maxRunCount="1"/>
+      <step name="imperialBidPlace" delegate="placeBid" player="Imperial" maxRunCount="1"/>
+      <step name="orcsBid" delegate="bid" player="Orcs" maxRunCount="1"/>
+      <step name="orcsBidPlace" delegate="placeBid" player="Orcs" maxRunCount="1"/>
+      <step name="thorwalBid" delegate="bid" player="Thorwal" maxRunCount="1"/>
+      <step name="thorwalBidPlace" delegate="placeBid" player="Thorwal" maxRunCount="1"/>
+      <step name="borbaradBid" delegate="bid" player="Borbarad" maxRunCount="1"/>
+      <step name="borbaradBidPlace" delegate="placeBid" player="Borbarad" maxRunCount="1"/>
+      <step name="alanfaBid" delegate="bid" player="AlAnfa" maxRunCount="1"/>
+      <step name="alanfaBidPlace" delegate="placeBid" player="AlAnfa" maxRunCount="1"/>
+      <step name="imperialPurchase" delegate="purchase" player="Imperial" maxRunCount="1000"/>
+      <step name="imperialCombatMove" delegate="move" player="Imperial" maxRunCount="1000"/>
+      <step name="imperialBattle" delegate="battle" player="Imperial" maxRunCount="1000"/>
+      <step name="imperialNonCombatMove" delegate="move" player="Imperial" display="Non Combat Move"/>
+      <step name="imperialPlace" delegate="place" player="Imperial" maxRunCount="1000"/>
+      <step name="imperialEndTurn" delegate="endTurn" player="Imperial" maxRunCount="1000"/>
+      <step name="orcsPurchase" delegate="purchase" player="Orcs" maxRunCount="1000"/>
+      <step name="orcsCombatMove" delegate="move" player="Orcs" maxRunCount="1000"/>
+      <step name="orcsBattle" delegate="battle" player="Orcs" maxRunCount="1000"/>
+      <step name="orcsNonCombatMove" delegate="move" player="Orcs" display="Non Combat Move"/>
+      <step name="orcsPlace" delegate="place" player="Orcs" maxRunCount="1000"/>
+      <step name="orcsEndTurn" delegate="endTurn" player="Orcs" maxRunCount="1000"/>
+      <step name="thorwalPurchase" delegate="purchase" player="Thorwal" maxRunCount="1000"/>
+      <step name="thorwalCombatMove" delegate="move" player="Thorwal" maxRunCount="1000"/>
+      <step name="thorwalBattle" delegate="battle" player="Thorwal" maxRunCount="1000"/>
+      <step name="thorwalNonCombatMove" delegate="move" player="Thorwal" display="Non Combat Move"/>
+      <step name="thorwalPlace" delegate="place" player="Thorwal" maxRunCount="1000"/>
+      <step name="thorwalEndTurn" delegate="endTurn" player="Thorwal" maxRunCount="1000"/>
+      <step name="borbaradPurchase" delegate="purchase" player="Borbarad" maxRunCount="1000"/>
+      <step name="borbaradCombatMove" delegate="move" player="Borbarad" maxRunCount="1000"/>
+      <step name="borbaradBattle" delegate="battle" player="Borbarad" maxRunCount="1000"/>
+      <step name="borbaradNonCombatMove" delegate="move" player="Borbarad" display="Non Combat Move"/>
+      <step name="borbaradPlace" delegate="place" player="Borbarad" maxRunCount="1000"/>
+      <step name="borbaradEndTurn" delegate="endTurn" player="Borbarad" maxRunCount="1000"/>
+      <step name="alanfaPurchase" delegate="purchase" player="AlAnfa" maxRunCount="1000"/>
+      <step name="alanfaCombatMove" delegate="move" player="AlAnfa" maxRunCount="1000"/>
+      <step name="alanfaBattle" delegate="battle" player="AlAnfa" maxRunCount="1000"/>
+      <step name="alanfaNonCombatMove" delegate="move" player="AlAnfa" display="Non Combat Move"/>
+      <step name="alanfaPlace" delegate="place" player="AlAnfa" maxRunCount="1000"/>
+      <step name="alanfaEndTurn" delegate="endTurn" player="AlAnfa" maxRunCount="1000"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyOrcDefense">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="OrcDefense" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyGoblinInfantry">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="GoblinInfantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySkeletonInfantry">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="SkeletonInfantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyOrcInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="OrcInfantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySpearInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="SpearInfantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyKnightInfantry">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="KnightInfantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyThorwalInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="ThorwalInfantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyOgreInfantry">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="OgreInfantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCatapult">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="Catapult" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyLightCavalry">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="LightCavalry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHeavyCavalry">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="HeavyCavalry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyWizard">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="Wizard" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHeshthot">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="Heshthot" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDemon">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="Demon" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyGiantDragon">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="GiantDragon" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyRaft">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="Raft" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCaravel">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="Caravel" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyGalleon">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="Galleon" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyOtta">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="Otta" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyClipper">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="Clipper" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDemonship">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="Demonship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCastle">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="Castle" quantity="1"/>
+    </productionRule>
+    <!-- Unit Production Rules -->
+    <productionFrontier name="imperialFrontier">
+      <frontierRules name="buySpearInfantry"/>
+      <frontierRules name="buyKnightInfantry"/>
+      <frontierRules name="buyCatapult"/>
+      <frontierRules name="buyLightCavalry"/>
+      <frontierRules name="buyHeavyCavalry"/>
+      <frontierRules name="buyCaravel"/>
+      <frontierRules name="buyGalleon"/>
+      <frontierRules name="buyClipper"/>
+      <frontierRules name="buyWizard"/>
+      <frontierRules name="buyCastle"/>
+    </productionFrontier>
+    <productionFrontier name="orcsFrontier">
+      <frontierRules name="buyOrcDefense"/>
+      <frontierRules name="buyGoblinInfantry"/>
+      <frontierRules name="buyOrcInfantry"/>
+      <frontierRules name="buyCatapult"/>
+      <frontierRules name="buyOgreInfantry"/>
+      <frontierRules name="buyRaft"/>
+      <frontierRules name="buyGiantDragon"/>
+      <frontierRules name="buyCastle"/>
+    </productionFrontier>
+    <productionFrontier name="thorwalFrontier">
+      <frontierRules name="buyThorwalInfantry"/>
+      <frontierRules name="buyCatapult"/>
+      <frontierRules name="buyOtta"/>
+      <frontierRules name="buyCastle"/>
+    </productionFrontier>
+    <productionFrontier name="borbaradFrontier">
+      <frontierRules name="buySkeletonInfantry"/>
+      <frontierRules name="buySpearInfantry"/>
+      <frontierRules name="buyCatapult"/>
+      <frontierRules name="buyLightCavalry"/>
+      <frontierRules name="buyHeshthot"/>
+      <frontierRules name="buyDemon"/>
+      <frontierRules name="buyGalleon"/>
+      <frontierRules name="buyDemonship"/>
+      <frontierRules name="buyWizard"/>
+      <frontierRules name="buyCastle"/>
+    </productionFrontier>
+    <productionFrontier name="alanfaFrontier">
+      <frontierRules name="buySpearInfantry"/>
+      <frontierRules name="buyKnightInfantry"/>
+      <frontierRules name="buyCatapult"/>
+      <frontierRules name="buyLightCavalry"/>
+      <frontierRules name="buyHeavyCavalry"/>
+      <frontierRules name="buyCaravel"/>
+      <frontierRules name="buyGalleon"/>
+      <frontierRules name="buyClipper"/>
+      <frontierRules name="buyWizard"/>
+      <frontierRules name="buyCastle"/>
+    </productionFrontier>
+    <playerProduction player="Imperial" frontier="imperialFrontier"/>
+    <playerProduction player="Orcs" frontier="orcsFrontier"/>
+    <playerProduction player="Thorwal" frontier="thorwalFrontier"/>
+    <playerProduction player="Borbarad" frontier="borbaradFrontier"/>
+    <playerProduction player="AlAnfa" frontier="alanfaFrontier"/>
+  </production>
+  <attachmentList>
+    <attachment name="unitAttachment" attachTo="SkeletonInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="GoblinInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="OrcDefense" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="OrcInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="SpearInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="KnightInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="ThorwalInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="ElveInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="DwarfInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1000"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="AchazInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1000"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="OgreInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1000"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="TrollInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1000"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="CyclopeInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1000"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Catapult" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="LightCavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="CamelCavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="HeavyCavalry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Raft" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="2"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Caravel" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="4"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Galleon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Otta" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Clipper" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="0"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="canBombard" value="true"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Demonship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="carrierCapacity" value="3"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Wizard" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="1"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Heshthot" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Demon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Dragon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="5"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="GiantDragon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="3"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="SunFortification" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Castle" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+      <option name="isAA" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Prince-Brin" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Cuanu-ui-Bennain" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Waldemar-of-Weiden" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Tronde-Torbensson" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Mizirion" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Demonmaster-Borbarad" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Sadrak-Whassoi" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Xeraan" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Galotta" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Tar-Honak" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="0"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Warunk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Andergast" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gareth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Imperial"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Marches" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Weiden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Brabak" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Greifenfurt" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dapartien" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tobrien" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fasar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="capital" value="Borbarad"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Farlorn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="West Elves Land" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cyclops Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Almada" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Selem" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lowangen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Aranien" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Arivor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Arivor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Olport" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Leskari" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Khom" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Orcland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="Orcs"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Aranien" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Al Anfa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="AlAnfa"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yeti Land" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Iron Sword" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Raschtulswall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Paavi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tuzak" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thorwal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Thorwal"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Riva" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nostria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Windhag" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Altoum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Thalusa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="East Elves Land" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jergan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Albernia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bornland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Forest Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Stone Oaks Forest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Caliphate" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Polar Ice" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Olport Stones" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="canalAttachment1" attachTo="3 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="canal1"/>
+      <option name="landTerritories" value="Leskari:Yeti Land"/>
+    </attachment>
+    <attachment name="canalAttachment1" attachTo="4 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="canal1"/>
+      <option name="landTerritories" value="Leskari:Yeti Land"/>
+    </attachment>
+    <attachment name="canalAttachment2" attachTo="23 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="canal2"/>
+      <option name="landTerritories" value="Brabak:Altoum"/>
+    </attachment>
+    <attachment name="canalAttachment2" attachTo="22 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="canal2"/>
+      <option name="landTerritories" value="Brabak:Altoum"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="Al Anfa" owner="AlAnfa"/>
+      <territoryOwner territory="Forest Islands" owner="AlAnfa"/>
+      <territoryOwner territory="Paavi" owner="Borbarad"/>
+      <territoryOwner territory="South Aranien" owner="Borbarad"/>
+      <territoryOwner territory="Fasar" owner="Borbarad"/>
+      <territoryOwner territory="Thalusa" owner="Borbarad"/>
+      <territoryOwner territory="Albernia" owner="Imperial"/>
+      <territoryOwner territory="Windhag" owner="Imperial"/>
+      <territoryOwner territory="Gareth" owner="Imperial"/>
+      <territoryOwner territory="North Marches" owner="Imperial"/>
+      <territoryOwner territory="Greifenfurt" owner="Imperial"/>
+      <territoryOwner territory="Weiden" owner="Imperial"/>
+      <territoryOwner territory="Tobrien" owner="Imperial"/>
+      <territoryOwner territory="Dapartien" owner="Imperial"/>
+      <territoryOwner territory="Warunk" owner="Imperial"/>
+      <territoryOwner territory="Almada" owner="Imperial"/>
+      <territoryOwner territory="North Aranien" owner="Imperial"/>
+      <territoryOwner territory="Jergan" owner="Imperial"/>
+      <territoryOwner territory="Tuzak" owner="Imperial"/>
+      <territoryOwner territory="Orcland" owner="Orcs"/>
+      <territoryOwner territory="Lowangen" owner="Orcs"/>
+      <territoryOwner territory="Thorwal" owner="Thorwal"/>
+      <territoryOwner territory="Yeti Land" owner="Thorwal"/>
+      <territoryOwner territory="Olport" owner="Thorwal"/>
+      <territoryOwner territory="Olport Stones" owner="Thorwal"/>
+      <territoryOwner territory="Brabak" owner="Thorwal"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <unitPlacement unitType="SpearInfantry" territory="Altoum" quantity="2"/>
+      <unitPlacement unitType="Caravel" territory="26 Sea Zone" quantity="1"/>
+      <unitPlacement unitType="SpearInfantry" territory="Riva" quantity="2"/>
+      <unitPlacement unitType="SpearInfantry" territory="Bornland" quantity="8"/>
+      <unitPlacement unitType="KnightInfantry" territory="Bornland" quantity="5"/>
+      <unitPlacement unitType="LightCavalry" territory="Bornland" quantity="4"/>
+      <unitPlacement unitType="Caravel" territory="38 Sea Zone" quantity="1"/>
+      <unitPlacement unitType="Castle" territory="Bornland" quantity="1"/>
+      <unitPlacement unitType="HeavyCavalry" territory="Bornland" quantity="2"/>
+      <unitPlacement unitType="SpearInfantry" territory="Leskari" quantity="1"/>
+      <unitPlacement unitType="Caravel" territory="4 Sea Zone" quantity="1"/>
+      <unitPlacement unitType="SpearInfantry" territory="Farlorn" quantity="3"/>
+      <unitPlacement unitType="SpearInfantry" territory="Caliphate" quantity="8"/>
+      <unitPlacement unitType="CamelCavalry" territory="Caliphate" quantity="6"/>
+      <unitPlacement unitType="SunFortification" territory="Caliphate" quantity="5"/>
+      <unitPlacement unitType="CamelCavalry" territory="Khom" quantity="4"/>
+      <unitPlacement unitType="SunFortification" territory="Khom" quantity="5"/>
+      <unitPlacement unitType="SpearInfantry" territory="Nostria" quantity="6"/>
+      <unitPlacement unitType="LightCavalry" territory="Nostria" quantity="2"/>
+      <unitPlacement unitType="SpearInfantry" territory="Andergast" quantity="5"/>
+      <unitPlacement unitType="LightCavalry" territory="Andergast" quantity="1"/>
+      <unitPlacement unitType="HeavyCavalry" territory="Andergast" quantity="1"/>
+      <unitPlacement unitType="ElveInfantry" territory="West Elves Land" quantity="8"/>
+      <unitPlacement unitType="TrollInfantry" territory="East Elves Land" quantity="1"/>
+      <unitPlacement unitType="ElveInfantry" territory="East Elves Land" quantity="6"/>
+      <unitPlacement unitType="SpearInfantry" territory="North Arivor" quantity="8"/>
+      <unitPlacement unitType="KnightInfantry" territory="North Arivor" quantity="4"/>
+      <unitPlacement unitType="LightCavalry" territory="North Arivor" quantity="2"/>
+      <unitPlacement unitType="HeavyCavalry" territory="North Arivor" quantity="1"/>
+      <unitPlacement unitType="Castle" territory="North Arivor" quantity="1"/>
+      <unitPlacement unitType="KnightInfantry" territory="South Arivor" quantity="8"/>
+      <unitPlacement unitType="HeavyCavalry" territory="South Arivor" quantity="4"/>
+      <unitPlacement unitType="Galleon" territory="16 Sea Zone" quantity="1"/>
+      <unitPlacement unitType="AchazInfantry" territory="Selem" quantity="6"/>
+      <unitPlacement unitType="CyclopeInfantry" territory="Cyclops Islands" quantity="3"/>
+      <unitPlacement unitType="Caravel" territory="37 Sea Zone" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Caravel" territory="34 Sea Zone" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Galleon" territory="14 Sea Zone" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Clipper" territory="14 Sea Zone" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="SpearInfantry" territory="Jergan" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="SpearInfantry" territory="Tuzak" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="SpearInfantry" territory="North Aranien" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="Catapult" territory="North Aranien" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="LightCavalry" territory="North Aranien" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="HeavyCavalry" territory="North Aranien" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="KnightInfantry" territory="Warunk" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="KnightInfantry" territory="Greifenfurt" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="SpearInfantry" territory="Windhag" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="KnightInfantry" territory="Albernia" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="LightCavalry" territory="Albernia" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Castle" territory="Albernia" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Cuanu-ui-Bennain" territory="Albernia" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="LightCavalry" territory="Gareth" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="HeavyCavalry" territory="Gareth" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Castle" territory="Gareth" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="LightCavalry" territory="Tobrien" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="Prince-Brin" territory="Tobrien" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="DwarfInfantry" territory="Almada" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="SpearInfantry" territory="Weiden" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="Catapult" territory="Weiden" quantity="2" owner="Imperial"/>
+      <unitPlacement unitType="Waldemar-of-Weiden" territory="Weiden" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Wizard" territory="Dapartien" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Dragon" territory="Jergan" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="Wizard" territory="North Marches" quantity="1" owner="Imperial"/>
+      <unitPlacement unitType="GoblinInfantry" territory="Lowangen" quantity="6" owner="Orcs"/>
+      <unitPlacement unitType="OrcInfantry" territory="Lowangen" quantity="10" owner="Orcs"/>
+      <unitPlacement unitType="OgreInfantry" territory="Lowangen" quantity="2" owner="Orcs"/>
+      <unitPlacement unitType="Catapult" territory="Lowangen" quantity="1" owner="Orcs"/>
+      <unitPlacement unitType="Sadrak-Whassoi" territory="Lowangen" quantity="1" owner="Orcs"/>
+      <unitPlacement unitType="OrcDefense" territory="Orcland" quantity="20" owner="Orcs"/>
+      <unitPlacement unitType="GiantDragon" territory="Orcland" quantity="1" owner="Orcs"/>
+      <unitPlacement unitType="Castle" territory="Orcland" quantity="1" owner="Orcs"/>
+      <unitPlacement unitType="Otta" territory="21 Sea Zone" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="Otta" territory="11 Sea Zone" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="Otta" territory="9 Sea Zone" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="ThorwalInfantry" territory="Olport" quantity="3" owner="Thorwal"/>
+      <unitPlacement unitType="ThorwalInfantry" territory="Thorwal" quantity="6" owner="Thorwal"/>
+      <unitPlacement unitType="Catapult" territory="Thorwal" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="Dragon" territory="Yeti Land" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="Tronde-Torbensson" territory="Thorwal" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="Castle" territory="Thorwal" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="ThorwalInfantry" territory="Brabak" quantity="8" owner="Thorwal"/>
+      <unitPlacement unitType="Castle" territory="Brabak" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="Mizirion" territory="Brabak" quantity="1" owner="Thorwal"/>
+      <unitPlacement unitType="Demonship" territory="32 Sea Zone" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="Heshthot" territory="32 Sea Zone" quantity="2" owner="Borbarad"/>
+      <unitPlacement unitType="Demon" territory="32 Sea Zone" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="Galleon" territory="6 Sea Zone" quantity="2" owner="Borbarad"/>
+      <unitPlacement unitType="Galleon" territory="33 Sea Zone" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="SkeletonInfantry" territory="Fasar" quantity="8" owner="Borbarad"/>
+      <unitPlacement unitType="Catapult" territory="Fasar" quantity="2" owner="Borbarad"/>
+      <unitPlacement unitType="Demon" territory="Fasar" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="Castle" territory="Fasar" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="Demonmaster-Borbarad" territory="Fasar" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="SpearInfantry" territory="South Aranien" quantity="6" owner="Borbarad"/>
+      <unitPlacement unitType="Catapult" territory="South Aranien" quantity="2" owner="Borbarad"/>
+      <unitPlacement unitType="LightCavalry" territory="South Aranien" quantity="4" owner="Borbarad"/>
+      <unitPlacement unitType="Xeraan" territory="South Aranien" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="SpearInfantry" territory="Thalusa" quantity="2" owner="Borbarad"/>
+      <unitPlacement unitType="SpearInfantry" territory="Paavi" quantity="6" owner="Borbarad"/>
+      <unitPlacement unitType="Catapult" territory="Paavi" quantity="2" owner="Borbarad"/>
+      <unitPlacement unitType="LightCavalry" territory="Paavi" quantity="4" owner="Borbarad"/>
+      <unitPlacement unitType="Castle" territory="Paavi" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="Galotta" territory="Paavi" quantity="1" owner="Borbarad"/>
+      <unitPlacement unitType="Galleon" territory="24 Sea Zone" quantity="2" owner="AlAnfa"/>
+      <unitPlacement unitType="Clipper" territory="24 Sea Zone" quantity="1" owner="AlAnfa"/>
+      <unitPlacement unitType="SpearInfantry" territory="Forest Islands" quantity="4" owner="AlAnfa"/>
+      <unitPlacement unitType="SpearInfantry" territory="Al Anfa" quantity="8" owner="AlAnfa"/>
+      <unitPlacement unitType="Catapult" territory="Al Anfa" quantity="2" owner="AlAnfa"/>
+      <unitPlacement unitType="LightCavalry" territory="Al Anfa" quantity="5" owner="AlAnfa"/>
+      <unitPlacement unitType="Castle" territory="Al Anfa" quantity="1" owner="AlAnfa"/>
+      <unitPlacement unitType="Tar-Honak" territory="Al Anfa" quantity="1" owner="AlAnfa"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Imperial" resource="PUs" quantity="20"/>
+      <resourceGiven player="Orcs" resource="PUs" quantity="10"/>
+      <resourceGiven player="Thorwal" resource="PUs" quantity="30"/>
+      <resourceGiven player="Borbarad" resource="PUs" quantity="20"/>
+      <resourceGiven player="AlAnfa" resource="PUs" quantity="20"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <!-- Allow multiple AA per territory -->
+    <property name="Multiple AA Per Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="Imperial bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Orcs bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Thorwal bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Borbarad bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="AlAnfa bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="mapName" value="battle_of_aventurica" editable="false"/>
+    <property name="notes" value="         &lt;br&gt;============================================         &lt;br&gt;&lt;H1&gt;- BATTLE OF AVENTURICA -&lt;/H1&gt; &lt;         &lt;br&gt;Designed by Nick Taylor         &lt;br&gt;============================================         &lt;br&gt;         &lt;br&gt;The dark wizard and demon master BORBARAD          &lt;br&gt;was defeated years ago and has been sent          &lt;br&gt;to the limbo.         &lt;br&gt;         &lt;br&gt;Now some of his followers fetched him back          &lt;br&gt;during a magic ritual.          &lt;br&gt;         &lt;br&gt;Again he tries to conquer Aventuria and          &lt;br&gt;this time he is supported by Orcs and         &lt;br&gt;Al Anfa a country in the deep south.         &lt;br&gt;         &lt;br&gt;===================GOALS====================         &lt;br&gt;           &lt;br&gt;Capture 5 of the 8 captial countries         &lt;br&gt;or kill 3 of the 5 opponent leaders         &lt;br&gt;           &lt;br&gt;================TURN ORDER=================         &lt;br&gt;           &lt;br&gt;Imperial - Orcs - Thorwal - Borbarad - Al Anfa         &lt;br&gt;           &lt;br&gt;===================UNITS====================         &lt;br&gt;         &lt;br&gt;--------------Attack/Defend/Movement/Cost/Ability-------------         &lt;br&gt;         &lt;br&gt;         &lt;br&gt;----------------------------Land Units----------------------------         &lt;br&gt;         &lt;br&gt;OrcDefense       - 0 / 2 / 0 / 1 Cannot move         &lt;br&gt;GoblinInfantry       - 1 / 1 / 1 / 2 Supported by catapult         &lt;br&gt;SkeletonInfantry      - 1 / 1 / 1 / 2 Supported by catapult         &lt;br&gt;OrcInfantry      - 1 / 2 / 1 / 3 Supported by catapult         &lt;br&gt;SpearInfantry     - 1 / 2 / 1 / 3 Supported by catapult         &lt;br&gt;ThorwalInfantry    - 1 / 3 / 1 / 3 Supported by catapult         &lt;br&gt;KnightInfantry    - 2 / 2 / 1 / 4 Supported by catapult         &lt;br&gt;OgreInfantry     - 3 / 3 / 1 / 6 Supported by catapult         &lt;br&gt;Catapult       - 2 / 1 / 1 / 4 Artillery         &lt;br&gt;LightCavalry     - 3 / 2 / 2 / 5 Blitz         &lt;br&gt;HeavyCavalry     - 4 / 3 / 2 / 8 Blitz         &lt;br&gt;Wizard        - 0 / 1 / 1 / 5 AAA         &lt;br&gt;Castle        - 0 / 1 / 0 / 20 Factory + AAA         &lt;br&gt;Leader/Hero      - 5 / 5 / 1 / - No transport costs         &lt;br&gt;          &lt;br&gt;-----------------------------Air Units-----------------------------         &lt;br&gt;         &lt;br&gt;Heshthot       - 3 / 2 / 4 / 8 Fighter         &lt;br&gt;Demon         - 4 / 3 / 4 / 12 Fighter         &lt;br&gt;Dragon         - 4 / 2 / 5 / - Bomber         &lt;br&gt;GiantDragon      - 5 / 3 / 6 / 18 Bomber         &lt;br&gt;         &lt;br&gt;-----------------------------Sea Units-----------------------------         &lt;br&gt;         &lt;br&gt;Raft         - 0 / 0 / 1 / 5 Capacity: 2         &lt;br&gt;Caravel        - 0 / 1 / 2 / 8 Capacity: 4         &lt;br&gt;Galleon        - 2 / 1 / 2 / 10 Capacity: 5         &lt;br&gt;Otta         - 3 / 2 / 3 / 12 Capacity: 5         &lt;br&gt;Clipper        - 3 / 3 / 3 / 15 Bombard - 2 hits         &lt;br&gt;Demonship       - 1 / 4 / 2 / 18 Carrier - Capacity: 3         &lt;br&gt;         &lt;br&gt;---------------------------Neutral Units---------------------------         &lt;br&gt;         &lt;br&gt;Sun in the Desert   - 0 / 1 / - / -          &lt;br&gt;DwarfInfantry     - 3 / 3 / - / -          &lt;br&gt;AchazInfantry     - 3 / 3 / - / -          &lt;br&gt;ElveInfantry     - 3 / 3 / - / -          &lt;br&gt;CamelCavalry     - 2 / 3 / - / -          &lt;br&gt;TrollInfantry     - 4 / 4 / - / -         &lt;br&gt;CyclopeInfantry    - 5 / 5 / - / -         &lt;br&gt;         &lt;br&gt;============================================         "/>
+  </propertyList>
+</game>

@@ -1,0 +1,1539 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="sengokuJidai" version="0.9.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="Satsuma"/>
+    <territory name="Osumi"/>
+    <territory name="Higo"/>
+    <territory name="Hyuga"/>
+    <territory name="Hizen"/>
+    <territory name="Bungo"/>
+    <territory name="Chikuzen"/>
+    <territory name="Nagato"/>
+    <territory name="Suo"/>
+    <territory name="Iwami"/>
+    <territory name="Aki"/>
+    <territory name="Bingo"/>
+    <territory name="Izumo"/>
+    <territory name="Iyoi"/>
+    <territory name="Tosa"/>
+    <territory name="Sanuki"/>
+    <territory name="Awa"/>
+    <territory name="Hoki"/>
+    <territory name="Bichu"/>
+    <territory name="Mimasaka"/>
+    <territory name="Bizen"/>
+    <territory name="Tajima"/>
+    <territory name="Harima"/>
+    <territory name="Tango"/>
+    <territory name="Yamashira"/>
+    <territory name="Wakasa"/>
+    <territory name="Izumi"/>
+    <territory name="Kii"/>
+    <territory name="Omi"/>
+    <territory name="Yamato"/>
+    <territory name="Ise"/>
+    <territory name="Echizen"/>
+    <territory name="Kaga"/>
+    <territory name="Mino"/>
+    <territory name="Owari"/>
+    <territory name="Hida"/>
+    <territory name="Etchu"/>
+    <territory name="Mikawa"/>
+    <territory name="Totomi"/>
+    <territory name="Noto"/>
+    <territory name="Izu"/>
+    <territory name="Suruga"/>
+    <territory name="Kai"/>
+    <territory name="Musashi"/>
+    <territory name="Sagami"/>
+    <territory name="Kozuke"/>
+    <territory name="Echigo"/>
+    <territory name="Kazusa"/>
+    <territory name="Shimosa"/>
+    <territory name="Shimotsuke"/>
+    <territory name="Hitachi"/>
+    <territory name="Dewa South"/>
+    <territory name="Dewa"/>
+    <territory name="Mutsu"/>
+    <territory name="Mutsu North"/>
+    <territory name="Mutsu South"/>
+    <territory name="Shinano"/>
+    <territory name="Shinano South"/>
+    <territory name="sz75" water="true"/>
+    <territory name="sz38" water="true"/>
+    <territory name="sz74" water="true"/>
+    <territory name="sz39" water="true"/>
+    <territory name="sz77" water="true"/>
+    <territory name="sz76" water="true"/>
+    <territory name="sz71" water="true"/>
+    <territory name="sz34" water="true"/>
+    <territory name="sz70" water="true"/>
+    <territory name="sz35" water="true"/>
+    <territory name="sz73" water="true"/>
+    <territory name="sz36" water="true"/>
+    <territory name="sz72" water="true"/>
+    <territory name="sz37" water="true"/>
+    <territory name="sz30" water="true"/>
+    <territory name="sz31" water="true"/>
+    <territory name="sz32" water="true"/>
+    <territory name="sz33" water="true"/>
+    <territory name="sz79" water="true"/>
+    <territory name="sz78" water="true"/>
+    <territory name="sz4" water="true"/>
+    <territory name="sz3" water="true"/>
+    <territory name="sz49" water="true"/>
+    <territory name="sz6" water="true"/>
+    <territory name="sz5" water="true"/>
+    <territory name="sz47" water="true"/>
+    <territory name="sz48" water="true"/>
+    <territory name="sz2" water="true"/>
+    <territory name="sz45" water="true"/>
+    <territory name="sz46" water="true"/>
+    <territory name="sz1" water="true"/>
+    <territory name="sz43" water="true"/>
+    <territory name="sz44" water="true"/>
+    <territory name="sz41" water="true"/>
+    <territory name="sz42" water="true"/>
+    <territory name="sz40" water="true"/>
+    <territory name="sz7" water="true"/>
+    <territory name="sz8" water="true"/>
+    <territory name="sz9" water="true"/>
+    <territory name="sz56" water="true"/>
+    <territory name="sz57" water="true"/>
+    <territory name="sz58" water="true"/>
+    <territory name="sz59" water="true"/>
+    <territory name="sz50" water="true"/>
+    <territory name="sz51" water="true"/>
+    <territory name="sz52" water="true"/>
+    <territory name="sz53" water="true"/>
+    <territory name="sz54" water="true"/>
+    <territory name="sz55" water="true"/>
+    <territory name="sza" water="true"/>
+    <territory name="szb" water="true"/>
+    <territory name="sze" water="true"/>
+    <territory name="sz11" water="true"/>
+    <territory name="sz10" water="true"/>
+    <territory name="szc" water="true"/>
+    <territory name="szd" water="true"/>
+    <territory name="sz15" water="true"/>
+    <territory name="sz14" water="true"/>
+    <territory name="sz13" water="true"/>
+    <territory name="sz12" water="true"/>
+    <territory name="sz19" water="true"/>
+    <territory name="sz18" water="true"/>
+    <territory name="sz17" water="true"/>
+    <territory name="sz16" water="true"/>
+    <territory name="sz69" water="true"/>
+    <territory name="sz67" water="true"/>
+    <territory name="sz68" water="true"/>
+    <territory name="sz61" water="true"/>
+    <territory name="sz62" water="true"/>
+    <territory name="sz60" water="true"/>
+    <territory name="sz65" water="true"/>
+    <territory name="sz66" water="true"/>
+    <territory name="sz63" water="true"/>
+    <territory name="sz64" water="true"/>
+    <territory name="sz20" water="true"/>
+    <territory name="sz22" water="true"/>
+    <territory name="sz21" water="true"/>
+    <territory name="sz24" water="true"/>
+    <territory name="sz23" water="true"/>
+    <territory name="sz26" water="true"/>
+    <territory name="sz25" water="true"/>
+    <territory name="sz28" water="true"/>
+    <territory name="sz27" water="true"/>
+    <territory name="sz29" water="true"/>
+    <!-- Territory Connections -->
+    <!-- SeaZone Connections -->
+    <connection t1="sz1" t2="sz2"/>
+    <connection t1="sz1" t2="sz5"/>
+    <connection t1="sz5" t2="sz1"/>
+    <connection t1="sz5" t2="sz6"/>
+    <connection t1="sz5" t2="sz10"/>
+    <connection t1="sz5" t2="sz11"/>
+    <connection t1="sz6" t2="sz5"/>
+    <connection t1="sz6" t2="sz2"/>
+    <connection t1="sz6" t2="sz7"/>
+    <connection t1="sz10" t2="sz5"/>
+    <connection t1="sz10" t2="sz11"/>
+    <connection t1="sz11" t2="sz13"/>
+    <connection t1="sz11" t2="sz10"/>
+    <connection t1="sz11" t2="sz5"/>
+    <connection t1="sz13" t2="sz11"/>
+    <connection t1="sz13" t2="sz14"/>
+    <connection t1="sz13" t2="sz23"/>
+    <connection t1="sz14" t2="sz13"/>
+    <connection t1="sz14" t2="sz15"/>
+    <connection t1="sz14" t2="sz18"/>
+    <connection t1="sz14" t2="sz23"/>
+    <connection t1="sz15" t2="sz14"/>
+    <connection t1="sz15" t2="sz18"/>
+    <connection t1="sz15" t2="sz17"/>
+    <connection t1="sz15" t2="sz19"/>
+    <connection t1="sz18" t2="sz14"/>
+    <connection t1="sz18" t2="sz15"/>
+    <connection t1="sz18" t2="sz23"/>
+    <connection t1="sz18" t2="sz24"/>
+    <connection t1="sz18" t2="sz19"/>
+    <connection t1="sz23" t2="sz13"/>
+    <connection t1="sz23" t2="sz14"/>
+    <connection t1="sz23" t2="sz18"/>
+    <connection t1="sz23" t2="sz24"/>
+    <connection t1="sz24" t2="sz18"/>
+    <connection t1="sz24" t2="sz23"/>
+    <connection t1="sz24" t2="sz19"/>
+    <connection t1="sz24" t2="sz25"/>
+    <connection t1="sz16" t2="sz12"/>
+    <connection t1="sz16" t2="sz17"/>
+    <connection t1="sz17" t2="sz16"/>
+    <connection t1="sz17" t2="sz15"/>
+    <connection t1="sz17" t2="sz19"/>
+    <connection t1="sz19" t2="sz15"/>
+    <connection t1="sz19" t2="sz17"/>
+    <connection t1="sz19" t2="sz18"/>
+    <connection t1="sz19" t2="sz24"/>
+    <connection t1="sz19" t2="sz25"/>
+    <connection t1="sz25" t2="sz24"/>
+    <connection t1="sz25" t2="sz19"/>
+    <connection t1="sz25" t2="sz20"/>
+    <connection t1="sz25" t2="sz26"/>
+    <connection t1="sz25" t2="sz30"/>
+    <connection t1="sz20" t2="sz19"/>
+    <connection t1="sz20" t2="sz25"/>
+    <connection t1="sz20" t2="sz26"/>
+    <connection t1="sz20" t2="szc"/>
+    <connection t1="sz26" t2="sz20"/>
+    <connection t1="sz26" t2="sz25"/>
+    <connection t1="sz26" t2="sz31"/>
+    <connection t1="sz26" t2="szc"/>
+    <connection t1="sz26" t2="sz27"/>
+    <connection t1="szc" t2="sz20"/>
+    <connection t1="szc" t2="sz26"/>
+    <connection t1="szc" t2="sz27"/>
+    <connection t1="szc" t2="sz28"/>
+    <connection t1="sz27" t2="szc"/>
+    <connection t1="sz27" t2="sz26"/>
+    <connection t1="sz27" t2="sz28"/>
+    <connection t1="sz27" t2="sz31"/>
+    <connection t1="sz30" t2="sz25"/>
+    <connection t1="sz30" t2="sz26"/>
+    <connection t1="sz30" t2="sz31"/>
+    <connection t1="sz30" t2="sz32"/>
+    <connection t1="sz31" t2="sz27"/>
+    <connection t1="sz31" t2="sz26"/>
+    <connection t1="sz31" t2="sz30"/>
+    <connection t1="sz31" t2="sz32"/>
+    <connection t1="sz31" t2="sz33"/>
+    <connection t1="sz32" t2="sz31"/>
+    <connection t1="sz32" t2="sz30"/>
+    <connection t1="sz32" t2="sz33"/>
+    <connection t1="sz32" t2="sz34"/>
+    <connection t1="sz33" t2="sz31"/>
+    <connection t1="sz33" t2="sz32"/>
+    <connection t1="sz33" t2="sz34"/>
+    <connection t1="sz33" t2="sz36"/>
+    <connection t1="sz34" t2="sz32"/>
+    <connection t1="sz34" t2="sz33"/>
+    <connection t1="sz34" t2="sz37"/>
+    <connection t1="sz34" t2="sz39"/>
+    <connection t1="sz35" t2="sz36"/>
+    <connection t1="sz36" t2="sz35"/>
+    <connection t1="sz36" t2="sz33"/>
+    <connection t1="sz36" t2="sz37"/>
+    <connection t1="sz37" t2="sz36"/>
+    <connection t1="sz37" t2="sz34"/>
+    <connection t1="sz37" t2="sz39"/>
+    <connection t1="sz38" t2="szd"/>
+    <connection t1="sz38" t2="sz37"/>
+    <connection t1="sz39" t2="sz37"/>
+    <connection t1="sz39" t2="sz34"/>
+    <connection t1="sz39" t2="sz41"/>
+    <connection t1="sz39" t2="szd"/>
+    <connection t1="sz40" t2="szd"/>
+    <connection t1="sz40" t2="sz41"/>
+    <connection t1="sz40" t2="sz43"/>
+    <connection t1="sz41" t2="szd"/>
+    <connection t1="sz41" t2="sz39"/>
+    <connection t1="sz41" t2="sz40"/>
+    <connection t1="sz41" t2="sz42"/>
+    <connection t1="sz42" t2="sz41"/>
+    <connection t1="sz42" t2="sz44"/>
+    <connection t1="sz42" t2="sz45"/>
+    <connection t1="sz44" t2="sz42"/>
+    <connection t1="sz44" t2="sz45"/>
+    <connection t1="sz44" t2="sz46"/>
+    <connection t1="sz44" t2="sz47"/>
+    <connection t1="sz45" t2="sz42"/>
+    <connection t1="sz45" t2="sz44"/>
+    <connection t1="sz46" t2="sz44"/>
+    <connection t1="sz46" t2="sz47"/>
+    <connection t1="sz46" t2="sz48"/>
+    <connection t1="sz47" t2="sz46"/>
+    <connection t1="sz47" t2="sz44"/>
+    <connection t1="sz47" t2="sz48"/>
+    <connection t1="sz47" t2="sz49"/>
+    <connection t1="sz48" t2="sz46"/>
+    <connection t1="sz48" t2="sz51"/>
+    <connection t1="sz48" t2="sz50"/>
+    <connection t1="sz48" t2="sz49"/>
+    <connection t1="sz49" t2="sz47"/>
+    <connection t1="sz49" t2="sz48"/>
+    <connection t1="sz49" t2="sz50"/>
+    <connection t1="sz50" t2="sz49"/>
+    <connection t1="sz50" t2="sz48"/>
+    <connection t1="sz50" t2="sz51"/>
+    <connection t1="sz51" t2="sz48"/>
+    <connection t1="sz51" t2="sz50"/>
+    <connection t1="sz51" t2="sz52"/>
+    <connection t1="sz52" t2="sz51"/>
+    <connection t1="sz52" t2="sz53"/>
+    <connection t1="sz53" t2="sz52"/>
+    <connection t1="sz53" t2="sz54"/>
+    <connection t1="sz54" t2="sz53"/>
+    <connection t1="sz54" t2="sz55"/>
+    <connection t1="sz54" t2="sz56"/>
+    <connection t1="sz55" t2="sz54"/>
+    <connection t1="sz55" t2="sz56"/>
+    <connection t1="sz55" t2="sz57"/>
+    <connection t1="sz56" t2="sz55"/>
+    <connection t1="sz56" t2="sz54"/>
+    <connection t1="sz56" t2="sz57"/>
+    <connection t1="sz56" t2="sz58"/>
+    <connection t1="sz56" t2="sz59"/>
+    <connection t1="sz57" t2="sz55"/>
+    <connection t1="sz57" t2="sz56"/>
+    <connection t1="sz57" t2="sz58"/>
+    <connection t1="sz57" t2="sz60"/>
+    <connection t1="sz58" t2="sz56"/>
+    <connection t1="sz58" t2="sz57"/>
+    <connection t1="sz58" t2="sz60"/>
+    <connection t1="sz58" t2="sz61"/>
+    <connection t1="sz58" t2="sz59"/>
+    <connection t1="sz59" t2="sz56"/>
+    <connection t1="sz59" t2="sz58"/>
+    <connection t1="sz59" t2="sz63"/>
+    <connection t1="sz60" t2="sz57"/>
+    <connection t1="sz60" t2="sz58"/>
+    <connection t1="sz60" t2="sz61"/>
+    <connection t1="sz60" t2="sz66"/>
+    <connection t1="sz60" t2="sz62"/>
+    <connection t1="sz61" t2="sz60"/>
+    <connection t1="sz61" t2="sz58"/>
+    <connection t1="sz61" t2="sz62"/>
+    <connection t1="sz61" t2="sz62"/>
+    <connection t1="sz61" t2="sz65"/>
+    <connection t1="sz61" t2="sz66"/>
+    <connection t1="sz62" t2="sz61"/>
+    <connection t1="sz62" t2="sz64"/>
+    <connection t1="sz62" t2="sz63"/>
+    <connection t1="sz64" t2="sz62"/>
+    <connection t1="sz64" t2="sz63"/>
+    <connection t1="sz63" t2="sz59"/>
+    <connection t1="sz63" t2="sz62"/>
+    <connection t1="sz63" t2="sz64"/>
+    <connection t1="sz65" t2="sz61"/>
+    <connection t1="sz65" t2="sz66"/>
+    <connection t1="sz65" t2="sz68"/>
+    <connection t1="sz65" t2="sz67"/>
+    <connection t1="sz66" t2="sz60"/>
+    <connection t1="sz66" t2="sz61"/>
+    <connection t1="sz66" t2="sz65"/>
+    <connection t1="sz66" t2="sz68"/>
+    <connection t1="sz66" t2="sz69"/>
+    <connection t1="sz67" t2="sz65"/>
+    <connection t1="sz67" t2="sz68"/>
+    <connection t1="sz67" t2="sz72"/>
+    <connection t1="sz67" t2="sz73"/>
+    <connection t1="sz68" t2="sz67"/>
+    <connection t1="sz68" t2="sz65"/>
+    <connection t1="sz68" t2="sz66"/>
+    <connection t1="sz68" t2="sz69"/>
+    <connection t1="sz68" t2="sz73"/>
+    <connection t1="sz69" t2="sz66"/>
+    <connection t1="sz69" t2="sz68"/>
+    <connection t1="sz69" t2="sz72"/>
+    <connection t1="sz69" t2="sz71"/>
+    <connection t1="sz69" t2="sz70"/>
+    <connection t1="sz70" t2="sz69"/>
+    <connection t1="sz70" t2="sz71"/>
+    <connection t1="sz70" t2="sze"/>
+    <connection t1="sz71" t2="sz70"/>
+    <connection t1="sz71" t2="sze"/>
+    <connection t1="sz71" t2="sz69"/>
+    <connection t1="sz71" t2="sz72"/>
+    <connection t1="sz71" t2="sz76"/>
+    <connection t1="sz72" t2="sz71"/>
+    <connection t1="sz72" t2="sz69"/>
+    <connection t1="sz72" t2="sz68"/>
+    <connection t1="sz72" t2="sz67"/>
+    <connection t1="sz72" t2="sz73"/>
+    <connection t1="sz72" t2="sz74"/>
+    <connection t1="sz72" t2="sz75"/>
+    <connection t1="sz73" t2="sz72"/>
+    <connection t1="sz73" t2="sz67"/>
+    <connection t1="sz73" t2="sz74"/>
+    <connection t1="sz74" t2="sz73"/>
+    <connection t1="sz74" t2="sz75"/>
+    <connection t1="sz75" t2="sz74"/>
+    <connection t1="sz75" t2="sz72"/>
+    <connection t1="sz75" t2="sz76"/>
+    <connection t1="sz76" t2="sz75"/>
+    <connection t1="sz76" t2="sz71"/>
+    <connection t1="sz76" t2="sz77"/>
+    <connection t1="sze" t2="sz70"/>
+    <connection t1="sze" t2="sz71"/>
+    <connection t1="sze" t2="sz77"/>
+    <connection t1="sze" t2="sz79"/>
+    <connection t1="sz77" t2="sz76"/>
+    <connection t1="sz77" t2="sz78"/>
+    <connection t1="sz77" t2="sze"/>
+    <connection t1="sz78" t2="sz77"/>
+    <connection t1="sz78" t2="sz79"/>
+    <connection t1="sz78" t2="sz4"/>
+    <connection t1="sz78" t2="sz9"/>
+    <connection t1="sz79" t2="sze"/>
+    <connection t1="sz79" t2="sz78"/>
+    <connection t1="sz79" t2="sz4"/>
+    <connection t1="sz4" t2="sz79"/>
+    <connection t1="sz4" t2="sz78"/>
+    <connection t1="sz4" t2="sz9"/>
+    <connection t1="sz4" t2="sz3"/>
+    <connection t1="sz9" t2="sz78"/>
+    <connection t1="sz9" t2="sz4"/>
+    <connection t1="sz9" t2="sz3"/>
+    <connection t1="sz9" t2="sz8"/>
+    <connection t1="sz3" t2="sz4"/>
+    <connection t1="sz3" t2="sz9"/>
+    <connection t1="sz3" t2="sz8"/>
+    <connection t1="sz3" t2="sz7"/>
+    <connection t1="sz3" t2="sz2"/>
+    <connection t1="sz8" t2="sz3"/>
+    <connection t1="sz8" t2="sz9"/>
+    <connection t1="sz8" t2="sz7"/>
+    <connection t1="sz7" t2="sz8"/>
+    <connection t1="sz7" t2="sz3"/>
+    <connection t1="sz7" t2="sz2"/>
+    <connection t1="sz7" t2="sz12"/>
+    <connection t1="sz7" t2="sz6"/>
+    <connection t1="sz2" t2="sz3"/>
+    <connection t1="sz2" t2="sz7"/>
+    <connection t1="sz2" t2="sz6"/>
+    <connection t1="sz2" t2="sz1"/>
+    <connection t1="sz12" t2="sz7"/>
+    <connection t1="sz12" t2="sz21"/>
+    <connection t1="sz12" t2="sz16"/>
+    <connection t1="sz21" t2="szb"/>
+    <connection t1="sz21" t2="sz12"/>
+    <connection t1="szb" t2="sz21"/>
+    <connection t1="szb" t2="sz22"/>
+    <connection t1="sz22" t2="szb"/>
+    <connection t1="sz22" t2="sz23"/>
+    <connection t1="sz23" t2="sz22"/>
+    <connection t1="sz23" t2="sz29"/>
+    <connection t1="sz29" t2="sz28"/>
+    <connection t1="sz29" t2="sz23"/>
+    <!-- SeaZone to Land Connections -->
+    <connection t1="Hizen" t2="sz6"/>
+    <connection t1="Hizen" t2="sz5"/>
+    <connection t1="Satsuma" t2="sz13"/>
+    <connection t1="Osumi" t2="sz13"/>
+    <connection t1="Bungo" t2="sz16"/>
+    <connection t1="Iyoi" t2="sz16"/>
+    <connection t1="Iyoi" t2="sz17"/>
+    <connection t1="Chikuzen" t2="sz12"/>
+    <connection t1="Nagato" t2="sz12"/>
+    <connection t1="Iyoi" t2="sz12"/>
+    <connection t1="Aki" t2="sz12"/>
+    <connection t1="Nagato" t2="sz8"/>
+    <connection t1="Izumo" t2="sz78"/>
+    <connection t1="Hoki" t2="sz77"/>
+    <connection t1="Tango" t2="sz75"/>
+    <connection t1="Wakasa" t2="sz74"/>
+    <connection t1="Echizen" t2="sz73"/>
+    <connection t1="Kaga" t2="sz67"/>
+    <connection t1="Noto" t2="sz61"/>
+    <connection t1="Noto" t2="sz64"/>
+    <!--
+				<connection t1="Sado" t2="sz61"/>
+				<connection t1="Sado" t2="sz62"/>
+				<connection t1="Sado" t2="sz63"/>
+				<connection t1="Sado" t2="sz59"/>
+				<connection t1="Sado" t2="sz58"/>
+				-->
+    <connection t1="Echigo" t2="sz59"/>
+    <connection t1="Mutsu North" t2="sz54"/>
+    <connection t1="Mutsu North" t2="sz53"/>
+    <connection t1="Mutsu South" t2="sz48"/>
+    <connection t1="Shimosa" t2="sz44"/>
+    <connection t1="Kazusa" t2="sz43"/>
+    <connection t1="Sagami" t2="sz40"/>
+    <connection t1="Izu" t2="sz38"/>
+    <connection t1="Totomi" t2="sz38"/>
+    <connection t1="Totomi" t2="sz36"/>
+    <connection t1="Mikawa" t2="sz36"/>
+    <connection t1="Owari" t2="sz35"/>
+    <connection t1="Mikawa" t2="sz35"/>
+    <connection t1="Kii" t2="sz31"/>
+    <connection t1="Izumi" t2="sz28"/>
+    <connection t1="Awa" t2="sz28"/>
+    <connection t1="Yamashira" t2="sz29"/>
+    <connection t1="Harima" t2="sz29"/>
+    <connection t1="Bichu" t2="sz22"/>
+    <connection t1="Sanuki" t2="sz22"/>
+    <!-- Land to Land Connections -->
+    <connection t1="Satsuma" t2="Osumi"/>
+    <connection t1="Satsuma" t2="Higo"/>
+    <connection t1="Satsuma" t2="Hyuga"/>
+    <connection t1="Osumi" t2="Satsuma"/>
+    <connection t1="Osumi" t2="Hyuga"/>
+    <connection t1="Osumi" t2="Higo"/>
+    <connection t1="Hyuga" t2="Satsuma"/>
+    <connection t1="Hyuga" t2="Osumi"/>
+    <connection t1="Hyuga" t2="Higo"/>
+    <connection t1="Hyuga" t2="Bungo"/>
+    <connection t1="Higo" t2="Hyuga"/>
+    <connection t1="Higo" t2="Satsuma"/>
+    <connection t1="Higo" t2="Osumi"/>
+    <connection t1="Higo" t2="Bungo"/>
+    <connection t1="Higo" t2="Chikuzen"/>
+    <connection t1="Hizen" t2="Chikuzen"/>
+    <connection t1="Bungo" t2="Hyuga"/>
+    <connection t1="Bungo" t2="Chikuzen"/>
+    <connection t1="Bungo" t2="Higo"/>
+    <connection t1="Chikuzen" t2="Hizen"/>
+    <connection t1="Chikuzen" t2="Higo"/>
+    <connection t1="Chikuzen" t2="Bungo"/>
+    <connection t1="Chikuzen" t2="Nagato"/>
+    <connection t1="Nagato" t2="Chikuzen"/>
+    <connection t1="Nagato" t2="Iwami"/>
+    <connection t1="Nagato" t2="Suo"/>
+    <connection t1="Suo" t2="Nagato"/>
+    <connection t1="Suo" t2="Iwami"/>
+    <connection t1="Suo" t2="Aki"/>
+    <connection t1="Suo" t2="Iyoi"/>
+    <connection t1="Iwami" t2="Nagato"/>
+    <connection t1="Iwami" t2="Suo"/>
+    <connection t1="Iwami" t2="Aki"/>
+    <connection t1="Iwami" t2="Bingo"/>
+    <connection t1="Iwami" t2="Izumo"/>
+    <connection t1="Aki" t2="Suo"/>
+    <connection t1="Aki" t2="Iwami"/>
+    <connection t1="Aki" t2="Bingo"/>
+    <connection t1="Bingo" t2="Aki"/>
+    <connection t1="Bingo" t2="Iwami"/>
+    <connection t1="Bingo" t2="Izumo"/>
+    <connection t1="Bingo" t2="Hoki"/>
+    <connection t1="Bingo" t2="Bichu"/>
+    <connection t1="Izumo" t2="Iwami"/>
+    <connection t1="Izumo" t2="Bingo"/>
+    <connection t1="Izumo" t2="Hoki"/>
+    <connection t1="Bichu" t2="Bingo"/>
+    <connection t1="Bichu" t2="Hoki"/>
+    <connection t1="Bichu" t2="Mimasaka"/>
+    <connection t1="Bichu" t2="Bizen"/>
+    <connection t1="Hoki" t2="Izumo"/>
+    <connection t1="Hoki" t2="Bingo"/>
+    <connection t1="Hoki" t2="Bichu"/>
+    <connection t1="Hoki" t2="Mimasaka"/>
+    <connection t1="Hoki" t2="Tajima"/>
+    <connection t1="Mimasaka" t2="Hoki"/>
+    <connection t1="Mimasaka" t2="Bingo"/>
+    <connection t1="Mimasaka" t2="Bichu"/>
+    <connection t1="Mimasaka" t2="Bizen"/>
+    <connection t1="Mimasaka" t2="Tajima"/>
+    <connection t1="Mimasaka" t2="Harima"/>
+    <connection t1="Bizen" t2="Mimasaka"/>
+    <connection t1="Bizen" t2="Bichu"/>
+    <connection t1="Bizen" t2="Sanuki"/>
+    <connection t1="Harima" t2="Mimasaka"/>
+    <connection t1="Harima" t2="Tajima"/>
+    <connection t1="Harima" t2="Tango"/>
+    <connection t1="Harima" t2="Yamashira"/>
+    <connection t1="Tajima" t2="Hoki"/>
+    <connection t1="Tajima" t2="Mimasaka"/>
+    <connection t1="Tajima" t2="Harima"/>
+    <connection t1="Tajima" t2="Tango"/>
+    <connection t1="Wakasa" t2="Tango"/>
+    <connection t1="Wakasa" t2="Omi"/>
+    <connection t1="Wakasa" t2="Echizen"/>
+    <connection t1="Yamashira" t2="Harima"/>
+    <connection t1="Yamashira" t2="Tango"/>
+    <connection t1="Yamashira" t2="Yamato"/>
+    <connection t1="Yamashira" t2="Izumi"/>
+    <connection t1="Izumi" t2="Yamashira"/>
+    <connection t1="Izumi" t2="Kii"/>
+    <connection t1="Izumi" t2="Yamato"/>
+    <connection t1="Yamato" t2="Kii"/>
+    <connection t1="Yamato" t2="Izumi"/>
+    <connection t1="Yamato" t2="Yamashira"/>
+    <connection t1="Yamato" t2="Tango"/>
+    <connection t1="Yamato" t2="Ise"/>
+    <connection t1="Omi" t2="Wakasa"/>
+    <connection t1="Omi" t2="Tango"/>
+    <connection t1="Omi" t2="Ise"/>
+    <connection t1="Omi" t2="Mino"/>
+    <connection t1="Omi" t2="Echizen"/>
+    <connection t1="Ise" t2="Kii"/>
+    <connection t1="Ise" t2="Yamato"/>
+    <connection t1="Ise" t2="Tango"/>
+    <connection t1="Ise" t2="Omi"/>
+    <connection t1="Ise" t2="Mino"/>
+    <connection t1="Ise" t2="Owari"/>
+    <connection t1="Ise" t2="Mikawa"/>
+    <connection t1="Echizen" t2="Wakasa"/>
+    <connection t1="Echizen" t2="Omi"/>
+    <connection t1="Echizen" t2="Mino"/>
+    <connection t1="Echizen" t2="Hida"/>
+    <connection t1="Echizen" t2="Kaga"/>
+    <connection t1="Kaga" t2="Noto"/>
+    <connection t1="Kaga" t2="Echizen"/>
+    <connection t1="Kaga" t2="Hida"/>
+    <connection t1="Kaga" t2="Etchu"/>
+    <connection t1="Noto" t2="Kaga"/>
+    <connection t1="Noto" t2="Etchu"/>
+    <connection t1="Mino" t2="Ise"/>
+    <connection t1="Mino" t2="Omi"/>
+    <connection t1="Mino" t2="Echizen"/>
+    <connection t1="Mino" t2="Hida"/>
+    <connection t1="Mino" t2="Shinano South"/>
+    <connection t1="Owari" t2="Ise"/>
+    <connection t1="Owari" t2="Mino"/>
+    <connection t1="Owari" t2="Mikawa"/>
+    <connection t1="Hida" t2="Kaga"/>
+    <connection t1="Hida" t2="Echizen"/>
+    <connection t1="Hida" t2="Mino"/>
+    <connection t1="Hida" t2="Shinano South"/>
+    <connection t1="Hida" t2="Shinano"/>
+    <connection t1="Hida" t2="Etchu"/>
+    <connection t1="Etchu" t2="Noto"/>
+    <connection t1="Etchu" t2="Kaga"/>
+    <connection t1="Etchu" t2="Hida"/>
+    <connection t1="Etchu" t2="Echigo"/>
+    <connection t1="Etchu" t2="Shinano"/>
+    <connection t1="Mikawa" t2="Ise"/>
+    <connection t1="Mikawa" t2="Owari"/>
+    <connection t1="Mikawa" t2="Shinano South"/>
+    <connection t1="Mikawa" t2="Totomi"/>
+    <connection t1="Shinano South" t2="Hida"/>
+    <connection t1="Shinano South" t2="Mino"/>
+    <connection t1="Shinano South" t2="Mikawa"/>
+    <connection t1="Shinano South" t2="Totomi"/>
+    <connection t1="Shinano" t2="Etchu"/>
+    <connection t1="Shinano" t2="Hida"/>
+    <connection t1="Shinano" t2="Shinano South"/>
+    <connection t1="Shinano" t2="Totomi"/>
+    <connection t1="Shinano" t2="Suruga"/>
+    <connection t1="Shinano" t2="Echigo"/>
+    <connection t1="Shinano" t2="Kozuke"/>
+    <connection t1="Shinano" t2="Musashi"/>
+    <connection t1="Totomi" t2="Mikawa"/>
+    <connection t1="Totomi" t2="Shinano South"/>
+    <connection t1="Totomi" t2="Shinano"/>
+    <connection t1="Totomi" t2="Suruga"/>
+    <connection t1="Totomi" t2="Izu"/>
+    <connection t1="Izu" t2="Totomi"/>
+    <connection t1="Izu" t2="Suruga"/>
+    <connection t1="Izu" t2="Sagami"/>
+    <connection t1="Sagami" t2="Izu"/>
+    <connection t1="Sagami" t2="Kai"/>
+    <connection t1="Sagami" t2="Suruga"/>
+    <connection t1="Kai" t2="Suruga"/>
+    <connection t1="Kai" t2="Sagami"/>
+    <connection t1="Kai" t2="Musashi"/>
+    <connection t1="Kai" t2="Kazusa"/>
+    <connection t1="Suruga" t2="Totomi"/>
+    <connection t1="Suruga" t2="Izu"/>
+    <connection t1="Suruga" t2="Shinano"/>
+    <connection t1="Suruga" t2="Musashi"/>
+    <connection t1="Suruga" t2="Kai"/>
+    <connection t1="Suruga" t2="Sagami"/>
+    <connection t1="Musashi" t2="Kai"/>
+    <connection t1="Musashi" t2="Suruga"/>
+    <connection t1="Musashi" t2="Shinano"/>
+    <connection t1="Musashi" t2="Kozuke"/>
+    <connection t1="Musashi" t2="Shimosa"/>
+    <connection t1="Musashi" t2="Kazusa"/>
+    <connection t1="Kozuke" t2="Musashi"/>
+    <connection t1="Kozuke" t2="Shinano"/>
+    <connection t1="Kozuke" t2="Echigo"/>
+    <connection t1="Kozuke" t2="Shimotsuke"/>
+    <connection t1="Echigo" t2="Dewa South"/>
+    <connection t1="Echigo" t2="Etchu"/>
+    <connection t1="Echigo" t2="Shinano"/>
+    <connection t1="Echigo" t2="Kozuke"/>
+    <connection t1="Shimotsuke" t2="Dewa South"/>
+    <connection t1="Shimotsuke" t2="Kozuke"/>
+    <connection t1="Shimotsuke" t2="Shimosa"/>
+    <connection t1="Shimotsuke" t2="Hitachi"/>
+    <connection t1="Shimosa" t2="Shimotsuke"/>
+    <connection t1="Shimosa" t2="Musashi"/>
+    <connection t1="Shimosa" t2="Kazusa"/>
+    <connection t1="Shimosa" t2="Hitachi"/>
+    <connection t1="Kazusa" t2="Shimosa"/>
+    <connection t1="Kazusa" t2="Musashi"/>
+    <connection t1="Kazusa" t2="Kai"/>
+    <connection t1="Hitachi" t2="Shimosa"/>
+    <connection t1="Hitachi" t2="Shimotsuke"/>
+    <connection t1="Hitachi" t2="Dewa South"/>
+    <connection t1="Hitachi" t2="Mutsu South"/>
+    <connection t1="Dewa South" t2="Echigo"/>
+    <connection t1="Dewa South" t2="Kozuke"/>
+    <connection t1="Dewa South" t2="Shimotsuke"/>
+    <connection t1="Dewa South" t2="Hitachi"/>
+    <connection t1="Dewa South" t2="Mutsu South"/>
+    <connection t1="Mutsu South" t2="Hitachi"/>
+    <connection t1="Mutsu South" t2="Dewa South"/>
+    <connection t1="Mutsu South" t2="Echigo"/>
+    <connection t1="Mutsu South" t2="Dewa"/>
+    <connection t1="Mutsu South" t2="Mutsu"/>
+    <connection t1="Dewa" t2="Dewa South"/>
+    <connection t1="Dewa" t2="Mutsu South"/>
+    <connection t1="Dewa" t2="Mutsu"/>
+    <connection t1="Dewa" t2="Mutsu North"/>
+    <connection t1="Mutsu North" t2="Dewa"/>
+    <connection t1="Mutsu North" t2="Mutsu"/>
+    <connection t1="Iyoi" t2="Sanuki"/>
+    <connection t1="Iyoi" t2="Awa"/>
+    <connection t1="Iyoi" t2="Tosa"/>
+    <connection t1="Iyoi" t2="Suo"/>
+    <connection t1="Tosa" t2="Iyoi"/>
+    <connection t1="Tosa" t2="Awa"/>
+    <connection t1="Awa" t2="Sanuki"/>
+    <connection t1="Awa" t2="Iyoi"/>
+    <connection t1="Awa" t2="Tosa"/>
+    <connection t1="Sanuki" t2="Awa"/>
+    <connection t1="Sanuki" t2="Iyoi"/>
+    <connection t1="Sanuki" t2="Bizen"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <player name="Shimazu" optional="false"/>
+    <player name="Tokugawa" optional="false"/>
+    <player name="Ryuzoji" optional="false"/>
+    <!--  <player name="Ryuzoji" optional="false"/>-->
+    <player name="Hojo" optional="false"/>
+    <player name="Oda" optional="false"/>
+    <player name="Toyotomi" optional="false"/>
+    <player name="Takeda" optional="false"/>
+    <player name="Date" optional="false"/>
+  </playerList>
+  <unitList>
+    <unit name="Ashigara"/>
+    <unit name="SamuraiFootSoldier"/>
+    <unit name="SamuraiSpearman"/>
+    <unit name="SamuraiArcher"/>
+    <unit name="SamuraiHorseback"/>
+    <unit name="castle"/>
+    <unit name="Shinobi"/>
+    <unit name="Arquebusiers"/>
+    <!--<unit name="StoneFortification"/>-->
+    <unit name="Fortification"/>
+    <unit name="RefinedArquebusiers"/>
+    <unit name="AdakeBune"/>
+    <unit name="Cannon"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <!--  <step name="RyuzojiBid" delegate="bid" player="Ryuzoji" maxRunCount="1"/>
+                        <step name="RyuzojiBidPlace" delegate="placeBid" player="Ryuzoji" maxRunCount="1"/>
+                        -->
+      <step name="ShimazuBid" delegate="bid" player="Shimazu" maxRunCount="1"/>
+      <step name="ShimazuBidPlace" delegate="placeBid" player="Shimazu" maxRunCount="1"/>
+      <step name="HojoBid" delegate="bid" player="Hojo" maxRunCount="1"/>
+      <step name="HojoBidPlace" delegate="placeBid" player="Hojo" maxRunCount="1"/>
+      <step name="RyuBid" delegate="bid" player="Hojo" maxRunCount="1"/>
+      <step name="RyuBidPlace" delegate="placeBid" player="Hojo" maxRunCount="1"/>
+      <!-- Ryuzoji Game Sequence -->
+      <!-- Ryuzoji Game Sequence
+                        <step name="RyuzojiPurchase" delegate="purchase" player="Ryuzoji"/>
+                        <step name="RyuzojiCombatMove" delegate="move" player="Ryuzoji"/>
+                        <step name="RyuzojiBattle" delegate="battle" player="Ryuzoji"/>
+                        <step name="RyuzojiNonCombatMove" delegate="move" player="Ryuzoji" display="Non Combat Move"/>
+                        <step name="RyuzojiPlace" delegate="place" player="Ryuzoji"/>
+                        <step name="RyuzojiEndTurn" delegate="endTurn" player="Ryuzoji"/>
+                         -->
+      <!-- Shizmau Game Sequence -->
+      <step name="ShimazuPurchase" delegate="purchase" player="Shimazu"/>
+      <step name="ShimazuCombatMove" delegate="move" player="Shimazu"/>
+      <step name="ShimazuBattle" delegate="battle" player="Shimazu"/>
+      <step name="ShimazuNonCombatMove" delegate="move" player="Shimazu" display="Non Combat Move"/>
+      <step name="ShimazuPlace" delegate="place" player="Shimazu"/>
+      <step name="ShimazuEndTurn" delegate="endTurn" player="Shimazu"/>
+      <!-- Hojo Game Sequence -->
+      <step name="HojoPurchase" delegate="purchase" player="Hojo"/>
+      <step name="HojoCombatMove" delegate="move" player="Hojo"/>
+      <step name="HojoBattle" delegate="battle" player="Hojo"/>
+      <step name="HojoNonCombatMove" delegate="move" player="Hojo" display="Non Combat Move"/>
+      <step name="HojoPlace" delegate="place" player="Hojo"/>
+      <step name="HojoEndTurn" delegate="endTurn" player="Hojo"/>
+      <!-- Oda Game Sequence -->
+      <step name="OdaPurchase" delegate="purchase" player="Oda"/>
+      <step name="OdaCombatMove" delegate="move" player="Oda"/>
+      <step name="OdaBattle" delegate="battle" player="Oda"/>
+      <step name="OdaNonCombatMove" delegate="move" player="Oda" display="Non Combat Move"/>
+      <step name="OdaPlace" delegate="place" player="Oda"/>
+      <step name="OdaEndTurn" delegate="endTurn" player="Oda"/>
+      <!-- Ryuzoji Game Sequence -->
+      <step name="RyuPurchase" delegate="purchase" player="Ryuzoji"/>
+      <step name="RyuCombatMove" delegate="move" player="Ryuzoji"/>
+      <step name="RyuBattle" delegate="battle" player="Ryuzoji"/>
+      <step name="RyuNonCombatMove" delegate="move" player="Ryuzoji" display="Non Combat Move"/>
+      <step name="RyuPlace" delegate="place" player="Ryuzoji"/>
+      <step name="RyuEndTurn" delegate="endTurn" player="Ryuzoji"/>
+      <!-- Takeda Game Sequence -->
+      <step name="TakedaPurchase" delegate="purchase" player="Takeda"/>
+      <step name="TakedaCombatMove" delegate="move" player="Takeda"/>
+      <step name="TakedaBattle" delegate="battle" player="Takeda"/>
+      <step name="TakedaNonCombatMove" delegate="move" player="Takeda" display="Non Combat Move"/>
+      <step name="TakedaPlace" delegate="place" player="Takeda"/>
+      <step name="TakedaEndTurn" delegate="endTurn" player="Takeda"/>
+      <!-- Tokugawa Game Sequence -->
+      <step name="TokugawaPurchase" delegate="purchase" player="Tokugawa"/>
+      <step name="TokugawaCombatMove" delegate="move" player="Tokugawa"/>
+      <step name="TokugawaBattle" delegate="battle" player="Tokugawa"/>
+      <step name="TokugawaNonCombatMove" delegate="move" player="Tokugawa" display="Non Combat Move"/>
+      <step name="TokugawaPlace" delegate="place" player="Tokugawa"/>
+      <step name="TokugawaEndTurn" delegate="endTurn" player="Tokugawa"/>
+      <!-- Date Game Sequence -->
+      <step name="DatePurchase" delegate="purchase" player="Date"/>
+      <step name="DateCombatMove" delegate="move" player="Date"/>
+      <step name="DateBattle" delegate="battle" player="Date"/>
+      <step name="DateNonCombatMove" delegate="move" player="Date" display="Non Combat Move"/>
+      <step name="DatePlace" delegate="place" player="Date"/>
+      <step name="DateEndTurn" delegate="endTurn" player="Date"/>
+      <!-- Toyotomi Game Sequence -->
+      <step name="ToyotomiPurchase" delegate="purchase" player="Toyotomi"/>
+      <step name="ToyotomiCombatMove" delegate="move" player="Toyotomi"/>
+      <step name="ToyotomiBattle" delegate="battle" player="Toyotomi"/>
+      <step name="ToyotomiNonCombatMove" delegate="move" player="Toyotomi" display="Non Combat Move"/>
+      <step name="ToyotomiPlace" delegate="place" player="Toyotomi"/>
+      <step name="ToyotomiEndTurn" delegate="endTurn" player="Toyotomi"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyAshigara">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="Ashigara" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySamuraiFootSoldier">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="SamuraiFootSoldier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySamuraiSpearman">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="SamuraiSpearman" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySamuraiArcher">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="SamuraiArcher" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySamuraiHorseback">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="SamuraiHorseback" quantity="1"/>
+    </productionRule>
+    <productionRule name="buycastle">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="castle" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyShinobi">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="Shinobi" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArquebusiers">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="Arquebusiers" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyRefinedArquebusiers">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="RefinedArquebusiers" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFortification">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="Fortification" quantity="5"/>
+    </productionRule>
+    <productionRule name="buyAdakeBune">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="AdakeBune" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCannon">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="Cannon" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="ShimazuProduction">
+      <frontierRules name="buyAshigara"/>
+      <frontierRules name="buySamuraiFootSoldier"/>
+      <frontierRules name="buycastle"/>
+      <frontierRules name="buySamuraiSpearman"/>
+      <frontierRules name="buyShinobi"/>
+      <frontierRules name="buySamuraiArcher"/>
+      <frontierRules name="buySamuraiHorseback"/>
+      <frontierRules name="buyRefinedArquebusiers"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyAdakeBune"/>
+      <frontierRules name="buyCannon"/>
+    </productionFrontier>
+    <!--	 <productionFrontier name="RyuzojiProduction">
+                        <frontierRules name="buyAshigara"/>
+                        <frontierRules name="buySamuraiFootSoldier"/>
+                        <frontierRules name="buycastle"/>  
+                        <frontierRules name="buySamuraiSpearman"/>
+                      <frontierRules name="buyShinobi"/>
+                        <frontierRules name="buySamuraiArcher"/>    
+                        <frontierRules name="buySamuraiHorseback"/>        
+                        <frontierRules name="buyArquebusiers"/>
+                </productionFrontier> -->
+    <productionFrontier name="HojoProduction">
+      <frontierRules name="buyAshigara"/>
+      <frontierRules name="buySamuraiFootSoldier"/>
+      <frontierRules name="buycastle"/>
+      <frontierRules name="buySamuraiSpearman"/>
+      <frontierRules name="buyShinobi"/>
+      <frontierRules name="buySamuraiArcher"/>
+      <frontierRules name="buySamuraiHorseback"/>
+      <frontierRules name="buyArquebusiers"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyAdakeBune"/>
+      <frontierRules name="buyCannon"/>
+    </productionFrontier>
+    <productionFrontier name="OdaProduction">
+      <frontierRules name="buyAshigara"/>
+      <frontierRules name="buySamuraiFootSoldier"/>
+      <frontierRules name="buycastle"/>
+      <frontierRules name="buySamuraiSpearman"/>
+      <frontierRules name="buyShinobi"/>
+      <frontierRules name="buySamuraiArcher"/>
+      <frontierRules name="buySamuraiHorseback"/>
+      <frontierRules name="buyArquebusiers"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyAdakeBune"/>
+      <frontierRules name="buyCannon"/>
+    </productionFrontier>
+    <productionFrontier name="RyuzojiProduction">
+      <frontierRules name="buyAshigara"/>
+      <frontierRules name="buySamuraiFootSoldier"/>
+      <frontierRules name="buycastle"/>
+      <frontierRules name="buySamuraiSpearman"/>
+      <frontierRules name="buyShinobi"/>
+      <frontierRules name="buySamuraiArcher"/>
+      <frontierRules name="buySamuraiHorseback"/>
+      <frontierRules name="buyArquebusiers"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyAdakeBune"/>
+      <frontierRules name="buyCannon"/>
+    </productionFrontier>
+    <productionFrontier name="TakedaProduction">
+      <frontierRules name="buyAshigara"/>
+      <frontierRules name="buySamuraiFootSoldier"/>
+      <frontierRules name="buycastle"/>
+      <frontierRules name="buySamuraiSpearman"/>
+      <frontierRules name="buyShinobi"/>
+      <frontierRules name="buySamuraiArcher"/>
+      <frontierRules name="buySamuraiHorseback"/>
+      <frontierRules name="buyArquebusiers"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyAdakeBune"/>
+      <frontierRules name="buyCannon"/>
+    </productionFrontier>
+    <productionFrontier name="TokugawaProduction">
+      <frontierRules name="buyAshigara"/>
+      <frontierRules name="buySamuraiFootSoldier"/>
+      <frontierRules name="buycastle"/>
+      <frontierRules name="buySamuraiSpearman"/>
+      <frontierRules name="buyShinobi"/>
+      <frontierRules name="buySamuraiArcher"/>
+      <frontierRules name="buySamuraiHorseback"/>
+      <frontierRules name="buyArquebusiers"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyAdakeBune"/>
+      <frontierRules name="buyCannon"/>
+    </productionFrontier>
+    <productionFrontier name="DateProduction">
+      <frontierRules name="buyAshigara"/>
+      <frontierRules name="buySamuraiFootSoldier"/>
+      <frontierRules name="buycastle"/>
+      <frontierRules name="buySamuraiSpearman"/>
+      <frontierRules name="buyShinobi"/>
+      <frontierRules name="buySamuraiArcher"/>
+      <frontierRules name="buySamuraiHorseback"/>
+      <frontierRules name="buyArquebusiers"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyAdakeBune"/>
+      <frontierRules name="buyCannon"/>
+    </productionFrontier>
+    <productionFrontier name="ToyotomiProduction">
+      <frontierRules name="buyAshigara"/>
+      <frontierRules name="buySamuraiFootSoldier"/>
+      <frontierRules name="buycastle"/>
+      <frontierRules name="buySamuraiSpearman"/>
+      <frontierRules name="buyShinobi"/>
+      <frontierRules name="buySamuraiArcher"/>
+      <frontierRules name="buySamuraiHorseback"/>
+      <frontierRules name="buyArquebusiers"/>
+      <frontierRules name="buyFortification"/>
+      <frontierRules name="buyAdakeBune"/>
+      <frontierRules name="buyCannon"/>
+    </productionFrontier>
+    <playerProduction player="Shimazu" frontier="ShimazuProduction"/>
+    <!--   <playerProduction player="Ryuzoji" frontier="RyuzojiProduction"/> -->
+    <playerProduction player="Hojo" frontier="HojoProduction"/>
+    <playerProduction player="Oda" frontier="OdaProduction"/>
+    <playerProduction player="Ryuzoji" frontier="RyuzojiProduction"/>
+    <playerProduction player="Takeda" frontier="TakedaProduction"/>
+    <playerProduction player="Tokugawa" frontier="TokugawaProduction"/>
+    <playerProduction player="Date" frontier="DateProduction"/>
+    <playerProduction player="Toyotomi" frontier="ToyotomiProduction"/>
+  </production>
+  <attachmentList>
+    <!-- Unit Attachment -->
+    <attachment name="unitAttachment" attachTo="Ashigara" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="canBlitz" value="false"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="SamuraiFootSoldier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="canBlitz" value="false"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="SamuraiArcher" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="canBlitz" value="false"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="1"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="SamuraiSpearman" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="canBlitz" value="false"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="SamuraiHorseback" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="4"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <!--Shinobi unit based on strat bomber unit -->
+    <attachment name="unitAttachment" attachTo="Shinobi" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="hitPoints" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="isAir" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="castle" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+      <option name="defense" value="5"/>
+      <option name="movement" value="0"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Arquebusiers" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="false"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="RefinedArquebusiers" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="false"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Fortification" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="hitPoints" value="2"/>
+      <option name="canBlitz" value="false"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="3"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="AdakeBune" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="canBombard" value="false"/>
+      <option name="hitPoints" value="2"/>
+      <option name="transportCapacity" value="6"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="Cannon" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="6"/>
+      <option name="canBlitz" value="false"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <!-- Territory Attachment -->
+    <attachment name="territoryAttachment" attachTo="Satsuma" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Shimazu"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Osumi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="capital" value="Shimazu"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hizen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Ryuzoji"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bungo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="capital" value="Ryuzoji"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Higo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hyuga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+      <option name="capital" value="Shimazu"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chikuzen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <!-- -->
+    <attachment name="territoryAttachment" attachTo="Nagato" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Suo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Iwami" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aki" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Izumo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bingo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hoki" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bichu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mimasaka" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bizen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tajima" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Harima" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tango" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wakasa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yamashira" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Tokugawa"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Izumi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kii" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yamato" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Omi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="capital" value="Oda"/>
+      <option name="production" value="10"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ise" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Echizen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kaga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Noto" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Etchu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hida" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mino" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Owari" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Echigo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shinano" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="capital" value="Takeda"/>
+      <option name="production" value="12"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shinano South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mikawa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kozuke" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Suruga" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Musashi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Hojo"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kai" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sagami" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Izu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shimotsuke" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shimosa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kazusa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hitachi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dewa South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dewa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mutsu North" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mutsu South" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mutsu" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Date"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Iyoi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tosa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+      <option name="capital" value="Toyotomi"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Sanuki" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Awa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Totomi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- Shimazu Owned Territories -->
+      <territoryOwner territory="Satsuma" owner="Shimazu"/>
+      <territoryOwner territory="Osumi" owner="Shimazu"/>
+      <territoryOwner territory="Hyuga" owner="Shimazu"/>
+      <!-- Ryuzoji Owned Territories 
+                        <territoryOwner territory="Hizen" owner="Ryuzoji"/>
+                        <territoryOwner territory="Chikuzen" owner="Ryuzoji"/> -->
+      <!-- Hojo owned Territories -->
+      <territoryOwner territory="Musashi" owner="Hojo"/>
+      <territoryOwner territory="Kai" owner="Hojo"/>
+      <territoryOwner territory="Kazusa" owner="Hojo"/>
+      <territoryOwner territory="Sagami" owner="Hojo"/>
+      <territoryOwner territory="Shimosa" owner="Hojo"/>
+      <!-- Oda owned Territories -->
+      <territoryOwner territory="Omi" owner="Oda"/>
+      <territoryOwner territory="Ise" owner="Oda"/>
+      <territoryOwner territory="Tango" owner="Oda"/>
+      <territoryOwner territory="Wakasa" owner="Oda"/>
+      <territoryOwner territory="Echizen" owner="Oda"/>
+      <territoryOwner territory="Mino" owner="Oda"/>
+      <!-- Ryuzoji owned Territories -->
+      <territoryOwner territory="Bungo" owner="Ryuzoji"/>
+      <territoryOwner territory="Hizen" owner="Ryuzoji"/>
+      <territoryOwner territory="Chikuzen" owner="Ryuzoji"/>
+      <!-- Takeda owned Territories -->
+      <territoryOwner territory="Shinano" owner="Takeda"/>
+      <territoryOwner territory="Shinano South" owner="Takeda"/>
+      <territoryOwner territory="Suruga" owner="Takeda"/>
+      <territoryOwner territory="Totomi" owner="Takeda"/>
+      <!-- Tokugawa owned Territories -->
+      <territoryOwner territory="Yamashira" owner="Tokugawa"/>
+      <territoryOwner territory="Izumi" owner="Tokugawa"/>
+      <territoryOwner territory="Yamato" owner="Tokugawa"/>
+      <territoryOwner territory="Kii" owner="Tokugawa"/>
+      <territoryOwner territory="Harima" owner="Tokugawa"/>
+      <!-- Date owned Territories -->
+      <territoryOwner territory="Mutsu" owner="Date"/>
+      <territoryOwner territory="Mutsu North" owner="Date"/>
+      <territoryOwner territory="Mutsu South" owner="Date"/>
+      <!-- Toyotomi owned Territories -->
+      <territoryOwner territory="Tosa" owner="Toyotomi"/>
+      <territoryOwner territory="Iyoi" owner="Toyotomi"/>
+      <territoryOwner territory="Sanuki" owner="Toyotomi"/>
+      <territoryOwner territory="Awa" owner="Toyotomi"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Shimazu Unit Placements -->
+      <unitPlacement unitType="castle" territory="Satsuma" quantity="1" owner="Shimazu"/>
+      <unitPlacement unitType="Ashigara" territory="Satsuma" quantity="6" owner="Shimazu"/>
+      <unitPlacement unitType="SamuraiSpearman" territory="Satsuma" quantity="3" owner="Shimazu"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Osumi" quantity="4" owner="Shimazu"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Osumi" quantity="4" owner="Shimazu"/>
+      <unitPlacement unitType="RefinedArquebusiers" territory="Satsuma" quantity="8" owner="Shimazu"/>
+      <unitPlacement unitType="Fortification" territory="Satsuma" quantity="5" owner="Shimazu"/>
+      <unitPlacement unitType="Ashigara" territory="Satsuma" quantity="4" owner="Shimazu"/>
+      <unitPlacement unitType="AdakeBune" territory="sz13" quantity="2" owner="Shimazu"/>
+      <!-- Ryuzoji Unit Placements
+                        <unitPlacement unitType="Ashigara" territory="Hizen" quantity="8" owner="Ryuzoji"/>
+                        <unitPlacement unitType="castle" territory="Hizen" quantity="1" owner="Ryuzoji"/>
+                       <unitPlacement unitType="SamuraiFootSoldier" territory="Hizen" quantity="5" owner="Ryuzoji"/>
+                       <unitPlacement unitType="Arquebusiers" territory="Hizen" quantity="3" owner="Ryuzoji"/>
+						<unitPlacement unitType="castle" territory="Chikuzen" quantity="1" owner="Ryuzoji"/>
+						 -->
+      <!-- Hojo Unit Placements -->
+      <unitPlacement unitType="Ashigara" territory="Musashi" quantity="16" owner="Hojo"/>
+      <unitPlacement unitType="Cannon" territory="Musashi" quantity="1" owner="Hojo"/>
+      <unitPlacement unitType="castle" territory="Musashi" quantity="1" owner="Hojo"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Musashi" quantity="8" owner="Hojo"/>
+      <unitPlacement unitType="Arquebusiers" territory="Musashi" quantity="2" owner="Hojo"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Musashi" quantity="6" owner="Hojo"/>
+      <unitPlacement unitType="Ashigara" territory="Shimosa" quantity="3" owner="Hojo"/>
+      <unitPlacement unitType="Fortification" territory="Musashi" quantity="10" owner="Hojo"/>
+      <unitPlacement unitType="castle" territory="Kazusa" quantity="1" owner="Hojo"/>
+      <unitPlacement unitType="AdakeBune" territory="sz43" quantity="1" owner="Hojo"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Sagami" quantity="2" owner="Hojo"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Kai" quantity="1" owner="Hojo"/>
+      <!-- Oda Unit Placements -->
+      <unitPlacement unitType="Ashigara" territory="Omi" quantity="4" owner="Oda"/>
+      <unitPlacement unitType="castle" territory="Omi" quantity="1" owner="Oda"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Ise" quantity="6" owner="Oda"/>
+      <unitPlacement unitType="Arquebusiers" territory="Omi" quantity="2" owner="Oda"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Omi" quantity="6" owner="Oda"/>
+      <unitPlacement unitType="Ashigara" territory="Omi" quantity="6" owner="Oda"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Tango" quantity="2" owner="Oda"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Tango" quantity="6" owner="Oda"/>
+      <unitPlacement unitType="Fortification" territory="Tango" quantity="2" owner="Oda"/>
+      <unitPlacement unitType="castle" territory="Wakasa" quantity="1" owner="Oda"/>
+      <unitPlacement unitType="AdakeBune" territory="sz74" quantity="1" owner="Oda"/>
+      <unitPlacement unitType="Fortification" territory="Omi" quantity="5" owner="Oda"/>
+      <!-- Ryu Unit Placements -->
+      <unitPlacement unitType="Ashigara" territory="Chikuzen" quantity="8" owner="Ryuzoji"/>
+      <unitPlacement unitType="castle" territory="Hizen" quantity="1" owner="Ryuzoji"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Hizen" quantity="4" owner="Ryuzoji"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Hizen" quantity="8" owner="Ryuzoji"/>
+      <unitPlacement unitType="SamuraiSpearman" territory="Hizen" quantity="2" owner="Ryuzoji"/>
+      <unitPlacement unitType="Fortification" territory="Hizen" quantity="2" owner="Ryuzoji"/>
+      <unitPlacement unitType="AdakeBune" territory="sz6" quantity="1" owner="Ryuzoji"/>
+      <unitPlacement unitType="Fortification" territory="Chikuzen" quantity="2" owner="Ryuzoji"/>
+      <!-- Takeda Unit Placements -->
+      <unitPlacement unitType="Ashigara" territory="Shinano" quantity="8" owner="Takeda"/>
+      <unitPlacement unitType="castle" territory="Shinano" quantity="1" owner="Takeda"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Shinano" quantity="10" owner="Takeda"/>
+      <unitPlacement unitType="SamuraiHorseback" territory="Shinano" quantity="4" owner="Takeda"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Shinano" quantity="4" owner="Takeda"/>
+      <unitPlacement unitType="Ashigara" territory="Shinano South" quantity="4" owner="Takeda"/>
+      <unitPlacement unitType="Fortification" territory="Shinano" quantity="6" owner="Takeda"/>
+      <unitPlacement unitType="SamuraiSpearman" territory="Shinano" quantity="2" owner="Takeda"/>
+      <unitPlacement unitType="Shinobi" territory="Shinano" quantity="1" owner="Takeda"/>
+      <unitPlacement unitType="Cannon" territory="Shinano" quantity="1" owner="Takeda"/>
+      <!-- Tokugawa Unit Placements -->
+      <unitPlacement unitType="Ashigara" territory="Yamashira" quantity="4" owner="Tokugawa"/>
+      <unitPlacement unitType="castle" territory="Yamashira" quantity="1" owner="Tokugawa"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Yamashira" quantity="6" owner="Tokugawa"/>
+      <unitPlacement unitType="SamuraiHorseback" territory="Yamashira" quantity="1" owner="Tokugawa"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Izumi" quantity="4" owner="Tokugawa"/>
+      <unitPlacement unitType="Ashigara" territory="Kii" quantity="4" owner="Tokugawa"/>
+      <unitPlacement unitType="Shinobi" territory="Kii" quantity="2" owner="Tokugawa"/>
+      <unitPlacement unitType="Ashigara" territory="Harima" quantity="4" owner="Tokugawa"/>
+      <unitPlacement unitType="AdakeBune" territory="sz29" quantity="1" owner="Tokugawa"/>
+      <unitPlacement unitType="Fortification" territory="Yamashira" quantity="1" owner="Tokugawa"/>
+      <unitPlacement unitType="Fortification" territory="Yamato" quantity="2" owner="Tokugawa"/>
+      <!-- Date Unit Placements -->
+      <unitPlacement unitType="Ashigara" territory="Mutsu" quantity="6" owner="Date"/>
+      <unitPlacement unitType="castle" territory="Mutsu" quantity="1" owner="Date"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Mutsu South" quantity="10" owner="Date"/>
+      <unitPlacement unitType="SamuraiHorseback" territory="Mutsu" quantity="6" owner="Date"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Mutsu" quantity="4" owner="Date"/>
+      <unitPlacement unitType="Ashigara" territory="Mutsu South" quantity="7" owner="Date"/>
+      <unitPlacement unitType="AdakeBune" territory="sz54" quantity="1" owner="Date"/>
+      <!-- Toyotomi Unit Placements -->
+      <unitPlacement unitType="Ashigara" territory="Iyoi" quantity="14" owner="Toyotomi"/>
+      <unitPlacement unitType="castle" territory="Iyoi" quantity="1" owner="Toyotomi"/>
+      <unitPlacement unitType="SamuraiFootSoldier" territory="Iyoi" quantity="8" owner="Toyotomi"/>
+      <unitPlacement unitType="SamuraiHorseback" territory="Awa" quantity="6" owner="Toyotomi"/>
+      <unitPlacement unitType="SamuraiArcher" territory="Tosa" quantity="4" owner="Toyotomi"/>
+      <unitPlacement unitType="Ashigara" territory="Tosa" quantity="8" owner="Toyotomi"/>
+      <unitPlacement unitType="AdakeBune" territory="sz16" quantity="1" owner="Toyotomi"/>
+      <unitPlacement unitType="castle" territory="Tosa" quantity="1" owner="Toyotomi"/>
+      <unitPlacement unitType="Fortification" territory="Tosa" quantity="5" owner="Toyotomi"/>
+      <!-- Neutral Unit Placements -->
+      <unitPlacement unitType="castle" territory="Hoki" quantity="1"/>
+      <unitPlacement unitType="Fortification" territory="Hoki" quantity="4"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Shimazu" resource="PUs" quantity="10"/>
+      <!-- <resourceGiven player="Ryuzoji" resource="PUs" quantity="30"/> -->
+      <resourceGiven player="Hojo" resource="PUs" quantity="18"/>
+      <resourceGiven player="Oda" resource="PUs" quantity="18"/>
+      <resourceGiven player="Ryuzoji" resource="PUs" quantity="16"/>
+      <resourceGiven player="Takeda" resource="PUs" quantity="10"/>
+      <resourceGiven player="Tokugawa" resource="PUs" quantity="16"/>
+      <resourceGiven player="Date" resource="PUs" quantity="12"/>
+      <resourceGiven player="Toyotomi" resource="PUs" quantity="18"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V3" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!--
+				<property name="Partial Amphibious Retreat" value="true" editable="false">
+                        <boolean/>
+                </property> -->
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Defending Subs Sneak Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Placement Restricted By Factory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <!-- <property name="Sub Retreat Before Battle" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+				<property name="Submersible Subs" value="true" editable="false">
+                        <boolean/>
+                </property>
+                
+				<property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+                	<boolean/>
+                </property>
+                -->
+    <!-- Bidding -->
+    <property name="Shimazu bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Ryuzoji bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="sengoku_jidai" editable="false"/>
+    <!-- notes appear in the notes menu in the main screen, format as html -->
+    <property name="notes">
+      <value><![CDATA[  Sengoku Jidai 1600. <BR>
+					Created by S.F.Radzikowski<BR>
+					Clans wage war for control of Japan...<BR>
+					
+					ver1.0 Changed Unit stats and territory PU's. game needs balancing though.<BR>
+					<BR>
+					
+					Ashigaru & FootSoldiers are supportable by Archers.<BR>
+ 
+Horseback units are able to blitz. at this time they are the only unit with blitz abilities.<BR>
+
+Shinobi can attack castles and reduce PU's just as bombers can in ww2 games.<BR>
+<BR>
+Fortifications are used in lieu of casualties.<BR>
+they are also two hit units. forts are bought in bulk, 5 unit lots.<BR>
+<BR>
+Castles are simply factories.
+<BR>
+AdakeBune are ships that can also transport.<BR>
+seazone to land passable areas are highlighted in gold along the coasts where its possible.<BR>
+					
+					SengokuJidai created for use with oceans.
+					]]></value>
+    </property>
+  </propertyList>
+</game>

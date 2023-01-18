@@ -1,0 +1,1685 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Neuschwabenland" version="0.4"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="S. Eldolas"/>
+    <territory name="Eldolas"/>
+    <territory name="Eldorian"/>
+    <territory name="W. Eldolas"/>
+    <territory name="Eldonovan"/>
+    <territory name="N. Eldolas"/>
+    <territory name="W. Melodion"/>
+    <territory name="Melodion"/>
+    <territory name="E. Melodion"/>
+    <territory name="S. Melodion"/>
+    <territory name="W. Forinth"/>
+    <territory name="E. Forinth"/>
+    <territory name="Westoran"/>
+    <territory name="S. Kabana"/>
+    <territory name="E. Kabana"/>
+    <territory name="W. Fall"/>
+    <territory name="S. Fall"/>
+    <territory name="E. Fall"/>
+    <territory name="Fall"/>
+    <territory name="W. Lorn"/>
+    <territory name="E. Lorn"/>
+    <territory name="Nothelm"/>
+    <territory name="E. Noth"/>
+    <territory name="Noth"/>
+    <territory name="W. Noth"/>
+    <territory name="Northa"/>
+    <territory name="Narn"/>
+    <territory name="Nordor"/>
+    <territory name="Norn"/>
+    <territory name="E. Nortic"/>
+    <territory name="E. Northrund"/>
+    <territory name="S. Northrund"/>
+    <territory name="W. Nortic"/>
+    <territory name="W. Northrund"/>
+    <territory name="Norin"/>
+    <territory name="Icoal"/>
+    <territory name="N. Ico"/>
+    <territory name="Weco"/>
+    <territory name="W. Ico"/>
+    <territory name="Wico"/>
+    <territory name="Nico"/>
+    <territory name="Eco"/>
+    <territory name="Ico"/>
+    <territory name="E. Ico"/>
+    <territory name="Icoast"/>
+    <territory name="S. Ico"/>
+    <territory name="S. Westor"/>
+    <territory name="W. Antar"/>
+    <territory name="N. Antar"/>
+    <territory name="E. Antar"/>
+    <territory name="W. Oir"/>
+    <territory name="Oir"/>
+    <territory name="N. Oir"/>
+    <territory name="Oirica"/>
+    <territory name="Vipora"/>
+    <territory name="E. Oir"/>
+    <territory name="E. Gall"/>
+    <territory name="Fallgall"/>
+    <territory name="Gall"/>
+    <territory name="Gallgorlad"/>
+    <territory name="N. Gall"/>
+    <territory name="S. Gall"/>
+    <territory name="Koko Kabana"/>
+    <territory name="E. Gogg"/>
+    <territory name="S. Gogg"/>
+    <territory name="W. Gogg"/>
+    <territory name="Lodonas"/>
+    <territory name="Eldono"/>
+    <territory name="Loboras"/>
+    <territory name="Wendion"/>
+    <territory name="Meloranda"/>
+    <territory name="Narctica"/>
+    <territory name="Arct"/>
+    <territory name="Arctica"/>
+    <territory name="Artic"/>
+    <territory name="Artnoth"/>
+    <territory name="N. Nothelm"/>
+    <territory name="N. Milhelm"/>
+    <territory name="W. Milhelm"/>
+    <territory name="S. Milhelm"/>
+    <territory name="Ichor"/>
+    <territory name="Oaki"/>
+    <territory name="Echo"/>
+    <territory name="Ecco"/>
+    <territory name="Icodoa"/>
+    <territory name="Namco"/>
+    <territory name="Grekos"/>
+    <territory name="S. Oir"/>
+    <territory name="Antarc"/>
+    <territory name="Iceford"/>
+    <territory name="Antartica"/>
+    <territory name="Antaith"/>
+    <territory name="Highhold"/>
+    <territory name="Ironspikes"/>
+    <territory name="N. Westor"/>
+    <territory name="Westest"/>
+    <territory name="Westmount"/>
+    <territory name="Elwest"/>
+    <territory name="Westor"/>
+    <territory name="Dewest"/>
+    <territory name="Penwest"/>
+    <!-- Sea Zones -->
+    <territory name="North West Sea" water="true"/>
+    <territory name="Strait of Lodonas" water="true"/>
+    <territory name="Eldolas Coast" water="true"/>
+    <territory name="Bay of Eldolas" water="true"/>
+    <territory name="Three Corners Sea" water="true"/>
+    <territory name="Eldorian Coast" water="true"/>
+    <territory name="Meloranda Coast" water="true"/>
+    <territory name="Melodion Coast" water="true"/>
+    <territory name="Sea of Forinth" water="true"/>
+    <territory name="Forinth Coast" water="true"/>
+    <territory name="Gallic Sea" water="true"/>
+    <territory name="Bay of Goggall" water="true"/>
+    <territory name="Bay of Gall" water="true"/>
+    <territory name="S. Forinth Coast" water="true"/>
+    <territory name="Sea of Goggall" water="true"/>
+    <territory name="Gall Sea" water="true"/>
+    <territory name="Narctica Coast" water="true"/>
+    <territory name="Norin Coast" water="true"/>
+    <territory name="Strait of Gall" water="true"/>
+    <territory name="Bay of Fall" water="true"/>
+    <territory name="Nortic Fjords" water="true"/>
+    <territory name="Sea of Grekos" water="true"/>
+    <territory name="Fall Coast" water="true"/>
+    <territory name="Weco Coast" water="true"/>
+    <territory name="Grekos Coast" water="true"/>
+    <territory name="Northrund Coast" water="true"/>
+    <territory name="Northrund Sea" water="true"/>
+    <territory name="Narn Fjords" water="true"/>
+    <territory name="Northa Coast" water="true"/>
+    <territory name="Noth Coast" water="true"/>
+    <territory name="Sea of Echo" water="true"/>
+    <territory name="Icodoa Coast" water="true"/>
+    <territory name="Strait of Milhelm" water="true"/>
+    <territory name="Strait of Noth" water="true"/>
+    <territory name="North East Sea" water="true"/>
+    <territory name="East Sea" water="true"/>
+    <territory name="Namco Coast" water="true"/>
+    <territory name="South East Sea" water="true"/>
+    <territory name="Strait of Vipora" water="true"/>
+    <territory name="Vipor Sea" water="true"/>
+    <territory name="Sea of Vipora" water="true"/>
+    <territory name="Ico Coast" water="true"/>
+    <territory name="Sea of Ico" water="true"/>
+    <territory name="Noir Sea" water="true"/>
+    <territory name="Strait of Antarc" water="true"/>
+    <territory name="Oir Coast" water="true"/>
+    <territory name="Sea of Oir" water="true"/>
+    <territory name="Lorn Coast" water="true"/>
+    <territory name="Antar Coast" water="true"/>
+    <territory name="Antar Sea" water="true"/>
+    <territory name="Fall Sea" water="true"/>
+    <territory name="Strait of Fall" water="true"/>
+    <territory name="Kabana Sea" water="true"/>
+    <territory name="Bay of Antar" water="true"/>
+    <territory name="Strait of Eldolas" water="true"/>
+    <territory name="Gogg Coast" water="true"/>
+    <territory name="Westoran Coast" water="true"/>
+    <territory name="Dewest Coast" water="true"/>
+    <territory name="Westor Sea" water="true"/>
+    <territory name="Antaith Coast" water="true"/>
+    <territory name="West Sea" water="true"/>
+    <territory name="Westest Sea" water="true"/>
+    <territory name="Strait of Gogg" water="true"/>
+    <territory name="South West Sea" water="true"/>
+    <territory name="Strait of Lorn" water="true"/>
+    <!-- Territory Connections -->
+    <connection t1="S. Eldolas" t2="Three Corners Sea"/>
+    <connection t1="S. Eldolas" t2="Strait of Eldolas"/>
+    <connection t1="S. Eldolas" t2="Eldorian Coast"/>
+    <connection t1="S. Eldolas" t2="Eldorian"/>
+    <connection t1="S. Eldolas" t2="Eldolas"/>
+    <connection t1="Eldolas" t2="Eldorian"/>
+    <connection t1="Eldolas" t2="W. Eldolas"/>
+    <connection t1="Eldolas" t2="Eldonovan"/>
+    <connection t1="Eldolas" t2="Bay of Eldolas"/>
+    <connection t1="Eldorian" t2="North West Sea"/>
+    <connection t1="Eldorian" t2="W. Eldolas"/>
+    <connection t1="Eldorian" t2="Eldorian Coast"/>
+    <connection t1="W. Eldolas" t2="Eldonovan"/>
+    <connection t1="W. Eldolas" t2="North West Sea"/>
+    <connection t1="Eldonovan" t2="Loboras"/>
+    <connection t1="Eldonovan" t2="Eldono"/>
+    <connection t1="Eldonovan" t2="N. Eldolas"/>
+    <connection t1="Eldonovan" t2="Bay of Eldolas"/>
+    <connection t1="Eldonovan" t2="North West Sea"/>
+    <connection t1="N. Eldolas" t2="Eldono"/>
+    <connection t1="N. Eldolas" t2="Strait of Lodonas"/>
+    <connection t1="N. Eldolas" t2="Eldolas Coast"/>
+    <connection t1="N. Eldolas" t2="Bay of Eldolas"/>
+    <connection t1="W. Melodion" t2="Wendion"/>
+    <connection t1="W. Melodion" t2="Melodion"/>
+    <connection t1="W. Melodion" t2="S. Melodion"/>
+    <connection t1="W. Melodion" t2="Strait of Lodonas"/>
+    <connection t1="Melodion" t2="Wendion"/>
+    <connection t1="Melodion" t2="Meloranda"/>
+    <connection t1="Melodion" t2="E. Melodion"/>
+    <connection t1="Melodion" t2="S. Melodion"/>
+    <connection t1="Melodion" t2="Melodion Coast"/>
+    <connection t1="E. Melodion" t2="Meloranda"/>
+    <connection t1="E. Melodion" t2="Meloranda Coast"/>
+    <connection t1="E. Melodion" t2="Narctica Coast"/>
+    <connection t1="E. Melodion" t2="Sea of Forinth"/>
+    <connection t1="E. Melodion" t2="Melodion Coast"/>
+    <connection t1="S. Melodion" t2="Eldolas Coast"/>
+    <connection t1="W. Forinth" t2="E. Forinth"/>
+    <connection t1="W. Forinth" t2="Forinth Coast"/>
+    <connection t1="W. Forinth" t2="Melodion Coast"/>
+    <connection t1="E. Forinth" t2="S. Forinth Coast"/>
+    <connection t1="E. Forinth" t2="Gall Sea"/>
+    <connection t1="E. Forinth" t2="Sea of Forinth"/>
+    <connection t1="E. Forinth" t2="Melodion Coast"/>
+    <connection t1="Westoran" t2="Dewest"/>
+    <connection t1="Westoran" t2="Westmount"/>
+    <connection t1="Westoran" t2="N. Westor"/>
+    <connection t1="Westoran" t2="Strait of Gogg"/>
+    <connection t1="Westoran" t2="Gogg Coast"/>
+    <connection t1="Westoran" t2="Westoran Coast"/>
+    <connection t1="S. Kabana" t2="Kabana Sea"/>
+    <connection t1="S. Kabana" t2="Westoran Coast"/>
+    <connection t1="S. Kabana" t2="Koko Kabana"/>
+    <connection t1="S. Kabana" t2="E. Kabana"/>
+    <connection t1="E. Kabana" t2="Koko Kabana"/>
+    <connection t1="E. Kabana" t2="Strait of Fall"/>
+    <connection t1="E. Kabana" t2="Antar Sea"/>
+    <connection t1="E. Kabana" t2="Kabana Sea"/>
+    <connection t1="Koko Kabana" t2="Westoran Coast"/>
+    <connection t1="Koko Kabana" t2="Gogg Coast"/>
+    <connection t1="Koko Kabana" t2="Sea of Goggall"/>
+    <connection t1="Koko Kabana" t2="Strait of Fall"/>
+    <connection t1="W. Fall" t2="S. Gall"/>
+    <connection t1="W. Fall" t2="Ironspikes"/>
+    <connection t1="W. Fall" t2="S. Fall"/>
+    <connection t1="W. Fall" t2="Fall Sea"/>
+    <connection t1="W. Fall" t2="Strait of Fall"/>
+    <connection t1="S. Fall" t2="Ironspikes"/>
+    <connection t1="S. Fall" t2="Fall"/>
+    <connection t1="S. Fall" t2="Strait of Lorn"/>
+    <connection t1="S. Fall" t2="Fall Sea"/>
+    <connection t1="E. Fall" t2="Fall"/>
+    <connection t1="E. Fall" t2="Highhold"/>
+    <connection t1="E. Fall" t2="Fallgall"/>
+    <connection t1="E. Fall" t2="E. Gall"/>
+    <connection t1="E. Fall" t2="Bay of Fall"/>
+    <connection t1="E. Fall" t2="Sea of Grekos"/>
+    <connection t1="E. Fall" t2="Fall Coast"/>
+    <connection t1="E. Fall" t2="Strait of Lorn"/>
+    <connection t1="Fall" t2="Ironspikes"/>
+    <connection t1="Fall" t2="Fallgall"/>
+    <connection t1="Fall" t2="Highhold"/>
+    <connection t1="Fall" t2="Strait of Lorn"/>
+    <connection t1="W. Lorn" t2="E. Lorn"/>
+    <connection t1="W. Lorn" t2="Lorn Coast"/>
+    <connection t1="W. Lorn" t2="Fall Sea"/>
+    <connection t1="W. Lorn" t2="Strait of Lorn"/>
+    <connection t1="E. Lorn" t2="Strait of Lorn"/>
+    <connection t1="E. Lorn" t2="Weco Coast"/>
+    <connection t1="E. Lorn" t2="Lorn Coast"/>
+    <connection t1="Nothelm" t2="N. Nothelm"/>
+    <connection t1="Nothelm" t2="E. Noth"/>
+    <connection t1="Nothelm" t2="North East Sea"/>
+    <connection t1="Nothelm" t2="Strait of Noth"/>
+    <connection t1="E. Noth" t2="N. Nothelm"/>
+    <connection t1="E. Noth" t2="Artnoth"/>
+    <connection t1="E. Noth" t2="Noth"/>
+    <connection t1="E. Noth" t2="Strait of Noth"/>
+    <connection t1="E. Noth" t2="Noth Coast"/>
+    <connection t1="Noth" t2="Artnoth"/>
+    <connection t1="Noth" t2="W. Noth"/>
+    <connection t1="Noth" t2="Noth Coast"/>
+    <connection t1="Noth" t2="Northa Coast"/>
+    <connection t1="W. Noth" t2="Artnoth"/>
+    <connection t1="W. Noth" t2="Artic"/>
+    <connection t1="W. Noth" t2="Northa"/>
+    <connection t1="W. Noth" t2="Northa Coast"/>
+    <connection t1="Northa" t2="Northa Coast"/>
+    <connection t1="Northa" t2="Narn Fjords"/>
+    <connection t1="Northa" t2="Narn"/>
+    <connection t1="Northa" t2="Artic"/>
+    <connection t1="Narn" t2="Artic"/>
+    <connection t1="Narn" t2="Arctica"/>
+    <connection t1="Narn" t2="Nordor"/>
+    <connection t1="Narn" t2="Narn Fjords"/>
+    <connection t1="Nordor" t2="Arctica"/>
+    <connection t1="Nordor" t2="Norn"/>
+    <connection t1="Nordor" t2="Narn Fjords"/>
+    <connection t1="Norn" t2="Arctica"/>
+    <connection t1="Norn" t2="E. Nortic"/>
+    <connection t1="Norn" t2="E. Northrund"/>
+    <connection t1="Norn" t2="Northrund Coast"/>
+    <connection t1="Norn" t2="Narn Fjords"/>
+    <connection t1="E. Nortic" t2="Arctica"/>
+    <connection t1="E. Nortic" t2="Arct"/>
+    <connection t1="E. Nortic" t2="W. Nortic"/>
+    <connection t1="E. Nortic" t2="S. Northrund"/>
+    <connection t1="E. Nortic" t2="Nortic Fjords"/>
+    <connection t1="E. Nortic" t2="E. Northrund"/>
+    <connection t1="E. Northrund" t2="Northrund Coast"/>
+    <connection t1="E. Northrund" t2="Nortic Fjords"/>
+    <connection t1="S. Northrund" t2="W. Nortic"/>
+    <connection t1="S. Northrund" t2="Strait of Gall"/>
+    <connection t1="S. Northrund" t2="Nortic Fjords"/>
+    <connection t1="W. Nortic" t2="Arct"/>
+    <connection t1="W. Nortic" t2="Norin"/>
+    <connection t1="W. Nortic" t2="W. Northrund"/>
+    <connection t1="W. Nortic" t2="Strait of Gall"/>
+    <connection t1="W. Northrund" t2="Norin"/>
+    <connection t1="W. Northrund" t2="Norin Coast"/>
+    <connection t1="W. Northrund" t2="Gall Sea"/>
+    <connection t1="W. Northrund" t2="Strait of Gall"/>
+    <connection t1="Norin" t2="Arct"/>
+    <connection t1="Norin" t2="Narctica"/>
+    <connection t1="Norin" t2="Norin Coast"/>
+    <connection t1="Icoal" t2="Icodoa"/>
+    <connection t1="Icoal" t2="N. Ico"/>
+    <connection t1="Icoal" t2="Wico"/>
+    <connection t1="Icoal" t2="W. Ico"/>
+    <connection t1="Icoal" t2="Weco"/>
+    <connection t1="Icoal" t2="Sea of Ico"/>
+    <connection t1="N. Ico" t2="Icodoa"/>
+    <connection t1="N. Ico" t2="Namco"/>
+    <connection t1="N. Ico" t2="Nico"/>
+    <connection t1="N. Ico" t2="Wico"/>
+    <connection t1="N. Ico" t2="Namco Coast"/>
+    <connection t1="Weco" t2="Sea of Ico"/>
+    <connection t1="Weco" t2="Weco Coast"/>
+    <connection t1="Weco" t2="W. Ico"/>
+    <connection t1="W. Ico" t2="Wico"/>
+    <connection t1="W. Ico" t2="Ico"/>
+    <connection t1="W. Ico" t2="Icoast"/>
+    <connection t1="W. Ico" t2="Ico Coast"/>
+    <connection t1="Wico" t2="Nico"/>
+    <connection t1="Wico" t2="Ico"/>
+    <connection t1="Nico" t2="Eco"/>
+    <connection t1="Nico" t2="E. Ico"/>
+    <connection t1="Nico" t2="Ico"/>
+    <connection t1="Nico" t2="Namco Coast"/>
+    <connection t1="Eco" t2="Namco Coast"/>
+    <connection t1="Eco" t2="E. Ico"/>
+    <connection t1="Ico" t2="E. Ico"/>
+    <connection t1="Ico" t2="Icoast"/>
+    <connection t1="E. Ico" t2="Icoast"/>
+    <connection t1="E. Ico" t2="S. Ico"/>
+    <connection t1="E. Ico" t2="South East Sea"/>
+    <connection t1="Icoast" t2="S. Ico"/>
+    <connection t1="Icoast" t2="Strait of Vipora"/>
+    <connection t1="Icoast" t2="Ico Coast"/>
+    <connection t1="S. Ico" t2="South East Sea"/>
+    <connection t1="S. Ico" t2="Strait of Vipora"/>
+    <connection t1="S. Westor" t2="Penwest"/>
+    <connection t1="S. Westor" t2="Westor"/>
+    <connection t1="S. Westor" t2="Dewest"/>
+    <connection t1="S. Westor" t2="Westor Sea"/>
+    <connection t1="S. Westor" t2="Antaith Coast"/>
+    <connection t1="S. Westor" t2="South West Sea"/>
+    <connection t1="W. Antar" t2="N. Antar"/>
+    <connection t1="W. Antar" t2="Antartica"/>
+    <connection t1="W. Antar" t2="Bay of Antar"/>
+    <connection t1="W. Antar" t2="Kabana Sea"/>
+    <connection t1="N. Antar" t2="Antar Sea"/>
+    <connection t1="N. Antar" t2="Antar Coast"/>
+    <connection t1="N. Antar" t2="E. Antar"/>
+    <connection t1="N. Antar" t2="Iceford"/>
+    <connection t1="N. Antar" t2="Antartica"/>
+    <connection t1="E. Antar" t2="Antar Coast"/>
+    <connection t1="E. Antar" t2="Strait of Antarc"/>
+    <connection t1="E. Antar" t2="Antarc"/>
+    <connection t1="E. Antar" t2="Iceford"/>
+    <connection t1="W. Oir" t2="Oir"/>
+    <connection t1="W. Oir" t2="S. Oir"/>
+    <connection t1="W. Oir" t2="Strait of Antarc"/>
+    <connection t1="W. Oir" t2="Antar Coast"/>
+    <connection t1="W. Oir" t2="Sea of Oir"/>
+    <connection t1="Oir" t2="N. Oir"/>
+    <connection t1="Oir" t2="Oirica"/>
+    <connection t1="Oir" t2="S. Oir"/>
+    <connection t1="Oir" t2="Oir Coast"/>
+    <connection t1="N. Oir" t2="Oir Coast"/>
+    <connection t1="N. Oir" t2="Noir Sea"/>
+    <connection t1="N. Oir" t2="E. Oir"/>
+    <connection t1="N. Oir" t2="Oirica"/>
+    <connection t1="N. Oir" t2="S. Oir"/>
+    <connection t1="Oirica" t2="E. Oir"/>
+    <connection t1="Oirica" t2="Sea of Vipora"/>
+    <connection t1="Oirica" t2="Strait of Antarc"/>
+    <connection t1="Oirica" t2="S. Oir"/>
+    <connection t1="Vipora" t2="Strait of Vipora"/>
+    <connection t1="Vipora" t2="Vipor Sea"/>
+    <connection t1="Vipora" t2="Sea of Vipora"/>
+    <connection t1="E. Oir" t2="Noir Sea"/>
+    <connection t1="E. Oir" t2="Ico Coast"/>
+    <connection t1="E. Oir" t2="Sea of Vipora"/>
+    <connection t1="E. Gall" t2="Bay of Gall"/>
+    <connection t1="E. Gall" t2="Gall Sea"/>
+    <connection t1="E. Gall" t2="Strait of Gall"/>
+    <connection t1="E. Gall" t2="Bay of Fall"/>
+    <connection t1="E. Gall" t2="Fallgall"/>
+    <connection t1="Fallgall" t2="Highhold"/>
+    <connection t1="Fallgall" t2="Ironspikes"/>
+    <connection t1="Fallgall" t2="Gall"/>
+    <connection t1="Fallgall" t2="Bay of Gall"/>
+    <connection t1="Fallgall" t2="Gallgorlad"/>
+    <connection t1="Gall" t2="Gallgorlad"/>
+    <connection t1="Gall" t2="S. Gall"/>
+    <connection t1="Gall" t2="N. Gall"/>
+    <connection t1="Gall" t2="Bay of Goggall"/>
+    <connection t1="Gall" t2="Bay of Gall"/>
+    <connection t1="Gallgorlad" t2="Ironspikes"/>
+    <connection t1="Gallgorlad" t2="S. Gall"/>
+    <connection t1="N. Gall" t2="Bay of Goggall"/>
+    <connection t1="N. Gall" t2="Three Corners Sea"/>
+    <connection t1="N. Gall" t2="Gallic Sea"/>
+    <connection t1="N. Gall" t2="S. Forinth Coast"/>
+    <connection t1="N. Gall" t2="Bay of Gall"/>
+    <connection t1="S. Gall" t2="Bay of Goggall"/>
+    <connection t1="S. Gall" t2="Sea of Goggall"/>
+    <connection t1="S. Gall" t2="Strait of Fall"/>
+    <connection t1="S. Gall" t2="Ironspikes"/>
+    <connection t1="E. Gogg" t2="Strait of Eldolas"/>
+    <connection t1="E. Gogg" t2="Three Corners Sea"/>
+    <connection t1="E. Gogg" t2="Bay of Goggall"/>
+    <connection t1="E. Gogg" t2="Sea of Goggall"/>
+    <connection t1="E. Gogg" t2="W. Gogg"/>
+    <connection t1="E. Gogg" t2="S. Gogg"/>
+    <connection t1="S. Gogg" t2="Sea of Goggall"/>
+    <connection t1="S. Gogg" t2="Gogg Coast"/>
+    <connection t1="W. Gogg" t2="Gogg Coast"/>
+    <connection t1="S. Gogg" t2="W. Gogg"/>
+    <connection t1="W. Gogg" t2="Strait of Eldolas"/>
+    <connection t1="W. Gogg" t2="Strait of Gogg"/>
+    <connection t1="Lodonas" t2="Strait of Lodonas"/>
+    <connection t1="Lodonas" t2="Eldono"/>
+    <connection t1="Eldono" t2="Loboras"/>
+    <connection t1="Eldono" t2="Strait of Lodonas"/>
+    <connection t1="Loboras" t2="Strait of Lodonas"/>
+    <connection t1="Loboras" t2="North West Sea"/>
+    <connection t1="Wendion" t2="Meloranda"/>
+    <connection t1="Wendion" t2="Meloranda Coast"/>
+    <connection t1="Wendion" t2="Strait of Lodonas"/>
+    <connection t1="Meloranda" t2="Meloranda Coast"/>
+    <connection t1="Narctica" t2="Arct"/>
+    <connection t1="Narctica" t2="Arctica"/>
+    <connection t1="Narctica" t2="Narctica Coast"/>
+    <connection t1="Arct" t2="Arctica"/>
+    <connection t1="Arctica" t2="Artic"/>
+    <connection t1="Artic" t2="Artnoth"/>
+    <connection t1="Artnoth" t2="N. Nothelm"/>
+    <connection t1="N. Nothelm" t2="North East Sea"/>
+    <connection t1="N. Milhelm" t2="North East Sea"/>
+    <connection t1="N. Milhelm" t2="S. Milhelm"/>
+    <connection t1="N. Milhelm" t2="W. Milhelm"/>
+    <connection t1="W. Milhelm" t2="S. Milhelm"/>
+    <connection t1="W. Milhelm" t2="Strait of Noth"/>
+    <connection t1="W. Milhelm" t2="Noth Coast"/>
+    <connection t1="W. Milhelm" t2="Strait of Milhelm"/>
+    <connection t1="S. Milhelm" t2="North East Sea"/>
+    <connection t1="S. Milhelm" t2="Strait of Milhelm"/>
+    <connection t1="Ichor" t2="Oaki"/>
+    <connection t1="Ichor" t2="Echo"/>
+    <connection t1="Ichor" t2="Strait of Milhelm"/>
+    <connection t1="Oaki" t2="Echo"/>
+    <connection t1="Oaki" t2="Ecco"/>
+    <connection t1="Oaki" t2="Namco Coast"/>
+    <connection t1="Oaki" t2="Strait of Milhelm"/>
+    <connection t1="Echo" t2="Ecco"/>
+    <connection t1="Echo" t2="Icodoa"/>
+    <connection t1="Echo" t2="Icodoa Coast"/>
+    <connection t1="Echo" t2="Sea of Echo"/>
+    <connection t1="Ecco" t2="Icodoa"/>
+    <connection t1="Ecco" t2="Namco"/>
+    <connection t1="Ecco" t2="Namco Coast"/>
+    <connection t1="Icodoa" t2="Namco"/>
+    <connection t1="Icodoa" t2="Icodoa Coast"/>
+    <connection t1="Icodoa" t2="Sea of Ico"/>
+    <connection t1="Namco" t2="Namco Coast"/>
+    <connection t1="Grekos" t2="Grekos Coast"/>
+    <connection t1="Grekos" t2="Sea of Grekos"/>
+    <connection t1="Grekos" t2="Fall Coast"/>
+    <connection t1="S. Oir" t2="Strait of Antarc"/>
+    <connection t1="Antarc" t2="Strait of Antarc"/>
+    <connection t1="Antarc" t2="Iceford"/>
+    <connection t1="Iceford" t2="Antartica"/>
+    <connection t1="Antartica" t2="Bay of Antar"/>
+    <connection t1="Antartica" t2="Antaith"/>
+    <connection t1="Antaith" t2="Bay of Antar"/>
+    <connection t1="Antaith" t2="Antaith Coast"/>
+    <connection t1="N. Westor" t2="Westmount"/>
+    <connection t1="N. Westor" t2="Westest"/>
+    <connection t1="N. Westor" t2="Strait of Gogg"/>
+    <connection t1="N. Westor" t2="Westest Sea"/>
+    <connection t1="Westest" t2="Westmount"/>
+    <connection t1="Westest" t2="Elwest"/>
+    <connection t1="Westest" t2="South West Sea"/>
+    <connection t1="Westest" t2="West Sea"/>
+    <connection t1="Westest" t2="Westest Sea"/>
+    <connection t1="Westmount" t2="Elwest"/>
+    <connection t1="Westmount" t2="Westor"/>
+    <connection t1="Westmount" t2="Dewest"/>
+    <connection t1="Elwest" t2="Westor"/>
+    <connection t1="Elwest" t2="South West Sea"/>
+    <connection t1="Westor" t2="Dewest"/>
+    <connection t1="Westor" t2="Penwest"/>
+    <connection t1="Westor" t2="South West Sea"/>
+    <connection t1="Dewest" t2="Dewest Coast"/>
+    <connection t1="Dewest" t2="Westor Sea"/>
+    <connection t1="Penwest" t2="South West Sea"/>
+    <!-- Sea Zones -->
+    <connection t1="North West Sea" t2="Strait of Lodonas"/>
+    <connection t1="North West Sea" t2="Eldorian Coast"/>
+    <connection t1="North West Sea" t2="Westest Sea"/>
+    <connection t1="North West Sea" t2="West Sea"/>
+    <connection t1="North West Sea" t2="North East Sea"/>
+    <connection t1="Strait of Lodonas" t2="Meloranda Coast"/>
+    <connection t1="Strait of Lodonas" t2="Eldolas Coast"/>
+    <connection t1="Eldolas Coast" t2="Melodion Coast"/>
+    <connection t1="Eldolas Coast" t2="Forinth Coast"/>
+    <connection t1="Eldolas Coast" t2="Bay of Eldolas"/>
+    <connection t1="Bay of Eldolas" t2="Forinth Coast"/>
+    <connection t1="Bay of Eldolas" t2="Gallic Sea"/>
+    <connection t1="Bay of Eldolas" t2="Three Corners Sea"/>
+    <connection t1="Three Corners Sea" t2="Gallic Sea"/>
+    <connection t1="Three Corners Sea" t2="Bay of Goggall"/>
+    <connection t1="Three Corners Sea" t2="Strait of Eldolas"/>
+    <connection t1="Eldorian Coast" t2="Strait of Eldolas"/>
+    <connection t1="Eldorian Coast" t2="Strait of Gogg"/>
+    <connection t1="Eldorian Coast" t2="Westest Sea"/>
+    <connection t1="Meloranda Coast" t2="Narctica Coast"/>
+    <connection t1="Melodion Coast" t2="Sea of Forinth"/>
+    <connection t1="Sea of Forinth" t2="Narctica Coast"/>
+    <connection t1="Sea of Forinth" t2="Norin Coast"/>
+    <connection t1="Sea of Forinth" t2="Gall Sea"/>
+    <connection t1="Forinth Coast" t2="S. Forinth Coast"/>
+    <connection t1="Forinth Coast" t2="Gallic Sea"/>
+    <connection t1="Gallic Sea" t2="S. Forinth Coast"/>
+    <connection t1="Bay of Goggall" t2="Sea of Goggall"/>
+    <connection t1="Bay of Gall" t2="S. Forinth Coast"/>
+    <connection t1="Bay of Gall" t2="Gall Sea"/>
+    <connection t1="S. Forinth Coast" t2="Gall Sea"/>
+    <connection t1="Sea of Goggall" t2="Gogg Coast"/>
+    <connection t1="Sea of Goggall" t2="Strait of Fall"/>
+    <connection t1="Gall Sea" t2="Norin Coast"/>
+    <connection t1="Gall Sea" t2="Strait of Gall"/>
+    <connection t1="Narctica Coast" t2="Norin Coast"/>
+    <connection t1="Strait of Gall" t2="Nortic Fjords"/>
+    <connection t1="Strait of Gall" t2="Bay of Fall"/>
+    <connection t1="Bay of Fall" t2="Nortic Fjords"/>
+    <connection t1="Bay of Fall" t2="Sea of Grekos"/>
+    <connection t1="Nortic Fjords" t2="Northrund Coast"/>
+    <connection t1="Nortic Fjords" t2="Northrund Sea"/>
+    <connection t1="Nortic Fjords" t2="Sea of Grekos"/>
+    <connection t1="Sea of Grekos" t2="Northrund Coast"/>
+    <connection t1="Sea of Grekos" t2="Grekos Coast"/>
+    <connection t1="Sea of Grekos" t2="Fall Coast"/>
+    <connection t1="Fall Coast" t2="Grekos Coast"/>
+    <connection t1="Fall Coast" t2="Sea of Ico"/>
+    <connection t1="Fall Coast" t2="Weco Coast"/>
+    <connection t1="Fall Coast" t2="Strait of Lorn"/>
+    <connection t1="Weco Coast" t2="Sea of Ico"/>
+    <connection t1="Weco Coast" t2="Ico Coast"/>
+    <connection t1="Weco Coast" t2="Noir Sea"/>
+    <connection t1="Weco Coast" t2="Lorn Coast"/>
+    <connection t1="Weco Coast" t2="Strait of Lorn"/>
+    <connection t1="Grekos Coast" t2="Northrund Sea"/>
+    <connection t1="Grekos Coast" t2="Sea of Echo"/>
+    <connection t1="Grekos Coast" t2="Icodoa Coast"/>
+    <connection t1="Grekos Coast" t2="Sea of Ico"/>
+    <connection t1="Northrund Coast" t2="Narn Fjords"/>
+    <connection t1="Northrund Coast" t2="Northa Coast"/>
+    <connection t1="Northrund Coast" t2="Sea of Echo"/>
+    <connection t1="Northrund Coast" t2="Northrund Sea"/>
+    <connection t1="Northrund Sea" t2="Sea of Echo"/>
+    <connection t1="Narn Fjords" t2="Northa Coast"/>
+    <connection t1="Northa Coast" t2="Noth Coast"/>
+    <connection t1="Northa Coast" t2="Sea of Echo"/>
+    <connection t1="Noth Coast" t2="Strait of Noth"/>
+    <connection t1="Noth Coast" t2="Sea of Echo"/>
+    <connection t1="Noth Coast" t2="Strait of Milhelm"/>
+    <connection t1="Sea of Echo" t2="Strait of Milhelm"/>
+    <connection t1="Sea of Echo" t2="Icodoa Coast"/>
+    <connection t1="Icodoa Coast" t2="Sea of Ico"/>
+    <connection t1="Strait of Milhelm" t2="North East Sea"/>
+    <connection t1="Strait of Milhelm" t2="Namco Coast"/>
+    <connection t1="Strait of Noth" t2="North East Sea"/>
+    <connection t1="North East Sea" t2="East Sea"/>
+    <connection t1="East Sea" t2="Namco Coast"/>
+    <connection t1="East Sea" t2="South East Sea"/>
+    <connection t1="Namco Coast" t2="South East Sea"/>
+    <connection t1="South East Sea" t2="Strait of Vipora"/>
+    <connection t1="South East Sea" t2="Vipor Sea"/>
+    <connection t1="Strait of Vipora" t2="Ico Coast"/>
+    <connection t1="Strait of Vipora" t2="Sea of Vipora"/>
+    <connection t1="Strait of Vipora" t2="Vipor Sea"/>
+    <connection t1="Vipor Sea" t2="Sea of Vipora"/>
+    <connection t1="Sea of Vipora" t2="Ico Coast"/>
+    <connection t1="Sea of Vipora" t2="Strait of Antarc"/>
+    <connection t1="Ico Coast" t2="Noir Sea"/>
+    <connection t1="Lorn Coast" t2="Noir Sea"/>
+    <connection t1="Noir Sea" t2="Oir Coast"/>
+    <connection t1="Strait of Antarc" t2="Antar Coast"/>
+    <connection t1="Oir Coast" t2="Lorn Coast"/>
+    <connection t1="Oir Coast" t2="Sea of Oir"/>
+    <connection t1="Sea of Oir" t2="Lorn Coast"/>
+    <connection t1="Sea of Oir" t2="Antar Coast"/>
+    <connection t1="Sea of Oir" t2="Antar Sea"/>
+    <connection t1="Lorn Coast" t2="Fall Sea"/>
+    <connection t1="Lorn Coast" t2="Antar Sea"/>
+    <connection t1="Antar Coast" t2="Antar Sea"/>
+    <connection t1="Antar Sea" t2="Fall Sea"/>
+    <connection t1="Antar Sea" t2="Strait of Fall"/>
+    <connection t1="Antar Sea" t2="Kabana Sea"/>
+    <connection t1="Fall Sea" t2="Strait of Lorn"/>
+    <connection t1="Fall Sea" t2="Strait of Fall"/>
+    <connection t1="Kabana Sea" t2="Bay of Antar"/>
+    <connection t1="Kabana Sea" t2="Westoran Coast"/>
+    <connection t1="Kabana Sea" t2="Dewest Coast"/>
+    <connection t1="Kabana Sea" t2="Westor Sea"/>
+    <connection t1="Bay of Antar" t2="Westor Sea"/>
+    <connection t1="Bay of Antar" t2="Antaith Coast"/>
+    <connection t1="Strait of Eldolas" t2="Strait of Gogg"/>
+    <connection t1="Gogg Coast" t2="Westoran Coast"/>
+    <connection t1="Westoran Coast" t2="Dewest Coast"/>
+    <connection t1="Dewest Coast" t2="Westor Sea"/>
+    <connection t1="Westor Sea" t2="Antaith Coast"/>
+    <connection t1="Antaith Coast" t2="South West Sea"/>
+    <connection t1="West Sea" t2="Westest Sea"/>
+    <connection t1="West Sea" t2="South West Sea"/>
+    <connection t1="West Sea" t2="East Sea"/>
+    <connection t1="Westest Sea" t2="Strait of Gogg"/>
+    <connection t1="Gogg Coast" t2="Strait of Gogg"/>
+    <connection t1="South West Sea" t2="South East Sea"/>
+    <!-- .061  -->
+    <connection t1="S. Kabana" t2="Strait of Fall"/>
+    <connection t1="S. Kabana" t2="Antar Sea"/>
+    <connection t1="S. Kabana" t2="Gogg Coast"/>
+    <connection t1="S. Kabana" t2="Sea of Goggall"/>
+    <connection t1="E. Forinth" t2="Forinth Coast"/>
+    <connection t1="E. Forinth" t2="Melodion Coast"/>
+    <connection t1="W. Milhelm" t2="North East Sea"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- Axis -->
+    <player name="Japanese" optional="false"/>
+    <player name="Germans" optional="false"/>
+    <!-- Allies -->
+    <player name="British" optional="false"/>
+    <player name="Russians" optional="false"/>
+    <!-- alliances -->
+    <alliance player="Germans" alliance="Axis"/>
+    <alliance player="Japanese" alliance="Axis"/>
+    <alliance player="British" alliance="Allies"/>
+    <alliance player="Russians" alliance="Allies"/>
+    <!-- Original Alliances              
+
+
+		<alliance player="Germans" alliance="Axis"/>
+		<alliance player="Japanese" alliance="Axis"/>
+
+		<alliance player="British" alliance="Allies"/>
+		<alliance player="Russians" alliance="Allies"/>
+
+		-->
+    <!-- North South               
+
+
+		<alliance player="Germans" alliance="Axis"/>
+		<alliance player="British" alliance="Axis"/>
+
+		<alliance player="Japanese" alliance="Allies"/>
+		<alliance player="Russians" alliance="Allies"/>
+
+		-->
+    <!-- East West              
+
+
+		<alliance player="Germans" alliance="Axis"/>
+		<alliance player="Russians" alliance="Axis"/>
+
+		<alliance player="British" alliance="Allies"/>
+		<alliance player="Japanese" alliance="Allies"/>
+
+		-->
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="elite"/>
+    <unit name="armour"/>
+    <unit name="bigarmour"/>
+    <unit name="halftrack"/>
+    <unit name="katyusha"/>
+    <unit name="scout"/>
+    <unit name="fighter"/>
+    <unit name="earlyfighter"/>
+    <unit name="me262"/>
+    <unit name="bomber"/>
+    <unit name="lancaster"/>
+    <unit name="transport"/>
+    <unit name="battleship"/>
+    <unit name="carrier"/>
+    <unit name="shinano"/>
+    <unit name="submarine"/>
+    <unit name="factory"/>
+    <unit name="aaGun"/>
+    <unit name="artillery"/>
+    <unit name="destroyer"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.twoIfBySea.delegate.InitDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.twoIfBySea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <!-- Bidding Phase -->
+      <step name="russianBid" delegate="bid" player="Russians" maxRunCount="1"/>
+      <step name="russianBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+      <step name="germanBid" delegate="bid" player="Germans" maxRunCount="1"/>
+      <step name="germanBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
+      <step name="britishBid" delegate="bid" player="British" maxRunCount="1"/>
+      <step name="britishBidPlace" delegate="placeBid" player="British" maxRunCount="1"/>
+      <step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
+      <step name="japanesedPlace" delegate="placeBid" player="Japanese" maxRunCount="1"/>
+      <!-- Russians Game Sequence -->
+      <step name="russianTech" delegate="tech" player="Russians"/>
+      <step name="russianTechActivation" delegate="tech_activation" player="Russians"/>
+      <step name="russianPurchase" delegate="purchase" player="Russians"/>
+      <step name="russianCombatMove" delegate="move" player="Russians"/>
+      <step name="russianBattle" delegate="battle" player="Russians"/>
+      <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
+      <step name="russianPlace" delegate="place" player="Russians"/>
+      <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
+      <step name="endRoundStep" delegate="endRound"/>
+      <!-- Japanese Game Sequence -->
+      <step name="japaneseTech" delegate="tech" player="Japanese"/>
+      <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
+      <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
+      <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
+      <step name="japaneseBattle" delegate="battle" player="Japanese"/>
+      <step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
+      <step name="japanesePlace" delegate="place" player="Japanese"/>
+      <step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
+      <!-- British Game Sequence -->
+      <step name="britishTech" delegate="tech" player="British"/>
+      <step name="britishTechActivation" delegate="tech_activation" player="British"/>
+      <step name="britishPurchase" delegate="purchase" player="British"/>
+      <step name="britishCombatMove" delegate="move" player="British"/>
+      <step name="britishBattle" delegate="battle" player="British"/>
+      <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
+      <step name="britishPlace" delegate="place" player="British"/>
+      <step name="britishEndTurn" delegate="endTurn" player="British"/>
+      <!-- Germans Game Sequence -->
+      <step name="germanTech" delegate="tech" player="Germans"/>
+      <step name="germanTechActivation" delegate="tech_activation" player="Germans"/>
+      <step name="germanPurchase" delegate="purchase" player="Germans"/>
+      <step name="germanCombatMove" delegate="move" player="Germans"/>
+      <step name="germanBattle" delegate="battle" player="Germans"/>
+      <step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
+      <step name="germanPlace" delegate="place" player="Germans"/>
+      <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyelite">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="elite" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buybigArmour">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="bigarmour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHalftrack">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="halftrack" quantity="1"/>
+    </productionRule>
+    <productionRule name="buykatyusha">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="katyusha" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyScout">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="scout" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyearlyFighter">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="earlyfighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyme262">
+      <cost resource="PUs" quantity="13"/>
+      <result resourceOrUnit="me262" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buylancaster">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="lancaster" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransport">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrier">
+      <cost resource="PUs" quantity="16"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyshinano">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="shinano" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyer">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleship">
+      <cost resource="PUs" quantity="24"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarine">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactory">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <!-- Advanced Industrial Production -->
+    <productionRule name="buyInfantryIndustrialTechnology">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyeliteIndustrialTechnology">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="elite" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtilleryIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmourIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buybigArmourIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="bigarmour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyHalftrackIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="halftrack" quantity="1"/>
+    </productionRule>
+    <productionRule name="buykatyushaIndustrialTechnology">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="katyusha" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyScoutIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="scout" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyearlyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyme262IndustrialTechnology">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomberIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buylancasterIndustrialTechnology">
+      <cost resource="PUs" quantity="17"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransportIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrierIndustrialTechnology">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyshinanoIndustrialTechnology">
+      <cost resource="PUs" quantity="17"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyerIndustrialTechnology">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleshipIndustrialTechnology">
+      <cost resource="PUs" quantity="23"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarineIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGunIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="productionGermans">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyelite"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buybigArmour"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyearlyFighter"/>
+      <frontierRules name="buyme262"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionJapanese">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyelite"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buybigArmour"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyearlyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyshinano"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionRussians">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyelite"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buybigArmour"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buykatyusha"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyearlyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionBritish">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyelite"/>
+      <frontierRules name="buyArtillery"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buybigArmour"/>
+      <frontierRules name="buyHalftrack"/>
+      <frontierRules name="buyScout"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyearlyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buylancaster"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyDestroyer"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionIndustrialTechnology">
+      <frontierRules name="buyInfantryIndustrialTechnology"/>
+      <frontierRules name="buyeliteIndustrialTechnology"/>
+      <frontierRules name="buyArtilleryIndustrialTechnology"/>
+      <frontierRules name="buyArmourIndustrialTechnology"/>
+      <frontierRules name="buybigArmourIndustrialTechnology"/>
+      <frontierRules name="buyHalftrackIndustrialTechnology"/>
+      <frontierRules name="buykatyushaIndustrialTechnology"/>
+      <frontierRules name="buyScoutIndustrialTechnology"/>
+      <frontierRules name="buyFighterIndustrialTechnology"/>
+      <frontierRules name="buyearlyFighterIndustrialTechnology"/>
+      <frontierRules name="buyme262IndustrialTechnology"/>
+      <frontierRules name="buyBomberIndustrialTechnology"/>
+      <frontierRules name="buyTransportIndustrialTechnology"/>
+      <frontierRules name="buySubmarineIndustrialTechnology"/>
+      <frontierRules name="buyCarrierIndustrialTechnology"/>
+      <frontierRules name="buyshinanoIndustrialTechnology"/>
+      <frontierRules name="buyDestroyerIndustrialTechnology"/>
+      <frontierRules name="buyBattleshipIndustrialTechnology"/>
+      <frontierRules name="buyAAGunIndustrialTechnology"/>
+      <frontierRules name="buyFactoryIndustrialTechnology"/>
+    </productionFrontier>
+    <playerProduction player="British" frontier="productionBritish"/>
+    <playerProduction player="Japanese" frontier="productionJapanese"/>
+    <playerProduction player="Germans" frontier="productionGermans"/>
+    <playerProduction player="Russians" frontier="productionRussians"/>
+  </production>
+  <attachmentList>
+    <attachment name="techAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="British" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="false"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="elite" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bigarmour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="halftrack" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="katyusha" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="artillery" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="scout" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="earlyfighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="me262" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="5"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="lancaster" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="2"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="canBombard" value="true"/>
+      <option name="hitPoints" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="isDestroyer" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="carrierCapacity" value="2"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="shinano" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="carrierCapacity" value="3"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isSub" value="true"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+      <option name="transportCost" value="6"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="3"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Eldolas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eldolas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eldorian" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Eldolas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eldonovan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Eldolas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Melodion" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Melodion" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Melodion" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Melodion" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Forinth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Forinth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="15"/>
+      <option name="capital" value="Germans"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Westoran" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Kabana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="15"/>
+      <option name="capital" value="Russians"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Kabana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Fall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Fall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Fall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Lorn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Lorn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nothelm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Noth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Noth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Noth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Northa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Narn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nordor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Norn" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Nortic" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Northrund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Northrund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Nortic" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Northrund" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Norin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Icoal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Ico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Weco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Ico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Ico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Icoast" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Ico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Westor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Antar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Antar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Antar" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Oir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Oir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oirica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vipora" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="15"/>
+      <option name="capital" value="Japanese"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Oir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Gall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fallgall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Gallgorlad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Gall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Gall" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Koko Kabana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Gogg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Gogg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Gogg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lodonas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Eldono" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Loboras" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wendion" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Meloranda" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Narctica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arct" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arctica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Artic" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Artnoth" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Nothelm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Milhelm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Milhelm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="15"/>
+      <option name="capital" value="British"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Milhelm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ichor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oaki" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Echo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ecco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Icodoa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Namco" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Grekos" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Oir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Antarc" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Iceford" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Antartica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Antaith" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Highhold" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ironspikes" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Westor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Westest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Westmount" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Elwest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Westor" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dewest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Penwest" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <!-- German Owned Territories -->
+      <territoryOwner territory="E. Forinth" owner="Germans"/>
+      <!-- Russian Owned Territories -->
+      <territoryOwner territory="S. Kabana" owner="Russians"/>
+      <!-- British Owned Territories -->
+      <territoryOwner territory="W. Milhelm" owner="British"/>
+      <!-- Japanese Owned Territories -->
+      <territoryOwner territory="Vipora" owner="Japanese"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <!-- Russian Unit Placements -->
+      <unitPlacement unitType="infantry" territory="S. Kabana" quantity="3" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="S. Kabana" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="fighter" territory="S. Kabana" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="aaGun" territory="S. Kabana" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="factory" territory="S. Kabana" quantity="3" owner="Russians"/>
+      <unitPlacement unitType="battleship" territory="Westoran Coast" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="transport" territory="Westoran Coast" quantity="2" owner="Russians"/>
+      <!-- German Unit Placements -->
+      <unitPlacement unitType="infantry" territory="E. Forinth" quantity="3" owner="Germans"/>
+      <unitPlacement unitType="armour" territory="E. Forinth" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="fighter" territory="E. Forinth" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="aaGun" territory="E. Forinth" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="factory" territory="E. Forinth" quantity="3" owner="Germans"/>
+      <unitPlacement unitType="battleship" territory="S. Forinth Coast" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="transport" territory="S. Forinth Coast" quantity="2" owner="Germans"/>
+      <!-- British Unit Placements -->
+      <unitPlacement unitType="armour" territory="W. Milhelm" quantity="1" owner="British"/>
+      <unitPlacement unitType="infantry" territory="W. Milhelm" quantity="3" owner="British"/>
+      <unitPlacement unitType="fighter" territory="W. Milhelm" quantity="1" owner="British"/>
+      <unitPlacement unitType="aaGun" territory="W. Milhelm" quantity="1" owner="British"/>
+      <unitPlacement unitType="factory" territory="W. Milhelm" quantity="3" owner="British"/>
+      <unitPlacement unitType="battleship" territory="Strait of Noth" quantity="1" owner="British"/>
+      <unitPlacement unitType="transport" territory="Strait of Noth" quantity="2" owner="British"/>
+      <!-- Japanese Unit Placements -->
+      <unitPlacement unitType="infantry" territory="Vipora" quantity="3" owner="Japanese"/>
+      <unitPlacement unitType="armour" territory="Vipora" quantity="1" owner="Japanese"/>
+      <unitPlacement unitType="fighter" territory="Vipora" quantity="1" owner="Japanese"/>
+      <unitPlacement unitType="aaGun" territory="Vipora" quantity="1" owner="Japanese"/>
+      <unitPlacement unitType="factory" territory="Vipora" quantity="3" owner="Japanese"/>
+      <unitPlacement unitType="battleship" territory="Strait of Vipora" quantity="1" owner="Japanese"/>
+      <unitPlacement unitType="transport" territory="Strait of Vipora" quantity="2" owner="Japanese"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Japanese" resource="PUs" quantity="80"/>
+      <resourceGiven player="British" resource="PUs" quantity="80"/>
+      <resourceGiven player="Russians" resource="PUs" quantity="80"/>
+      <resourceGiven player="Germans" resource="PUs" quantity="80"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <!-- Low Luck -->
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="10"/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="Neutrals Are Impassable" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Blitzable" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="maxFactoriesPerTerritory" value="20"/>
+    <!-- Sub Control Sea Zone Restricted should be FALSE if there are any convoy zones! -->
+    <property name="Sub Control Sea Zone Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <!-- Bids -->
+    <property name="Germans bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Japanese bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="British bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Russians bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <!-- Map Name: also used for map utils when asked -->
+    <property name="mapName" value="neuschwabenland" editable="false"/>
+    <!-- notes appear in the notes menu in the main screen, format as html -->
+    <property name="notes" value="=== NEUSCHWABENLAND ===   &lt;br&gt;by Sieg &lt;br&gt;==Turn Order==   &lt;br&gt;Russia,Japs,Brit,Germany &lt;br&gt;Russia and Brit against Germany and Japs &lt;br&gt;== Production ==   &lt;br&gt;Each non original Factory can Produce 5 Units &lt;br&gt;Multiple Factories in a Territory are Possible &lt;br&gt;==New Units are available== &lt;br&gt;PU/Attack/Defend/Move/Special &lt;br&gt;Infantry 2/1/2/1  &lt;br&gt;Elite  3/2/2/1 &lt;br&gt;Early Fighter 8/3/2/4 &lt;br&gt;Scout  4/2/1/2 (transport cost 1!)   &lt;br&gt;Halftrack 5/2/2/3 (can Blitz)(Infantry support) &lt;br&gt;Big Armour 7/4/3/2 &lt;br&gt;==National Advantages== &lt;br&gt;Russia:  Katyusha 5/3/2/3 (Infantry support) &lt;br&gt;Japan:   Shinano 18/1/3/2 (Carrys 3 Fighters) &lt;br&gt;U.K:    Lancaster   18/5/2/6 &lt;br&gt;Germany: Me 262 13/4/2/5 (Strat.Bombing) &lt;br&gt; &lt;br&gt;Grey Terretories belong to Start Country  &lt;br&gt; &lt;br&gt;=== Let There Be War  === &lt;br&gt;-------- sieg ----------- &lt;br&gt; &lt;br&gt;Converted up to TripleA 1.2.x.x by Veqryn "/>
+  </propertyList>
+</game>

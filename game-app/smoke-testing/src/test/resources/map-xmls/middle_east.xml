@@ -1,0 +1,1154 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Middle East" version="1.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <territory name="Black sz 1" water="true"/>
+    <territory name="Black sz 2" water="true"/>
+    <territory name="Black sz 3" water="true"/>
+    <territory name="Bosporus Strait" water="true"/>
+    <territory name="Caspian sz 1" water="true"/>
+    <territory name="Caspian sz 2" water="true"/>
+    <territory name="Caspian sz 3" water="true"/>
+    <territory name="Dardenelles Strait" water="true"/>
+    <territory name="Gulf of Aden" water="true"/>
+    <territory name="Gulf of Aquaba" water="true"/>
+    <territory name="Gulf of Oman" water="true"/>
+    <territory name="Indian Ocean" water="true"/>
+    <territory name="Mediterranean sz 1" water="true"/>
+    <territory name="Mediterranean sz 2" water="true"/>
+    <territory name="Mediterranean sz 3" water="true"/>
+    <territory name="Mediterranean sz 4" water="true"/>
+    <territory name="Mediterranean sz 5" water="true"/>
+    <territory name="North Arabian Sea" water="true"/>
+    <territory name="Northern Persian Gulf" water="true"/>
+    <territory name="Port of Tehran" water="true"/>
+    <territory name="Red Sea" water="true"/>
+    <territory name="South Arabian Sea" water="true"/>
+    <territory name="Southern Persian Gulf" water="true"/>
+    <territory name="Straits of Hormuz" water="true"/>
+    <territory name="Abadan"/>
+    <territory name="Abha"/>
+    <territory name="Adana"/>
+    <territory name="Al Hajara"/>
+    <territory name="Al Hasa"/>
+    <territory name="Al Khali"/>
+    <territory name="Al Qalif"/>
+    <territory name="Alexandria"/>
+    <territory name="An Nafud"/>
+    <territory name="Ankara"/>
+    <territory name="Ar Ramadi"/>
+    <territory name="Armenia"/>
+    <territory name="Ashkhabad"/>
+    <territory name="Asmera"/>
+    <territory name="Aswan"/>
+    <territory name="Azerbayzhan"/>
+    <territory name="Badanah"/>
+    <territory name="Baghdad"/>
+    <territory name="Basra"/>
+    <territory name="Birjand"/>
+    <territory name="Bulgaria"/>
+    <territory name="Cairo"/>
+    <territory name="Caucasus"/>
+    <territory name="Chardzhou"/>
+    <territory name="Cyprus"/>
+    <territory name="Djibouti"/>
+    <territory name="Erzurum"/>
+    <territory name="Esfahan"/>
+    <territory name="Georgia"/>
+    <territory name="Greece"/>
+    <territory name="Herat"/>
+    <territory name="ice shelf"/>
+    <territory name="Isreal"/>
+    <territory name="Istanbul"/>
+    <territory name="Izmir"/>
+    <territory name="Jordan"/>
+    <territory name="Karachi"/>
+    <territory name="Kerman"/>
+    <territory name="Kirkut"/>
+    <territory name="Kransnovodsk"/>
+    <territory name="Kurdistan"/>
+    <territory name="Kuwait"/>
+    <territory name="Lebanon"/>
+    <territory name="Libya"/>
+    <territory name="Mashad"/>
+    <territory name="Mecca"/>
+    <territory name="Oman"/>
+    <territory name="Peski Karakumy"/>
+    <territory name="Port Sudan"/>
+    <territory name="Rigestan"/>
+    <territory name="Riyadh"/>
+    <territory name="Shiraz"/>
+    <territory name="Somalia"/>
+    <territory name="Southern Ethiopia"/>
+    <territory name="Southern Russia"/>
+    <territory name="Suez Canal"/>
+    <territory name="Syria"/>
+    <territory name="Tabriz"/>
+    <territory name="Tabuk"/>
+    <territory name="Tehran"/>
+    <territory name="United Arab Emirates"/>
+    <territory name="Yemen"/>
+    <territory name="Zagros Mountains"/>
+    <connection t1="Abadan" t2="Basra"/>
+    <connection t1="Abadan" t2="Shiraz"/>
+    <connection t1="Abadan" t2="Esfahan"/>
+    <connection t1="Abadan" t2="Zagros Mountains"/>
+    <connection t1="Abadan" t2="Tehran"/>
+    <connection t1="Abha" t2="Mecca"/>
+    <connection t1="Abha" t2="Riyadh"/>
+    <connection t1="Abha" t2="Al Khali"/>
+    <connection t1="Abha" t2="Yemen"/>
+    <connection t1="Adana" t2="Izmir"/>
+    <connection t1="Adana" t2="Ankara"/>
+    <connection t1="Adana" t2="Erzurum"/>
+    <connection t1="Adana" t2="Kurdistan"/>
+    <connection t1="Adana" t2="Syria"/>
+    <connection t1="Adana" t2="Istanbul"/>
+    <connection t1="Al Hajara" t2="Badanah"/>
+    <connection t1="Al Hajara" t2="An Nafud"/>
+    <connection t1="Al Hajara" t2="Ar Ramadi"/>
+    <connection t1="Al Hajara" t2="Baghdad"/>
+    <connection t1="Al Hajara" t2="Basra"/>
+    <connection t1="Al Hasa" t2="Basra"/>
+    <connection t1="Al Hasa" t2="Al Qalif"/>
+    <connection t1="Al Hasa" t2="Riyadh"/>
+    <connection t1="Al Hasa" t2="Kuwait"/>
+    <connection t1="Al Hasa" t2="An Nafud"/>
+    <connection t1="Al Khali" t2="United Arab Emirates"/>
+    <connection t1="Al Khali" t2="Oman"/>
+    <connection t1="Al Khali" t2="Yemen"/>
+    <connection t1="Al Khali" t2="Al Qalif"/>
+    <connection t1="Al Khali" t2="Riyadh"/>
+    <connection t1="Al Qalif" t2="Riyadh"/>
+    <connection t1="Al Qalif" t2="United Arab Emirates"/>
+    <connection t1="Alexandria" t2="Libya"/>
+    <connection t1="Alexandria" t2="Cairo"/>
+    <connection t1="Alexandria" t2="Suez Canal"/>
+    <connection t1="An Nafud" t2="Basra"/>
+    <connection t1="An Nafud" t2="Mecca"/>
+    <connection t1="An Nafud" t2="Tabuk"/>
+    <connection t1="An Nafud" t2="Badanah"/>
+    <connection t1="An Nafud" t2="Riyadh"/>
+    <connection t1="Ankara" t2="Istanbul"/>
+    <connection t1="Ankara" t2="Erzurum"/>
+    <connection t1="Ankara" t2="Izmir"/>
+    <connection t1="Ar Ramadi" t2="Jordan"/>
+    <connection t1="Ar Ramadi" t2="Syria"/>
+    <connection t1="Ar Ramadi" t2="Badanah"/>
+    <connection t1="Ar Ramadi" t2="Baghdad"/>
+    <connection t1="Ar Ramadi" t2="Kirkut"/>
+    <connection t1="Armenia" t2="Kurdistan"/>
+    <connection t1="Armenia" t2="Tabriz"/>
+    <connection t1="Armenia" t2="Erzurum"/>
+    <connection t1="Armenia" t2="Georgia"/>
+    <connection t1="Armenia" t2="Azerbayzhan"/>
+    <connection t1="Ashkhabad" t2="Peski Karakumy"/>
+    <connection t1="Ashkhabad" t2="Chardzhou"/>
+    <connection t1="Ashkhabad" t2="Kransnovodsk"/>
+    <connection t1="Ashkhabad" t2="Mashad"/>
+    <connection t1="Asmera" t2="Port Sudan"/>
+    <connection t1="Asmera" t2="Djibouti"/>
+    <connection t1="Asmera" t2="Southern Ethiopia"/>
+    <connection t1="Aswan" t2="Cairo"/>
+    <connection t1="Aswan" t2="Port Sudan"/>
+    <connection t1="Azerbayzhan" t2="Tabriz"/>
+    <connection t1="Azerbayzhan" t2="Georgia"/>
+    <connection t1="Azerbayzhan" t2="Caucasus"/>
+    <connection t1="Badanah" t2="Jordan"/>
+    <connection t1="Badanah" t2="Tabuk"/>
+    <connection t1="Baghdad" t2="Kirkut"/>
+    <connection t1="Baghdad" t2="Zagros Mountains"/>
+    <connection t1="Baghdad" t2="Basra"/>
+    <connection t1="Basra" t2="Kuwait"/>
+    <connection t1="Birjand" t2="Herat"/>
+    <connection t1="Birjand" t2="Rigestan"/>
+    <connection t1="Birjand" t2="Kerman"/>
+    <connection t1="Birjand" t2="Esfahan"/>
+    <connection t1="Birjand" t2="Mashad"/>
+    <connection t1="Bulgaria" t2="Greece"/>
+    <connection t1="Bulgaria" t2="Istanbul"/>
+    <connection t1="Cairo" t2="Suez Canal"/>
+    <connection t1="Cairo" t2="Libya"/>
+    <connection t1="Caucasus" t2="Georgia"/>
+    <connection t1="Caucasus" t2="Southern Russia"/>
+    <connection t1="Chardzhou" t2="Peski Karakumy"/>
+    <connection t1="Chardzhou" t2="Herat"/>
+    <connection t1="Chardzhou" t2="Mashad"/>
+    <connection t1="Djibouti" t2="Southern Ethiopia"/>
+    <connection t1="Djibouti" t2="Somalia"/>
+    <connection t1="Erzurum" t2="Georgia"/>
+    <connection t1="Erzurum" t2="Kurdistan"/>
+    <connection t1="Esfahan" t2="Tehran"/>
+    <connection t1="Esfahan" t2="Mashad"/>
+    <connection t1="Esfahan" t2="Kerman"/>
+    <connection t1="Esfahan" t2="Shiraz"/>
+    <connection t1="Greece" t2="Istanbul"/>
+    <connection t1="Herat" t2="Rigestan"/>
+    <connection t1="Herat" t2="Mashad"/>
+    <connection t1="ice shelf" t2="Kransnovodsk"/>
+    <connection t1="Isreal" t2="Suez Canal"/>
+    <connection t1="Isreal" t2="Lebanon"/>
+    <connection t1="Isreal" t2="Syria"/>
+    <connection t1="Isreal" t2="Jordan"/>
+    <connection t1="Istanbul" t2="Izmir"/>
+    <connection t1="Jordan" t2="Syria"/>
+    <connection t1="Jordan" t2="Tabuk"/>
+    <connection t1="Karachi" t2="Kerman"/>
+    <connection t1="Kerman" t2="Rigestan"/>
+    <connection t1="Kerman" t2="Shiraz"/>
+    <connection t1="Kirkut" t2="Tabriz"/>
+    <connection t1="Kirkut" t2="Kurdistan"/>
+    <connection t1="Kirkut" t2="Syria"/>
+    <connection t1="Kirkut" t2="Zagros Mountains"/>
+    <connection t1="Kransnovodsk" t2="Peski Karakumy"/>
+    <connection t1="Kurdistan" t2="Tabriz"/>
+    <connection t1="Kurdistan" t2="Syria"/>
+    <connection t1="Lebanon" t2="Syria"/>
+    <connection t1="Mashad" t2="Tehran"/>
+    <connection t1="Mecca" t2="Riyadh"/>
+    <connection t1="Mecca" t2="Tabuk"/>
+    <connection t1="Oman" t2="Yemen"/>
+    <connection t1="Oman" t2="United Arab Emirates"/>
+    <connection t1="Somalia" t2="Southern Ethiopia"/>
+    <connection t1="Suez Canal" t2="Syria"/>
+    <connection t1="Tabriz" t2="Zagros Mountains"/>
+    <connection t1="Tabriz" t2="Tehran"/>
+    <connection t1="Tehran" t2="Zagros Mountains"/>
+    <connection t1="Black sz 1" t2="Erzurum"/>
+    <connection t1="Black sz 1" t2="Black sz 2"/>
+    <connection t1="Black sz 1" t2="Black sz 3"/>
+    <connection t1="Black sz 1" t2="Dardenelles Strait"/>
+    <connection t1="Black sz 1" t2="Ankara"/>
+    <connection t1="Black sz 2" t2="Black sz 3"/>
+    <connection t1="Black sz 2" t2="Southern Russia"/>
+    <connection t1="Black sz 2" t2="Caucasus"/>
+    <connection t1="Black sz 2" t2="Georgia"/>
+    <connection t1="Black sz 2" t2="Erzurum"/>
+    <connection t1="Black sz 3" t2="Southern Russia"/>
+    <connection t1="Black sz 3" t2="Dardenelles Strait"/>
+    <connection t1="Bosporus Strait" t2="Dardenelles Strait"/>
+    <connection t1="Bosporus Strait" t2="Istanbul"/>
+    <connection t1="Bosporus Strait" t2="Greece"/>
+    <connection t1="Bosporus Strait" t2="Izmir"/>
+    <connection t1="Bosporus Strait" t2="Mediterranean sz 1"/>
+    <connection t1="Bosporus Strait" t2="Mediterranean sz 3"/>
+    <connection t1="Caspian sz 1" t2="Southern Russia"/>
+    <connection t1="Caspian sz 1" t2="Caucasus"/>
+    <connection t1="Caspian sz 1" t2="Caspian sz 2"/>
+    <connection t1="Caspian sz 2" t2="Caspian sz 3"/>
+    <connection t1="Caspian sz 2" t2="Caucasus"/>
+    <connection t1="Caspian sz 2" t2="Azerbayzhan"/>
+    <connection t1="Caspian sz 2" t2="Kransnovodsk"/>
+    <connection t1="Caspian sz 2" t2="Ashkhabad"/>
+    <connection t1="Caspian sz 3" t2="Port of Tehran"/>
+    <connection t1="Caspian sz 3" t2="Ashkhabad"/>
+    <connection t1="Caspian sz 3" t2="Azerbayzhan"/>
+    <connection t1="Caspian sz 3" t2="Tabriz"/>
+    <connection t1="Dardenelles Strait" t2="Bulgaria"/>
+    <connection t1="Dardenelles Strait" t2="Istanbul"/>
+    <connection t1="Dardenelles Strait" t2="Ankara"/>
+    <connection t1="Gulf of Aden" t2="Yemen"/>
+    <connection t1="Gulf of Aden" t2="North Arabian Sea"/>
+    <connection t1="Gulf of Aden" t2="South Arabian Sea"/>
+    <connection t1="Gulf of Aden" t2="Somalia"/>
+    <connection t1="Gulf of Aden" t2="Djibouti"/>
+    <connection t1="Gulf of Aden" t2="Red Sea"/>
+    <connection t1="Gulf of Aquaba" t2="Red Sea"/>
+    <connection t1="Gulf of Aquaba" t2="Suez Canal"/>
+    <connection t1="Gulf of Aquaba" t2="Cairo"/>
+    <connection t1="Gulf of Aquaba" t2="Aswan"/>
+    <connection t1="Gulf of Aquaba" t2="Isreal"/>
+    <connection t1="Gulf of Aquaba" t2="Jordan"/>
+    <connection t1="Gulf of Aquaba" t2="Tabuk"/>
+    <connection t1="Gulf of Aquaba" t2="Mecca"/>
+    <connection t1="Gulf of Aquaba" t2="Mediterranean sz 4"/>
+    <connection t1="Gulf of Oman" t2="Indian Ocean"/>
+    <connection t1="Gulf of Oman" t2="Kerman"/>
+    <connection t1="Gulf of Oman" t2="Oman"/>
+    <connection t1="Gulf of Oman" t2="United Arab Emirates"/>
+    <connection t1="Gulf of Oman" t2="Straits of Hormuz"/>
+    <connection t1="Gulf of Oman" t2="North Arabian Sea"/>
+    <connection t1="Indian Ocean" t2="Kerman"/>
+    <connection t1="Indian Ocean" t2="Karachi"/>
+    <connection t1="Mediterranean sz 1" t2="Mediterranean sz 2"/>
+    <connection t1="Mediterranean sz 1" t2="Mediterranean sz 3"/>
+    <connection t1="Mediterranean sz 1" t2="Greece"/>
+    <connection t1="Mediterranean sz 1" t2="Bosporus Strait"/>
+    <connection t1="Mediterranean sz 2" t2="Mediterranean sz 3"/>
+    <connection t1="Mediterranean sz 2" t2="Mediterranean sz 4"/>
+    <connection t1="Mediterranean sz 2" t2="Alexandria"/>
+    <connection t1="Mediterranean sz 2" t2="Libya"/>
+    <connection t1="Mediterranean sz 3" t2="Mediterranean sz 4"/>
+    <connection t1="Mediterranean sz 3" t2="Mediterranean sz 5"/>
+    <connection t1="Mediterranean sz 3" t2="Izmir"/>
+    <connection t1="Mediterranean sz 3" t2="Bosporus Strait"/>
+    <connection t1="Mediterranean sz 4" t2="Mediterranean sz 5"/>
+    <connection t1="Mediterranean sz 4" t2="Alexandria"/>
+    <connection t1="Mediterranean sz 4" t2="Suez Canal"/>
+    <connection t1="Mediterranean sz 4" t2="Isreal"/>
+    <connection t1="Mediterranean sz 4" t2="Lebanon"/>
+    <connection t1="Mediterranean sz 5" t2="Cyprus"/>
+    <connection t1="Mediterranean sz 5" t2="Lebanon"/>
+    <connection t1="Mediterranean sz 5" t2="Izmir"/>
+    <connection t1="Mediterranean sz 5" t2="Syria"/>
+    <connection t1="Mediterranean sz 5" t2="Adana"/>
+    <connection t1="North Arabian Sea" t2="Yemen"/>
+    <connection t1="North Arabian Sea" t2="Oman"/>
+    <connection t1="North Arabian Sea" t2="South Arabian Sea"/>
+    <connection t1="Northern Persian Gulf" t2="Basra"/>
+    <connection t1="Northern Persian Gulf" t2="Kuwait"/>
+    <connection t1="Northern Persian Gulf" t2="Abadan"/>
+    <connection t1="Northern Persian Gulf" t2="Shiraz"/>
+    <connection t1="Northern Persian Gulf" t2="Southern Persian Gulf"/>
+    <connection t1="Port of Tehran" t2="Tehran"/>
+    <connection t1="Port of Tehran" t2="Tabriz"/>
+    <connection t1="Port of Tehran" t2="Ashkhabad"/>
+    <connection t1="Port of Tehran" t2="Mashad"/>
+    <connection t1="Red Sea" t2="Yemen"/>
+    <connection t1="Red Sea" t2="Mecca"/>
+    <connection t1="Red Sea" t2="Abha"/>
+    <connection t1="Red Sea" t2="Djibouti"/>
+    <connection t1="Red Sea" t2="Asmera"/>
+    <connection t1="Red Sea" t2="Port Sudan"/>
+    <connection t1="South Arabian Sea" t2="Somalia"/>
+    <connection t1="Southern Persian Gulf" t2="Straits of Hormuz"/>
+    <connection t1="Southern Persian Gulf" t2="Shiraz"/>
+    <connection t1="Southern Persian Gulf" t2="Al Hasa"/>
+    <connection t1="Southern Persian Gulf" t2="Al Qalif"/>
+    <connection t1="Southern Persian Gulf" t2="United Arab Emirates"/>
+    <connection t1="Straits of Hormuz" t2="United Arab Emirates"/>
+    <connection t1="Straits of Hormuz" t2="Shiraz"/>
+    <connection t1="Straits of Hormuz" t2="Kerman"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="SaudiEgyptians" optional="false"/>
+    <player name="Iraqis" optional="false"/>
+    <player name="Iranians" optional="false"/>
+    <player name="Russians" optional="false"/>
+    <player name="Turks" optional="false"/>
+    <!-- alliances -->
+    <alliance player="Russians" alliance="Red Pact"/>
+    <alliance player="Iraqis" alliance="Red Pact"/>
+    <alliance player="SaudiEgyptians" alliance="Triad"/>
+    <alliance player="Iranians" alliance="Triad"/>
+    <alliance player="Turks" alliance="Triad"/>
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="armour"/>
+    <unit name="fighter"/>
+    <unit name="bomber"/>
+    <unit name="transport"/>
+    <unit name="battleship"/>
+    <unit name="carrier"/>
+    <unit name="submarine"/>
+    <unit name="factory"/>
+    <unit name="aaGun"/>
+    <unit name="artillery"/>
+    <unit name="destroyer"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <step name="SaudiEgyptBid" delegate="bid" player="SaudiEgyptians" maxRunCount="1"/>
+      <step name="SaudiEgyptBidPlace" delegate="placeBid" player="SaudiEgyptians" maxRunCount="1"/>
+      <step name="IraqBid" delegate="bid" player="Iraqis" maxRunCount="1"/>
+      <step name="IraqBidPlace" delegate="placeBid" player="Iraqis" maxRunCount="1"/>
+      <step name="IranBid" delegate="bid" player="Iranians" maxRunCount="1"/>
+      <step name="IranBidPlace" delegate="placeBid" player="Iranians" maxRunCount="1"/>
+      <step name="RussiaBid" delegate="bid" player="Russians" maxRunCount="1"/>
+      <step name="RussiaBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+      <step name="TurkeyBid" delegate="bid" player="Turks" maxRunCount="1"/>
+      <step name="TurkeyBidPlace" delegate="placeBid" player="Turks" maxRunCount="1"/>
+      <step name="saudiEgyptPurchase" delegate="purchase" player="SaudiEgyptians"/>
+      <step name="saudiEgyptCombatMove" delegate="move" player="SaudiEgyptians"/>
+      <step name="saudiEgyptBattle" delegate="battle" player="SaudiEgyptians"/>
+      <step name="saudiEgyptNonCombatMove" delegate="move" player="SaudiEgyptians" display="Non Combat Move"/>
+      <step name="saudiEgyptPlace" delegate="place" player="SaudiEgyptians"/>
+      <step name="saudiEgyptEndTurn" delegate="endTurn" player="SaudiEgyptians"/>
+      <step name="iraqPurchase" delegate="purchase" player="Iraqis"/>
+      <step name="iraqCombatMove" delegate="move" player="Iraqis"/>
+      <step name="iraqBattle" delegate="battle" player="Iraqis"/>
+      <step name="iraqNonCombatMove" delegate="move" player="Iraqis" display="Non Combat Move"/>
+      <step name="iraqPlace" delegate="place" player="Iraqis"/>
+      <step name="iraqEndTurn" delegate="endTurn" player="Iraqis"/>
+      <step name="iranPurchase" delegate="purchase" player="Iranians"/>
+      <step name="iranCombatMove" delegate="move" player="Iranians"/>
+      <step name="iranBattle" delegate="battle" player="Iranians"/>
+      <step name="iranNonCombatMove" delegate="move" player="Iranians" display="Non Combat Move"/>
+      <step name="iranPlace" delegate="place" player="Iranians"/>
+      <step name="iranEndTurn" delegate="endTurn" player="Iranians"/>
+      <step name="russianPurchase" delegate="purchase" player="Russians"/>
+      <step name="russianCombatMove" delegate="move" player="Russians"/>
+      <step name="russianBattle" delegate="battle" player="Russians"/>
+      <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
+      <step name="russianPlace" delegate="place" player="Russians"/>
+      <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
+      <step name="turkeyPurchase" delegate="purchase" player="Turks"/>
+      <step name="turkeyCombatMove" delegate="move" player="Turks"/>
+      <step name="turkeyBattle" delegate="battle" player="Turks"/>
+      <step name="turkeyNonCombatMove" delegate="move" player="Turks" display="Non Combat Move"/>
+      <step name="turkeyPlace" delegate="place" player="Turks"/>
+      <step name="turkenEndTurn" delegate="endTurn" player="Turks"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <productionRule name="buyInfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighter">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomber">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransport">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyer">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrier">
+      <cost resource="PUs" quantity="18"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleship">
+      <cost resource="PUs" quantity="24"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarine">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactory">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGun">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <!-- advanced industrial production -->
+    <productionRule name="buyInfantryIndustrialTechnology">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtilleryIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmourIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomberIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransportIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyerIndustrialTechnology">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrierIndustrialTechnology">
+      <cost resource="PUs" quantity="17"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleshipIndustrialTechnology">
+      <cost resource="PUs" quantity="23"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarineIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGunIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <productionFrontier name="production">
+      <frontierRules name="buyInfantry"/>
+      <frontierRules name="buyArmour"/>
+      <frontierRules name="buyFighter"/>
+      <frontierRules name="buyBomber"/>
+      <frontierRules name="buyTransport"/>
+      <frontierRules name="buySubmarine"/>
+      <frontierRules name="buyCarrier"/>
+      <frontierRules name="buyBattleship"/>
+      <frontierRules name="buyAAGun"/>
+      <frontierRules name="buyFactory"/>
+    </productionFrontier>
+    <productionFrontier name="productionIndustrialTechnology">
+      <frontierRules name="buyInfantryIndustrialTechnology"/>
+      <frontierRules name="buyArmourIndustrialTechnology"/>
+      <frontierRules name="buyFighterIndustrialTechnology"/>
+      <frontierRules name="buyBomberIndustrialTechnology"/>
+      <frontierRules name="buyTransportIndustrialTechnology"/>
+      <frontierRules name="buySubmarineIndustrialTechnology"/>
+      <frontierRules name="buyCarrierIndustrialTechnology"/>
+      <frontierRules name="buyBattleshipIndustrialTechnology"/>
+      <frontierRules name="buyAAGunIndustrialTechnology"/>
+      <frontierRules name="buyFactoryIndustrialTechnology"/>
+    </productionFrontier>
+    <playerProduction player="SaudiEgyptians" frontier="production"/>
+    <playerProduction player="Iraqis" frontier="production"/>
+    <playerProduction player="Iranians" frontier="production"/>
+    <playerProduction player="Russians" frontier="production"/>
+    <playerProduction player="Turks" frontier="production"/>
+  </production>
+  <attachmentList>
+    <attachment name="techAttachment" attachTo="SaudiEgyptians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="true"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Iraqis" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="true"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Iranians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="true"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="true"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Turks" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="heavyBomber" value="false"/>
+      <option name="jetPower" value="false"/>
+      <option name="industrialTechnology" value="false"/>
+      <option name="superSub" value="false"/>
+      <option name="rocket" value="true"/>
+      <option name="longRangeAir" value="false"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="transportCost" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="canBlitz" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="8"/>
+      <option name="isAir" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="transportCapacity" value="2"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="isDestroyer" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="canBombard" value="true"/>
+      <option name="hitPoints" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="carrierCapacity" value="2"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isSub" value="true"/>
+      <option name="movement" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="2"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Abadan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Abha" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Adana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Al Hajara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Al Hasa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="victoryCity" value="1"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Al Khali" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Al Qalif" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="victoryCity" value="1"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alexandria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="An Nafud" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ankara" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="Turks"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ar Ramadi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Armenia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ashkhabad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Asmera" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Aswan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Azerbayzhan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Badanah" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Baghdad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Iraqis"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Basra" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Birjand" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bulgaria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cairo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="SaudiEgyptians"/>
+      <option name="originalFactory" value="true"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Caucasus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chardzhou" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Cyprus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Djibouti" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Erzurum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Esfahan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Georgia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Greece" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Herat" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="ice shelf" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="isImpassable" value="true"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Isreal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Istanbul" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Izmir" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jordan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Karachi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kerman" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kirkut" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kransnovodsk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kurdistan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kuwait" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Lebanon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Libya" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mashad" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mecca" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oman" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Peski Karakumy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Port Sudan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rigestan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Riyadh" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Shiraz" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Somalia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Southern Ethiopia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Southern Russia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="12"/>
+      <option name="capital" value="Russians"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Suez Canal" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Syria" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="10"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tabriz" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tabuk" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tehran" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="Iranians"/>
+      <option name="originalFactory" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="United Arab Emirates" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="victoryCity" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yemen" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Zagros Mountains" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <!-- canals -->
+    <attachment name="canalAttachment" attachTo="Bosporus Strait" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Bosporus Strait"/>
+      <option name="landTerritories" value="Istanbul"/>
+    </attachment>
+    <attachment name="canalAttachment" attachTo="Dardenelles Strait" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Bosporus Strait"/>
+      <option name="landTerritories" value="Istanbul"/>
+    </attachment>
+    <attachment name="canalAttachment" attachTo="Mediterranean sz 3" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Suez Canal"/>
+      <option name="landTerritories" value="Suez Canal"/>
+    </attachment>
+    <attachment name="canalAttachment" attachTo="Gulf of Aquaba" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Suez Canal"/>
+      <option name="landTerritories" value="Suez Canal"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="Cairo" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Al Qalif" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Al Khali" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Al Hasa" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Riyadh" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Mecca" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Tabuk" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Badanah" owner="SaudiEgyptians"/>
+      <territoryOwner territory="An Nafud" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Aswan" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Alexandria" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Suez Canal" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Abha" owner="SaudiEgyptians"/>
+      <territoryOwner territory="Baghdad" owner="Iraqis"/>
+      <territoryOwner territory="Jordan" owner="Iraqis"/>
+      <territoryOwner territory="Basra" owner="Iraqis"/>
+      <territoryOwner territory="Al Hajara" owner="Iraqis"/>
+      <territoryOwner territory="Ar Ramadi" owner="Iraqis"/>
+      <territoryOwner territory="Kirkut" owner="Iraqis"/>
+      <territoryOwner territory="Libya" owner="Iraqis"/>
+      <territoryOwner territory="Port Sudan" owner="Iraqis"/>
+      <territoryOwner territory="Tehran" owner="Iranians"/>
+      <territoryOwner territory="Birjand" owner="Iranians"/>
+      <territoryOwner territory="Kerman" owner="Iranians"/>
+      <territoryOwner territory="Shiraz" owner="Iranians"/>
+      <territoryOwner territory="Abadan" owner="Iranians"/>
+      <territoryOwner territory="Esfahan" owner="Iranians"/>
+      <territoryOwner territory="Zagros Mountains" owner="Iranians"/>
+      <territoryOwner territory="Tabriz" owner="Iranians"/>
+      <territoryOwner territory="Mashad" owner="Iranians"/>
+      <territoryOwner territory="Southern Russia" owner="Russians"/>
+      <territoryOwner territory="Yemen" owner="Russians"/>
+      <territoryOwner territory="Southern Ethiopia" owner="Russians"/>
+      <territoryOwner territory="Asmera" owner="Russians"/>
+      <territoryOwner territory="Bulgaria" owner="Russians"/>
+      <territoryOwner territory="Caucasus" owner="Russians"/>
+      <territoryOwner territory="Georgia" owner="Russians"/>
+      <territoryOwner territory="Armenia" owner="Russians"/>
+      <territoryOwner territory="Azerbayzhan" owner="Russians"/>
+      <territoryOwner territory="Peski Karakumy" owner="Russians"/>
+      <territoryOwner territory="Chardzhou" owner="Russians"/>
+      <territoryOwner territory="Ashkhabad" owner="Russians"/>
+      <territoryOwner territory="Kransnovodsk" owner="Russians"/>
+      <territoryOwner territory="Ankara" owner="Turks"/>
+      <territoryOwner territory="Izmir" owner="Turks"/>
+      <territoryOwner territory="Istanbul" owner="Turks"/>
+      <territoryOwner territory="Erzurum" owner="Turks"/>
+      <territoryOwner territory="Adana" owner="Turks"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <unitPlacement unitType="infantry" territory="Alexandria" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="infantry" territory="Cairo" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="armour" territory="Cairo" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="fighter" territory="Cairo" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="factory" territory="Cairo" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="aaGun" territory="Cairo" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="battleship" territory="Gulf of Aquaba" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="transport" territory="Gulf of Aquaba" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="infantry" territory="Aswan" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="infantry" territory="Tabuk" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="infantry" territory="Abha" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="infantry" territory="Riyadh" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="fighter" territory="Riyadh" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="infantry" territory="Al Hasa" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="armour" territory="Al Hasa" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="infantry" territory="Al Qalif" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="fighter" territory="Al Qalif" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="factory" territory="Al Qalif" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="aaGun" territory="Al Qalif" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="transport" territory="Southern Persian Gulf" quantity="1" owner="SaudiEgyptians"/>
+      <unitPlacement unitType="infantry" territory="Kirkut" quantity="3" owner="Iraqis"/>
+      <unitPlacement unitType="armour" territory="Kirkut" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="fighter" territory="Kirkut" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="infantry" territory="Ar Ramadi" quantity="2" owner="Iraqis"/>
+      <unitPlacement unitType="armour" territory="Ar Ramadi" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="infantry" territory="Baghdad" quantity="4" owner="Iraqis"/>
+      <unitPlacement unitType="armour" territory="Baghdad" quantity="2" owner="Iraqis"/>
+      <unitPlacement unitType="fighter" territory="Baghdad" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="bomber" territory="Baghdad" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="factory" territory="Baghdad" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="aaGun" territory="Baghdad" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="infantry" territory="Basra" quantity="4" owner="Iraqis"/>
+      <unitPlacement unitType="armour" territory="Basra" quantity="2" owner="Iraqis"/>
+      <unitPlacement unitType="fighter" territory="Basra" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="battleship" territory="Northern Persian Gulf" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="transport" territory="Northern Persian Gulf" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="infantry" territory="Al Hajara" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="infantry" territory="Jordan" quantity="2" owner="Iraqis"/>
+      <unitPlacement unitType="armour" territory="Jordan" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="infantry" territory="Libya" quantity="3" owner="Iraqis"/>
+      <unitPlacement unitType="armour" territory="Libya" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="fighter" territory="Libya" quantity="1" owner="Iraqis"/>
+      <unitPlacement unitType="infantry" territory="Port Sudan" quantity="2" owner="Iraqis"/>
+      <unitPlacement unitType="infantry" territory="Tabriz" quantity="4" owner="Iranians"/>
+      <unitPlacement unitType="infantry" territory="Tehran" quantity="5" owner="Iranians"/>
+      <unitPlacement unitType="armour" territory="Tehran" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="fighter" territory="Tehran" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="factory" territory="Tehran" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="aaGun" territory="Tehran" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="battleship" territory="Port of Tehran" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="transport" territory="Port of Tehran" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="infantry" territory="Mashad" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="infantry" territory="Esfahan" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="infantry" territory="Zagros Mountains" quantity="2" owner="Iranians"/>
+      <unitPlacement unitType="infantry" territory="Abadan" quantity="3" owner="Iranians"/>
+      <unitPlacement unitType="armour" territory="Abadan" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="infantry" territory="Shiraz" quantity="3" owner="Iranians"/>
+      <unitPlacement unitType="armour" territory="Shiraz" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="fighter" territory="Shiraz" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="factory" territory="Shiraz" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="aaGun" territory="Shiraz" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="battleship" territory="Straits of Hormuz" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="transport" territory="Straits of Hormuz" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="infantry" territory="Kerman" quantity="1" owner="Iranians"/>
+      <unitPlacement unitType="infantry" territory="Bulgaria" quantity="3" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="Bulgaria" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="fighter" territory="Bulgaria" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Southern Russia" quantity="4" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="Southern Russia" quantity="2" owner="Russians"/>
+      <unitPlacement unitType="fighter" territory="Southern Russia" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="bomber" territory="Southern Russia" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="factory" territory="Southern Russia" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="aaGun" territory="Southern Russia" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="battleship" territory="Black sz 3" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="transport" territory="Black sz 3" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="carrier" territory="Black sz 3" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="submarine" territory="Black sz 3" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="fighter" territory="Black sz 3" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Caucasus" quantity="3" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="Caucasus" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="fighter" territory="Caucasus" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Georgia" quantity="2" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="Georgia" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Armenia" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Azerbayzhan" quantity="2" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="Azerbayzhan" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Kransnovodsk" quantity="2" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="Kransnovodsk" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="fighter" territory="Kransnovodsk" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="factory" territory="Kransnovodsk" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="aaGun" territory="Kransnovodsk" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="battleship" territory="Caspian sz 2" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="transport" territory="Caspian sz 2" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Ashkhabad" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Asmera" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Southern Ethiopia" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Yemen" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="armour" territory="Yemen" quantity="1" owner="Russians"/>
+      <unitPlacement unitType="infantry" territory="Istanbul" quantity="3" owner="Turks"/>
+      <unitPlacement unitType="armour" territory="Istanbul" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="fighter" territory="Istanbul" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="factory" territory="Istanbul" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="aaGun" territory="Istanbul" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="battleship" territory="Bosporus Strait" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="transport" territory="Bosporus Strait" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="carrier" territory="Bosporus Strait" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="fighter" territory="Bosporus Strait" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="submarine" territory="Dardenelles Strait" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="infantry" territory="Ankara" quantity="4" owner="Turks"/>
+      <unitPlacement unitType="armour" territory="Ankara" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="fighter" territory="Ankara" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="bomber" territory="Ankara" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="factory" territory="Ankara" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="aaGun" territory="Ankara" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="infantry" territory="Erzurum" quantity="2" owner="Turks"/>
+      <unitPlacement unitType="armour" territory="Erzurum" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="infantry" territory="Izmir" quantity="2" owner="Turks"/>
+      <unitPlacement unitType="infantry" territory="Adana" quantity="2" owner="Turks"/>
+      <unitPlacement unitType="armour" territory="Adana" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="transport" territory="Mediterranean sz 5" quantity="1" owner="Turks"/>
+      <unitPlacement unitType="infantry" territory="Djibouti" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Oman" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="United Arab Emirates" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Rigestan" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Herat" quantity="1"/>
+      <unitPlacement unitType="infantry" territory="Karachi" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Kuwait" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Isreal" quantity="4"/>
+      <unitPlacement unitType="fighter" territory="Isreal" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Syria" quantity="4"/>
+      <unitPlacement unitType="fighter" territory="Syria" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Greece" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Kurdistan" quantity="2"/>
+      <unitPlacement unitType="infantry" territory="Lebanon" quantity="1"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="SaudiEgyptians" resource="PUs" quantity="28"/>
+      <resourceGiven player="Iraqis" resource="PUs" quantity="24"/>
+      <resourceGiven player="Iranians" resource="PUs" quantity="24"/>
+      <resourceGiven player="Russians" resource="PUs" quantity="34"/>
+      <resourceGiven player="Turks" resource="PUs" quantity="20"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <!-- Use WW2V2 Rules -->
+    <property name="WW2V2" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Use Destroyers and Artillery" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="SaudiEgyptians bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Iraqis bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Iranians bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Russians bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Turks bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="2" max="3"/>
+    </property>
+    <property name="neutralCharge" value="0"/>
+    <property name="Neutrals Are Blitzable" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="maxFactoriesPerTerritory" value="1"/>
+    <property name="mapName" value="middle_east" editable="false"/>
+    <property name="notes" value=" &lt;html&gt; &lt;body bgcolor=&quot;000000&quot; align=&quot;left&quot;&gt; &lt;h1 style=&quot;font-size:200%;color:FF0000&quot; &gt;Middle East&lt;/h1&gt; &lt;br&gt; &lt;br&gt; &lt;h3 style=&quot;color:red&quot; &gt;Turn Order:&lt;br&gt;1. Insurrection Table&lt;br&gt;2. USSR Event Table&lt;br&gt;3. Technology Research&lt;br&gt;4. Purchase Units&lt;br&gt;5. Combat Movement&lt;br&gt;6. Combat&lt;br&gt;7. Non Combat Movement&lt;br&gt;8. Launch Rockets&lt;br&gt;9. Place New Units&lt;/h3&gt; &lt;br&gt; &lt;h3 style=&quot;color:red&quot; &gt;Notes:&lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* Insurrection, USSR Event and Technolgy Research tables can be rolled at http://theartifact.net/dice_simulator.htm if you trust your opponent or in a second hosted room if you don't.  Simply, host a minimap and edit in a couple 100 inf v 100 inf battles in low luck.  Use the 1d6 rolls for tables.&lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* Technology Research Table:  Costs 5 procuction points. Roll 1d6. If a 6 is rolled then roll 1d6 to determine what tech is achieved.&lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* Suez Canal and the Bosporus Strait are canals, Suez Canal and Istanbul must be controled to pass through.&lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* If a neutral army is attacked but not defeated the neutral forces are restored to full strength.&lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* Each nation begins the game with rocket technology and long range aircraft. &lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* Aircraft may not claim empty neutrals.&lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* There is no retreat from amphibious assaults, even for aircraft.&lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* Insurrection Table: This table reflects the turmoil of rebellions and civil war.  Each player rolls one die at the beginning of his turn and consults the table.  Note that if a 1 is rolled, the player does not have to roll on the Insurrection Table again for the rest of the game.&lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* USSR Special Naval Rule: The USSR is a unique nation.  It has units all across the board, and may bring extra ships onto three sides of the map.  Soviet naval power takes the form of three fleets which may be deployed by the USSR player. In each of his turns, the USSR player may choose to bring in one of the three fleets or he may prefer to hold one or more fleets in reserve instead of bringing out all three fleets on the first three rounds.  The fleets may be deployed in any order.  Only one fleet may be deployed per round.  Fleets may deploy any time during USSR turn. These three fleets may be deployed in Mediterranean sz 1 ,Mediterranean sz 2, South Arabian Sea or Indian ocean.  Fleets may not be deployed in the Black Sea or the Caspian Sea  (but new ships may be built there).  The three choices of fleets to deploy are A- 2 Infantry, 1 Transport and a Battleship; B- 2 Infantry and 1 Transport;or C- 2 Submarines.  (** since editing land units on water is troublesome, improvisation might be needed) &lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* USSR Special Naval Rule (cont): A fleet may move or attack the turn it is deployed.  It takes one movement to deploy on the edge of the board.  &lt;/h3&gt; &lt;h3 style=&quot;color:red&quot; &gt;* USSR Special Events Rule: This chart describes the troubles afflicting the disintegrating Soviet empire.  The purpose of the table is to counter-act the USSR's military arsenal and provide game balance.  The USSR player does not roll on the table on the first turn.  On the second and all remaining turns, the USSR player must roll 2d6 at the beginning of his turn.&lt;/h3&gt; &lt;br&gt; &lt;h3 style=&quot;color:red&quot; &gt;land units: ===========================================&lt;/h3&gt; &lt;table border=&quot;0&quot;bgcolor=&quot;000000&quot;color=&quot;FF0000&quot;font-size=&quot;12px&quot;&gt; &lt;tr&gt; &lt;th&gt;unit name&lt;/th&gt; &lt;th&gt;att&lt;/th&gt; &lt;th&gt;def&lt;/th&gt; &lt;th&gt;move&lt;/th&gt; &lt;th&gt;cost&lt;/th&gt; &lt;th&gt;transport cost &lt;/th&gt; &lt;/tr&gt;  &lt;tr bgcolor=&quot;000000&quot;&gt; &lt;td&gt;infantry &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;1 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;1 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;3 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;1 &lt;/td&gt; &lt;/tr&gt;  &lt;tr bgcolor=&quot;000000&quot;&gt; &lt;td&gt;armour &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;3 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;5 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;/tr&gt; &lt;/table&gt;  &lt;h3 style=&quot;color:red&quot; &gt;naval units: ===========================================&lt;/h3&gt; &lt;table border=&quot;0&quot;bgcolor=&quot;000000&quot;color=&quot;FF0000&quot;font-size=&quot;12px&quot;&gt; &lt;tr&gt; &lt;th&gt;unit name&lt;/th&gt; &lt;th&gt;att&lt;/th&gt; &lt;th&gt;def&lt;/th&gt; &lt;th&gt;move&lt;/th&gt; &lt;th&gt;cost&lt;/th&gt; &lt;th&gt;transport capacity &lt;/th&gt; &lt;th&gt;carrier capacity&lt;/th&gt; &lt;/tr&gt;  &lt;tr&gt; &lt;td&gt;transport &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;0 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;1 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;8 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;- &lt;/td&gt; &lt;/tr&gt;  &lt;tr&gt; &lt;td&gt;submarine &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;8 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;- &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;- &lt;/td&gt; &lt;/tr&gt;  &lt;tr&gt; &lt;td&gt;battleship &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;4 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;4 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;24 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;- &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;- &lt;/td&gt; &lt;/tr&gt;  &lt;tr&gt; &lt;td&gt;carrier &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;1 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;3 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;18 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;- &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;2 &lt;/td&gt; &lt;/tr&gt;  &lt;/table&gt;  &lt;h3 style=&quot;color:red&quot; &gt;air units: ===========================================&lt;/h3&gt; &lt;table border=&quot;0&quot;bgcolor=&quot;000000&quot;color=&quot;FF0000&quot;font-size=&quot;12px&quot;&gt; &lt;tr&gt; &lt;th&gt;unit name&lt;/th&gt; &lt;th&gt;att&lt;/th&gt; &lt;th&gt;def&lt;/th&gt; &lt;th&gt;move&lt;/th&gt; &lt;th&gt;cost&lt;/th&gt; &lt;th&gt;carrier cost&lt;/th&gt; &lt;/tr&gt;  &lt;tr bgcolor=&quot;000000&quot;&gt; &lt;td&gt;fighter &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;3 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;4 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;6 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;12 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;1 &lt;/td&gt; &lt;/tr&gt;  &lt;tr bgcolor=&quot;000000&quot;&gt; &lt;td&gt;bomber &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;4 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;1 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;8 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;15 &lt;/td&gt; &lt;td align=&quot;center&quot;&gt;- &lt;/td&gt; &lt;/tr&gt;  &lt;/table&gt;  &lt;br&gt;&lt;br&gt; &lt;br&gt;&lt;br&gt; &lt;br&gt;&lt;br&gt; "/>
+  </propertyList>
+</game>

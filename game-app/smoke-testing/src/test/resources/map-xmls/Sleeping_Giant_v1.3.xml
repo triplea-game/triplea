@@ -1,0 +1,2985 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Sleeping Giant" version="1.3"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="S. W. Ontario"/>
+    <territory name="W. Manitoba"/>
+    <territory name="S. E. Saskatchewan"/>
+    <territory name="N. E. Ontario"/>
+    <territory name="S. W. Quebec"/>
+    <territory name="S. Quebec"/>
+    <territory name="Labrador"/>
+    <territory name="Baffin Island"/>
+    <territory name="N. W. Ontario"/>
+    <territory name="N. E. Manitoba"/>
+    <territory name="Yukon"/>
+    <territory name="C. Quebec"/>
+    <territory name="S. Manitoba"/>
+    <territory name="N. W. Quebec"/>
+    <territory name="S. W. Saskatchewan"/>
+    <territory name="E. C. Alberta"/>
+    <territory name="Victoria Island"/>
+    <territory name="Keewatin"/>
+    <territory name="C. British Columbia"/>
+    <territory name="N. British Columbia"/>
+    <territory name="E. C. Quebec"/>
+    <territory name="Newfoundland"/>
+    <territory name="S. E. Ontario"/>
+    <territory name="S. Alberta"/>
+    <territory name="New Brunswick"/>
+    <territory name="Ottowa"/>
+    <territory name="S. British Columbia"/>
+    <territory name="Fort Smith"/>
+    <territory name="C. W. Quebec"/>
+    <territory name="N. Alberta"/>
+    <territory name="N. Saskatchewan"/>
+    <territory name="W. C. Alberta"/>
+    <territory name="C. Saskatchewan"/>
+    <territory name="C. Mexico S. E."/>
+    <territory name="N. Mexico C."/>
+    <territory name="Baja California"/>
+    <territory name="C. Mexico E."/>
+    <territory name="N. W. Mexico N. W."/>
+    <territory name="N. Mexico N."/>
+    <territory name="Ilas de Revillagigedo"/>
+    <territory name="C. Mexico W."/>
+    <territory name="N. W. Mexico S."/>
+    <territory name="C. Mexico N. C."/>
+    <territory name="S. E. Mexico S. W."/>
+    <territory name="S. E. Mexico N. E."/>
+    <territory name="N. Mexico E."/>
+    <territory name="N. W. Mexico N."/>
+    <territory name="N. Mexico W."/>
+    <territory name="Clipperton Island"/>
+    <territory name="Haiti"/>
+    <territory name="S. Honduras"/>
+    <territory name="S. W. Costa Rica"/>
+    <territory name="El Salvador"/>
+    <territory name="C. Nicaragua"/>
+    <territory name="S. W. Guatemala"/>
+    <territory name="W. Cuba"/>
+    <territory name="Dominican Republic"/>
+    <territory name="W. Nicaragua"/>
+    <territory name="Belize"/>
+    <territory name="E. Panama"/>
+    <territory name="N. Honduras"/>
+    <territory name="W. Panama"/>
+    <territory name="N. E. Guatemala"/>
+    <territory name="N. W. Costa Rica"/>
+    <territory name="E. Cuba"/>
+    <territory name="Jamaica"/>
+    <territory name="E. Nicaragua"/>
+    <territory name="C. Brazil E."/>
+    <territory name="N. Argentina"/>
+    <territory name="Equador"/>
+    <territory name="C. Brazil N. W."/>
+    <territory name="N. Peru"/>
+    <territory name="Guyana"/>
+    <territory name="C. Argentina"/>
+    <territory name="W. Brazil"/>
+    <territory name="W. Columbia"/>
+    <territory name="S. Brazil"/>
+    <territory name="E. Venezuala"/>
+    <territory name="C. Peru"/>
+    <territory name="W. Argentina"/>
+    <territory name="Bolivia"/>
+    <territory name="Chile"/>
+    <territory name="C. Brazil S. W."/>
+    <territory name="Paraguay"/>
+    <territory name="S. E. Argentina"/>
+    <territory name="N. Venezuala"/>
+    <territory name="Galapagos Islands"/>
+    <territory name="S. Peru"/>
+    <territory name="N. W. Columbia"/>
+    <territory name="Suriname"/>
+    <territory name="E. Columbia"/>
+    <territory name="Rhode Island"/>
+    <territory name="Tennessee"/>
+    <territory name="Louisiana"/>
+    <territory name="Mississippi"/>
+    <territory name="New Hamshire"/>
+    <territory name="Maine"/>
+    <territory name="Wisconsin"/>
+    <territory name="Washington"/>
+    <territory name="South Dakota"/>
+    <territory name="Alabama"/>
+    <territory name="Florida"/>
+    <territory name="Idaho"/>
+    <territory name="Virginia"/>
+    <territory name="Texas"/>
+    <territory name="New Jersey"/>
+    <territory name="Michigan"/>
+    <territory name="Arkansas"/>
+    <territory name="Iowa"/>
+    <territory name="North Dakota"/>
+    <territory name="Indiana"/>
+    <territory name="Minnesota"/>
+    <territory name="Hawaii"/>
+    <territory name="Montana"/>
+    <territory name="Bahamas"/>
+    <territory name="North Carolina"/>
+    <territory name="New Mexico"/>
+    <territory name="California"/>
+    <territory name="Wyoming"/>
+    <territory name="Kansas"/>
+    <territory name="Missouri"/>
+    <territory name="Oregon"/>
+    <territory name="Illinois"/>
+    <territory name="Connecticut"/>
+    <territory name="Arizona"/>
+    <territory name="Kodiak Island"/>
+    <territory name="Kentucky"/>
+    <territory name="Alaska"/>
+    <territory name="Utah"/>
+    <territory name="Georgia"/>
+    <territory name="Nebraska"/>
+    <territory name="South Carolina"/>
+    <territory name="Massachusetts"/>
+    <territory name="Maryland"/>
+    <territory name="West Virginia"/>
+    <territory name="Ohio"/>
+    <territory name="Vermont"/>
+    <territory name="New York"/>
+    <territory name="Pennsylvania"/>
+    <territory name="Colorado"/>
+    <territory name="Nevada"/>
+    <territory name="Oklahoma"/>
+    <territory name="E. Gulf Of Mexico" water="true"/>
+    <territory name="P. 41" water="true"/>
+    <territory name="P. 40" water="true"/>
+    <territory name="P. 111" water="true"/>
+    <territory name="P. 110" water="true"/>
+    <territory name="P. 116" water="true"/>
+    <territory name="P. 117" water="true"/>
+    <territory name="P. 39" water="true"/>
+    <territory name="P. 118" water="true"/>
+    <territory name="P. 119" water="true"/>
+    <territory name="P. 112" water="true"/>
+    <territory name="P. 113" water="true"/>
+    <territory name="P. 114" water="true"/>
+    <territory name="P. 115" water="true"/>
+    <territory name="P. 33" water="true"/>
+    <territory name="P. 34" water="true"/>
+    <territory name="P. 31" water="true"/>
+    <territory name="W. Hudson Bay" water="true"/>
+    <territory name="P. 32" water="true"/>
+    <territory name="P. 37" water="true"/>
+    <territory name="P. 38" water="true"/>
+    <territory name="P. 35" water="true"/>
+    <territory name="P. 36" water="true"/>
+    <territory name="Lake Erie" water="true"/>
+    <territory name="P. 30" water="true"/>
+    <territory name="P. 120" water="true"/>
+    <territory name="N. E. Hudson Bay" water="true"/>
+    <territory name="P. 28" water="true"/>
+    <territory name="P. 29" water="true"/>
+    <territory name="P. 20" water="true"/>
+    <territory name="P. 21" water="true"/>
+    <territory name="P. 22" water="true"/>
+    <territory name="P. 23" water="true"/>
+    <territory name="P. 24" water="true"/>
+    <territory name="P. 25" water="true"/>
+    <territory name="P. 26" water="true"/>
+    <territory name="P. 27" water="true"/>
+    <territory name="P. 19" water="true"/>
+    <territory name="P. 99" water="true"/>
+    <territory name="P. 98" water="true"/>
+    <territory name="P. 17" water="true"/>
+    <territory name="P. 97" water="true"/>
+    <territory name="P. 18" water="true"/>
+    <territory name="P. 15" water="true"/>
+    <territory name="P. 16" water="true"/>
+    <territory name="P. 13" water="true"/>
+    <territory name="P. 14" water="true"/>
+    <territory name="P. 11" water="true"/>
+    <territory name="P. 12" water="true"/>
+    <territory name="P. 10" water="true"/>
+    <territory name="P. 93" water="true"/>
+    <territory name="P. 94" water="true"/>
+    <territory name="P. 95" water="true"/>
+    <territory name="P. 96" water="true"/>
+    <territory name="P. 100" water="true"/>
+    <territory name="P. 90" water="true"/>
+    <territory name="P. 91" water="true"/>
+    <territory name="P. 92" water="true"/>
+    <territory name="P. 103" water="true"/>
+    <territory name="P. 104" water="true"/>
+    <territory name="P. 101" water="true"/>
+    <territory name="P. 102" water="true"/>
+    <territory name="P. 87" water="true"/>
+    <territory name="P. 108" water="true"/>
+    <territory name="P. 86" water="true"/>
+    <territory name="P. 89" water="true"/>
+    <territory name="P. 105" water="true"/>
+    <territory name="P. 88" water="true"/>
+    <territory name="P. 106" water="true"/>
+    <territory name="P. 109" water="true"/>
+    <territory name="P. 81" water="true"/>
+    <territory name="P. 80" water="true"/>
+    <territory name="P. 85" water="true"/>
+    <territory name="P. 84" water="true"/>
+    <territory name="P. 83" water="true"/>
+    <territory name="P. 82" water="true"/>
+    <territory name="A. 2" water="true"/>
+    <territory name="A. 1" water="true"/>
+    <territory name="P. 77" water="true"/>
+    <territory name="P. 78" water="true"/>
+    <territory name="P. 75" water="true"/>
+    <territory name="P. 76" water="true"/>
+    <territory name="P. 79" water="true"/>
+    <territory name="P. 70" water="true"/>
+    <territory name="P. 72" water="true"/>
+    <territory name="Lake Ontario" water="true"/>
+    <territory name="P. 71" water="true"/>
+    <territory name="P. 74" water="true"/>
+    <territory name="P. 73" water="true"/>
+    <territory name="A. 3" water="true"/>
+    <territory name="A. 5" water="true"/>
+    <territory name="A. 6" water="true"/>
+    <territory name="A. 7" water="true"/>
+    <territory name="A. 8" water="true"/>
+    <territory name="A. 9" water="true"/>
+    <territory name="P. 64" water="true"/>
+    <territory name="P. 65" water="true"/>
+    <territory name="P. 66" water="true"/>
+    <territory name="Lake Superior" water="true"/>
+    <territory name="P. 67" water="true"/>
+    <territory name="P. 68" water="true"/>
+    <territory name="P. 69" water="true"/>
+    <territory name="P. 63" water="true"/>
+    <territory name="P. 62" water="true"/>
+    <territory name="P. 61" water="true"/>
+    <territory name="St. Lawrence River" water="true"/>
+    <territory name="P. 60" water="true"/>
+    <territory name="P. 59" water="true"/>
+    <territory name="P. 57" water="true"/>
+    <territory name="P. 58" water="true"/>
+    <territory name="P. 55" water="true"/>
+    <territory name="E. Hudson Bay" water="true"/>
+    <territory name="P. 56" water="true"/>
+    <territory name="P. 53" water="true"/>
+    <territory name="P. 54" water="true"/>
+    <territory name="P. 50" water="true"/>
+    <territory name="P. 52" water="true"/>
+    <territory name="P. 51" water="true"/>
+    <territory name="P. 1" water="true"/>
+    <territory name="S. W. Gulf Of Mexico" water="true"/>
+    <territory name="P. 2" water="true"/>
+    <territory name="P. 46" water="true"/>
+    <territory name="P. 3" water="true"/>
+    <territory name="P. 47" water="true"/>
+    <territory name="P. 48" water="true"/>
+    <territory name="P. 4" water="true"/>
+    <territory name="P. 49" water="true"/>
+    <territory name="P. 5" water="true"/>
+    <territory name="P. 42" water="true"/>
+    <territory name="P. 6" water="true"/>
+    <territory name="P. 43" water="true"/>
+    <territory name="P. 7" water="true"/>
+    <territory name="P. 44" water="true"/>
+    <territory name="P. 8" water="true"/>
+    <territory name="P. 45" water="true"/>
+    <territory name="P. 9" water="true"/>
+    <territory name="A. 28" water="true"/>
+    <territory name="A. 27" water="true"/>
+    <territory name="A. 29" water="true"/>
+    <territory name="A. 24" water="true"/>
+    <territory name="A. 23" water="true"/>
+    <territory name="A. 26" water="true"/>
+    <territory name="A. 25" water="true"/>
+    <territory name="A. 20" water="true"/>
+    <territory name="A. 22" water="true"/>
+    <territory name="A. 21" water="true"/>
+    <territory name="A. 19" water="true"/>
+    <territory name="Lake Huron" water="true"/>
+    <territory name="A. 18" water="true"/>
+    <territory name="A. 17" water="true"/>
+    <territory name="A. 16" water="true"/>
+    <territory name="A. 15" water="true"/>
+    <territory name="A. 13" water="true"/>
+    <territory name="A. 12" water="true"/>
+    <territory name="A. 11" water="true"/>
+    <territory name="A. 49" water="true"/>
+    <territory name="A. 42" water="true"/>
+    <territory name="A. 41" water="true"/>
+    <territory name="A. 44" water="true"/>
+    <territory name="A. 43" water="true"/>
+    <territory name="A. 46" water="true"/>
+    <territory name="A. 45" water="true"/>
+    <territory name="A. 48" water="true"/>
+    <territory name="A. 47" water="true"/>
+    <territory name="A. 40" water="true"/>
+    <territory name="A. 39" water="true"/>
+    <territory name="N. W. Hudson Bay" water="true"/>
+    <territory name="A. 38" water="true"/>
+    <territory name="A. 33" water="true"/>
+    <territory name="A. 32" water="true"/>
+    <territory name="A. 31" water="true"/>
+    <territory name="A. 30" water="true"/>
+    <territory name="A. 37" water="true"/>
+    <territory name="A. 36" water="true"/>
+    <territory name="A. 35" water="true"/>
+    <territory name="A. 34" water="true"/>
+    <territory name="Greenland"/>
+    <territory name="A. 56" water="true"/>
+    <territory name="A. 55" water="true"/>
+    <territory name="A. 52" water="true"/>
+    <territory name="A. 51" water="true"/>
+    <territory name="A. 50" water="true"/>
+    <territory name="Lake Michigan" water="true"/>
+    <territory name="S. Hudson Bay" water="true"/>
+    <territory name="N. W. Gulf Of Mexico" water="true"/>
+    <!-- Territory Connections -->
+    <connection t1="S. W. Ontario" t2="N. E. Ontario"/>
+    <connection t1="S. W. Ontario" t2="N. W. Ontario"/>
+    <connection t1="S. W. Ontario" t2="Lake Superior"/>
+    <connection t1="S. W. Ontario" t2="S. Manitoba"/>
+    <connection t1="S. W. Ontario" t2="Minnesota"/>
+    <connection t1="S. W. Ontario" t2="S. E. Ontario"/>
+    <connection t1="W. Manitoba" t2="S. E. Saskatchewan"/>
+    <connection t1="W. Manitoba" t2="N. E. Manitoba"/>
+    <connection t1="W. Manitoba" t2="S. Manitoba"/>
+    <connection t1="W. Manitoba" t2="N. Saskatchewan"/>
+    <connection t1="W. Manitoba" t2="C. Saskatchewan"/>
+    <connection t1="S. E. Saskatchewan" t2="North Dakota"/>
+    <connection t1="S. E. Saskatchewan" t2="S. Manitoba"/>
+    <connection t1="S. E. Saskatchewan" t2="Montana"/>
+    <connection t1="S. E. Saskatchewan" t2="S. W. Saskatchewan"/>
+    <connection t1="S. E. Saskatchewan" t2="C. Saskatchewan"/>
+    <connection t1="N. E. Ontario" t2="N. W. Ontario"/>
+    <connection t1="N. E. Ontario" t2="S. E. Ontario"/>
+    <connection t1="N. E. Ontario" t2="S. Hudson Bay"/>
+    <connection t1="S. W. Quebec" t2="S. Quebec"/>
+    <connection t1="S. W. Quebec" t2="S. E. Ontario"/>
+    <connection t1="S. W. Quebec" t2="C. W. Quebec"/>
+    <connection t1="S. Quebec" t2="C. Quebec"/>
+    <connection t1="S. Quebec" t2="E. C. Quebec"/>
+    <connection t1="S. Quebec" t2="S. E. Ontario"/>
+    <connection t1="S. Quebec" t2="C. W. Quebec"/>
+    <connection t1="Labrador" t2="A. 6"/>
+    <connection t1="Labrador" t2="A. 7"/>
+    <connection t1="Labrador" t2="C. Quebec"/>
+    <connection t1="Labrador" t2="A. 12"/>
+    <connection t1="Labrador" t2="E. C. Quebec"/>
+    <connection t1="Baffin Island" t2="A. 6"/>
+    <connection t1="N. W. Ontario" t2="N. E. Manitoba"/>
+    <connection t1="N. W. Ontario" t2="S. Manitoba"/>
+    <connection t1="N. W. Ontario" t2="S. Hudson Bay"/>
+    <connection t1="N. E. Manitoba" t2="S. Manitoba"/>
+    <connection t1="N. E. Manitoba" t2="Fort Smith"/>
+    <connection t1="N. E. Manitoba" t2="N. Saskatchewan"/>
+    <connection t1="N. E. Manitoba" t2="S. Hudson Bay"/>
+    <connection t1="Yukon" t2="N. British Columbia"/>
+    <connection t1="Yukon" t2="Alaska"/>
+    <connection t1="Yukon" t2="Fort Smith"/>
+    <connection t1="C. Quebec" t2="N. W. Quebec"/>
+    <connection t1="C. Quebec" t2="E. C. Quebec"/>
+    <connection t1="C. Quebec" t2="C. W. Quebec"/>
+    <connection t1="S. Manitoba" t2="Minnesota"/>
+    <connection t1="N. W. Quebec" t2="C. W. Quebec"/>
+    <connection t1="N. W. Quebec" t2="S. Hudson Bay"/>
+    <connection t1="S. W. Saskatchewan" t2="E. C. Alberta"/>
+    <connection t1="S. W. Saskatchewan" t2="C. Saskatchewan"/>
+    <connection t1="E. C. Alberta" t2="S. Alberta"/>
+    <connection t1="E. C. Alberta" t2="N. Alberta"/>
+    <connection t1="E. C. Alberta" t2="W. C. Alberta"/>
+    <connection t1="Keewatin" t2="N. W. Hudson Bay"/>
+    <connection t1="Keewatin" t2="Fort Smith"/>
+    <connection t1="C. British Columbia" t2="N. British Columbia"/>
+    <connection t1="C. British Columbia" t2="S. British Columbia"/>
+    <connection t1="C. British Columbia" t2="N. Alberta"/>
+    <connection t1="C. British Columbia" t2="W. C. Alberta"/>
+    <connection t1="N. British Columbia" t2="Fort Smith"/>
+    <connection t1="N. British Columbia" t2="N. Alberta"/>
+    <connection t1="S. E. Ontario" t2="Ottowa"/>
+    <connection t1="S. E. Ontario" t2="C. W. Quebec"/>
+    <connection t1="S. E. Ontario" t2="S. Hudson Bay"/>
+    <connection t1="S. Alberta" t2="S. British Columbia"/>
+    <connection t1="S. Alberta" t2="W. C. Alberta"/>
+    <connection t1="New Brunswick" t2="Vermont"/>
+    <connection t1="New Brunswick" t2="New York"/>
+    <connection t1="Fort Smith" t2="N. Alberta"/>
+    <connection t1="Fort Smith" t2="N. Saskatchewan"/>
+    <connection t1="C. W. Quebec" t2="S. Hudson Bay"/>
+    <connection t1="N. Alberta" t2="N. Saskatchewan"/>
+    <connection t1="N. Alberta" t2="W. C. Alberta"/>
+    <connection t1="N. Alberta" t2="C. Saskatchewan"/>
+    <connection t1="N. Saskatchewan" t2="C. Saskatchewan"/>
+    <connection t1="C. Mexico S. E." t2="P. 21"/>
+    <connection t1="C. Mexico S. E." t2="P. 22"/>
+    <connection t1="C. Mexico S. E." t2="C. Mexico E."/>
+    <connection t1="C. Mexico S. E." t2="C. Mexico W."/>
+    <connection t1="C. Mexico S. E." t2="C. Mexico N. C."/>
+    <connection t1="C. Mexico S. E." t2="S. E. Mexico S. W."/>
+    <connection t1="N. Mexico C." t2="Texas"/>
+    <connection t1="N. Mexico C." t2="N. Mexico N."/>
+    <connection t1="N. Mexico C." t2="N. Mexico E."/>
+    <connection t1="N. Mexico C." t2="N. Mexico W."/>
+    <connection t1="Baja California" t2="N. W. Mexico N. W."/>
+    <connection t1="Baja California" t2="P. 8"/>
+    <connection t1="Baja California" t2="California"/>
+    <connection t1="C. Mexico E." t2="S. W. Gulf Of Mexico"/>
+    <connection t1="C. Mexico E." t2="C. Mexico N. C."/>
+    <connection t1="C. Mexico E." t2="S. E. Mexico S. W."/>
+    <connection t1="C. Mexico E." t2="N. Mexico E."/>
+    <connection t1="N. W. Mexico N. W." t2="New Mexico"/>
+    <connection t1="N. W. Mexico N. W." t2="California"/>
+    <connection t1="N. W. Mexico N. W." t2="N. W. Mexico S."/>
+    <connection t1="N. W. Mexico N. W." t2="Arizona"/>
+    <connection t1="N. W. Mexico N. W." t2="N. W. Mexico N."/>
+    <connection t1="N. Mexico N." t2="N. W. Mexico S."/>
+    <connection t1="N. Mexico N." t2="N. W. Mexico N."/>
+    <connection t1="N. Mexico N." t2="N. Mexico W."/>
+    <connection t1="Ilas de Revillagigedo" t2="P. 15"/>
+    <connection t1="C. Mexico W." t2="N. W. Mexico S."/>
+    <connection t1="C. Mexico W." t2="C. Mexico N. C."/>
+    <connection t1="C. Mexico W." t2="N. Mexico W."/>
+    <connection t1="N. W. Mexico S." t2="N. W. Mexico N."/>
+    <connection t1="N. W. Mexico S." t2="N. Mexico W."/>
+    <connection t1="C. Mexico N. C." t2="N. Mexico E."/>
+    <connection t1="C. Mexico N. C." t2="N. Mexico W."/>
+    <connection t1="S. E. Mexico S. W." t2="S. E. Mexico N. E."/>
+    <connection t1="S. E. Mexico S. W." t2="N. E. Guatemala"/>
+    <connection t1="S. E. Mexico N. E." t2="N. E. Guatemala"/>
+    <connection t1="N. Mexico E." t2="N. Mexico W."/>
+    <connection t1="N. Mexico E." t2="N. W. Gulf Of Mexico"/>
+    <connection t1="Clipperton Island" t2="P. 63"/>
+    <connection t1="Haiti" t2="Dominican Republic"/>
+    <connection t1="Haiti" t2="A. 41"/>
+    <connection t1="Haiti" t2="A. 46"/>
+    <connection t1="S. Honduras" t2="P. 30"/>
+    <connection t1="S. Honduras" t2="El Salvador"/>
+    <connection t1="S. Honduras" t2="S. W. Guatemala"/>
+    <connection t1="S. Honduras" t2="W. Nicaragua"/>
+    <connection t1="S. Honduras" t2="N. Honduras"/>
+    <connection t1="S. Honduras" t2="N. E. Guatemala"/>
+    <connection t1="S. Honduras" t2="E. Nicaragua"/>
+    <connection t1="S. W. Costa Rica" t2="W. Panama"/>
+    <connection t1="S. W. Costa Rica" t2="A. 50"/>
+    <connection t1="S. W. Costa Rica" t2="N. W. Costa Rica"/>
+    <connection t1="S. W. Costa Rica" t2="E. Nicaragua"/>
+    <connection t1="El Salvador" t2="S. W. Guatemala"/>
+    <connection t1="C. Nicaragua" t2="W. Nicaragua"/>
+    <connection t1="C. Nicaragua" t2="N. W. Costa Rica"/>
+    <connection t1="C. Nicaragua" t2="E. Nicaragua"/>
+    <connection t1="S. W. Guatemala" t2="S. E. Mexico S. W."/>
+    <connection t1="S. W. Guatemala" t2="N. E. Guatemala"/>
+    <connection t1="W. Cuba" t2="A. 40"/>
+    <connection t1="W. Cuba" t2="E. Cuba"/>
+    <connection t1="Dominican Republic" t2="A. 41"/>
+    <connection t1="Dominican Republic" t2="A. 46"/>
+    <connection t1="W. Nicaragua" t2="E. Nicaragua"/>
+    <connection t1="Belize" t2="A. 44"/>
+    <connection t1="Belize" t2="S. E. Mexico N. E."/>
+    <connection t1="Belize" t2="N. E. Guatemala"/>
+    <connection t1="E. Panama" t2="W. Panama"/>
+    <connection t1="E. Panama" t2="A. 51"/>
+    <connection t1="E. Panama" t2="A. 50"/>
+    <connection t1="E. Panama" t2="N. W. Columbia"/>
+    <connection t1="N. Honduras" t2="N. E. Guatemala"/>
+    <connection t1="N. Honduras" t2="E. Nicaragua"/>
+    <connection t1="W. Panama" t2="A. 50"/>
+    <connection t1="N. W. Costa Rica" t2="E. Nicaragua"/>
+    <connection t1="C. Brazil E." t2="C. Brazil N. W."/>
+    <connection t1="C. Brazil E." t2="Guyana"/>
+    <connection t1="C. Brazil E." t2="S. Brazil"/>
+    <connection t1="C. Brazil E." t2="C. Brazil S. W."/>
+    <connection t1="N. Argentina" t2="C. Argentina"/>
+    <connection t1="N. Argentina" t2="W. Argentina"/>
+    <connection t1="N. Argentina" t2="Bolivia"/>
+    <connection t1="N. Argentina" t2="Chile"/>
+    <connection t1="N. Argentina" t2="Paraguay"/>
+    <connection t1="Equador" t2="N. Peru"/>
+    <connection t1="Equador" t2="W. Columbia"/>
+    <connection t1="Equador" t2="P. 59"/>
+    <connection t1="Equador" t2="P. 49"/>
+    <connection t1="C. Brazil N. W." t2="Guyana"/>
+    <connection t1="C. Brazil N. W." t2="W. Brazil"/>
+    <connection t1="C. Brazil N. W." t2="E. Venezuala"/>
+    <connection t1="C. Brazil N. W." t2="C. Brazil S. W."/>
+    <connection t1="N. Peru" t2="W. Brazil"/>
+    <connection t1="N. Peru" t2="W. Columbia"/>
+    <connection t1="N. Peru" t2="C. Peru"/>
+    <connection t1="N. Peru" t2="P. 68"/>
+    <connection t1="N. Peru" t2="P. 59"/>
+    <connection t1="N. Peru" t2="E. Columbia"/>
+    <connection t1="Guyana" t2="E. Venezuala"/>
+    <connection t1="Guyana" t2="A. 56"/>
+    <connection t1="Guyana" t2="Suriname"/>
+    <connection t1="C. Argentina" t2="W. Argentina"/>
+    <connection t1="C. Argentina" t2="Paraguay"/>
+    <connection t1="C. Argentina" t2="S. E. Argentina"/>
+    <connection t1="W. Brazil" t2="E. Venezuala"/>
+    <connection t1="W. Brazil" t2="C. Peru"/>
+    <connection t1="W. Brazil" t2="Bolivia"/>
+    <connection t1="W. Brazil" t2="C. Brazil S. W."/>
+    <connection t1="W. Brazil" t2="S. Peru"/>
+    <connection t1="W. Brazil" t2="E. Columbia"/>
+    <connection t1="W. Columbia" t2="P. 49"/>
+    <connection t1="W. Columbia" t2="N. W. Columbia"/>
+    <connection t1="W. Columbia" t2="E. Columbia"/>
+    <connection t1="S. Brazil" t2="Bolivia"/>
+    <connection t1="S. Brazil" t2="C. Brazil S. W."/>
+    <connection t1="S. Brazil" t2="Paraguay"/>
+    <connection t1="E. Venezuala" t2="N. Venezuala"/>
+    <connection t1="E. Venezuala" t2="A. 56"/>
+    <connection t1="E. Venezuala" t2="A. 55"/>
+    <connection t1="E. Venezuala" t2="E. Columbia"/>
+    <connection t1="C. Peru" t2="P. 78"/>
+    <connection t1="C. Peru" t2="P. 68"/>
+    <connection t1="C. Peru" t2="S. Peru"/>
+    <connection t1="W. Argentina" t2="Chile"/>
+    <connection t1="Bolivia" t2="Chile"/>
+    <connection t1="Bolivia" t2="C. Brazil S. W."/>
+    <connection t1="Bolivia" t2="Paraguay"/>
+    <connection t1="Bolivia" t2="S. Peru"/>
+    <connection t1="Chile" t2="S. Peru"/>
+    <connection t1="N. Venezuala" t2="A. 55"/>
+    <connection t1="N. Venezuala" t2="A. 52"/>
+    <connection t1="N. Venezuala" t2="N. W. Columbia"/>
+    <connection t1="N. Venezuala" t2="E. Columbia"/>
+    <connection t1="Galapagos Islands" t2="P. 117"/>
+    <connection t1="N. W. Columbia" t2="E. Columbia"/>
+    <connection t1="Rhode Island" t2="A. 23"/>
+    <connection t1="Rhode Island" t2="Connecticut"/>
+    <connection t1="Rhode Island" t2="Massachusetts"/>
+    <connection t1="Tennessee" t2="Mississippi"/>
+    <connection t1="Tennessee" t2="Alabama"/>
+    <connection t1="Tennessee" t2="Virginia"/>
+    <connection t1="Tennessee" t2="Arkansas"/>
+    <connection t1="Tennessee" t2="North Carolina"/>
+    <connection t1="Tennessee" t2="Missouri"/>
+    <connection t1="Tennessee" t2="Kentucky"/>
+    <connection t1="Tennessee" t2="Georgia"/>
+    <connection t1="Louisiana" t2="Mississippi"/>
+    <connection t1="Louisiana" t2="Texas"/>
+    <connection t1="Louisiana" t2="Arkansas"/>
+    <connection t1="Louisiana" t2="N. W. Gulf Of Mexico"/>
+    <connection t1="Mississippi" t2="Alabama"/>
+    <connection t1="Mississippi" t2="Arkansas"/>
+    <connection t1="Mississippi" t2="N. W. Gulf Of Mexico"/>
+    <connection t1="New Hamshire" t2="Maine"/>
+    <connection t1="New Hamshire" t2="A. 23"/>
+    <connection t1="New Hamshire" t2="A. 19"/>
+    <connection t1="New Hamshire" t2="New Brunswick"/>
+    <connection t1="New Hamshire" t2="Massachusetts"/>
+    <connection t1="New Hamshire" t2="Vermont"/>
+    <connection t1="Maine" t2="A. 19"/>
+    <connection t1="Maine" t2="New Brunswick"/>
+    <connection t1="Wisconsin" t2="Lake Superior"/>
+    <connection t1="Wisconsin" t2="Michigan"/>
+    <connection t1="Wisconsin" t2="Iowa"/>
+    <connection t1="Wisconsin" t2="Minnesota"/>
+    <connection t1="Wisconsin" t2="Illinois"/>
+    <connection t1="Wisconsin" t2="Lake Michigan"/>
+    <connection t1="Washington" t2="Idaho"/>
+    <connection t1="Washington" t2="P. 4"/>
+    <connection t1="Washington" t2="Oregon"/>
+    <connection t1="Washington" t2="S. Alberta"/>
+    <connection t1="Washington" t2="S. British Columbia"/>
+    <connection t1="South Dakota" t2="Iowa"/>
+    <connection t1="South Dakota" t2="North Dakota"/>
+    <connection t1="South Dakota" t2="Minnesota"/>
+    <connection t1="South Dakota" t2="Montana"/>
+    <connection t1="South Dakota" t2="Wyoming"/>
+    <connection t1="South Dakota" t2="Nebraska"/>
+    <connection t1="Alabama" t2="Florida"/>
+    <connection t1="Alabama" t2="Georgia"/>
+    <connection t1="Florida" t2="A. 40"/>
+    <connection t1="Florida" t2="A. 31"/>
+    <connection t1="Florida" t2="A. 36"/>
+    <connection t1="Florida" t2="Georgia"/>
+    <connection t1="Idaho" t2="Montana"/>
+    <connection t1="Idaho" t2="Wyoming"/>
+    <connection t1="Idaho" t2="Oregon"/>
+    <connection t1="Idaho" t2="S. Alberta"/>
+    <connection t1="Idaho" t2="Utah"/>
+    <connection t1="Idaho" t2="Nevada"/>
+    <connection t1="Virginia" t2="North Carolina"/>
+    <connection t1="Virginia" t2="A. 27"/>
+    <connection t1="Virginia" t2="Kentucky"/>
+    <connection t1="Virginia" t2="Maryland"/>
+    <connection t1="Virginia" t2="West Virginia"/>
+    <connection t1="Texas" t2="Arkansas"/>
+    <connection t1="Texas" t2="N. Mexico N."/>
+    <connection t1="Texas" t2="New Mexico"/>
+    <connection t1="Texas" t2="N. Mexico E."/>
+    <connection t1="Texas" t2="N. W. Mexico N."/>
+    <connection t1="Texas" t2="N. W. Gulf Of Mexico"/>
+    <connection t1="Texas" t2="Oklahoma"/>
+    <connection t1="New Jersey" t2="A. 27"/>
+    <connection t1="New Jersey" t2="A. 23"/>
+    <connection t1="New Jersey" t2="Maryland"/>
+    <connection t1="New Jersey" t2="New York"/>
+    <connection t1="New Jersey" t2="Pennsylvania"/>
+    <connection t1="Michigan" t2="Indiana"/>
+    <connection t1="Michigan" t2="Ohio"/>
+    <connection t1="Michigan" t2="Lake Michigan"/>
+    <connection t1="Arkansas" t2="Missouri"/>
+    <connection t1="Arkansas" t2="Oklahoma"/>
+    <connection t1="Iowa" t2="Minnesota"/>
+    <connection t1="Iowa" t2="Missouri"/>
+    <connection t1="Iowa" t2="Illinois"/>
+    <connection t1="Iowa" t2="Nebraska"/>
+    <connection t1="North Dakota" t2="S. Manitoba"/>
+    <connection t1="North Dakota" t2="Minnesota"/>
+    <connection t1="North Dakota" t2="Montana"/>
+    <connection t1="Indiana" t2="Illinois"/>
+    <connection t1="Indiana" t2="Kentucky"/>
+    <connection t1="Indiana" t2="Ohio"/>
+    <connection t1="Indiana" t2="Lake Michigan"/>
+    <connection t1="Hawaii" t2="P. 100"/>
+    <connection t1="Montana" t2="S. W. Saskatchewan"/>
+    <connection t1="Montana" t2="E. C. Alberta"/>
+    <connection t1="Montana" t2="Wyoming"/>
+    <connection t1="Montana" t2="S. Alberta"/>
+    <connection t1="Bahamas" t2="A. 40"/>
+    <connection t1="Bahamas" t2="A. 36"/>
+    <connection t1="North Carolina" t2="A. 27"/>
+    <connection t1="North Carolina" t2="A. 31"/>
+    <connection t1="North Carolina" t2="Georgia"/>
+    <connection t1="North Carolina" t2="South Carolina"/>
+    <connection t1="New Mexico" t2="Arizona"/>
+    <connection t1="New Mexico" t2="Colorado"/>
+    <connection t1="New Mexico" t2="N. W. Mexico N."/>
+    <connection t1="New Mexico" t2="Oklahoma"/>
+    <connection t1="California" t2="Oregon"/>
+    <connection t1="California" t2="Arizona"/>
+    <connection t1="California" t2="Nevada"/>
+    <connection t1="Wyoming" t2="Utah"/>
+    <connection t1="Wyoming" t2="Nebraska"/>
+    <connection t1="Wyoming" t2="Colorado"/>
+    <connection t1="Kansas" t2="Missouri"/>
+    <connection t1="Kansas" t2="Nebraska"/>
+    <connection t1="Kansas" t2="Colorado"/>
+    <connection t1="Kansas" t2="Oklahoma"/>
+    <connection t1="Missouri" t2="Illinois"/>
+    <connection t1="Missouri" t2="Kentucky"/>
+    <connection t1="Missouri" t2="Nebraska"/>
+    <connection t1="Missouri" t2="Oklahoma"/>
+    <connection t1="Oregon" t2="Nevada"/>
+    <connection t1="Illinois" t2="Kentucky"/>
+    <connection t1="Illinois" t2="Lake Michigan"/>
+    <connection t1="Connecticut" t2="Massachusetts"/>
+    <connection t1="Connecticut" t2="New York"/>
+    <connection t1="Arizona" t2="Utah"/>
+    <connection t1="Arizona" t2="Nevada"/>
+    <connection t1="Kentucky" t2="Ohio"/>
+    <connection t1="Kentucky" t2="West Virginia"/>
+    <connection t1="Utah" t2="Colorado"/>
+    <connection t1="Utah" t2="Nevada"/>
+    <connection t1="Georgia" t2="South Carolina"/>
+    <connection t1="Nebraska" t2="Colorado"/>
+    <connection t1="Massachusetts" t2="Vermont"/>
+    <connection t1="Massachusetts" t2="New York"/>
+    <connection t1="Maryland" t2="West Virginia"/>
+    <connection t1="Maryland" t2="Pennsylvania"/>
+    <connection t1="West Virginia" t2="Pennsylvania"/>
+    <connection t1="Ohio" t2="West Virginia"/>
+    <connection t1="Ohio" t2="Pennsylvania"/>
+    <connection t1="Vermont" t2="New York"/>
+    <connection t1="New York" t2="Pennsylvania"/>
+    <connection t1="Colorado" t2="Oklahoma"/>
+    <connection t1="E. Gulf Of Mexico" t2="Mississippi"/>
+    <connection t1="E. Gulf Of Mexico" t2="Alabama"/>
+    <connection t1="E. Gulf Of Mexico" t2="Florida"/>
+    <connection t1="E. Gulf Of Mexico" t2="S. W. Gulf Of Mexico"/>
+    <connection t1="E. Gulf Of Mexico" t2="W. Cuba"/>
+    <connection t1="E. Gulf Of Mexico" t2="A. 44"/>
+    <connection t1="E. Gulf Of Mexico" t2="A. 40"/>
+    <connection t1="E. Gulf Of Mexico" t2="S. E. Mexico N. E."/>
+    <connection t1="E. Gulf Of Mexico" t2="N. W. Gulf Of Mexico"/>
+    <connection t1="P. 41" t2="P. 31"/>
+    <connection t1="P. 41" t2="P. 32"/>
+    <connection t1="P. 41" t2="P. 50"/>
+    <connection t1="P. 41" t2="P. 51"/>
+    <connection t1="P. 41" t2="P. 42"/>
+    <connection t1="P. 40" t2="P. 39"/>
+    <connection t1="P. 40" t2="W. Columbia"/>
+    <connection t1="P. 40" t2="P. 49"/>
+    <connection t1="P. 40" t2="E. Panama"/>
+    <connection t1="P. 40" t2="W. Panama"/>
+    <connection t1="P. 40" t2="N. W. Columbia"/>
+    <connection t1="P. 111" t2="P. 112"/>
+    <connection t1="P. 111" t2="P. 100"/>
+    <connection t1="P. 110" t2="P. 120"/>
+    <connection t1="P. 110" t2="P. 99"/>
+    <connection t1="P. 110" t2="P. 109"/>
+    <connection t1="P. 110" t2="Chile"/>
+    <connection t1="P. 116" t2="P. 117"/>
+    <connection t1="P. 116" t2="P. 115"/>
+    <connection t1="P. 116" t2="P. 104"/>
+    <connection t1="P. 116" t2="P. 105"/>
+    <connection t1="P. 117" t2="P. 118"/>
+    <connection t1="P. 117" t2="P. 105"/>
+    <connection t1="P. 117" t2="P. 106"/>
+    <connection t1="P. 39" t2="P. 38"/>
+    <connection t1="P. 39" t2="P. 30"/>
+    <connection t1="P. 39" t2="S. W. Costa Rica"/>
+    <connection t1="P. 39" t2="P. 48"/>
+    <connection t1="P. 39" t2="P. 49"/>
+    <connection t1="P. 39" t2="W. Panama"/>
+    <connection t1="P. 39" t2="N. W. Costa Rica"/>
+    <connection t1="P. 118" t2="P. 119"/>
+    <connection t1="P. 118" t2="P. 108"/>
+    <connection t1="P. 118" t2="P. 106"/>
+    <connection t1="P. 119" t2="P. 120"/>
+    <connection t1="P. 119" t2="P. 108"/>
+    <connection t1="P. 119" t2="P. 109"/>
+    <connection t1="P. 112" t2="P. 113"/>
+    <connection t1="P. 112" t2="P. 100"/>
+    <connection t1="P. 112" t2="P. 101"/>
+    <connection t1="P. 113" t2="P. 114"/>
+    <connection t1="P. 113" t2="P. 101"/>
+    <connection t1="P. 113" t2="P. 102"/>
+    <connection t1="P. 114" t2="P. 115"/>
+    <connection t1="P. 114" t2="P. 103"/>
+    <connection t1="P. 114" t2="P. 102"/>
+    <connection t1="P. 115" t2="P. 103"/>
+    <connection t1="P. 115" t2="P. 104"/>
+    <connection t1="P. 33" t2="P. 34"/>
+    <connection t1="P. 33" t2="P. 32"/>
+    <connection t1="P. 33" t2="P. 24"/>
+    <connection t1="P. 33" t2="P. 25"/>
+    <connection t1="P. 33" t2="P. 42"/>
+    <connection t1="P. 33" t2="P. 43"/>
+    <connection t1="P. 34" t2="P. 35"/>
+    <connection t1="P. 34" t2="P. 25"/>
+    <connection t1="P. 34" t2="P. 26"/>
+    <connection t1="P. 34" t2="P. 43"/>
+    <connection t1="P. 34" t2="P. 44"/>
+    <connection t1="P. 31" t2="P. 32"/>
+    <connection t1="P. 31" t2="P. 23"/>
+    <connection t1="W. Hudson Bay" t2="N. E. Manitoba"/>
+    <connection t1="W. Hudson Bay" t2="E. Hudson Bay"/>
+    <connection t1="W. Hudson Bay" t2="N. W. Hudson Bay"/>
+    <connection t1="W. Hudson Bay" t2="Fort Smith"/>
+    <connection t1="W. Hudson Bay" t2="S. Hudson Bay"/>
+    <connection t1="P. 32" t2="P. 23"/>
+    <connection t1="P. 32" t2="P. 24"/>
+    <connection t1="P. 32" t2="P. 42"/>
+    <connection t1="P. 37" t2="P. 38"/>
+    <connection t1="P. 37" t2="P. 36"/>
+    <connection t1="P. 37" t2="P. 28"/>
+    <connection t1="P. 37" t2="P. 29"/>
+    <connection t1="P. 37" t2="P. 46"/>
+    <connection t1="P. 37" t2="P. 47"/>
+    <connection t1="P. 38" t2="P. 30"/>
+    <connection t1="P. 38" t2="P. 29"/>
+    <connection t1="P. 38" t2="P. 47"/>
+    <connection t1="P. 38" t2="P. 48"/>
+    <connection t1="P. 35" t2="P. 36"/>
+    <connection t1="P. 35" t2="P. 26"/>
+    <connection t1="P. 35" t2="P. 27"/>
+    <connection t1="P. 35" t2="P. 44"/>
+    <connection t1="P. 35" t2="P. 45"/>
+    <connection t1="P. 36" t2="P. 28"/>
+    <connection t1="P. 36" t2="P. 27"/>
+    <connection t1="P. 36" t2="P. 46"/>
+    <connection t1="P. 36" t2="P. 45"/>
+    <connection t1="Lake Erie" t2="Lake Ontario"/>
+    <connection t1="Lake Erie" t2="Michigan"/>
+    <connection t1="Lake Erie" t2="Ottowa"/>
+    <connection t1="Lake Erie" t2="Ohio"/>
+    <connection t1="Lake Erie" t2="New York"/>
+    <connection t1="Lake Erie" t2="Pennsylvania"/>
+    <connection t1="P. 30" t2="P. 29"/>
+    <connection t1="P. 30" t2="El Salvador"/>
+    <connection t1="P. 30" t2="C. Nicaragua"/>
+    <connection t1="P. 30" t2="W. Nicaragua"/>
+    <connection t1="P. 30" t2="N. W. Costa Rica"/>
+    <connection t1="P. 120" t2="P. 109"/>
+    <connection t1="P. 120" t2="Chile"/>
+    <connection t1="N. E. Hudson Bay" t2="Baffin Island"/>
+    <connection t1="N. E. Hudson Bay" t2="A. 6"/>
+    <connection t1="N. E. Hudson Bay" t2="E. Hudson Bay"/>
+    <connection t1="N. E. Hudson Bay" t2="N. W. Quebec"/>
+    <connection t1="N. E. Hudson Bay" t2="N. W. Hudson Bay"/>
+    <connection t1="P. 28" t2="P. 29"/>
+    <connection t1="P. 28" t2="P. 22"/>
+    <connection t1="P. 28" t2="P. 27"/>
+    <connection t1="P. 29" t2="P. 22"/>
+    <connection t1="P. 29" t2="El Salvador"/>
+    <connection t1="P. 29" t2="S. W. Guatemala"/>
+    <connection t1="P. 20" t2="P. 21"/>
+    <connection t1="P. 20" t2="P. 25"/>
+    <connection t1="P. 20" t2="P. 26"/>
+    <connection t1="P. 20" t2="P. 19"/>
+    <connection t1="P. 20" t2="P. 16"/>
+    <connection t1="P. 20" t2="C. Mexico W."/>
+    <connection t1="P. 21" t2="P. 22"/>
+    <connection t1="P. 21" t2="P. 26"/>
+    <connection t1="P. 21" t2="P. 27"/>
+    <connection t1="P. 21" t2="C. Mexico W."/>
+    <connection t1="P. 22" t2="P. 27"/>
+    <connection t1="P. 22" t2="S. W. Guatemala"/>
+    <connection t1="P. 22" t2="S. E. Mexico S. W."/>
+    <connection t1="P. 23" t2="P. 24"/>
+    <connection t1="P. 23" t2="P. 17"/>
+    <connection t1="P. 23" t2="P. 18"/>
+    <connection t1="P. 24" t2="P. 25"/>
+    <connection t1="P. 24" t2="P. 19"/>
+    <connection t1="P. 24" t2="P. 18"/>
+    <connection t1="P. 25" t2="P. 26"/>
+    <connection t1="P. 25" t2="P. 19"/>
+    <connection t1="P. 26" t2="P. 27"/>
+    <connection t1="P. 19" t2="P. 18"/>
+    <connection t1="P. 19" t2="P. 15"/>
+    <connection t1="P. 19" t2="P. 16"/>
+    <connection t1="P. 99" t2="P. 98"/>
+    <connection t1="P. 99" t2="P. 88"/>
+    <connection t1="P. 99" t2="P. 109"/>
+    <connection t1="P. 99" t2="Chile"/>
+    <connection t1="P. 99" t2="S. Peru"/>
+    <connection t1="P. 98" t2="P. 97"/>
+    <connection t1="P. 98" t2="P. 87"/>
+    <connection t1="P. 98" t2="P. 108"/>
+    <connection t1="P. 98" t2="P. 88"/>
+    <connection t1="P. 98" t2="P. 109"/>
+    <connection t1="P. 17" t2="P. 18"/>
+    <connection t1="P. 17" t2="P. 14"/>
+    <connection t1="P. 97" t2="P. 96"/>
+    <connection t1="P. 97" t2="P. 87"/>
+    <connection t1="P. 97" t2="P. 108"/>
+    <connection t1="P. 97" t2="P. 86"/>
+    <connection t1="P. 97" t2="P. 106"/>
+    <connection t1="P. 18" t2="P. 15"/>
+    <connection t1="P. 18" t2="P. 14"/>
+    <connection t1="P. 15" t2="P. 16"/>
+    <connection t1="P. 15" t2="P. 14"/>
+    <connection t1="P. 15" t2="P. 12"/>
+    <connection t1="P. 16" t2="P. 13"/>
+    <connection t1="P. 16" t2="P. 12"/>
+    <connection t1="P. 16" t2="Baja California"/>
+    <connection t1="P. 16" t2="C. Mexico W."/>
+    <connection t1="P. 16" t2="N. W. Mexico S."/>
+    <connection t1="P. 13" t2="Baja California"/>
+    <connection t1="P. 13" t2="N. W. Mexico N. W."/>
+    <connection t1="P. 13" t2="N. W. Mexico S."/>
+    <connection t1="P. 14" t2="P. 11"/>
+    <connection t1="P. 14" t2="P. 12"/>
+    <connection t1="P. 11" t2="P. 12"/>
+    <connection t1="P. 11" t2="P. 10"/>
+    <connection t1="P. 11" t2="P. 9"/>
+    <connection t1="P. 12" t2="P. 10"/>
+    <connection t1="P. 12" t2="Baja California"/>
+    <connection t1="P. 10" t2="Baja California"/>
+    <connection t1="P. 10" t2="P. 8"/>
+    <connection t1="P. 10" t2="P. 9"/>
+    <connection t1="P. 93" t2="P. 94"/>
+    <connection t1="P. 93" t2="P. 92"/>
+    <connection t1="P. 93" t2="P. 103"/>
+    <connection t1="P. 93" t2="P. 104"/>
+    <connection t1="P. 93" t2="P. 83"/>
+    <connection t1="P. 93" t2="P. 82"/>
+    <connection t1="P. 94" t2="P. 95"/>
+    <connection t1="P. 94" t2="P. 104"/>
+    <connection t1="P. 94" t2="P. 84"/>
+    <connection t1="P. 94" t2="P. 83"/>
+    <connection t1="P. 95" t2="P. 96"/>
+    <connection t1="P. 95" t2="P. 104"/>
+    <connection t1="P. 95" t2="P. 105"/>
+    <connection t1="P. 95" t2="P. 85"/>
+    <connection t1="P. 95" t2="P. 84"/>
+    <connection t1="P. 96" t2="P. 86"/>
+    <connection t1="P. 96" t2="P. 105"/>
+    <connection t1="P. 96" t2="P. 106"/>
+    <connection t1="P. 96" t2="P. 85"/>
+    <connection t1="P. 100" t2="P. 90"/>
+    <connection t1="P. 100" t2="P. 101"/>
+    <connection t1="P. 100" t2="P. 89"/>
+    <connection t1="P. 90" t2="P. 91"/>
+    <connection t1="P. 90" t2="P. 101"/>
+    <connection t1="P. 90" t2="P. 89"/>
+    <connection t1="P. 90" t2="P. 80"/>
+    <connection t1="P. 90" t2="P. 79"/>
+    <connection t1="P. 91" t2="P. 92"/>
+    <connection t1="P. 91" t2="P. 101"/>
+    <connection t1="P. 91" t2="P. 102"/>
+    <connection t1="P. 91" t2="P. 81"/>
+    <connection t1="P. 91" t2="P. 80"/>
+    <connection t1="P. 92" t2="P. 103"/>
+    <connection t1="P. 92" t2="P. 102"/>
+    <connection t1="P. 92" t2="P. 81"/>
+    <connection t1="P. 92" t2="P. 82"/>
+    <connection t1="P. 103" t2="P. 104"/>
+    <connection t1="P. 103" t2="P. 102"/>
+    <connection t1="P. 104" t2="P. 105"/>
+    <connection t1="P. 101" t2="P. 102"/>
+    <connection t1="P. 87" t2="P. 86"/>
+    <connection t1="P. 87" t2="P. 88"/>
+    <connection t1="P. 87" t2="P. 77"/>
+    <connection t1="P. 87" t2="P. 78"/>
+    <connection t1="P. 108" t2="P. 106"/>
+    <connection t1="P. 108" t2="P. 109"/>
+    <connection t1="P. 86" t2="P. 85"/>
+    <connection t1="P. 86" t2="P. 77"/>
+    <connection t1="P. 86" t2="P. 76"/>
+    <connection t1="P. 89" t2="P. 79"/>
+    <connection t1="P. 105" t2="P. 106"/>
+    <connection t1="P. 88" t2="C. Peru"/>
+    <connection t1="P. 88" t2="P. 78"/>
+    <connection t1="P. 88" t2="S. Peru"/>
+    <connection t1="P. 81" t2="P. 80"/>
+    <connection t1="P. 81" t2="P. 82"/>
+    <connection t1="P. 81" t2="P. 72"/>
+    <connection t1="P. 81" t2="P. 71"/>
+    <connection t1="P. 80" t2="P. 79"/>
+    <connection t1="P. 80" t2="P. 70"/>
+    <connection t1="P. 80" t2="P. 71"/>
+    <connection t1="P. 85" t2="P. 84"/>
+    <connection t1="P. 85" t2="P. 75"/>
+    <connection t1="P. 85" t2="P. 76"/>
+    <connection t1="P. 84" t2="P. 83"/>
+    <connection t1="P. 84" t2="P. 75"/>
+    <connection t1="P. 84" t2="P. 74"/>
+    <connection t1="P. 83" t2="P. 82"/>
+    <connection t1="P. 83" t2="P. 74"/>
+    <connection t1="P. 83" t2="P. 73"/>
+    <connection t1="P. 82" t2="P. 72"/>
+    <connection t1="P. 82" t2="P. 73"/>
+    <connection t1="A. 2" t2="A. 1"/>
+    <connection t1="A. 2" t2="A. 3"/>
+    <connection t1="A. 2" t2="A. 6"/>
+    <connection t1="A. 2" t2="A. 7"/>
+    <connection t1="A. 2" t2="A. 8"/>
+    <connection t1="A. 1" t2="Baffin Island"/>
+    <connection t1="A. 1" t2="A. 6"/>
+    <connection t1="P. 77" t2="P. 78"/>
+    <connection t1="P. 77" t2="P. 76"/>
+    <connection t1="P. 77" t2="P. 67"/>
+    <connection t1="P. 77" t2="P. 68"/>
+    <connection t1="P. 78" t2="P. 68"/>
+    <connection t1="P. 75" t2="P. 76"/>
+    <connection t1="P. 75" t2="P. 74"/>
+    <connection t1="P. 75" t2="P. 65"/>
+    <connection t1="P. 75" t2="P. 66"/>
+    <connection t1="P. 76" t2="P. 66"/>
+    <connection t1="P. 76" t2="P. 67"/>
+    <connection t1="P. 79" t2="P. 70"/>
+    <connection t1="P. 79" t2="P. 69"/>
+    <connection t1="P. 70" t2="P. 71"/>
+    <connection t1="P. 70" t2="P. 69"/>
+    <connection t1="P. 70" t2="P. 61"/>
+    <connection t1="P. 70" t2="P. 60"/>
+    <connection t1="P. 72" t2="P. 71"/>
+    <connection t1="P. 72" t2="P. 73"/>
+    <connection t1="P. 72" t2="P. 63"/>
+    <connection t1="P. 72" t2="P. 62"/>
+    <connection t1="Lake Ontario" t2="Ottowa"/>
+    <connection t1="Lake Ontario" t2="New York"/>
+    <connection t1="P. 71" t2="P. 62"/>
+    <connection t1="P. 71" t2="P. 61"/>
+    <connection t1="P. 74" t2="P. 73"/>
+    <connection t1="P. 74" t2="P. 64"/>
+    <connection t1="P. 74" t2="P. 65"/>
+    <connection t1="P. 73" t2="P. 64"/>
+    <connection t1="P. 73" t2="P. 63"/>
+    <connection t1="A. 3" t2="A. 5"/>
+    <connection t1="A. 3" t2="A. 8"/>
+    <connection t1="A. 3" t2="A. 9"/>
+    <connection t1="A. 3" t2="A. 11"/>
+    <connection t1="A. 3" t2="Greenland"/>
+    <connection t1="A. 5" t2="A. 11"/>
+    <connection t1="A. 5" t2="Greenland"/>
+    <connection t1="A. 6" t2="A. 7"/>
+    <connection t1="A. 6" t2="C. Quebec"/>
+    <connection t1="A. 6" t2="N. W. Quebec"/>
+    <connection t1="A. 7" t2="A. 8"/>
+    <connection t1="A. 7" t2="A. 12"/>
+    <connection t1="A. 8" t2="A. 9"/>
+    <connection t1="A. 8" t2="A. 13"/>
+    <connection t1="A. 8" t2="A. 12"/>
+    <connection t1="A. 9" t2="A. 15"/>
+    <connection t1="A. 9" t2="A. 13"/>
+    <connection t1="A. 9" t2="A. 11"/>
+    <connection t1="A. 9" t2="Greenland"/>
+    <connection t1="P. 64" t2="P. 65"/>
+    <connection t1="P. 64" t2="P. 63"/>
+    <connection t1="P. 64" t2="P. 55"/>
+    <connection t1="P. 64" t2="P. 54"/>
+    <connection t1="P. 65" t2="P. 66"/>
+    <connection t1="P. 65" t2="P. 55"/>
+    <connection t1="P. 65" t2="P. 56"/>
+    <connection t1="P. 66" t2="P. 67"/>
+    <connection t1="P. 66" t2="P. 57"/>
+    <connection t1="P. 66" t2="P. 56"/>
+    <connection t1="Lake Superior" t2="Michigan"/>
+    <connection t1="Lake Superior" t2="Minnesota"/>
+    <connection t1="Lake Superior" t2="S. E. Ontario"/>
+    <connection t1="P. 67" t2="P. 68"/>
+    <connection t1="P. 67" t2="P. 57"/>
+    <connection t1="P. 67" t2="P. 58"/>
+    <connection t1="P. 68" t2="P. 59"/>
+    <connection t1="P. 68" t2="P. 58"/>
+    <connection t1="P. 69" t2="P. 60"/>
+    <connection t1="P. 63" t2="P. 62"/>
+    <connection t1="P. 63" t2="P. 53"/>
+    <connection t1="P. 63" t2="P. 54"/>
+    <connection t1="P. 62" t2="P. 61"/>
+    <connection t1="P. 62" t2="P. 53"/>
+    <connection t1="P. 62" t2="P. 52"/>
+    <connection t1="P. 61" t2="P. 60"/>
+    <connection t1="P. 61" t2="P. 52"/>
+    <connection t1="P. 61" t2="P. 51"/>
+    <connection t1="St. Lawrence River" t2="New Brunswick"/>
+    <connection t1="St. Lawrence River" t2="S. Quebec"/>
+    <connection t1="St. Lawrence River" t2="E. C. Quebec"/>
+    <connection t1="St. Lawrence River" t2="A. 12"/>
+    <connection t1="St. Lawrence River" t2="A. 16"/>
+    <connection t1="P. 60" t2="P. 50"/>
+    <connection t1="P. 60" t2="P. 51"/>
+    <connection t1="P. 59" t2="P. 58"/>
+    <connection t1="P. 59" t2="P. 49"/>
+    <connection t1="P. 57" t2="P. 58"/>
+    <connection t1="P. 57" t2="P. 56"/>
+    <connection t1="P. 57" t2="P. 47"/>
+    <connection t1="P. 57" t2="P. 48"/>
+    <connection t1="P. 58" t2="P. 48"/>
+    <connection t1="P. 58" t2="P. 49"/>
+    <connection t1="P. 55" t2="P. 56"/>
+    <connection t1="P. 55" t2="P. 54"/>
+    <connection t1="P. 55" t2="P. 46"/>
+    <connection t1="P. 55" t2="P. 45"/>
+    <connection t1="E. Hudson Bay" t2="N. W. Quebec"/>
+    <connection t1="E. Hudson Bay" t2="N. W. Hudson Bay"/>
+    <connection t1="E. Hudson Bay" t2="S. Hudson Bay"/>
+    <connection t1="P. 56" t2="P. 46"/>
+    <connection t1="P. 56" t2="P. 47"/>
+    <connection t1="P. 53" t2="P. 54"/>
+    <connection t1="P. 53" t2="P. 52"/>
+    <connection t1="P. 53" t2="P. 43"/>
+    <connection t1="P. 53" t2="P. 44"/>
+    <connection t1="P. 54" t2="P. 44"/>
+    <connection t1="P. 54" t2="P. 45"/>
+    <connection t1="P. 50" t2="P. 51"/>
+    <connection t1="P. 52" t2="P. 51"/>
+    <connection t1="P. 52" t2="P. 42"/>
+    <connection t1="P. 52" t2="P. 43"/>
+    <connection t1="P. 51" t2="P. 42"/>
+    <connection t1="P. 1" t2="P. 2"/>
+    <connection t1="P. 1" t2="C. British Columbia"/>
+    <connection t1="P. 1" t2="N. British Columbia"/>
+    <connection t1="P. 1" t2="Alaska"/>
+    <connection t1="P. 1" t2="Kodiak Island"/>
+    <connection t1="S. W. Gulf Of Mexico" t2="S. E. Mexico S. W."/>
+    <connection t1="S. W. Gulf Of Mexico" t2="S. E. Mexico N. E."/>
+    <connection t1="S. W. Gulf Of Mexico" t2="N. Mexico E."/>
+    <connection t1="S. W. Gulf Of Mexico" t2="N. W. Gulf Of Mexico"/>
+    <connection t1="P. 2" t2="P. 3"/>
+    <connection t1="P. 2" t2="C. British Columbia"/>
+    <connection t1="P. 2" t2="S. British Columbia"/>
+    <connection t1="P. 46" t2="P. 47"/>
+    <connection t1="P. 46" t2="P. 45"/>
+    <connection t1="P. 3" t2="P. 4"/>
+    <connection t1="P. 3" t2="S. British Columbia"/>
+    <connection t1="P. 47" t2="P. 48"/>
+    <connection t1="P. 48" t2="P. 49"/>
+    <connection t1="P. 4" t2="P. 5"/>
+    <connection t1="P. 4" t2="Oregon"/>
+    <connection t1="P. 4" t2="S. British Columbia"/>
+    <connection t1="P. 5" t2="P. 6"/>
+    <connection t1="P. 5" t2="California"/>
+    <connection t1="P. 5" t2="Oregon"/>
+    <connection t1="P. 42" t2="P. 43"/>
+    <connection t1="P. 6" t2="P. 7"/>
+    <connection t1="P. 6" t2="P. 8"/>
+    <connection t1="P. 6" t2="California"/>
+    <connection t1="P. 43" t2="P. 44"/>
+    <connection t1="P. 7" t2="P. 8"/>
+    <connection t1="P. 7" t2="P. 9"/>
+    <connection t1="P. 44" t2="P. 45"/>
+    <connection t1="P. 8" t2="P. 9"/>
+    <connection t1="P. 8" t2="California"/>
+    <connection t1="A. 28" t2="A. 27"/>
+    <connection t1="A. 28" t2="A. 29"/>
+    <connection t1="A. 28" t2="A. 24"/>
+    <connection t1="A. 28" t2="A. 23"/>
+    <connection t1="A. 28" t2="A. 25"/>
+    <connection t1="A. 28" t2="A. 33"/>
+    <connection t1="A. 28" t2="A. 32"/>
+    <connection t1="A. 27" t2="A. 23"/>
+    <connection t1="A. 27" t2="A. 32"/>
+    <connection t1="A. 27" t2="A. 31"/>
+    <connection t1="A. 27" t2="Maryland"/>
+    <connection t1="A. 29" t2="A. 26"/>
+    <connection t1="A. 29" t2="A. 25"/>
+    <connection t1="A. 29" t2="A. 33"/>
+    <connection t1="A. 29" t2="A. 30"/>
+    <connection t1="A. 29" t2="A. 35"/>
+    <connection t1="A. 29" t2="A. 34"/>
+    <connection t1="A. 24" t2="A. 23"/>
+    <connection t1="A. 24" t2="A. 25"/>
+    <connection t1="A. 24" t2="A. 20"/>
+    <connection t1="A. 24" t2="A. 19"/>
+    <connection t1="A. 23" t2="A. 19"/>
+    <connection t1="A. 23" t2="Connecticut"/>
+    <connection t1="A. 23" t2="Massachusetts"/>
+    <connection t1="A. 23" t2="New York"/>
+    <connection t1="A. 26" t2="A. 25"/>
+    <connection t1="A. 26" t2="A. 22"/>
+    <connection t1="A. 26" t2="A. 21"/>
+    <connection t1="A. 26" t2="A. 30"/>
+    <connection t1="A. 25" t2="A. 20"/>
+    <connection t1="A. 25" t2="A. 21"/>
+    <connection t1="A. 20" t2="A. 21"/>
+    <connection t1="A. 20" t2="A. 19"/>
+    <connection t1="A. 20" t2="A. 17"/>
+    <connection t1="A. 20" t2="A. 16"/>
+    <connection t1="A. 22" t2="A. 21"/>
+    <connection t1="A. 22" t2="A. 18"/>
+    <connection t1="A. 21" t2="A. 18"/>
+    <connection t1="A. 21" t2="A. 17"/>
+    <connection t1="A. 19" t2="A. 16"/>
+    <connection t1="A. 19" t2="New Brunswick"/>
+    <connection t1="Lake Huron" t2="Lake Michigan"/>
+    <connection t1="Lake Huron" t2="S. E. Ontario"/>
+    <connection t1="Lake Huron" t2="Ottowa"/>
+    <connection t1="Lake Huron" t2="Michigan"/>
+    <connection t1="Lake Huron" t2="Lake Superior"/>
+    <connection t1="A. 18" t2="A. 17"/>
+    <connection t1="A. 18" t2="A. 15"/>
+    <connection t1="A. 17" t2="A. 16"/>
+    <connection t1="A. 17" t2="A. 15"/>
+    <connection t1="A. 17" t2="A. 13"/>
+    <connection t1="A. 16" t2="A. 13"/>
+    <connection t1="A. 16" t2="A. 12"/>
+    <connection t1="A. 16" t2="Newfoundland"/>
+    <connection t1="A. 16" t2="New Brunswick"/>
+    <connection t1="A. 15" t2="A. 13"/>
+    <connection t1="A. 15" t2="A. 11"/>
+    <connection t1="A. 13" t2="A. 12"/>
+    <connection t1="A. 12" t2="E. C. Quebec"/>
+    <connection t1="A. 12" t2="Newfoundland"/>
+    <connection t1="A. 11" t2="Greenland"/>
+    <connection t1="A. 49" t2="A. 43"/>
+    <connection t1="A. 49" t2="A. 48"/>
+    <connection t1="A. 49" t2="A. 56"/>
+    <connection t1="A. 49" t2="A. 55"/>
+    <connection t1="A. 42" t2="A. 41"/>
+    <connection t1="A. 42" t2="A. 43"/>
+    <connection t1="A. 42" t2="A. 48"/>
+    <connection t1="A. 42" t2="A. 47"/>
+    <connection t1="A. 42" t2="A. 39"/>
+    <connection t1="A. 42" t2="A. 38"/>
+    <connection t1="A. 41" t2="A. 46"/>
+    <connection t1="A. 41" t2="A. 47"/>
+    <connection t1="A. 41" t2="A. 40"/>
+    <connection t1="A. 41" t2="A. 38"/>
+    <connection t1="A. 41" t2="A. 37"/>
+    <connection t1="A. 41" t2="E. Cuba"/>
+    <connection t1="A. 44" t2="A. 45"/>
+    <connection t1="A. 44" t2="A. 40"/>
+    <connection t1="A. 44" t2="S. E. Mexico N. E."/>
+    <connection t1="A. 44" t2="N. Honduras"/>
+    <connection t1="A. 44" t2="A. 50"/>
+    <connection t1="A. 44" t2="N. E. Guatemala"/>
+    <connection t1="A. 44" t2="E. Nicaragua"/>
+    <connection t1="A. 43" t2="A. 48"/>
+    <connection t1="A. 43" t2="A. 39"/>
+    <connection t1="A. 46" t2="A. 45"/>
+    <connection t1="A. 46" t2="A. 47"/>
+    <connection t1="A. 46" t2="A. 52"/>
+    <connection t1="A. 46" t2="A. 51"/>
+    <connection t1="A. 46" t2="Jamaica"/>
+    <connection t1="A. 45" t2="A. 40"/>
+    <connection t1="A. 45" t2="A. 51"/>
+    <connection t1="A. 45" t2="A. 50"/>
+    <connection t1="A. 45" t2="Jamaica"/>
+    <connection t1="A. 48" t2="A. 47"/>
+    <connection t1="A. 48" t2="A. 55"/>
+    <connection t1="A. 48" t2="A. 52"/>
+    <connection t1="A. 47" t2="A. 52"/>
+    <connection t1="A. 40" t2="A. 36"/>
+    <connection t1="A. 40" t2="E. Cuba"/>
+    <connection t1="A. 39" t2="A. 38"/>
+    <connection t1="A. 39" t2="A. 35"/>
+    <connection t1="A. 39" t2="A. 34"/>
+    <connection t1="N. W. Hudson Bay" t2="Fort Smith"/>
+    <connection t1="A. 38" t2="A. 33"/>
+    <connection t1="A. 38" t2="A. 37"/>
+    <connection t1="A. 38" t2="A. 34"/>
+    <connection t1="A. 33" t2="A. 32"/>
+    <connection t1="A. 33" t2="A. 37"/>
+    <connection t1="A. 33" t2="A. 34"/>
+    <connection t1="A. 32" t2="A. 31"/>
+    <connection t1="A. 32" t2="A. 37"/>
+    <connection t1="A. 32" t2="A. 36"/>
+    <connection t1="A. 31" t2="A. 36"/>
+    <connection t1="A. 31" t2="Georgia"/>
+    <connection t1="A. 31" t2="South Carolina"/>
+    <connection t1="A. 30" t2="A. 35"/>
+    <connection t1="A. 37" t2="A. 36"/>
+    <connection t1="A. 35" t2="A. 34"/>
+    <connection t1="A. 56" t2="A. 55"/>
+    <connection t1="A. 56" t2="Suriname"/>
+    <connection t1="A. 55" t2="A. 52"/>
+    <connection t1="A. 52" t2="A. 51"/>
+    <connection t1="A. 52" t2="N. W. Columbia"/>
+    <connection t1="A. 51" t2="A. 50"/>
+    <connection t1="A. 51" t2="N. W. Columbia"/>
+    <connection t1="A. 50" t2="E. Nicaragua"/>
+    <connection t1="Lake Huron" t2="Lake Erie"/>
+    <connection t1="A. 50" t2="P. 40"/>
+  </map>
+  <resourceList>
+    <resource name="techTokens"/>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Canadians" optional="false"/>
+    <player name="Mexicans" optional="false"/>
+    <player name="CentralAmericans" optional="false"/>
+    <player name="SouthAmericans" optional="false"/>
+    <player name="Americans" optional="false"/>
+    <alliance player="Canadians" alliance="Anti-American"/>
+    <alliance player="Mexicans" alliance="Anti-American"/>
+    <alliance player="CentralAmericans" alliance="Anti-American"/>
+    <alliance player="SouthAmericans" alliance="Anti-American"/>
+    <alliance player="Americans" alliance="American"/>
+  </playerList>
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="artillery"/>
+    <unit name="armour"/>
+    <unit name="fighter"/>
+    <unit name="bomber"/>
+    <unit name="transport"/>
+    <unit name="submarine"/>
+    <unit name="destroyer"/>
+    <unit name="cruiser"/>
+    <unit name="carrier"/>
+    <unit name="battleship"/>
+    <unit name="aaGun"/>
+    <unit name="factory"/>
+    <unit name="factory_hit"/>
+  </unitList>
+  <gamePlay>
+    <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+    <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+    <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+    <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
+    <delegate name="tech_Activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
+    <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <sequence>
+      <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+      <step name="canadiansBid" delegate="bid" player="Canadians" maxRunCount="1"/>
+      <step name="canadiansBidPlace" delegate="placeBid" player="Canadians" maxRunCount="1"/>
+      <step name="mexicansBid" delegate="bid" player="Mexicans" maxRunCount="1"/>
+      <step name="mexicansBidPlace" delegate="placeBid" player="Mexicans" maxRunCount="1"/>
+      <step name="centralamericansBid" delegate="bid" player="CentralAmericans" maxRunCount="1"/>
+      <step name="centralamericansBidPlace" delegate="placeBid" player="CentralAmericans" maxRunCount="1"/>
+      <step name="southamericansBid" delegate="bid" player="SouthAmericans" maxRunCount="1"/>
+      <step name="southamericansBidPlace" delegate="placeBid" player="SouthAmericans" maxRunCount="1"/>
+      <step name="americansBid" delegate="bid" player="Americans" maxRunCount="1"/>
+      <step name="americansBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
+      <step name="canadiansTech" delegate="tech" player="Canadians"/>
+      <step name="canadiansTechActivation" delegate="tech_Activation" player="Canadians"/>
+      <step name="canadiansPurchase" delegate="purchase" player="Canadians"/>
+      <step name="canadiansCombatMove" delegate="move" player="Canadians"/>
+      <step name="canadiansBattle" delegate="battle" player="Canadians"/>
+      <step name="canadiansNonCombatMove" delegate="move" player="Canadians" display="Non Combat Move"/>
+      <step name="canadiansPlace" delegate="place" player="Canadians"/>
+      <step name="canadiansEndTurn" delegate="endTurn" player="Canadians"/>
+      <step name="mexicansTech" delegate="tech" player="Mexicans"/>
+      <step name="mexicansTechActivation" delegate="tech_Activation" player="Mexicans"/>
+      <step name="mexicansPurchase" delegate="purchase" player="Mexicans"/>
+      <step name="mexicansCombatMove" delegate="move" player="Mexicans"/>
+      <step name="mexicansBattle" delegate="battle" player="Mexicans"/>
+      <step name="mexicansNonCombatMove" delegate="move" player="Mexicans" display="Non Combat Move"/>
+      <step name="mexicansPlace" delegate="place" player="Mexicans"/>
+      <step name="mexicansEndTurn" delegate="endTurn" player="Mexicans"/>
+      <step name="centralamericansTech" delegate="tech" player="CentralAmericans"/>
+      <step name="centralamericansTechActivation" delegate="tech_Activation" player="CentralAmericans"/>
+      <step name="centralamericansPurchase" delegate="purchase" player="CentralAmericans"/>
+      <step name="centralamericansCombatMove" delegate="move" player="CentralAmericans"/>
+      <step name="centralamericansBattle" delegate="battle" player="CentralAmericans"/>
+      <step name="centralamericansNonCombatMove" delegate="move" player="CentralAmericans" display="Non Combat Move"/>
+      <step name="centralamericansPlace" delegate="place" player="CentralAmericans"/>
+      <step name="centralamericansEndTurn" delegate="endTurn" player="CentralAmericans"/>
+      <step name="southamericansTech" delegate="tech" player="SouthAmericans"/>
+      <step name="southamericansTechActivation" delegate="tech_Activation" player="SouthAmericans"/>
+      <step name="southamericansPurchase" delegate="purchase" player="SouthAmericans"/>
+      <step name="southamericansCombatMove" delegate="move" player="SouthAmericans"/>
+      <step name="southamericansBattle" delegate="battle" player="SouthAmericans"/>
+      <step name="southamericansNonCombatMove" delegate="move" player="SouthAmericans" display="Non Combat Move"/>
+      <step name="southamericansPlace" delegate="place" player="SouthAmericans"/>
+      <step name="southamericansEndTurn" delegate="endTurn" player="SouthAmericans"/>
+      <step name="americansTech" delegate="tech" player="Americans"/>
+      <step name="americansTechActivation" delegate="tech_Activation" player="Americans"/>
+      <step name="americansPurchase" delegate="purchase" player="Americans"/>
+      <step name="americansCombatMove" delegate="move" player="Americans"/>
+      <step name="americansBattle" delegate="battle" player="Americans"/>
+      <step name="americansNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
+      <step name="americansPlace" delegate="place" player="Americans"/>
+      <step name="americansEndTurn" delegate="endTurn" player="Americans"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <production>
+    <!-- Unit Production Cost -->
+    <productionRule name="buyinfantry">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyarmour">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyfighter">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buybomber">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buytransport">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buybattleship">
+      <cost resource="PUs" quantity="20"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buycarrier">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buysubmarine">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyfactory">
+      <cost resource="PUs" quantity="15"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyaaGun">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyartillery">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buydestroyer">
+      <cost resource="PUs" quantity="8"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buycruiser">
+      <cost resource="PUs" quantity="12"/>
+      <result resourceOrUnit="cruiser" quantity="1"/>
+    </productionRule>
+    <!-- SHIPYARD PRICES -->
+    <productionRule name="buyTransportShipyards">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrierShipyards">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyerShipyards">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCruiserShipyards">
+      <cost resource="PUs" quantity="10"/>
+      <result resourceOrUnit="cruiser" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleshipShipyards">
+      <cost resource="PUs" quantity="17"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarineShipyards">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <!-- Advanced Industrial Production -->
+    <productionRule name="buyInfantryIndustrialTechnology">
+      <cost resource="PUs" quantity="2"/>
+      <result resourceOrUnit="infantry" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArtilleryIndustrialTechnology">
+      <cost resource="PUs" quantity="3"/>
+      <result resourceOrUnit="artillery" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyArmourIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="armour" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFighterIndustrialTechnology">
+      <cost resource="PUs" quantity="9"/>
+      <result resourceOrUnit="fighter" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBomberIndustrialTechnology">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="bomber" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyTransportIndustrialTechnology">
+      <cost resource="PUs" quantity="6"/>
+      <result resourceOrUnit="transport" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCarrierIndustrialTechnology">
+      <cost resource="PUs" quantity="13"/>
+      <result resourceOrUnit="carrier" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyDestroyerIndustrialTechnology">
+      <cost resource="PUs" quantity="7"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyCruiserIndustrialTechnology">
+      <cost resource="PUs" quantity="11"/>
+      <result resourceOrUnit="destroyer" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyBattleshipIndustrialTechnology">
+      <cost resource="PUs" quantity="19"/>
+      <result resourceOrUnit="battleship" quantity="1"/>
+    </productionRule>
+    <productionRule name="buySubmarineIndustrialTechnology">
+      <cost resource="PUs" quantity="5"/>
+      <result resourceOrUnit="submarine" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="14"/>
+      <result resourceOrUnit="factory" quantity="1"/>
+    </productionRule>
+    <productionRule name="buyAAGunIndustrialTechnology">
+      <cost resource="PUs" quantity="4"/>
+      <result resourceOrUnit="aaGun" quantity="1"/>
+    </productionRule>
+    <repairRule name="repairFactory">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="factory_hit" quantity="1"/>
+    </repairRule>
+    <repairRule name="repairFactoryIndustrialTechnology">
+      <cost resource="PUs" quantity="1"/>
+      <result resourceOrUnit="factory_hit" quantity="2"/>
+    </repairRule>
+    <repairFrontier name="repair">
+      <repairRules name="repairFactory"/>
+    </repairFrontier>
+    <repairFrontier name="repairIndustrialTechnology">
+      <repairRules name="repairFactoryIndustrialTechnology"/>
+    </repairFrontier>
+    <!-- Production Frontiers -->
+    <productionFrontier name="productionShipyards">
+      <frontierRules name="buyTransportShipyards"/>
+      <frontierRules name="buySubmarineShipyards"/>
+      <frontierRules name="buyDestroyerShipyards"/>
+      <frontierRules name="buyCruiserShipyards"/>
+      <frontierRules name="buyCarrierShipyards"/>
+      <frontierRules name="buyBattleshipShipyards"/>
+    </productionFrontier>
+    <productionFrontier name="production">
+      <frontierRules name="buyinfantry"/>
+      <frontierRules name="buyartillery"/>
+      <frontierRules name="buyarmour"/>
+      <frontierRules name="buyfighter"/>
+      <frontierRules name="buybomber"/>
+      <frontierRules name="buytransport"/>
+      <frontierRules name="buysubmarine"/>
+      <frontierRules name="buydestroyer"/>
+      <frontierRules name="buycruiser"/>
+      <frontierRules name="buycarrier"/>
+      <frontierRules name="buybattleship"/>
+      <frontierRules name="buyfactory"/>
+      <frontierRules name="buyaaGun"/>
+    </productionFrontier>
+    <playerProduction player="Canadians" frontier="production"/>
+    <playerProduction player="Mexicans" frontier="production"/>
+    <playerProduction player="Americans" frontier="production"/>
+    <playerProduction player="CentralAmericans" frontier="production"/>
+    <playerProduction player="SouthAmericans" frontier="production"/>
+    <playerRepair player="Canadians" frontier="repair"/>
+    <playerRepair player="Mexicans" frontier="repair"/>
+    <playerRepair player="Americans" frontier="repair"/>
+    <playerRepair player="CentralAmericans" frontier="repair"/>
+    <playerRepair player="SouthAmericans" frontier="repair"/>
+  </production>
+  <attachmentList>
+    <attachment name="techAttachment" attachTo="Canadians" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="False"/>
+      <option name="jetPower" value="False"/>
+      <option name="shipyards" value="False"/>
+      <option name="aARadar" value="False"/>
+      <option name="longRangeAir" value="False"/>
+      <option name="heavyBomber" value="False"/>
+      <option name="improvedArtillerySupport" value="False"/>
+      <option name="rocket" value="False"/>
+      <option name="paratroopers" value="False"/>
+      <option name="increasedFactoryProduction" value="False"/>
+      <option name="warBonds" value="False"/>
+      <option name="mechanizedInfantry" value="False"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Mexicans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="False"/>
+      <option name="jetPower" value="False"/>
+      <option name="shipyards" value="False"/>
+      <option name="aARadar" value="False"/>
+      <option name="longRangeAir" value="False"/>
+      <option name="heavyBomber" value="False"/>
+      <option name="improvedArtillerySupport" value="False"/>
+      <option name="rocket" value="False"/>
+      <option name="paratroopers" value="False"/>
+      <option name="increasedFactoryProduction" value="False"/>
+      <option name="warBonds" value="False"/>
+      <option name="mechanizedInfantry" value="False"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="CentralAmericans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="False"/>
+      <option name="jetPower" value="False"/>
+      <option name="shipyards" value="False"/>
+      <option name="aARadar" value="False"/>
+      <option name="longRangeAir" value="False"/>
+      <option name="heavyBomber" value="False"/>
+      <option name="improvedArtillerySupport" value="False"/>
+      <option name="rocket" value="False"/>
+      <option name="paratroopers" value="False"/>
+      <option name="increasedFactoryProduction" value="False"/>
+      <option name="warBonds" value="False"/>
+      <option name="mechanizedInfantry" value="False"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="SouthAmericans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="False"/>
+      <option name="jetPower" value="False"/>
+      <option name="shipyards" value="False"/>
+      <option name="aARadar" value="False"/>
+      <option name="longRangeAir" value="False"/>
+      <option name="heavyBomber" value="False"/>
+      <option name="improvedArtillerySupport" value="False"/>
+      <option name="rocket" value="False"/>
+      <option name="paratroopers" value="False"/>
+      <option name="increasedFactoryProduction" value="False"/>
+      <option name="warBonds" value="False"/>
+      <option name="mechanizedInfantry" value="False"/>
+    </attachment>
+    <attachment name="techAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
+      <option name="superSub" value="False"/>
+      <option name="jetPower" value="False"/>
+      <option name="shipyards" value="False"/>
+      <option name="aARadar" value="False"/>
+      <option name="longRangeAir" value="False"/>
+      <option name="heavyBomber" value="False"/>
+      <option name="improvedArtillerySupport" value="False"/>
+      <option name="rocket" value="False"/>
+      <option name="paratroopers" value="False"/>
+      <option name="increasedFactoryProduction" value="False"/>
+      <option name="warBonds" value="False"/>
+      <option name="mechanizedInfantry" value="False"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="transportCost" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="isInfantry" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canBlitz" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="4"/>
+      <option name="carrierCost" value="1"/>
+      <option name="isAir" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="6"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isStrategicBomber" value="true"/>
+      <option name="isAir" value="true"/>
+      <option name="transportCapacity" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="isSea" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="battleship" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="4"/>
+      <option name="canBombard" value="true"/>
+      <option name="isSea" value="true"/>
+      <option name="hitPoints" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="carrier" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="carrierCapacity" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="1"/>
+      <option name="isSea" value="true"/>
+      <option name="isSub" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="factory_hit" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isFactory" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isAA" value="true"/>
+      <option name="transportCost" value="3"/>
+      <option name="movement" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="transportCost" value="3"/>
+      <option name="artillery" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="isSea" value="true"/>
+      <option name="isDestroyer" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="cruiser" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="3"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="canBombard" value="true"/>
+      <option name="isSea" value="true"/>
+      <option name="hitPoints" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. W. Ontario" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Manitoba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. E. Saskatchewan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. E. Ontario" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. W. Quebec" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Quebec" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Labrador" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Baffin Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. W. Ontario" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. E. Manitoba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Yukon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Quebec" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Manitoba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. W. Quebec" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. W. Saskatchewan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. C. Alberta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Victoria Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Keewatin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. British Columbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. British Columbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. C. Quebec" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Newfoundland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. E. Ontario" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Alberta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Brunswick" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ottowa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="8"/>
+      <option name="capital" value="Canadians"/>
+      <option name="unitProduction" value="8"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. British Columbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Fort Smith" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. W. Quebec" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Alberta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Saskatchewan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. C. Alberta" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Saskatchewan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Mexico S. E." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="Mexicans"/>
+      <option name="unitProduction" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Mexico C." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Baja California" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Mexico E." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. W. Mexico N. W." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Mexico N." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ilas de Revillagigedo" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Mexico W." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. W. Mexico S." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Mexico N. C." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. E. Mexico S. W." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. E. Mexico N. E." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Mexico E." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. W. Mexico N." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Mexico W." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Clipperton Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Haiti" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Honduras" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. W. Costa Rica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="El Salvador" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Nicaragua" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. W. Guatemala" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="6"/>
+      <option name="capital" value="CentralAmericans"/>
+      <option name="unitProduction" value="6"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Cuba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dominican Republic" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Nicaragua" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Belize" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Panama" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Honduras" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Panama" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. E. Guatemala" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. W. Costa Rica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Cuba" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Jamaica" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Nicaragua" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Brazil E." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Argentina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Equador" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Brazil N. W." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Peru" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Guyana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Argentina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Brazil" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Columbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Brazil" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Venezuala" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Peru" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="capital" value="SouthAmericans"/>
+      <option name="unitProduction" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="W. Argentina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bolivia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Chile" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="C. Brazil S. W." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Paraguay" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. E. Argentina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. Venezuala" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Galapagos Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="S. Peru" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="N. W. Columbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Suriname" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="E. Columbia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rhode Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Tennessee" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Louisiana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Mississippi" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Hamshire" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Maine" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wisconsin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Washington" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Dakota" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alabama" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Florida" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Idaho" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Virginia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Texas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="unitProduction" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Jersey" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Michigan" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arkansas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Iowa" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Dakota" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Indiana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Minnesota" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hawaii" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="unitProduction" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Montana" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bahamas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="North Carolina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New Mexico" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="California" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="5"/>
+      <option name="unitProduction" value="5"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wyoming" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kansas" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Missouri" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+      <option name="unitProduction" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oregon" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Illinois" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Connecticut" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Arizona" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kodiak Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Kentucky" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Alaska" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Utah" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Georgia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nebraska" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+      <option name="unitProduction" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="South Carolina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Massachusetts" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Maryland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="7"/>
+      <option name="capital" value="Americans"/>
+      <option name="unitProduction" value="7"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="West Virginia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ohio" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vermont" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="New York" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="4"/>
+      <option name="unitProduction" value="4"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Pennsylvania" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Colorado" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nevada" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="2"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Oklahoma" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="3"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Greenland" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="1"/>
+    </attachment>
+    <attachment name="canalAttachment1" attachTo="A. 50" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="canal1"/>
+      <option name="landTerritories" value="E. Panama"/>
+    </attachment>
+    <attachment name="canalAttachment1" attachTo="P. 40" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="canal1"/>
+      <option name="landTerritories" value="E. Panama"/>
+    </attachment>
+    <attachment name="canalAttachment2" attachTo="Lake Erie" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Huron-Erie Canal"/>
+      <option name="landTerritories" value="Michigan:Ottowa"/>
+    </attachment>
+    <attachment name="canalAttachment2" attachTo="Lake Huron" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Huron-Erie Canal"/>
+      <option name="landTerritories" value="Michigan:Ottowa"/>
+    </attachment>
+    <attachment name="canalAttachment3" attachTo="P. 40" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Panama Canal"/>
+      <option name="landTerritories" value="W. Panama:E. Panama"/>
+    </attachment>
+    <attachment name="canalAttachment3" attachTo="A. 50" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
+      <option name="canalName" value="Panama Canal"/>
+      <option name="landTerritories" value="W. Panama:E. Panama"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="S. W. Ontario" owner="Canadians"/>
+      <territoryOwner territory="W. Manitoba" owner="Canadians"/>
+      <territoryOwner territory="S. E. Saskatchewan" owner="Canadians"/>
+      <territoryOwner territory="N. E. Ontario" owner="Canadians"/>
+      <territoryOwner territory="S. W. Quebec" owner="Canadians"/>
+      <territoryOwner territory="S. Quebec" owner="Canadians"/>
+      <territoryOwner territory="Labrador" owner="Canadians"/>
+      <territoryOwner territory="Baffin Island" owner="Canadians"/>
+      <territoryOwner territory="N. W. Ontario" owner="Canadians"/>
+      <territoryOwner territory="N. E. Manitoba" owner="Canadians"/>
+      <territoryOwner territory="Yukon" owner="Canadians"/>
+      <territoryOwner territory="C. Quebec" owner="Canadians"/>
+      <territoryOwner territory="S. Manitoba" owner="Canadians"/>
+      <territoryOwner territory="N. W. Quebec" owner="Canadians"/>
+      <territoryOwner territory="S. W. Saskatchewan" owner="Canadians"/>
+      <territoryOwner territory="E. C. Alberta" owner="Canadians"/>
+      <territoryOwner territory="Victoria Island" owner="Canadians"/>
+      <territoryOwner territory="Keewatin" owner="Canadians"/>
+      <territoryOwner territory="C. British Columbia" owner="Canadians"/>
+      <territoryOwner territory="N. British Columbia" owner="Canadians"/>
+      <territoryOwner territory="E. C. Quebec" owner="Canadians"/>
+      <territoryOwner territory="Newfoundland" owner="Canadians"/>
+      <territoryOwner territory="S. E. Ontario" owner="Canadians"/>
+      <territoryOwner territory="S. Alberta" owner="Canadians"/>
+      <territoryOwner territory="New Brunswick" owner="Canadians"/>
+      <territoryOwner territory="Ottowa" owner="Canadians"/>
+      <territoryOwner territory="S. British Columbia" owner="Canadians"/>
+      <territoryOwner territory="Fort Smith" owner="Canadians"/>
+      <territoryOwner territory="C. W. Quebec" owner="Canadians"/>
+      <territoryOwner territory="N. Alberta" owner="Canadians"/>
+      <territoryOwner territory="N. Saskatchewan" owner="Canadians"/>
+      <territoryOwner territory="W. C. Alberta" owner="Canadians"/>
+      <territoryOwner territory="C. Saskatchewan" owner="Canadians"/>
+      <territoryOwner territory="C. Mexico S. E." owner="Mexicans"/>
+      <territoryOwner territory="N. Mexico C." owner="Mexicans"/>
+      <territoryOwner territory="Baja California" owner="Mexicans"/>
+      <territoryOwner territory="C. Mexico E." owner="Mexicans"/>
+      <territoryOwner territory="N. W. Mexico N. W." owner="Mexicans"/>
+      <territoryOwner territory="N. Mexico N." owner="Mexicans"/>
+      <territoryOwner territory="Ilas de Revillagigedo" owner="Mexicans"/>
+      <territoryOwner territory="C. Mexico W." owner="Mexicans"/>
+      <territoryOwner territory="N. W. Mexico S." owner="Mexicans"/>
+      <territoryOwner territory="C. Mexico N. C." owner="Mexicans"/>
+      <territoryOwner territory="S. E. Mexico S. W." owner="Mexicans"/>
+      <territoryOwner territory="S. E. Mexico N. E." owner="Mexicans"/>
+      <territoryOwner territory="N. Mexico E." owner="Mexicans"/>
+      <territoryOwner territory="N. W. Mexico N." owner="Mexicans"/>
+      <territoryOwner territory="N. Mexico W." owner="Mexicans"/>
+      <territoryOwner territory="Clipperton Island" owner="Mexicans"/>
+      <territoryOwner territory="Haiti" owner="CentralAmericans"/>
+      <territoryOwner territory="S. Honduras" owner="CentralAmericans"/>
+      <territoryOwner territory="S. W. Costa Rica" owner="CentralAmericans"/>
+      <territoryOwner territory="El Salvador" owner="CentralAmericans"/>
+      <territoryOwner territory="C. Nicaragua" owner="CentralAmericans"/>
+      <territoryOwner territory="S. W. Guatemala" owner="CentralAmericans"/>
+      <territoryOwner territory="W. Cuba" owner="CentralAmericans"/>
+      <territoryOwner territory="Dominican Republic" owner="CentralAmericans"/>
+      <territoryOwner territory="W. Nicaragua" owner="CentralAmericans"/>
+      <territoryOwner territory="Belize" owner="CentralAmericans"/>
+      <territoryOwner territory="E. Panama" owner="CentralAmericans"/>
+      <territoryOwner territory="N. Honduras" owner="CentralAmericans"/>
+      <territoryOwner territory="W. Panama" owner="CentralAmericans"/>
+      <territoryOwner territory="N. E. Guatemala" owner="CentralAmericans"/>
+      <territoryOwner territory="N. W. Costa Rica" owner="CentralAmericans"/>
+      <territoryOwner territory="E. Cuba" owner="CentralAmericans"/>
+      <territoryOwner territory="Jamaica" owner="CentralAmericans"/>
+      <territoryOwner territory="E. Nicaragua" owner="CentralAmericans"/>
+      <territoryOwner territory="C. Brazil E." owner="SouthAmericans"/>
+      <territoryOwner territory="N. Argentina" owner="SouthAmericans"/>
+      <territoryOwner territory="Equador" owner="SouthAmericans"/>
+      <territoryOwner territory="C. Brazil N. W." owner="SouthAmericans"/>
+      <territoryOwner territory="N. Peru" owner="SouthAmericans"/>
+      <territoryOwner territory="Guyana" owner="SouthAmericans"/>
+      <territoryOwner territory="C. Argentina" owner="SouthAmericans"/>
+      <territoryOwner territory="W. Brazil" owner="SouthAmericans"/>
+      <territoryOwner territory="W. Columbia" owner="SouthAmericans"/>
+      <territoryOwner territory="S. Brazil" owner="SouthAmericans"/>
+      <territoryOwner territory="E. Venezuala" owner="SouthAmericans"/>
+      <territoryOwner territory="C. Peru" owner="SouthAmericans"/>
+      <territoryOwner territory="W. Argentina" owner="SouthAmericans"/>
+      <territoryOwner territory="Bolivia" owner="SouthAmericans"/>
+      <territoryOwner territory="Chile" owner="SouthAmericans"/>
+      <territoryOwner territory="C. Brazil S. W." owner="SouthAmericans"/>
+      <territoryOwner territory="Paraguay" owner="SouthAmericans"/>
+      <territoryOwner territory="S. E. Argentina" owner="SouthAmericans"/>
+      <territoryOwner territory="N. Venezuala" owner="SouthAmericans"/>
+      <territoryOwner territory="Galapagos Islands" owner="SouthAmericans"/>
+      <territoryOwner territory="S. Peru" owner="SouthAmericans"/>
+      <territoryOwner territory="N. W. Columbia" owner="SouthAmericans"/>
+      <territoryOwner territory="Suriname" owner="SouthAmericans"/>
+      <territoryOwner territory="E. Columbia" owner="SouthAmericans"/>
+      <territoryOwner territory="Rhode Island" owner="Americans"/>
+      <territoryOwner territory="Tennessee" owner="Americans"/>
+      <territoryOwner territory="Louisiana" owner="Americans"/>
+      <territoryOwner territory="Mississippi" owner="Americans"/>
+      <territoryOwner territory="New Hamshire" owner="Americans"/>
+      <territoryOwner territory="Maine" owner="Americans"/>
+      <territoryOwner territory="Wisconsin" owner="Americans"/>
+      <territoryOwner territory="Washington" owner="Americans"/>
+      <territoryOwner territory="South Dakota" owner="Americans"/>
+      <territoryOwner territory="Alabama" owner="Americans"/>
+      <territoryOwner territory="Florida" owner="Americans"/>
+      <territoryOwner territory="Idaho" owner="Americans"/>
+      <territoryOwner territory="Virginia" owner="Americans"/>
+      <territoryOwner territory="Texas" owner="Americans"/>
+      <territoryOwner territory="New Jersey" owner="Americans"/>
+      <territoryOwner territory="Michigan" owner="Americans"/>
+      <territoryOwner territory="Arkansas" owner="Americans"/>
+      <territoryOwner territory="Iowa" owner="Americans"/>
+      <territoryOwner territory="North Dakota" owner="Americans"/>
+      <territoryOwner territory="Indiana" owner="Americans"/>
+      <territoryOwner territory="Minnesota" owner="Americans"/>
+      <territoryOwner territory="Hawaii" owner="Americans"/>
+      <territoryOwner territory="Montana" owner="Americans"/>
+      <territoryOwner territory="Bahamas" owner="Americans"/>
+      <territoryOwner territory="North Carolina" owner="Americans"/>
+      <territoryOwner territory="New Mexico" owner="Americans"/>
+      <territoryOwner territory="California" owner="Americans"/>
+      <territoryOwner territory="Wyoming" owner="Americans"/>
+      <territoryOwner territory="Kansas" owner="Americans"/>
+      <territoryOwner territory="Missouri" owner="Americans"/>
+      <territoryOwner territory="Oregon" owner="Americans"/>
+      <territoryOwner territory="Illinois" owner="Americans"/>
+      <territoryOwner territory="Connecticut" owner="Americans"/>
+      <territoryOwner territory="Arizona" owner="Americans"/>
+      <territoryOwner territory="Kodiak Island" owner="Americans"/>
+      <territoryOwner territory="Kentucky" owner="Americans"/>
+      <territoryOwner territory="Alaska" owner="Americans"/>
+      <territoryOwner territory="Utah" owner="Americans"/>
+      <territoryOwner territory="Georgia" owner="Americans"/>
+      <territoryOwner territory="Nebraska" owner="Americans"/>
+      <territoryOwner territory="South Carolina" owner="Americans"/>
+      <territoryOwner territory="Massachusetts" owner="Americans"/>
+      <territoryOwner territory="Maryland" owner="Americans"/>
+      <territoryOwner territory="West Virginia" owner="Americans"/>
+      <territoryOwner territory="Ohio" owner="Americans"/>
+      <territoryOwner territory="Vermont" owner="Americans"/>
+      <territoryOwner territory="New York" owner="Americans"/>
+      <territoryOwner territory="Pennsylvania" owner="Americans"/>
+      <territoryOwner territory="Colorado" owner="Americans"/>
+      <territoryOwner territory="Nevada" owner="Americans"/>
+      <territoryOwner territory="Oklahoma" owner="Americans"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <unitPlacement unitType="infantry" territory="S. W. Ontario" quantity="3" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. W. Ontario" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. W. Ontario" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="W. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="W. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="W. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="S. E. Saskatchewan" quantity="3" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. E. Saskatchewan" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. E. Saskatchewan" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="N. E. Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="N. E. Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="N. E. Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="S. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="S. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="Labrador" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="Labrador" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="Labrador" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="Baffin Island" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="Baffin Island" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="Baffin Island" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="N. W. Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="N. W. Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="N. W. Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="N. W. Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="N. E. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="N. E. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="N. E. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="Yukon" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="Yukon" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="Yukon" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="C. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="C. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="C. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="S. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. Manitoba" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="N. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="N. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="N. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="N. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="S. W. Saskatchewan" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. W. Saskatchewan" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. W. Saskatchewan" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="E. C. Alberta" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="E. C. Alberta" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="E. C. Alberta" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="E. C. Alberta" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="Victoria Island" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="Keewatin" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="Keewatin" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="Keewatin" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="C. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="C. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="C. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="C. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="N. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="N. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="N. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="E. C. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="E. C. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="E. C. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="E. C. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="Newfoundland" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="Newfoundland" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="Newfoundland" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="Newfoundland" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="S. E. Ontario" quantity="3" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. E. Ontario" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="S. E. Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. E. Ontario" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="S. Alberta" quantity="3" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. Alberta" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. Alberta" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="New Brunswick" quantity="3" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="New Brunswick" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="New Brunswick" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="Ottowa" quantity="6" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="Ottowa" quantity="4" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="Ottowa" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="Ottowa" quantity="5" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="S. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="S. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="S. British Columbia" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="Fort Smith" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="Fort Smith" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="factory" territory="Fort Smith" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="Fort Smith" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="C. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="C. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="C. W. Quebec" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="N. Alberta" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="N. Alberta" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="N. Alberta" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="N. Saskatchewan" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="N. Saskatchewan" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="N. Saskatchewan" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="W. C. Alberta" quantity="3" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="W. C. Alberta" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="W. C. Alberta" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="C. Saskatchewan" quantity="3" owner="Canadians"/>
+      <unitPlacement unitType="armour" territory="C. Saskatchewan" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="artillery" territory="C. Saskatchewan" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="infantry" territory="C. Mexico S. E." quantity="3" owner="Mexicans"/>
+      <unitPlacement unitType="fighter" territory="C. Mexico S. E." quantity="2" owner="Mexicans"/>
+      <unitPlacement unitType="factory" territory="C. Mexico S. E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="C. Mexico S. E." quantity="3" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="N. Mexico C." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="N. Mexico C." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="Baja California" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="Baja California" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="C. Mexico E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="armour" territory="C. Mexico E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="C. Mexico E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="N. W. Mexico N. W." quantity="2" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="N. W. Mexico N. W." quantity="2" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="N. Mexico N." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="N. Mexico N." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="Ilas de Revillagigedo" quantity="2" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="C. Mexico W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="armour" territory="C. Mexico W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="C. Mexico W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="N. W. Mexico S." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="factory" territory="N. W. Mexico S." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="N. W. Mexico S." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="C. Mexico N. C." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="armour" territory="C. Mexico N. C." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="C. Mexico N. C." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="S. E. Mexico S. W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="armour" territory="S. E. Mexico S. W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="S. E. Mexico S. W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="S. E. Mexico N. E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="S. E. Mexico N. E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="N. Mexico E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="armour" territory="N. Mexico E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="factory" territory="N. Mexico E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="N. Mexico E." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="N. W. Mexico N." quantity="2" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="N. W. Mexico N." quantity="2" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="N. Mexico W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="armour" territory="N. Mexico W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="N. Mexico W." quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="Clipperton Island" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="artillery" territory="Clipperton Island" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="infantry" territory="Haiti" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="armour" territory="Haiti" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="Haiti" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="S. Honduras" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="S. Honduras" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="S. W. Costa Rica" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="S. W. Costa Rica" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="El Salvador" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="El Salvador" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="C. Nicaragua" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="C. Nicaragua" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="S. W. Guatemala" quantity="3" owner="CentralAmericans"/>
+      <unitPlacement unitType="armour" territory="S. W. Guatemala" quantity="3" owner="CentralAmericans"/>
+      <unitPlacement unitType="factory" territory="S. W. Guatemala" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="S. W. Guatemala" quantity="4" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="W. Cuba" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="armour" territory="W. Cuba" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="W. Cuba" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="Dominican Republic" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="armour" territory="Dominican Republic" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="Dominican Republic" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="W. Nicaragua" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="W. Nicaragua" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="Belize" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="Belize" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="E. Panama" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="E. Panama" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="N. Honduras" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="armour" territory="N. Honduras" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="N. Honduras" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="W. Panama" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="factory" territory="W. Panama" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="W. Panama" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="N. E. Guatemala" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="armour" territory="N. E. Guatemala" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="factory" territory="N. E. Guatemala" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="N. E. Guatemala" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="N. W. Costa Rica" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="N. W. Costa Rica" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="E. Cuba" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="armour" territory="E. Cuba" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="factory" territory="E. Cuba" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="E. Cuba" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="Jamaica" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="armour" territory="Jamaica" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="Jamaica" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="E. Nicaragua" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="factory" territory="E. Nicaragua" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="artillery" territory="E. Nicaragua" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="infantry" territory="C. Brazil E." quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="C. Brazil E." quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="N. Argentina" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="N. Argentina" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="Equador" quantity="3" owner="SouthAmericans"/>
+      <unitPlacement unitType="armour" territory="Equador" quantity="3" owner="SouthAmericans"/>
+      <unitPlacement unitType="factory" territory="Equador" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="Equador" quantity="4" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="C. Brazil N. W." quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="C. Brazil N. W." quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="N. Peru" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="N. Peru" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="Guyana" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="Guyana" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="C. Argentina" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="C. Argentina" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="W. Brazil" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="W. Brazil" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="W. Columbia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="W. Columbia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="S. Brazil" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="S. Brazil" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="E. Venezuala" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="E. Venezuala" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="C. Peru" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="factory" territory="C. Peru" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="C. Peru" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="W. Argentina" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="W. Argentina" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="Bolivia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="factory" territory="Bolivia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="Bolivia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="Chile" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="Chile" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="C. Brazil S. W." quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="C. Brazil S. W." quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="Paraguay" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="Paraguay" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="S. E. Argentina" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="S. E. Argentina" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="N. Venezuala" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="factory" territory="N. Venezuala" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="N. Venezuala" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="Galapagos Islands" quantity="2" owner="SouthAmericans"/>
+      <unitPlacement unitType="fighter" territory="Galapagos Islands" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="S. Peru" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="S. Peru" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="N. W. Columbia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="N. W. Columbia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="Suriname" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="Suriname" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="E. Columbia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="artillery" territory="E. Columbia" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="infantry" territory="Rhode Island" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Rhode Island" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Rhode Island" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Tennessee" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Tennessee" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Tennessee" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Tennessee" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Louisiana" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Louisiana" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Louisiana" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Mississippi" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Mississippi" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Mississippi" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="New Hamshire" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="New Hamshire" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="New Hamshire" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Maine" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Maine" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Maine" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Wisconsin" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Wisconsin" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Wisconsin" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Wisconsin" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Washington" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Washington" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Washington" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Washington" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="South Dakota" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="South Dakota" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="South Dakota" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Alabama" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Alabama" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Alabama" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Florida" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Florida" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Florida" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Florida" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Idaho" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Idaho" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Idaho" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Virginia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Virginia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Virginia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Texas" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Texas" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Texas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Texas" quantity="4" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="New Jersey" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="New Jersey" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="New Jersey" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Michigan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Michigan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Michigan" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Arkansas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Arkansas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Arkansas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Iowa" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Iowa" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Iowa" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="North Dakota" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="North Dakota" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="North Dakota" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Indiana" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Indiana" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Indiana" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Indiana" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Minnesota" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Minnesota" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Minnesota" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Minnesota" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Hawaii" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Hawaii" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="fighter" territory="Hawaii" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Hawaii" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Montana" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Montana" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Montana" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Montana" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Bahamas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Bahamas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Bahamas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="North Carolina" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="North Carolina" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="North Carolina" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="New Mexico" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="New Mexico" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="New Mexico" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="California" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="California" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="California" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="California" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Wyoming" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Wyoming" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Wyoming" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Kansas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Kansas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Kansas" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Missouri" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Missouri" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Missouri" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Missouri" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Oregon" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Oregon" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Oregon" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Illinois" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Illinois" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Illinois" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Connecticut" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Connecticut" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Connecticut" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Arizona" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Arizona" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Arizona" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Kodiak Island" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Kentucky" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Kentucky" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Kentucky" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Alaska" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Alaska" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Alaska" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Utah" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Utah" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Utah" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Utah" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Georgia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Georgia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Georgia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Nebraska" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Nebraska" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Nebraska" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Nebraska" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="South Carolina" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="South Carolina" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="South Carolina" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Massachusetts" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Massachusetts" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Massachusetts" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Maryland" quantity="4" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Maryland" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="Maryland" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Maryland" quantity="4" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="West Virginia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="West Virginia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="West Virginia" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Ohio" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Ohio" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Ohio" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Vermont" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Vermont" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Vermont" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="New York" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="New York" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="factory" territory="New York" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="New York" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Pennsylvania" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Pennsylvania" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Pennsylvania" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Colorado" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Colorado" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Colorado" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Nevada" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Nevada" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Nevada" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Oklahoma" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Oklahoma" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Oklahoma" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="P. 110" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="battleship" territory="P. 110" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="transport" territory="P. 117" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="destroyer" territory="P. 117" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="cruiser" territory="P. 117" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="submarine" territory="P. 39" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="destroyer" territory="P. 39" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="battleship" territory="P. 33" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="carrier" territory="P. 33" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="cruiser" territory="P. 33" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="transport" territory="W. Hudson Bay" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="Lake Erie" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="P. 29" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="battleship" territory="P. 29" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="transport" territory="P. 20" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="battleship" territory="P. 20" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="submarine" territory="P. 20" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="submarine" territory="P. 21" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="cruiser" territory="P. 21" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="transport" territory="P. 99" quantity="2" owner="SouthAmericans"/>
+      <unitPlacement unitType="battleship" territory="P. 99" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="submarine" territory="P. 99" quantity="2" owner="SouthAmericans"/>
+      <unitPlacement unitType="destroyer" territory="P. 99" quantity="3" owner="SouthAmericans"/>
+      <unitPlacement unitType="cruiser" territory="P. 99" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="transport" territory="P. 15" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="transport" territory="P. 100" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="battleship" territory="P. 100" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="submarine" territory="P. 100" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="cruiser" territory="P. 100" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="Lake Ontario" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="A. 3" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="destroyer" territory="A. 6" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="cruiser" territory="A. 6" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="Lake Superior" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="P. 63" quantity="2" owner="Mexicans"/>
+      <unitPlacement unitType="submarine" territory="P. 63" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="destroyer" territory="P. 63" quantity="2" owner="Mexicans"/>
+      <unitPlacement unitType="cruiser" territory="P. 63" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="transport" territory="P. 59" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="battleship" territory="P. 59" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="submarine" territory="P. 59" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="destroyer" territory="P. 59" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="transport" territory="E. Hudson Bay" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="P. 1" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="S. W. Gulf Of Mexico" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="battleship" territory="S. W. Gulf Of Mexico" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="submarine" territory="S. W. Gulf Of Mexico" quantity="1" owner="Mexicans"/>
+      <unitPlacement unitType="transport" territory="P. 49" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="battleship" territory="P. 49" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="cruiser" territory="P. 5" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="P. 6" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="battleship" territory="P. 6" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="carrier" territory="P. 6" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="cruiser" territory="P. 6" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="P. 8" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="battleship" territory="P. 8" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="A. 27" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="battleship" territory="A. 27" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="submarine" territory="A. 27" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="cruiser" territory="A. 27" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="A. 29" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="cruiser" territory="A. 29" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="A. 23" quantity="3" owner="Americans"/>
+      <unitPlacement unitType="battleship" territory="A. 23" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="submarine" territory="A. 23" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="Lake Huron" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="A. 12" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="destroyer" territory="A. 12" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="cruiser" territory="A. 12" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="N. W. Hudson Bay" quantity="1" owner="Canadians"/>
+      <unitPlacement unitType="transport" territory="A. 31" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="battleship" territory="A. 31" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="carrier" territory="A. 31" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="A. 36" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="battleship" territory="A. 36" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="carrier" territory="A. 36" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Greenland" quantity="3"/>
+      <unitPlacement unitType="fighter" territory="Greenland" quantity="2"/>
+      <unitPlacement unitType="aaGun" territory="Greenland" quantity="1"/>
+      <unitPlacement unitType="transport" territory="A. 52" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="battleship" territory="A. 52" quantity="1" owner="SouthAmericans"/>
+      <unitPlacement unitType="transport" territory="A. 50" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="battleship" territory="A. 50" quantity="1" owner="CentralAmericans"/>
+      <unitPlacement unitType="destroyer" territory="A. 50" quantity="2" owner="CentralAmericans"/>
+      <unitPlacement unitType="transport" territory="Lake Michigan" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="transport" territory="S. Hudson Bay" quantity="2" owner="Canadians"/>
+      <unitPlacement unitType="battleship" territory="S. Hudson Bay" quantity="1" owner="Canadians"/>
+    </unitInitialize>
+    <resourceInitialize>
+      <resourceGiven player="Canadians" resource="PUs" quantity="45"/>
+      <resourceGiven player="Mexicans" resource="PUs" quantity="40"/>
+      <resourceGiven player="CentralAmericans" resource="PUs" quantity="15"/>
+      <resourceGiven player="SouthAmericans" resource="PUs" quantity="35"/>
+      <resourceGiven player="Americans" resource="PUs" quantity="50"/>
+    </resourceInitialize>
+  </initialize>
+  <propertyList>
+    <property name="Honorable Surrender" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+      <number min="2" max="3"/>
+    </property>
+    <property name="Always on AA" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Display Sea Names" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="WW2V3" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="WW2V3 Tech Model" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Use Shipyards" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="All Rockets Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="AA Territory Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Multiple AA Per Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Partial Amphibious Retreat" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Naval Bombard Casualties Return Fire" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Hari-Kari Units" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Surviving Air Move To Land" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Air Attack Sub Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Transport In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Transport Casualties Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unescorted Transport Dies" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Sub In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Defending Subs Sneak Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Retreat Before Battle" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Previous Units Fight" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce fighters on carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Produce new fighters on old carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Move existing fighters to new carriers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Land existing fighters on new carriers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unit Placement In Enemy Seas" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Territory Turn Limit" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="maxFactoriesPerTerritory" value="1" editable="false"/>
+    <property name="Placement Restricted By Factory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0" editable="false"/>
+    <property name="Neutrals Are Impassable" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Blitzable" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Canadians bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Mexicans bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="CentralAmericans bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="SouthAmericans bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Americans bid" value="0" editable="true">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="mapName" value="sleeping_giant" editable="false"/>
+    <property name="notes">
+      <value><![CDATA[A war between the United States and all her neighbors.]]></value>
+    </property>
+  </propertyList>
+</game>
