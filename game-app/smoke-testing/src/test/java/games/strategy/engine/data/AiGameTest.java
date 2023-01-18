@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -51,29 +52,24 @@ public class AiGameTest {
     log.info("Game winners: " + endDelegate.getWinners());
   }
 
-  @ParameterizedTest
-  @CsvSource({
-    "map_making_tutorial,map/games/Test1.xml",
-  })
-  void testFirstRoundFiftyTimes(String mapName, String mapXmlPath) throws Exception {
-    // Run the first round of all-AI game several times. Ensure no errors and no winner so early.
-    for (int i = 0; i < 10; i++) {
-      GameSelectorModel gameSelector = GameTestUtils.loadGameFromURI(mapName, mapXmlPath);
-      ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
-      game.setStopGameOnDelegateExecutionStop(true);
-      while (!game.isGameOver() && game.getData().getSequence().getRound() < 2) {
-        game.runNextStep();
-      }
-      log.debug(i + " first round stats: " + getResourceSummary(game.getData()));
-      assertThat(
-          "Expecting first round game to not be over so early: "
-              + getResourceSummary(game.getData()),
-          game.isGameOver(),
-          is(false));
-      // Need to call stopGame() to ensure ProAI resets its static ConcurrentBattleCalculator, else
-      // the next test will use the wrong GameData for simulation.
-      game.stopGame();
+  @RepeatedTest(10)
+  // Run the first round of all-AI game several times. Ensure no errors and no winner so early.
+  void testFirstRoundTenTimes() throws Exception {
+    GameSelectorModel gameSelector =
+        GameTestUtils.loadGameFromURI("map_making_tutorial", "map/games/Test1.xml");
+    ServerGame game = GameTestUtils.setUpGameWithAis(gameSelector);
+    game.setStopGameOnDelegateExecutionStop(true);
+    while (!game.isGameOver() && game.getData().getSequence().getRound() < 2) {
+      game.runNextStep();
     }
+    log.debug("First round stats: " + getResourceSummary(game.getData()));
+    assertThat(
+        "Expecting first round game to not be over so early: " + getResourceSummary(game.getData()),
+        game.isGameOver(),
+        is(false));
+    // Need to call stopGame() to ensure ProAI resets its static ConcurrentBattleCalculator, else
+    // the next test will use the wrong GameData for simulation.
+    game.stopGame();
   }
 
   @Test
@@ -139,10 +135,14 @@ public class AiGameTest {
   }
 
   private String getResourceSummary(GameData gameData) {
-    String summary = "";
+    StringBuilder summary = new StringBuilder();
     for (GamePlayer p : gameData.getPlayerList()) {
-      summary += (summary.isEmpty() ? "" : ", ") + p.getName() + ": " + p.getResources();
+      summary
+          .append((summary.length() == 0) ? "" : ", ")
+          .append(p.getName())
+          .append(": ")
+          .append(p.getResources());
     }
-    return summary;
+    return summary.toString();
   }
 }
