@@ -30,7 +30,8 @@ class TestDataFileLister {
       resourcesFolder = Path.of("smoke-testing", "src", "test", "resources", folderName);
     }
     if (!Files.exists(resourcesFolder)) {
-      resourcesFolder = Path.of("game-app", "smoke-testing", "src", "test", "resources", folderName);
+      resourcesFolder =
+          Path.of("game-app", "smoke-testing", "src", "test", "resources", folderName);
     }
 
     Postconditions.assertState(
