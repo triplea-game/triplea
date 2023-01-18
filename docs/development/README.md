@@ -138,3 +138,27 @@ save games from loading.
 A lot of code is not automatically verified via tests. If reasonable tests can be added, do so!
 Generally though even the smallest of changes will need to be manually and thoroughly tested
 in a variety of maps and scenarios.
+
+# FAQ - common problems
+
+
+### Assets folder not found
+
+This is going to be typically because the working directory is not set properly. The 'run' gradle task
+for game-headed will download game assets into the 'root' directory. When the game starts it expects
+to find the assets folder in that root directory. If launching from IDE, chances are good the working
+directory is not set.
+
+Ideally the IDE launcher is checked in and pre-configured. This could be broken and needs to be 're-checked'
+back in properly. 
+
+In short:
+- check working directory is 'game-app/game-headed'
+- chect that `./gradlew downloadAssets` has been run and there is an 'assets' folder in the working directory
+
+### Google formatter does not work
+
+IDEA needs a tweak to overcome a JDk9 problem. See the IDE setup for the needed config that needs
+to be added to your vmoptions file.
+
+

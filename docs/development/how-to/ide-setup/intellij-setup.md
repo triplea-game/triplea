@@ -39,3 +39,21 @@ Plugin installation can be initiated from the JetBrains Marketplace web page, by
   1. *PlantUML Integration*
         1. GraphViz also needs to be installed: <https://graphviz.org/download/>
 
+
+## Google Java Format Plugin Fix
+
+Find your IDEA vmoptions file with: `find ~ -name "*vmoptions"`
+(eg: ./.config/JetBrains/IntelliJIdea2022.3/idea64.vmoptions)
+
+Add the following to your vmoptions file:
+
+```
+--add-opens=java.base/java.lang=ALL-UNNAMED
+--add-opens=java.base/java.util=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+```
+
