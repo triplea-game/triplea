@@ -6,6 +6,9 @@ servers:
     message: |
       Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
+      
+      It's about that time again! Revised players... please respond on the following thread to express your interest in signing up for ToC19.
+      https://forums.triplea-game.org/topic/3404/revised-toc19-signup
   - version: "2.0.20057"
     inactive: true
   - version: "0.0"
