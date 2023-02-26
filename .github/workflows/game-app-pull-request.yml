@@ -5,6 +5,7 @@ on:
       - 'game-app/**'
       - 'http-clients/**'
       - 'lib/**'
+      - 'build.gradle'
 jobs:
   build:
     runs-on: ubuntu-latest

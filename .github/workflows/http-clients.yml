@@ -4,12 +4,14 @@ on:
     paths:
       - 'http-clients/**'
       - 'lib/**'
+      - 'build.gradle'
   push:
     branches:
       - master
     paths:
       - 'http-clients/**'
       - 'lib/**'
+      - 'build.gradle'
 jobs:
   build:
     runs-on: Ubuntu-20.04
