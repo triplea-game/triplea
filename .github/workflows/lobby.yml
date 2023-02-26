@@ -7,11 +7,13 @@ on:
       - 'spitfire-server/**'
       - 'http-clients/**'
       - 'lib/**'
+      - 'build.gradle'
   pull_request:
     paths:
       - 'spitfire-server/**'
       - 'http-clients/**'
       - 'lib/**'
+      - 'build.gradle'
 jobs:
   build:
     runs-on: ubuntu-latest

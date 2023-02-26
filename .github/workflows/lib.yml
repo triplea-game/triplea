@@ -3,11 +3,13 @@ on:
   pull_request:
     paths:
       - 'lib/**'
+      - 'build.gradle'
   push:
     branches:
       - master
     paths:
       - 'lib/**'
+      - 'build.gradle'
 jobs:
   build:
     runs-on: Ubuntu-20.04
