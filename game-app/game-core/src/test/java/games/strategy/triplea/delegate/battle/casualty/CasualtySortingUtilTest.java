@@ -50,6 +50,7 @@ class CasualtySortingUtilTest {
     when(unitType1.getName()).thenReturn("A");
     final UnitAttachment unitAttachment1 = mock(UnitAttachment.class);
     when(unitType1.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment1);
+    when(unitType1.getUnitAttachment()).thenCallRealMethod();
     when(unitAttachment1.getMovement(player)).thenReturn(2);
     final Unit unitWith2Movement = new Unit(unitType1, player, gameData);
 
@@ -58,6 +59,7 @@ class CasualtySortingUtilTest {
     final UnitAttachment unitAttachment2 = mock(UnitAttachment.class);
     when(unitAttachment2.getMovement(player)).thenReturn(1);
     when(unitType2.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment2);
+    when(unitType2.getUnitAttachment()).thenCallRealMethod();
     final Unit unitWith1Movement = new Unit(unitType2, player, gameData);
 
     final List<Unit> units = Arrays.asList(unitWith2Movement, unitWith1Movement);
@@ -73,6 +75,7 @@ class CasualtySortingUtilTest {
     when(unitType1.getName()).thenReturn("A");
     final UnitAttachment unitAttachment1 = mock(UnitAttachment.class);
     when(unitType1.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment1);
+    when(unitType1.getUnitAttachment()).thenCallRealMethod();
     lenient().when(unitAttachment1.getMovement(player)).thenReturn(1);
     when(unitAttachment1.getIsMarine()).thenReturn(0);
     final Unit unitWithNoMarine = spy(new Unit(unitType1, player, gameData));
@@ -84,6 +87,7 @@ class CasualtySortingUtilTest {
     lenient().when(unitAttachment2.getMovement(player)).thenReturn(1);
     when(unitAttachment2.getIsMarine()).thenReturn(1);
     when(unitType2.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment2);
+    when(unitType2.getUnitAttachment()).thenCallRealMethod();
     final Unit unitWith1Marine = spy(new Unit(unitType2, player, gameData));
     when(unitWith1Marine.getWasAmphibious()).thenReturn(true);
 
@@ -93,6 +97,7 @@ class CasualtySortingUtilTest {
     lenient().when(unitAttachment3.getMovement(player)).thenReturn(1);
     when(unitAttachment3.getIsMarine()).thenReturn(2);
     when(unitType3.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment3);
+    when(unitType3.getUnitAttachment()).thenCallRealMethod();
     final Unit unitWith2Marine = spy(new Unit(unitType3, player, gameData));
     when(unitWith2Marine.getWasAmphibious()).thenReturn(true);
 
@@ -109,6 +114,7 @@ class CasualtySortingUtilTest {
     when(unitType1.getName()).thenReturn("A");
     final UnitAttachment unitAttachment1 = mock(UnitAttachment.class);
     when(unitType1.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment1);
+    when(unitType1.getUnitAttachment()).thenCallRealMethod();
     lenient().when(unitAttachment1.getMovement(player)).thenReturn(1);
     when(unitAttachment1.getIsMarine()).thenReturn(0);
     final Unit unitWithNoMarine = spy(new Unit(unitType1, player, gameData));
@@ -120,6 +126,7 @@ class CasualtySortingUtilTest {
     lenient().when(unitAttachment2.getMovement(player)).thenReturn(1);
     when(unitAttachment2.getIsMarine()).thenReturn(1);
     when(unitType2.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment2);
+    when(unitType2.getUnitAttachment()).thenCallRealMethod();
     final Unit unitWith1Marine = spy(new Unit(unitType2, player, gameData));
     when(unitWith1Marine.getWasAmphibious()).thenReturn(true);
 
@@ -129,6 +136,7 @@ class CasualtySortingUtilTest {
     lenient().when(unitAttachment3.getMovement(player)).thenReturn(1);
     when(unitAttachment3.getIsMarine()).thenReturn(2);
     when(unitType3.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment3);
+    when(unitType3.getUnitAttachment()).thenCallRealMethod();
     final Unit unitWith2Marine = spy(new Unit(unitType3, player, gameData));
     when(unitWith2Marine.getWasAmphibious()).thenReturn(true);
 
@@ -139,6 +147,7 @@ class CasualtySortingUtilTest {
     lenient().when(unitAttachment4.getMovement(player)).thenReturn(2);
     lenient().when(unitAttachment4.getIsMarine()).thenReturn(1);
     lenient().when(unitType4.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment4);
+    lenient().when(unitType4.getUnitAttachment()).thenCallRealMethod();
     final Unit unitWith3MarineButNotAmphibious = spy(new Unit(unitType4, player, gameData));
     when(unitWith3MarineButNotAmphibious.getWasAmphibious()).thenReturn(false);
 

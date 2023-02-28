@@ -31,36 +31,44 @@ class UnitTypeComparatorTest {
   @BeforeEach
   void setUp() {
     when(nullType.getName()).thenReturn("<NULL TYPE>");
+    when(nullType.getUnitAttachment()).thenCallRealMethod();
 
     final var infrastructureAttachment = mock(UnitAttachment.class);
     when(infrastructureAttachment.getIsInfrastructure()).thenReturn(true);
     when(infrastructure.getAttachment(any())).thenReturn(infrastructureAttachment);
+    when(infrastructure.getUnitAttachment()).thenCallRealMethod();
     when(infrastructure.getName()).thenReturn("<Infrastructure TYPE>");
 
     final var antiAircraftAttachment = mock(UnitAttachment.class);
     when(antiAircraftAttachment.getIsAaForBombingThisUnitOnly()).thenReturn(true);
     when(antiAircraft.getAttachment(any())).thenReturn(antiAircraftAttachment);
+    when(antiAircraft.getUnitAttachment()).thenCallRealMethod();
     when(antiAircraft.getName()).thenReturn("<AA TYPE>");
 
     final var airAttachment = mock(UnitAttachment.class);
     when(airAttachment.getIsAir()).thenReturn(true);
     when(air.getAttachment(any())).thenReturn(airAttachment);
+    when(air.getUnitAttachment()).thenCallRealMethod();
     when(air.getName()).thenReturn("<Air TYPE>");
 
     final var seaAttachment = mock(UnitAttachment.class);
     when(seaAttachment.getIsSea()).thenReturn(true);
     when(sea.getAttachment(any())).thenReturn(seaAttachment);
+    when(sea.getUnitAttachment()).thenCallRealMethod();
     when(sea.getName()).thenReturn("<Sea Type>");
 
     final var attackerAttachment = mock(UnitAttachment.class);
     when(attackerAttachment.getAttack()).thenReturn(1);
     when(attacker.getAttachment(any())).thenReturn(attackerAttachment);
+    when(attacker.getUnitAttachment()).thenCallRealMethod();
     when(attacker.getName()).thenReturn("<Attacker Type>");
 
     when(noneType1.getAttachment(any())).thenReturn(mock(UnitAttachment.class));
+    when(noneType1.getUnitAttachment()).thenCallRealMethod();
     when(noneType1.getName()).thenReturn("<NONE TYPE> - 1");
 
     when(noneType2.getAttachment(any())).thenReturn(mock(UnitAttachment.class));
+    when(noneType2.getUnitAttachment()).thenCallRealMethod();
     when(noneType2.getName()).thenReturn("<NONE TYPE> - 0");
   }
 

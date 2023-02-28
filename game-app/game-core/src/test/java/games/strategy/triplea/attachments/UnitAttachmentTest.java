@@ -190,10 +190,12 @@ class UnitAttachmentTest {
 
       final UnitType sub = mock(UnitType.class);
       when(sub.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(mock(UnitAttachment.class));
+      when(sub.getUnitAttachment()).thenCallRealMethod();
       final UnitType air = mock(UnitType.class);
       final UnitAttachment airAttachment = mock(UnitAttachment.class);
       when(airAttachment.getIsAir()).thenReturn(true);
       when(air.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(airAttachment);
+      when(air.getUnitAttachment()).thenCallRealMethod();
       when(unitTypeList.getAllUnitTypes()).thenReturn(Set.of(sub, air));
 
       final GameProperties properties = new GameProperties(gameData);

@@ -128,6 +128,7 @@ class SubmergeSubsVsOnlyAirStepTest extends AbstractClientSettingTestCase {
     final UnitType unitType = mock(UnitType.class);
     final UnitAttachment unitAttachment = mock(UnitAttachment.class);
     when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
+    when(unitType.getUnitAttachment()).thenCallRealMethod();
     when(unitAttachment.getCanEvade()).thenReturn(true);
     when(unitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
     final Unit sub = new Unit(unitType, mock(GamePlayer.class), givenGameData().build());

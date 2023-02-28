@@ -32,7 +32,10 @@ import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+
+import java.util.List;
 import java.util.Set;
 
 public class MockGameData {
@@ -57,6 +60,7 @@ public class MockGameData {
     lenient().when(gameData.getResourceList()).thenReturn(resourceList);
     lenient().when(gameData.getPlayerList()).thenReturn(playerList);
     lenient().when(gameData.getTechnologyFrontier()).thenReturn(technologyFrontier);
+    lenient().when(technologyFrontier.iterator()).thenCallRealMethod();
     lenient().when(playerList.getNullPlayer()).thenCallRealMethod();
   }
 

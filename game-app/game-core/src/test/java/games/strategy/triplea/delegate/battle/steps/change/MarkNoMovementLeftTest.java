@@ -84,6 +84,7 @@ class MarkNoMovementLeftTest {
     final UnitType unitType = mock(UnitType.class);
     final UnitAttachment unitAttachment = mock(UnitAttachment.class);
     when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
+    when(unitType.getUnitAttachment()).thenCallRealMethod();
     when(unitAttachment.getIsAir()).thenReturn(false);
     final Unit unit = spy(new Unit(unitType, mock(GamePlayer.class), givenGameData().build()));
     doReturn(movement).when(unit).getMovementLeft();
