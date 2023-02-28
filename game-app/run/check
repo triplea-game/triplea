@@ -4,9 +4,13 @@ set -e
 
 scriptDir=$(dirname "$0")
 "$scriptDir/../../gradlew" --parallel \
+  :game-app:ai:check \
+  :game-app:domain-data:check \
+  :game-app:game-core:check \
   :game-app:game-headed:check \
   :game-app:game-headless:check \
   :game-app:game-relay-server:check \
+  :game-app:map-data:check \
   :game-app:smoke-testing:check
 
 "$scriptDir/.build/check-links"
