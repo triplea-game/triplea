@@ -14,6 +14,7 @@ flyway {
     driver = 'org.postgresql.Driver'
 
 }
+
 task flywayMigrateLobbyDb(type: FlywayMigrateTask) {
     url= 'jdbc:postgresql://localhost:5432/lobby_db'
     user = 'lobby_user'
@@ -21,7 +22,12 @@ task flywayMigrateLobbyDb(type: FlywayMigrateTask) {
     locations = ['filesystem:src/main/resources/db/migration/lobby_db']
 }
 
-task flywayMigrateAll(dependsOn: [flywayMigrateLobbyDb])
+task flywayMigrateErrorReportDb(type: FlywayMigrateTask) {
+    url= 'jdbc:postgresql://localhost:5432/error_report'
+    user = 'error_report_user'
+    password = 'error_report'
+    locations = ['filesystem:src/main/resources/db/migration/error_report']
+}
 
 task portableInstaller(type: Zip, group: 'release') {
     from 'src/main/resources/db/migration/'
