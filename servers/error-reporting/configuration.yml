@@ -8,8 +8,7 @@ githubMapsOrgName: triplea-maps
 # be made and instead a hardcoded value returned.
 errorReportToGithubEnabled: ${ERROR_REPORT_TO_GITHUB_ENABLED:-false}
 
-# Whether to print out SQL statements as executed, useful for debugging.
-logSqlStatements: false
+
 
 database:
   driverClass: org.postgresql.Driver

@@ -19,7 +19,6 @@ public class ErrorReportingConfiguration extends Configuration {
   String githubMapsOrgName; // : triplea-maps
 
   Boolean errorReportToGithubEnabled;
-  Boolean logSqlStatements;
 
   @Valid @NotNull @JsonProperty @Getter DataSourceFactory database = new DataSourceFactory();
 }
