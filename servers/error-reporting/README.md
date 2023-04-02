@@ -6,4 +6,3 @@ and the web-api for Github Issues.
 
 The service provides throttling, it keeps tracks of error reports that have been submitted
 and will allow only so many for a given window of time from a given user.
-
