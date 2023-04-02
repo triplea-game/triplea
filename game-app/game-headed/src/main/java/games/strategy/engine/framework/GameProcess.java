@@ -45,7 +45,6 @@ public class GameProcess {
       commands.add("-D" + TRIPLEA_GAME + "=" + fileName);
     }
     commands.add(getMainClassName());
-    log.info("commands: " + commands);
     ProcessRunnerUtil.exec(commands);
   }
 
