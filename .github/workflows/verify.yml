@@ -1,19 +1,10 @@
-name: Lobby Build
+# Runs all build checks on any pull request or merges to master
+name: Verify
 on:
+  pull_request:
   push:
     branches:
       - master
-    paths:
-      - 'spitfire-server/**'
-      - 'http-clients/**'
-      - 'lib/**'
-      - 'build.gradle'
-  pull_request:
-    paths:
-      - 'spitfire-server/**'
-      - 'http-clients/**'
-      - 'lib/**'
-      - 'build.gradle'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,10 +18,10 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-            --health-cmd pg_isready
-            --health-interval 10s
-            --health-timeout 5s
-            --health-retries 5
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -38,6 +29,5 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
-      - name: Run Tests
-        run: ./spitfire-server/run/check
-
+      - name: Run Build Checks
+        run: ./verify

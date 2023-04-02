@@ -4,9 +4,15 @@
 - Install JDK 11 (project is using this Java version)
 - [Install IDE](./how-to/ide-setup) (IDEA is better supported, YMMV with Eclipse)
   - Create as a gradle project (file > open project > select the build.gradle file))
-- Install docker
-  - Docker for Mac can be obtained at: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
-  - Docker for linux (ubuntu): https://docs.docker.com/engine/install/ubuntu/
+
+## Mac
+
+- Install docker: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
+
+## Windows
+
+Set up WSL, this will give you a command line that can be used to run docker, gradle and the code check scripts.
+
 
 ## Getting Started
 
