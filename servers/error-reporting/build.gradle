@@ -4,7 +4,7 @@ plugins {
 }
 
 archivesBaseName = "$group-$name"
-mainClassName = 'org.triplea.spitfire.server.SpitfireServerApplication'
+mainClassName = 'org.triplea.server.error.reporting.ErrorReportingServer'
 ext {
     releasesDir = file("$buildDir/releases")
 }
@@ -45,30 +45,20 @@ configurations {
     }
 }
 
+
 dependencies {
-    implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
-    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
-    implementation project(':game-app:domain-data')
-    implementation project(':http-clients:feign-common')
+    implementation project(':http-clients:error-reporting-client')
     implementation project(':http-clients:github-client')
-    implementation project(':http-clients:lobby-client')
-    implementation project(':lib:java-extras')
-    implementation project(':lib:websocket-client')
-    implementation project(':lib:websocket-server')
+    implementation project(':http-clients:http-client-lib')
     implementation project(':servers:server-lib')
-    implementation project(':spitfire-server:latest-version-module')
-    implementation project(':spitfire-server:lobby-module')
-    implementation project(':spitfire-server:maps-module')
+
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
+
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
-    testImplementation "io.github.openfeign:feign-core:$feignCoreVersion"
-    testImplementation "io.github.openfeign:feign-gson:$feignGsonVersion"
-    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testImplementation project(':servers:server-test-support')
     testImplementation project(':spitfire-server:database-test-support')
-    testImplementation project(':lib:test-common')
-    testImplementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
-    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 }

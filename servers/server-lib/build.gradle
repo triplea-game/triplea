@@ -1,0 +1,22 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}
+
+dependencies {
+    implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
+    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
+    implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
+
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation "io.github.openfeign:feign-core:$feignCoreVersion"
+    testImplementation "io.github.openfeign:feign-gson:$feignGsonVersion"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testImplementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
+}

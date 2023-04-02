@@ -25,7 +25,6 @@ import org.triplea.spitfire.server.access.authentication.ApiKeyAuthenticator;
 import org.triplea.spitfire.server.access.authentication.AuthenticatedUser;
 import org.triplea.spitfire.server.access.authorization.BannedPlayerFilter;
 import org.triplea.spitfire.server.access.authorization.RoleAuthorizer;
-import org.triplea.spitfire.server.controllers.ErrorReportController;
 import org.triplea.spitfire.server.controllers.latest.version.LatestVersionController;
 import org.triplea.spitfire.server.controllers.lobby.GameHostingController;
 import org.triplea.spitfire.server.controllers.lobby.GameListingController;
@@ -172,7 +171,6 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
             UsernameBanController.build(jdbi),
             UserBanController.build(
                 jdbi, chatters, playerConnectionMessagingBus, gameConnectionMessagingBus),
-            ErrorReportController.build(configuration, jdbi),
             ModeratorAuditHistoryController.build(jdbi),
             ModeratorsController.build(jdbi),
             MuteUserController.build(chatters),
