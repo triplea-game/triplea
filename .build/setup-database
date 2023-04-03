@@ -5,7 +5,8 @@ set -eux
 function main() {
   export PGPASSWORD=postgres
   createDatabase "lobby_db" "lobby_user" "lobby"
-  ./gradlew flywayMigrateLobbyDb
+  createDatabase "error_report" "error_report_user" "error_report"
+  ./gradlew flywayMigrateLobbyDb flywayMigrateErrorReportDb
 }
 
 function createDatabase() {

@@ -2,19 +2,54 @@
 
 # This script runs all checks across the entire project.
 
-function main {
-  checkDependency "docker"
-  ./game-app/run/check
-  ./spitfire-server/run/check
-}
-
-# Verifies a given dependency is installed, if not, aborts
+# Checks if a dependency is installed on a system.
 function checkDependency {
   local depName="$1"
-  if ! hash "$depName"; then
+  if hash "$depName"; then
+    return 0
+  else
     echo "ERROR: dependency not installed '$depName'"
-    exit 1
+
+    if [ "$(uname)" == "Darwin" ]; then
+      echo "Follow these steps to install docker: https://store.docker.com/editions/community/docker-ce-desktop-mac"
+      exit 1
+    fi
+
+    return 1
   fi
 }
 
-main
+# Installs python
+# Installs docker & docker-compose using pip
+# Adds current user to 'docker' group (allows for sudo-less docker)
+function installDocker {
+  echo "Installing python and pip, a dependency of docker"
+  if hash yum; then
+    set -x
+    sudo yum update -y
+    sudo yum install -y python3 python3-pip
+    set +x
+  else
+    set -x
+    sudo apt install -y python3 python3-pip
+    set +x
+  fi
+  echo "Installing Docker (with pip)"
+  set -x
+  pip3 install docker docker-compose
+  set +x
+
+  echo "Adding current user: $USER to group: 'docker' (allows sudo-less docker)."
+  echo "Log back in for these changes to take effect."
+  groups | grep -q "docker" || sudo usermod -a -G docker "$USER"
+}
+
+scriptDir="$(dirname $0)"
+set -o pipefail
+set -eu
+
+checkDependency "docker" || installDocker
+"$scriptDir/.build/setup-database"
+"$scriptDir/gradlew" check $@
+"$scriptDir/.build/find-unused-dbunit-datasets"
+"$scriptDir/.build/code-convention-checks/check-custom-style" spitfire-server

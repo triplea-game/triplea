@@ -1,4 +1,4 @@
-name: Game App Master Branch Build
+name: Package and Upload Game Installers
 on:
   push:
     branches:
