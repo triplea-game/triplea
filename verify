@@ -48,8 +48,8 @@ scriptDir="$(dirname $0)"
 set -o pipefail
 set -eu
 
-checkDependency "docker234" || installDocker
+checkDependency "docker" || installDocker
 
-"$scriptDir/gradlew" check
+"$scriptDir/gradlew" check $@
 "$scriptDir/.build/find-unused-dbunit-datasets"
 "$scriptDir/.build/code-convention-checks/check-custom-style" spitfire-server
