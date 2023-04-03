@@ -2800,3 +2800,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/adam_met_de_bois/master/preview.png
   description: |
    <br>Free for all fight the city of Amsterdam
+- mapName: UHD World War II Global
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/uhd_world_war_ii_global/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/uhd_world_war_ii_global/master/preview.png
+  description: 
+   <br>This is UHD World War II Global using the Black Elk Mega Map
