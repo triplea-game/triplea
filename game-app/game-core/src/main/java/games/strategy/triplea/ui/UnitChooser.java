@@ -603,7 +603,7 @@ public final class UnitChooser extends JPanel {
                     .damaged(damaged || category.hasDamageOrBombingUnitDamage())
                     .disabled(category.getDisabled())
                     .build(),
-                /*nonWithdrawable =*/ !category.getCanRetreat());
+                /* nonWithdrawable= */ !category.getCanRetreat());
         g.drawImage(image, 0, 0, this);
 
         int index = 1;
