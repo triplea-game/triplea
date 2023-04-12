@@ -34,8 +34,8 @@
 
 ## Cleanup
 1. *Project > Java Code Style > Cleanup*
-1. Select the Triplea cleanup file: [triplea/.build/eclipse/triplea_java_eclipse_format_style.xml
-   ](https://github.com/triplea-game/triplea/blob/master/.build/eclipse/triplea_java_eclipse_format_style.xml)
+1. Select the Triplea cleanup file: [triplea/.build/eclipse/triplea_java_eclipse_cleanup.xml
+   ](https://github.com/triplea-game/triplea/blob/master/.build/eclipse/triplea_java_eclipse_cleanup.xml)
 
 ![screenshot from 2019-01-10 15-07-46
   ](https://user-images.githubusercontent.com/12397753/51002909-acc46b80-14e9-11e9-8a49-80281769f81a.png)
