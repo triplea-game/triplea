@@ -80,7 +80,7 @@ subprojects {
         junitJupiterVersion = '5.9.2'
         junitPlatformLauncherVersion = '1.9.2'
         logbackClassicVersion = '1.2.11'
-        mockitoVersion = '4.11.0'
+        mockitoVersion = '5.3.0'
         openFeignVersion = '12.3'
         postgresqlVersion = '42.6.0'
         snakeYamlVersion = '2.6'
