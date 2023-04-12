@@ -43,7 +43,7 @@
 ## Import Order
 1. *Project > Java Code Style > Organize Imports*
 1. Click 'Import' and select the import file: [triplea/.build/eclipse/triplea.importorder
-](https://github.com/triplea-game/triplea/blob/master/.eclipse/format/triplea.importorder)
+](https://github.com/triplea-game/triplea/blob/master/.build/eclipse/triplea.importorder)
 
 Should look like this when configured: <br />
 ![Screenshot from 2019-08-08 16-45-04
