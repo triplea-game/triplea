@@ -26,4 +26,7 @@ dependencies {
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testImplementation project(":lib:swing-lib-test-support")
     testImplementation project(":lib:test-common")
+    // Configures mockito to use the legacy "subclass mock maker"
+    // see https://github.com/mockito/mockito/releases/tag/v5.0.0 for more information
+    testImplementation "org.mockito:mockito-subclass:$mockitoVersion"
 }
