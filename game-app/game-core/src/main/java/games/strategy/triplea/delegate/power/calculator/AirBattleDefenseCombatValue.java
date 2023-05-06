@@ -47,7 +47,7 @@ class AirBattleDefenseCombatValue implements CombatValue {
 
   @Override
   public BattleState.Side getBattleSide() {
-    return BattleState.Side.OFFENSE;
+    return BattleState.Side.DEFENSE;
   }
 
   @Override
