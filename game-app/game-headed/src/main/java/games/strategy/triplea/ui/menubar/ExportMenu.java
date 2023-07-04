@@ -168,7 +168,7 @@ final class ExportMenu extends JMenu {
       return;
     }
     try (PrintWriter writer =
-            new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8.toString());
+            new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8);
         GameData.Unlocker ignored = gameData.acquireReadLock()) {
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
@@ -257,8 +257,7 @@ final class ExportMenu extends JMenu {
       final List<GamePlayer> players = clone.getPlayerList().getSortedPlayers();
 
       // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom
-      // resources or tech
-      // tokens or # techs, etc.
+      // resources or tech  tokens or # techs, etc.
       final Iterable<IStat> stats =
           Iterables.concat(
               List.of(statPanel.getStats()), List.of(statPanel.getStatsExtended(gameData)));
@@ -273,6 +272,7 @@ final class ExportMenu extends JMenu {
         }
       }
       writer.println();
+      clone.getHistory().enableSeeking(null);
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
       final Enumeration<TreeNode> nodes =
           ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
