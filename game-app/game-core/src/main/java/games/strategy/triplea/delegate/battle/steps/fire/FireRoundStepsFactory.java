@@ -25,8 +25,10 @@ public class FireRoundStepsFactory {
   @Nonnull final BattleActions battleActions;
   @Nonnull final Function<BattleState, Collection<FiringGroup>> firingGroupSplitter;
   @Nonnull final BattleState.Side side;
+
   @RemoveOnNextMajorRelease("This is ReturnFire.ALL or null for everything except old saves")
   final MustFightBattle.ReturnFire returnFire;
+
   @Nonnull final BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> diceRoller;
   @Nonnull final BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> casualtySelector;
 
