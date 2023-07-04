@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Build the steps for the fire round (roll dice, select casualties, and mark casualties) */
 @Builder
@@ -24,7 +25,8 @@ public class FireRoundStepsFactory {
   @Nonnull final BattleActions battleActions;
   @Nonnull final Function<BattleState, Collection<FiringGroup>> firingGroupSplitter;
   @Nonnull final BattleState.Side side;
-  @Nonnull final MustFightBattle.ReturnFire returnFire;
+  @RemoveOnNextMajorRelease("This is ReturnFire.ALL or null for everything except old saves")
+  final MustFightBattle.ReturnFire returnFire;
   @Nonnull final BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> diceRoller;
   @Nonnull final BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> casualtySelector;
 
