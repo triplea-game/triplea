@@ -116,7 +116,8 @@ public class CheckGeneralBattleEnd implements BattleStep {
                     Properties.getLhtrHeavyBombers(battleState.getGameData().getProperties()))
                 .gameDiceSides(battleState.getGameData().getDiceSides())
                 .territoryEffects(battleState.getTerritoryEffects())
-                .build()).hasStrengthOrRolls();
+                .build())
+        .hasStrengthOrRolls();
   }
 
   private Iterable<FiringGroup> getAllFiringGroups(final BattleState.Side side) {
