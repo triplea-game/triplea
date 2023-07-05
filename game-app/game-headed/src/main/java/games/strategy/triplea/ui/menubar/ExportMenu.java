@@ -167,8 +167,7 @@ final class ExportMenu extends JMenu {
     if (clone == null) {
       return;
     }
-    try (PrintWriter writer =
-            new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8);
+    try (PrintWriter writer = new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8);
         GameData.Unlocker ignored = gameData.acquireReadLock()) {
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
