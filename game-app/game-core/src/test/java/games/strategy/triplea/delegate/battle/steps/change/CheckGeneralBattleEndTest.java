@@ -7,6 +7,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,6 +25,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -37,6 +39,14 @@ class CheckGeneralBattleEndTest {
   @Mock BattleActions battleActions;
   @Mock GamePlayer attacker;
   @Mock GamePlayer defender;
+
+  @BeforeEach
+  void setUp() {
+    final GameData gameData = new GameData();
+
+    lenient().when(attacker.getData()).thenReturn(gameData);
+    lenient().when(defender.getData()).thenReturn(gameData);
+  }
 
   private CheckGeneralBattleEnd givenCheckGeneralBattleEnd(final BattleState battleState) {
     return new CheckGeneralBattleEnd(battleState, battleActions);
@@ -133,9 +143,10 @@ class CheckGeneralBattleEndTest {
   void battleIsNotDoneIfOffenseHasUnitWithPower() {
     final Unit attackerUnit = givenUnitWithAttackPower(attacker);
     final Unit defenderUnit = givenAnyUnit();
+    lenient().when(defenderUnit.getOwner()).thenReturn(defender);
 
     final BattleState battleState =
-        givenBattleStateBuilder()
+        givenBattleStateBuilder(attacker, defender)
             .gameData(givenGameData().withDiceSides(6).build())
             .attackingUnits(List.of(attackerUnit))
             .defendingUnits(List.of(defenderUnit))
@@ -252,8 +263,10 @@ class CheckGeneralBattleEndTest {
         givenBattleStateBuilder()
             .gameData(
                 givenGameData()
-                    .withLhtrHeavyBombers(false)
+                    .withAlliedAirIndependent(false)
+                    .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                     .withTransportCasualtiesRestricted(true)
+                    .withLhtrHeavyBombers(false)
                     .build())
             .attackingUnits(List.of(attackerUnit))
             .defendingUnits(List.of(defenderUnit))
