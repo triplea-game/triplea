@@ -4,6 +4,7 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 
+import com.google.common.collect.Iterables;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
@@ -15,14 +16,19 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
+import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
 import games.strategy.triplea.delegate.battle.steps.fire.general.FiringGroupSplitterGeneral;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
+import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
 public class CheckGeneralBattleEnd implements BattleStep {
@@ -54,10 +60,8 @@ public class CheckGeneralBattleEnd implements BattleStep {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (hasSideLost(OFFENSE)) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
-
     } else if (hasSideLost(DEFENSE)) {
       battleActions.endBattle(IBattle.WhoWon.ATTACKER, bridge);
-
     } else if (isStalemate() && !canAttackerRetreatInStalemate()) {
       battleActions.endBattle(IBattle.WhoWon.DRAW, bridge);
     }
@@ -68,18 +72,43 @@ public class CheckGeneralBattleEnd implements BattleStep {
         .noneMatch(Matches.unitIsNotInfrastructure());
   }
 
-  protected boolean isStalemate() {
-    return battleState.getStatus().isLastRound()
-        || (hasNoStrengthOrRolls(OFFENSE) && hasNoStrengthOrRolls(DEFENSE))
-        || (hasNoTargets(OFFENSE) && hasNoTargets(DEFENSE));
+  private Predicate<Unit> inAnyFiringGroup(Iterable<FiringGroup> firingGroups) {
+    return u ->
+        StreamSupport.stream(firingGroups.spliterator(), false)
+            .anyMatch(fg -> fg.getFiringUnits().contains(u));
   }
 
-  private boolean hasNoStrengthOrRolls(final BattleState.Side side) {
+  protected boolean isStalemate() {
+    if (battleState.getStatus().isLastRound()) {
+      return true;
+    }
+    final Iterable<FiringGroup> attackerFiringGroups = getAllFiringGroups(OFFENSE);
+    // Filter attackers to only units that are in firing groups, to eliminate units
+    // that can technically roll dice in abstract, but not against any current enemies.
+    final Collection<Unit> attackers =
+        CollectionUtils.getMatches(
+            battleState.filterUnits(ALIVE, OFFENSE), inAnyFiringGroup(attackerFiringGroups));
+    final Iterable<FiringGroup> defendersFiringGroups = getAllFiringGroups(DEFENSE);
+    // Filter defenders to only units that are in firing groups, to eliminate units
+    // that can technically roll dice in abstract, but not against any current enemies.
+    final Collection<Unit> defenders =
+        CollectionUtils.getMatches(
+            battleState.filterUnits(ALIVE, DEFENSE), inAnyFiringGroup(defendersFiringGroups));
+    return battleState.getStatus().isLastRound()
+        || (hasNoStrengthOrRolls(OFFENSE, attackers, defenders)
+            && hasNoStrengthOrRolls(DEFENSE, defenders, attackers))
+        || (hasNoTargets(attackerFiringGroups) && hasNoTargets(defendersFiringGroups));
+  }
+
+  private boolean hasNoStrengthOrRolls(
+      final BattleState.Side side,
+      final Collection<Unit> myUnits,
+      final Collection<Unit> enemyUnits) {
     return !PowerStrengthAndRolls.buildWithPreSortedUnits(
-            battleState.filterUnits(ALIVE, side),
+            myUnits,
             CombatValueBuilder.mainCombatValue()
-                .enemyUnits(battleState.filterUnits(ALIVE, side.getOpposite()))
-                .friendlyUnits(battleState.filterUnits(ALIVE, side))
+                .enemyUnits(enemyUnits)
+                .friendlyUnits(myUnits)
                 .side(side)
                 .gameSequence(battleState.getGameData().getSequence())
                 .supportAttachments(battleState.getGameData().getUnitTypeList().getSupportRules())
@@ -87,18 +116,22 @@ public class CheckGeneralBattleEnd implements BattleStep {
                     Properties.getLhtrHeavyBombers(battleState.getGameData().getProperties()))
                 .gameDiceSides(battleState.getGameData().getDiceSides())
                 .territoryEffects(battleState.getTerritoryEffects())
-                .build())
-        .hasStrengthOrRolls();
+                .build()).hasStrengthOrRolls();
   }
 
-  private boolean hasNoTargets(final BattleState.Side side) {
-    return FiringGroupSplitterGeneral.of(side, FiringGroupSplitterGeneral.Type.NORMAL, "stalemate")
-            .apply(battleState)
-            .isEmpty()
-        && FiringGroupSplitterGeneral.of(
-                side, FiringGroupSplitterGeneral.Type.FIRST_STRIKE, "stalemate")
-            .apply(battleState)
-            .isEmpty();
+  private Iterable<FiringGroup> getAllFiringGroups(final BattleState.Side side) {
+    return Iterables.concat(
+        getFiringGroup(side, FiringGroupSplitterGeneral.Type.NORMAL),
+        getFiringGroup(side, FiringGroupSplitterGeneral.Type.FIRST_STRIKE));
+  }
+
+  private List<FiringGroup> getFiringGroup(
+      final BattleState.Side side, final FiringGroupSplitterGeneral.Type type) {
+    return FiringGroupSplitterGeneral.of(side, type, "stalemate").apply(battleState);
+  }
+
+  private boolean hasNoTargets(Iterable<FiringGroup> firingGroups) {
+    return Iterables.isEmpty(firingGroups);
   }
 
   protected boolean canAttackerRetreatInStalemate() {
