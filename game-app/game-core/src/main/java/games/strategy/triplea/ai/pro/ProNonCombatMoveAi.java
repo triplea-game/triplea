@@ -2412,7 +2412,8 @@ class ProNonCombatMoveAi {
             if (finalDestinationTest.test(t)) {
               Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
               while (r != null && r.hasSteps()) {
-                if (moveMap.get(r.getEnd()).isCanHold() && validateMove.test(r)) {
+                final ProTerritory proDestination = proData.getProTerritory(moveMap, r.getEnd());
+                if (proDestination.isCanHold() && validateMove.test(r)) {
                   destination.setValue(r.getEnd());
                   // End the search.
                   return false;
