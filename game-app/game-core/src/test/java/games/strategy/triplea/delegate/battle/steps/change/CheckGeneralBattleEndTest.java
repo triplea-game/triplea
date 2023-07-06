@@ -44,7 +44,9 @@ class CheckGeneralBattleEndTest {
   void setUp() {
     final GameData gameData = new GameData();
 
+    lenient().when(attacker.getName()).thenReturn("attacker");
     lenient().when(attacker.getData()).thenReturn(gameData);
+    lenient().when(defender.getName()).thenReturn("defender");
     lenient().when(defender.getData()).thenReturn(gameData);
   }
 
@@ -140,7 +142,7 @@ class CheckGeneralBattleEndTest {
   }
 
   @Test
-  void battleIsNotDoneIfOffenseHasUnitWithPower() {
+  void battleDoesNotEndIfOffenseHasUnitWithPower() {
     final Unit attackerUnit = givenUnitWithAttackPower(attacker);
     final Unit defenderUnit = givenAnyUnit();
     lenient().when(defenderUnit.getOwner()).thenReturn(defender);
@@ -169,7 +171,7 @@ class CheckGeneralBattleEndTest {
   }
 
   @Test
-  void battleIsNotDoneIfDefenseHasUnitWithPower() {
+  void battleDoesNotEndIfDefenseHasUnitWithPower() {
     final Unit attackerUnit = givenAnyUnit();
     when(attackerUnit.getOwner()).thenReturn(attacker);
     final Unit defenderUnit = givenUnitWithDefensePower(defender);
@@ -307,6 +309,51 @@ class CheckGeneralBattleEndTest {
             .defender(defender)
             .attackingUnits(List.of(attackerUnit))
             .defendingUnits(List.of(defenderUnit))
+            .build();
+
+    final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
+    checkGeneralBattleEnd.execute(executionStack, delegateBridge);
+
+    verify(battleActions, times(1).description("No one can hit each other so it is a stalemate"))
+        .endBattle(IBattle.WhoWon.DRAW, delegateBridge);
+  }
+
+  @Test
+  void nobodyWinsIfBothCanNotTargetEachOtherInGeneralCombat2() {
+    final GameData gameData = givenGameData().withDiceSides(6).build();
+
+    final UnitType attackerUnitType = new UnitType("attacker", gameData);
+    final UnitAttachment attackerUnitAttachment =
+        new UnitAttachment("attacker", attackerUnitType, gameData);
+    attackerUnitAttachment.setAttack(0).setAttackRolls(0);
+    attackerUnitType.addAttachment(UNIT_ATTACHMENT_NAME, attackerUnitAttachment);
+
+    final UnitType defenderUnitType = new UnitType("defender", gameData);
+    final UnitAttachment defenderUnitAttachment =
+        new UnitAttachment("defender", defenderUnitType, gameData);
+    defenderUnitAttachment.setDefense(1).setDefenseRolls(1);
+    // A unit that can't target attacker.
+    defenderUnitAttachment.setCanNotTarget(Set.of(attackerUnitType));
+    defenderUnitType.addAttachment(UNIT_ATTACHMENT_NAME, defenderUnitAttachment);
+
+    final UnitType defenderUnitType2 = new UnitType("defender2", gameData);
+    final UnitAttachment defenderUnitAttachment2 =
+        new UnitAttachment("defender2", defenderUnitType2, gameData);
+    // A unit that can target attacker, but has no defense power.
+    defenderUnitAttachment2.setDefense(0).setDefenseRolls(1);
+    defenderUnitType2.addAttachment(UNIT_ATTACHMENT_NAME, defenderUnitAttachment2);
+
+    final Unit attackerUnit = attackerUnitType.createTemp(1, attacker).get(0);
+    final Unit defenderUnit = defenderUnitType.createTemp(1, defender).get(0);
+    final Unit defenderUnit2 = defenderUnitType2.createTemp(1, defender).get(0);
+
+    final BattleState battleState =
+        givenBattleStateBuilder()
+            .gameData(gameData)
+            .attacker(attacker)
+            .defender(defender)
+            .attackingUnits(List.of(attackerUnit))
+            .defendingUnits(List.of(defenderUnit, defenderUnit2))
             .build();
 
     final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
