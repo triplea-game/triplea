@@ -2416,7 +2416,7 @@ class ProNonCombatMoveAi {
                 if (proDestination.isCanHold() && validateMove.test(r)) {
                   destination.setValue(r.getEnd());
                   // End the search.
-                  return false;
+                  return Optional.empty(); // empty Optional to indicate that no final destination was found.
                 }
                 r = new Route(from, r.getMiddleSteps());
               }
