@@ -105,8 +105,8 @@ public class CombatValueBuilder {
                 supportFromFriends.filter(UnitSupportAttachment::getAaStrength))
             .strengthSupportFromEnemies(
                 supportFromEnemies.filter(UnitSupportAttachment::getAaStrength))
-            .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getRoll))
-            .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getRoll))
+            .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getAaRoll))
+            .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getAaRoll))
             .friendUnits(friendlyUnits)
             .enemyUnits(enemyUnits)
             .build();

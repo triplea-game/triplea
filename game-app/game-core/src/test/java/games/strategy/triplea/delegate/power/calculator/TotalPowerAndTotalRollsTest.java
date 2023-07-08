@@ -923,6 +923,73 @@ class TotalPowerAndTotalRollsTest {
           "Unit gets 2 support so its best strength is 4",
           totalPowerAndTotalRolls.getBestStrength(),
           is(4));
+
+      // Now, test the same thing through the CombatValueBuilder.aaCombatValue() API.
+      final AaPowerStrengthAndRolls totalPowerAndTotalRolls2 =
+          AaPowerStrengthAndRolls.build(
+              List.of(unit),
+              1,
+              CombatValueBuilder.aaCombatValue()
+                  .friendlyUnits(List.of(unit, supportUnit))
+                  .enemyUnits(List.of())
+                  .side(BattleState.Side.OFFENSE)
+                  .supportAttachments(List.of(unitSupportAttachment))
+                  .build());
+      assertThat(
+          "Unit has a max die side of 4 so that will be used",
+          totalPowerAndTotalRolls2.getDiceSides(),
+          is(4));
+      assertThat(
+          "Unit gets 2 support so its best strength is 4",
+          totalPowerAndTotalRolls2.getBestStrength(),
+          is(4));
+    }
+
+    @Test
+    void singleUnitWithAARollSupport() throws GameParseException {
+      final GameData gameData = givenGameData().build();
+      final GamePlayer player = givenPlayer(gameData);
+      final Unit unit = givenUnit("test", player);
+      unit.getUnitAttachment()
+          .setOffensiveAttackAa(2)
+          .setMaxAaAttacks(1)
+          .setOffensiveAttackAaMaxDieSides(4);
+
+      final Unit supportUnit = givenUnit("support", player);
+      final UnitSupportAttachment unitSupportAttachment =
+          new UnitSupportAttachment("rule", supportUnit.getType(), gameData)
+              .setBonus(2)
+              .setBonusType("bonus")
+              .setDice("AAroll")
+              .setNumber(1)
+              .setPlayers(List.of(player))
+              .setSide("offence")
+              .setFaction("allied")
+              .setUnitType(Set.of(unit.getType()));
+
+      final AaPowerStrengthAndRolls totalPowerAndTotalRolls =
+          AaPowerStrengthAndRolls.build(
+              List.of(unit),
+              3,
+              CombatValueBuilder.aaCombatValue()
+                  .friendlyUnits(List.of(unit, supportUnit))
+                  .enemyUnits(List.of())
+                  .side(BattleState.Side.OFFENSE)
+                  .supportAttachments(List.of(unitSupportAttachment))
+                  .build());
+
+      assertThat(
+          "Unit has a max die side of 4 so that will be used",
+          totalPowerAndTotalRolls.getDiceSides(),
+          is(4));
+      assertThat(
+          "Unit should get 3 rolls via a bonus of 2",
+          totalPowerAndTotalRolls.getRolls(unit),
+          is(3));
+      assertThat(
+          "Unit gets no strength support so its best strength is 2",
+          totalPowerAndTotalRolls.getBestStrength(),
+          is(2));
     }
 
     @Test
