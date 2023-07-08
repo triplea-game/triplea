@@ -1301,6 +1301,10 @@ public class MustFightBattle extends DependentBattle
                 throw new IllegalStateException(
                     "Round 10,000 reached in a battle. Something must be wrong."
                         + " Please report this to TripleA.\n"
+                        + " Territory: "
+                        + battleSite
+                        + " Attacker: "
+                        + attacker.getName()
                         + " Attacking unit types: "
                         + attackingUnits.stream()
                             .map(Unit::getType)
