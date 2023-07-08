@@ -345,7 +345,7 @@ public final class UnitChooser extends JPanel {
    * killed).
    */
   public List<Unit> getSelected(final boolean selectDependents) {
-    // Use a Set to avoid duplicates in the case where depends can be selected manually too.
+    // Use a Set to avoid duplicates in the case where dependents are also manually selected.
     final var selectedUnits = new HashSet<Unit>();
     for (final ChooserEntry entry : entries) {
       addToCollection(selectedUnits, entry, entry.getFinalHit(), selectDependents);
