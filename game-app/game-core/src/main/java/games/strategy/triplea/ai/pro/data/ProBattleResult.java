@@ -1,8 +1,8 @@
 package games.strategy.triplea.ai.pro.data;
 
 import games.strategy.engine.data.Unit;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -21,6 +21,6 @@ public class ProBattleResult {
   private final double battleRounds;
 
   public ProBattleResult() {
-    this(0, -1, false, new ArrayList<>(), new ArrayList<>(), 0);
+    this(0, -1, false, List.of(), List.of(), 0);
   }
 }

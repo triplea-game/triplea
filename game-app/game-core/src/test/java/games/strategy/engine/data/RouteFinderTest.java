@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.base.Preconditions;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -81,7 +80,7 @@ class RouteFinderTest {
 
   @Test
   void testFindRoute() {
-    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
+    final RouteFinder routeFinder = new RouteFinder(map, t -> true, List.of(), player);
     final Optional<Route> optRoute =
         routeFinder.findRouteByDistance(
             territories.get(0), territories.get(territories.size() - 1));
@@ -93,7 +92,7 @@ class RouteFinderTest {
 
   @Test
   void testFindRouteEndAndStartAreTheSame() {
-    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
+    final RouteFinder routeFinder = new RouteFinder(map, t -> true, List.of(), player);
     final Optional<Route> optRoute =
         routeFinder.findRouteByDistance(territories.get(0), territories.get(0));
     assertTrue(optRoute.isPresent());
@@ -108,8 +107,7 @@ class RouteFinderTest {
     final Territory island1 = mock(Territory.class);
     when(islandMap.getNeighbors(eq(island0), any())).thenReturn(Set.of());
 
-    final RouteFinder routeFinder =
-        new RouteFinder(islandMap, t -> true, new ArrayList<>(), player);
+    final RouteFinder routeFinder = new RouteFinder(islandMap, t -> true, List.of(), player);
 
     final Optional<Route> optRoute = routeFinder.findRouteByDistance(island0, island1);
 
@@ -118,7 +116,7 @@ class RouteFinderTest {
 
   @Test
   void testFindRouteByCost() {
-    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
+    final RouteFinder routeFinder = new RouteFinder(map, t -> true, List.of(), player);
     final Optional<Route> optRoute =
         routeFinder.findRouteByCost(territories.get(0), territories.get(territories.size() - 1));
     assertTrue(optRoute.isPresent());
@@ -152,8 +150,7 @@ class RouteFinderTest {
   }
 
   private RouteFinder createRouteFinder(final List<Territory> territoriesWithIncreasedCost) {
-    final RouteFinder routeFinder =
-        Mockito.spy(new RouteFinder(map, t -> true, new ArrayList<>(), player));
+    final RouteFinder routeFinder = Mockito.spy(new RouteFinder(map, t -> true, List.of(), player));
     doAnswer(
             invocation ->
                 territoriesWithIncreasedCost.contains(invocation.getArgument(0))
@@ -166,7 +163,7 @@ class RouteFinderTest {
 
   @Test
   void testFindRouteByCostEndAndStartAreTheSame() {
-    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
+    final RouteFinder routeFinder = new RouteFinder(map, t -> true, List.of(), player);
     final Optional<Route> optRoute =
         routeFinder.findRouteByCost(territories.get(0), territories.get(0));
     assertTrue(optRoute.isPresent());
@@ -179,7 +176,7 @@ class RouteFinderTest {
     final GameMap map = mock(GameMap.class);
     when(map.getNeighbors(eq(territories.get(0)), any())).thenReturn(Set.of(territories.get(1)));
 
-    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
+    final RouteFinder routeFinder = new RouteFinder(map, t -> true, List.of(), player);
     final Optional<Route> optRoute =
         routeFinder.findRouteByCost(territories.get(0), territories.get(territories.size() - 1));
     assertFalse(optRoute.isPresent());
