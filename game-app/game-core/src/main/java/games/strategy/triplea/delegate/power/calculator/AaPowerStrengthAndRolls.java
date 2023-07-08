@@ -177,16 +177,15 @@ public class AaPowerStrengthAndRolls implements TotalPowerAndTotalRolls {
     // only fires enough to hit the remaining targets
     int totalBasicRolls = 0;
     for (final Unit unit : basicAa) {
-      if (totalStrengthAndTotalRollsByUnit.get(unit).getStrength() <= strengthOfBestInfiniteUnit) {
+      final UnitPowerStrengthAndRolls originalUnitData = totalStrengthAndTotalRollsByUnit.get(unit);
+      if (originalUnitData.getStrength() <= strengthOfBestInfiniteUnit) {
         continue;
       }
       activeUnits.add(unit);
-      final int roll = totalStrengthAndTotalRollsByUnit.get(unit).getRolls();
+      final int roll = originalUnitData.getRolls();
       if (totalBasicRolls + roll >= targetCount) {
         final int weakestBasicAaRolls = targetCount - totalBasicRolls;
         totalBasicRolls += weakestBasicAaRolls;
-        final UnitPowerStrengthAndRolls originalUnitData =
-            totalStrengthAndTotalRollsByUnit.get(unit);
         final UnitPowerStrengthAndRolls weakestBasicUnitData =
             originalUnitData.updateRolls(weakestBasicAaRolls);
         activeStrengthAndRolls.add(weakestBasicUnitData);
