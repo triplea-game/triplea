@@ -422,7 +422,7 @@ public class ProCombatMoveAi {
     }
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(
-            proData, player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
+            proData, player, List.of(), clearedTerritories, territoriesToCheck);
     for (final ProTerritory patd : prioritizedTerritories) {
       final Territory t = patd.getTerritory();
 
