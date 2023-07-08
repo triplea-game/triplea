@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -344,11 +345,12 @@ public final class UnitChooser extends JPanel {
    * killed).
    */
   public List<Unit> getSelected(final boolean selectDependents) {
-    final List<Unit> selectedUnits = new ArrayList<>();
+    // Use a Set to avoid duplicates in the case where depends can be selected manually too.
+    final var selectedUnits = new HashSet<Unit>();
     for (final ChooserEntry entry : entries) {
       addToCollection(selectedUnits, entry, entry.getFinalHit(), selectDependents);
     }
-    return selectedUnits;
+    return new ArrayList<>(selectedUnits);
   }
 
   /** Only applicable if this dialog was constructed using multiple hit points. */
