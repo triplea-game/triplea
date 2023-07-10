@@ -145,8 +145,12 @@ class TabbedProductionPanel extends ProductionPanel {
       }
     }
     if (!rulesCopy.isEmpty()) {
+      String missing = "";
+      for (Rule rule : rulesCopy) {
+        missing += rule.getProductionRule().getName() + ", ";
+      }
       throw new IllegalStateException(
-          "production_tabs: must include all player production rules/units");
+          "production_tabs: must include all player production rules/units; missing: " + missing);
     }
   }
 
