@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
 import com.google.common.collect.Iterables;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
@@ -92,7 +93,6 @@ final class ExportMenu extends JMenu {
   private void exportXmlFile() {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final Path rootDir = Path.of(SystemProperties.getUserDir());
 
     final int round = gameData.getCurrentRound();
     final String defaultFileName =
@@ -103,6 +103,7 @@ final class ExportMenu extends JMenu {
                     gameData.getGameName(),
                     round))
             + ".xml";
+    final Path rootDir = ClientFileSystemHelper.getUserRootFolder();
     chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
