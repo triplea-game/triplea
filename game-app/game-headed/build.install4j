@@ -812,7 +812,4 @@ return true;</property>
       <jreBundle usePack200="false" directDownload="true" installOnlyIfNecessary="true" />
     </unixInstaller>
   </mediaSets>
-  <buildIds buildAll="false">
-    <mediaSet refId="557" />
-  </buildIds>
 </install4j>
