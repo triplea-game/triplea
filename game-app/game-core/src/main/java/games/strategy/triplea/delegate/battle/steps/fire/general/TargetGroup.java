@@ -69,14 +69,14 @@ class TargetGroup {
     // Note: uses a single stream instead of a sequence of removeAll() calls for performance.
     return enemyUnitTypes.stream()
         .filter(
-            ut -> {
-              if (cannotTarget.contains(ut)) {
+            targetUnitType -> {
+              if (cannotTarget.contains(targetUnitType)) {
                 return false;
               }
               if (destroyerPresent) {
                 return true;
               }
-              return !ut.getUnitAttachment().getCanNotBeTargetedBy().contains(unitType);
+              return !targetUnitType.getUnitAttachment().getCanNotBeTargetedBy().contains(unitType);
             })
         .collect(Collectors.toSet());
   }
