@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import static games.strategy.engine.ClientFileSystemHelper.getUserRootFolder;
-
 import com.google.common.collect.Iterables;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
