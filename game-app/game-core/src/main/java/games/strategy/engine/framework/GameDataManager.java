@@ -7,7 +7,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
