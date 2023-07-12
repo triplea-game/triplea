@@ -129,7 +129,7 @@ public final class GameDataManager {
       try (OutputStream os = Files.newOutputStream(tempFile);
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
-        saveGameUncompressed(zippedOutStream, gameData, Options.withEverything());
+        saveGameUncompressed(zippedOutStream, gameData, Options.forSaveGame());
       }
 
       // now write to sink (ensure sink is closed per method contract)
@@ -152,6 +152,12 @@ public final class GameDataManager {
       return builder().withDelegates(true).withHistory(true).withAttachmentXmlData(true).build();
     }
 
+    public static Options forSaveGame() {
+      // Omit attachment data as it uses a lot of memory and is only needed for XML exports, which
+      // now reads it from the original XML instead.
+      return builder().withDelegates(true).withHistory(true).withAttachmentXmlData(false).build();
+    }
+
     public static Options forBattleCalculator() {
       return builder().build();
     }
@@ -167,8 +173,6 @@ public final class GameDataManager {
         if (!options.withHistory) {
           data.resetHistory();
         }
-        // TODO: Attachment order data is only used for XML export and takes up lots of memory.
-        // Could we remove it and just get the info again from the XML when exporting?
         final var attachments = data.getAttachmentOrderAndValues();
         if (!options.withAttachmentXmlData) {
           data.setAttachmentOrderAndValues(null);

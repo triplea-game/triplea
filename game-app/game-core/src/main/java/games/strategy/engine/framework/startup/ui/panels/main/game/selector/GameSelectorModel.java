@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Observable;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -29,9 +28,6 @@ import org.triplea.java.ThreadRunner;
  */
 @Slf4j
 public class GameSelectorModel extends Observable implements GameSelector {
-
-  private final Function<Path, Optional<GameData>> gameParser;
-
   @Nullable
   @Getter(onMethod_ = {@Override})
   private GameData gameData = null;
@@ -46,9 +42,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @Setter @Getter private ClientModel clientModelForHostBots = null;
   private Optional<String> saveGameToLoad = Optional.empty();
 
-  public GameSelectorModel() {
-    this.gameParser = GameParser::parse;
-  }
+  public GameSelectorModel() {}
 
   /**
    * Loads game data by parsing a given file.
@@ -102,7 +96,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
 
   @Nullable
   private GameData parseAndValidate(final Path file) {
-    final GameData gameData = gameParser.apply(file).orElse(null);
+    final GameData gameData = GameParser.parse(file, false).orElse(null);
     if (gameData == null) {
       return null;
     }
