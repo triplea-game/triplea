@@ -1017,6 +1017,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withAlliedAirIndependent(true)
@@ -1621,6 +1622,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withAlliedAirIndependent(true)
@@ -2013,6 +2015,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withWW2V2(false)
                         .withAlliedAirIndependent(true)

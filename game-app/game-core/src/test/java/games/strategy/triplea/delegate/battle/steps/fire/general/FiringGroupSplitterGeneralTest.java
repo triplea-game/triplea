@@ -22,6 +22,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -29,6 +30,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -39,6 +41,16 @@ class FiringGroupSplitterGeneralTest {
 
   @Mock GamePlayer attacker;
   @Mock GamePlayer defender;
+
+  @BeforeEach
+  void setUp() {
+    final GameData gameData = new GameData();
+
+    lenient().when(attacker.getName()).thenReturn("attacker");
+    lenient().when(attacker.getData()).thenReturn(gameData);
+    lenient().when(defender.getName()).thenReturn("defender");
+    lenient().when(defender.getData()).thenReturn(gameData);
+  }
 
   @Test
   void oneFiringUnitVsOneTargetableUnitMakesOneFiringGroup() {
@@ -216,14 +228,6 @@ class FiringGroupSplitterGeneralTest {
     assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit, fireUnit2));
     assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
     assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
-
-    verify(
-            fireUnit,
-            never()
-                .description(
-                    "Units on defense with AlliedAirIndependent == false"
-                        + "should never call getOwner"))
-        .getOwner();
   }
 
   @Test
