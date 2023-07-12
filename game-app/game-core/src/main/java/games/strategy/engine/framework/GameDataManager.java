@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -129,7 +130,7 @@ public final class GameDataManager {
       try (OutputStream os = Files.newOutputStream(tempFile);
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
-        saveGameUncompressed(zippedOutStream, gameData, Options.withEverything());
+        saveGameUncompressed(zippedOutStream, gameData, Options.forSaveGame());
       }
 
       // now write to sink (ensure sink is closed per method contract)
@@ -150,6 +151,12 @@ public final class GameDataManager {
 
     public static Options withEverything() {
       return builder().withDelegates(true).withHistory(true).withAttachmentXmlData(true).build();
+    }
+
+    public static Options forSaveGame() {
+      // Omit attachment data as it uses a lot of memory and is only needed for XML exports, which
+      // now reads it from the original XML instead.
+      return builder().withDelegates(true).withHistory(true).withAttachmentXmlData(false).build();
     }
 
     public static Options forBattleCalculator() {

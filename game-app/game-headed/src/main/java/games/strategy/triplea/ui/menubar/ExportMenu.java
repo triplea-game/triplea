@@ -91,6 +91,13 @@ final class ExportMenu extends JMenu {
   }
 
   private void exportXmlFile() {
+    // The existing XML file is needed for attachment ordering data.
+    final Path gameXmlPath = gameData.getGameXmlPath(uiContext.getMapLocation()).orElse(null);
+    if (gameXmlPath == null) {
+      JOptionPane.showMessageDialog(frame, "Error: Existing XML file not found.");
+      return;
+    }
+
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -109,7 +116,7 @@ final class ExportMenu extends JMenu {
       return;
     }
     try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-      final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData);
+      final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData, gameXmlPath);
       GameXmlWriter.exportXml(xmlGameModel, chooser.getSelectedFile().toPath());
     }
   }
