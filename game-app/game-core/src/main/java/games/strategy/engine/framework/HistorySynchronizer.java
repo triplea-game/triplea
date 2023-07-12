@@ -46,7 +46,7 @@ public class HistorySynchronizer {
                   } catch (ConcurrentModificationException e) {
                     // Instrumented to diagnose what exactly is causing this.
                     throw new ConcurrentModificationException(
-                        "Failed to map renderingData=" + renderingData + " for event=" + event);
+                        "Failed to map renderingData=" + renderingData + " for event=" + event, e);
                   }
                 });
           }
