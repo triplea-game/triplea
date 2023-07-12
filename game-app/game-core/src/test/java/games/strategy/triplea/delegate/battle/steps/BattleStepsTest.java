@@ -79,8 +79,8 @@ public class BattleStepsTest {
 
   @Value
   public static class UnitAndAttachment {
-    private Unit unit;
-    private UnitAttachment unitAttachment;
+    Unit unit;
+    UnitAttachment unitAttachment;
   }
 
   public static UnitAndAttachment newUnitAndAttachment() {
@@ -767,6 +767,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(true)
                         .withSubmersibleSubs(true)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
@@ -1051,6 +1052,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withAlliedAirIndependent(true)
@@ -1085,6 +1087,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withAlliedAirIndependent(true)
@@ -1582,6 +1585,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withAlliedAirIndependent(true)
@@ -1654,6 +1658,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withAlliedAirIndependent(true)
@@ -1975,6 +1980,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withAlliedAirIndependent(true)
@@ -2066,6 +2072,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withSubRetreatBeforeBattle(false)
                         .withAlliedAirIndependent(true)
@@ -2100,6 +2107,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withWW2V2(false)
                         .withAttackerRetreatPlanes(false)
@@ -2131,6 +2139,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(false)
                         .withWW2V2(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
@@ -2162,6 +2171,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withCaptureUnitsOnEnteringTerritory(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withSubRetreatBeforeBattle(false)
                         .withAlliedAirIndependent(true)
