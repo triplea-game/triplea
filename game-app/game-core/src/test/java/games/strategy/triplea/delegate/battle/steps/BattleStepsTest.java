@@ -142,7 +142,8 @@ public class BattleStepsTest {
     return unitAndAttachment.unit;
   }
 
-  public static Unit givenSeaUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(final UnitType otherType) {
+  public static Unit givenSeaUnitFirstStrikeAndEvadeAndCanNotBeTargetedBy(
+      final UnitType otherType) {
     final UnitAndAttachment unitAndAttachment = newSeaUnitAndAttachment();
     when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
     when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
