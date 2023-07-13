@@ -111,7 +111,7 @@ public class BattleStepsTest {
 
   public static Unit givenUnitFirstStrike() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    lenient().when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
@@ -132,6 +132,13 @@ public class BattleStepsTest {
     final UnitAndAttachment unitAndAttachment = newSeaUnitAndAttachment();
     lenient().when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
     lenient().when(unitAndAttachment.unitAttachment.getIsSuicideOnDefense()).thenReturn(true);
+    return unitAndAttachment.unit;
+  }
+
+  public static Unit givenUnitFirstStrikeAndEvade() {
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
@@ -770,7 +777,7 @@ public class BattleStepsTest {
       "Verify defending firstStrike submerge before battle "
           + "if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
   void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
-    final Unit unit1 = givenAnyUnit();
+    final Unit unit1 = givenUnitIsSea();
     final Unit unit2 = givenSeaUnitFirstStrikeAndEvade();
 
     final List<String> steps =
@@ -778,6 +785,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withTransportCasualtiesRestricted(false)
                         .withCaptureUnitsOnEnteringTerritory(false)
                         .withSubRetreatBeforeBattle(true)
                         .withSubmersibleSubs(true)
@@ -790,7 +798,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
@@ -961,6 +969,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withTransportCasualtiesRestricted(false)
                         .withWW2V2(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withSubRetreatBeforeBattle(false)
@@ -970,7 +979,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
@@ -988,7 +997,7 @@ public class BattleStepsTest {
           + "(no other attackers, no special defenders, all options false)")
   void defendingFirstStrikeBasic() {
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenSeaUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         givenBattleSteps(
@@ -1020,7 +1029,7 @@ public class BattleStepsTest {
   @Test
   @DisplayName("Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true")
   void defendingFirstStrikeWithSneakAttackAllowed() {
-    final Unit unit1 = givenAnyUnit();
+    final Unit unit1 = givenUnitIsSea();
     final Unit unit2 = givenSeaUnitFirstStrikeAndEvade();
 
     final List<String> steps =
@@ -1040,7 +1049,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
@@ -1057,7 +1066,7 @@ public class BattleStepsTest {
   @DisplayName("Verify defender firstStrike with WW2v2 true")
   void defendingFirstStrikeWithWW2v2() {
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenSeaUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         givenBattleSteps(
@@ -1110,7 +1119,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
@@ -1127,8 +1136,8 @@ public class BattleStepsTest {
       "Verify basic attacker and defender firstStrikes "
           + "(no other attackers, no special defenders, all options false)")
   void attackingDefendingFirstStrikeBasic() {
-    final Unit unit1 = givenSeaUnitFirstStrikeAndEvade();
-    final Unit unit2 = givenSeaUnitFirstStrikeAndEvade();
+    final Unit unit1 = givenUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         givenBattleSteps(
@@ -1595,7 +1604,7 @@ public class BattleStepsTest {
   @DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true")
   void attackingFirstStrikeCanSubmergeIfSubmersibleSubs() {
     final Unit unit1 = givenSeaUnitFirstStrikeAndEvade();
-    final Unit unit2 = givenAnyUnit();
+    final Unit unit2 = givenUnitIsSea();
 
     final List<String> steps =
         givenBattleSteps(
@@ -1614,7 +1623,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
@@ -1630,7 +1639,7 @@ public class BattleStepsTest {
   @Test
   @DisplayName("Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true")
   void defendingFirstStrikeCanSubmergeIfSubmersibleSubs() {
-    final Unit unit1 = givenAnyUnit();
+    final Unit unit1 = givenUnitIsSea();
     final Unit unit2 = givenSeaUnitFirstStrikeAndEvade();
 
     final List<String> steps =
@@ -1651,7 +1660,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
@@ -1688,7 +1697,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
@@ -1785,6 +1794,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withTransportCasualtiesRestricted(false)
                         .withWW2V2(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withSubRetreatBeforeBattle(false)
@@ -1795,7 +1805,7 @@ public class BattleStepsTest {
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
                 .attackerRetreatTerritories(List.of(battleSite))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
@@ -1852,9 +1862,10 @@ public class BattleStepsTest {
   @Test
   @DisplayName("Verify defending firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
   void defendingFirstStrikeWithdrawIfAble() {
-    final Unit unit1 = givenAnyUnit();
+    final Unit unit1 = givenUnitIsSea();
     final Unit unit2 = givenSeaUnitFirstStrikeAndEvade();
 
+    final Territory battleTerritory = givenSeaBattleSite();
     final Territory retreatTerritory = mock(Territory.class);
     when(retreatTerritory.isWater()).thenReturn(true);
     when(retreatTerritory.getUnitCollection()).thenReturn(mock(UnitCollection.class));
@@ -1864,7 +1875,8 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
-                        .withTerritoryHasNeighbors(battleSite, Set.of(retreatTerritory))
+                        .withTransportCasualtiesRestricted(false)
+                        .withTerritoryHasNeighbors(battleTerritory, Set.of(retreatTerritory))
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withWW2V2(false)
                         .withDefendingSubsSneakAttack(false)
@@ -1875,7 +1887,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(battleTerritory)
                 .build());
 
     assertThat(
@@ -1893,7 +1905,7 @@ public class BattleStepsTest {
           + "SUBMERSIBLE_SUBS is false and no retreat territories")
   void defendingFirstStrikeNoWithdrawIfEmptyTerritories() {
     final Unit unit1 = givenAnyUnit();
-    final Unit unit2 = givenSeaUnitFirstStrikeAndEvade();
+    final Unit unit2 = givenUnitFirstStrikeAndEvade();
 
     final List<String> steps =
         givenBattleSteps(
@@ -1935,6 +1947,7 @@ public class BattleStepsTest {
             givenBattleStateBuilder()
                 .gameData(
                     givenGameData()
+                        .withTransportCasualtiesRestricted(false)
                         .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withWW2V2(false)
                         .withSubRetreatBeforeBattle(false)
@@ -1944,7 +1957,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
                 .defendingUnits(List.of(unit2))
-                .battleSite(battleSite)
+                .battleSite(givenSeaBattleSite())
                 .build());
 
     assertThat(
