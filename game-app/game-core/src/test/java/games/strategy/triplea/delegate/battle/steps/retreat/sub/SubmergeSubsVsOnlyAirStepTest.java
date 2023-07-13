@@ -5,7 +5,7 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaUnitCanEvadeAndCanNotBeTargetedByRandomUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -90,7 +90,7 @@ class SubmergeSubsVsOnlyAirStepTest extends AbstractClientSettingTestCase {
         Arguments.of(
             "Attacking evaders vs ALL air",
             givenBattleStateBuilder()
-                .attackingUnits(List.of(givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit()))
+                .attackingUnits(List.of(givenSeaUnitCanEvadeAndCanNotBeTargetedByRandomUnit()))
                 .defendingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
                 .build(),
             true),
@@ -98,7 +98,7 @@ class SubmergeSubsVsOnlyAirStepTest extends AbstractClientSettingTestCase {
             "Defending evaders vs ALL air",
             givenBattleStateBuilder()
                 .attackingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
-                .defendingUnits(List.of(givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit()))
+                .defendingUnits(List.of(givenSeaUnitCanEvadeAndCanNotBeTargetedByRandomUnit()))
                 .build(),
             true));
   }

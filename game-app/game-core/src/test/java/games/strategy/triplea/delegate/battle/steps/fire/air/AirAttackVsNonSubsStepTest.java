@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.fire.air;
 
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanNotBeTargetedBy;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaUnitCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,7 +35,7 @@ class AirAttackVsNonSubsStepTest {
             "Attacker has air units and no destroyers vs Defender subs",
             givenBattleStateBuilder()
                 .attackingUnits(List.of(givenAnyUnit(), givenUnitIsAir()))
-                .defendingUnits(List.of(givenUnitCanNotBeTargetedBy(mock(UnitType.class))))
+                .defendingUnits(List.of(givenSeaUnitCanNotBeTargetedBy(mock(UnitType.class))))
                 .build(),
             true),
         Arguments.of(
