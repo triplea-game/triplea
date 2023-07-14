@@ -65,6 +65,10 @@ public class BattleStepsTest {
   @Mock GamePlayer defender;
   @Mock TechAttachment techAttachment;
 
+  public static MockGameData givenGameDataWithLenientProperties() {
+    return givenGameData().withLenientProperties();
+  }
+
   @BeforeEach
   public void givenPlayers() {
     lenient().when(attacker.getName()).thenReturn("mockAttacker");
@@ -333,9 +337,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -360,11 +362,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withNavalBombardCasualtiesReturnFire(false)
-                        .withCaptureUnitsOnEnteringTerritory(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -393,9 +391,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -419,10 +415,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .battleRound(1)
@@ -480,9 +473,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .battleRound(1)
@@ -506,9 +497,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -562,10 +551,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .battleRound(1)
@@ -699,8 +685,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withSubRetreatBeforeBattle(true)
                         .withSubmersibleSubs(true)
                         .withAlliedAirIndependent(true)
@@ -728,8 +713,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withSubRetreatBeforeBattle(true)
                         .withSubmersibleSubs(true)
                         .withAlliedAirIndependent(true)
@@ -757,9 +741,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -784,13 +766,9 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withTransportCasualtiesRestricted(false)
-                        .withCaptureUnitsOnEnteringTerritory(false)
+                    givenGameDataWithLenientProperties()
                         .withSubRetreatBeforeBattle(true)
                         .withSubmersibleSubs(true)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withWW2V2(false)
                         .withDefendingSubsSneakAttack(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -822,9 +800,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withTransportCasualtiesRestricted(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -850,10 +826,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -877,9 +850,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withTransportCasualtiesRestricted(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -906,10 +877,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -935,10 +903,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withWW2V2(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -968,11 +933,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withTransportCasualtiesRestricted(false)
-                        .withWW2V2(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1003,11 +964,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withWW2V2(false)
-                        .withDefendingSubsSneakAttack(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1036,13 +993,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withTransportCasualtiesRestricted(false)
-                        .withWW2V2(false)
                         .withDefendingSubsSneakAttack(true)
                         .build())
                 .attacker(attacker)
@@ -1072,12 +1024,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withTransportCasualtiesRestricted(false)
                         .withWW2V2(true)
                         .build())
                 .attacker(attacker)
@@ -1107,12 +1055,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withTransportCasualtiesRestricted(false)
                         .withWW2V2(true)
                         .build())
                 .attacker(attacker)
@@ -1143,11 +1087,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withWW2V2(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withDefendingSubsSneakAttack(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1177,11 +1117,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
-                        .withWW2V2(false)
+                    givenGameDataWithLenientProperties()
                         .withDefendingSubsSneakAttack(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1211,11 +1147,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1248,10 +1180,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1286,12 +1215,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
-                        .withWW2V2(false)
+                    givenGameDataWithLenientProperties()
                         .withDefendingSubsSneakAttack(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1324,10 +1248,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1360,10 +1281,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1395,10 +1313,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1431,10 +1346,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1468,10 +1380,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1501,11 +1410,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1537,11 +1442,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1573,11 +1474,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withWW2V2(true)
                         .withAlliedAirIndependent(true)
                         .build())
@@ -1610,13 +1507,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withTransportCasualtiesRestricted(false)
-                        .withWW2V2(false)
                         .withSubmersibleSubs(true)
                         .build())
                 .attacker(attacker)
@@ -1646,13 +1538,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withTransportCasualtiesRestricted(false)
-                        .withWW2V2(false)
                         .withDefendingSubsSneakAttack(true)
                         .withSubmersibleSubs(true)
                         .build())
@@ -1684,13 +1571,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withTransportCasualtiesRestricted(false)
-                        .withWW2V2(false)
                         .withSubmersibleSubs(true)
                         .build())
                 .attacker(attacker)
@@ -1719,10 +1601,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withWW2V2(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1758,10 +1637,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withWW2V2(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1793,11 +1669,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withTransportCasualtiesRestricted(false)
-                        .withWW2V2(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1830,11 +1702,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withWW2V2(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1874,14 +1742,9 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withTransportCasualtiesRestricted(false)
-                        .withTerritoryHasNeighbors(battleTerritory, Set.of(retreatTerritory))
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withWW2V2(false)
-                        .withDefendingSubsSneakAttack(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
+                        .withTerritoryHasNeighbors(battleTerritory, Set.of(retreatTerritory))
                         .build())
                 .attacker(attacker)
                 .defender(defender)
@@ -1911,11 +1774,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withWW2V2(false)
-                        .withDefendingSubsSneakAttack(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1946,11 +1805,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withTransportCasualtiesRestricted(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withWW2V2(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -1979,10 +1834,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withTransportCasualtiesRestricted(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -2010,10 +1862,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .withPartialAmphibiousRetreat(true)
                         .build())
@@ -2043,13 +1892,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withWW2V2(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withAttackerRetreatPlanes(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
                         .withPartialAmphibiousRetreat(true)
                         .build())
                 .attacker(attacker)
@@ -2075,9 +1919,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .build())
                 .attacker(attacker)
@@ -2103,12 +1945,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withPartialAmphibiousRetreat(false)
                         .withWW2V2(true)
                         .build())
                 .attacker(attacker)
@@ -2138,12 +1976,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withWW2V2(false)
-                        .withAttackerRetreatPlanes(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .withPartialAmphibiousRetreat(true)
                         .build())
@@ -2170,13 +2003,8 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withSubRetreatBeforeBattle(false)
-                        .withWW2V2(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
-                        .withPartialAmphibiousRetreat(false)
                         .withAttackerRetreatPlanes(true)
                         .build())
                 .attacker(attacker)
@@ -2202,10 +2030,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameData()
-                        .withCaptureUnitsOnEnteringTerritory(false)
-                        .withDefendingSuicideAndMunitionUnitsDoNotFire(false)
-                        .withSubRetreatBeforeBattle(false)
+                    givenGameDataWithLenientProperties()
                         .withAlliedAirIndependent(true)
                         .withTransportCasualtiesRestricted(true)
                         .build())
