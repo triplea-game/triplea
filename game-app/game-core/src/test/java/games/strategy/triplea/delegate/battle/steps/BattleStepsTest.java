@@ -337,9 +337,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -362,9 +360,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -391,9 +387,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .battleRound(2)
@@ -415,9 +409,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .battleRound(1)
                 .attacker(attacker)
                 .defender(defender)
@@ -473,9 +465,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .battleRound(1)
                 .attacker(attacker)
                 .defender(defender)
@@ -497,9 +487,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .battleRound(2)
@@ -551,9 +539,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .battleRound(1)
                 .attacker(attacker)
                 .defender(defender)
@@ -741,9 +727,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -826,9 +810,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -877,9 +859,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -903,9 +883,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -933,9 +911,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -964,9 +940,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1087,9 +1061,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1601,9 +1573,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1637,9 +1607,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1669,9 +1637,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1702,9 +1668,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1774,9 +1738,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1805,9 +1767,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1834,9 +1794,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1))
@@ -1919,9 +1877,7 @@ public class BattleStepsTest {
         givenBattleSteps(
             givenBattleStateBuilder()
                 .gameData(
-                    givenGameDataWithLenientProperties()
-                        .withAlliedAirIndependent(true)
-                        .build())
+                    givenGameDataWithLenientProperties().withAlliedAirIndependent(true).build())
                 .attacker(attacker)
                 .defender(defender)
                 .attackingUnits(List.of(unit1, unit3))
