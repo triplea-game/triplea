@@ -2000,4 +2000,42 @@ public class BattleStepsTest {
 
     assertThat(steps, is(basicFightStepStrings()));
   }
+
+  @Test
+  @DisplayName("Verify that extra steps won't be created due to canNotTarget and non-participants")
+  void nonParticipantsDontCreateExtraStepsWithCannotTarget() {
+    // Two attacking units of different types.
+    final Unit unit1 = givenAnyUnit();
+    lenient().when(unit1.getOwner()).thenReturn(attacker);
+    final Unit unit2 = givenAnyUnit();
+    lenient().when(unit2.getOwner()).thenReturn(attacker);
+    final UnitType unit2Type = unit2.getType();
+
+    // One defending unit that can only target one of the attackers.
+    final Unit unit3 = givenAnyUnit();
+    lenient().when(unit3.getOwner()).thenReturn(defender);
+    final UnitAttachment unit3Attachment = unit3.getUnitAttachment();
+    when(unit3Attachment.getCanNotTarget()).thenReturn(Set.of(unit2Type));
+    // And an infra unit on the defense that should not participate in combat.
+    final Unit unit4 = givenUnitIsInfrastructure();
+    lenient().when(unit4.getOwner()).thenReturn(defender);
+
+    final var unitTypeList =
+        List.of(unit1.getType(), unit2.getType(), unit3.getType(), unit4.getType());
+
+    final List<String> steps =
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(
+                    givenGameDataWithLenientProperties().withUnitTypeList(unitTypeList).build())
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1, unit2))
+                .defendingUnits(List.of(unit3, unit4))
+                .battleSite(battleSite)
+                .amphibious(false)
+                .build());
+
+    assertThat(steps, is(basicFightStepStrings()));
+  }
 }

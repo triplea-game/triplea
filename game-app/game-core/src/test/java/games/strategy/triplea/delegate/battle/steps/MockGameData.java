@@ -32,9 +32,11 @@ import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.delegate.TechTracker;
+import java.util.List;
 import java.util.Set;
 
 public class MockGameData {
@@ -194,6 +196,16 @@ public class MockGameData {
 
   public MockGameData withLowLuck(final boolean value) {
     when(gameProperties.get(LOW_LUCK, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withUnitTypeList(final List<UnitType> types) {
+    UnitTypeList unitTypeList = new UnitTypeList(gameData);
+    for (var unitType : types) {
+      lenient().when(unitType.getData()).thenReturn(gameData);
+      unitTypeList.addUnitType(unitType);
+    }
+    when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
     return this;
   }
 }
