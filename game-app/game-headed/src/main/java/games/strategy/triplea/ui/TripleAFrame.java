@@ -379,23 +379,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
 
-    addTab("Actions", actionButtons, KeyCode.C);
     actionButtons.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
-    addTab("Players", statsPanel, KeyCode.P);
     economyPanel = new EconomyPanel(data, uiContext);
-    addTab("Resources", economyPanel, KeyCode.R);
     objectivePanel = new ObjectivePanel(data, uiContext);
     if (objectivePanel.isEmpty()) {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
-    } else {
-      String objectivePanelName = new ObjectiveProperties(uiContext.getResourceLoader()).getName();
-      addTab(objectivePanelName, objectivePanel, KeyCode.O);
     }
     territoryDetails = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
-    addTab("Territory", territoryDetails, KeyCode.T);
     editPanel = new EditPanel(data, mapPanel, this);
+    addTabs(true);
     // Register a change listener
     tabsPanel.addChangeListener(
         evt -> {
@@ -1776,15 +1770,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               new HistoryDetailsPanel(clonedGameData, mapPanel);
           tabsPanel.removeAll();
           tabsPanel.add("History", historyDetailPanel);
-          addTab("Players", statsPanel, KeyCode.P);
-          addTab("Resources", economyPanel, KeyCode.R);
-          if (objectivePanel != null && !objectivePanel.isEmpty()) {
-            addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
-          }
-          addTab("Territory", territoryDetails, KeyCode.T);
-          if (mapPanel.getEditMode()) {
-            tabsPanel.add("Edit", editPanel);
-          }
+          addTabs(false);
           actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
           historyComponent.removeAll();
           historyComponent.setLayout(new BorderLayout());
@@ -1952,16 +1938,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             tabsPanel.removeAll();
           }
           setWidgetActivation();
-          addTab("Actions", actionButtons, KeyCode.C);
-          addTab("Players", statsPanel, KeyCode.P);
-          addTab("Resources", economyPanel, KeyCode.R);
-          if (objectivePanel != null && !objectivePanel.isEmpty()) {
-            addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
-          }
-          addTab("Territory", territoryDetails, KeyCode.T);
-          if (mapPanel.getEditMode()) {
-            tabsPanel.add("Edit", editPanel);
-          }
+          addTabs(true);
           actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
           gameMainPanel.removeAll();
           gameMainPanel.setLayout(new BorderLayout());
@@ -1973,6 +1950,22 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           requestWindowFocus();
         });
     mapPanel.setRoute(null);
+  }
+
+  private void addTabs(boolean includeActionsTab) {
+    if (includeActionsTab) {
+      addTab("Actions", actionButtons, KeyCode.C);
+    }
+    addTab("Players", statsPanel, KeyCode.P);
+    addTab("Resources", economyPanel, KeyCode.R);
+    if (objectivePanel != null && !objectivePanel.isEmpty()) {
+      String objectivePanelName = new ObjectiveProperties(uiContext.getResourceLoader()).getName();
+      addTab(objectivePanelName, objectivePanel, KeyCode.O);
+    }
+    addTab("Territory", territoryDetails, KeyCode.T);
+    if (mapPanel.getEditMode()) {
+      tabsPanel.add("Edit", editPanel);
+    }
   }
 
   private void setWidgetActivation() {
