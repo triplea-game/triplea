@@ -74,6 +74,9 @@ public final class GameDataManager {
       final GameData data = (GameData) input.readObject();
       data.postDeSerialize();
       loadDelegates(input, data);
+      data.getBattleDelegate()
+          .getBattleTracker()
+          .fixUpNullPlayers(data.getPlayerList().getNullPlayer());
       return Optional.of(data);
     } catch (final Throwable e) {
       log.warn(

@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import org.triplea.java.ObjectUtils;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -42,7 +43,7 @@ abstract class AbstractBattle implements IBattle {
   boolean headless = false;
 
   @Getter final Territory battleSite;
-  final GamePlayer attacker;
+  GamePlayer attacker;
   GamePlayer defender;
   final BattleTracker battleTracker;
   int round = 1;
@@ -225,6 +226,16 @@ abstract class AbstractBattle implements IBattle {
   @Override
   public GamePlayer getDefender() {
     return defender;
+  }
+
+  @Override
+  public void fixUpNullPlayer(GamePlayer nullPlayer) {
+    if (attacker.isNull() && !ObjectUtils.referenceEquals(attacker, nullPlayer)) {
+      attacker = nullPlayer;
+    }
+    if (defender.isNull() && !ObjectUtils.referenceEquals(defender, nullPlayer)) {
+      defender = nullPlayer;
+    }
   }
 
   public void setHeadless(final boolean headless) {
