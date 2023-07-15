@@ -56,24 +56,34 @@ public class FiringGroupSplitterGeneral
 
   @Override
   public List<FiringGroup> apply(final BattleState battleState) {
-    final Collection<Unit> canFire =
-        CollectionUtils.getMatches(
-            battleState.filterUnits(ACTIVE, side),
-            PredicateBuilder.of(getFiringUnitPredicate(battleState))
-                // Remove offense allied units if allied air can not participate
-                .andIf(
-                    side == OFFENSE
-                        && !Properties.getAlliedAirIndependent(
-                            battleState.getGameData().getProperties()),
-                    Matches.unitIsOwnedBy(battleState.getPlayer(side)))
-                .build());
-
     final Collection<Unit> enemyUnits =
         CollectionUtils.getMatches(
             battleState.filterUnits(ALIVE, side.getOpposite()),
             PredicateBuilder.of(Matches.unitIsNotInfrastructure())
                 .andIf(side == DEFENSE, Matches.unitIsSuicideOnAttack().negate())
                 .andIf(side == OFFENSE, Matches.unitIsSuicideOnDefense().negate())
+                .build());
+
+    // Filter participants (same as is done in MustFightBattle.removeNonCombatants()), so that we
+    // don't end up generating combat step names for units that will be excluded.
+    final Predicate<Unit> canParticipateInCombat =
+        Matches.unitCanParticipateInCombat(
+            side == OFFENSE,
+            battleState.getPlayer(OFFENSE),
+            battleState.getBattleSite(),
+            1,
+            enemyUnits);
+    final Collection<Unit> canFire =
+        CollectionUtils.getMatches(
+            battleState.filterUnits(ACTIVE, side),
+            PredicateBuilder.of(getFiringUnitPredicate(battleState))
+                .and(canParticipateInCombat)
+                // Remove offense allied units if allied air can not participate
+                .andIf(
+                    side == OFFENSE
+                        && !Properties.getAlliedAirIndependent(
+                            battleState.getGameData().getProperties()),
+                    Matches.unitIsOwnedBy(battleState.getPlayer(side)))
                 .build());
 
     final List<FiringGroup> firingGroups = new ArrayList<>();

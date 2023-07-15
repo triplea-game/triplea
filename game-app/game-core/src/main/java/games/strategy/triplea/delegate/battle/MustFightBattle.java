@@ -1272,6 +1272,7 @@ public class MustFightBattle extends DependentBattle
       final boolean attacking,
       final boolean removeForNextRound) {
     int battleRound = (removeForNextRound ? round + 1 : round);
+    // Note: Also done in FiringGroupSplitterGeneral when determining step names. They must match.
     return CollectionUtils.getMatches(
         units,
         Matches.unitCanParticipateInCombat(

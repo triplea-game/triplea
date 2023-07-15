@@ -16,6 +16,8 @@ import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
 import static games.strategy.triplea.Constants.WW2V2;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,9 +32,11 @@ import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.delegate.TechTracker;
+import java.util.List;
 import java.util.Set;
 
 public class MockGameData {
@@ -99,6 +103,11 @@ public class MockGameData {
 
   public MockGameData withTechnologyFrontier() {
     when(gameData.getTechnologyFrontier()).thenReturn(mock(TechnologyFrontier.class));
+    return this;
+  }
+
+  public MockGameData withLenientProperties() {
+    lenient().when(gameProperties.get(anyString(), anyBoolean())).thenReturn(false);
     return this;
   }
 
@@ -187,6 +196,16 @@ public class MockGameData {
 
   public MockGameData withLowLuck(final boolean value) {
     when(gameProperties.get(LOW_LUCK, false)).thenReturn(value);
+    return this;
+  }
+
+  public MockGameData withUnitTypeList(final List<UnitType> types) {
+    UnitTypeList unitTypeList = new UnitTypeList(gameData);
+    for (var unitType : types) {
+      lenient().when(unitType.getData()).thenReturn(gameData);
+      unitTypeList.addUnitType(unitType);
+    }
+    when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
     return this;
   }
 }
