@@ -27,7 +27,7 @@ class TargetGroup {
     this.targetUnitTypes = targetUnitTypes;
   }
 
-  public Collection<Unit> getFiringUnits(final Collection<Unit> units) {
+  public List<Unit> getFiringUnits(final Collection<Unit> units) {
     return CollectionUtils.getMatches(units, Matches.unitIsOfTypes(firingUnitTypes));
   }
 
