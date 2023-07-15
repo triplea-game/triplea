@@ -13,6 +13,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -338,6 +339,14 @@ class FiringGroupSplitterGeneralTest {
     assertThat(firingGroups, is(empty()));
   }
 
+  private Unit givenUnitWithCannotTarget(String name, Set<UnitType> cannotTarget) {
+    final Unit fireUnit = givenAnyUnit();
+    lenient().when(fireUnit.getType().getName()).thenReturn(name);
+    lenient().when(fireUnit.toString()).thenReturn(name);
+    when(fireUnit.getUnitAttachment().getCanNotTarget()).thenReturn(cannotTarget);
+    return fireUnit;
+  }
+
   @Test
   void twoFiringGroupsWithCanNotTarget() {
     final Unit targetUnit = givenAnyUnit();
@@ -347,39 +356,38 @@ class FiringGroupSplitterGeneralTest {
     final Unit targetUnit3 = givenAnyUnit();
     final UnitType targetUnit3Type = targetUnit3.getType();
 
-    final Unit fireUnit = givenAnyUnit();
-    when(fireUnit.getType().getName()).thenReturn("fireUnit");
-    final UnitAttachment unitAttachment =
-        (UnitAttachment) fireUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-    when(unitAttachment.getCanNotTarget()).thenReturn(Set.of(targetUnit2Type, targetUnit3Type));
+    final Unit fireUnit =
+        givenUnitWithCannotTarget("fireUnit", Set.of(targetUnit2Type, targetUnit3Type));
+    final Unit fireUnit2 = givenUnitWithCannotTarget("fireUnit2", Set.of(targetUnitType));
+    final Unit fireUnit3 = givenUnitWithCannotTarget("fireUnit3", Set.of(targetUnitType));
 
-    final Unit fireUnit2 = givenAnyUnit();
-    when(fireUnit2.getType().getName()).thenReturn("fireUnit2");
-    final UnitAttachment unitAttachment2 =
-        (UnitAttachment) fireUnit2.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-    when(unitAttachment2.getCanNotTarget()).thenReturn(Set.of(targetUnitType));
+    // Iterate over several different orderings of attackers to ensure step names are deterministic
+    // regardless of the order of units passed in.
+    List<Unit> attackersOrdering1 = List.of(fireUnit, fireUnit2, fireUnit3);
+    List<Unit> attackersOrdering2 = List.of(fireUnit, fireUnit3, fireUnit2);
+    for (List<Unit> attackingUnits : List.of(attackersOrdering1, attackersOrdering2)) {
+      final List<FiringGroup> firingGroups =
+          FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.NORMAL, UNITS)
+              .apply(
+                  givenBattleStateBuilder()
+                      .gameData(givenGameData().withAlliedAirIndependent(true).build())
+                      .attacker(attacker)
+                      .defender(defender)
+                      .attackingUnits(attackingUnits)
+                      .defendingUnits(List.of(targetUnit, targetUnit2, targetUnit3))
+                      .build());
 
-    final List<FiringGroup> firingGroups =
-        FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.NORMAL, UNITS)
-            .apply(
-                givenBattleStateBuilder()
-                    .gameData(givenGameData().withAlliedAirIndependent(true).build())
-                    .attacker(attacker)
-                    .defender(defender)
-                    .attackingUnits(List.of(fireUnit, fireUnit2))
-                    .defendingUnits(List.of(targetUnit, targetUnit2, targetUnit3))
-                    .build());
+      assertThat(firingGroups, hasSize(2));
+      assertThat(firingGroups.get(0).getDisplayName(), is(UNITS + " fireUnit"));
+      assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
+      assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
+      assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
 
-    assertThat(firingGroups, hasSize(2));
-    assertThat(firingGroups.get(0).getDisplayName(), is(UNITS + " fireUnit"));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
-
-    assertThat(firingGroups.get(1).getDisplayName(), is(UNITS + " fireUnit2"));
-    assertThat(firingGroups.get(1).getFiringUnits(), contains(fireUnit2));
-    assertThat(firingGroups.get(1).getTargetUnits(), contains(targetUnit2, targetUnit3));
-    assertThat(firingGroups.get(1).isSuicideOnHit(), is(false));
+      assertThat(firingGroups.get(1).getDisplayName(), is(UNITS + " fireUnit2"));
+      assertThat(firingGroups.get(1).getFiringUnits(), containsInAnyOrder(fireUnit2, fireUnit3));
+      assertThat(firingGroups.get(1).getTargetUnits(), contains(targetUnit2, targetUnit3));
+      assertThat(firingGroups.get(1).isSuicideOnHit(), is(false));
+    }
   }
 
   @Test
