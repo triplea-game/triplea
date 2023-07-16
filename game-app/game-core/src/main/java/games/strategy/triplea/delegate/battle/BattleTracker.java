@@ -51,6 +51,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.ISound;
@@ -174,6 +175,13 @@ public class BattleTracker implements Serializable {
       }
     }
     return false;
+  }
+
+  @RemoveOnNextMajorRelease
+  public void fixUpNullPlayers(GamePlayer nullPlayer) {
+    for (var b : pendingBattles) {
+      b.fixUpNullPlayer(nullPlayer);
+    }
   }
 
   void clearFinishedBattles(final IDelegateBridge bridge) {

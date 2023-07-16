@@ -74,6 +74,7 @@ public final class GameDataManager {
       final GameData data = (GameData) input.readObject();
       data.postDeSerialize();
       loadDelegates(input, data);
+      data.fixUpNullPlayersInDelegates();
       return Optional.of(data);
     } catch (final Throwable e) {
       log.warn(
