@@ -395,6 +395,14 @@ public class GameData implements Serializable, GameState {
     }
   }
 
+  @RemoveOnNextMajorRelease
+  public void fixUpNullPlayersInDelegates() {
+    BattleDelegate battleDelegate = (BattleDelegate) getDelegate("battle");
+    if (battleDelegate != null) {
+      battleDelegate.getBattleTracker().fixUpNullPlayers(playerList.getNullPlayer());
+    }
+  }
+
   public interface Unlocker extends Closeable {
     @Override
     void close();
