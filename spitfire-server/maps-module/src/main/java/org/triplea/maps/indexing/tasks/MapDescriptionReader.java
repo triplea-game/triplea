@@ -19,12 +19,12 @@ public class MapDescriptionReader implements Function<MapRepoListing, String> {
     final String description = downloadDescription(mapRepoListing).orElse(null);
     if (description == null) {
       return String.format(
-          "No description available for: %s"
+          "No description available for: %s. "
               + "Contact the map author and request they add a 'description.html' file",
           mapRepoListing.getUri());
     } else if (description.length() > DESCRIPTION_COLUMN_DATABASE_MAX_LENGTH) {
       return String.format(
-          "The description for this map is too long at %s characters. Max length is %s."
+          "The description for this map is too long at %s characters. Max length is %s. "
               + "Contact the map author for: %s"
               + ", and request they reduce the length of the file 'description.html'",
           description.length(), DESCRIPTION_COLUMN_DATABASE_MAX_LENGTH, mapRepoListing.getUri());
