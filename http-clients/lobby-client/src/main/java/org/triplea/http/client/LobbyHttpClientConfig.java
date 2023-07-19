@@ -19,6 +19,7 @@ public class LobbyHttpClientConfig {
 
   /** The "major.minor" version of the client using the http-client (EG: "3.6") */
   @Nonnull private final String clientVersion;
+
   /** The system-id of the client using the http-client. */
   @Nonnull private final String systemId;
 

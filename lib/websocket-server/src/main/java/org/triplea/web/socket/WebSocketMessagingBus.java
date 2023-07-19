@@ -39,6 +39,7 @@ public class WebSocketMessagingBus {
 
   /** These listeners are for specific message types. */
   private final List<MessageListener<?>> messageListeners = new ArrayList<>();
+
   /** These listeners are invoked when we receive any type of message. */
   private final List<Consumer<MessageEnvelope>> anyMessageListeners = new ArrayList<>();
 

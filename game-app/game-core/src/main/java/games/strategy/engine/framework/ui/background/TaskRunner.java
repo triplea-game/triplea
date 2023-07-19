@@ -29,6 +29,7 @@ public class TaskRunner<E extends Exception> {
    * cancelled and this is invoked with the exception that occurred.
    */
   @Nonnull private final Consumer<E> exceptionHandler;
+
   /**
    * Title of the wait spinner window that is displayed to user while a background action is being
    * executed.

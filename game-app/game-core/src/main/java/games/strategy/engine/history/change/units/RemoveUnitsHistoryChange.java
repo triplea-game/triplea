@@ -37,8 +37,10 @@ public class RemoveUnitsHistoryChange implements HistoryChange {
   Map<Territory, Collection<Unit>> unloadedUnits = new HashMap<>();
   TransformDamagedUnitsHistoryChange transformDamagedUnitsHistoryChange;
   String messageTemplate;
+
   /** Units that were killed */
   Collection<Unit> oldUnits = new ArrayList<>();
+
   /** The units that were created after a transformation */
   Collection<Unit> newUnits = new ArrayList<>();
 

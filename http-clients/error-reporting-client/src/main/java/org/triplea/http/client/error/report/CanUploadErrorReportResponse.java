@@ -17,11 +17,13 @@ public class CanUploadErrorReportResponse {
    * If true, then responseDetails and existingBugReportUrl will be null.
    */
   @Nonnull private final Boolean canUpload;
+
   /**
    * Contains any message details that should be displayed to the user. EG: "This error is already
    * uploaded"
    */
   @Nullable private final String responseDetails;
+
   /** Contains a link to any existing error report that matches the same error the user sees. */
   @Nullable private final String existingBugReportUrl;
 }

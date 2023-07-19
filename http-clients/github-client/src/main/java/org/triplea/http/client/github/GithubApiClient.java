@@ -24,6 +24,7 @@ public class GithubApiClient {
       "API-token==test--returned-a-stubbed-github-issue-link";
 
   private final GithubApiFeignClient githubApiFeignClient;
+
   /**
    * Flag useful for testing, when set to true no API calls will be made and a hardcoded stubbed
    * value of {@code STUBBED_RETURN_VALUE} will always be returned.

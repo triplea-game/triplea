@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NonNls;
 
 public class HtmlUtils {
   private HtmlUtils() {}
+
   /**
    * @param text Text to be wrapped with html-tags
    * @return Wrapped text

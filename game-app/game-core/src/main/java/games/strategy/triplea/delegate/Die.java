@@ -23,6 +23,7 @@ public class Die implements Serializable {
 
   /** The value of the dice, 0 based. */
   private final int value;
+
   /** This value is 1 based. */
   private final int rolledAt;
 

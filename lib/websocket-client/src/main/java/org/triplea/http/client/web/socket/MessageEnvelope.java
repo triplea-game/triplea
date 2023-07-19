@@ -18,6 +18,7 @@ public class MessageEnvelope {
   private static final Gson gson = new Gson();
 
   @Getter @Nonnull private final String messageTypeId;
+
   /**
    * Payload itself is a JSON string. This is so we can preserve any underlying data objects. If we
    * try to store this as a generic object, then we'd have to know the generic type when

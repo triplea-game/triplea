@@ -77,6 +77,7 @@ public class MapDescriptionYaml {
   @EqualsAndHashCode
   public static class MapGame {
     private final String gameName;
+
     /** Path of the XML file relative to the location of map.yml file. */
     private final String xmlFileName;
   }

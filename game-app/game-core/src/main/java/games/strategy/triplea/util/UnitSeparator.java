@@ -30,14 +30,19 @@ public class UnitSeparator {
      * amount)
      */
     @Builder.Default @Nullable final Map<Unit, Collection<Unit>> dependents = null;
+
     /** whether to categorize by movement */
     @Builder.Default final boolean movement = false;
+
     /** whether to categorize by movement for air units only */
     @Builder.Default final boolean movementForAirUnitsOnly = false;
+
     /** whether to categorize by transport cost */
     @Builder.Default final boolean transportCost = false;
+
     /** whether to categorize transports by movement */
     @Builder.Default final boolean transportMovement = false;
+
     /** whether to categorize by whether the unit can retreat or not */
     @Builder.Default final boolean retreatPossibility = false;
   }

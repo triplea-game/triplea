@@ -88,6 +88,7 @@ public class CombatUnitAbility {
   @Getter(value = AccessLevel.NONE)
   @Builder.Default
   Suicide suicideOnOffense = Suicide.NONE;
+
   /** When should this unit commit suicide on defense */
   @Getter(value = AccessLevel.NONE)
   @Builder.Default

@@ -22,6 +22,7 @@ public class HeadedPlayerTypes {
           return new TripleAPlayer(name, getLabel(), false);
         }
       };
+
   /** A hidden player type to represent network connected players. */
   public static final PlayerTypes.Type CLIENT_PLAYER =
       new PlayerTypes.Type("Client", false) {

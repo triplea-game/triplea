@@ -16,6 +16,7 @@ public class GameHostingApiKeyDaoWrapper {
 
   @Nonnull private final GameHostingApiKeyDao gameHostApiKeyDao;
   @Nonnull private final Supplier<ApiKey> keyMaker;
+
   /** Hashing function so that we do not store plain-text API key values in database. */
   @Nonnull private final Function<ApiKey, String> keyHashingFunction;
 

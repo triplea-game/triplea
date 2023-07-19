@@ -20,6 +20,7 @@ public class UnitDamageReceivedChange extends Change {
 
   /** Maps unit ids to the total damage they have */
   private final Map<String, Integer> newTotalDamage;
+
   /** Maps unit ids to the total damage they used to have */
   private final Map<String, Integer> oldTotalDamage;
 

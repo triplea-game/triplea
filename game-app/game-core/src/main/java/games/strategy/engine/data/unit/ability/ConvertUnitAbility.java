@@ -24,6 +24,7 @@ public class ConvertUnitAbility {
   }
 
   @Nonnull String name;
+
   /** The unit types that have this ability */
   @NonFinal Collection<UnitType> attachedUnitTypes;
 

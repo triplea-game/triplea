@@ -25,6 +25,7 @@ public abstract class ActionPanel extends JPanel {
 
   @Getter(AccessLevel.PROTECTED)
   protected final MapPanel map;
+
   /** Refreshes the action panel. */
   protected final Runnable refresh =
       () -> SwingUtilities.invokeLater(() -> SwingComponents.redraw(this));

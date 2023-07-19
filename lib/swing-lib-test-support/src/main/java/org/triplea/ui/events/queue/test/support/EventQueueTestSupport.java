@@ -47,6 +47,7 @@ public class EventQueueTestSupport<
     ViewDataT extends ViewData> {
 
   @Getter private final EventQueueTypeT eventQueue;
+
   /** List of all controller events received. */
   @Getter
   private final Deque<ControllerEvent<ControllerEventTypeT, ViewDataT>> controllerEvents =

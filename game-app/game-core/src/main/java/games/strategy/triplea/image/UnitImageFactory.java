@@ -45,6 +45,7 @@ public class UnitImageFactory {
    * account.
    */
   private final int unitIconWidth;
+
   /**
    * Height of all icons. You probably want getUnitImageHeight(), which takes scale factor into
    * account.

@@ -19,6 +19,7 @@ class Decoder {
   private final ErrorReporter errorReporter;
   private final IObjectStreamFactory objectStreamFactory;
   private final NioSocket nioSocket;
+
   /**
    * These sockets are quarantined. They have not logged in, and messages read from them are not
    * passed outside of the quarantine conversation.

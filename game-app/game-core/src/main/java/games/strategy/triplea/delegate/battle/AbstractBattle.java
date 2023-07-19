@@ -36,6 +36,7 @@ abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
 
   final UUID battleId = UUID.randomUUID();
+
   /**
    * In headless mode we should NOT access any Delegates. In headless mode we are just being used to
    * calculate results for an odds calculator so we can skip some steps for efficiency.
