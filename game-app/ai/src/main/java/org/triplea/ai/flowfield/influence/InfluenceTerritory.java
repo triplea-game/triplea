@@ -18,8 +18,10 @@ public class InfluenceTerritory {
   long influence = 0;
   @Setter BattleDetails battleDetails;
   int distanceFromInitialTerritory;
+
   /** Tracks battle details that were diffused to this territory and their distance */
   final Map<BattleDetails, Integer> battleDetailsByDistance = new HashMap<>();
+
   /**
    * Tracks territories that this territory diffused the battle details to. Prevents diffusing the
    * battle details back towards the initial territory.
