@@ -441,8 +441,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     data.addDataChangeListener(dataChangeListener);
-    game.getData().addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
+    data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
+    // Clear cached unit images when getting standard tech like jet power.
+    data.addGameDataEventListener(
+        GameDataEvent.TECH_ATTACHMENT_CHANGED, this::clearCachedUnitImages);
     uiContext.addShutdownWindow(this);
+  }
+
+  private void clearCachedUnitImages() {
+    uiContext.getUnitImageFactory().clearCache();
   }
 
   /**

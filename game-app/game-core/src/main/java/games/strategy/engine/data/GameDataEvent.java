@@ -1,12 +1,14 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.data.changefactory.ObjectPropertyChange;
+import games.strategy.triplea.Constants;
 import java.util.Optional;
 
 /** Enum that represents various possible game data change events. */
 public enum GameDataEvent {
   UNIT_MOVED,
-  GAME_STEP_CHANGED;
+  GAME_STEP_CHANGED,
+  TECH_ATTACHMENT_CHANGED;
 
   /**
    * Converts a 'Change' object to a 'GameDataEvent' object, returns empty if the change object does
@@ -15,6 +17,12 @@ public enum GameDataEvent {
   static Optional<GameDataEvent> lookupEvent(final Change change) {
     if (hasMoveChange(change)) {
       return Optional.of(UNIT_MOVED);
+    }
+    if (change instanceof ChangeAttachmentChange) {
+      ChangeAttachmentChange attachmentChange = (ChangeAttachmentChange) change;
+      if (attachmentChange.getAttachmentName().equals(Constants.TECH_ATTACHMENT_NAME)) {
+        return Optional.of(TECH_ATTACHMENT_CHANGED);
+      }
     }
     return Optional.empty();
   }
