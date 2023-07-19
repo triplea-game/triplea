@@ -26,7 +26,7 @@ public class ClearBombardmentCasualtiesTest {
   @Mock IDelegateBridge delegateBridge;
 
   @ParameterizedTest
-  @ValueSource(booleans = {true, false}) // six numbers
+  @ValueSource(booleans = {true, false})
   void bombardCasualtiesRemoved(boolean navalBombardCasualtiesReturnFire) {
     final List<Unit> bombardingUnits = List.of(givenAnyUnit());
     final List<Unit> attackers = List.of(givenAnyUnit());
