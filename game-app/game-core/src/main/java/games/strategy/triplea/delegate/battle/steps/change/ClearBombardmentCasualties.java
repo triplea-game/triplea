@@ -34,7 +34,7 @@ public class ClearBombardmentCasualties implements BattleStep {
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     if (canBombardmentOccur() && clearCasualties()) {
-      battleActions.clearWaitingToDieAndDamagedChangesInto(bridge);
+      battleActions.clearWaitingToDieAndDamagedChangesInto(bridge, BattleState.Side.DEFENSE);
     }
   }
 
