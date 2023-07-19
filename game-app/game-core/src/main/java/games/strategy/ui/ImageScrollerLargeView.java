@@ -43,6 +43,7 @@ public class ImageScrollerLargeView extends JComponent {
   protected double scale = 1;
   private int dragScrollingLastX;
   private int dragScrollingLastY;
+
   /**
    * 'wasLastActionDragging' tracks if the last user action was right click dragging the map. It is
    * used so if we have units selected and drag the map that we will not deselect the units. This

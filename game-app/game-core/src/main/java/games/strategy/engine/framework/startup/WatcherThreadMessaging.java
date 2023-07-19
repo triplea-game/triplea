@@ -20,6 +20,7 @@ public interface WatcherThreadMessaging {
           + "TripleA comes out.)\n"
           + "And that your Router is configured to send TCP traffic the correct port "
           + " to your local ip address.";
+
   /**
    * When a host posts a game to the lobby, the lobby will verify connectivity to the host via a
    * 'reverse connection' back to the game host. If the reverse connection fails then this method is

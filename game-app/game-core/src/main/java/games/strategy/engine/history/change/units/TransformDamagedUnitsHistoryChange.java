@@ -34,6 +34,7 @@ public class TransformDamagedUnitsHistoryChange implements HistoryChange {
 
   CompositeChange change = new CompositeChange();
   Territory location;
+
   /** Map of old unit -> new unit */
   Map<Unit, Unit> transformingUnits = new HashMap<>();
 

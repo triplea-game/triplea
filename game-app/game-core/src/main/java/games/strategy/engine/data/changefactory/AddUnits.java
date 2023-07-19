@@ -19,6 +19,7 @@ public class AddUnits extends Change {
   private final String name;
   private final Collection<Unit> units;
   private final String type;
+
   /**
    * The unit's owner can be modified sometime after this Change is created but before it is
    * performed. To ensure that the newly created units have the correct ownership, their original

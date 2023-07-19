@@ -31,6 +31,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 public class MapRouteDrawer {
 
   private static final SplineInterpolator splineInterpolator = new SplineInterpolator();
+
   /**
    * This value influences the "resolution" of the Path. Too low values make the Path look edgy, too
    * high values will cause lag and rendering errors because the distance between the drawing

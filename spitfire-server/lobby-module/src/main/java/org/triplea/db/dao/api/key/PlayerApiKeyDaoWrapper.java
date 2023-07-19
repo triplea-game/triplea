@@ -26,6 +26,7 @@ public class PlayerApiKeyDaoWrapper {
   @Nonnull private final UserJdbiDao userJdbiDao;
   @Nonnull private final UserRoleDao userRoleDao;
   @Nonnull private final Supplier<ApiKey> keyMaker;
+
   /** Hashing function so that we do not store plain-text API key values in database. */
   @Nonnull private final Function<ApiKey, String> keyHashingFunction;
 

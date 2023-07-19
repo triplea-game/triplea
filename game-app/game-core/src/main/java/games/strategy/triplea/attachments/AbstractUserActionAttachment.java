@@ -27,6 +27,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // a key referring to politicaltexts.properties or other .properties for all the UI messages
   // belonging to this action.
   protected String text = "";
+
   /**
    * The cost in PUs to attempt this action.
    *
@@ -34,6 +35,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    *     possibly old map downloads that still have this value.
    */
   @Deprecated protected int costPu = 0;
+
   // cost in any resources to attempt this action
   protected @Nullable IntegerMap<Resource> costResources = null;
   // how many times can you perform this action each round?
