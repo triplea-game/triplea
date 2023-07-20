@@ -178,12 +178,8 @@ public class FakeBattleState implements BattleState {
     return List.of();
   }
 
-  public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
-    final GameData gameData = givenGameData().build();
-    final GamePlayer attacker = mock(GamePlayer.class);
-    lenient().when(attacker.getData()).thenReturn(gameData);
-    final GamePlayer defender = mock(GamePlayer.class);
-    lenient().when(defender.getData()).thenReturn(gameData);
+  public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder(
+      final GamePlayer attacker, final GamePlayer defender) {
     return FakeBattleState.builder()
         .battleRound(2)
         .maxBattleRounds(-1)
@@ -199,9 +195,18 @@ public class FakeBattleState implements BattleState {
         .dependentUnits(List.of())
         .killed(List.of())
         .retreatUnits(new ArrayList<>())
-        .gameData(gameData)
+        .gameData(attacker.getData())
         .amphibious(false)
         .over(false)
         .attackerRetreatTerritories(List.of());
+  }
+
+  public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
+    final GameData gameData = givenGameData().build();
+    final GamePlayer attacker = mock(GamePlayer.class);
+    lenient().when(attacker.getData()).thenReturn(gameData);
+    final GamePlayer defender = mock(GamePlayer.class);
+    lenient().when(defender.getData()).thenReturn(gameData);
+    return givenBattleStateBuilder(attacker, defender);
   }
 }

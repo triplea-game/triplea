@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryWriter;
+import java.util.ConcurrentModificationException;
 import javax.swing.SwingUtilities;
 
 /**
@@ -34,7 +35,20 @@ public class HistorySynchronizer {
         public void startHistoryEvent(final String event, final Object renderingData) {
           startHistoryEvent(event);
           if (renderingData != null) {
-            setRenderingData(renderingData);
+            SwingUtilities.invokeLater(
+                () -> {
+                  try {
+                    final Object translatedRenderingData = translateIntoMyData(renderingData);
+                    gameData
+                        .getHistory()
+                        .getHistoryWriter()
+                        .setRenderingData(translatedRenderingData);
+                  } catch (ConcurrentModificationException e) {
+                    // Instrumented to diagnose what exactly is causing this.
+                    throw new ConcurrentModificationException(
+                        "Failed to map renderingData=" + renderingData + " for event=" + event, e);
+                  }
+                });
           }
         }
 
@@ -53,14 +67,6 @@ public class HistorySynchronizer {
                     .getHistory()
                     .getHistoryWriter()
                     .addChildToEvent(new EventChild(text, translatedRenderingData));
-              });
-        }
-
-        void setRenderingData(final Object renderingData) {
-          SwingUtilities.invokeLater(
-              () -> {
-                final Object translatedRenderingData = translateIntoMyData(renderingData);
-                gameData.getHistory().getHistoryWriter().setRenderingData(translatedRenderingData);
               });
         }
 

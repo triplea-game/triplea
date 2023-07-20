@@ -191,7 +191,7 @@ class ProPurchaseAi {
       }
       final Map<Territory, Double> territoryValueMap =
           ProTerritoryValueUtils.findTerritoryValues(
-              proData, player, new ArrayList<>(), new ArrayList<>(), territoriesToCheck);
+              proData, player, List.of(), List.of(), territoriesToCheck);
       for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
         for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
           ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
@@ -311,7 +311,7 @@ class ProPurchaseAi {
     }
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(
-            proData, player, new ArrayList<>(), new ArrayList<>(), territoriesToCheck);
+            proData, player, List.of(), List.of(), territoriesToCheck);
     for (final Territory t : purchaseTerritories.keySet()) {
       for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
         ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
@@ -547,7 +547,7 @@ class ProPurchaseAi {
     }
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(
-            proData, player, new ArrayList<>(), new ArrayList<>(), territoriesToCheck);
+            proData, player, List.of(), List.of(), territoriesToCheck);
     for (final ProPurchaseTerritory t : placeNonConstructionTerritories.values()) {
       for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
         ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
@@ -1079,7 +1079,7 @@ class ProPurchaseAi {
     }
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(
-            proData, player, new ArrayList<>(), new ArrayList<>(), territoriesToCheck);
+            proData, player, List.of(), List.of(), territoriesToCheck);
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
       final Territory t = placeTerritory.getTerritory();
       ProLogger.debug("Checking land place for " + t.getName());
@@ -1332,11 +1332,7 @@ class ProPurchaseAi {
     // Find strategic value for each territory
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(
-            proData,
-            player,
-            territoriesThatCantBeHeld,
-            new ArrayList<>(),
-            purchaseFactoryTerritories);
+            proData, player, territoriesThatCantBeHeld, List.of(), purchaseFactoryTerritories);
     double maxValue = 0.0;
     Territory maxTerritory = null;
     for (final Territory t : purchaseFactoryTerritories) {
@@ -1917,7 +1913,7 @@ class ProPurchaseAi {
       }
       final Map<Territory, Double> territoryValueMap =
           ProTerritoryValueUtils.findTerritoryValues(
-              proData, player, new ArrayList<>(), new ArrayList<>(), territoriesToCheck);
+              proData, player, List.of(), List.of(), territoriesToCheck);
       ProLogger.trace(t + ", transportMovement=" + distance);
       for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
         final Territory landTerritory = purchaseTerritory.getTerritory();

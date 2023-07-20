@@ -39,9 +39,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   protected int objectiveValue = 0;
   // only matters for objectiveValue, does not affect the condition
   protected int uses = -1;
+
   // condition for what turn it is
   @RenameOnNextMajorRelease(newName = "rounds")
   protected @Nullable Map<Integer, Integer> turns = null;
+
   // for on/off conditions
   protected boolean switched = true;
   // allows custom GameProperties

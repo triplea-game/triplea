@@ -25,18 +25,21 @@ public class AiPlayerDebugOption {
 
   /** The menu title */
   @Nonnull String title;
+
   /**
    * The type of option
    *
    * <p>Not used if subOptions is non-empty
    */
   @Builder.Default OptionType optionType = OptionType.NORMAL;
+
   /**
    * Used to group the related ON_OFF_EXCLUSIVE options
    *
    * <p>Only used if optionType is ON_OFF_EXCLUSIVE
    */
   @Builder.Default String exclusiveGroup = "";
+
   /** These options become available when the parent option is selected */
   @Builder.Default List<AiPlayerDebugOption> subOptions = List.of();
 

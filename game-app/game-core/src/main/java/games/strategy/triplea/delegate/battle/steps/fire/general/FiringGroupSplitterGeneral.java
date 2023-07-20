@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.FiringGroup;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -56,24 +57,34 @@ public class FiringGroupSplitterGeneral
 
   @Override
   public List<FiringGroup> apply(final BattleState battleState) {
-    final Collection<Unit> canFire =
-        CollectionUtils.getMatches(
-            battleState.filterUnits(ACTIVE, side),
-            PredicateBuilder.of(getFiringUnitPredicate(battleState))
-                // Remove offense allied units if allied air can not participate
-                .andIf(
-                    side == OFFENSE
-                        && !Properties.getAlliedAirIndependent(
-                            battleState.getGameData().getProperties()),
-                    Matches.unitIsOwnedBy(battleState.getPlayer(side)))
-                .build());
-
     final Collection<Unit> enemyUnits =
         CollectionUtils.getMatches(
             battleState.filterUnits(ALIVE, side.getOpposite()),
             PredicateBuilder.of(Matches.unitIsNotInfrastructure())
                 .andIf(side == DEFENSE, Matches.unitIsSuicideOnAttack().negate())
                 .andIf(side == OFFENSE, Matches.unitIsSuicideOnDefense().negate())
+                .build());
+
+    // Filter participants (same as is done in MustFightBattle.removeNonCombatants()), so that we
+    // don't end up generating combat step names for units that will be excluded.
+    final Predicate<Unit> canParticipateInCombat =
+        Matches.unitCanParticipateInCombat(
+            side == OFFENSE,
+            battleState.getPlayer(OFFENSE),
+            battleState.getBattleSite(),
+            1,
+            enemyUnits);
+    final Collection<Unit> canFire =
+        CollectionUtils.getMatches(
+            battleState.filterUnits(ACTIVE, side),
+            PredicateBuilder.of(getFiringUnitPredicate(battleState))
+                .and(canParticipateInCombat)
+                // Remove offense allied units if allied air can not participate
+                .andIf(
+                    side == OFFENSE
+                        && !Properties.getAlliedAirIndependent(
+                            battleState.getGameData().getProperties()),
+                    Matches.unitIsOwnedBy(battleState.getPlayer(side)))
                 .build());
 
     final List<FiringGroup> firingGroups = new ArrayList<>();
@@ -144,14 +155,17 @@ public class FiringGroupSplitterGeneral
       final Collection<TargetGroup> targetGroups,
       final Collection<Unit> canFire,
       final Collection<Unit> enemyUnits) {
-
     if (targetGroups.size() == 1) {
       firingGroups.addAll(
           buildFiringGroups(name, canFire, enemyUnits, CollectionUtils.getAny(targetGroups)));
     } else {
       // use the first unitType name of each TargetGroup as a suffix for the FiringGroup name
       for (final TargetGroup targetGroup : targetGroups) {
-        final UnitType type = CollectionUtils.getAny(targetGroup.getFiringUnits(canFire)).getType();
+        // Sort units first, before getting the unit type to use for the name, so that we choose
+        // the same name regardless of the order of units provided.
+        List<Unit> firingUnits = targetGroup.getFiringUnits(canFire);
+        firingUnits.sort(Comparator.comparing(u -> u.getType().getName()));
+        UnitType type = CollectionUtils.getAny(firingUnits).getType();
         firingGroups.addAll(
             buildFiringGroups(name + " " + type.getName(), canFire, enemyUnits, targetGroup));
       }

@@ -22,8 +22,10 @@ public final class Version implements Serializable, Comparable<Version> {
 
   /** Indicates engine incompatible releases. */
   private int major;
+
   /** Indicates engine compatible releases. */
   private int minor;
+
   /**
    * Point (build number), unused, kept for serialization compatibility.
    *

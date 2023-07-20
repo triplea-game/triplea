@@ -42,6 +42,9 @@ import org.triplea.swing.SwingAction;
 @Slf4j
 class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;
+
+  private static final Pattern COMMENT_PATTERN = Pattern.compile("^COMMENT: (.*)");
+
   private JTextPane text;
   private JScrollPane scrollPane;
   private JTextField nextMessage;
@@ -134,31 +137,36 @@ class CommentPanel extends JPanel {
   private void readHistoryTreeEvent(final TreeModelEvent e) {
     SwingAction.invokeNowOrLater(
         () -> {
-          try (GameData.Unlocker ignored = data.acquireReadLock()) {
-            final Document doc = text.getDocument();
+          final Object[] children = e.getChildren();
+          final Object child =
+              (children != null && children.length > 0) ? children[children.length - 1] : null;
+          final String title;
+          if (child != null) {
+            title = (child instanceof Event) ? ((Event) child).getDescription() : child.toString();
+          } else {
             final HistoryNode node = (HistoryNode) e.getTreePath().getLastPathComponent();
-            final TreeNode child =
-                node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
-            final String title =
-                child != null
-                    ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
-                    : (node != null ? node.getTitle() : "");
-            final Pattern p = Pattern.compile("^COMMENT: (.*)");
-            final Matcher m = p.matcher(title);
-            if (m.matches()) {
-              final GamePlayer gamePlayer = data.getSequence().getStep().getPlayerId();
-              final int round = data.getSequence().getRound();
-              final String player = gamePlayer.getName();
-              final Icon icon = iconMap.get(gamePlayer);
-              try {
-                // insert into ui document
-                final String prefix = " " + player + "(" + round + ") : ";
-                text.insertIcon(icon);
-                doc.insertString(doc.getLength(), prefix, bold);
-                doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
-              } catch (final BadLocationException e1) {
-                log.error("Failed to add history node", e1);
-              }
+            title = (node != null) ? node.getTitle() : "";
+          }
+          final Matcher m = COMMENT_PATTERN.matcher(title);
+          if (m.matches()) {
+            final GamePlayer gamePlayer;
+            final String player;
+            final int round;
+            try (GameData.Unlocker ignored = data.acquireReadLock()) {
+              gamePlayer = data.getSequence().getStep().getPlayerId();
+              player = gamePlayer.getName();
+              round = data.getSequence().getRound();
+            }
+            final Icon icon = iconMap.get(gamePlayer);
+            try {
+              // insert into ui document
+              final Document doc = text.getDocument();
+              final String prefix = " " + player + "(" + round + ") : ";
+              text.insertIcon(icon);
+              doc.insertString(doc.getLength(), prefix, bold);
+              doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
+            } catch (final BadLocationException e1) {
+              log.error("Failed to add history node", e1);
             }
           }
         });
@@ -174,7 +182,6 @@ class CommentPanel extends JPanel {
     ThreadRunner.runInNewThread(
         () -> {
           final HistoryNode rootNode = (HistoryNode) data.getHistory().getRoot();
-          @SuppressWarnings("unchecked")
           final Enumeration<TreeNode> nodeEnum = rootNode.preorderEnumeration();
           final Pattern p = Pattern.compile("^COMMENT: (.*)");
           String player = "";

@@ -26,7 +26,8 @@ final class GameParserTest {
   void backwardCompatibilityCheck() throws Exception {
     final Path mapFile = getTestMap("v1_8_map__270BC.xml");
     final GameData gameData =
-        GameParser.parse(mapFile, new XmlGameElementMapper(), new Version("2.0.0")).orElseThrow();
+        GameParser.parse(mapFile, new XmlGameElementMapper(), new Version("2.0.0"), false)
+            .orElseThrow();
     assertNotNullGameData(gameData);
 
     verifyLegacyPropertiesAreUpdated(gameData);

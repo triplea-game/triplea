@@ -1272,6 +1272,7 @@ public class MustFightBattle extends DependentBattle
       final boolean attacking,
       final boolean removeForNextRound) {
     int battleRound = (removeForNextRound ? round + 1 : round);
+    // Note: Also done in FiringGroupSplitterGeneral when determining step names. They must match.
     return CollectionUtils.getMatches(
         units,
         Matches.unitCanParticipateInCombat(
@@ -1301,6 +1302,10 @@ public class MustFightBattle extends DependentBattle
                 throw new IllegalStateException(
                     "Round 10,000 reached in a battle. Something must be wrong."
                         + " Please report this to TripleA.\n"
+                        + " Territory: "
+                        + battleSite
+                        + " Attacker: "
+                        + attacker.getName()
                         + " Attacking unit types: "
                         + attackingUnits.stream()
                             .map(Unit::getType)

@@ -81,6 +81,7 @@ public class ServerGame extends AbstractGame {
    * startgame(...) method from returning.
    */
   private final CountDownLatch delegateExecutionStoppedLatch = new CountDownLatch(1);
+
   /** Has the delegate signaled that delegate execution should stop. */
   private volatile boolean delegateExecutionStopped = false;
 

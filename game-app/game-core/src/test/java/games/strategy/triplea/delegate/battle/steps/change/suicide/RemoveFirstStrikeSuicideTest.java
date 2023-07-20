@@ -4,8 +4,8 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrikeSuicideOnAttack;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrikeSuicideOnDefense;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaUnitFirstStrikeSuicideOnAttack;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaUnitFirstStrikeSuicideOnDefense;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -34,8 +34,8 @@ public class RemoveFirstStrikeSuicideTest {
   void suicideUnitsRemoved() {
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
 
-    final List<Unit> attackers = List.of(givenAnyUnit(), givenUnitFirstStrikeSuicideOnAttack());
-    final List<Unit> defenders = List.of(givenAnyUnit(), givenUnitFirstStrikeSuicideOnDefense());
+    final List<Unit> attackers = List.of(givenAnyUnit(), givenSeaUnitFirstStrikeSuicideOnAttack());
+    final List<Unit> defenders = List.of(givenAnyUnit(), givenSeaUnitFirstStrikeSuicideOnDefense());
     final MockGameData gameData = MockGameData.givenGameData();
     final BattleState battleState =
         givenBattleStateBuilder()

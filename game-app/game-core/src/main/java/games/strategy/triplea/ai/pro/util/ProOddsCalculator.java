@@ -56,7 +56,7 @@ public class ProOddsCalculator {
     final double strengthDifference =
         ProBattleUtils.estimateStrengthDifference(t, attackingUnits, defendingUnits);
     if (strengthDifference < 45) {
-      return new ProBattleResult(0, -999, false, new ArrayList<>(), defendingUnits, 1);
+      return new ProBattleResult(0, -999, false, List.of(), defendingUnits, 1);
     }
     return callBattleCalc(proData, t, attackingUnits, defendingUnits, bombardingUnits);
   }
@@ -93,7 +93,7 @@ public class ProOddsCalculator {
           999 + strengthDifference,
           !isLandAndCanOnlyBeAttackedByAir,
           attackingUnits,
-          new ArrayList<>(),
+          List.of(),
           1);
     }
     return callBattleCalc(proData, t, attackingUnits, defendingUnits, bombardingUnits);
@@ -179,7 +179,7 @@ public class ProOddsCalculator {
           CollectionUtils.getMatches(
               defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, true));
       final double tuv = TuvUtils.getTuv(mainCombatDefenders, proData.getUnitValueMap());
-      return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, new ArrayList<>(), 0);
+      return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, List.of(), 0);
     } else if (canSubmergeBeforeBattle(
         proData.getData(), attackingUnits, defendingUnits, checkSubmerge)) {
       return new ProBattleResult();

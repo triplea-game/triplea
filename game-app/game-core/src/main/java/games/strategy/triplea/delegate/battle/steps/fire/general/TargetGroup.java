@@ -7,7 +7,6 @@ import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,7 +27,7 @@ class TargetGroup {
     this.targetUnitTypes = targetUnitTypes;
   }
 
-  public Collection<Unit> getFiringUnits(final Collection<Unit> units) {
+  public List<Unit> getFiringUnits(final Collection<Unit> units) {
     return CollectionUtils.getMatches(units, Matches.unitIsOfTypes(firingUnitTypes));
   }
 
@@ -44,13 +43,13 @@ class TargetGroup {
    */
   public static List<TargetGroup> newTargetGroups(
       final Collection<Unit> units, final Collection<Unit> enemyUnits) {
-
     final Set<UnitType> unitTypes = units.stream().map(Unit::getType).collect(Collectors.toSet());
+    final boolean destroyerPresent = unitTypes.stream().anyMatch(Matches.unitTypeIsDestroyer());
     final Set<UnitType> enemyUnitTypes =
         enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet());
     final List<TargetGroup> targetGroups = new ArrayList<>();
     for (final UnitType unitType : unitTypes) {
-      final Set<UnitType> targets = findTargets(unitType, unitTypes, enemyUnitTypes);
+      final Set<UnitType> targets = findTargets(unitType, destroyerPresent, enemyUnitTypes);
       if (targets.isEmpty()) {
         continue;
       }
@@ -65,15 +64,21 @@ class TargetGroup {
   }
 
   private static Set<UnitType> findTargets(
-      final UnitType unitType, final Set<UnitType> unitTypes, final Set<UnitType> enemyUnitTypes) {
-    final Set<UnitType> targets = new HashSet<>(enemyUnitTypes);
-    targets.removeAll(unitType.getUnitAttachment().getCanNotTarget());
-    return unitTypes.stream().anyMatch(Matches.unitTypeIsDestroyer())
-        ? targets
-        : targets.stream()
-            .filter(
-                target -> !target.getUnitAttachment().getCanNotBeTargetedBy().contains(unitType))
-            .collect(Collectors.toSet());
+      UnitType unitType, boolean destroyerPresent, Set<UnitType> enemyUnitTypes) {
+    Set<UnitType> cannotTarget = unitType.getUnitAttachment().getCanNotTarget();
+    // Note: uses a single stream instead of a sequence of removeAll() calls for performance.
+    return enemyUnitTypes.stream()
+        .filter(
+            targetUnitType -> {
+              if (cannotTarget.contains(targetUnitType)) {
+                return false;
+              }
+              if (destroyerPresent) {
+                return true;
+              }
+              return !targetUnitType.getUnitAttachment().getCanNotBeTargetedBy().contains(unitType);
+            })
+        .collect(Collectors.toSet());
   }
 
   private static Optional<TargetGroup> findTargetsInTargetGroups(

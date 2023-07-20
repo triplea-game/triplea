@@ -669,7 +669,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsAaOfTypeAa(final String typeAa) {
-    return u -> u.getUnitAttachment().getTypeAa().matches(typeAa);
+    return u -> u.getUnitAttachment().getTypeAa().equals(typeAa);
   }
 
   public static Predicate<Unit> unitAaShotDamageableInsteadOfKillingInstantly() {

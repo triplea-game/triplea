@@ -20,11 +20,13 @@ import lombok.ToString;
 public class MapDownloadItem {
   /** URL where the map can be downloaded. */
   @Nonnull private final String downloadUrl;
+
   /** URL of the preview image of the map. */
   @Nonnull private final String previewImageUrl;
 
   @Nonnull private final String mapName;
   @Nonnull private final Long lastCommitDateEpochMilli;
+
   /** HTML description of the map. */
   @Nonnull private final String description;
 

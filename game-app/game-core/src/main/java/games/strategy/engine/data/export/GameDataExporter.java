@@ -17,11 +17,13 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -60,7 +62,7 @@ public class GameDataExporter {
    * Converts a 'GameData' object into a 'Game' object, the latter is a POJO that models XML and is
    * suitable to then be written to an XML string. Use this method to export live game data to XML.
    */
-  public static Game convertToXmlModel(final GameData data) {
+  public static Game convertToXmlModel(final GameData data, final Path existingMapXmlPath) {
     return Game.builder()
         .info(info(data))
         .triplea(
@@ -89,7 +91,7 @@ public class GameDataExporter {
                 .technologies(technologies(data))
                 .playerTechs(playertechs(data))
                 .build())
-        .attachmentList(attachments(data))
+        .attachmentList(attachments(existingMapXmlPath))
         .initialize(
             Initialize.builder()
                 .ownerInitialize(ownerInitialize(data))
@@ -293,10 +295,17 @@ public class GameDataExporter {
         .build();
   }
 
-  private static AttachmentList attachments(final GameData data) {
+  private List<Tuple<IAttachment, List<Tuple<String, String>>>> loadAttachmentOrderAndValues(
+      Path existingMapXmlPath) {
+    return GameParser.parse(existingMapXmlPath, true)
+        .map(GameData::getAttachmentOrderAndValues)
+        .orElse(List.of());
+  }
+
+  private static AttachmentList attachments(final Path existingMapXmlPath) {
     return AttachmentList.builder()
         .attachments(
-            data.getAttachmentOrderAndValues().stream()
+            loadAttachmentOrderAndValues(existingMapXmlPath).stream()
                 .map(GameDataExporter::printAttachments)
                 .collect(Collectors.toList()))
         .build();

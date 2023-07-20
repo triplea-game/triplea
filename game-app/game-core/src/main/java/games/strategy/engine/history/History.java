@@ -56,7 +56,6 @@ public class History extends DefaultTreeModel {
   }
 
   public HistoryNode enableSeeking(final HistoryPanel panel) {
-    Preconditions.checkNotNull(panel);
     Preconditions.checkState(!seekingEnabled);
     this.panel = panel;
     nextChangeIndex = changes.size();

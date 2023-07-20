@@ -233,11 +233,13 @@ public class UnitAttachment extends DefaultAttachment {
   private int whenCapturedSustainsDamage = 0;
   private @Nullable List<GamePlayer> canBeCapturedOnEnteringBy = null;
   private @Nullable List<GamePlayer> canBeGivenByTerritoryTo = null;
+
   // a set of information for dealing with special abilities or loss of abilities when a unit takes
   // x-y amount of damage
   @ChangeOnNextMajorRelease("This should be a list of WhenCombatDamaged objects instead of Tuples")
   private @Nullable List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged =
       null;
+
   // a kind of support attachment for giving actual unit attachment abilities or other to a unit,
   // when in the presence or on the same route with another unit
   private @Nullable List<String> receivesAbilityWhenWith = null;

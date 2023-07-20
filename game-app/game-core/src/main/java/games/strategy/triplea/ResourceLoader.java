@@ -2,6 +2,7 @@ package games.strategy.triplea;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -48,11 +49,13 @@ public class ResourceLoader implements Closeable {
     this.assetPaths = assetPaths;
     List<URL> searchUrls = assetPaths.stream().map(PathUtils::toUrl).collect(Collectors.toList());
 
-    Path gameEngineAssets =
-        findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
-            .orElseThrow(GameAssetsNotFoundException::new);
+    if (!GameRunner.headless()) {
+      Path gameEngineAssets =
+          findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
+              .orElseThrow(GameAssetsNotFoundException::new);
 
-    searchUrls.add(PathUtils.toUrl(gameEngineAssets));
+      searchUrls.add(PathUtils.toUrl(gameEngineAssets));
+    }
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched

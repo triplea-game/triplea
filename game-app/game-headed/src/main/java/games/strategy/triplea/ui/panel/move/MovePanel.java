@@ -78,6 +78,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int defaultMinTransportCost = 5;
+
   /** Number of units to add/remove when Alt key is down. */
   private static final int MULTI_SELECT_NUMBER = 10;
 

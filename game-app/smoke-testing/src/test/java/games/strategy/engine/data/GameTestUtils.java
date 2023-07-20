@@ -55,7 +55,7 @@ public class GameTestUtils {
     }
 
     GameData gameData =
-        GameParser.parse(xmlFilePath)
+        GameParser.parse(xmlFilePath, false)
             .orElseThrow(() -> new RuntimeException("Error parsing file: " + xmlFilePath));
     Map<String, PlayerTypes.Type> playerTypes = new HashMap<>();
     for (var player : gameData.getPlayerList().getPlayers()) {

@@ -179,6 +179,7 @@ public class UiContext {
       }
       activeToDeactivate.clear();
       windowsToCloseOnShutdown.clear();
+      unitImageFactory.deleteTempFiles();
     }
     StackTraceReportModel.setCurrentMapName(null);
     resourceLoader.close();

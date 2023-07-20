@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
 import com.google.common.collect.Iterables;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
@@ -90,9 +91,15 @@ final class ExportMenu extends JMenu {
   }
 
   private void exportXmlFile() {
+    // The existing XML file is needed for attachment ordering data.
+    final Path gameXmlPath = gameData.getGameXmlPath(uiContext.getMapLocation()).orElse(null);
+    if (gameXmlPath == null) {
+      JOptionPane.showMessageDialog(frame, "Error: Existing XML file not found.");
+      return;
+    }
+
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final Path rootDir = Path.of(SystemProperties.getUserDir());
 
     final int round = gameData.getCurrentRound();
     final String defaultFileName =
@@ -103,12 +110,13 @@ final class ExportMenu extends JMenu {
                     gameData.getGameName(),
                     round))
             + ".xml";
+    final Path rootDir = ClientFileSystemHelper.getUserRootFolder();
     chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
     try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-      final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData);
+      final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData, gameXmlPath);
       GameXmlWriter.exportXml(xmlGameModel, chooser.getSelectedFile().toPath());
     }
   }
@@ -167,8 +175,7 @@ final class ExportMenu extends JMenu {
     if (clone == null) {
       return;
     }
-    try (PrintWriter writer =
-            new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8.toString());
+    try (PrintWriter writer = new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8);
         GameData.Unlocker ignored = gameData.acquireReadLock()) {
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
@@ -257,8 +264,7 @@ final class ExportMenu extends JMenu {
       final List<GamePlayer> players = clone.getPlayerList().getSortedPlayers();
 
       // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom
-      // resources or tech
-      // tokens or # techs, etc.
+      // resources or tech  tokens or # techs, etc.
       final Iterable<IStat> stats =
           Iterables.concat(
               List.of(statPanel.getStats()), List.of(statPanel.getStatsExtended(gameData)));
@@ -273,6 +279,7 @@ final class ExportMenu extends JMenu {
         }
       }
       writer.println();
+      clone.getHistory().enableSeeking(null);
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
       final Enumeration<TreeNode> nodes =
           ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();

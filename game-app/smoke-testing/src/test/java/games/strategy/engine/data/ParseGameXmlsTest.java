@@ -22,7 +22,7 @@ class ParseGameXmlsTest {
   void parseGameFiles(final Path xmlFile) {
     final Optional<GameData> result =
         GameParser.parse(
-            xmlFile, new XmlGameElementMapper(), ProductVersionReader.getCurrentVersion());
+            xmlFile, new XmlGameElementMapper(), ProductVersionReader.getCurrentVersion(), false);
     assertThat(result, OptionalMatchers.isPresent());
   }
 

@@ -19,6 +19,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.general.FiringGroupSpli
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Generates fire steps for the first strike battle phase for the offensive player */
 public class OffensiveFirstStrike implements BattleStep {
@@ -39,6 +40,7 @@ public class OffensiveFirstStrike implements BattleStep {
 
   protected final State state;
 
+  @RemoveOnNextMajorRelease("This is ReturnFire.ALL or null for everything except old saves")
   protected transient ReturnFire returnFire = ReturnFire.ALL;
 
   public OffensiveFirstStrike(final BattleState battleState, final BattleActions battleActions) {

@@ -27,10 +27,13 @@ import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 class LobbyWatcherKeepAliveTask implements Runnable {
   /** The current gameId, updated if we re-post. */
   @Nonnull private String gameId;
+
   /** Call this after re-posting so we can update with a new game id. */
   @Nonnull private final Consumer<String> gameIdSetter;
+
   /** Call this to send a keep-alive request to server. */
   @Nonnull private final Predicate<String> keepAliveSender;
+
   /** Call this to re-post the current game, obtains a new game id. */
   @Nonnull private final Supplier<GamePostingResponse> gamePoster;
 

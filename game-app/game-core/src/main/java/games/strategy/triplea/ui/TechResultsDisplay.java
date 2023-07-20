@@ -69,25 +69,17 @@ class TechResultsDisplay extends JPanel {
     final JPanel dice = new JPanel();
     dice.setLayout(new BoxLayout(dice, BoxLayout.X_AXIS));
     final int remainder = msg.getRemainder();
+    final var diceFactory = uiContext.getDiceImageFactory();
     for (int i = 0; i < msg.getRolls().length; i++) {
       // add 1 since dice are 0 based
       final int roll = msg.getRolls()[i] + 1;
-      final JLabel die;
+      final Die.DieType dieType;
       if (remainder > 0) {
-        die =
-            new JLabel(
-                uiContext
-                    .getDiceImageFactory()
-                    .getDieIcon(roll, roll <= remainder ? Die.DieType.HIT : Die.DieType.MISS));
+        dieType = (roll <= remainder) ? Die.DieType.HIT : Die.DieType.MISS;
       } else {
-        die =
-            new JLabel(
-                uiContext
-                    .getDiceImageFactory()
-                    .getDieIcon(
-                        roll, roll == data.getDiceSides() ? Die.DieType.HIT : Die.DieType.MISS));
+        dieType = (roll == data.getDiceSides()) ? Die.DieType.HIT : Die.DieType.MISS;
       }
-      dice.add(die);
+      dice.add(new JLabel(diceFactory.getDieIcon(roll, dieType)));
       dice.add(Box.createHorizontalStrut(2));
       dice.setMaximumSize(new Dimension(200, (int) dice.getMaximumSize().getHeight()));
     }

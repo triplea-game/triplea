@@ -11,6 +11,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   private static final long serialVersionUID = -6390555051736721082L;
 
   private final boolean water;
+
   /**
    * The territory owner; defaults to {@link PlayerList#getNullPlayer()} if the territory is not
    * owned.

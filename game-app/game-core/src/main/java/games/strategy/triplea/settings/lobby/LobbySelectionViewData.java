@@ -64,8 +64,10 @@ class LobbySelectionViewData implements ViewData {
 
   /** Which lobby choice radio button is selected eg: prod / local / other */
   @Nonnull LobbyChoice selectedRadioButton;
+
   /** The string text in the uri field. */
   @Nonnull String uriFieldValue;
+
   /** Whether a user can edit the uri field. */
   @Nonnull Boolean uriFieldEnabled;
 

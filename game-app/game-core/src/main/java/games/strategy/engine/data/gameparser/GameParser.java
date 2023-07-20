@@ -82,15 +82,18 @@ public final class GameParser {
   private final XmlGameElementMapper xmlGameElementMapper;
   private GameDataVariables variables;
   private final Version engineVersion;
+  private boolean collectAttachmentOrderAndValues;
 
   private GameParser(
       final Path xmlUri,
       final XmlGameElementMapper xmlGameElementMapper,
-      final Version engineVersion) {
+      final Version engineVersion,
+      final boolean collectAttachmentOrderAndValues) {
     data = new GameData();
     this.xmlUri = xmlUri;
     this.xmlGameElementMapper = xmlGameElementMapper;
     this.engineVersion = engineVersion;
+    this.collectAttachmentOrderAndValues = collectAttachmentOrderAndValues;
   }
 
   /**
@@ -100,11 +103,15 @@ public final class GameParser {
    * @return A complete {@link GameData} instance that can be used to play the game, otherwise
    *     returns empty if the file could not parsed or is not valid.
    */
-  public static Optional<GameData> parse(final Path xmlFile) {
+  public static Optional<GameData> parse(
+      final Path xmlFile, boolean collectAttachmentOrderAndValues) {
     log.debug("Parsing game XML: {}", xmlFile.toAbsolutePath());
     final Optional<GameData> gameData =
         GameParser.parse(
-            xmlFile, new XmlGameElementMapper(), ProductVersionReader.getCurrentVersion());
+            xmlFile,
+            new XmlGameElementMapper(),
+            ProductVersionReader.getCurrentVersion(),
+            collectAttachmentOrderAndValues);
 
     // if parsed, find the 'map.yml' from a parent folder and set the 'mapName' property
     // using the 'map name' from 'map.yml'
@@ -125,12 +132,14 @@ public final class GameParser {
   public static Optional<GameData> parse(
       final Path xmlFile,
       final XmlGameElementMapper xmlGameElementMapper,
-      final Version engineVersion) {
+      final Version engineVersion,
+      final boolean collectAttachmentOrderAndValues) {
     return UrlStreams.openStream(
         xmlFile.toUri(),
         inputStream -> {
           try {
-            return new GameParser(xmlFile, xmlGameElementMapper, engineVersion)
+            return new GameParser(
+                    xmlFile, xmlGameElementMapper, engineVersion, collectAttachmentOrderAndValues)
                 .parse(xmlFile, inputStream);
           } catch (final EngineVersionException e) {
             log.warn("Game engine not compatible with: " + xmlFile, e);
@@ -839,7 +848,9 @@ public final class GameParser {
     final List<Tuple<String, String>> attachmentOptionValues =
         setOptions(attachment, current.getOptions(), foreach);
     // keep a list of attachment references in the order they were added
-    data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));
+    if (collectAttachmentOrderAndValues) {
+      data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));
+    }
   }
 
   private Attachable findAttachment(

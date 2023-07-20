@@ -395,6 +395,14 @@ public class GameData implements Serializable, GameState {
     }
   }
 
+  @RemoveOnNextMajorRelease
+  public void fixUpNullPlayersInDelegates() {
+    BattleDelegate battleDelegate = (BattleDelegate) getDelegate("battle");
+    if (battleDelegate != null) {
+      battleDelegate.getBattleTracker().fixUpNullPlayers(playerList.getNullPlayer());
+    }
+  }
+
   public interface Unlocker extends Closeable {
     @Override
     void close();
@@ -588,12 +596,14 @@ public class GameData implements Serializable, GameState {
    * header. Returns empty if the 'map.yml' or game notes file cannot be found.
    */
   public String loadGameNotes(final Path mapLocation) {
-    // Given a game name, the map.yml file can tell us the path to the game xml file.
     // From the game-xml file name, we can find the game-notes file.
+    return getGameXmlPath(mapLocation).map(GameNotes::loadGameNotes).orElse("");
+  }
+
+  public Optional<Path> getGameXmlPath(final Path mapLocation) {
+    // Given a game name, the map.yml file can tell us the path to the game xml file.
     return findMapDescriptionYaml(mapLocation)
-        .flatMap(yaml -> yaml.getGameXmlPathByGameName(getGameName()))
-        .map(GameNotes::loadGameNotes)
-        .orElse("");
+        .flatMap(yaml -> yaml.getGameXmlPathByGameName(getGameName()));
   }
 
   private Optional<MapDescriptionYaml> findMapDescriptionYaml(final Path mapLocation) {

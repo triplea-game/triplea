@@ -25,7 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.imageio.ImageIO;
@@ -45,6 +47,7 @@ public class UnitImageFactory {
    * account.
    */
   private final int unitIconWidth;
+
   /**
    * Height of all icons. You probably want getUnitImageHeight(), which takes scale factor into
    * account.
@@ -59,6 +62,7 @@ public class UnitImageFactory {
   private final Map<String, ImageIcon> icons = new HashMap<>();
   // Temporary colorized image files used for URLs for html views (e.g. unit stats table).
   private final Map<ImageKey, URL> colorizedTempFiles = new HashMap<>();
+  private final List<File> tempFiles = new ArrayList<>();
   // Scaling factor for unit images
   private final double scaleFactor;
   private final ResourceLoader resourceLoader;
@@ -73,6 +77,18 @@ public class UnitImageFactory {
     this.scaleFactor = unitScale;
     this.resourceLoader = resourceLoader;
     this.mapData = mapData;
+  }
+
+  public void clearCache() {
+    images.clear();
+    icons.clear();
+    deleteTempFiles();
+    colorizedTempFiles.clear();
+  }
+
+  public void deleteTempFiles() {
+    tempFiles.forEach(File::delete);
+    tempFiles.clear();
   }
 
   @Value
@@ -282,6 +298,7 @@ public class UnitImageFactory {
                 File file = Files.createTempFile(key.getFullName(), ".png").toFile();
                 // Delete the file on exit.
                 file.deleteOnExit();
+                tempFiles.add(file);
                 ImageIO.write(bufferedImage, "PNG", file);
                 return file.toURI().toURL();
               } catch (IOException e) {

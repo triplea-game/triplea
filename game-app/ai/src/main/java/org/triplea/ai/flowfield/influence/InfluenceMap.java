@@ -23,6 +23,7 @@ import org.triplea.java.collections.CollectionUtils;
 public class InfluenceMap {
 
   String name;
+
   /** Percentage of the value to be copied to the */
   double diffuseRate;
 

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class PagingParams {
   /** The next row to fetch, zero-based. */
   private int rowNumber;
+
   /** How many rows to fetch, should be greater than zero. */
   private Integer pageSize;
 }

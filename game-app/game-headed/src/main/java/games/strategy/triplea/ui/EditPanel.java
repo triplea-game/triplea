@@ -378,8 +378,7 @@ class EditPanel extends ActionPanel {
             final MustMoveWithDetails mustMoveWithDetails;
             try (GameData.Unlocker ignored = getData().acquireReadLock()) {
               mustMoveWithDetails =
-                  MoveValidator.getMustMoveWith(
-                      selectedTerritory, new HashMap<>(), getCurrentPlayer());
+                  MoveValidator.getMustMoveWith(selectedTerritory, Map.of(), getCurrentPlayer());
             }
             final boolean mustChoose;
             final List<Unit> allUnits = new ArrayList<>(selectedTerritory.getUnits());

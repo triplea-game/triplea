@@ -10,12 +10,14 @@ import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.triplea.settings.ClientSetting;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Observable;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -29,9 +31,6 @@ import org.triplea.java.ThreadRunner;
  */
 @Slf4j
 public class GameSelectorModel extends Observable implements GameSelector {
-
-  private final Function<Path, Optional<GameData>> gameParser;
-
   @Nullable
   @Getter(onMethod_ = {@Override})
   private GameData gameData = null;
@@ -46,9 +45,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @Setter @Getter private ClientModel clientModelForHostBots = null;
   private Optional<String> saveGameToLoad = Optional.empty();
 
-  public GameSelectorModel() {
-    this.gameParser = GameParser::parse;
-  }
+  public GameSelectorModel() {}
 
   /**
    * Loads game data by parsing a given file.
@@ -102,7 +99,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
 
   @Nullable
   private GameData parseAndValidate(final Path file) {
-    final GameData gameData = gameParser.apply(file).orElse(null);
+    final GameData gameData = GameParser.parse(file, false).orElse(null);
     if (gameData == null) {
       return null;
     }
@@ -194,14 +191,26 @@ public class GameSelectorModel extends Observable implements GameSelector {
     gameUri
         .filter(Predicate.not(String::isBlank))
         .filter(GameSelectorModel::gameUriExistsOnFileSystem)
-        .map(Path::of)
+        .map(GameSelectorModel::pathFromGameUri)
         .ifPresentOrElse(this::load, this::resetDefaultGame);
+  }
+
+  private static Path pathFromGameUri(final String gameUri) {
+    if (gameUri.startsWith("file:")) {
+      try {
+        return Path.of(new URI(gameUri));
+      } catch (URISyntaxException e) {
+        throw new InvalidPathException(gameUri, e.getReason());
+      }
+    } else {
+      return Path.of(gameUri);
+    }
   }
 
   @SuppressWarnings("ReturnValueIgnored")
   private static boolean gameUriExistsOnFileSystem(final String gameUri) {
     try {
-      final Path gameFile = Path.of(gameUri);
+      final Path gameFile = pathFromGameUri(gameUri);
 
       // starts with check is because we don't want to load a game file by default that is not
       // within

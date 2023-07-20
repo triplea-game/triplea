@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Represents a battle. */
 public interface IBattle extends Serializable {
@@ -164,6 +165,9 @@ public interface IBattle extends Serializable {
   GamePlayer getAttacker();
 
   GamePlayer getDefender();
+
+  @RemoveOnNextMajorRelease
+  void fixUpNullPlayer(GamePlayer nullPlayer);
 
   UUID getBattleId();
 }
