@@ -163,6 +163,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     final GameData data = getData();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final GamePlayer player = data.getSequence().getStep().getPlayerId();
+      if (player == null) {
+        return;
+      }
       unitsToPlace = UnitSeparator.categorize(player.getUnits());
     }
 
