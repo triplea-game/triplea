@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.listing.MapTag;
 import org.triplea.swing.JTableBuilder;
+import org.triplea.swing.JTableTypeAheadListener;
 
 /**
  * UI component representing a list of maps to download. The table is sortable and displays
@@ -50,6 +51,7 @@ public class MapDownloadSwingTable {
                     .collect(Collectors.toList()))
             .rowMapper(mapDownloadListing -> rowMapper(mapDownloadListing, tagNames))
             .build();
+    table.addKeyListener(new JTableTypeAheadListener(table, 0));
   }
 
   /**
