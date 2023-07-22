@@ -179,9 +179,13 @@ public class History extends DefaultTreeModel {
       if (node instanceof Step) {
         player = ((Step) node).getPlayerId();
       }
-      int nodeChangeIndex = getNextChange(node);
-      if (seekingEnabled && nodeChangeIndex > nextChangeIndex) {
-        break;
+      if (node.isLeaf()) {
+        // Don't do this logic on non-leaf nodes as getNextChange() will return
+        // the next change after this non-leaf, skipping all the child nodes.
+        int nodeChangeIndex = getNextChange(node);
+        if (seekingEnabled && nodeChangeIndex > nextChangeIndex) {
+          break;
+        }
       }
     }
     return player;
