@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui.posted.game;
 
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.MartiDiceRoller;
 import games.strategy.engine.random.PbemDiceRoller;
@@ -10,6 +11,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.net.URI;
+import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -255,10 +257,8 @@ public class DiceServerEditor extends JPanel {
   }
 
   public boolean areFieldsValid() {
-    final boolean toValid =
-        !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText());
-    final boolean ccValid =
-        !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText());
+    final boolean toValid = !toAddress.getText().isEmpty() && validateEmailAddresses(toAddress.getText());
+    final boolean ccValid = !ccAddress.getText().isEmpty() && validateEmailAddresses(ccAddress.getText());
 
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
@@ -273,6 +273,10 @@ public class DiceServerEditor extends JPanel {
           SwingComponents.highlightLabelIfNotValid(ccValid, ccLabel);
         });
     return allValid;
+  }
+
+  private boolean validateEmailAddresses(String addresses) {
+    return Arrays.stream(addresses.split("\\s+")).allMatch(PlayerEmailValidation::isValid);
   }
 
   public void applyToGameProperties(final GameProperties properties) {
