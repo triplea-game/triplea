@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui.posted.game;
 
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.MartiDiceRoller;
 import games.strategy.engine.random.PbemDiceRoller;
@@ -257,8 +256,10 @@ public class DiceServerEditor extends JPanel {
   }
 
   public boolean areFieldsValid() {
-    final boolean toValid = !toAddress.getText().isEmpty() && validateEmailAddresses(toAddress.getText());
-    final boolean ccValid = !ccAddress.getText().isEmpty() && validateEmailAddresses(ccAddress.getText());
+    final boolean toValid =
+        !toAddress.getText().isEmpty() && validateEmailAddresses(toAddress.getText());
+    final boolean ccValid =
+        !ccAddress.getText().isEmpty() && validateEmailAddresses(ccAddress.getText());
 
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
