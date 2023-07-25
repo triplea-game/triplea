@@ -103,9 +103,7 @@ public class ProPurchaseOptionMap {
         ProLogger.debug("Air: " + ppo);
       } else if (Matches.unitTypeIsSea().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-        if (!ppo.isSub()) {
-          seaDefenseOptions.add(ppo);
-        }
+        seaDefenseOptions.add(ppo);
         if (ppo.isTransport()) {
           seaTransportOptions.add(ppo);
         }
