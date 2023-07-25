@@ -612,18 +612,15 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       if (errorP != null) {
         failingProducers.add(producer);
         // do not include the error for same territory, if water, because users do not want to see
-        // this error report for
-        // 99.9% of games
+        // this error report for 99.9% of games
         if (!(producer.equals(to) && producer.isWater())) {
-          error.append(", ").append(errorP);
+          error.append(errorP).append(".\n");
         }
       }
     }
     if (producers.size() == failingProducers.size()) {
-      return "Adjacent territories to "
-          + to.getName()
-          + " cannot produce, due to: \n "
-          + error.toString().replaceFirst(", ", "");
+      return String.format(
+          "Adjacent territories to %s cannot produce because:\n\n%s", to.getName(), error);
     }
     return null;
   }
