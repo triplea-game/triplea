@@ -3468,10 +3468,14 @@ public class UnitAttachment extends DefaultAttachment {
         sb.append(integerMap.totalValues());
       } else {
         for (final Entry<T, Integer> entry : integerMap.entrySet()) {
-          sb.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
+          if (entry.getValue() != 0) {
+            sb.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
+          }
         }
       }
-      formatter.append(key, sb.toString());
+      if (sb.length() > 0) {
+        formatter.append(key, sb.toString());
+      }
     }
   }
 
