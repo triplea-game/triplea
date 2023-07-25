@@ -243,8 +243,8 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       if (production.isError()) {
         JOptionPane.showMessageDialog(
             getTopLevelAncestor(),
-            production.getErrorMessage(),
-            "No units",
+            production.getErrorMessage() + "\n\n",
+            "Cannot produce units",
             JOptionPane.INFORMATION_MESSAGE);
       }
       return production;
