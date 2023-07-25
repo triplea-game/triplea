@@ -619,7 +619,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     if (producers.size() == failingProducers.size()) {
-      return String.format("Adjacent territories to %s cannot produce because:\n\n%s", to.getName(), error);
+      return String.format(
+          "Adjacent territories to %s cannot produce because:\n\n%s", to.getName(), error);
     }
     return null;
   }
