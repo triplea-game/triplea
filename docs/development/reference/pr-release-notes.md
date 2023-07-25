@@ -29,6 +29,6 @@ If a comment is very long, just keep typing and let the text word-wrap to a next
 Example format for a very long note:
 
 ```
-<!--RELEASE_NOTE-->FEATURE|This is a very long feature request comment.  This is a very long feature request comment.  This is a very long feature request comment. This is a very long feature request comment. This is a very long feature request comment.<!--END_RELEASE_NOTE-->
+<!--RELEASE_NOTE-->CHANGE|This is a very long feature request comment.  This is a very long feature request comment.  This is a very long feature request comment. This is a very long feature request comment. This is a very long feature request comment.<!--END_RELEASE_NOTE-->
 ```
 
