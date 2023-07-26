@@ -8,7 +8,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -2552,10 +2551,9 @@ public class UnitAttachment extends DefaultAttachment {
       final String limitType,
       final UnitType ut,
       final Territory t,
-      final GamePlayer owner,
-      final RelationshipTracker relationshipTracker,
-      final GameProperties properties) {
+      final GamePlayer owner) {
     final UnitAttachment ua = ut.getUnitAttachment();
+    final GameProperties properties = t.getData().getProperties();
     final Tuple<Integer, String> stackingLimit;
     switch (limitType) {
       case "movementLimit":
@@ -2597,7 +2595,6 @@ public class UnitAttachment extends DefaultAttachment {
         stackingMatch = Matches.unitIsOfType(ut);
         break;
     }
-    // else if (stackingType.equals("total"))
     final int totalInTerritory = CollectionUtils.countMatches(t.getUnits(), stackingMatch);
     return Math.max(0, max - totalInTerritory);
   }
@@ -2722,9 +2719,8 @@ public class UnitAttachment extends DefaultAttachment {
                   + " in the xml before using it as a transport"
                   + thisErrorMsg());
           // Units may be considered transported if they are on a carrier, or if they are
-          // paratroopers, or if they are
-          // mech infantry. The "transporter" may not be an actual transport, so we should not check
-          // for that here.
+          // paratroopers, or if they are mech infantry. The "transporter" may not be an actual
+          // transport, so we should not check for that here.
         }
       }
     }

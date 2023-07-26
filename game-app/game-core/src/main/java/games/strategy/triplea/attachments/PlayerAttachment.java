@@ -173,8 +173,7 @@ public class PlayerAttachment extends DefaultAttachment {
       final String limitType,
       final Collection<Unit> unitsMoving,
       final Territory toMoveInto,
-      final GamePlayer owner,
-      final GameState data) {
+      final GamePlayer owner) {
     final PlayerAttachment pa = PlayerAttachment.get(owner);
     if (pa == null) {
       return true;
