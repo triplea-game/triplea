@@ -93,7 +93,7 @@ public class PlayerAttachment extends DefaultAttachment {
     placementLimit = value;
   }
 
-  private Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit() {
+  public Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit() {
     return getSetProperty(placementLimit);
   }
 
@@ -112,7 +112,7 @@ public class PlayerAttachment extends DefaultAttachment {
     movementLimit = value;
   }
 
-  private Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit() {
+  public Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit() {
     return getSetProperty(movementLimit);
   }
 
@@ -131,7 +131,7 @@ public class PlayerAttachment extends DefaultAttachment {
     attackingLimit = value;
   }
 
-  private Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit() {
+  public Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit() {
     return getSetProperty(attackingLimit);
   }
 

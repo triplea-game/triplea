@@ -40,6 +40,7 @@ import lombok.Value;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
 
 /**
@@ -2556,29 +2557,59 @@ public class UnitAttachment extends DefaultAttachment {
    */
   public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(
       final String limitType, final UnitType ut, final Territory t, final GamePlayer owner) {
+    int max = Integer.MAX_VALUE;
     final UnitAttachment ua = ut.getUnitAttachment();
-    final GameProperties properties = t.getData().getProperties();
+    final PlayerAttachment pa = PlayerAttachment.get(owner);
     final Tuple<Integer, String> stackingLimit;
+    Set<Triple<Integer, String, Set<UnitType>>> playerStackingLimits = Set.of();
     switch (limitType) {
       case "movementLimit":
         stackingLimit = ua.getMovementLimit();
+        if (pa != null) {
+          playerStackingLimits = pa.getMovementLimit();
+        }
         break;
       case "attackingLimit":
         stackingLimit = ua.getAttackingLimit();
+        if (pa != null) {
+          playerStackingLimits = pa.getAttackingLimit();
+        }
         break;
       case "placementLimit":
         stackingLimit = ua.getPlacementLimit();
+        if (pa != null) {
+          playerStackingLimits = pa.getPlacementLimit();
+        }
         break;
       default:
         throw new IllegalStateException(
             "getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: "
                 + limitType);
     }
-    if (stackingLimit == null) {
-      return Integer.MAX_VALUE;
+
+    // Apply stacking limits coming from the PlayerAttachment.
+    for (final Triple<Integer, String, Set<UnitType>> currentLimit : playerStackingLimits) {
+      if (!currentLimit.getThird().contains(ut)) {
+        continue;
+      }
+      final String type = currentLimit.getSecond();
+      Predicate<Unit> stackingMatch = Matches.unitIsOfTypes(currentLimit.getThird());
+      if (type.equals("owned")) {
+        stackingMatch = stackingMatch.and(Matches.unitIsOwnedBy(owner));
+      } else if (type.equals("allied")) {
+        stackingMatch = stackingMatch.and(Matches.isUnitAllied(owner));
+      }
+      final int totalInTerritory = CollectionUtils.countMatches(t.getUnits(), stackingMatch);
+      final Integer limitMax = currentLimit.getFirst();
+      max = Math.min(max, limitMax - totalInTerritory);
     }
-    int max = stackingLimit.getFirst();
+
+    if (stackingLimit == null) {
+      return max;
+    }
+    max = Math.min(max, stackingLimit.getFirst());
     // under certain rules (classic rules) there can only be 1 aa gun in a territory.
+    final GameProperties properties = t.getData().getProperties();
     if (max == Integer.MAX_VALUE
         && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())
         && !(Properties.getWW2V2(properties)

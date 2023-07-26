@@ -176,12 +176,15 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   @Override
   public PlaceableUnits getPlaceableUnits(final Collection<Unit> units, final Territory to) {
+    System.err.println("getPlaceableUnits: " + units);
     final String error = canProduce(to, units, player);
     if (error != null) {
       return new PlaceableUnits(error);
     }
     final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, player);
+    System.err.println("-> placeableUnits: " + placeableUnits);
     final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, player);
+    System.err.println("-> maxUnits: " + maxUnits);
     return new PlaceableUnits(placeableUnits, maxUnits);
   }
 
@@ -835,7 +838,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
       // make sure all units are land
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsNotSea())) {
-        return "Cant place sea units on land";
+        return "Can't place sea units on land";
       }
     }
     // make sure we can place consuming units
@@ -859,6 +862,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
         "placementLimit", units, to, player)) {
+      System.err.println("Err1");
       return "Units Cannot Go Over Stacking Limit";
     }
     // now return null (valid placement) if we have placement restrictions disabled in game options
@@ -972,6 +976,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     // now check stacking limits
+    System.err.println("Checking stacking limit...");
     final Collection<Unit> placeableUnits2 = new ArrayList<>();
     final var typesAlreadyChecked = new HashSet<UnitType>();
     for (final Unit currentUnit : placeableUnits) {
@@ -983,6 +988,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       int max =
           UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
               "placementLimit", ut, to, player);
+      System.err.println("Max:" + max);
       placeableUnits2.addAll(
           CollectionUtils.getNMatches(placeableUnits, max, Matches.unitIsOfType(ut)));
     }
