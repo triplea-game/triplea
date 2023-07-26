@@ -825,9 +825,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       if (!to.isOwnedBy(player)) {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
-          if ((pa == null
-                  || pa.getGiveUnitControl() == null
-                  || !pa.getGiveUnitControl().contains(player))
+          if ((pa == null || !pa.getGiveUnitControl().contains(player))
               && !to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
             return "You don't own " + to.getName();
           }
