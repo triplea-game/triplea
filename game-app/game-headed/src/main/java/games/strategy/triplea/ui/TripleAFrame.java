@@ -631,7 +631,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     bottomBar.setStatus(msg, mapPanel.getWarningImage());
   }
 
-  public IntegerMap<ProductionRule> getProduction(final GamePlayer player, final boolean bid, final boolean keepCurrentPurchase) {
+  public IntegerMap<ProductionRule> getProduction(
+      final GamePlayer player, final boolean bid, final boolean keepCurrentPurchase) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToProduce(player, keepCurrentPurchase);
     return actionButtons.waitForPurchase(bid);

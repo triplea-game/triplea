@@ -44,8 +44,7 @@ public class PurchasePanel extends ActionPanel {
   private final SimpleUnitPanel purchasedUnits;
   private final JLabel purchasedLabel = createIndentedLabel();
   private final JButton buyButton;
-  @Setter
-  private boolean keepCurrentPurchase;
+  @Setter private boolean keepCurrentPurchase;
 
   private final AbstractAction purchaseAction =
       new AbstractAction("Buy") {
