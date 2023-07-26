@@ -113,8 +113,11 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
 
   // Return collection of bid units which can placed in a land territory
   @Override
-  protected Collection<Unit> getUnitsToBePlacedLand(
+  protected Collection<Unit> getUnitsToBePlaced(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
+    if (to.isWater()) {
+      return super.getUnitsToBePlaced(to, units, player);
+    }
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<>();
     // we add factories and constructions later

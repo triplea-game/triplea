@@ -899,7 +899,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return null;
   }
 
-  private Collection<Unit> getUnitsToBePlaced(
+  protected Collection<Unit> getUnitsToBePlaced(
       final Territory to, final Collection<Unit> allUnits, final GamePlayer player) {
     final GameProperties properties = getData().getProperties();
     final boolean water = to.isWater();
