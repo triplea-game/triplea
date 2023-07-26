@@ -28,10 +28,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import org.triplea.java.collections.CollectionUtils;
@@ -459,7 +461,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     boolean unusedSplitPlacements = false;
     if (foundSpaceTotal < freeSize) {
       // we need to split some placement moves
-      final Collection<UndoablePlacement> usedUndoablePlacements = new ArrayList<>();
+      final var usedUndoablePlacements = new HashSet<UndoablePlacement>();
       for (final Tuple<UndoablePlacement, Territory> tuple : splitPlacements) {
         final UndoablePlacement placement = tuple.getFirst();
         if (usedUndoablePlacements.contains(placement)) {
@@ -880,9 +882,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             + to.getName()
             + " due to Unit Placement Restrictions on Territory Value";
       }
-      final String[] terrs = ua.getUnitPlacementRestrictions();
-      final Collection<Territory> listedTerrs = getListedTerritories(terrs);
-      if (listedTerrs.contains(to)) {
+      if (ua.unitPlacementRestrictionsContain(to)) {
         return "Cannot place these units in "
             + to.getName()
             + " due to Unit Placement Restrictions";
@@ -945,7 +945,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (units.stream().anyMatch(Matches.unitIsConstruction())) {
       final IntegerMap<String> constructionsMap =
           howManyOfEachConstructionCanPlace(to, to, units, player);
-      final Collection<Unit> skipUnits = new ArrayList<>();
+      final var skipUnits = new HashSet<Unit>();
       for (final Unit currentUnit :
           CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
@@ -979,7 +979,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     // now check stacking limits
     final Collection<Unit> placeableUnits2 = new ArrayList<>();
-    final Collection<UnitType> typesAlreadyChecked = new ArrayList<>();
+    final var typesAlreadyChecked = new HashSet<UnitType>();
     for (final Unit currentUnit : placeableUnits) {
       final UnitType ut = currentUnit.getType();
       if (typesAlreadyChecked.contains(ut)) {
@@ -1013,9 +1013,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         continue;
       }
       // account for any unit placement restrictions by territory
-      final String[] terrs = ua.getUnitPlacementRestrictions();
-      final Collection<Territory> listedTerrs = getListedTerritories(terrs);
-      if (!listedTerrs.contains(to)) {
+      if (!ua.unitPlacementRestrictionsContain(to)) {
         placeableUnits3.add(currentUnit);
       }
     }
@@ -1367,9 +1365,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final UnitAttachment ua = currentUnit.getUnitAttachment();
       // account for any unit placement restrictions by territory
       if (Properties.getUnitPlacementRestrictions(getData().getProperties())) {
-        final String[] terrs = ua.getUnitPlacementRestrictions();
-        final Collection<Territory> listedTerrs = getListedTerritories(terrs);
-        if (listedTerrs.contains(to)) {
+        if (ua.unitPlacementRestrictionsContain(to)) {
           continue;
         }
         if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
@@ -1742,22 +1738,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   private static boolean isPlacementInCapitalRestricted(final GamePlayer player) {
     final RulesAttachment ra = player.getRulesAttachment();
     return ra != null && ra.getPlacementInCapitalRestricted();
-  }
-
-  private Collection<Territory> getListedTerritories(final String[] list) {
-    final List<Territory> territories = new ArrayList<>();
-    if (list == null) {
-      return territories;
-    }
-    for (final String name : list) {
-      // Validate all territories exist
-      final Territory territory = getData().getMap().getTerritory(name);
-      if (territory == null) {
-        throw new IllegalStateException("Rules & Conditions: No territory called:" + name);
-      }
-      territories.add(territory);
-    }
-    return territories;
   }
 
   @Override
