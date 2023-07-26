@@ -2548,10 +2548,7 @@ public class UnitAttachment extends DefaultAttachment {
    * @return {@link Integer#MAX_VALUE} if there is no stacking limit for the specified conditions.
    */
   public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-      final String limitType,
-      final UnitType ut,
-      final Territory t,
-      final GamePlayer owner) {
+      final String limitType, final UnitType ut, final Territory t, final GamePlayer owner) {
     final UnitAttachment ua = ut.getUnitAttachment();
     final GameProperties properties = t.getData().getProperties();
     final Tuple<Integer, String> stackingLimit;
