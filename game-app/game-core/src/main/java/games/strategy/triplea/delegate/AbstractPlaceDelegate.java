@@ -855,15 +855,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
               "placementLimit",
               ut,
               to,
-              player,
-              getData().getRelationshipTracker(),
-              getData().getProperties());
+              player);
       if (CollectionUtils.countMatches(units, Matches.unitIsOfType(ut)) > maxForThisType) {
         return "UnitType " + ut.getName() + " is over stacking limit of " + maxForThisType;
       }
     }
     if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-        "placementLimit", units, to, player, getData())) {
+        "placementLimit", units, to, player)) {
       return "Units Cannot Go Over Stacking Limit";
     }
     // now return null (valid placement) if we have placement restrictions disabled in game options
@@ -985,11 +983,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         continue;
       }
       typesAlreadyChecked.add(ut);
+      int max = UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+          "placementLimit", ut, to, player);
       placeableUnits2.addAll(
           CollectionUtils.getNMatches(
               placeableUnits,
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "placementLimit", ut, to, player, getData().getRelationshipTracker(), properties),
+              max,
               Matches.unitIsOfType(ut)));
     }
     if (!Properties.getUnitPlacementRestrictions(properties)) {

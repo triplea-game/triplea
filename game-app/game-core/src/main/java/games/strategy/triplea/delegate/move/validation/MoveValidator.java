@@ -815,12 +815,7 @@ public class MoveValidator {
           final UnitType ut = unit.getType();
           int maxAllowed =
               UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "attackingLimit",
-                  ut,
-                  t,
-                  player,
-                  data.getRelationshipTracker(),
-                  data.getProperties());
+                  "attackingLimit", ut, t, player);
           maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
           if (maxAllowed > 0) {
             unitsAllowedSoFar.add(unit);
@@ -830,7 +825,7 @@ public class MoveValidator {
           }
         }
         if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-            "attackingLimit", units, t, player, data)) {
+            "attackingLimit", units, t, player)) {
           return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
         }
       } else {
@@ -838,12 +833,7 @@ public class MoveValidator {
           final UnitType ut = unit.getType();
           int maxAllowed =
               UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "movementLimit",
-                  ut,
-                  t,
-                  player,
-                  data.getRelationshipTracker(),
-                  data.getProperties());
+                  "movementLimit", ut, t, player);
           maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
           if (maxAllowed > 0) {
             unitsAllowedSoFar.add(unit);
@@ -853,7 +843,7 @@ public class MoveValidator {
           }
         }
         if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-            "movementLimit", units, t, player, data)) {
+            "movementLimit", units, t, player)) {
           return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
         }
       }
