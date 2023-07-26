@@ -240,7 +240,7 @@ class MainDefenseCombatValueTest {
       final GamePlayer attacker = mock(GamePlayer.class);
       final RulesAttachment rulesAttachment = mock(RulesAttachment.class);
       when(rulesAttachment.getDominatingFirstRoundAttack()).thenReturn(true);
-      when(attacker.getAttachment(RULES_ATTACHMENT_NAME)).thenReturn(rulesAttachment);
+      when(attacker.getRulesAttachment()).thenReturn(rulesAttachment);
 
       final GameData gameData = givenGameData().withDiceSides(6).withRound(1, attacker).build();
 
