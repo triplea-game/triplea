@@ -111,8 +111,11 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
 
   // Return collection of bid units which can placed in a land territory
   @Override
-  protected Collection<Unit> getUnitsToBePlacedLand(
+  protected Collection<Unit> getUnitsToBePlaced(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
+    if (to.isWater()) {
+      return super.getUnitsToBePlaced(to, units, player);
+    }
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<>();
     // we add factories and constructions later
@@ -129,8 +132,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
           // we are doing this because we could have multiple unitTypes with the same
-          // constructionType, so we have to be
-          // able to place the max placement by constructionType of each unitType
+          // constructionType, so we have to be able to place the max placement by constructionType
+          // of each unitType
           if (skipUnit.contains(currentUnit)) {
             continue;
           }

@@ -15,7 +15,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractUserActionAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -996,8 +995,7 @@ public final class Matches {
       if (!Properties.getMovementByTerritoryRestricted(player.getData().getProperties())) {
         return true;
       }
-      final RulesAttachment ra =
-          (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+      final RulesAttachment ra = player.getRulesAttachment();
       if (ra == null || ra.getMovementRestrictionTerritories() == null) {
         return true;
       }
@@ -1047,9 +1045,7 @@ public final class Matches {
         return false;
       }
       if (Properties.getMovementByTerritoryRestricted(properties)) {
-        final RulesAttachment ra =
-            (RulesAttachment)
-                playerWhoOwnsAllTheUnitsMoving.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+        final RulesAttachment ra = playerWhoOwnsAllTheUnitsMoving.getRulesAttachment();
         if (ra != null && ra.getMovementRestrictionTerritories() != null) {
           final String movementRestrictionType = ra.getMovementRestrictionType();
           final Collection<Territory> listedTerritories =

@@ -644,8 +644,7 @@ public class MoveValidator {
     if (!Properties.getMovementByTerritoryRestricted(data.getProperties())) {
       return result;
     }
-    final RulesAttachment ra =
-        (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+    final RulesAttachment ra = player.getRulesAttachment();
     if (ra == null || ra.getMovementRestrictionTerritories() == null) {
       return result;
     }
