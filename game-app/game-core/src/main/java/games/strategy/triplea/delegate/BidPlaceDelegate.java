@@ -54,9 +54,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       return "Cant place sea units on land";
     } else if (!to.isOwnedBy(player)) {
       final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
-      if (pa != null
-          && pa.getGiveUnitControl() != null
-          && pa.getGiveUnitControl().contains(player)) {
+      if (pa != null && pa.getGiveUnitControl().contains(player)) {
         return null;
       } else if (to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
         return null;
