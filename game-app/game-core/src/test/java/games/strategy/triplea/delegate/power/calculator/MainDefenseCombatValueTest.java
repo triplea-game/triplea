@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import static games.strategy.triplea.Constants.RULES_ATTACHMENT_NAME;
 import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
