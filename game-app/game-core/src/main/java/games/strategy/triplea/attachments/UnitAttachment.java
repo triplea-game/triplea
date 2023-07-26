@@ -908,6 +908,13 @@ public class UnitAttachment extends DefaultAttachment {
     return unitPlacementRestrictions;
   }
 
+  public boolean unitPlacementRestrictionsContain(Territory territory) {
+    if (unitPlacementRestrictions == null) {
+      return false;
+    }
+    return Arrays.asList(unitPlacementRestrictions).contains(territory.getName());
+  }
+
   private void resetUnitPlacementRestrictions() {
     unitPlacementRestrictions = null;
   }
