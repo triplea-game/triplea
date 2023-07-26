@@ -24,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import lombok.Setter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingComponents;
@@ -43,6 +44,7 @@ public class PurchasePanel extends ActionPanel {
   private final SimpleUnitPanel purchasedUnits;
   private final JLabel purchasedLabel = createIndentedLabel();
   private final JButton buyButton;
+  @Setter private boolean keepCurrentPurchase;
 
   private final AbstractAction purchaseAction =
       new AbstractAction("Buy") {
@@ -86,7 +88,13 @@ public class PurchasePanel extends ActionPanel {
   @Override
   public void display(final GamePlayer gamePlayer) {
     super.display(gamePlayer);
-    purchase = new IntegerMap<>();
+    // If keepCurrentPurchase is true, we're trying after showing an error to the user about their
+    // current selection. Don't clear everything and let the user correct it instead.
+    if (keepCurrentPurchase) {
+      keepCurrentPurchase = false;
+    } else {
+      purchase = new IntegerMap<>();
+    }
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
