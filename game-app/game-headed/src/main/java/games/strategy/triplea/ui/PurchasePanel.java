@@ -7,7 +7,6 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -221,8 +220,7 @@ public class PurchasePanel extends ActionPanel {
   }
 
   private static boolean isUnlimitedProduction(final GamePlayer player) {
-    final RulesAttachment ra =
-        (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+    final RulesAttachment ra = player.getRulesAttachment();
     return ra != null && ra.getUnlimitedProduction();
   }
 

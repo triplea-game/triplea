@@ -44,8 +44,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
       return productionUnits;
     }
     IntegerMap<UnitType> productionPerXTerritories = new IntegerMap<>();
-    final RulesAttachment ra =
-        (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+    final RulesAttachment ra = player.getRulesAttachment();
     // if they have no rules attachments, but are calling NoPU purchase, and have the game property
     // isProductionPerValuedTerritoryRestricted, then they want 1 infantry for each territory with
     // PU value > 0
