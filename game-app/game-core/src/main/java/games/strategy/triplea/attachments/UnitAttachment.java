@@ -2553,7 +2553,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Returns the subset of units that are valid with respect to any stacking limits in effect.
-   * Note: The passed list of units should have already been filtered for placement restrictions
+   *
+   * <p>Note: The passed list of units should have already been filtered for placement restrictions
    * as otherwise this could return a subset of units that cannot be placed for other reasons.
    */
   public static Collection<Unit> filterUnitsByStackingLimit(
