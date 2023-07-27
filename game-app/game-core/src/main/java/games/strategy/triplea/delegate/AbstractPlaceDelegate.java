@@ -842,21 +842,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (!canWeConsumeUnits(units, to, false, null)) {
       return "Not Enough Units To Upgrade or Be Consumed";
     }
-    // now check for stacking limits
-    final Collection<UnitType> typesAlreadyChecked = new ArrayList<>();
-    for (final Unit currentUnit : units) {
-      final UnitType ut = currentUnit.getType();
-      if (typesAlreadyChecked.contains(ut)) {
-        continue;
-      }
-      typesAlreadyChecked.add(ut);
-      final int maxForThisType =
-          UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-              "placementLimit", ut, to, player);
-      if (CollectionUtils.countMatches(units, Matches.unitIsOfType(ut)) > maxForThisType) {
-        return "UnitType " + ut.getName() + " is over stacking limit of " + maxForThisType;
-      }
-    }
     // now return null (valid placement) if we have placement restrictions disabled in game options
     if (!Properties.getUnitPlacementRestrictions(getData().getProperties())) {
       return null;
@@ -968,20 +953,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     // now check stacking limits
-    final Collection<Unit> placeableUnits2 = new ArrayList<>();
-    final var typesAlreadyChecked = new HashSet<UnitType>();
-    for (final Unit currentUnit : placeableUnits) {
-      final UnitType ut = currentUnit.getType();
-      if (typesAlreadyChecked.contains(ut)) {
-        continue;
-      }
-      typesAlreadyChecked.add(ut);
-      int max =
-          UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-              "placementLimit", ut, to, player);
-      placeableUnits2.addAll(
-          CollectionUtils.getNMatches(placeableUnits, max, Matches.unitIsOfType(ut)));
-    }
+    final Collection<Unit> placeableUnits2 =
+        UnitAttachment.filterUnitsByStackingLimit(placeableUnits, "placementLimit", player, to);
     if (!Properties.getUnitPlacementRestrictions(properties)) {
       return placeableUnits2;
     }

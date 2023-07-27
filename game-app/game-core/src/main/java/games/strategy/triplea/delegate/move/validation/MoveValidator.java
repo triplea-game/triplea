@@ -807,36 +807,18 @@ public class MoveValidator {
         CollectionUtils.getMatches(
             units, Matches.unitHasMovementLimit().or(Matches.unitHasAttackingLimit()));
     for (final Territory t : route.getSteps()) {
-      final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
+      final String limitType;
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
           || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(player))) {
-        for (final Unit unit : unitsWithStackingLimits) {
-          final UnitType ut = unit.getType();
-          int maxAllowed =
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "attackingLimit", ut, t, player);
-          maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
-          if (maxAllowed > 0) {
-            unitsAllowedSoFar.add(unit);
-          } else {
-            result.addDisallowedUnit(
-                "UnitType " + ut.getName() + " has reached stacking limit", unit);
-          }
-        }
+        limitType = "attackingLimit";
       } else {
-        for (final Unit unit : unitsWithStackingLimits) {
-          final UnitType ut = unit.getType();
-          int maxAllowed =
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "movementLimit", ut, t, player);
-          maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
-          if (maxAllowed > 0) {
-            unitsAllowedSoFar.add(unit);
-          } else {
-            result.addDisallowedUnit(
-                "UnitType " + ut.getName() + " has reached stacking limit", unit);
-          }
-        }
+        limitType = "movementLimit";
+      }
+      final Collection<Unit> allowedUnits =
+          UnitAttachment.filterUnitsByStackingLimit(unitsWithStackingLimits, limitType, player, t);
+      for (Unit unit : CollectionUtils.difference(unitsWithStackingLimits, allowedUnits)) {
+        result.addDisallowedUnit(
+            "Unit type " + unit.getType().getName() + " has reached stacking limit", unit);
       }
     }
 

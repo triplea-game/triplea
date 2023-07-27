@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import java.util.ArrayList;
@@ -158,21 +157,6 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     }
     // now check stacking limits
-    final Collection<Unit> placeableUnits2 = new ArrayList<>();
-    final Collection<UnitType> typesAlreadyChecked = new ArrayList<>();
-    for (final Unit currentUnit : placeableUnits) {
-      final UnitType ut = currentUnit.getType();
-      if (typesAlreadyChecked.contains(ut)) {
-        continue;
-      }
-      typesAlreadyChecked.add(ut);
-      placeableUnits2.addAll(
-          CollectionUtils.getNMatches(
-              placeableUnits,
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "placementLimit", ut, to, player),
-              Matches.unitIsOfType(ut)));
-    }
-    return placeableUnits2;
+    return UnitAttachment.filterUnitsByStackingLimit(placeableUnits, "placementLimit", player, to);
   }
 }
