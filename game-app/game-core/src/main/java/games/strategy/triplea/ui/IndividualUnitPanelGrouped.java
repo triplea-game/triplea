@@ -84,7 +84,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
         entry.getSecond().setMaxAndUpdate(maxForThis);
       }
     }
-    leftToSelect.setText("Left to select:" + newMax);
+    leftToSelect.setText("Left to select: " + newMax);
   }
 
   protected int getSelectedCount() {
