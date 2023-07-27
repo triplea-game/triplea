@@ -176,15 +176,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   @Override
   public PlaceableUnits getPlaceableUnits(final Collection<Unit> units, final Territory to) {
-    System.err.println("getPlaceableUnits: " + units);
     final String error = canProduce(to, units, player);
     if (error != null) {
       return new PlaceableUnits(error);
     }
     final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, player);
-    System.err.println("-> placeableUnits: " + placeableUnits);
     final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, player);
-    System.err.println("-> maxUnits: " + maxUnits);
     return new PlaceableUnits(placeableUnits, maxUnits);
   }
 
@@ -971,7 +968,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     // now check stacking limits
-    System.err.println("Checking stacking limit...");
     final Collection<Unit> placeableUnits2 = new ArrayList<>();
     final var typesAlreadyChecked = new HashSet<UnitType>();
     for (final Unit currentUnit : placeableUnits) {
@@ -983,7 +979,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       int max =
           UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
               "placementLimit", ut, to, player);
-      System.err.println("Max:" + max);
       placeableUnits2.addAll(
           CollectionUtils.getNMatches(placeableUnits, max, Matches.unitIsOfType(ut)));
     }
