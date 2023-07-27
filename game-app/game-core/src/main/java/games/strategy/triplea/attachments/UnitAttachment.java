@@ -2581,9 +2581,8 @@ public class UnitAttachment extends DefaultAttachment {
     // correctly handle stacking limits that apply to multiple unit types.
     final var unitsAllowedSoFar = new ArrayList<Unit>();
     for (final Unit unit : units) {
-      final UnitType ut = unit.getType();
-      final Tuple<Integer, String> stackingLimit =
-          stackingLimitGetter.apply(ut.getUnitAttachment());
+      UnitType ut = unit.getType();
+      Tuple<Integer, String> stackingLimit = stackingLimitGetter.apply(ut.getUnitAttachment());
       int maxAllowed =
           getMaximumNumberOfThisUnitTypeToReachStackingLimit(
               ut, t, owner, stackingLimit, playerStackingLimits, unitsAllowedSoFar);
@@ -2617,11 +2616,11 @@ public class UnitAttachment extends DefaultAttachment {
       if (!unitTypes.contains(ut)) {
         continue;
       }
-      final String type = limit.getSecond();
+      final String stackingType = limit.getSecond();
       Predicate<Unit> stackingMatch = Matches.unitIsOfTypes(unitTypes);
-      if (type.equals("owned")) {
+      if (stackingType.equals("owned")) {
         stackingMatch = stackingMatch.and(Matches.unitIsOwnedBy(owner));
-      } else if (type.equals("allied")) {
+      } else if (stackingType.equals("allied")) {
         stackingMatch = stackingMatch.and(Matches.alliedUnit(owner));
       }
       final int totalInTerritory = CollectionUtils.countMatches(existingUnits, stackingMatch);
