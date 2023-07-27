@@ -952,34 +952,33 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         }
       }
     }
+    final Collection<Unit> placeableUnits2;
+    if (Properties.getUnitPlacementRestrictions(properties)) {
+      final int territoryProduction = TerritoryAttachment.getProduction(to);
+      placeableUnits2 = new ArrayList<>();
+      for (final Unit currentUnit : placeableUnits) {
+        final UnitAttachment ua = currentUnit.getUnitAttachment();
+        if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
+            && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > territoryProduction) {
+          continue;
+        }
+        if (unitWhichRequiresUnitsHasRequiredUnits(to, false).negate().test(currentUnit)) {
+          continue;
+        }
+        if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
+            && !Matches.territoryIsOriginallyOwnedBy(player).test(to)) {
+          continue;
+        }
+        // account for any unit placement restrictions by territory
+        if (!ua.unitPlacementRestrictionsContain(to)) {
+          placeableUnits2.add(currentUnit);
+        }
+      }
+    } else {
+      placeableUnits2 = placeableUnits;
+    }
     // now check stacking limits
-    final Collection<Unit> placeableUnits2 =
-        UnitAttachment.filterUnitsByStackingLimit(placeableUnits, "placementLimit", player, to);
-    if (!Properties.getUnitPlacementRestrictions(properties)) {
-      return placeableUnits2;
-    }
-    final Collection<Unit> placeableUnits3 = new ArrayList<>();
-    for (final Unit currentUnit : placeableUnits2) {
-      final UnitAttachment ua = currentUnit.getUnitAttachment();
-      // Can be null!
-      final TerritoryAttachment ta = TerritoryAttachment.get(to);
-      if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
-          && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > (ta == null ? 0 : ta.getProduction())) {
-        continue;
-      }
-      if (unitWhichRequiresUnitsHasRequiredUnits(to, false).negate().test(currentUnit)) {
-        continue;
-      }
-      if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
-          && !Matches.territoryIsOriginallyOwnedBy(player).test(to)) {
-        continue;
-      }
-      // account for any unit placement restrictions by territory
-      if (!ua.unitPlacementRestrictionsContain(to)) {
-        placeableUnits3.add(currentUnit);
-      }
-    }
-    return placeableUnits3;
+    return UnitAttachment.filterUnitsByStackingLimit(placeableUnits2, "placementLimit", player, to);
   }
 
   private Predicate<Unit> unitIsCarrierOwnedByCombinedPlayers(GamePlayer player) {
