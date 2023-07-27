@@ -17,7 +17,6 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.CanalAttachment;
-import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -824,10 +823,6 @@ public class MoveValidator {
                 "UnitType " + ut.getName() + " has reached stacking limit", unit);
           }
         }
-        if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-            "attackingLimit", units, t, player)) {
-          return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
-        }
       } else {
         for (final Unit unit : unitsWithStackingLimits) {
           final UnitType ut = unit.getType();
@@ -841,10 +836,6 @@ public class MoveValidator {
             result.addDisallowedUnit(
                 "UnitType " + ut.getName() + " has reached stacking limit", unit);
           }
-        }
-        if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-            "movementLimit", units, t, player)) {
-          return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
         }
       }
     }

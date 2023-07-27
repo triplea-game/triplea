@@ -860,11 +860,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         return "UnitType " + ut.getName() + " is over stacking limit of " + maxForThisType;
       }
     }
-    if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-        "placementLimit", units, to, player)) {
-      System.err.println("Err1");
-      return "Units Cannot Go Over Stacking Limit";
-    }
     // now return null (valid placement) if we have placement restrictions disabled in game options
     if (!Properties.getUnitPlacementRestrictions(getData().getProperties())) {
       return null;

@@ -2597,7 +2597,7 @@ public class UnitAttachment extends DefaultAttachment {
       if (type.equals("owned")) {
         stackingMatch = stackingMatch.and(Matches.unitIsOwnedBy(owner));
       } else if (type.equals("allied")) {
-        stackingMatch = stackingMatch.and(Matches.isUnitAllied(owner));
+        stackingMatch = stackingMatch.and(Matches.alliedUnit(owner));
       }
       final int totalInTerritory = CollectionUtils.countMatches(t.getUnits(), stackingMatch);
       final Integer limitMax = currentLimit.getFirst();

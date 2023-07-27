@@ -7,19 +7,12 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
-import games.strategy.triplea.delegate.Matches;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 import javax.annotation.Nullable;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
@@ -163,64 +156,6 @@ public class PlayerAttachment extends DefaultAttachment {
       }
     }
     return Triple.of(max, s[1].intern(), types);
-  }
-
-  /**
-   * Returns {@code true} if the specified units can move into the specified territory without
-   * violating the specified stacking limit (movement, attack, or placement).
-   */
-  public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-      final String limitType,
-      final Collection<Unit> unitsMoving,
-      final Territory toMoveInto,
-      final GamePlayer owner) {
-    final PlayerAttachment pa = PlayerAttachment.get(owner);
-    if (pa == null) {
-      return true;
-    }
-    final Set<Triple<Integer, String, Set<UnitType>>> stackingLimits;
-    switch (limitType) {
-      case "movementLimit":
-        stackingLimits = pa.getMovementLimit();
-        break;
-      case "attackingLimit":
-        stackingLimits = pa.getAttackingLimit();
-        break;
-      case "placementLimit":
-        stackingLimits = pa.getPlacementLimit();
-        break;
-      default:
-        throw new IllegalStateException("Invalid limitType: " + limitType);
-    }
-    if (stackingLimits.isEmpty()) {
-      return true;
-    }
-    final Predicate<Unit> notOwned = Matches.unitIsOwnedBy(owner).negate();
-    final Predicate<Unit> notAllied = Matches.alliedUnit(owner).negate();
-    for (final Triple<Integer, String, Set<UnitType>> currentLimit : stackingLimits) {
-      // first make a copy of unitsMoving
-      final Collection<Unit> copyUnitsMoving = new ArrayList<>(unitsMoving);
-      final Collection<Unit> currentInTerritory = new ArrayList<>(toMoveInto.getUnits());
-      final String type = currentLimit.getSecond();
-      // first remove units that do not apply to our current type
-      if (type.equals("owned")) {
-        currentInTerritory.removeAll(CollectionUtils.getMatches(currentInTerritory, notOwned));
-        copyUnitsMoving.removeAll(CollectionUtils.getMatches(copyUnitsMoving, notOwned));
-      } else if (type.equals("allied")) {
-        currentInTerritory.removeAll(CollectionUtils.getMatches(currentInTerritory, notAllied));
-        copyUnitsMoving.removeAll(CollectionUtils.getMatches(copyUnitsMoving, notAllied));
-      }
-      // now remove units that are not part of our list
-      final Predicate<Unit> matchesUnits = Matches.unitIsOfTypes(currentLimit.getThird());
-      currentInTerritory.retainAll(CollectionUtils.getMatches(currentInTerritory, matchesUnits));
-      copyUnitsMoving.retainAll(CollectionUtils.getMatches(copyUnitsMoving, matchesUnits));
-      // now test
-      final Integer max = currentLimit.getFirst();
-      if (max < (currentInTerritory.size() + copyUnitsMoving.size())) {
-        return false;
-      }
-    }
-    return true;
   }
 
   private void setSuicideAttackTargets(final String value) throws GameParseException {
