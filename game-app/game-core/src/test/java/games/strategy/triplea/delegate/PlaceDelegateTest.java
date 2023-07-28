@@ -1,7 +1,11 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.Matches.unitIsOfType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -11,9 +15,12 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.CollectionUtils;
 
 class PlaceDelegateTest extends AbstractDelegateTestCase {
   private PlaceDelegate delegate;
@@ -27,7 +34,7 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     delegate.start();
   }
 
-  private Collection<Unit> create(GamePlayer player, UnitType unitType, int quantity) {
+  private List<Unit> create(GamePlayer player, UnitType unitType, int quantity) {
     var units = unitType.create(quantity, player);
     player.getUnitCollection().addAll(units);
     return units;
@@ -198,5 +205,31 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     // but not 2 battleships and 2 carriers
     units.addAll(create(british, carrier, 1));
     assertError(delegate.canUnitsBePlaced(northSea, units, british));
+  }
+
+  @Test
+  void testStackingLimitFilteringHappensAfterPlacementRestrictions() {
+    // Note: battleship is marked as not placeable in "West Canada Sea Zone" on the test map.
+
+    // Add a carrier to the sea zone.
+    westCanadaSeaZone.getUnitCollection().addAll(create(british, carrier, 1));
+
+    // if we filter list of 2 battleships and 2 carriers, the 2 carriers should be selected.
+    List<Unit> units = create(british, battleship, 2);
+    units.addAll(create(british, carrier, 2));
+    // First, we can't place all of them (expected).
+    assertError(delegate.canUnitsBePlaced(westCanadaSeaZone, units, british));
+
+    PlaceableUnits response = delegate.getPlaceableUnits(units, westCanadaSeaZone);
+    assertThat(response.getUnits(), hasSize(2));
+    assertThat(response.getUnits(), is(CollectionUtils.getMatches(units, unitIsOfType(carrier))));
+
+    // Check that it's the case even if we shuffle the list a few times.
+    for (int i = 0; i < 5; i++) {
+      Collections.shuffle(units);
+      response = delegate.getPlaceableUnits(units, westCanadaSeaZone);
+      assertThat(response.getUnits(), hasSize(2));
+      assertThat(response.getUnits(), is(CollectionUtils.getMatches(units, unitIsOfType(carrier))));
+    }
   }
 }
