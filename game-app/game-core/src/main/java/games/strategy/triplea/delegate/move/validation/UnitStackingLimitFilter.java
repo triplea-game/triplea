@@ -137,5 +137,4 @@ public class UnitStackingLimitFilter {
     final int totalInTerritory = CollectionUtils.countMatches(existingUnits, stackingMatch);
     return Math.max(0, max - totalInTerritory);
   }
-
 }
