@@ -23,6 +23,11 @@ class UnitStackingLimitTest extends AbstractDelegateTestCase {
     List<Unit> fourTanks = armour.create(4, british);
     assertThat(filterUnits(fourTanks, PLACEMENT_LIMIT, british, uk), is(fourTanks));
 
+    // the same four tanks are returned, even if we pass some existing units.
+    assertThat(filterUnits(fourTanks, PLACEMENT_LIMIT, british, uk, infantry.create(2, british)), is(fourTanks));
+    // and only 2 are returned if we pass 2 existing tanks
+    assertThat(filterUnits(fourTanks, PLACEMENT_LIMIT, british, uk, armour.create(2, british)), hasSize(2));
+
     // we can't place 5 per the unit attachment's placementLimit
     List<Unit> fiveTanks = armour.create(5, british);
     assertThat(filterUnits(fiveTanks, PLACEMENT_LIMIT, british, uk), hasSize(4));

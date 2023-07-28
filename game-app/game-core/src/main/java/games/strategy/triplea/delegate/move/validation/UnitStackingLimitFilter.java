@@ -79,7 +79,7 @@ public class UnitStackingLimitFilter {
         unitsAllowedSoFar.add(unit);
       }
     }
-    return unitsAllowedSoFar;
+    return unitsAllowedSoFar.subList(existingUnitsToBePlaced.size(), unitsAllowedSoFar.size());
   }
 
   /**
