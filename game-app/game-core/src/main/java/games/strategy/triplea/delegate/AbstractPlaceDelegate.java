@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter.PLACEMENT_LIMIT;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -21,6 +23,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
+import games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
@@ -978,7 +981,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       placeableUnits2 = placeableUnits;
     }
     // now check stacking limits
-    return UnitAttachment.filterUnitsByStackingLimit(placeableUnits2, "placementLimit", player, to);
+    return UnitStackingLimitFilter.filterUnits(placeableUnits2, PLACEMENT_LIMIT, player, to);
   }
 
   private Predicate<Unit> unitIsCarrierOwnedByCombinedPlayers(GamePlayer player) {

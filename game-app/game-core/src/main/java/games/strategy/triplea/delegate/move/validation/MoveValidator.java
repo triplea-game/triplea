@@ -810,12 +810,12 @@ public class MoveValidator {
       final String limitType;
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
           || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(player))) {
-        limitType = "attackingLimit";
+        limitType = UnitStackingLimitFilter.ATTACKING_LIMIT;
       } else {
-        limitType = "movementLimit";
+        limitType = UnitStackingLimitFilter.MOVEMENT_LIMIT;
       }
       final Collection<Unit> allowedUnits =
-          UnitAttachment.filterUnitsByStackingLimit(unitsWithStackingLimits, limitType, player, t);
+          UnitStackingLimitFilter.filterUnits(unitsWithStackingLimits, limitType, player, t);
       for (Unit unit : CollectionUtils.difference(unitsWithStackingLimits, allowedUnits)) {
         result.addDisallowedUnit(
             "Unit type " + unit.getType().getName() + " has reached stacking limit", unit);
