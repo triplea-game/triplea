@@ -981,7 +981,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       placeableUnits2 = placeableUnits;
     }
     // now check stacking limits
-    return UnitStackingLimitFilter.filterUnits(placeableUnits2, PLACEMENT_LIMIT, player, to);
+    return UnitStackingLimitFilter.filterUnits(
+        placeableUnits2, PLACEMENT_LIMIT, player, to, produced.getOrDefault(to, List.of()));
   }
 
   private Predicate<Unit> unitIsCarrierOwnedByCombinedPlayers(GamePlayer player) {

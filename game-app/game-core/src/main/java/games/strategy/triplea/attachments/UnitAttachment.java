@@ -15,6 +15,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.gameparser.GameParseException;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
@@ -3442,22 +3443,32 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
+  public int getStackingLimitMax(final Tuple<Integer, String> stackingLimit) {
+    int max = stackingLimit.getFirst();
+    if (max != Integer.MAX_VALUE) {
+      return max;
+    }
+    // under certain rules (classic rules) there can only be 1 aa gun in a territory.
+    final GameProperties properties = getData().getProperties();
+    if ((getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
+        && !(Properties.getWW2V2(properties)
+        || Properties.getWW2V3(properties)
+        || Properties.getMultipleAaPerTerritory(properties))) {
+      max = 1;
+    }
+    return max;
+  }
+
   private void addStackingLimitDescription(
       final Tuple<Integer, String> stackingLimit,
       final String description,
       final Formatter formatter) {
     if (stackingLimit != null) {
-      if (stackingLimit.getFirst() == Integer.MAX_VALUE
-          && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
-          && !(Properties.getWW2V2(getData().getProperties())
-              || Properties.getWW2V3(getData().getProperties())
-              || Properties.getMultipleAaPerTerritory(getData().getProperties()))) {
-        formatter.append(
-            "Max " + stackingLimit.getSecond() + " Units " + description + " per Territory", "1");
-      } else if (stackingLimit.getFirst() < 10000) {
+      int max = getStackingLimitMax(stackingLimit);
+      if (max < 10000) {
         formatter.append(
             "Max " + stackingLimit.getSecond() + " Units " + description + " per Territory",
-            String.valueOf(stackingLimit.getFirst()));
+            String.valueOf(max));
       }
     }
   }

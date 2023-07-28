@@ -12,6 +12,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -35,6 +36,18 @@ public class UnitStackingLimitFilter {
       final String limitType,
       final GamePlayer owner,
       final Territory t) {
+    return filterUnits(units, limitType, owner, t, List.of());
+  }
+
+  /**
+   * Same as above, but allows passing `existingUnitsToBePlaced` that have already been selected.
+   */
+  public static Collection<Unit> filterUnits(
+      final Collection<Unit> units,
+      final String limitType,
+      final GamePlayer owner,
+      final Territory t,
+      final Collection<Unit> existingUnitsToBePlaced) {
     final PlayerAttachment pa = PlayerAttachment.get(owner);
     final Function<UnitAttachment, Tuple<Integer, String>> stackingLimitGetter;
     final Set<Triple<Integer, String, Set<UnitType>>> playerStackingLimits;
@@ -57,7 +70,7 @@ public class UnitStackingLimitFilter {
 
     // Note: This must check each unit individually and track the ones that passed in order to
     // correctly handle stacking limits that apply to multiple unit types.
-    final var unitsAllowedSoFar = new ArrayList<Unit>();
+    final var unitsAllowedSoFar = new ArrayList<>(existingUnitsToBePlaced);
     for (final Unit unit : units) {
       UnitType ut = unit.getType();
       Tuple<Integer, String> stackingLimit = stackingLimitGetter.apply(ut.getUnitAttachment());
@@ -109,16 +122,7 @@ public class UnitStackingLimitFilter {
     if (stackingLimit == null) {
       return max;
     }
-    max = Math.min(max, stackingLimit.getFirst());
-    // under certain rules (classic rules) there can only be 1 aa gun in a territory.
-    final GameProperties properties = t.getData().getProperties();
-    if (max == Integer.MAX_VALUE
-        && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())
-        && !(Properties.getWW2V2(properties)
-        || Properties.getWW2V3(properties)
-        || Properties.getMultipleAaPerTerritory(properties))) {
-      max = 1;
-    }
+    max = Math.min(max, ua.getStackingLimitMax(stackingLimit));
     final Predicate<Unit> stackingMatch;
     final String stackingType = stackingLimit.getSecond();
     switch (stackingType) {
