@@ -5,12 +5,12 @@ import static games.strategy.triplea.delegate.move.validation.UnitStackingLimitF
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.triplea.java.collections.CollectionUtils.countMatches;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.AbstractDelegateTestCase;
 import games.strategy.triplea.delegate.Matches;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -44,8 +44,13 @@ class UnitStackingLimitTest extends AbstractDelegateTestCase {
 
   @Test
   void testClassicAaStackingLimit() {
-    List<Unit> twoAa = aaGun.create(2, british);
+    // No more aa guns to be placed in UK.
+    List<Unit> units = aaGun.create(2, british);
+    assertThat(filterUnits(units, PLACEMENT_LIMIT, british, uk), empty());
 
+    // Remove the aa gun in UK, now one can be placed.
+    uk.getUnitCollection().removeIf(Matches.unitIsOfType(aaGun));
+    assertThat(filterUnits(units, PLACEMENT_LIMIT, british, uk), hasSize(1));
   }
 
   @Test
