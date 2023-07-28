@@ -3452,8 +3452,8 @@ public class UnitAttachment extends DefaultAttachment {
     final GameProperties properties = getData().getProperties();
     if ((getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
         && !(Properties.getWW2V2(properties)
-        || Properties.getWW2V3(properties)
-        || Properties.getMultipleAaPerTerritory(properties))) {
+            || Properties.getWW2V3(properties)
+            || Properties.getMultipleAaPerTerritory(properties))) {
       max = 1;
     }
     return max;

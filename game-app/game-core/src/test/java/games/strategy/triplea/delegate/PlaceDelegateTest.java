@@ -170,7 +170,7 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     assertValid(delegate.canUnitsBePlaced(uk, fourTanks, british));
 
     // we can't place 5 per the unit attachment's placementLimit
-    Collection<Unit> fiveTanks = create(british, armour,5);
+    Collection<Unit> fiveTanks = create(british, armour, 5);
     assertError(delegate.canUnitsBePlaced(uk, fiveTanks, british));
 
     // we can't place 3, if 2 are already scheduled to be placed
@@ -199,7 +199,7 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     assertError(delegate.canUnitsBePlaced(northSea, units, british));
 
     // we can also place 2 battleships and a carrier
-    units = create(british, battleship,2);
+    units = create(british, battleship, 2);
     units.addAll(create(british, carrier, 1));
     assertValid(delegate.canUnitsBePlaced(northSea, units, british));
     // but not 2 battleships and 2 carriers
