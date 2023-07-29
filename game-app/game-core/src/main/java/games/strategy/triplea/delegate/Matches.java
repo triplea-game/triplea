@@ -611,14 +611,6 @@ public final class Matches {
     return obj -> unitTypeIsRocket().test(obj.getType());
   }
 
-  public static Predicate<Unit> unitHasMovementLimit() {
-    return u -> u.getUnitAttachment().getMovementLimit() != null;
-  }
-
-  public static Predicate<Unit> unitHasAttackingLimit() {
-    return u -> u.getUnitAttachment().getAttackingLimit() != null;
-  }
-
   public static Predicate<UnitType> unitTypeCanNotMoveDuringCombatMove() {
     return u -> u.getUnitAttachment().getCanNotMoveDuringCombatMove();
   }

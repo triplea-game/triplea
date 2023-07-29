@@ -17,6 +17,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.CanalAttachment;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -53,6 +54,7 @@ import lombok.AllArgsConstructor;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
 
 /** Responsible for validating unit movement. */
 @AllArgsConstructor
@@ -803,9 +805,31 @@ public class MoveValidator {
       }
     }
     // test for stack limits per unit
+    final PlayerAttachment pa = PlayerAttachment.get(player);
+    final Set<Triple<Integer, String, Set<UnitType>>> playerMovementLimit =
+        (pa != null ? pa.getMovementLimit() : Set.of());
+    final Set<Triple<Integer, String, Set<UnitType>>> playerAttackingLimit =
+        (pa != null ? pa.getAttackingLimit() : Set.of());
+    final Predicate<Unit> hasMovementOrAttackingLimit =
+        unit -> {
+          final var ua = unit.getUnitAttachment();
+          if (ua.getMovementLimit() != null || ua.getAttackingLimit() != null) {
+            return true;
+          }
+          for (final var limit : playerMovementLimit) {
+            if (limit.getThird().contains(unit.getType())) {
+              return true;
+            }
+          }
+          for (final var limit : playerAttackingLimit) {
+            if (limit.getThird().contains(unit.getType())) {
+              return true;
+            }
+          }
+          return false;
+        };
     final Collection<Unit> unitsWithStackingLimits =
-        CollectionUtils.getMatches(
-            units, Matches.unitHasMovementLimit().or(Matches.unitHasAttackingLimit()));
+        CollectionUtils.getMatches(units, hasMovementOrAttackingLimit);
     for (final Territory t : route.getSteps()) {
       final String limitType;
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
