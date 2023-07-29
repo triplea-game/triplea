@@ -57,7 +57,7 @@ public class CollectionUtils {
   /**
    * Returns all elements in the specified collection that match the specified predicate.
    *
-   * Returns a mutable list with distinct storage from `collection`.
+   * <p>Returns a mutable list with distinct storage from `collection`.
    *
    * @param collection The collection whose elements are to be matched.
    * @param predicate The predicate with which to test each element.
@@ -75,7 +75,7 @@ public class CollectionUtils {
    * Returns the elements in the specified collection, up to the specified limit, that match the
    * specified predicate.
    *
-   * Returns a mutable list with distinct storage from `collection`.
+   * <p>Returns a mutable list with distinct storage from `collection`.
    *
    * @param collection The collection whose elements are to be matched.
    * @param max The maximum number of elements in the returned collection.
@@ -95,7 +95,7 @@ public class CollectionUtils {
   /**
    * Returns a such that a exists in c1 and a exists in c2. Always returns a new collection.
    *
-   * Returns a mutable list with distinct storage from `collection`.
+   * <p>Returns a mutable list with distinct storage from `collection`.
    */
   public static <T> List<T> intersection(
       final Collection<T> collection1, final Collection<T> collection2) {
@@ -113,7 +113,7 @@ public class CollectionUtils {
   /**
    * Returns a such that a exists in c1 but not in c2. Always returns a new collection.
    *
-   * Returns a mutable list with distinct storage from `collection`.
+   * <p>Returns a mutable list with distinct storage from `collection`.
    */
   public static <T> List<T> difference(
       final Collection<T> collection1, final Collection<T> collection2) {
@@ -148,7 +148,7 @@ public class CollectionUtils {
    * Creates a sorted, mutable collection containing the specified elements that will maintain its
    * sort order according to the specified comparator as elements are added or removed.
    *
-   * Returns a mutable collection with distinct storage from `elements`.
+   * <p>Returns a mutable collection with distinct storage from `elements`.
    */
   public static <T> Collection<T> createSortedCollection(
       final Collection<T> elements, final @Nullable Comparator<T> comparator) {
