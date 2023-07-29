@@ -1,7 +1,10 @@
 package org.triplea.java.collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.triplea.java.collections.CollectionUtils.countMatches;
@@ -9,6 +12,7 @@ import static org.triplea.java.collections.CollectionUtils.getMatches;
 import static org.triplea.java.collections.CollectionUtils.getNMatches;
 import static org.triplea.java.collections.CollectionUtils.haveEqualSizeAndEquivalentElements;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -44,6 +48,26 @@ final class CollectionUtilsTest {
       assertEquals(List.of(), getMatches(input, NEVER), "none match");
       assertEquals(List.of(-1, 1), getMatches(input, IS_ZERO.negate()), "some match");
       assertEquals(List.of(-1, 0, 1), getMatches(input, ALWAYS), "all match");
+    }
+
+    @Test
+    void returnsDistinctInstanceWithDifferenceStorage() {
+      final Collection<Integer> input = new ArrayList<>(List.of(-1, 0, 1));
+      final List<Integer> result = getMatches(input, ALWAYS);
+      assertThat(result, equalTo(input));
+      assertThat(result, not(sameInstance(input)));
+      // Modifying input shouldn't change result.
+      input.add(5);
+      assertThat(result, not(equalTo(input)));
+    }
+
+    @Test
+    void returnsMutableInstance() {
+      final Collection<Integer> input = List.of(-1, 0, 1);
+      final List<Integer> result = getMatches(input, IS_ZERO.negate());
+      assertThat(result, equalTo(List.of(-1, 1)));
+      result.add(5);
+      assertThat(result, equalTo(List.of(-1, 1, 5)));
     }
   }
 
