@@ -1228,8 +1228,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
         bridge,
         invocation -> {
           final Collection<Unit> selectFrom = invocation.getArgument(0);
-          return new CasualtyDetails(
-              List.of(selectFrom.iterator().next()), new ArrayList<>(), false);
+          return new CasualtyDetails(List.of(selectFrom.iterator().next()), List.of(), false);
         });
     // attacking subs sneak attack and hit
     // no chance to return fire
@@ -1290,7 +1289,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
           final int hitsRemaining = invocation.getArgument(2);
           return new CasualtyDetails(
               selectFrom.stream().limit(hitsRemaining).collect(Collectors.toList()),
-              new ArrayList<>(),
+              List.of(),
               false);
         });
     // Show that bombard casualties can return fire
