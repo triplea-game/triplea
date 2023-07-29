@@ -806,25 +806,28 @@ public class MoveValidator {
     }
     // test for stack limits per unit
     final PlayerAttachment pa = PlayerAttachment.get(player);
-    final Set<Triple<Integer, String, Set<UnitType>>> playerMovementLimit = (pa != null ? pa.getMovementLimit() : Set.of());
-    final Set<Triple<Integer, String, Set<UnitType>>> playerAttackingLimit = (pa != null ? pa.getAttackingLimit() : Set.of());
-    final Predicate<Unit> hasMovementOrAttackingLimit = unit -> {
-      final var ua = unit.getUnitAttachment();
-      if (ua.getMovementLimit() != null || ua.getAttackingLimit() != null) {
-        return true;
-      }
-      for (final var limit : playerMovementLimit) {
-        if (limit.getThird().contains(unit.getType())) {
-          return true;
-        }
-      }
-      for (final var limit : playerAttackingLimit) {
-        if (limit.getThird().contains(unit.getType())) {
-          return true;
-        }
-      }
-      return false;
-    };
+    final Set<Triple<Integer, String, Set<UnitType>>> playerMovementLimit =
+        (pa != null ? pa.getMovementLimit() : Set.of());
+    final Set<Triple<Integer, String, Set<UnitType>>> playerAttackingLimit =
+        (pa != null ? pa.getAttackingLimit() : Set.of());
+    final Predicate<Unit> hasMovementOrAttackingLimit =
+        unit -> {
+          final var ua = unit.getUnitAttachment();
+          if (ua.getMovementLimit() != null || ua.getAttackingLimit() != null) {
+            return true;
+          }
+          for (final var limit : playerMovementLimit) {
+            if (limit.getThird().contains(unit.getType())) {
+              return true;
+            }
+          }
+          for (final var limit : playerAttackingLimit) {
+            if (limit.getThird().contains(unit.getType())) {
+              return true;
+            }
+          }
+          return false;
+        };
     final Collection<Unit> unitsWithStackingLimits =
         CollectionUtils.getMatches(units, hasMovementOrAttackingLimit);
     for (final Territory t : route.getSteps()) {
