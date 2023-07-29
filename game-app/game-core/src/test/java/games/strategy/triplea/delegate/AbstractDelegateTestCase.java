@@ -34,6 +34,7 @@ public abstract class AbstractDelegateTestCase extends AbstractClientSettingTest
   protected Territory sfeSeaZone = gameData.getMap().getTerritory("Soviet Far East Sea Zone");
   protected Territory brazil = gameData.getMap().getTerritory("Brazil");
   protected Territory westCanada = gameData.getMap().getTerritory("West Canada");
+  protected Territory eastCanada = gameData.getMap().getTerritory("East Canada");
   protected Territory westCanadaSeaZone = gameData.getMap().getTerritory("West Canada Sea Zone");
   protected Territory germany = gameData.getMap().getTerritory("Germany");
   protected Territory syria = gameData.getMap().getTerritory("Syria Jordan");
