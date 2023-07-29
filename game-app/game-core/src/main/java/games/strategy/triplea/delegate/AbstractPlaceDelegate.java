@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter.PLACEMENT_LIMIT;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -21,6 +23,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
+import games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
@@ -835,31 +838,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
       // make sure all units are land
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsNotSea())) {
-        return "Cant place sea units on land";
+        return "Can't place sea units on land";
       }
     }
     // make sure we can place consuming units
     if (!canWeConsumeUnits(units, to, false, null)) {
       return "Not Enough Units To Upgrade or Be Consumed";
-    }
-    // now check for stacking limits
-    final Collection<UnitType> typesAlreadyChecked = new ArrayList<>();
-    for (final Unit currentUnit : units) {
-      final UnitType ut = currentUnit.getType();
-      if (typesAlreadyChecked.contains(ut)) {
-        continue;
-      }
-      typesAlreadyChecked.add(ut);
-      final int maxForThisType =
-          UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-              "placementLimit", ut, to, player);
-      if (CollectionUtils.countMatches(units, Matches.unitIsOfType(ut)) > maxForThisType) {
-        return "UnitType " + ut.getName() + " is over stacking limit of " + maxForThisType;
-      }
-    }
-    if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-        "placementLimit", units, to, player)) {
-      return "Units Cannot Go Over Stacking Limit";
     }
     // now return null (valid placement) if we have placement restrictions disabled in game options
     if (!Properties.getUnitPlacementRestrictions(getData().getProperties())) {
@@ -971,46 +955,34 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         }
       }
     }
+    final Collection<Unit> placeableUnits2;
+    if (Properties.getUnitPlacementRestrictions(properties)) {
+      final int territoryProduction = TerritoryAttachment.getProduction(to);
+      placeableUnits2 = new ArrayList<>();
+      for (final Unit currentUnit : placeableUnits) {
+        final UnitAttachment ua = currentUnit.getUnitAttachment();
+        if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
+            && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > territoryProduction) {
+          continue;
+        }
+        if (unitWhichRequiresUnitsHasRequiredUnits(to, false).negate().test(currentUnit)) {
+          continue;
+        }
+        if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
+            && !Matches.territoryIsOriginallyOwnedBy(player).test(to)) {
+          continue;
+        }
+        // account for any unit placement restrictions by territory
+        if (!ua.unitPlacementRestrictionsContain(to)) {
+          placeableUnits2.add(currentUnit);
+        }
+      }
+    } else {
+      placeableUnits2 = placeableUnits;
+    }
     // now check stacking limits
-    final Collection<Unit> placeableUnits2 = new ArrayList<>();
-    final var typesAlreadyChecked = new HashSet<UnitType>();
-    for (final Unit currentUnit : placeableUnits) {
-      final UnitType ut = currentUnit.getType();
-      if (typesAlreadyChecked.contains(ut)) {
-        continue;
-      }
-      typesAlreadyChecked.add(ut);
-      int max =
-          UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-              "placementLimit", ut, to, player);
-      placeableUnits2.addAll(
-          CollectionUtils.getNMatches(placeableUnits, max, Matches.unitIsOfType(ut)));
-    }
-    if (!Properties.getUnitPlacementRestrictions(properties)) {
-      return placeableUnits2;
-    }
-    final Collection<Unit> placeableUnits3 = new ArrayList<>();
-    for (final Unit currentUnit : placeableUnits2) {
-      final UnitAttachment ua = currentUnit.getUnitAttachment();
-      // Can be null!
-      final TerritoryAttachment ta = TerritoryAttachment.get(to);
-      if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
-          && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > (ta == null ? 0 : ta.getProduction())) {
-        continue;
-      }
-      if (unitWhichRequiresUnitsHasRequiredUnits(to, false).negate().test(currentUnit)) {
-        continue;
-      }
-      if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
-          && !Matches.territoryIsOriginallyOwnedBy(player).test(to)) {
-        continue;
-      }
-      // account for any unit placement restrictions by territory
-      if (!ua.unitPlacementRestrictionsContain(to)) {
-        placeableUnits3.add(currentUnit);
-      }
-    }
-    return placeableUnits3;
+    return UnitStackingLimitFilter.filterUnits(
+        placeableUnits2, PLACEMENT_LIMIT, player, to, produced.getOrDefault(to, List.of()));
   }
 
   private Predicate<Unit> unitIsCarrierOwnedByCombinedPlayers(GamePlayer player) {

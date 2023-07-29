@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import lombok.experimental.UtilityClass;
@@ -36,6 +37,20 @@ public class CollectionUtils {
     checkNotNull(predicate);
 
     return (int) collection.stream().filter(predicate).count();
+  }
+
+  /**
+   * Returns the count of elements in the specified iterable that match the specified predicate.
+   *
+   * @param it The iterable whose elements are to be matched.
+   * @param predicate The predicate with which to test each element.
+   * @return The count of elements in the specified collection that match the specified predicate.
+   */
+  public static <T> int countMatches(final Iterable<T> it, final Predicate<T> predicate) {
+    checkNotNull(it);
+    checkNotNull(predicate);
+
+    return (int) StreamSupport.stream(it.spliterator(), false).filter(predicate).count();
   }
 
   /**
@@ -72,7 +87,7 @@ public class CollectionUtils {
     return collection.stream().filter(predicate).limit(max).collect(Collectors.toList());
   }
 
-  /** return a such that a exists in c1 and a exists in c2. always returns a new collection. */
+  /** return a such that a exists in c1 and a exists in c2. Always returns a new collection. */
   public static <T> List<T> intersection(
       final Collection<T> collection1, final Collection<T> collection2) {
     if (collection1 == null

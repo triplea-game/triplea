@@ -17,7 +17,6 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.CanalAttachment;
-import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -808,44 +807,18 @@ public class MoveValidator {
         CollectionUtils.getMatches(
             units, Matches.unitHasMovementLimit().or(Matches.unitHasAttackingLimit()));
     for (final Territory t : route.getSteps()) {
-      final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
+      final String limitType;
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
           || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(player))) {
-        for (final Unit unit : unitsWithStackingLimits) {
-          final UnitType ut = unit.getType();
-          int maxAllowed =
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "attackingLimit", ut, t, player);
-          maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
-          if (maxAllowed > 0) {
-            unitsAllowedSoFar.add(unit);
-          } else {
-            result.addDisallowedUnit(
-                "UnitType " + ut.getName() + " has reached stacking limit", unit);
-          }
-        }
-        if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-            "attackingLimit", units, t, player)) {
-          return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
-        }
+        limitType = UnitStackingLimitFilter.ATTACKING_LIMIT;
       } else {
-        for (final Unit unit : unitsWithStackingLimits) {
-          final UnitType ut = unit.getType();
-          int maxAllowed =
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "movementLimit", ut, t, player);
-          maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
-          if (maxAllowed > 0) {
-            unitsAllowedSoFar.add(unit);
-          } else {
-            result.addDisallowedUnit(
-                "UnitType " + ut.getName() + " has reached stacking limit", unit);
-          }
-        }
-        if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-            "movementLimit", units, t, player)) {
-          return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
-        }
+        limitType = UnitStackingLimitFilter.MOVEMENT_LIMIT;
+      }
+      final Collection<Unit> allowedUnits =
+          UnitStackingLimitFilter.filterUnits(unitsWithStackingLimits, limitType, player, t);
+      for (Unit unit : CollectionUtils.difference(unitsWithStackingLimits, allowedUnits)) {
+        result.addDisallowedUnit(
+            "Unit type " + unit.getType().getName() + " has reached stacking limit", unit);
       }
     }
 
