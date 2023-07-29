@@ -710,16 +710,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // move carriers to ensure they can't go anywhere
     route = new Route(congoSeaZone, westAfricaSea, northAtlantic);
     Collection<Unit> units =
-            CollectionUtils.getMatches(
-                gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits(),
-                Matches.unitIsCarrier());
+        CollectionUtils.getMatches(
+            gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits(),
+            Matches.unitIsCarrier());
     results = delegate.move(units, route);
     assertValid(results);
     // move carriers to ensure they can't go anywhere
     route = new Route(redSea, eastMediteranean, blackSea);
-    units = CollectionUtils.getMatches(
-                gameData.getMap().getTerritory(redSea.toString()).getUnits(),
-                Matches.unitIsCarrier());
+    units =
+        CollectionUtils.getMatches(
+            gameData.getMap().getTerritory(redSea.toString()).getUnits(), Matches.unitIsCarrier());
     results = delegate.move(units, route);
     assertValid(results);
     // make sure the place cant use it to land
