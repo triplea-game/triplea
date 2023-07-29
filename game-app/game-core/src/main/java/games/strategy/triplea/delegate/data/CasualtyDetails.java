@@ -29,7 +29,7 @@ public class CasualtyDetails extends CasualtyList {
    * @param autoCalculated whether casualties should be selected automatically
    */
   public CasualtyDetails(
-      final List<Unit> killed, final List<Unit> damaged, final boolean autoCalculated) {
+      final Collection<Unit> killed, final Collection<Unit> damaged, final boolean autoCalculated) {
     super(killed, damaged);
     this.autoCalculated = autoCalculated;
   }

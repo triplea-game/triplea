@@ -22,7 +22,6 @@ import games.strategy.triplea.delegate.battle.steps.fire.RollDiceStep;
 import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
 import games.strategy.triplea.delegate.battle.steps.fire.SelectMainBattleCasualties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -161,8 +160,7 @@ public class Fire implements IExecutable {
             final FireRoundState fireRoundState = new FireRoundState();
             fireRoundState.setDice(dice);
             fireRoundState.setCasualties(
-                new CasualtyDetails(
-                    new ArrayList<>(killed), new ArrayList<>(damaged), confirmOwnCasualties));
+                new CasualtyDetails(killed, damaged, confirmOwnCasualties));
             new MarkCasualties(
                     battle,
                     battle,
