@@ -136,7 +136,7 @@ public final class EventThreadJOptionPane {
     scroll.setBorder(BorderFactory.createEmptyBorder());
     scroll.addAncestorListener(
         new AncestorListener() {
-          private int getScrollbarSize() {
+          private int getScrollWidth() {
             Object scrollWidth = UIManager.get("ScrollBar.width");
             if (scrollWidth instanceof Integer) {
               return (Integer) scrollWidth;
@@ -149,10 +149,10 @@ public final class EventThreadJOptionPane {
             Rectangle maxBounds =
                 GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
             Rectangle r = event.getAncestor().getBounds();
-            boolean vScroll = (r.width > maxBounds.width);
-            boolean hScroll = (r.height > maxBounds.height);
-            r.width = Math.min(r.width + (hScroll ? getScrollbarSize() : 0), maxBounds.width);
-            r.height = Math.min(r.height + (vScroll ? getScrollbarSize() : 0), maxBounds.height);
+            boolean vertScroll = (r.width > maxBounds.width);
+            boolean horizScroll = (r.height > maxBounds.height);
+            r.width = Math.min(r.width + (horizScroll ? getScrollWidth() : 0), maxBounds.width);
+            r.height = Math.min(r.height + (vertScroll ? getScrollWidth() : 0), maxBounds.height);
             event.getAncestor().setBounds(r);
           }
 
