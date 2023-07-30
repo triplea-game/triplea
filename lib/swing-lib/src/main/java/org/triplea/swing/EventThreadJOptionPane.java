@@ -4,8 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,6 +19,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import lombok.AllArgsConstructor;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 
@@ -131,21 +134,34 @@ public final class EventThreadJOptionPane {
     final JLabel label = new JLabel(message);
     final JScrollPane scroll = new JScrollPane(label);
     scroll.setBorder(BorderFactory.createEmptyBorder());
-    final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-    final int availWidth = screenResolution.width - 40;
-    final int availHeight = screenResolution.height - 140;
-    // add 25 for scrollbars
-    final int newWidth =
-        (scroll.getPreferredSize().width > availWidth
-            ? availWidth
-            : (scroll.getPreferredSize().width
-                + (scroll.getPreferredSize().height > availHeight ? 25 : 0)));
-    final int newHeight =
-        (scroll.getPreferredSize().height > availHeight
-            ? availHeight
-            : (scroll.getPreferredSize().height
-                + (scroll.getPreferredSize().width > availWidth ? 25 : 0)));
-    scroll.setPreferredSize(new Dimension(newWidth, newHeight));
+    scroll.addAncestorListener(
+        new AncestorListener() {
+          private int getScrollWidth() {
+            Object scrollWidth = UIManager.get("ScrollBar.width");
+            if (scrollWidth instanceof Integer) {
+              return (Integer) scrollWidth;
+            }
+            return 25;
+          }
+
+          @Override
+          public void ancestorAdded(final AncestorEvent event) {
+            Rectangle maxBounds =
+                GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+            Rectangle r = event.getAncestor().getBounds();
+            boolean vertScroll = (r.width > maxBounds.width);
+            boolean horizScroll = (r.height > maxBounds.height);
+            r.width = Math.min(r.width + (horizScroll ? getScrollWidth() : 0), maxBounds.width);
+            r.height = Math.min(r.height + (vertScroll ? getScrollWidth() : 0), maxBounds.height);
+            event.getAncestor().setBounds(r);
+          }
+
+          @Override
+          public void ancestorRemoved(final AncestorEvent event) {}
+
+          @Override
+          public void ancestorMoved(final AncestorEvent event) {}
+        });
     return scroll;
   }
 
