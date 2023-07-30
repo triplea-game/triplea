@@ -254,13 +254,14 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     MoveValidator moveValidator = new MoveValidator(gameData, true);
     Route r = new Route(westCanada, eastCanada);
 
-    Collection<Unit> units = infantry.create(5, british);
+    // 7 infantry can move, no problem.
+    Collection<Unit> units = infantry.create(7, british);
     westCanada.getUnitCollection().addAll(units);
     assertThat(units, everyItem(in(westCanada.getUnitCollection())));
     var result = moveValidator.validateMove(new MoveDescription(units, r), british);
     assertTrue(result.isMoveValid());
 
-    // But 6 infantry is not allowed due to a movementLimit on the PlayerAttachment.
+    // But 8 infantry is not allowed due to a movementLimit on the PlayerAttachment.
     Collection<Unit> unit = infantry.create(1, british);
     units.addAll(unit);
     westCanada.getUnitCollection().addAll(unit);
