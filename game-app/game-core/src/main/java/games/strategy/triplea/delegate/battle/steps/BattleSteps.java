@@ -15,10 +15,10 @@ public class BattleSteps implements BattleStepStrings {
   final BattleState battleState;
   final BattleActions battleActions;
 
-  public List<String> get() {
+  public List<BattleStep.StepDetails> get() {
     return BattleStep.getAll(battleState, battleActions).stream()
         .sorted(Comparator.comparing(BattleStep::getOrder))
-        .flatMap(step -> step.getNames().stream())
+        .flatMap(step -> step.getAllStepDetails().stream())
         .collect(Collectors.toList());
   }
 }

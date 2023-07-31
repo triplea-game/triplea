@@ -28,8 +28,10 @@ public class LandParatroopers implements BattleStep {
   protected final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
-    return new TransportsAndParatroopers().hasParatroopers() ? List.of(LAND_PARATROOPS) : List.of();
+  public List<StepDetails> getAllStepDetails() {
+    return new TransportsAndParatroopers().hasParatroopers()
+        ? List.of(new StepDetails(LAND_PARATROOPS, this))
+        : List.of();
   }
 
   @Override

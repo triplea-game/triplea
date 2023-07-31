@@ -32,8 +32,8 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
   protected final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
-    return valid() ? List.of(SUBMERGE_SUBS_VS_AIR_ONLY) : List.of();
+  public List<StepDetails> getAllStepDetails() {
+    return valid() ? List.of(new StepDetails(SUBMERGE_SUBS_VS_AIR_ONLY, this)) : List.of();
   }
 
   @Override

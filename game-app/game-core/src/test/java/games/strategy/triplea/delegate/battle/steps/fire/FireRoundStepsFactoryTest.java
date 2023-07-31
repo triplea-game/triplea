@@ -57,7 +57,9 @@ class FireRoundStepsFactoryTest {
   }
 
   private List<String> getStepNames(final List<BattleStep> steps) {
-    return steps.stream().flatMap(step -> step.getNames().stream()).collect(Collectors.toList());
+    return steps.stream()
+        .flatMap(step -> step.getAllStepDetails().stream())
+        .collect(Collectors.toList());
   }
 
   @Test

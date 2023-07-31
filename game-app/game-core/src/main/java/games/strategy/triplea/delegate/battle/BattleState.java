@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Value;
@@ -119,4 +120,6 @@ public interface BattleState {
   @RemoveOnNextMajorRelease
   @Deprecated
   List<String> getStepStrings();
+
+  Optional<String> findStepNameForFiringUnits(Collection<Unit> firingUnits);
 }

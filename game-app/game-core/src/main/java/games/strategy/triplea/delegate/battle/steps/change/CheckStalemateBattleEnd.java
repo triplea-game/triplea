@@ -16,7 +16,7 @@ public class CheckStalemateBattleEnd extends CheckGeneralBattleEnd {
   }
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     return List.of();
   }
 

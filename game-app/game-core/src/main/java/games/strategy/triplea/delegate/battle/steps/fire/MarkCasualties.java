@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.triplea.java.ChangeOnNextMajorRelease;
@@ -49,8 +50,8 @@ public class MarkCasualties implements BattleStep {
   private final MustFightBattle.ReturnFire returnFire;
 
   @Override
-  public List<String> getNames() {
-    return List.of(getName());
+  public List<StepDetails> getAllStepDetails() {
+    return List.of(new StepDetails(getName(), this));
   }
 
   private String getName() {
@@ -159,6 +160,15 @@ public class MarkCasualties implements BattleStep {
       final String name) {
     if (battleState.getStepStrings().contains(name)) {
       return name;
+    }
+    // Try to find the original step name for these firing units at the time the step names shown in
+    // the UI were produced. It can happen that such a step no longer exists in the stack due to the
+    // units having changed due to previous steps, however the UI still has the original strings and
+    // we need to map to one of the ones shown. Match based on firing units.
+    Optional<String> stepName =
+        battleState.findStepNameForFiringUnits(firingGroup.getFiringUnits());
+    if (stepName.isPresent()) {
+      return stepName.get();
     }
 
     // this is from a save game and so must use the old step name

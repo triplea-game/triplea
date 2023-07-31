@@ -71,7 +71,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getNames(), hasSize(1));
+    assertThat(defensiveSubsRetreat.getAllStepDetails(), hasSize(1));
   }
 
   @Test
@@ -84,7 +84,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getNames(), hasSize(1));
+    assertThat(defensiveSubsRetreat.getAllStepDetails(), hasSize(1));
   }
 
   @Test
@@ -99,7 +99,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getNames(), hasSize(1));
+    assertThat(defensiveSubsRetreat.getAllStepDetails(), hasSize(1));
   }
 
   @Test
@@ -113,7 +113,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getNames(), hasSize(1));
+    assertThat(defensiveSubsRetreat.getAllStepDetails(), hasSize(1));
   }
 
   @Test
@@ -123,7 +123,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getNames(), is(empty()));
+    assertThat(defensiveSubsRetreat.getAllStepDetails(), is(empty()));
   }
 
   @Nested

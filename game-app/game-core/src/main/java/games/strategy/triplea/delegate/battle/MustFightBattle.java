@@ -45,6 +45,7 @@ import games.strategy.triplea.delegate.battle.steps.change.RemoveUnprotectedUnit
 import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveFirstStrikeSuicide;
 import games.strategy.triplea.delegate.battle.steps.change.suicide.RemoveGeneralSuicide;
 import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
+import games.strategy.triplea.delegate.battle.steps.fire.SelectCasualties;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFirstStrike;
@@ -64,9 +65,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -116,8 +119,14 @@ public class MustFightBattle extends DependentBattle
   // and resume while in the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
 
-  @Getter(onMethod_ = @Override)
-  private List<String> stepStrings;
+  @Getter private List<String> stepStrings;
+  // Stores the firing units corresponding to the casualty steps in stepStrings. This is to fix a
+  // "step name not found" error due to stepStrings being generated at the start of combat, but
+  // actual steps being produced as we advance through combat. The error would happen when there are
+  // multiple casualty steps at first, but when we get to that point in combat, some of those get
+  // removed (due units dying and not having a counterattack) and we may end up with a generic
+  // casualty step. To fix this, we use the map to find the original step name for the firing units.
+  private Map<String, Collection<Unit>> stepFiringUnits;
 
   @RemoveOnNextMajorRelease
   @SuppressWarnings("unused")
@@ -673,7 +682,7 @@ public class MustFightBattle extends DependentBattle
       endBattle(WhoWon.ATTACKER, bridge);
       return;
     }
-    stepStrings = determineStepStrings();
+    determineStepStrings();
     final IDisplay display = bridge.getDisplayChannelBroadcaster();
     display.showBattle(
         battleId,
@@ -798,7 +807,27 @@ public class MustFightBattle extends DependentBattle
 
   @VisibleForTesting
   public List<String> determineStepStrings() {
-    return BattleSteps.builder().battleState(this).battleActions(this).build().get();
+    stepStrings = new ArrayList<>();
+    stepFiringUnits = new HashMap<>();
+    for (var details : BattleSteps.builder().battleState(this).battleActions(this).build().get()) {
+      String stepName = details.getName();
+      stepStrings.add(stepName);
+      if (details.getStep() instanceof SelectCasualties) {
+        SelectCasualties step = (SelectCasualties) details.getStep();
+        // Note: We don't copy the list since the steps will be destroyed.
+        stepFiringUnits.put(stepName, step.getFiringGroup().getFiringUnits());
+      }
+    }
+    return stepStrings;
+  }
+
+  public Optional<String> findStepNameForFiringUnits(Collection<Unit> firingUnits) {
+    for (final var entry : Optional.ofNullable(stepFiringUnits).orElse(Map.of()).entrySet()) {
+      if (entry.getValue().containsAll(firingUnits)) {
+        return Optional.of(entry.getKey());
+      }
+    }
+    return Optional.empty();
   }
 
   @Override
@@ -1314,7 +1343,7 @@ public class MustFightBattle extends DependentBattle
                             .map(UnitType::getName)
                             .collect(Collectors.joining(",")));
               }
-              stepStrings = determineStepStrings();
+              determineStepStrings();
               final IDisplay display = bridge.getDisplayChannelBroadcaster();
               display.listBattleSteps(battleId, stepStrings);
               // continue fighting the recursive steps

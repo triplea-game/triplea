@@ -36,8 +36,8 @@ public class OffensiveGeneralRetreat implements BattleStep {
   private final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
-    return isRetreatPossible() ? List.of(getName()) : List.of();
+  public List<StepDetails> getAllStepDetails() {
+    return isRetreatPossible() ? List.of(new StepDetails(getName(), this)) : List.of();
   }
 
   private boolean isRetreatPossible() {

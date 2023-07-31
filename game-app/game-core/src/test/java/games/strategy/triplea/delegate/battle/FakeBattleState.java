@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -176,6 +177,11 @@ public class FakeBattleState implements BattleState {
   @Override
   public List<String> getStepStrings() {
     return List.of();
+  }
+
+  @Override
+  public Optional<String> findStepNameForFiringUnits(final Collection<Unit> firingUnits) {
+    return Optional.empty();
   }
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder(

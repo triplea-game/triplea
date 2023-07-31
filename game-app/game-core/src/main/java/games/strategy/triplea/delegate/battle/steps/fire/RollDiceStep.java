@@ -32,8 +32,8 @@ public class RollDiceStep implements BattleStep {
   private final BiFunction<IDelegateBridge, RollDiceStep, DiceRoll> rollDice;
 
   @Override
-  public List<String> getNames() {
-    return List.of(getName());
+  public List<StepDetails> getAllStepDetails() {
+    return List.of(new StepDetails(getName(), this));
   }
 
   private String getName() {

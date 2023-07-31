@@ -42,7 +42,7 @@ class LandParatroopersTest {
     final BattleState battleState = givenBattleStateBuilder().battleRound(2).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), is(empty()));
+    assertThat(landParatroopers.getAllStepDetails(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge, never()).addChange(any(Change.class));
@@ -54,7 +54,7 @@ class LandParatroopersTest {
         givenBattleStateBuilder().battleRound(1).battleSite(givenSeaBattleSite()).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), is(empty()));
+    assertThat(landParatroopers.getAllStepDetails(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge, never()).addChange(any(Change.class));
@@ -70,7 +70,7 @@ class LandParatroopersTest {
         givenBattleStateBuilder().battleRound(1).attacker(attacker).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), is(empty()));
+    assertThat(landParatroopers.getAllStepDetails(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge, never()).addChange(any(Change.class));
@@ -101,7 +101,7 @@ class LandParatroopersTest {
 
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), is(empty()));
+    assertThat(landParatroopers.getAllStepDetails(), is(empty()));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge, never()).addChange(any(Change.class));
@@ -133,7 +133,7 @@ class LandParatroopersTest {
 
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getNames(), hasSize(1));
+    assertThat(landParatroopers.getAllStepDetails(), hasSize(1));
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge).addChange(any(Change.class));

@@ -15,7 +15,7 @@ public class RemoveGeneralSuicide extends RemoveUnits {
   }
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     return List.of();
   }
 

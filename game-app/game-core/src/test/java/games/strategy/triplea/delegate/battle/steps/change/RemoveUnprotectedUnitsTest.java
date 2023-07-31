@@ -55,7 +55,7 @@ class RemoveUnprotectedUnitsTest {
       final BattleState battleState = givenBattleStateBuilder().battleSite(battleSite).build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
-      assertThat(removeUnprotectedUnits.getNames(), is(empty()));
+      assertThat(removeUnprotectedUnits.getAllStepDetails(), is(empty()));
     }
 
     @Test
@@ -66,7 +66,7 @@ class RemoveUnprotectedUnitsTest {
           givenBattleStateBuilder().battleSite(battleSite).gameData(gameData).build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
-      assertThat(removeUnprotectedUnits.getNames(), is(empty()));
+      assertThat(removeUnprotectedUnits.getAllStepDetails(), is(empty()));
     }
 
     @Test
@@ -82,7 +82,7 @@ class RemoveUnprotectedUnitsTest {
               .build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
-      assertThat(removeUnprotectedUnits.getNames(), is(empty()));
+      assertThat(removeUnprotectedUnits.getAllStepDetails(), is(empty()));
     }
 
     @Test
@@ -97,7 +97,7 @@ class RemoveUnprotectedUnitsTest {
               .build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
-      assertThat(removeUnprotectedUnits.getNames(), hasSize(1));
+      assertThat(removeUnprotectedUnits.getAllStepDetails(), hasSize(1));
     }
 
     @Test
@@ -112,7 +112,7 @@ class RemoveUnprotectedUnitsTest {
               .build();
       final RemoveUnprotectedUnits removeUnprotectedUnits =
           new RemoveUnprotectedUnits(battleState, battleActions);
-      assertThat(removeUnprotectedUnits.getNames(), hasSize(1));
+      assertThat(removeUnprotectedUnits.getAllStepDetails(), hasSize(1));
     }
   }
 
