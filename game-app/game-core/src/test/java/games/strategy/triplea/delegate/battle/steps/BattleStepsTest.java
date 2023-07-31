@@ -309,7 +309,10 @@ public class BattleStepsTest {
         .battleActions(battleActions)
         .battleState(battleState)
         .build()
-        .get();
+        .get()
+        .stream()
+        .map(BattleStep.StepDetails::getName)
+        .collect(Collectors.toList());
   }
 
   @Test
