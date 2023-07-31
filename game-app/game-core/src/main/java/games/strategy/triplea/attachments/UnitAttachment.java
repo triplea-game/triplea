@@ -8,7 +8,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -906,6 +905,13 @@ public class UnitAttachment extends DefaultAttachment {
 
   public String[] getUnitPlacementRestrictions() {
     return unitPlacementRestrictions;
+  }
+
+  public boolean unitPlacementRestrictionsContain(Territory territory) {
+    if (unitPlacementRestrictions == null) {
+      return false;
+    }
+    return Arrays.asList(unitPlacementRestrictions).contains(territory.getName());
   }
 
   private void resetUnitPlacementRestrictions() {
@@ -2482,7 +2488,7 @@ public class UnitAttachment extends DefaultAttachment {
     placementLimit = value;
   }
 
-  private @Nullable Tuple<Integer, String> getPlacementLimit() {
+  public @Nullable Tuple<Integer, String> getPlacementLimit() {
     return placementLimit;
   }
 
@@ -2540,66 +2546,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public void resetCanRetreatOnStalemate() {
     canRetreatOnStalemate = null;
-  }
-
-  /**
-   * Returns the maximum number of units of the specified type that can be placed in the specified
-   * territory according to the specified stacking limit (movement, attack, or placement).
-   *
-   * @return {@link Integer#MAX_VALUE} if there is no stacking limit for the specified conditions.
-   */
-  public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-      final String limitType,
-      final UnitType ut,
-      final Territory t,
-      final GamePlayer owner,
-      final RelationshipTracker relationshipTracker,
-      final GameProperties properties) {
-    final UnitAttachment ua = ut.getUnitAttachment();
-    final Tuple<Integer, String> stackingLimit;
-    switch (limitType) {
-      case "movementLimit":
-        stackingLimit = ua.getMovementLimit();
-        break;
-      case "attackingLimit":
-        stackingLimit = ua.getAttackingLimit();
-        break;
-      case "placementLimit":
-        stackingLimit = ua.getPlacementLimit();
-        break;
-      default:
-        throw new IllegalStateException(
-            "getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: "
-                + limitType);
-    }
-    if (stackingLimit == null) {
-      return Integer.MAX_VALUE;
-    }
-    int max = stackingLimit.getFirst();
-    // under certain rules (classic rules) there can only be 1 aa gun in a territory.
-    if (max == Integer.MAX_VALUE
-        && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())
-        && !(Properties.getWW2V2(properties)
-            || Properties.getWW2V3(properties)
-            || Properties.getMultipleAaPerTerritory(properties))) {
-      max = 1;
-    }
-    final Predicate<Unit> stackingMatch;
-    final String stackingType = stackingLimit.getSecond();
-    switch (stackingType) {
-      case "owned":
-        stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
-        break;
-      case "allied":
-        stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner));
-        break;
-      default:
-        stackingMatch = Matches.unitIsOfType(ut);
-        break;
-    }
-    // else if (stackingType.equals("total"))
-    final int totalInTerritory = CollectionUtils.countMatches(t.getUnits(), stackingMatch);
-    return Math.max(0, max - totalInTerritory);
   }
 
   @Override
@@ -2722,9 +2668,8 @@ public class UnitAttachment extends DefaultAttachment {
                   + " in the xml before using it as a transport"
                   + thisErrorMsg());
           // Units may be considered transported if they are on a carrier, or if they are
-          // paratroopers, or if they are
-          // mech infantry. The "transporter" may not be an actual transport, so we should not check
-          // for that here.
+          // paratroopers, or if they are mech infantry. The "transporter" may not be an actual
+          // transport, so we should not check for that here.
         }
       }
     }
@@ -3468,10 +3413,14 @@ public class UnitAttachment extends DefaultAttachment {
         sb.append(integerMap.totalValues());
       } else {
         for (final Entry<T, Integer> entry : integerMap.entrySet()) {
-          sb.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
+          if (entry.getValue() != 0) {
+            sb.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
+          }
         }
       }
-      formatter.append(key, sb.toString());
+      if (sb.length() > 0) {
+        formatter.append(key, sb.toString());
+      }
     }
   }
 
@@ -3494,22 +3443,32 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
+  public int getStackingLimitMax(final Tuple<Integer, String> stackingLimit) {
+    int max = stackingLimit.getFirst();
+    if (max != Integer.MAX_VALUE) {
+      return max;
+    }
+    // under certain rules (classic rules) there can only be 1 aa gun in a territory.
+    final GameProperties properties = getData().getProperties();
+    if ((getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
+        && !(Properties.getWW2V2(properties)
+            || Properties.getWW2V3(properties)
+            || Properties.getMultipleAaPerTerritory(properties))) {
+      max = 1;
+    }
+    return max;
+  }
+
   private void addStackingLimitDescription(
       final Tuple<Integer, String> stackingLimit,
       final String description,
       final Formatter formatter) {
     if (stackingLimit != null) {
-      if (stackingLimit.getFirst() == Integer.MAX_VALUE
-          && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
-          && !(Properties.getWW2V2(getData().getProperties())
-              || Properties.getWW2V3(getData().getProperties())
-              || Properties.getMultipleAaPerTerritory(getData().getProperties()))) {
-        formatter.append(
-            "Max " + stackingLimit.getSecond() + " Units " + description + " per Territory", "1");
-      } else if (stackingLimit.getFirst() < 10000) {
+      int max = getStackingLimitMax(stackingLimit);
+      if (max < 10000) {
         formatter.append(
             "Max " + stackingLimit.getSecond() + " Units " + description + " per Territory",
-            String.valueOf(stackingLimit.getFirst()));
+            String.valueOf(max));
       }
     }
   }

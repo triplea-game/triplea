@@ -106,7 +106,7 @@
 	<!ELEMENT sequence (step+)>
 		<!ELEMENT step (stepProperty*)>
 		<!ATTLIST step
-			name ID #REQUIRED
+			name CDATA #REQUIRED
 			delegate IDREF #REQUIRED
 			player IDREF #IMPLIED
 			maxRunCount CDATA #IMPLIED

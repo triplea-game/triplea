@@ -31,7 +31,6 @@ import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +64,7 @@ class CasualtySelectorTest {
               final int count = invocation.getArgument(2);
               final List<Unit> selected =
                   CollectionUtils.getNMatches(selectFrom, count, Matches.unitIsStrategicBomber());
-              return new CasualtyDetails(selected, new ArrayList<>(), false);
+              return new CasualtyDetails(selected, List.of(), false);
             });
   }
 

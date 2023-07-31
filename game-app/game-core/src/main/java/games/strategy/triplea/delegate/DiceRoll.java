@@ -93,10 +93,9 @@ public class DiceRoll implements Externalizable {
       final Territory territory,
       final int battleRound) {
     // Note: This pattern is parsed when loading saved games to restore dice stats to get the player
-    // name via the
-    // getPlayerNameFromAnnotation() function above. When changing this format, update
-    // getPlayerNameFromAnnotation(),
-    // preferably in a way that is backwards compatible (can parse previous formats too).
+    // name via the getPlayerNameFromAnnotation() function above. When changing this format, update
+    // getPlayerNameFromAnnotation(), preferably in a way that is backwards compatible (can parse
+    // previous formats too).
     return player.getName()
         + " roll dice for "
         + MyFormatter.unitsToTextNoOwner(units)

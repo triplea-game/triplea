@@ -2,6 +2,9 @@ package games.strategy.triplea.delegate.move.validation;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.in;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -244,5 +247,25 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
             new MoveDescription(northernGermany.getUnitCollection(), r, unitsToTransports),
             germans);
     assertTrue(results.isMoveValid());
+  }
+
+  @Test
+  void testStackingLimitOnMove() {
+    MoveValidator moveValidator = new MoveValidator(gameData, true);
+    Route r = new Route(westCanada, eastCanada);
+
+    // 7 infantry can move, no problem.
+    Collection<Unit> units = infantry.create(7, british);
+    westCanada.getUnitCollection().addAll(units);
+    assertThat(units, everyItem(in(westCanada.getUnitCollection())));
+    var result = moveValidator.validateMove(new MoveDescription(units, r), british);
+    assertTrue(result.isMoveValid());
+
+    // But 8 infantry is not allowed due to a movementLimit on the PlayerAttachment.
+    Collection<Unit> unit = infantry.create(1, british);
+    units.addAll(unit);
+    westCanada.getUnitCollection().addAll(unit);
+    result = moveValidator.validateMove(new MoveDescription(units, r), british);
+    assertFalse(result.isMoveValid());
   }
 }

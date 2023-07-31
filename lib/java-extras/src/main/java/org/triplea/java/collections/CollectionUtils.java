@@ -14,7 +14,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import lombok.experimental.UtilityClass;
@@ -39,7 +41,23 @@ public class CollectionUtils {
   }
 
   /**
+   * Returns the count of elements in the specified iterable that match the specified predicate.
+   *
+   * @param it The iterable whose elements are to be matched.
+   * @param predicate The predicate with which to test each element.
+   * @return The count of elements in the specified collection that match the specified predicate.
+   */
+  public static <T> int countMatches(final Iterable<T> it, final Predicate<T> predicate) {
+    checkNotNull(it);
+    checkNotNull(predicate);
+
+    return (int) StreamSupport.stream(it.spliterator(), false).filter(predicate).count();
+  }
+
+  /**
    * Returns all elements in the specified collection that match the specified predicate.
+   *
+   * <p>Returns a mutable list with distinct storage from `collection`.
    *
    * @param collection The collection whose elements are to be matched.
    * @param predicate The predicate with which to test each element.
@@ -50,12 +68,14 @@ public class CollectionUtils {
     checkNotNull(collection);
     checkNotNull(predicate);
 
-    return collection.stream().filter(predicate).collect(Collectors.toList());
+    return collection.stream().filter(predicate).collect(toArrayList());
   }
 
   /**
    * Returns the elements in the specified collection, up to the specified limit, that match the
    * specified predicate.
+   *
+   * <p>Returns a mutable list with distinct storage from `collection`.
    *
    * @param collection The collection whose elements are to be matched.
    * @param max The maximum number of elements in the returned collection.
@@ -69,10 +89,14 @@ public class CollectionUtils {
     checkArgument(max >= 0, "max must not be negative");
     checkNotNull(predicate);
 
-    return collection.stream().filter(predicate).limit(max).collect(Collectors.toList());
+    return collection.stream().filter(predicate).limit(max).collect(toArrayList());
   }
 
-  /** return a such that a exists in c1 and a exists in c2. always returns a new collection. */
+  /**
+   * Returns a such that a exists in c1 and a exists in c2. Always returns a new collection.
+   *
+   * <p>Returns a mutable list with distinct storage from `collection`.
+   */
   public static <T> List<T> intersection(
       final Collection<T> collection1, final Collection<T> collection2) {
     if (collection1 == null
@@ -83,10 +107,14 @@ public class CollectionUtils {
     }
     final Collection<T> c2 =
         (collection2 instanceof Set) ? collection2 : ImmutableSet.copyOf(collection2);
-    return collection1.stream().distinct().filter(c2::contains).collect(Collectors.toList());
+    return collection1.stream().distinct().filter(c2::contains).collect(toArrayList());
   }
 
-  /** Returns a such that a exists in c1 but not in c2. Always returns a new collection. */
+  /**
+   * Returns a such that a exists in c1 but not in c2. Always returns a new collection.
+   *
+   * <p>Returns a mutable list with distinct storage from `collection`.
+   */
   public static <T> List<T> difference(
       final Collection<T> collection1, final Collection<T> collection2) {
     if (collection1 == null || collection1.isEmpty()) {
@@ -98,7 +126,7 @@ public class CollectionUtils {
 
     final Collection<T> c2 =
         (collection2 instanceof Set) ? collection2 : ImmutableSet.copyOf(collection2);
-    return collection1.stream().distinct().filter(not(c2::contains)).collect(Collectors.toList());
+    return collection1.stream().distinct().filter(not(c2::contains)).collect(toArrayList());
   }
 
   /**
@@ -119,6 +147,8 @@ public class CollectionUtils {
   /**
    * Creates a sorted, mutable collection containing the specified elements that will maintain its
    * sort order according to the specified comparator as elements are added or removed.
+   *
+   * <p>Returns a mutable collection with distinct storage from `elements`.
    */
   public static <T> Collection<T> createSortedCollection(
       final Collection<T> elements, final @Nullable Comparator<T> comparator) {
@@ -129,5 +159,10 @@ public class CollectionUtils {
 
   public static <T> T getAny(final Iterable<T> elements) {
     return elements.iterator().next();
+  }
+
+  /** Like Collectors.toList() but guarantees that the returned object is a mutable ArrayList. */
+  public static <T> Collector<T, ?, List<T>> toArrayList() {
+    return Collectors.toCollection(ArrayList::new);
   }
 }

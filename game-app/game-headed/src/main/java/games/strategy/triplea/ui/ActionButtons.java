@@ -143,7 +143,8 @@ public class ActionButtons extends JPanel {
     changeTo(gamePlayer, repairPanel);
   }
 
-  public void changeToProduce(final GamePlayer gamePlayer) {
+  public void changeToProduce(final GamePlayer gamePlayer, final boolean keepCurrentPurchase) {
+    purchasePanel.setKeepCurrentPurchase(keepCurrentPurchase);
     changeTo(gamePlayer, purchasePanel);
   }
 

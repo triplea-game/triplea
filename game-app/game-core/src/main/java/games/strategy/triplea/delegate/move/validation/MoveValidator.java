@@ -54,6 +54,7 @@ import lombok.AllArgsConstructor;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
 
 /** Responsible for validating unit movement. */
 @AllArgsConstructor
@@ -644,8 +645,7 @@ public class MoveValidator {
     if (!Properties.getMovementByTerritoryRestricted(data.getProperties())) {
       return result;
     }
-    final RulesAttachment ra =
-        (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+    final RulesAttachment ra = player.getRulesAttachment();
     if (ra == null || ra.getMovementRestrictionTerritories() == null) {
       return result;
     }
@@ -805,58 +805,44 @@ public class MoveValidator {
       }
     }
     // test for stack limits per unit
+    final PlayerAttachment pa = PlayerAttachment.get(player);
+    final Set<Triple<Integer, String, Set<UnitType>>> playerMovementLimit =
+        (pa != null ? pa.getMovementLimit() : Set.of());
+    final Set<Triple<Integer, String, Set<UnitType>>> playerAttackingLimit =
+        (pa != null ? pa.getAttackingLimit() : Set.of());
+    final Predicate<Unit> hasMovementOrAttackingLimit =
+        unit -> {
+          final var ua = unit.getUnitAttachment();
+          if (ua.getMovementLimit() != null || ua.getAttackingLimit() != null) {
+            return true;
+          }
+          for (final var limit : playerMovementLimit) {
+            if (limit.getThird().contains(unit.getType())) {
+              return true;
+            }
+          }
+          for (final var limit : playerAttackingLimit) {
+            if (limit.getThird().contains(unit.getType())) {
+              return true;
+            }
+          }
+          return false;
+        };
     final Collection<Unit> unitsWithStackingLimits =
-        CollectionUtils.getMatches(
-            units, Matches.unitHasMovementLimit().or(Matches.unitHasAttackingLimit()));
+        CollectionUtils.getMatches(units, hasMovementOrAttackingLimit);
     for (final Territory t : route.getSteps()) {
-      final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
+      final String limitType;
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
           || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(player))) {
-        for (final Unit unit : unitsWithStackingLimits) {
-          final UnitType ut = unit.getType();
-          int maxAllowed =
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "attackingLimit",
-                  ut,
-                  t,
-                  player,
-                  data.getRelationshipTracker(),
-                  data.getProperties());
-          maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
-          if (maxAllowed > 0) {
-            unitsAllowedSoFar.add(unit);
-          } else {
-            result.addDisallowedUnit(
-                "UnitType " + ut.getName() + " has reached stacking limit", unit);
-          }
-        }
-        if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-            "attackingLimit", units, t, player, data)) {
-          return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
-        }
+        limitType = UnitStackingLimitFilter.ATTACKING_LIMIT;
       } else {
-        for (final Unit unit : unitsWithStackingLimits) {
-          final UnitType ut = unit.getType();
-          int maxAllowed =
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "movementLimit",
-                  ut,
-                  t,
-                  player,
-                  data.getRelationshipTracker(),
-                  data.getProperties());
-          maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
-          if (maxAllowed > 0) {
-            unitsAllowedSoFar.add(unit);
-          } else {
-            result.addDisallowedUnit(
-                "UnitType " + ut.getName() + " has reached stacking limit", unit);
-          }
-        }
-        if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-            "movementLimit", units, t, player, data)) {
-          return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
-        }
+        limitType = UnitStackingLimitFilter.MOVEMENT_LIMIT;
+      }
+      final Collection<Unit> allowedUnits =
+          UnitStackingLimitFilter.filterUnits(unitsWithStackingLimits, limitType, player, t);
+      for (Unit unit : CollectionUtils.difference(unitsWithStackingLimits, allowedUnits)) {
+        result.addDisallowedUnit(
+            "Unit type " + unit.getType().getName() + " has reached stacking limit", unit);
       }
     }
 

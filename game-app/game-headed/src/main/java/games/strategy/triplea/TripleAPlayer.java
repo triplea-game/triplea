@@ -147,7 +147,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (GameStep.isTechStep(name)) {
       tech();
     } else if (GameStep.isPurchaseOrBidStep(name)) {
-      purchase(GameStepPropertiesHelper.isBid(getGameData()));
+      purchase(GameStepPropertiesHelper.isBid(getGameData()), false);
       if (!GameStepPropertiesHelper.isBid(getGameData())) {
         ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
         // TODO only do forum post if there is a combat
@@ -414,7 +414,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDie(unitsCantFight));
   }
 
-  private void purchase(final boolean bid) {
+  private void purchase(final boolean bid, final boolean keepCurrentPurchase) {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
@@ -464,7 +464,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
           if (error != null) {
             ui.notifyError(error);
             // don't give up, keep going
-            purchase(bid);
+            purchase(bid, true);
           }
         }
       }
@@ -472,7 +472,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (isOnlyRepairIfDisabled) {
       return;
     }
-    final IntegerMap<ProductionRule> prod = ui.getProduction(gamePlayer, bid);
+    final IntegerMap<ProductionRule> prod = ui.getProduction(gamePlayer, bid, keepCurrentPurchase);
     if (prod == null) {
       return;
     }
@@ -492,7 +492,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (purchaseError != null) {
       ui.notifyError(purchaseError);
       // don't give up, keep going
-      purchase(bid);
+      purchase(bid, true);
     }
   }
 

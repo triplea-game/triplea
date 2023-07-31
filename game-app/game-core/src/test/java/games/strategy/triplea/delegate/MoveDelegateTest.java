@@ -289,7 +289,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testCantBlitzNuetral() {
+  void testCantBlitzNeutral() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route(equatorialAfrica, westAfrica, algeria);
@@ -710,19 +710,16 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // move carriers to ensure they can't go anywhere
     route = new Route(congoSeaZone, westAfricaSea, northAtlantic);
     Collection<Unit> units =
-        new ArrayList<>(
-            CollectionUtils.getMatches(
-                gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits(),
-                Matches.unitIsCarrier()));
+        CollectionUtils.getMatches(
+            gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits(),
+            Matches.unitIsCarrier());
     results = delegate.move(units, route);
     assertValid(results);
     // move carriers to ensure they can't go anywhere
     route = new Route(redSea, eastMediteranean, blackSea);
     units =
-        new ArrayList<>(
-            CollectionUtils.getMatches(
-                gameData.getMap().getTerritory(redSea.toString()).getUnits(),
-                Matches.unitIsCarrier()));
+        CollectionUtils.getMatches(
+            gameData.getMap().getTerritory(redSea.toString()).getUnits(), Matches.unitIsCarrier());
     results = delegate.move(units, route);
     assertValid(results);
     // make sure the place cant use it to land
@@ -989,8 +986,6 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // Get the defending land units that and their number
     retreatingLandUnits.addAll(
         karelia.getUnitCollection().getMatches(Matches.isUnitAllied(british)));
-    final List<Unit> defendingLandUnits = new ArrayList<>();
-    final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =
         gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
@@ -1025,10 +1020,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final OffensiveGeneralRetreat offensiveGeneralRetreat =
         new OffensiveGeneralRetreat((BattleState) inBalticSeaZone, (BattleActions) inBalticSeaZone);
     offensiveGeneralRetreat.execute(mock(ExecutionStack.class), bridge);
-    // Get the total number of units that should be left
-    final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
-    assertEquals(defendingLandSizeInt, postCountInt);
+    assertEquals(preCountInt, retreatingLandSizeInt);
   }
 
   @Test
@@ -1052,11 +1045,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> retreatingLandUnits =
         new ArrayList<>(karelia.getUnitCollection().getMatches(Matches.isUnitAllied(russians)));
     final int retreatingLandSizeInt = retreatingLandUnits.size();
-    // Get the defending land units that and their number
-    final List<Unit> defendingLandUnits = new ArrayList<>();
     retreatingLandUnits.addAll(
         karelia.getUnitCollection().getMatches(Matches.isUnitAllied(british)));
-    final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =
         gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
@@ -1091,10 +1081,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final OffensiveGeneralRetreat offensiveGeneralRetreat =
         new OffensiveGeneralRetreat((BattleState) inBalticSeaZone, (BattleActions) inBalticSeaZone);
     offensiveGeneralRetreat.execute(mock(ExecutionStack.class), bridge);
-    // Get the total number of units that should be left
-    final int postCountInt = preCountInt - retreatingLandSizeInt;
     // Compare the number of units in Finland to begin with the number after retreating
-    assertEquals(defendingLandSizeInt, postCountInt);
+    assertEquals(preCountInt, retreatingLandSizeInt);
   }
 
   @Test

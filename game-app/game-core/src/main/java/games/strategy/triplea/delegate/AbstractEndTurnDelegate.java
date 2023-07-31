@@ -231,7 +231,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     }
     if (Properties.getGiveUnitsByTerritory(getData().getProperties())
         && pa != null
-        && pa.getGiveUnitControl() != null
         && !pa.getGiveUnitControl().isEmpty()) {
       changeUnitOwnership(bridge);
     }

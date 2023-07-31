@@ -150,7 +150,7 @@ public class IndividualUnitPanel extends JPanel {
       final int maxForThis = current + newMax;
       entry.setMax(maxForThis);
     }
-    leftToSelect.setText("Left to select:" + newMax);
+    leftToSelect.setText("Left to select: " + newMax);
     textFieldPurelyForListening.setValue(0);
   }
 

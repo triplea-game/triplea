@@ -79,7 +79,6 @@ import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.xml.TestMapGameData;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -1384,8 +1383,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
         bridge,
         invocation -> {
           final Collection<Unit> selectFrom = invocation.getArgument(0);
-          return new CasualtyDetails(
-              List.of(selectFrom.iterator().next()), new ArrayList<>(), false);
+          return new CasualtyDetails(List.of(selectFrom.iterator().next()), List.of(), false);
         });
     whenGetRandom(bridge)
         .thenAnswer(withValues(0))

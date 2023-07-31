@@ -163,6 +163,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     final GameData data = getData();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final GamePlayer player = data.getSequence().getStep().getPlayerId();
+      if (player == null) {
+        return;
+      }
       unitsToPlace = UnitSeparator.categorize(player.getUnits());
     }
 
@@ -205,9 +208,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       if (!territory.isWater() && !territory.isOwnedBy(getCurrentPlayer())) {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
-          if ((pa == null
-                  || pa.getGiveUnitControl() == null
-                  || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
+          if ((pa == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
               && !territory.anyUnitsMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return new PlaceableUnits();
           }
@@ -240,8 +241,8 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       if (production.isError()) {
         JOptionPane.showMessageDialog(
             getTopLevelAncestor(),
-            production.getErrorMessage(),
-            "No units",
+            production.getErrorMessage() + "\n\n",
+            "Cannot produce units",
             JOptionPane.INFORMATION_MESSAGE);
       }
       return production;
