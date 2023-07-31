@@ -489,8 +489,7 @@ public class MustFightBattle extends DependentBattle
     isOver = true;
     battleTracker.removeBattle(this, bridge.getData());
 
-    // Must clear transportedby for allied air on carriers for both attacking units and retreating
-    // units
+    // Must clear transportedBy for allied air on carriers for both attacking and retreating units
     final CompositeChange clearAlliedAir =
         TransportTracker.clearTransportedByForAlliedAirOnCarrier(
             attackingUnits, battleSite, attacker, gameData);
@@ -515,22 +514,16 @@ public class MustFightBattle extends DependentBattle
       final IDelegateBridge bridge, final BattleState.Side... sides) {
     for (final Side side : sides) {
       if (side == OFFENSE) {
-        damagedChangeInto(
-            attacker,
-            attackingUnits,
-            CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)),
-            bridge,
-            side);
+        Collection<Unit> killed =
+            CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker));
+        damagedChangeInto(attacker, attackingUnits, killed, bridge, side);
         removeUnits(attackingWaitingToDie, bridge, battleSite, side);
         attackingWaitingToDie.clear();
       } else {
-        damagedChangeInto(
-            defender,
-            defendingUnits,
+        Collection<Unit> killed =
             CollectionUtils.getMatches(
-                killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()),
-            bridge,
-            side);
+                killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate());
+        damagedChangeInto(defender, defendingUnits, killed, bridge, side);
         removeUnits(defendingWaitingToDie, bridge, battleSite, side);
         defendingWaitingToDie.clear();
       }
@@ -852,10 +845,10 @@ public class MustFightBattle extends DependentBattle
     }
 
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
-    final Predicate<Territory> conqueuredOrEnemy =
+    final Predicate<Territory> conqueredOrEnemy =
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(attacker)
             .or(Matches.territoryIsWater().and(Matches.territoryWasFoughtOver(battleTracker)));
-    possible.removeAll(CollectionUtils.getMatches(possible, conqueuredOrEnemy));
+    possible.removeAll(CollectionUtils.getMatches(possible, conqueredOrEnemy));
 
     // the battle site is in the attacking from if sea units are fighting a submerged sub
     possible.remove(battleSite);
