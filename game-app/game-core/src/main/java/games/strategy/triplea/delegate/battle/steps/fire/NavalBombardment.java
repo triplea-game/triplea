@@ -41,11 +41,11 @@ public class NavalBombardment implements BattleStep {
   protected final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     return !valid()
         ? List.of()
         : getSteps().stream()
-            .flatMap(step -> step.getNames().stream())
+            .flatMap(step -> step.getAllStepDetails().stream())
             .collect(Collectors.toList());
   }
 

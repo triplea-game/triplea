@@ -80,11 +80,11 @@ public class OffensiveFirstStrike implements BattleStep {
   }
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     return this.state == State.NOT_APPLICABLE
         ? List.of()
         : getSteps().stream()
-            .flatMap(step -> step.getNames().stream())
+            .flatMap(step -> step.getAllStepDetails().stream())
             .collect(Collectors.toList());
   }
 

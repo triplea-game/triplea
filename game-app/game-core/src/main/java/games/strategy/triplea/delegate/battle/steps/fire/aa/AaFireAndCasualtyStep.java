@@ -34,9 +34,9 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
   protected final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     return getSteps().stream()
-        .flatMap(step -> step.getNames().stream())
+        .flatMap(step -> step.getAllStepDetails().stream())
         .collect(Collectors.toList());
   }
 

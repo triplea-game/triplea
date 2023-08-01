@@ -39,7 +39,7 @@ class ClearFirstStrikeCasualtiesTest {
     final ClearFirstStrikeCasualties clearFirstStrikeCasualties =
         new ClearFirstStrikeCasualties(battleState, battleActions);
 
-    assertThat(clearFirstStrikeCasualties.getNames(), hasSize(sides.isEmpty() ? 0 : 1));
+    assertThat(clearFirstStrikeCasualties.getAllStepDetails(), hasSize(sides.isEmpty() ? 0 : 1));
 
     clearFirstStrikeCasualties.execute(executionStack, delegateBridge);
 

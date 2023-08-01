@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -70,12 +69,11 @@ public class ClearFirstStrikeCasualties implements BattleStep {
   }
 
   @Override
-  public List<String> getNames() {
-    final List<String> steps = new ArrayList<>();
+  public List<StepDetails> getAllStepDetails() {
     if (offenseHasSneakAttack() || defenseHasSneakAttack()) {
-      steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
+      return List.of(new StepDetails(REMOVE_SNEAK_ATTACK_CASUALTIES, this));
     }
-    return steps;
+    return List.of();
   }
 
   @Override

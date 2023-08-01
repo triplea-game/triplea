@@ -33,13 +33,13 @@ public class RemoveUnprotectedUnits implements BattleStep {
   private final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     if (battleState.getBattleSite().isWater()
         && Properties.getTransportCasualtiesRestricted(battleState.getGameData().getProperties())
         && (battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsSeaTransport())
             || battleState.filterUnits(ALIVE, DEFENSE).stream()
                 .anyMatch(Matches.unitIsSeaTransport()))) {
-      return List.of(REMOVE_UNESCORTED_TRANSPORTS);
+      return List.of(new StepDetails(REMOVE_UNESCORTED_TRANSPORTS, this));
     }
     return List.of();
   }

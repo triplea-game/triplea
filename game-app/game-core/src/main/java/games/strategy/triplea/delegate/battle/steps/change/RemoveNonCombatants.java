@@ -28,7 +28,7 @@ public class RemoveNonCombatants implements BattleStep {
   }
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     return List.of();
   }
 

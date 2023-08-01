@@ -1486,6 +1486,9 @@
                                 A unit which can not perform amphibious assaults may instead disembark during non-combat
                                 can be set to "all", or "none", or a list of some transports. if this option is not present, it defaults to "all" -->
                          <option name="canInvadeOnlyFrom" value="transport:jp_transport:air_transport:super_carrier"/>
+
+                         <!-- For MustFightBattleTest.testStepNamesChangeDuringCombat -->
+                         <option name="canNotTarget" value="fighter" />
                 </attachment>
 
                 <!-- Armour -->
@@ -1532,6 +1535,11 @@
                          <option name="airAttack" value="2"/>
                          <option name="fuelCost" value="Fuel" count="1"/>
                          <option name="fuelFlatCost" value="Fuel" count="2"/>
+
+                        <!-- For MustFightBattleTest.testStepNamesChangeDuringCombat -->
+                        <option name="isAAforCombatOnly" value="true"/>
+                        <option name="offensiveAttackAA" value="1"/>
+                        <option name="targetsAA" value="artillery"/>
                 </attachment>
 
                 <attachment name="unitAttachment" attachTo="jp_fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">

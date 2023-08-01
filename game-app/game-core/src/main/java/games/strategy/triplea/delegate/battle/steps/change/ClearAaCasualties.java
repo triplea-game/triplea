@@ -17,7 +17,7 @@ public class ClearAaCasualties implements BattleStep {
   protected final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     return List.of();
   }
 

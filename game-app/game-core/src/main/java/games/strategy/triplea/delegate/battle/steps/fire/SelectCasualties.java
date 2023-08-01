@@ -37,8 +37,8 @@ public class SelectCasualties implements BattleStep {
   private final BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> selectCasualties;
 
   @Override
-  public List<String> getNames() {
-    return List.of(getName());
+  public List<StepDetails> getAllStepDetails() {
+    return List.of(new StepDetails(getName(), this));
   }
 
   private String getName() {

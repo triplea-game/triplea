@@ -34,7 +34,7 @@ class OffensiveGeneralTest {
               .defendingUnits(List.of(givenAnyUnit()))
               .build();
       final OffensiveGeneral offensiveGeneral = new OffensiveGeneral(battleState, battleActions);
-      assertThat(offensiveGeneral.getNames(), hasSize(3));
+      assertThat(offensiveGeneral.getAllStepDetails(), hasSize(3));
     }
 
     @Test
@@ -46,7 +46,7 @@ class OffensiveGeneralTest {
               .defendingUnits(List.of(givenAnyUnit()))
               .build();
       final OffensiveGeneral offensiveGeneral = new OffensiveGeneral(battleState, battleActions);
-      assertThat(offensiveGeneral.getNames(), is(empty()));
+      assertThat(offensiveGeneral.getAllStepDetails(), is(empty()));
     }
   }
 }
