@@ -814,7 +814,7 @@ public class MustFightBattle extends DependentBattle
       stepStrings.add(stepName);
       if (details.getStep() instanceof SelectCasualties) {
         SelectCasualties step = (SelectCasualties) details.getStep();
-        // Note: We don't copy the list since the steps will be destroyed.
+        // Note: No need to copy since `step` is a temp that won't outlive this call.
         stepFiringUnits.put(stepName, step.getFiringGroup().getFiringUnits());
       }
     }
