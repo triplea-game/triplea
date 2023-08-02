@@ -25,6 +25,7 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.HistoryWriter;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IRemote;
@@ -117,13 +118,17 @@ public class ServerGame extends AbstractGame {
     this.clientNetworkBridge = clientNetworkBridge;
     this.launchAction = launchAction;
     this.inGameLobbyWatcher = inGameLobbyWatcher;
+    // Keep a ref to the history writer. This not only makes the calls below more concise, but also
+    // prevents a need to grab the lock on gameData (as its history object can get reset temporarily
+    // during game cloning operations for the battle calculator, e.g. by AIs).
+    final HistoryWriter historyWriter = gameData.getHistory().getHistoryWriter();
     gameModifiedChannel =
         new IGameModifiedChannel() {
           @Override
           public void gameDataChanged(final Change change) {
             assertCorrectCaller();
             gameData.performChange(change);
-            gameData.getHistory().getHistoryWriter().addChange(change);
+            historyWriter.addChange(change);
           }
 
           private void assertCorrectCaller() {
@@ -143,21 +148,18 @@ public class ServerGame extends AbstractGame {
           @Override
           public void startHistoryEvent(final String event) {
             assertCorrectCaller();
-            gameData.getHistory().getHistoryWriter().startEvent(event);
+            historyWriter.startEvent(event);
           }
 
           @Override
           public void addChildToEvent(final String text, final Object renderingData) {
             assertCorrectCaller();
-            gameData
-                .getHistory()
-                .getHistoryWriter()
-                .addChildToEvent(new EventChild(text, renderingData));
+            historyWriter.addChildToEvent(new EventChild(text, renderingData));
           }
 
           void setRenderingData(final Object renderingData) {
             assertCorrectCaller();
-            gameData.getHistory().getHistoryWriter().setRenderingData(renderingData);
+            historyWriter.setRenderingData(renderingData);
           }
 
           @Override
@@ -172,10 +174,7 @@ public class ServerGame extends AbstractGame {
             if (loadedFromSavedGame) {
               return;
             }
-            gameData
-                .getHistory()
-                .getHistoryWriter()
-                .startNextStep(stepName, delegateName, player, displayName);
+            historyWriter.startNextStep(stepName, delegateName, player, displayName);
           }
 
           // nothing to do, we call this
