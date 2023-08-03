@@ -1126,7 +1126,7 @@ public class ProTerritoryManager {
               Predicate<Unit> canFitOnTransport =
                   canBeTransported.and(u -> u.getUnitAttachment().getTransportCost() <= capacity);
               for (Territory loadTerritory : map.getNeighbors(from)) {
-                if (loadTerritory.getUnitCollection().anyMatch(canFitOnTransport)) {
+                if (loadTerritory.anyUnitsMatch(canFitOnTransport)) {
                   loadFromTerritories.add(loadTerritory);
                   haveUnitsToTransport = true;
                 }

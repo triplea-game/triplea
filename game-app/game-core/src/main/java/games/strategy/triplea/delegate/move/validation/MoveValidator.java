@@ -833,7 +833,7 @@ public class MoveValidator {
     for (final Territory t : route.getSteps()) {
       final String limitType;
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
-          || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(player))) {
+          || t.anyUnitsMatch(Matches.unitIsEnemyOf(player))) {
         limitType = UnitStackingLimitFilter.ATTACKING_LIMIT;
       } else {
         limitType = UnitStackingLimitFilter.MOVEMENT_LIMIT;
@@ -1307,7 +1307,7 @@ public class MoveValidator {
           && nonParatroopersPresent(player, landAndAir)
           && !onlyIgnoredUnitsOnPath(route, player, false)
           && !AbstractMoveDelegate.getBattleTracker(data)
-              .didAllThesePlayersJustGoToWarThisTurn(player, route.getEnd().getUnits(), data)) {
+              .didAllThesePlayersJustGoToWarThisTurn(player, route.getEnd().getUnits())) {
         return result.setErrorReturnResult("Cannot load when enemy sea units are present");
       }
       if (!isEditMode) {
@@ -1718,12 +1718,10 @@ public class MoveValidator {
 
     // Avoid looking at the dependents
     final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent =
-        new ArrayList<>(
-            CollectionUtils.getMatches(
-                units,
-                Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
-                        units, player, true)
-                    .negate()));
+        CollectionUtils.getMatches(
+            units,
+            Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, player, true)
+                .negate());
 
     // If start and end are land, try a land route. Don't force a land route, since planes may be
     // moving

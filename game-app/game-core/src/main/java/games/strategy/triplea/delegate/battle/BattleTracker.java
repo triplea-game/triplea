@@ -139,7 +139,7 @@ public class BattleTracker implements Serializable {
   }
 
   public boolean didAllThesePlayersJustGoToWarThisTurn(
-      final GamePlayer p1, final Collection<Unit> enemyUnits, final GameState data) {
+      final GamePlayer p1, final Collection<Unit> enemyUnits) {
     final Set<GamePlayer> enemies = new HashSet<>();
     for (final Unit u : CollectionUtils.getMatches(enemyUnits, Matches.unitIsEnemyOf(p1))) {
       enemies.add(u.getOwner());
@@ -774,9 +774,8 @@ public class BattleTracker implements Serializable {
     }
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
-    if (territory
-        .getUnitCollection()
-        .anyMatch(Matches.unitIsEnemyOf(gamePlayer).and(Matches.unitCanBeDamaged()))) {
+    if (territory.anyUnitsMatch(
+        Matches.unitIsEnemyOf(gamePlayer).and(Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -1088,7 +1087,7 @@ public class BattleTracker implements Serializable {
   public Collection<Territory> getPendingBattleSites(final boolean bombing) {
     final Collection<Territory> battles = new ArrayList<>();
     for (final IBattle battle : pendingBattles) {
-      if (battle != null && !battle.isEmpty() && battle.getBattleType().isBombingRun() == bombing) {
+      if (!battle.isEmpty() && battle.getBattleType().isBombingRun() == bombing) {
         battles.add(battle.getTerritory());
       }
     }
@@ -1098,7 +1097,7 @@ public class BattleTracker implements Serializable {
   public BattleListing getPendingBattleSites() {
     final Map<BattleType, Collection<Territory>> battles = new HashMap<>();
     for (final IBattle battle : pendingBattles) {
-      if (battle != null && !battle.isEmpty()) {
+      if (!battle.isEmpty()) {
         Collection<Territory> territories = battles.get(battle.getBattleType());
         if (territories == null) {
           territories = new HashSet<>();
@@ -1229,8 +1228,7 @@ public class BattleTracker implements Serializable {
     // Then we will have a wave of battles for the SBR. AA guns will shoot, and we'll roll for
     // damage.
     // CAUTION: air raid battles when completed will potentially spawn new bombing raids. Would be
-    // good to refactor
-    // that out, in the meantime be aware there are mass side effects in these calls..
+    // good to refactor that, in the meantime be aware there are mass side effects in these calls..
 
     for (final Territory t : pendingBattleSiteSupplier.get()) {
       final IBattle airRaid = pendingBattleFunction.apply(t, BattleType.AIR_RAID);
@@ -1287,9 +1285,8 @@ public class BattleTracker implements Serializable {
 
   private static List<Unit> getPossibleDefendingUnits(
       final Territory territory, final Collection<Unit> defenders) {
-    return new ArrayList<>(
-        CollectionUtils.getMatches(
-            defenders, Matches.unitCanBeInBattle(false, !territory.isWater(), 1, true)));
+    return CollectionUtils.getMatches(
+        defenders, Matches.unitCanBeInBattle(false, !territory.isWater(), 1, true));
   }
 
   /** Fight battle automatically if there is only one left to pick from. */
