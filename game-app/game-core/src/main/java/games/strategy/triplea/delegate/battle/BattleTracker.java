@@ -63,6 +63,9 @@ import org.triplea.util.Tuple;
 public class BattleTracker implements Serializable {
   private static final long serialVersionUID = 8806010984321554662L;
 
+  public static final String BOMBING_DEPENDENCY_ERROR =
+      "Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!";
+
   // List of pending battles
   private final Set<IBattle> pendingBattles = new HashSet<>();
   // List of battle dependencies
@@ -773,26 +776,13 @@ public class BattleTracker implements Serializable {
       }
     }
     // Remove any bombing raids against captured territory
-    // TODO: see if necessary
     if (territory.anyUnitsMatch(
         Matches.unitIsEnemyOf(gamePlayer).and(Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBombingBattle(territory);
-      if (bombingBattle != null) {
-        final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
-        getBattleRecords()
-            .addResultToBattle(
-                gamePlayer,
-                bombingBattle.getBattleId(),
-                null,
-                0,
-                0,
-                BattleRecord.BattleResultDescription.NO_BATTLE,
-                results);
-        bombingBattle.cancelBattle(bridge);
-        removeBattle(bombingBattle, data);
-        throw new IllegalStateException(
-            "Bombing Raids should be dealt with first! Be sure the battle "
-                + "has dependencies set correctly!");
+      // Only throw an error if the battle is not empty. An empty one could legitimately happen when
+      // you send a unit to bomb somewhere, but then move it again out of the battle site.
+      if (bombingBattle != null && !bombingBattle.isEmpty()) {
+        throw new IllegalStateException(BOMBING_DEPENDENCY_ERROR);
       }
     }
     captureOrDestroyUnits(territory, gamePlayer, newOwner, bridge, changeTracker);
@@ -1227,8 +1217,9 @@ public class BattleTracker implements Serializable {
     // First we'll fight all of the air battles (air raids)
     // Then we will have a wave of battles for the SBR. AA guns will shoot, and we'll roll for
     // damage.
-    // CAUTION: air raid battles when completed will potentially spawn new bombing raids. Would be
-    // good to refactor that, in the meantime be aware there are mass side effects in these calls..
+    // CAUTION: air raid battles when completed will potentially spawn new bombing raids, hence
+    // the user of a Supplier for the param. Would be good to refactor that out, in the meantime be
+    // aware there are mass side effects in these calls..
 
     for (final Territory t : pendingBattleSiteSupplier.get()) {
       final IBattle airRaid = pendingBattleFunction.apply(t, BattleType.AIR_RAID);
