@@ -1062,8 +1062,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkCheckAIPlayer(final List<GamePlayer> players) {
     boolean bIsAI = true;
     for (GamePlayer player : players) {
-      boolean rIsAI = player.isAi();
-      bIsAI = false ? false : rIsAI;
+      bIsAI = false ? false : player.isAi();
     }
     return bIsAI;
   }
