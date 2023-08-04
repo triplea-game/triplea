@@ -1060,11 +1060,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private boolean checkCheckAIPlayer(final List<GamePlayer> players) {
-    boolean bIsAI = true;
+    boolean found = true;
     for (GamePlayer player : players) {
-      bIsAI = false ? false : player.isAi();
+      found = false ? false : player.isAi();
     }
-    return bIsAI;
+    return found;
   }
 
   private boolean checkAtWar(
@@ -1099,15 +1099,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   private boolean checkHaveResources(final List<GamePlayer> players) {
     final boolean toSum = (haveResources[1].equalsIgnoreCase("sum") || haveResources[1].equalsIgnoreCase("add"));
-    int rTotal = 0;
+    int total = 0;
     for (GamePlayer player : players) {
         for (int i = toSum ? 2 : 1; i < haveResources.length; i++) {
            final Resource resource = getData().getResourceList().getResource(haveResources[i]);
-           int rHave = player.getResources().getQuantity(resource);
-           rTotal = toSum ? rTotal + rHave : Math.max(rTotal, rHave);
+           int amount = player.getResources().getQuantity(resource);
+          total = toSum ? total + amount : Math.max(total, amount);
         }
     }
-    return rTotal >= getInt(haveResources[0]);
+    return total >= getInt(haveResources[0]);
   }
   @Override
   public void validate(final GameState data) {
