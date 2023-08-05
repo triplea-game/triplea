@@ -47,7 +47,7 @@ public class ErrorReportBodyFormatter {
             .map(msg -> "## Log Message\n" + msg + "\n\n")
             .orElse("")
         + "## TripleA Version\n"
-        + linkifiedVersion
+        + engineVersionLink
         + "\n\n"
         + "## Java Version\n"
         + SystemProperties.getJavaVersion()
