@@ -182,7 +182,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
                   .map(
                       worker ->
                           // Note: Although we're running in parallel, the data passed in does not
-                          // get modified, so no copies are necessarily. Also, the outer calculate()
+                          // get modified, so no copies are necessary. Also, the outer calculate()
                           // call is synchronous, so there's no problem if the caller later modifies
                           // the collections that were provided.
                           worker.calculate(
