@@ -33,6 +33,10 @@ public class ErrorReportBodyFormatter {
       @Nullable final String mapName,
       final LoggerRecord logRecord,
       final Version engineVersion) {
+    String engineVersionLink =
+        String.format(
+            "[%s](https://github.com/triplea-game/triplea/releases/tag/%s)",
+            engineVersion, engineVersion);
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
             .map(description -> "## User Description\n" + description + "\n\n")
             .orElse("")
@@ -43,7 +47,7 @@ public class ErrorReportBodyFormatter {
             .map(msg -> "## Log Message\n" + msg + "\n\n")
             .orElse("")
         + "## TripleA Version\n"
-        + engineVersion
+        + engineVersionLink
         + "\n\n"
         + "## Java Version\n"
         + SystemProperties.getJavaVersion()
