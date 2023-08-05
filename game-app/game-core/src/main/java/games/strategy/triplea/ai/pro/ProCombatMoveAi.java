@@ -333,7 +333,7 @@ public class ProCombatMoveAi {
       final List<ProTerritory> territoriesToTryToAttack =
           prioritizedTerritories.subList(0, numToAttack);
       ProLogger.debug("Current number of territories: " + numToAttack);
-      tryToAttackTerritories(territoriesToTryToAttack, new ArrayList<>());
+      tryToAttackTerritories(territoriesToTryToAttack, List.of());
 
       // Determine if all attacks are successful
       boolean areSuccessful = true;
@@ -476,7 +476,7 @@ public class ProCombatMoveAi {
             calc.estimateAttackBattleResults(
                 proData,
                 t,
-                new ArrayList<>(attackingUnits),
+                attackingUnits,
                 patd.getMaxEnemyDefenders(player),
                 patd.getMaxBombardUnits());
         final List<Unit> remainingUnitsToDefendWith =
@@ -772,18 +772,14 @@ public class ProCombatMoveAi {
                 enemyAttackOptions.getMax(unloadTerritory).getMaxUnits();
             final ProBattleResult result =
                 calc.calculateBattleResults(
-                    proData,
-                    unloadTerritory,
-                    enemyAttackers,
-                    new ArrayList<>(defenders),
-                    new HashSet<>());
+                    proData, unloadTerritory, enemyAttackers, defenders, List.of());
             final ProBattleResult minResult =
                 calc.calculateBattleResults(
                     proData,
                     unloadTerritory,
                     enemyAttackOptions.getMax(unloadTerritory).getMaxUnits(),
                     territoryTransportAndBombardMap.get(unloadTerritory),
-                    new HashSet<>());
+                    List.of());
             final double minTuvSwing = Math.min(result.getTuvSwing(), minResult.getTuvSwing());
             if (minTuvSwing > 0) {
               enemyTuvSwing += minTuvSwing;
@@ -1811,9 +1807,7 @@ public class ProCombatMoveAi {
         territoriesToAttack.add(t.getTerritory());
       }
       ProLogger.trace("Remaining territories to attack=" + territoriesToAttack);
-      final List<Territory> territoriesToCheck = new ArrayList<>();
-      territoriesToCheck.add(myCapital);
-      territoryManager.populateEnemyAttackOptions(territoriesToAttack, territoriesToCheck);
+      territoryManager.populateEnemyAttackOptions(territoriesToAttack, List.of(myCapital));
       final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
       if (enemyAttackOptions.getMax(myCapital) == null) {
         break;
@@ -1842,7 +1836,7 @@ public class ProCombatMoveAi {
           calc.estimateDefendBattleResults(
               proData,
               myCapital,
-              new ArrayList<>(enemyAttackingUnits),
+              enemyAttackingUnits,
               defenders,
               enemyAttackOptions.getMax(myCapital).getMaxBombardUnits());
       ProLogger.trace(

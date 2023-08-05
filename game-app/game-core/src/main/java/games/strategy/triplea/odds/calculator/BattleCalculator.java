@@ -106,17 +106,7 @@ class BattleCalculator implements IBattleCalculator {
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);
         if (amphibious) {
-          attackingUnits.forEach(
-              unit ->
-                  unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
-                      .ifPresent(
-                          property -> {
-                            try {
-                              property.setValue(true);
-                            } catch (final MutableProperty.InvalidValueException e) {
-                              // ignore
-                            }
-                          }));
+          attackingUnits.forEach(unit -> unit.setWasAmphibious(true));
         }
         battle.setUnits(
             defendingUnits, attackingUnits, bombardingUnits, defender2, territoryEffects2);
