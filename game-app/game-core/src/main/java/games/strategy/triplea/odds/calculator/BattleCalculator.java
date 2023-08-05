@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -106,17 +105,7 @@ class BattleCalculator implements IBattleCalculator {
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);
         if (amphibious) {
-          attackingUnits.forEach(
-              unit ->
-                  unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
-                      .ifPresent(
-                          property -> {
-                            try {
-                              property.setValue(true);
-                            } catch (final MutableProperty.InvalidValueException e) {
-                              // ignore
-                            }
-                          }));
+          attackingUnits.forEach(unit -> unit.setWasAmphibious(true));
         }
         battle.setUnits(
             defendingUnits, attackingUnits, bombardingUnits, defender2, territoryEffects2);

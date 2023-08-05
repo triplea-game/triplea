@@ -261,7 +261,7 @@ public class ProTerritory {
   }
 
   public void putAllAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap) {
-    amphibAttackMap.forEach((unit, amphibUnits) -> putAmphibAttackMap(unit, amphibUnits));
+    amphibAttackMap.forEach(this::putAmphibAttackMap);
   }
 
   public void putAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits) {
