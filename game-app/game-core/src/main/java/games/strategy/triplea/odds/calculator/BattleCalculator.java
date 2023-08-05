@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import lombok.Setter;
-import org.triplea.java.collections.CollectionUtils;
 
 class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
