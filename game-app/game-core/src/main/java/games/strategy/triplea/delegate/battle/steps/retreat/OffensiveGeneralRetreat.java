@@ -107,16 +107,22 @@ public class OffensiveGeneralRetreat implements BattleStep {
     }
 
     if (retreater != null) {
+      final String stepName = getName();
+      // Only send the gotoBattleStep message if the step exists in the UI. It will not exist in the
+      // case where normally retreat is not possible but only becomes possible when there are only
+      // planes left.
+      if (battleState.getStepStrings().contains(stepName)) {
+        final var battleId = battleState.getBattleId();
+        if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+          bridge.sendMessage(new IDisplay.GoToBattleStepMessage(battleId.toString(), stepName));
+        } else {
+          bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, stepName);
+        }
+      }
+
       final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
       final Collection<Territory> possibleRetreatSites =
           retreater.getPossibleRetreatSites(retreatUnits);
-
-      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-        bridge.sendMessage(
-            new IDisplay.GoToBattleStepMessage(battleState.getBattleId().toString(), getName()));
-      } else {
-        bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleState.getBattleId(), getName());
-      }
       final Territory retreatTo =
           battleActions.queryRetreatTerritory(
               battleState,
