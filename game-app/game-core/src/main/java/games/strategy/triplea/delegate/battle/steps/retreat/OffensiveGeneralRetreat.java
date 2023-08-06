@@ -22,6 +22,7 @@ import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.sound.SoundUtils;
@@ -111,7 +112,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
       // Only send the gotoBattleStep message if the step exists in the UI. It will not exist in the
       // case where normally retreat is not possible but only becomes possible when there are only
       // planes left.
-      if (battleState.getStepStrings().contains(stepName)) {
+      if (Optional.ofNullable(battleState.getStepStrings()).orElse(List.of()).contains(stepName)) {
         final var battleId = battleState.getBattleId();
         if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
           bridge.sendMessage(new IDisplay.GoToBattleStepMessage(battleId.toString(), stepName));
