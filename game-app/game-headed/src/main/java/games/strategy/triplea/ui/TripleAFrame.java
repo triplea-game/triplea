@@ -1928,8 +1928,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               });
           final JSplitPane split = new JSplitPane();
           split.setOneTouchExpandable(true);
-          split.setDividerSize(8);
           split.setContinuousLayout(true);
+          split.setDividerSize(8);
           historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
           split.setLeftComponent(historyPanel);
           split.setRightComponent(gameCenterPanel);
