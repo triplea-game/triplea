@@ -418,6 +418,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     gameCenterPanel =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
     gameCenterPanel.setOneTouchExpandable(true);
+    gameCenterPanel.setContinuousLayout(true);
     gameCenterPanel.setDividerSize(8);
     gameCenterPanel.setResizeWeight(1.0);
     gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
@@ -1928,6 +1929,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           final JSplitPane split = new JSplitPane();
           split.setOneTouchExpandable(true);
           split.setDividerSize(8);
+          split.setContinuousLayout(true);
           historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
           split.setLeftComponent(historyPanel);
           split.setRightComponent(gameCenterPanel);
