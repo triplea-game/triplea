@@ -39,7 +39,7 @@ class ChattersTest {
   private static final ChatParticipant CHAT_PARTICIPANT_2 =
       ChatParticipant.builder().userName("player-name2").playerChatId("4444").build();
 
-  private Chatters chatters = new Chatters();
+  private final Chatters chatters = new Chatters();
 
   @Mock private WebSocketSession session;
   @Mock private WebSocketSession session2;

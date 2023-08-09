@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MapTest {
-  private GameData gameData = givenGameData().build();
+  private final GameData gameData = givenGameData().build();
 
   private Territory aa;
   private Territory ab;

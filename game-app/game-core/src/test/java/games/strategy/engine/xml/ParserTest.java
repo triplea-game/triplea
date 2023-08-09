@@ -24,7 +24,7 @@ import java.util.Collection;
 import org.junit.jupiter.api.Test;
 
 class ParserTest {
-  private GameData gameData = TestMapGameData.GAME_EXAMPLE.getGameData();
+  private final GameData gameData = TestMapGameData.GAME_EXAMPLE.getGameData();
 
   @Test
   void testCanCreateData() {

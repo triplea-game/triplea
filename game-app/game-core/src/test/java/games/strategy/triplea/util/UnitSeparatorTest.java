@@ -29,8 +29,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class UnitSeparatorTest {
-  private GameData gameData = givenGameData().build();
-  private GamePlayer player1 = new GamePlayer("player1", gameData);
+  private final GameData gameData = givenGameData().build();
+  private final GamePlayer player1 = new GamePlayer("player1", gameData);
 
   @Mock private MapData mockMapData;
 

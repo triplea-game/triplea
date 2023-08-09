@@ -23,7 +23,7 @@ import org.triplea.java.collections.IntegerMap;
 @ExtendWith(MockitoExtension.class)
 class UnitCollectionTest {
 
-  private GameData mockGameData = givenGameData().build();
+  private final GameData mockGameData = givenGameData().build();
   private UnitType unitTypeOne;
   private UnitType unitTypeTwo;
   private final GamePlayer defaultGamePlayer =

@@ -15,7 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class AiUtilsTest {
-  private GameState gameData = TestMapGameData.REVISED.getGameData();
+  private final GameState gameData = TestMapGameData.REVISED.getGameData();
 
   @Test
   void testCost() {

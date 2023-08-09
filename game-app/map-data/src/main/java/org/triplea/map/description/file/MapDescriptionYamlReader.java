@@ -70,7 +70,7 @@ class MapDescriptionYamlReader {
                 + "Data parsed:\n"
                 + "{}",
             ymlFile.toAbsolutePath(),
-            mapDescriptionYaml.toString());
+            mapDescriptionYaml);
         return Optional.empty();
       }
       return Optional.of(mapDescriptionYaml);

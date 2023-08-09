@@ -30,7 +30,7 @@ class PlayerLeftListenerTest {
   @Mock private WebSocketSession session;
   @Mock private WebSocketMessagingBus webSocketMessagingBus;
 
-  private ArgumentCaptor<PlayerLeftMessage> messageCaptor =
+  private final ArgumentCaptor<PlayerLeftMessage> messageCaptor =
       ArgumentCaptor.forClass(PlayerLeftMessage.class);
 
   @Test

@@ -28,10 +28,10 @@ import org.triplea.swing.SwingAction;
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
   private final JFrame parent;
-  private JButton joinGame;
-  private LobbyGameTableModel gameTableModel;
+  private final JButton joinGame;
+  private final LobbyGameTableModel gameTableModel;
   private final LobbyClient lobbyClient;
-  private JTable gameTable;
+  private final JTable gameTable;
   private final URI lobbyUri;
 
   LobbyGamePanel(

@@ -230,8 +230,10 @@ class DummyPlayerTest {
     private DummyPlayer attacker;
     private DummyPlayer defender;
 
-    private List<Unit> attackers = List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class));
-    private List<Unit> defenders = List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class));
+    private final List<Unit> attackers =
+        List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class));
+    private final List<Unit> defenders =
+        List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class));
 
     @BeforeEach
     void setUp() {

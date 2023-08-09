@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class AllianceTrackerTest {
-  private GameData gameData = TestMapGameData.TEST.getGameData();
+  private final GameData gameData = TestMapGameData.TEST.getGameData();
 
   @Test
   void testAddAlliance() {

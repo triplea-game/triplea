@@ -68,7 +68,7 @@ public class TechTrackerTest {
             new IntegerMap<>(ImmutableMap.of(dummyUnitType, 300)))
         .when(mapper)
         .apply(attachment);
-    final int result = techTracker.sumIntegerMap(mapper, dummyUnitType, techAdvances);
+    final int result = TechTracker.sumIntegerMap(mapper, dummyUnitType, techAdvances);
     assertEquals(319, result);
   }
 
@@ -76,7 +76,7 @@ public class TechTrackerTest {
   void sumNumbers() {
     final AtomicInteger counter = new AtomicInteger(1);
     final int result =
-        techTracker.sumNumbers(
+        TechTracker.sumNumbers(
             a -> {
               assertEquals(attachment, a);
               return counter.getAndUpdate(i -> i * -10);
@@ -100,13 +100,13 @@ public class TechTrackerTest {
 
     // Check that modifying tech via tech tracker (via Change objects), invalidates the cache.
     assertThat(techTracker.getAttackRollsBonus(player, bomber(gameData)), is(0));
-    techTracker.addAdvance(player, bridge, heavyBomber);
+    TechTracker.addAdvance(player, bridge, heavyBomber);
     assertThat(techTracker.getAttackRollsBonus(player, bomber(gameData)), is(1));
-    techTracker.removeAdvance(player, bridge, heavyBomber);
+    TechTracker.removeAdvance(player, bridge, heavyBomber);
     assertThat(techTracker.getAttackRollsBonus(player, bomber(gameData)), is(0));
 
     // Check that modifying the tech frontier also invalidates the cache.
-    techTracker.addAdvance(player, bridge, heavyBomber);
+    TechTracker.addAdvance(player, bridge, heavyBomber);
     assertThat(techTracker.getAttackRollsBonus(player, bomber(gameData)), is(1));
     technologyFrontier.removeAdvance(heavyBomber);
     assertThat(techTracker.getAttackRollsBonus(player, bomber(gameData)), is(0));
@@ -142,12 +142,12 @@ public class TechTrackerTest {
 
     // Add one advance, there should still be nothing fully researched.
     final List<TechnologyFrontier> allAdvances = TechAdvance.getPlayerTechCategories(player);
-    techTracker.addAdvance(player, bridge, allAdvances.get(0).getTechs().get(0));
+    TechTracker.addAdvance(player, bridge, allAdvances.get(0).getTechs().get(0));
     assertThat(TechTracker.getFullyResearchedPlayerTechCategories(player), is(empty()));
 
     // Add the remaining advances from that category.
     for (int i = 1; i < allAdvances.get(0).getTechs().size(); i++) {
-      techTracker.addAdvance(player, bridge, allAdvances.get(0).getTechs().get(i));
+      TechTracker.addAdvance(player, bridge, allAdvances.get(0).getTechs().get(i));
     }
     assertThat(
         TechTracker.getFullyResearchedPlayerTechCategories(player),

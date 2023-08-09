@@ -25,7 +25,7 @@ class SessionSetTest {
   private static final InetAddress IP_0 = IpAddressParser.fromString("99.99.99.0");
   private static final InetAddress IP_1 = IpAddressParser.fromString("99.99.99.11");
 
-  private SessionSet sessionSet = new SessionSet();
+  private final SessionSet sessionSet = new SessionSet();
 
   @Mock private WebSocketSession session;
   @Mock private WebSocketSession session0;

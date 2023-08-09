@@ -30,7 +30,7 @@ public class ScrambleLogic {
   private final GameState data;
   private final GamePlayer player;
   private final Set<Territory> territoriesWithBattles;
-  private BattleTracker battleTracker;
+  private final BattleTracker battleTracker;
   @Getter private final Predicate<Unit> airbaseThatCanScramblePredicate;
   private final Predicate<Territory> canScrambleFromPredicate;
   private final int maxScrambleDistance;

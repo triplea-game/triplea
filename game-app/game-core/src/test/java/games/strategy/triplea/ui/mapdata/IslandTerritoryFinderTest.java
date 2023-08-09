@@ -21,10 +21,10 @@ final class IslandTerritoryFinderTest {
   private static final String LAND_TERR = "Land";
   private static final String LAND_TERR_1 = "Land 1";
 
-  private Polygon inner = new Polygon();
-  private Polygon adjacentInner = new Polygon();
-  private Polygon outer = new Polygon();
-  private Polygon adjacentContainingRectange = new Polygon();
+  private final Polygon inner = new Polygon();
+  private final Polygon adjacentInner = new Polygon();
+  private final Polygon outer = new Polygon();
+  private final Polygon adjacentContainingRectange = new Polygon();
 
   @BeforeEach
   void setUp() {
