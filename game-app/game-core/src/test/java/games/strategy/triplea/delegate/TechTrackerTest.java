@@ -38,20 +38,13 @@ import org.triplea.java.collections.IntegerMap;
 
 public class TechTrackerTest {
   private final GameData data = mock(GameData.class);
-  private final TechTracker techTracker = new TechTracker(data);
   private final TechAbilityAttachment attachment =
       spy(new TechAbilityAttachment("", new NamedAttachable("test", data), data));
-  private final UnitTypeList list = mock(UnitTypeList.class);
   private final UnitType dummyUnitType = mock(UnitType.class);
-  private final String customToString = "CustomToString";
-  private final String testUnitType = "someExistentKey";
   private Collection<TechAdvance> techAdvances;
 
   @BeforeEach
   void setUp() {
-    when(attachment.toString()).thenReturn(customToString);
-    when(data.getUnitTypeList()).thenReturn(list);
-    when(list.getUnitType(testUnitType)).thenReturn(dummyUnitType);
     final TechAdvance advance = mock(TechAdvance.class);
     techAdvances = List.of(advance, advance, advance, advance);
     when(advance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME))
@@ -135,7 +128,6 @@ public class TechTrackerTest {
   @Test
   void getFullyResearchedPlayerTechCategories() {
     GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
-    TechTracker techTracker = gameData.getTechTracker();
     GamePlayer player = americans(gameData);
     IDelegateBridge bridge = newDelegateBridge(player);
     assertThat(TechTracker.getFullyResearchedPlayerTechCategories(player), is(empty()));
