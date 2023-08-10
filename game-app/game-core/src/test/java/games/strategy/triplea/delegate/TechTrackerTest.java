@@ -21,7 +21,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
