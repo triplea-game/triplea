@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 /** A KeyListener that implements row selection in a JTable by prefix-matching typed text. */
 @RequiredArgsConstructor
 public class JTableTypeAheadListener extends KeyAdapter {
-  private static int INPUT_RESET_TIME_MS = 500; // 0.5s
+  private static final int INPUT_RESET_TIME_MS = 500; // 0.5s
 
   private final JTable table;
   // Column that contains text data that should be matched.

@@ -28,7 +28,7 @@ class BattleTrackerTest {
 
   @Mock private IDelegateBridge mockDelegateBridge;
 
-  private GameData mockGameData = givenGameData().build();
+  private final GameData mockGameData = givenGameData().build();
 
   @Mock private GameProperties mockGameProperties;
 

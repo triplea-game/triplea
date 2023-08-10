@@ -33,7 +33,7 @@ class StatusUpdateListenerTest {
   @Mock private WebSocketSession session;
   @Mock private WebSocketMessageContext<PlayerStatusUpdateSentMessage> messageContext;
 
-  private ArgumentCaptor<PlayerStatusUpdateReceivedMessage> messageCaptor =
+  private final ArgumentCaptor<PlayerStatusUpdateReceivedMessage> messageCaptor =
       ArgumentCaptor.forClass(PlayerStatusUpdateReceivedMessage.class);
 
   @Test

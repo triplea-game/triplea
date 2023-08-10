@@ -43,7 +43,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   @SuppressWarnings("unused")
   @Deprecated
   @RemoveOnNextMajorRelease
-  private int[] gridDimensions = null;
+  private final int[] gridDimensions = null;
 
   GameMap(final GameData data) {
     super(data);

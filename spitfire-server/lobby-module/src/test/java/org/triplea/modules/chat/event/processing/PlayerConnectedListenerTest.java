@@ -54,9 +54,9 @@ class PlayerConnectedListenerTest {
   @Mock private WebSocketMessagingBus webSocketMessagingBus;
   private PlayerApiKeyLookupRecord apiKeyLookupRecord;
 
-  private ArgumentCaptor<ChatterListingMessage> responseCaptor =
+  private final ArgumentCaptor<ChatterListingMessage> responseCaptor =
       ArgumentCaptor.forClass(ChatterListingMessage.class);
-  private ArgumentCaptor<PlayerJoinedMessage> broadcastCaptor =
+  private final ArgumentCaptor<PlayerJoinedMessage> broadcastCaptor =
       ArgumentCaptor.forClass(PlayerJoinedMessage.class);
 
   private ChatterSession chatterSession;

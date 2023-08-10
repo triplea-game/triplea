@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
 class TuvCostsCalculatorTest {
-  private GameData gameData = TestMapGameData.TWW.getGameData();
-  private TuvCostsCalculator calculator = new TuvCostsCalculator();
+  private final GameData gameData = TestMapGameData.TWW.getGameData();
+  private final TuvCostsCalculator calculator = new TuvCostsCalculator();
 
   @Test
   void testCostsForTuv() {

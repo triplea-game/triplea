@@ -26,9 +26,9 @@ import java.util.Map.Entry;
 import org.junit.jupiter.api.Test;
 
 class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
-  private GameData gameData = TestMapGameData.REVISED.getGameData();
-  private GamePlayer americansPlayer = GameDataTestUtil.americans(gameData);
-  private UnitType fighterType = GameDataTestUtil.fighter(gameData);
+  private final GameData gameData = TestMapGameData.REVISED.getGameData();
+  private final GamePlayer americansPlayer = GameDataTestUtil.americans(gameData);
+  private final UnitType fighterType = GameDataTestUtil.fighter(gameData);
 
   private static void fight(final IBattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry :

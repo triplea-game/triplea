@@ -280,7 +280,7 @@ public class HistoryLog extends JFrame {
                 } else if (title.startsWith("Battle casualty summary:")) {
                   stringBuilder
                       .append(indent)
-                      .append(conquerStr.toString())
+                      .append(conquerStr)
                       .append(". Battle score ")
                       .append(title.substring(title.indexOf("for attacker is")))
                       .append('\n');
