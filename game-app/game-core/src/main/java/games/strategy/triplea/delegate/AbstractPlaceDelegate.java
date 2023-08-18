@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -980,6 +981,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     } else {
       placeableUnits2 = placeableUnits;
     }
+    // Limit count of each unit type to the max that can be placed based on unit requirements.
+    for (UnitType ut : placeableUnits2.stream().map(Unit::getType).collect(Collectors.toSet())) {
+      var unitsOfType = CollectionUtils.getMatches(placeableUnits2, Matches.unitIsOfType(ut));
+      placeableUnits2.removeAll(getUnitsThatCantBePlacedThatRequireUnits(unitsOfType, to));
+    }
     // now check stacking limits
     return UnitStackingLimitFilter.filterUnits(
         placeableUnits2, PLACEMENT_LIMIT, player, to, produced.getOrDefault(to, List.of()));
@@ -1477,20 +1483,25 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(
       final Collection<Unit> units, final Territory to) {
+    return getUnitsThatCantBePlacedThatRequireUnits(units, to).isEmpty();
+  }
+
+  private Collection<Unit> getUnitsThatCantBePlacedThatRequireUnits(
+      final Collection<Unit> units, final Territory to) {
     if (!Properties.getUnitPlacementRestrictions(getData().getProperties())
         || units.stream().noneMatch(Matches.unitRequiresUnitsOnCreation())) {
-      return true;
+      return List.of();
     }
     final IntegerMap<Territory> producersMap = getMaxUnitsToBePlacedMap(units, to, player);
     final List<Territory> producers = getAllProducers(to, player, units);
     if (producers.isEmpty()) {
-      return false;
+      return units;
     }
     producers.sort(getBestProducerComparator(to, units, player));
     final Collection<Unit> unitsLeftToPlace = new ArrayList<>(units);
     for (final Territory t : producers) {
       if (unitsLeftToPlace.isEmpty()) {
-        return true;
+        return List.of();
       }
       final int productionHere = producersMap.getInt(t);
       final List<Unit> canBePlacedHere =
@@ -1505,7 +1516,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           CollectionUtils.getNMatches(canBePlacedHere, productionHere, it -> true);
       unitsLeftToPlace.removeAll(placedHere);
     }
-    return unitsLeftToPlace.isEmpty();
+    return unitsLeftToPlace;
   }
 
   private Comparator<Territory> getBestProducerComparator(
