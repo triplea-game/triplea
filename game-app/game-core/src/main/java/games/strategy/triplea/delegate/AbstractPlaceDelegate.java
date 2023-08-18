@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter.PLACEMENT_LIMIT;
+import static java.util.function.Predicate.not;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -884,10 +885,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         && to.anyUnitsMatch(Matches.enemyUnit(player))) {
       return null;
     }
-    final Collection<Unit> units = new ArrayList<>(allUnits);
     // if water, remove land. if land, remove water.
-    units.removeAll(
-        CollectionUtils.getMatches(units, water ? Matches.unitIsLand() : Matches.unitIsSea()));
+    final Collection<Unit> units =
+        CollectionUtils.getMatches(
+            allUnits, water ? not(Matches.unitIsLand()) : not(Matches.unitIsSea()));
     final Collection<Unit> placeableUnits = new ArrayList<>();
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> allProducedUnits = unitsPlacedInTerritorySoFar(to);
@@ -944,17 +945,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     // remove any units that require other units to be consumed on creation, if we don't have enough
     // to consume (veqryn)
-    if (placeableUnits.stream().anyMatch(Matches.unitConsumesUnitsOnCreation())) {
-      final Collection<Unit> unitsWhichConsume =
-          CollectionUtils.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
-      for (final Unit unit : unitsWhichConsume) {
-        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)
-            .negate()
-            .test(unit)) {
-          placeableUnits.remove(unit);
-        }
-      }
-    }
+    placeableUnits.removeIf(
+        Matches.unitConsumesUnitsOnCreation()
+            .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
+
     final Collection<Unit> placeableUnits2;
     if (Properties.getUnitPlacementRestrictions(properties)) {
       final int territoryProduction = TerritoryAttachment.getProduction(to);

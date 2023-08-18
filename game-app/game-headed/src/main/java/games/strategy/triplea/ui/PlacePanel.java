@@ -8,6 +8,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -219,9 +220,10 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       // get the units that can be placed on this territory.
       Collection<Unit> units = getCurrentPlayer().getUnits();
       if (territory.isWater()) {
-        if (!(Properties.getProduceFightersOnCarriers(getData().getProperties())
-            || Properties.getProduceNewFightersOnOldCarriers(getData().getProperties())
-            || Properties.getLhtrCarrierProductionRules(getData().getProperties())
+        GameProperties properties = getData().getProperties();
+        if (!(Properties.getProduceFightersOnCarriers(properties)
+            || Properties.getProduceNewFightersOnOldCarriers(properties)
+            || Properties.getLhtrCarrierProductionRules(properties)
             || GameStepPropertiesHelper.isBid(getData()))) {
           units = CollectionUtils.getMatches(units, Matches.unitIsSea());
         } else {
