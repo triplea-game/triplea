@@ -1666,8 +1666,6 @@ public final class Matches {
           if (unitsInTerritoryAtStartOfTurnWithSameOwnerAndNotDisabled.stream()
               .noneMatch(unitIsOfType(ut))) {
             haveAll = false;
-          }
-          if (!haveAll) {
             break;
           }
         }
