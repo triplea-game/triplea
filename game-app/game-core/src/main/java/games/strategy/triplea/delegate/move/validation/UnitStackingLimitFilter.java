@@ -24,12 +24,13 @@ public class UnitStackingLimitFilter {
   public static final String PLACEMENT_LIMIT = "placementLimit";
 
   /**
-   * Returns the subset of units that are valid with respect to any stacking limits in effect.
+   * Returns the subset of units that are valid with respect to any stacking limits in effect. The
+   * returned list is mutable and serializable.
    *
    * <p>Note: The passed list of units should have already been filtered for placement restrictions
    * as otherwise this could return a subset of units that cannot be placed for other reasons.
    */
-  public static Collection<Unit> filterUnits(
+  public static List<Unit> filterUnits(
       final Collection<Unit> units,
       final String limitType,
       final GamePlayer owner,
@@ -40,7 +41,7 @@ public class UnitStackingLimitFilter {
   /**
    * Same as above, but allows passing `existingUnitsToBePlaced` that have already been selected.
    */
-  public static Collection<Unit> filterUnits(
+  public static List<Unit> filterUnits(
       final Collection<Unit> units,
       final String limitType,
       final GamePlayer owner,
@@ -79,7 +80,10 @@ public class UnitStackingLimitFilter {
         unitsAllowedSoFar.add(unit);
       }
     }
-    return unitsAllowedSoFar.subList(existingUnitsToBePlaced.size(), unitsAllowedSoFar.size());
+    // Remove the existing units from the list before returning it. Don't return a sublist as it's
+    // not serializable.
+    unitsAllowedSoFar.subList(0, existingUnitsToBePlaced.size()).clear();
+    return unitsAllowedSoFar;
   }
 
   /**
