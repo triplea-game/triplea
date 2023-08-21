@@ -12,13 +12,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.util.Collection;
 import java.util.Collections;
