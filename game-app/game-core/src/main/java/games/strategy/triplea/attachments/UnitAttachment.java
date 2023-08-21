@@ -2520,7 +2520,7 @@ public class UnitAttachment extends DefaultAttachment {
     final int value = getInt(s);
     if (value < -1) {
       throw new GameParseException(
-              "tuv must be 0 positive (or -1, default, to calculate) " + thisErrorMsg());
+          "tuv must be 0 positive (or -1, default, to calculate) " + thisErrorMsg());
     }
     tuv = getInt(s);
   }
