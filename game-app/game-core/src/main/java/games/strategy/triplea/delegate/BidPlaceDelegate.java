@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter.PLACEMENT_LIMIT;
+import static java.util.function.Predicate.not;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -147,17 +148,9 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     }
     // remove any units that require other units to be consumed on creation (veqryn)
-    if (placeableUnits.stream().anyMatch(Matches.unitConsumesUnitsOnCreation())) {
-      final Collection<Unit> unitsWhichConsume =
-          CollectionUtils.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
-      for (final Unit unit : unitsWhichConsume) {
-        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)
-            .negate()
-            .test(unit)) {
-          placeableUnits.remove(unit);
-        }
-      }
-    }
+    placeableUnits.removeIf(
+        Matches.unitConsumesUnitsOnCreation()
+            .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
     // now check stacking limits
     return UnitStackingLimitFilter.filterUnits(placeableUnits, PLACEMENT_LIMIT, player, to);
   }

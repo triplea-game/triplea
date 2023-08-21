@@ -1657,32 +1657,23 @@ public final class Matches {
       }
       final Predicate<Unit> unitIsOwnedByAndNotDisabled =
           unitIsOwnedBy(unitWhichRequiresUnits.getOwner()).and(unitIsNotDisabled());
-      unitsInTerritoryAtStartOfTurn.retainAll(
-          CollectionUtils.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
-      boolean canBuild = false;
+      final Collection<Unit> unitsInTerritoryAtStartOfTurnWithSameOwnerAndNotDisabled =
+          CollectionUtils.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled);
       final UnitAttachment ua = unitWhichRequiresUnits.getUnitAttachment();
-      final List<String[]> unitComboPossibilities = ua.getRequiresUnits();
-      for (final String[] combo : unitComboPossibilities) {
-        if (combo != null) {
-          boolean haveAll = true;
-          final Collection<UnitType> requiredUnits = ua.getListedUnits(combo);
-          for (final UnitType ut : requiredUnits) {
-            if (CollectionUtils.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOfType(ut)) < 1) {
-              haveAll = false;
-            }
-            if (!haveAll) {
-              break;
-            }
-          }
-          if (haveAll) {
-            canBuild = true;
+      for (final String[] combo : ua.getRequiresUnits()) {
+        boolean haveAll = true;
+        for (final UnitType ut : ua.getListedUnits(combo)) {
+          if (unitsInTerritoryAtStartOfTurnWithSameOwnerAndNotDisabled.stream()
+              .noneMatch(unitIsOfType(ut))) {
+            haveAll = false;
+            break;
           }
         }
-        if (canBuild) {
-          break;
+        if (haveAll) {
+          return true;
         }
       }
-      return canBuild;
+      return false;
     };
   }
 
