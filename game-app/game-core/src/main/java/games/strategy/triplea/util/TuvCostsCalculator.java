@@ -120,7 +120,7 @@ public class TuvCostsCalculator {
     // Add any units that have XML TUV even if they aren't purchasable
     for (final UnitType unitType : data.getUnitTypeList()) {
       final UnitAttachment ua = unitType.getUnitAttachment();
-      if (ua.getTuv() > 0) {
+      if (ua.getTuv() > -1) {
         costs.put(unitType, ua.getTuv());
       }
     }
@@ -131,7 +131,7 @@ public class TuvCostsCalculator {
   private static int getTotalTuv(
       final UnitType unitType, final IntegerMap<UnitType> costs, final Set<UnitType> alreadyAdded) {
     final UnitAttachment ua = unitType.getUnitAttachment();
-    if (ua.getTuv() > 0) {
+    if (ua.getTuv() > -1) {
       return ua.getTuv();
     }
     int tuv = costs.getInt(unitType);
