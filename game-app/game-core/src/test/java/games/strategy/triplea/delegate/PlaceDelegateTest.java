@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.Constants.DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES;
+import static games.strategy.triplea.Constants.UNIT_PLACEMENT_RESTRICTIONS;
+import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.Matches.unitIsOfType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
@@ -143,6 +146,26 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     final PlaceableUnits response =
         delegate.getPlaceableUnits(create(british, infantry, 3), westCanada);
     assertEquals(2, response.getMaxUnits());
+  }
+
+  @Test
+  void testCanNotProduceThatManyUnitsDueToRequiresUnits() {
+    gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
+    // Needed for canProduceXUnits to work. (!)
+    gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
+    final var factory2 = unitType("factory2", gameData);
+    final var infantry2 = unitType("infantry2", gameData);
+
+    final var threeInfantry2 = create(british, infantry2, 3);
+    final var fourInfantry2 = create(british, infantry2, 4);
+
+    uk.getUnitCollection().clear();
+    assertError(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
+    uk.getUnitCollection().addAll(create(british, factory2, 1));
+    assertValid(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
+    assertError(delegate.canUnitsBePlaced(uk, fourInfantry2, british));
+    final PlaceableUnits response = delegate.getPlaceableUnits(fourInfantry2, uk);
+    assertThat(response.getUnits(), hasSize(3));
   }
 
   @Test
