@@ -1074,15 +1074,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final Collection<Territory> notUsableAsOtherProducers = new ArrayList<>(producers);
     final Map<Territory, Integer> currentAvailablePlacementForOtherProducers = new HashMap<>();
     for (final Territory producerTerritory : producers) {
-      final Collection<Unit> unitsCanBePlacedByThisProducer =
-          (Properties.getUnitPlacementRestrictions(getData().getProperties())
-              ? CollectionUtils.getMatches(
-                  units, unitWhichRequiresUnitsHasRequiredUnits(producerTerritory, true))
-              : new ArrayList<>(units));
       final int prodT =
           getMaxUnitsToBePlacedFrom(
               producerTerritory,
-              unitsCanBePlacedByThisProducer,
+              units,
               to,
               player,
               true,
@@ -1158,8 +1153,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
     }
     // a factory can produce the same number of units as the number of PUs the territory generates
-    // each turn (or not, if
-    // it has canProduceXUnits)
+    // each turn (or not, if it has canProduceXUnits)
     final int maxConstructions =
         howManyOfEachConstructionCanPlace(to, producer, unitsCanBePlacedByThisProducer, player)
             .totalValues();
@@ -1601,7 +1595,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return new ArrayList<>();
     }
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-    if (Matches.territoryIsWater().test(to)) {
+    if (to.isWater()) {
       for (final Territory current : getAllProducers(to, player, null, true)) {
         unitsPlacedAlready.addAll(getAlreadyProduced(current));
       }
@@ -1637,7 +1631,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             // land factories in water can't produce, and sea factories in land can't produce.
             // air can produce like land if in land, and like sea if in water.
             .and(to.isWater() ? Matches.unitIsLand().negate() : Matches.unitIsSea().negate());
-    return CollectionUtils.countMatches(unitsAtStartOfTurnInTo, factoryMatch) > 0;
+    return unitsAtStartOfTurnInTo.stream().anyMatch(factoryMatch);
   }
 
   /**
