@@ -209,22 +209,22 @@ class BattleCalculatorPanel extends JPanel {
     attackAndDefend.setLayout(new GridBagLayout());
     final int gap = 20;
     int row0 = 0;
-    var builder0 =
+    GridBagConstraintsBuilder builder0 =
         new GridBagConstraintsBuilder().gridY(row0++).anchor(GridBagConstraintsAnchor.EAST);
     attackAndDefend.add(new JLabel("Attacker: "), builder0.gridX(0).insets(0, gap, gap, 0).build());
     attackAndDefend.add(attackerCombo, builder0.gridX(1).insets(0, 0, gap / 2, gap).build());
     attackAndDefend.add(new JLabel("Defender: "), builder0.gridX(2).insets(0, gap, gap, 0).build());
     attackAndDefend.add(defenderCombo, builder0.gridX(3).insets(0, 0, gap / 2, gap).build());
-    builder0 = builder0.gridY(row0++);
-    attackAndDefend.add(attackerUnitsTotalNumber, builder0.gridX(0).insets(0, gap, 0, 0).build());
+    attackAndDefend.add(
+        attackerUnitsTotalNumber, builder0.gridY(row0++).gridX(0).insets(0, gap, 0, 0).build());
     attackAndDefend.add(
         attackerUnitsTotalTuv, builder0.gridX(1).insets(0, gap / 2, 0, gap * 2).build());
     attackAndDefend.add(defenderUnitsTotalNumber, builder0.gridX(2).insets(0, gap, 0, 0).build());
     attackAndDefend.add(
         defenderUnitsTotalTuv, builder0.gridX(3).insets(0, gap / 2, 0, gap * 2).build());
-    builder0 = builder0.gridY(row0);
     attackAndDefend.add(
-        attackerUnitsTotalHitpoints, builder0.gridX(0).insets(0, gap, gap / 2, 0).build());
+        attackerUnitsTotalHitpoints,
+        builder0.gridY(row0).gridX(0).insets(0, gap, gap / 2, 0).build());
     attackAndDefend.add(
         attackerUnitsTotalPower, builder0.gridX(1).insets(0, gap / 2, gap / 2, gap * 2).build());
     attackAndDefend.add(
@@ -257,26 +257,26 @@ class BattleCalculatorPanel extends JPanel {
     final JPanel resultsText = new JPanel();
     resultsText.setLayout(new GridBagLayout());
     int row1 = 0;
-    GridBagConstraintsBuilder builder =
+    GridBagConstraintsBuilder builder1 =
         new GridBagConstraintsBuilder().anchor(GridBagConstraintsAnchor.EAST);
-    resultsText.add(new JLabel("Attacker Wins:"), builder.gridY(row1++).build());
-    resultsText.add(new JLabel("Draw:"), builder.gridY(row1++).build());
-    resultsText.add(new JLabel("Defender Wins:"), builder.gridY(row1++).build());
+    resultsText.add(new JLabel("Attacker Wins:"), builder1.gridY(row1++).build());
+    resultsText.add(new JLabel("Draw:"), builder1.gridY(row1++).build());
+    resultsText.add(new JLabel("Defender Wins:"), builder1.gridY(row1++).build());
     resultsText.add(
-        new JLabel("Ave. Defender Units Left:"), builder.gridY(row1++).insets(6, 0, 0, 0).build());
+        new JLabel("Ave. Defender Units Left:"), builder1.gridY(row1++).insets(6, 0, 0, 0).build());
     resultsText.add(
-        new JLabel("Units Left If Def Won:"), builder.gridY(row1++).insets(0, 0, 0, 0).build());
+        new JLabel("Units Left If Def Won:"), builder1.gridY(row1++).insets(0, 0, 0, 0).build());
     resultsText.add(
-        new JLabel("Ave. Attacker Units Left:"), builder.gridY(row1++).insets(6, 0, 0, 0).build());
+        new JLabel("Ave. Attacker Units Left:"), builder1.gridY(row1++).insets(6, 0, 0, 0).build());
     resultsText.add(
-        new JLabel("Units Left If Att Won:"), builder.gridY(row1++).insets(0, 0, 0, 0).build());
+        new JLabel("Units Left If Att Won:"), builder1.gridY(row1++).insets(0, 0, 0, 0).build());
     resultsText.add(
-        new JLabel("Average TUV Swing:"), builder.gridY(row1++).insets(6, 0, 0, 0).build());
+        new JLabel("Average TUV Swing:"), builder1.gridY(row1++).insets(6, 0, 0, 0).build());
     resultsText.add(
-        new JLabel("Average Rounds:"), builder.gridY(row1++).insets(0, 0, 0, 0).build());
+        new JLabel("Average Rounds:"), builder1.gridY(row1++).insets(0, 0, 0, 0).build());
     resultsText.add(
-        new JLabel("Simulation Count:"), builder.gridY(row1++).insets(15, 0, 0, 0).build());
-    resultsText.add(new JLabel("Time:"), builder.gridY(row1++).insets(0, 0, 0, 0).build());
+        new JLabel("Simulation Count:"), builder1.gridY(row1++).insets(15, 0, 0, 0).build());
+    resultsText.add(new JLabel("Time:"), builder1.gridY(row1++).insets(0, 0, 0, 0).build());
     GridBagConstraintsBuilder builder2 =
         new GridBagConstraintsBuilder()
             .gridWidth(2)
@@ -286,10 +286,10 @@ class BattleCalculatorPanel extends JPanel {
         calculateButton, builder2.gridY(row1++).gridWidth(2).insets(20, 60, 0, 100).build());
     final JButton clearButton = new JButton("Clear");
     resultsText.add(clearButton, builder2.gridY(row1++).gridWidth(1).insets(6, 60, 0, 0).build());
-    resultsText.add(new JLabel("Run Count:"), builder.gridY(row1++).insets(20, 0, 0, 0).build());
+    resultsText.add(new JLabel("Run Count:"), builder1.gridY(row1++).insets(20, 0, 0, 0).build());
     resultsText.add(
-        new JLabel("Retreat After Round:"), builder.gridY(row1++).insets(10, 0, 0, 0).build());
-    resultsText.add(new JLabel("Retreat When X Units Left:"), builder.gridY(row1).build());
+        new JLabel("Retreat After Round:"), builder1.gridY(row1++).insets(10, 0, 0, 0).build());
+    resultsText.add(new JLabel("Retreat When X Units Left:"), builder1.gridY(row1).build());
     GridBagConstraintsBuilder builder3 =
         new GridBagConstraintsBuilder()
             .gridX(1)
@@ -323,11 +323,11 @@ class BattleCalculatorPanel extends JPanel {
     row1 = row2;
     final JButton orderOfLossesButton = new JButton("Order Of Losses");
     resultsText.add(
-        orderOfLossesButton, builder.gridX(0).gridY(row1++).insets(10, 15, 0, 0).build());
+        orderOfLossesButton, builder1.gridX(0).gridY(row1++).insets(10, 15, 0, 0).build());
     if (territoryEffectsJList != null) {
       resultsText.add(
           new JScrollPane(territoryEffectsJList),
-          builder
+          builder1
               .gridY(row1)
               .gridHeight(territoryEffectsJList.getVisibleRowCount())
               .fill(GridBagConstraintsFill.BOTH)
@@ -335,7 +335,7 @@ class BattleCalculatorPanel extends JPanel {
     }
     resultsText.add(
         retreatWhenOnlyAirLeftCheckBox,
-        builder
+        builder1
             .gridX(1)
             .gridY(row2++)
             .gridHeight(1)
@@ -344,9 +344,9 @@ class BattleCalculatorPanel extends JPanel {
             .insets(10, 10, 0, 5)
             .build());
     resultsText.add(
-        keepOneAttackingLandUnitCheckBox, builder.gridY(row2++).insets(2, 10, 0, 5).build());
-    resultsText.add(amphibiousCheckBox, builder.gridY(row2++).build());
-    resultsText.add(landBattleCheckBox, builder.gridY(row2).build());
+        keepOneAttackingLandUnitCheckBox, builder1.gridY(row2++).insets(2, 10, 0, 5).build());
+    resultsText.add(amphibiousCheckBox, builder1.gridY(row2++).build());
+    resultsText.add(landBattleCheckBox, builder1.gridY(row2).build());
 
     final JPanel resultsPanel = new JPanel();
     resultsPanel.add(resultsText);
