@@ -12,7 +12,9 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
@@ -34,40 +36,40 @@ public class CanalAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
+  private static boolean hasCanal(final Territory t, final String canalName) {
+    return !get(t, canalAttachment -> canalAttachment.getCanalName().equals(canalName)).isEmpty();
+  }
+
+  public static List<CanalAttachment> get(final Territory t, final Route onRoute) {
+    return get(t, attachment -> isCanalOnRoute(attachment.getCanalName(), onRoute));
+  }
+
+  private static List<CanalAttachment> get(final Territory t, Predicate<CanalAttachment> cond) {
+    return t.getAttachments().values().stream()
+        .filter(attachment -> attachment.getName().startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
+        .map(CanalAttachment.class::cast)
+        .filter(cond)
+        .collect(Collectors.toList());
+  }
+
+  static CanalAttachment get(final Territory t, final String nameOfAttachment) {
+    return getAttachment(t, nameOfAttachment, CanalAttachment.class);
+  }
+
   /**
    * Checks if the route contains both territories to pass through the given canal. If route is null
    * returns true.
    */
-  public static boolean isCanalOnRoute(final String canalName, final Route route) {
-    if (route == null) {
-      return true;
-    }
+  private static boolean isCanalOnRoute(final String canalName, final Route route) {
     boolean previousTerritoryHasCanal = false;
     for (final Territory t : route) {
-      boolean currentTerritoryHasCanal = false;
-      for (final CanalAttachment canalAttachment : get(t)) {
-        if (canalAttachment.getCanalName().equals(canalName)) {
-          currentTerritoryHasCanal = true;
-          break;
-        }
-      }
+      boolean currentTerritoryHasCanal = hasCanal(t, canalName);
       if (previousTerritoryHasCanal && currentTerritoryHasCanal) {
         return true;
       }
       previousTerritoryHasCanal = currentTerritoryHasCanal;
     }
     return false;
-  }
-
-  public static Set<CanalAttachment> get(final Territory t) {
-    return t.getAttachments().values().stream()
-        .filter(attachment -> attachment.getName().startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
-        .map(CanalAttachment.class::cast)
-        .collect(Collectors.toSet());
-  }
-
-  static CanalAttachment get(final Territory t, final String nameOfAttachment) {
-    return getAttachment(t, nameOfAttachment, CanalAttachment.class);
   }
 
   private void setCanalName(final String name) {
@@ -162,11 +164,8 @@ public class CanalAttachment extends DefaultAttachment {
     }
     final Set<Territory> territories = new HashSet<>();
     for (final Territory t : data.getMap()) {
-      final Set<CanalAttachment> canalAttachments = get(t);
-      for (final CanalAttachment canalAttachment : canalAttachments) {
-        if (canalAttachment.getCanalName().equals(canalName)) {
-          territories.add(t);
-        }
+      if (hasCanal(t, canalName)) {
+        territories.add(t);
       }
     }
     if (territories.size() != 2) {
