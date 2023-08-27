@@ -193,10 +193,9 @@ public class MoveValidator {
                   .negate());
       if (matches.isEmpty() || !matches.stream().allMatch(Matches.unitIsOwnedBy(player))) {
         result.setError(
-            "Player, "
-                + player.getName()
-                + ", is not owner of all the units: "
-                + MyFormatter.unitsToTextNoOwner(units));
+            String.format(
+                "Player, %s, is not owner of all the units: %s",
+                player.getName(), MyFormatter.unitsToTextNoOwner(units)));
         return result;
       }
     }
@@ -216,9 +215,8 @@ public class MoveValidator {
     final Collection<Territory> landOnRoute = route.getMatches(Matches.territoryIsLand());
     if (!landOnRoute.isEmpty()) {
       // TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is
-      // also checking to
-      // make sure we avoid land territories owned by nations with these 2 relationship type
-      // attachment options
+      // also checking to make sure we avoid land territories owned by nations with these 2
+      // relationship type attachment options
       for (final Territory t : landOnRoute) {
         if (units.stream().anyMatch(Matches.unitIsLand())
             && !data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner())) {
@@ -300,36 +298,41 @@ public class MoveValidator {
       @Nullable final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> airTransportDependents,
       final GamePlayer player) {
-    List<CanalAttachment> canals =
-        route.getAllTerritories().stream()
-            .map(t -> CanalAttachment.get(t))
-            .flatMap(Collection::stream)
-            // Only check canals that are on the route
-            .filter(c -> CanalAttachment.isCanalOnRoute(c.getCanalName(), route))
-            .collect(Collectors.toList());
-    if (canals.isEmpty()) {
+    Map<Territory, Collection<CanalAttachment>> territoryCanals = new HashMap<>();
+    int numCanals = 0;
+    for (Territory t : route.getAllTerritories()) {
+      // Only check canals that are on the route
+      var canals = CanalAttachment.get(t, route);
+      territoryCanals.put(t, canals);
+      numCanals += canals.size();
+    }
+    if (numCanals == 0) {
       return null;
     }
     final boolean mustControlAllCanals =
         Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
+
     // Check each unit 1 by 1 to see if they can move through necessary canals on route
     String result = null;
     final Set<Unit> unitsThatFailCanal = new HashSet<>();
+    final Set<Unit> setWithNull = new HashSet<>();
+    setWithNull.add(null);
     final Collection<Unit> unitsWithoutDependents =
-        (units == null)
-            ? Set.of((Unit) null)
-            : findNonDependentUnits(units, route, airTransportDependents);
+        (units == null) ? setWithNull : findNonDependentUnits(units, route, airTransportDependents);
     for (final Unit unit : unitsWithoutDependents) {
-      for (CanalAttachment canalAttachment : canals) {
-        Optional<String> failureMessage = canPassThroughCanal(canalAttachment, unit, player);
-        final boolean canPass = failureMessage.isEmpty();
-        if (mustControlAllCanals != canPass) {
-          // If need to control any canal and can pass OR need to control all and can't pass.
-          if (!canPass) {
-            result = failureMessage.get();
-            unitsThatFailCanal.add(unit);
+      for (final Territory t : route.getAllTerritories()) {
+        Optional<String> failureMessage = Optional.empty();
+        for (CanalAttachment canalAttachment : territoryCanals.get(t)) {
+          failureMessage = canPassThroughCanal(canalAttachment, unit, player);
+          final boolean canPass = failureMessage.isEmpty();
+          if (mustControlAllCanals != canPass) {
+            // If need to control any canal and can pass OR need to control all and can't pass.
+            break;
           }
-          break;
+        }
+        if (failureMessage.isPresent()) {
+          result = failureMessage.get();
+          unitsThatFailCanal.add(unit);
         }
       }
     }
@@ -369,10 +372,7 @@ public class MoveValidator {
       final GamePlayer player) {
     boolean canPass = true;
     final Route route = new Route(start, end);
-    for (final CanalAttachment canalAttachment : CanalAttachment.get(start)) {
-      if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
-        continue; // Only check canals that are on the route
-      }
+    for (final CanalAttachment canalAttachment : CanalAttachment.get(start, route)) {
       final Collection<Unit> unitsWithoutDependents = findNonDependentUnits(units, route, Map.of());
       canPass = canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player).isEmpty();
       final boolean mustControlAllCanals =

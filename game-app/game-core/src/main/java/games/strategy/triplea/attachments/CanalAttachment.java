@@ -13,6 +13,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
@@ -44,13 +45,7 @@ public class CanalAttachment extends DefaultAttachment {
     }
     boolean previousTerritoryHasCanal = false;
     for (final Territory t : route) {
-      boolean currentTerritoryHasCanal = false;
-      for (final CanalAttachment canalAttachment : get(t)) {
-        if (canalAttachment.getCanalName().equals(canalName)) {
-          currentTerritoryHasCanal = true;
-          break;
-        }
-      }
+      boolean currentTerritoryHasCanal = !getByCanalName(t, canalName).isEmpty();
       if (previousTerritoryHasCanal && currentTerritoryHasCanal) {
         return true;
       }
@@ -59,10 +54,19 @@ public class CanalAttachment extends DefaultAttachment {
     return false;
   }
 
-  public static Set<CanalAttachment> get(final Territory t) {
+  public static Set<CanalAttachment> get(final Territory t, final Route onRoute) {
+    return get(t, attachment -> isCanalOnRoute(attachment.getCanalName(), onRoute));
+  }
+
+  public static Set<CanalAttachment> getByCanalName(final Territory t, final String canalName) {
+    return get(t, canalAttachment -> canalAttachment.getCanalName().equals(canalName));
+  }
+
+  private static Set<CanalAttachment> get(final Territory t, Predicate<CanalAttachment> cond) {
     return t.getAttachments().values().stream()
         .filter(attachment -> attachment.getName().startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
         .map(CanalAttachment.class::cast)
+        .filter(cond)
         .collect(Collectors.toSet());
   }
 
@@ -162,11 +166,8 @@ public class CanalAttachment extends DefaultAttachment {
     }
     final Set<Territory> territories = new HashSet<>();
     for (final Territory t : data.getMap()) {
-      final Set<CanalAttachment> canalAttachments = get(t);
-      for (final CanalAttachment canalAttachment : canalAttachments) {
-        if (canalAttachment.getCanalName().equals(canalName)) {
-          territories.add(t);
-        }
+      if (!getByCanalName(t, canalName).isEmpty()) {
+        territories.add(t);
       }
     }
     if (territories.size() != 2) {
