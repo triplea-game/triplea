@@ -394,13 +394,13 @@ class ProNonCombatMoveAi {
       final ProTerritory patd = moveMap.get(t);
 
       // Check if no enemy attackers
-      if (enemyAttackOptions.getMax(t) == null) {
+      final ProTerritory enemyAttackMax = enemyAttackOptions.getMax(t);
+      if (enemyAttackMax == null) {
         ProLogger.debug("Territory=" + t.getName() + ", CanHold=true since has no enemy attackers");
         continue;
       }
 
       // Check if min defenders can hold it (not considering AA)
-      final ProTerritory enemyAttackMax = enemyAttackOptions.getMax(t);
       final Set<Unit> enemyAttackingUnits = new HashSet<>(enemyAttackMax.getMaxUnits());
       enemyAttackingUnits.addAll(enemyAttackMax.getMaxAmphibUnits());
       patd.setMaxEnemyUnits(enemyAttackingUnits);
