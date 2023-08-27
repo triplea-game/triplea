@@ -12,6 +12,7 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -35,20 +36,20 @@ public class CanalAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  public static Set<CanalAttachment> getByCanalName(final Territory t, final String canalName) {
-    return get(t, canalAttachment -> canalAttachment.getCanalName().equals(canalName));
+  private static boolean hasCanal(final Territory t, final String canalName) {
+    return !get(t, canalAttachment -> canalAttachment.getCanalName().equals(canalName)).isEmpty();
   }
 
-  public static Set<CanalAttachment> get(final Territory t, final Route onRoute) {
+  public static List<CanalAttachment> get(final Territory t, final Route onRoute) {
     return get(t, attachment -> isCanalOnRoute(attachment.getCanalName(), onRoute));
   }
 
-  private static Set<CanalAttachment> get(final Territory t, Predicate<CanalAttachment> cond) {
+  private static List<CanalAttachment> get(final Territory t, Predicate<CanalAttachment> cond) {
     return t.getAttachments().values().stream()
         .filter(attachment -> attachment.getName().startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
         .map(CanalAttachment.class::cast)
         .filter(cond)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
   }
 
   /**
@@ -58,7 +59,7 @@ public class CanalAttachment extends DefaultAttachment {
   private static boolean isCanalOnRoute(final String canalName, final Route route) {
     boolean previousTerritoryHasCanal = false;
     for (final Territory t : route) {
-      boolean currentTerritoryHasCanal = !getByCanalName(t, canalName).isEmpty();
+      boolean currentTerritoryHasCanal = hasCanal(t, canalName);
       if (previousTerritoryHasCanal && currentTerritoryHasCanal) {
         return true;
       }
@@ -66,7 +67,6 @@ public class CanalAttachment extends DefaultAttachment {
     }
     return false;
   }
-
 
   static CanalAttachment get(final Territory t, final String nameOfAttachment) {
     return getAttachment(t, nameOfAttachment, CanalAttachment.class);
@@ -164,7 +164,7 @@ public class CanalAttachment extends DefaultAttachment {
     }
     final Set<Territory> territories = new HashSet<>();
     for (final Territory t : data.getMap()) {
-      if (!getByCanalName(t, canalName).isEmpty()) {
+      if (hasCanal(t, canalName)) {
         territories.add(t);
       }
     }
