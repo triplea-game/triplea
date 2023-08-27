@@ -865,17 +865,12 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Route route,
       final Map<Unit, Collection<Unit>> airTransportDependents) {
-    final Map<Unit, Collection<Unit>> dependentsMap =
-        getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
-    final Set<Unit> dependents =
-        dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
-    dependents.addAll(
-        airTransportDependents.values().stream()
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet()));
     final Collection<Unit> unitsWithoutDependents = new ArrayList<>();
     unitsWithoutDependents.addAll(route.getStart().isWater() ? getNonLand(units) : units);
-    unitsWithoutDependents.removeAll(dependents);
+    unitsWithoutDependents.removeIf(u -> u.getTransportedBy() != null);
+    for (Collection<Unit> deps : airTransportDependents.values()) {
+      unitsWithoutDependents.removeAll(deps);
+    }
     return unitsWithoutDependents;
   }
 
@@ -941,15 +936,6 @@ public class MoveValidator {
       }
     }
     return map;
-  }
-
-  public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units) {
-    // just worry about transports
-    final Map<Unit, Collection<Unit>> dependents = new HashMap<>();
-    for (final Unit unit : units) {
-      dependents.put(unit, unit.getTransporting());
-    }
-    return dependents;
   }
 
   /**
