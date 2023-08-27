@@ -35,25 +35,6 @@ public class CanalAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  /**
-   * Checks if the route contains both territories to pass through the given canal. If route is null
-   * returns true.
-   */
-  public static boolean isCanalOnRoute(final String canalName, final Route route) {
-    if (route == null) {
-      return true;
-    }
-    boolean previousTerritoryHasCanal = false;
-    for (final Territory t : route) {
-      boolean currentTerritoryHasCanal = !getByCanalName(t, canalName).isEmpty();
-      if (previousTerritoryHasCanal && currentTerritoryHasCanal) {
-        return true;
-      }
-      previousTerritoryHasCanal = currentTerritoryHasCanal;
-    }
-    return false;
-  }
-
   public static Set<CanalAttachment> getByCanalName(final Territory t, final String canalName) {
     return get(t, canalAttachment -> canalAttachment.getCanalName().equals(canalName));
   }
@@ -69,6 +50,23 @@ public class CanalAttachment extends DefaultAttachment {
         .filter(cond)
         .collect(Collectors.toSet());
   }
+
+  /**
+   * Checks if the route contains both territories to pass through the given canal. If route is null
+   * returns true.
+   */
+  private static boolean isCanalOnRoute(final String canalName, final Route route) {
+    boolean previousTerritoryHasCanal = false;
+    for (final Territory t : route) {
+      boolean currentTerritoryHasCanal = !getByCanalName(t, canalName).isEmpty();
+      if (previousTerritoryHasCanal && currentTerritoryHasCanal) {
+        return true;
+      }
+      previousTerritoryHasCanal = currentTerritoryHasCanal;
+    }
+    return false;
+  }
+
 
   static CanalAttachment get(final Territory t, final String nameOfAttachment) {
     return getAttachment(t, nameOfAttachment, CanalAttachment.class);
