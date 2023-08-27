@@ -2405,24 +2405,21 @@ class ProNonCombatMoveAi {
     MutableObject<Territory> destination = new MutableObject<>();
     BreadthFirstSearch bfs = new BreadthFirstSearch(from, canMoveThrough);
     bfs.traverse(
-        new BreadthFirstSearch.Visitor() {
-          @Override
-          public boolean visit(Territory t, int distance) {
-            // If it's a desired final destination, see if we can move towards it.
-            if (finalDestinationTest.test(t)) {
-              Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
-              while (r != null && r.hasSteps()) {
-                final ProTerritory proDestination = proData.getProTerritory(moveMap, r.getEnd());
-                if (proDestination.isCanHold() && validateMove.test(r)) {
-                  destination.setValue(r.getEnd());
-                  // End the search.
-                  return false;
-                }
-                r = new Route(from, r.getMiddleSteps());
+        (t, distance) -> {
+          // If it's a desired final destination, see if we can move towards it.
+          if (finalDestinationTest.test(t)) {
+            Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
+            while (r != null && r.hasSteps()) {
+              final ProTerritory proDestination = proData.getProTerritory(moveMap, r.getEnd());
+              if (proDestination.isCanHold() && validateMove.test(r)) {
+                destination.setValue(r.getEnd());
+                // End the search.
+                return false;
               }
+              r = new Route(from, r.getMiddleSteps());
             }
-            return true;
           }
+          return true;
         });
     // If nothing chosen and we can't hold the current territory, try to move somewhere safe.
     if (destination.getValue() == null && !moveMap.get(from).isCanHold()) {

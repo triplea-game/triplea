@@ -7,7 +7,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import lombok.Getter;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -20,7 +22,7 @@ public final class BreadthFirstSearch {
   private final GameMap map;
   private final Set<Territory> visited;
   private final ArrayDeque<Territory> territoriesToCheck;
-  private final Predicate<Territory> neighborCondition;
+  private final BiPredicate<Territory, Territory> neighborCondition;
 
   @FunctionalInterface
   public interface Visitor {
@@ -35,16 +37,47 @@ public final class BreadthFirstSearch {
   }
 
   /**
+   * Visitor implementation for finding a specific territory. The resulting distance can be accessed
+   * using the getDistanceFound() getter, which will return -1 when not found.
+   *
+   * <p>Note: The Visitor does not get called with any of the starting territories, so -1 will be
+   * returned when passing one of them. If handling such a case is needed, it should be done by the
+   * caller before running the BreadthFirstSearch.
+   */
+  public static class TerritoryFinder implements Visitor {
+    final Territory destination;
+    @Getter int distanceFound = -1;
+
+    public TerritoryFinder(Territory destination) {
+      this.destination = destination;
+    }
+
+    @Override
+    public boolean visit(Territory territory, int distance) {
+      if (destination.equals(territory)) {
+        distanceFound = distance;
+        return false;
+      }
+      return true;
+    }
+  }
+
+  /**
    * @param startTerritories The territories from where to start the search.
    * @param neighborCondition Condition that neighboring territories must match to be considered
    *     neighbors.
    */
   public BreadthFirstSearch(
-      Collection<Territory> startTerritories, Predicate<Territory> neighborCondition) {
+      Collection<Territory> startTerritories, BiPredicate<Territory, Territory> neighborCondition) {
     this.map = CollectionUtils.getAny(startTerritories).getData().getMap();
     this.visited = new HashSet<>(startTerritories);
     this.territoriesToCheck = new ArrayDeque<>(startTerritories);
     this.neighborCondition = neighborCondition;
+  }
+
+  public BreadthFirstSearch(
+      Collection<Territory> startTerritories, Predicate<Territory> neighborCondition) {
+    this(startTerritories, (it, it2) -> neighborCondition.test(it2));
   }
 
   public BreadthFirstSearch(Territory startTerritory, Predicate<Territory> neighborCondition) {
@@ -82,10 +115,10 @@ public final class BreadthFirstSearch {
     final Territory territory = territoriesToCheck.removeFirst();
     // Note: The condition isn't passed to getNeighbors() because that implementation is very slow.
     for (final Territory neighbor : map.getNeighbors(territory)) {
-      if (!visited.contains(neighbor) && neighborCondition.test(neighbor)) {
+      if (!visited.contains(neighbor) && neighborCondition.test(territory, neighbor)) {
         visited.add(neighbor);
 
-        final boolean shouldContinueSearch = visitor.visit(neighbor, currentDistance);
+        final boolean shouldContinueSearch = visitor.visit(neighbor, currentDistance + 1);
         if (!shouldContinueSearch) {
           territoriesToCheck.clear();
           break;
