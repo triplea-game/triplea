@@ -54,12 +54,12 @@ public class CanalAttachment extends DefaultAttachment {
     return false;
   }
 
-  public static Set<CanalAttachment> get(final Territory t, final Route onRoute) {
-    return get(t, attachment -> isCanalOnRoute(attachment.getCanalName(), onRoute));
-  }
-
   public static Set<CanalAttachment> getByCanalName(final Territory t, final String canalName) {
     return get(t, canalAttachment -> canalAttachment.getCanalName().equals(canalName));
+  }
+
+  public static Set<CanalAttachment> get(final Territory t, final Route onRoute) {
+    return get(t, attachment -> isCanalOnRoute(attachment.getCanalName(), onRoute));
   }
 
   private static Set<CanalAttachment> get(final Territory t, Predicate<CanalAttachment> cond) {
