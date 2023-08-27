@@ -52,6 +52,10 @@ public class CanalAttachment extends DefaultAttachment {
         .collect(Collectors.toList());
   }
 
+  static CanalAttachment get(final Territory t, final String nameOfAttachment) {
+    return getAttachment(t, nameOfAttachment, CanalAttachment.class);
+  }
+
   /**
    * Checks if the route contains both territories to pass through the given canal. If route is null
    * returns true.
@@ -66,10 +70,6 @@ public class CanalAttachment extends DefaultAttachment {
       previousTerritoryHasCanal = currentTerritoryHasCanal;
     }
     return false;
-  }
-
-  static CanalAttachment get(final Territory t, final String nameOfAttachment) {
-    return getAttachment(t, nameOfAttachment, CanalAttachment.class);
   }
 
   private void setCanalName(final String name) {
