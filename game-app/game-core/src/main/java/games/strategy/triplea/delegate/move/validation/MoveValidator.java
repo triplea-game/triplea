@@ -291,7 +291,7 @@ public class MoveValidator {
    */
   public @Nullable String validateCanal(
       final Route route, @Nullable final Collection<Unit> units, final GamePlayer player) {
-    return validateCanal(route, units, new HashMap<>(), player);
+    return validateCanal(route, units, Map.of(), player);
   }
 
   @Nullable
@@ -300,32 +300,36 @@ public class MoveValidator {
       @Nullable final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> airTransportDependents,
       final GamePlayer player) {
+    List<CanalAttachment> canals =
+        route.getAllTerritories().stream()
+            .map(t -> CanalAttachment.get(t))
+            .flatMap(Collection::stream)
+            // Only check canals that are on the route
+            .filter(c -> CanalAttachment.isCanalOnRoute(c.getCanalName(), route))
+            .collect(Collectors.toList());
+    if (canals.isEmpty()) {
+      return null;
+    }
+    final boolean mustControlAllCanals =
+        Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
     // Check each unit 1 by 1 to see if they can move through necessary canals on route
     String result = null;
     final Set<Unit> unitsThatFailCanal = new HashSet<>();
-    final Set<Unit> setWithNull = new HashSet<>();
-    setWithNull.add(null);
     final Collection<Unit> unitsWithoutDependents =
-        (units == null) ? setWithNull : findNonDependentUnits(units, route, airTransportDependents);
+        (units == null)
+            ? Set.of((Unit) null)
+            : findNonDependentUnits(units, route, airTransportDependents);
     for (final Unit unit : unitsWithoutDependents) {
-      for (final Territory t : route.getAllTerritories()) {
-        Optional<String> failureMessage = Optional.empty();
-        for (final CanalAttachment canalAttachment : CanalAttachment.get(t)) {
-          if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
-            continue; // Only check canals that are on the route
+      for (CanalAttachment canalAttachment : canals) {
+        Optional<String> failureMessage = canPassThroughCanal(canalAttachment, unit, player);
+        final boolean canPass = failureMessage.isEmpty();
+        if (mustControlAllCanals != canPass) {
+          // If need to control any canal and can pass OR need to control all and can't pass.
+          if (!canPass) {
+            result = failureMessage.get();
+            unitsThatFailCanal.add(unit);
           }
-          failureMessage = canPassThroughCanal(canalAttachment, unit, player);
-          final boolean canPass = failureMessage.isEmpty();
-          final boolean mustControlAllCanals =
-              Properties.getControlAllCanalsBetweenTerritoriesToPass(data.getProperties());
-          if (mustControlAllCanals != canPass) {
-            // If need to control any canal and can pass OR need to control all and can't pass.
-            break;
-          }
-        }
-        if (failureMessage.isPresent()) {
-          result = failureMessage.get();
-          unitsThatFailCanal.add(unit);
+          break;
         }
       }
     }
