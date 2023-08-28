@@ -313,7 +313,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
     // make sure we can place consuming units
-    final boolean didIt = canWeConsumeUnits(placeableUnits, at, true, change);
+    final boolean didIt = canWeConsumeUnits(placeableUnits, at, change);
     if (!didIt) {
       throw new IllegalStateException("Something wrong with consuming/upgrading units");
     }
@@ -844,7 +844,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     // make sure we can place consuming units
-    if (!canWeConsumeUnits(units, to, false, null)) {
+    if (!canWeConsumeUnits(units, to, null)) {
       return "Not Enough Units To Upgrade or Be Consumed";
     }
     // now return null (valid placement) if we have placement restrictions disabled in game options
@@ -992,30 +992,19 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private boolean canWeConsumeUnits(
-      final Collection<Unit> units,
-      final Territory to,
-      final boolean actuallyDoIt,
-      final CompositeChange change) {
-    boolean weCanConsume = true;
+      final Collection<Unit> units, final Territory to, final CompositeChange change) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> removedUnits = new ArrayList<>();
     final Collection<Unit> unitsWhichConsume =
         CollectionUtils.getMatches(units, Matches.unitConsumesUnitsOnCreation());
     for (final Unit unit : unitsWhichConsume) {
-      if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)
-          .negate()
-          .test(unit)) {
-        weCanConsume = false;
-      }
-      if (!weCanConsume) {
-        break;
+      if (!Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).test(unit)) {
+        return false;
       }
       // remove units which are now consumed, then test the rest of the consuming units on the
       // diminishing pile of units which were in the territory at start of turn
-      final UnitAttachment ua = unit.getUnitAttachment();
-      final IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
-      final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
-      for (final UnitType ut : requiredUnits) {
+      final IntegerMap<UnitType> requiredUnitsMap = unit.getUnitAttachment().getConsumesUnits();
+      for (final UnitType ut : requiredUnitsMap.keySet()) {
         final int requiredNumber = requiredUnitsMap.getInt(ut);
         final Predicate<Unit> unitIsOwnedByAndOfTypeAndNotDamaged =
             Matches.unitIsOwnedBy(unit.getOwner())
@@ -1028,23 +1017,20 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
                 unitsAtStartOfTurnInTo, requiredNumber, unitIsOwnedByAndOfTypeAndNotDamaged);
         unitsAtStartOfTurnInTo.removeAll(unitsBeingRemoved);
         // if we should actually do it, not just test, then add to bridge
-        if (actuallyDoIt && change != null) {
-          final Change remove = ChangeFactory.removeUnits(to, unitsBeingRemoved);
-          change.add(remove);
+        if (change != null) {
+          change.add(ChangeFactory.removeUnits(to, unitsBeingRemoved));
           removedUnits.addAll(unitsBeingRemoved);
         }
       }
     }
-    if (weCanConsume && actuallyDoIt && change != null && !change.isEmpty()) {
-      bridge
-          .getHistoryWriter()
-          .startEvent(
-              String.format(
-                  "Units in %s being upgraded or consumed: %s",
-                  to.getName(), MyFormatter.unitsToTextNoOwner(removedUnits)),
-              removedUnits);
+    if (change != null && !change.isEmpty()) {
+      String message =
+          String.format(
+              "Units in %s being upgraded or consumed: %s",
+              to.getName(), MyFormatter.unitsToTextNoOwner(removedUnits));
+      bridge.getHistoryWriter().startEvent(message, removedUnits);
     }
-    return weCanConsume;
+    return true;
   }
 
   /** Returns -1 if we can place unlimited units. */
@@ -1275,11 +1261,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           Math.max(0, unitCountAlreadyProduced - productionThatCanBeTakenOver);
     }
     if (ra != null && ra.getMaxPlacePerTerritory() > 0) {
-      return Math.max(
-          0,
-          Math.min(
-              production - unitCountHaveToAndHaveBeenBeProducedHere,
-              ra.getMaxPlacePerTerritory() - unitCountHaveToAndHaveBeenBeProducedHere));
+      int currentValue = unitCountHaveToAndHaveBeenBeProducedHere;
+      int value = Math.min(production - currentValue, ra.getMaxPlacePerTerritory() - currentValue);
+      return Math.max(0, value);
     }
     return Math.max(0, production - unitCountHaveToAndHaveBeenBeProducedHere);
   }
@@ -1390,13 +1374,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
                   Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)),
                   (unlimitedConstructions ? 10000 : 0));
         }
-        unitMapHeld.put(
-            constructionType,
-            Math.max(
-                0,
-                Math.min(
-                    unitMax - unitMapTo.getInt(constructionType),
-                    unitMapHeld.getInt(constructionType))));
+        int value =
+            Math.min(
+                unitMax - unitMapTo.getInt(constructionType), unitMapHeld.getInt(constructionType));
+        unitMapHeld.put(constructionType, Math.max(0, value));
       }
     }
     // deal with already placed units
