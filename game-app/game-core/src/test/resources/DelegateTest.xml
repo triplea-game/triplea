@@ -459,6 +459,8 @@
         <unit name="submarine"/>
         <unit name="factory"/>
         <unit name="aaGun"/>
+        <unit name="factory2"/>
+        <unit name="infantry2"/>
     </unitList>
 <gamePlay>
         <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate"/>
@@ -718,6 +720,20 @@
             type="unitType">
             <option name="isFactory" value="true"/>
         </attachment>
+
+
+        <attachment name="unitAttachment" attachTo="factory2" javaClass="UnitAttachment" type="unitType">
+            <option name="isFactory" value="true"/>
+            <option name="canProduceXUnits" value="3"/>
+        </attachment>
+        <attachment name="unitAttachment" attachTo="infantry2" javaClass="UnitAttachment" type="unitType">
+            <option name="movement" value="1"/>
+            <option name="transportCost" value="1"/>
+            <option name="attack" value="1"/>
+            <option name="defense" value="2"/>
+            <option name="requiresUnits" value="factory2"/>
+        </attachment>
+
         <attachment name="unitAttachment"
             attachTo="aaGun"
             javaClass="UnitAttachment"

@@ -344,8 +344,8 @@ public class ProTerritory {
     this.cantMoveUnits.addAll(units);
   }
 
-  public void setMaxEnemyUnits(final List<Unit> maxEnemyUnits) {
-    this.maxEnemyUnits = maxEnemyUnits;
+  public void setMaxEnemyUnits(final Collection<Unit> maxEnemyUnits) {
+    this.maxEnemyUnits = new ArrayList<>(maxEnemyUnits);
   }
 
   public List<Unit> getMaxEnemyUnits() {

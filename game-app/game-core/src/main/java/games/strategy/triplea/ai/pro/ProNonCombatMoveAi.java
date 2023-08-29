@@ -394,17 +394,17 @@ class ProNonCombatMoveAi {
       final ProTerritory patd = moveMap.get(t);
 
       // Check if no enemy attackers
-      if (enemyAttackOptions.getMax(t) == null) {
+      final ProTerritory enemyAttackMax = enemyAttackOptions.getMax(t);
+      if (enemyAttackMax == null) {
         ProLogger.debug("Territory=" + t.getName() + ", CanHold=true since has no enemy attackers");
         continue;
       }
 
       // Check if min defenders can hold it (not considering AA)
-      final Set<Unit> enemyAttackingUnits =
-          new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
-      enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
-      patd.setMaxEnemyUnits(new ArrayList<>(enemyAttackingUnits));
-      patd.setMaxEnemyBombardUnits(enemyAttackOptions.getMax(t).getMaxBombardUnits());
+      final Set<Unit> enemyAttackingUnits = new HashSet<>(enemyAttackMax.getMaxUnits());
+      enemyAttackingUnits.addAll(enemyAttackMax.getMaxAmphibUnits());
+      patd.setMaxEnemyUnits(enemyAttackingUnits);
+      patd.setMaxEnemyBombardUnits(enemyAttackMax.getMaxBombardUnits());
       final List<Unit> minDefendingUnitsAndNotAa =
           CollectionUtils.getMatches(
               patd.getCantMoveUnits(), Matches.unitIsAaForAnything().negate());
@@ -414,7 +414,7 @@ class ProNonCombatMoveAi {
               t,
               enemyAttackingUnits,
               minDefendingUnitsAndNotAa,
-              enemyAttackOptions.getMax(t).getMaxBombardUnits());
+              enemyAttackMax.getMaxBombardUnits());
       patd.setMinBattleResult(minResult);
       if (minResult.getTuvSwing() <= 0 && !minDefendingUnitsAndNotAa.isEmpty()) {
         ProLogger.debug(
@@ -2405,24 +2405,21 @@ class ProNonCombatMoveAi {
     MutableObject<Territory> destination = new MutableObject<>();
     BreadthFirstSearch bfs = new BreadthFirstSearch(from, canMoveThrough);
     bfs.traverse(
-        new BreadthFirstSearch.Visitor() {
-          @Override
-          public boolean visit(Territory t, int distance) {
-            // If it's a desired final destination, see if we can move towards it.
-            if (finalDestinationTest.test(t)) {
-              Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
-              while (r != null && r.hasSteps()) {
-                final ProTerritory proDestination = proData.getProTerritory(moveMap, r.getEnd());
-                if (proDestination.isCanHold() && validateMove.test(r)) {
-                  destination.setValue(r.getEnd());
-                  // End the search.
-                  return false;
-                }
-                r = new Route(from, r.getMiddleSteps());
+        (t, distance) -> {
+          // If it's a desired final destination, see if we can move towards it.
+          if (finalDestinationTest.test(t)) {
+            Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
+            while (r != null && r.hasSteps()) {
+              final ProTerritory proDestination = proData.getProTerritory(moveMap, r.getEnd());
+              if (proDestination.isCanHold() && validateMove.test(r)) {
+                destination.setValue(r.getEnd());
+                // End the search.
+                return false;
               }
+              r = new Route(from, r.getMiddleSteps());
             }
-            return true;
           }
+          return true;
         });
     // If nothing chosen and we can't hold the current territory, try to move somewhere safe.
     if (destination.getValue() == null && !moveMap.get(from).isCanHold()) {
