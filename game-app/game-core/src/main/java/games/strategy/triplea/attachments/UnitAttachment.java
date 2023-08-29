@@ -2516,7 +2516,12 @@ public class UnitAttachment extends DefaultAttachment {
     return Tuple.of(max, s[1].intern());
   }
 
-  private void setTuv(final String s) {
+  private void setTuv(final String s) throws GameParseException {
+    final int value = getInt(s);
+    if (value < -1) {
+      throw new GameParseException(
+          "tuv must be 0 positive (or -1, default, to calculate) " + thisErrorMsg());
+    }
     tuv = getInt(s);
   }
 
