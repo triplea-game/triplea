@@ -6,6 +6,7 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.french;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.italians;
@@ -398,9 +399,12 @@ public class AttackerAndDefenderSelectorTest {
     private final GamePlayer germans = germans(gameData);
     private final GamePlayer italians = italians(gameData);
     private final GamePlayer russians = russians(gameData);
+    private final GamePlayer british = british(gameData);
+    private final GamePlayer french = french(gameData);
     private final Territory northernItaly = gameData.getMap().getTerritory("Northern Italy");
     private final Territory balticStates = gameData.getMap().getTerritory("Baltic States");
     private final Territory sz97 = gameData.getMap().getTerritory("97 Sea Zone");
+    private final Territory uk = gameData.getMap().getTerritory("United Kingdom");
 
     @Test
     void alliedTerritory() {
@@ -455,6 +459,26 @@ public class AttackerAndDefenderSelectorTest {
       final Optional<GamePlayer> defender = attAndDef.getDefender();
       assertThat(defender, isPresentAndIs(russians));
       assertThat(attAndDef.getDefendingUnits(), equalTo(balticStates.getUnits()));
+    }
+
+    @Test
+    void ownTerritoryWithAlliedUnits() {
+      final AttackerAndDefenderSelector attackerAndDefenderSelector =
+          AttackerAndDefenderSelector.builder()
+              .players(gameData.getPlayerList().getPlayers())
+              .currentPlayer(british)
+              .relationshipTracker(gameData.getRelationshipTracker())
+              .territory(uk)
+              .build();
+
+      final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+          attackerAndDefenderSelector.getAttackerAndDefender();
+
+      final Optional<GamePlayer> defender = attAndDef.getDefender();
+      assertThat(defender, isPresentAndIs(british));
+      assertThat(uk.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(french)), is(true));
+      assertThat(uk.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(british)), is(true));
+      assertThat(attAndDef.getDefendingUnits(), equalTo(uk.getUnits()));
     }
   }
 }

@@ -105,6 +105,10 @@ public final class GameDataTestUtil {
     return data.getPlayerList().getPlayerId("Britain");
   }
 
+  public static GamePlayer french(final GameState data) {
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_FRENCH);
+  }
+
   /**
    * Get the japanese PlayerId for the given GameData object.
    *
