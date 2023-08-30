@@ -179,7 +179,7 @@ public class AttackerAndDefenderSelector {
         if (bestDefender == null) {
           bestDefender = UnitUtils.findPlayerWithMostUnits(territory.getUnits());
         }
-      } else if (!territory.getOwner().equals(currentPlayer)) {
+      } else {
         bestDefender = territory.getOwner();
         // If we're not at war with the owner and there are enemies, fight them.
         if (!bestDefender.isAtWar(currentPlayer)) {
