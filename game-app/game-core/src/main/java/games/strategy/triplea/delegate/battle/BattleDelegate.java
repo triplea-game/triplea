@@ -24,6 +24,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -625,7 +626,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Territory territory : battleTerritories) {
       final List<Unit> abandonedToUnits =
           territory.getUnitCollection().getMatches(Matches.enemyUnit(player));
-      final GamePlayer abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(abandonedToUnits);
+      final GamePlayer abandonedToPlayer = UnitUtils.findPlayerWithMostUnits(abandonedToUnits);
 
       // now make sure to add any units that must move with these units, so that they get included
       // as dependencies

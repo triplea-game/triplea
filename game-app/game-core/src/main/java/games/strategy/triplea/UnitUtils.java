@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -240,5 +241,22 @@ public class UnitUtils {
               IntegerMap.of(Map.of(receivingUnit, transferDamage)), List.of(territory)));
     }
     return unitChange;
+  }
+
+  public static @Nullable GamePlayer findPlayerWithMostUnits(final Iterable<Unit> units) {
+    final IntegerMap<GamePlayer> playerUnitCount = new IntegerMap<>();
+    for (final Unit unit : units) {
+      playerUnitCount.add(unit.getOwner(), 1);
+    }
+    int max = -1;
+    GamePlayer player = null;
+    for (final GamePlayer current : playerUnitCount.keySet()) {
+      final int count = playerUnitCount.getInt(current);
+      if (count > max) {
+        max = count;
+        player = current;
+      }
+    }
+    return player;
   }
 }

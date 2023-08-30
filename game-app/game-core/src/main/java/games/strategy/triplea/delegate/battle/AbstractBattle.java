@@ -315,23 +315,6 @@ abstract class AbstractBattle implements IBattle {
     return defender;
   }
 
-  static GamePlayer findPlayerWithMostUnits(final Collection<Unit> units) {
-    final IntegerMap<GamePlayer> playerUnitCount = new IntegerMap<>();
-    for (final Unit unit : units) {
-      playerUnitCount.add(unit.getOwner(), 1);
-    }
-    int max = -1;
-    GamePlayer player = null;
-    for (final GamePlayer current : playerUnitCount.keySet()) {
-      final int count = playerUnitCount.getInt(current);
-      if (count > max) {
-        max = count;
-        player = current;
-      }
-    }
-    return player;
-  }
-
   void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
     BattleDelegate.markDamaged(damaged, bridge, battleSite);
   }
