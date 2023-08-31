@@ -28,6 +28,7 @@ import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
 import games.strategy.engine.history.change.units.TransformDamagedUnitsHistoryChange;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -1368,7 +1369,7 @@ public class MustFightBattle extends DependentBattle
             battleSite.getUnitCollection().getMatches(Matches.unitIsNotInfrastructure());
         if (!allyOfAttackerUnits.isEmpty()) {
           final GamePlayer abandonedToPlayer =
-              AbstractBattle.findPlayerWithMostUnits(allyOfAttackerUnits);
+              UnitUtils.findPlayerWithMostUnits(allyOfAttackerUnits);
           bridge
               .getHistoryWriter()
               .addChildToEvent(
