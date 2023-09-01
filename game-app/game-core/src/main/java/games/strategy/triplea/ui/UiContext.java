@@ -334,12 +334,9 @@ public class UiContext {
     // waiting for that lock, then you have a deadlock.
     // A real life example: player disconnects while you have the battle calc open.
     // Non-EDT thread does shutdown on IGame and UiContext, causing btl calc to shutdown,
-    // which calls the
-    // window closed event on the EDT, and waits for the lock on UiContext to
-    // removeShutdownWindow, meanwhile
-    // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait,
-    // resulting in a
-    // deadlock.
+    // which calls the window closed event on the EDT, and waits for the lock on UiContext to
+    // removeShutdownWindow, meanwhile our non-EDT tries to dispose the battle panel, which requires
+    // the EDT with a invokeAndWait, resulting in a deadlock.
     SwingUtilities.invokeLater(window::dispose);
   }
 

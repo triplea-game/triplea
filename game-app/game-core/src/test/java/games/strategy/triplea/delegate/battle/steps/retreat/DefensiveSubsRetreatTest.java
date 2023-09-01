@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
-import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
@@ -28,7 +27,6 @@ import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -225,9 +223,6 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
       final GameData gameData = givenGameData().build();
 
       final Unit unit = givenRealUnitCanEvade(gameData, defender);
-      final UnitAttachment unitAttachment =
-          (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-      when(unitAttachment.getTransportCapacity()).thenReturn(-1);
       final Collection<Unit> retreatingUnits = List.of(unit);
 
       final Territory retreatTerritory = mock(Territory.class);
@@ -265,7 +260,6 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
     @Test
     void retreatHappensWhenDefendingIsSubmersibleAndHasRetreatTerritories() {
-
       final Territory retreatTerritory = mock(Territory.class);
       when(retreatTerritory.isWater()).thenReturn(true);
       final UnitCollection retreatTerritoryCollection = mock(UnitCollection.class);
@@ -280,9 +274,6 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
               .build();
 
       final Unit unit = givenRealUnitCanEvade(gameData, defender);
-      final UnitAttachment unitAttachment =
-          (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-      when(unitAttachment.getTransportCapacity()).thenReturn(-1);
       final Collection<Unit> retreatingUnits = List.of(unit);
 
       final BattleState battleState =

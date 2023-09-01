@@ -28,6 +28,7 @@ import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
 import games.strategy.engine.history.change.units.TransformDamagedUnitsHistoryChange;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -1363,12 +1364,12 @@ public class MustFightBattle extends DependentBattle
     whoWon = WhoWon.DEFENDER;
     bridge.getDisplayChannelBroadcaster().battleEnd(battleId, defender.getName() + " win");
     if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(gameData.getProperties())) {
-      if (CollectionUtils.countMatches(defendingUnits, Matches.unitIsNotInfrastructure()) == 0) {
+      if (defendingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
         final List<Unit> allyOfAttackerUnits =
             battleSite.getUnitCollection().getMatches(Matches.unitIsNotInfrastructure());
         if (!allyOfAttackerUnits.isEmpty()) {
           final GamePlayer abandonedToPlayer =
-              AbstractBattle.findPlayerWithMostUnits(allyOfAttackerUnits);
+              UnitUtils.findPlayerWithMostUnits(allyOfAttackerUnits);
           bridge
               .getHistoryWriter()
               .addChildToEvent(
@@ -1378,14 +1379,12 @@ public class MustFightBattle extends DependentBattle
                       + " as there are no defenders left",
                   allyOfAttackerUnits);
           // should we create a new battle records to show the ally capturing the territory (in the
-          // case where they
-          // didn't already own/allied it)?
+          // case where they didn't already own/allied it)?
           battleTracker.takeOver(battleSite, abandonedToPlayer, bridge, null, allyOfAttackerUnits);
         }
       } else {
         // should we create a new battle records to show the defender capturing the territory (in
-        // the case where they
-        // didn't already own/allied it)?
+        // the case where they didn't already own/allied it)?
         battleTracker.takeOver(battleSite, defender, bridge, null, defendingUnits);
       }
     }

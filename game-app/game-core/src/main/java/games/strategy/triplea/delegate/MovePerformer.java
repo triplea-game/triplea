@@ -385,10 +385,13 @@ public class MovePerformer implements Serializable {
     final boolean paratroopsLanding =
         arrived.stream().anyMatch(paratroopNAirTransports)
             && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
-    final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =
-        new HashMap<>(
-            MoveValidator.getDependents(
-                CollectionUtils.getMatches(arrived, Matches.unitCanTransport())));
+    final Map<Unit, Collection<Unit>> dependentAirTransportableUnits = new HashMap<>();
+    for (final Unit unit : arrived) {
+      Unit transport = unit.getTransportedBy();
+      if (transport != null) {
+        dependentAirTransportableUnits.computeIfAbsent(transport, u -> new ArrayList<>()).add(unit);
+      }
+    }
     // add newly created dependents
     for (final Entry<Unit, Collection<Unit>> entry : airTransportDependents.entrySet()) {
       Collection<Unit> dependents = dependentAirTransportableUnits.get(entry.getKey());
@@ -414,7 +417,7 @@ public class MovePerformer implements Serializable {
       // mark transports as having transported
       for (final Unit load : transporting.keySet()) {
         final Unit transport = transporting.get(load);
-        if (!transport.getTransporting().contains(load)) {
+        if (!transport.equals(load.getTransportedBy())) {
           final Change change = TransportTracker.loadTransportChange(transport, load);
           currentMove.addChange(change);
           currentMove.load(transport);

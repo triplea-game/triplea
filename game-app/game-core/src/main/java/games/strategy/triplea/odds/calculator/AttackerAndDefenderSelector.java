@@ -4,10 +4,12 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,10 +35,10 @@ public class AttackerAndDefenderSelector {
     /** NONE = No attacker, no defender and no units. */
     public static final AttackerAndDefender NONE = AttackerAndDefender.builder().build();
 
-    @Nullable private final GamePlayer attacker;
-    @Nullable private final GamePlayer defender;
-    @Builder.Default private final List<Unit> attackingUnits = List.of();
-    @Builder.Default private final List<Unit> defendingUnits = List.of();
+    @Nullable GamePlayer attacker;
+    @Nullable GamePlayer defender;
+    @Builder.Default List<Unit> attackingUnits = List.of();
+    @Builder.Default List<Unit> defendingUnits = List.of();
 
     public Optional<GamePlayer> getAttacker() {
       return Optional.ofNullable(attacker);
@@ -82,10 +84,11 @@ public class AttackerAndDefenderSelector {
       if (!territoryOwner.isNull()) {
         playersWithUnits.add(territoryOwner);
       }
+
       final GamePlayer attacker = currentPlayer;
       // Attacker fights alone; the defender can also use all the allied units.
       final GamePlayer defender =
-          getOpponentWithPriorityList(attacker, playersWithUnits).orElse(null);
+          getOpponentWithPriorityList(territory, attacker, playersWithUnits).orElse(null);
       final List<Unit> attackingUnits =
           territory.getUnitCollection().getMatches(Matches.unitIsOwnedBy(attacker));
       final List<Unit> defendingUnits =
@@ -94,7 +97,7 @@ public class AttackerAndDefenderSelector {
               : territory.getUnitCollection().getMatches(Matches.alliedUnit(defender));
 
       return AttackerAndDefender.builder()
-          .attacker(currentPlayer)
+          .attacker(attacker)
           .defender(defender)
           .attackingUnits(attackingUnits)
           .defendingUnits(defendingUnits)
@@ -141,7 +144,8 @@ public class AttackerAndDefenderSelector {
       return AttackerAndDefender.NONE;
     }
     // Defender
-    final GamePlayer defender = getOpponentWithPriorityList(attacker, priorityPlayers).orElse(null);
+    final GamePlayer defender =
+        getOpponentWithPriorityList(territory, attacker, priorityPlayers).orElse(null);
     return AttackerAndDefender.builder().attacker(attacker).defender(defender).build();
   }
 
@@ -150,7 +154,8 @@ public class AttackerAndDefenderSelector {
    * priority. The order in {@code priorityPlayers} determines the priority for those players
    * included in that list. Players not in the list are at the bottom without any order.
    *
-   * <p>The opponent is chosen with the following priorities
+   * <p>Some additional prioritisation is given based on the territory owner and players with units.
+   * Otherwise, the opponent is chosen with the following priorities
    *
    * <ol>
    *   <li>the first player in {@code priorityPlayers} who is an enemy of {@code p}
@@ -165,7 +170,26 @@ public class AttackerAndDefenderSelector {
    * @return an opponent. An empty optional is returned if the game has no players
    */
   private Optional<GamePlayer> getOpponentWithPriorityList(
-      final GamePlayer player, final List<GamePlayer> priorityPlayers) {
+      Territory territory, final GamePlayer player, final List<GamePlayer> priorityPlayers) {
+    GamePlayer bestDefender = null;
+    // Handle some special cases that the priority ordering logic doesn't handle. See tests.
+    if (territory != null) {
+      if (territory.isWater()) {
+        bestDefender = getEnemyWithMostUnits(territory);
+        if (bestDefender == null) {
+          bestDefender = UnitUtils.findPlayerWithMostUnits(territory.getUnits());
+        }
+      } else {
+        bestDefender = territory.getOwner();
+        // If we're not at war with the owner and there are enemies, fight them.
+        if (!bestDefender.isAtWar(currentPlayer)) {
+          GamePlayer enemyWithMostUnits = getEnemyWithMostUnits(territory);
+          if (enemyWithMostUnits != null) {
+            bestDefender = enemyWithMostUnits;
+          }
+        }
+      }
+    }
     final Stream<GamePlayer> enemiesPriority =
         priorityPlayers.stream().filter(Matches.isAtWar(player));
     final Stream<GamePlayer> neutralsPriority =
@@ -173,6 +197,7 @@ public class AttackerAndDefenderSelector {
             .filter(Matches.isAtWar(player).negate())
             .filter(Matches.isAllied(player).negate());
     return Stream.of(
+            Optional.ofNullable(bestDefender).stream(),
             enemiesPriority,
             playersAtWarWith(player),
             neutralsPriority,
@@ -180,6 +205,13 @@ public class AttackerAndDefenderSelector {
             players.stream())
         .flatMap(s -> s)
         .findFirst();
+  }
+
+  private @Nullable GamePlayer getEnemyWithMostUnits(Territory territory) {
+    return UnitUtils.findPlayerWithMostUnits(
+        territory.getUnits().stream()
+            .filter(Matches.unitIsEnemyOf(currentPlayer))
+            .collect(Collectors.toList()));
   }
 
   /**

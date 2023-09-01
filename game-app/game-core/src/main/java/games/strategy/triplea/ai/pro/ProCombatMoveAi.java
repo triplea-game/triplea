@@ -434,12 +434,12 @@ public class ProCombatMoveAi {
       }
 
       // Set max enemy attackers
-      if (enemyAttackOptions.getMax(t) != null) {
-        final Set<Unit> enemyAttackingUnits =
-            new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
-        enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
-        patd.setMaxEnemyUnits(new ArrayList<>(enemyAttackingUnits));
-        patd.setMaxEnemyBombardUnits(enemyAttackOptions.getMax(t).getMaxBombardUnits());
+      final ProTerritory enemyAttackMax = enemyAttackOptions.getMax(t);
+      if (enemyAttackMax != null) {
+        final Set<Unit> enemyAttackingUnits = new HashSet<>(enemyAttackMax.getMaxUnits());
+        enemyAttackingUnits.addAll(enemyAttackMax.getMaxAmphibUnits());
+        patd.setMaxEnemyUnits(enemyAttackingUnits);
+        patd.setMaxEnemyBombardUnits(enemyAttackMax.getMaxBombardUnits());
       }
 
       // Add strategic value for factories
