@@ -57,7 +57,7 @@ public final class GameDataTestUtil {
    *
    * @return A italian PlayerId.
    */
-  static GamePlayer italians(final GameState data) {
+  public static GamePlayer italians(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_ITALIANS);
   }
 
@@ -103,6 +103,10 @@ public final class GameDataTestUtil {
 
   public static GamePlayer britain(final GameState data) {
     return data.getPlayerList().getPlayerId("Britain");
+  }
+
+  public static GamePlayer french(final GameState data) {
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_FRENCH);
   }
 
   /**
