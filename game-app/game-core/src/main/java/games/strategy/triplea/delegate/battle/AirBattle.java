@@ -99,7 +99,9 @@ public class AirBattle extends AbstractBattle {
   @Override
   public Change addAttackChange(
       final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {
-    attackingUnits.addAll(units);
+    // Avoid duplicates. Note: This is needed as scrambling code calls addAirBattle(), but the
+    // battle may have already been created with the same attackers. They should not be added twice.
+    units.stream().filter(not(attackingUnits::contains)).forEach(attackingUnits::add);
     return ChangeFactory.EMPTY_CHANGE;
   }
 
