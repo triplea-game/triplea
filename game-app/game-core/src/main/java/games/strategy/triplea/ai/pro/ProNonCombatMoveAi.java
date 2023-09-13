@@ -255,7 +255,7 @@ class ProNonCombatMoveAi {
       if (territories.size() == 1) {
         final Territory onlyTerritory = CollectionUtils.getAny(territories);
         if (onlyTerritory.equals(unitTerritoryMap.get(u))
-            && !canBePotentiallyBeTransported(onlyTerritory)) {
+            && !canPotentiallyBeTransported(onlyTerritory)) {
           moveMap.get(onlyTerritory).addCantMoveUnit(u);
           it.remove();
         }
@@ -311,7 +311,7 @@ class ProNonCombatMoveAi {
     return infraUnitMoveMap;
   }
 
-  private boolean canBePotentiallyBeTransported(Territory unitTerritory) {
+  private boolean canPotentiallyBeTransported(Territory unitTerritory) {
     final List<ProTransport> transportMapList =
         territoryManager.getDefendOptions().getTransportList();
     for (final ProTransport pad : transportMapList) {
