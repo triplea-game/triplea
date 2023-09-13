@@ -235,7 +235,6 @@ class ProNonCombatMoveAi {
 
     Map<Territory, ProTerritory> moveMap = territoryManager.getDefendOptions().getTerritoryMap();
     Map<Unit, Set<Territory>> unitMoveMap = territoryManager.getDefendOptions().getUnitMoveMap();
-    List<ProTransport> transportMapList = territoryManager.getDefendOptions().getTransportList();
 
     // Add all units that can't move (to be consumed, allied units, 0 move units, etc)
     for (final Territory t : moveMap.keySet()) {
@@ -252,26 +251,13 @@ class ProNonCombatMoveAi {
     // Add all units that only have 1 move option and can't be transported
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext(); ) {
       final Unit u = it.next();
-      if (unitMoveMap.get(u).size() == 1) {
-        final Territory onlyTerritory = CollectionUtils.getAny(unitMoveMap.get(u));
-        if (onlyTerritory.equals(unitTerritoryMap.get(u))) {
-          boolean canBeTransported = false;
-          for (final ProTransport pad : transportMapList) {
-            for (final Territory t : pad.getTransportMap().keySet()) {
-              if (pad.getTransportMap().get(t).contains(onlyTerritory)) {
-                canBeTransported = true;
-              }
-            }
-            for (final Territory t : pad.getSeaTransportMap().keySet()) {
-              if (pad.getSeaTransportMap().get(t).contains(onlyTerritory)) {
-                canBeTransported = true;
-              }
-            }
-          }
-          if (!canBeTransported) {
-            moveMap.get(onlyTerritory).addCantMoveUnit(u);
-            it.remove();
-          }
+      final Set<Territory> territories = unitMoveMap.get(u);
+      if (territories.size() == 1) {
+        final Territory onlyTerritory = CollectionUtils.getAny(territories);
+        if (onlyTerritory.equals(unitTerritoryMap.get(u))
+            && !canBePotentiallyBeTransported(onlyTerritory)) {
+          moveMap.get(onlyTerritory).addCantMoveUnit(u);
+          it.remove();
         }
       }
     }
@@ -323,6 +309,24 @@ class ProNonCombatMoveAi {
       }
     }
     return infraUnitMoveMap;
+  }
+
+  private boolean canBePotentiallyBeTransported(Territory unitTerritory) {
+    final List<ProTransport> transportMapList =
+        territoryManager.getDefendOptions().getTransportList();
+    for (final ProTransport pad : transportMapList) {
+      for (final Territory t : pad.getTransportMap().keySet()) {
+        if (pad.getTransportMap().get(t).contains(unitTerritory)) {
+          return true;
+        }
+      }
+      for (final Territory t : pad.getSeaTransportMap().keySet()) {
+        if (pad.getSeaTransportMap().get(t).contains(unitTerritory)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private List<Territory> moveOneDefenderToLandTerritoriesBorderingEnemy() {
