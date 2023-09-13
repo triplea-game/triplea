@@ -70,6 +70,7 @@ public class UiContext {
   @Getter private final TileImageFactory tileImageFactory = new TileImageFactory();
   @Getter private UnitImageFactory unitImageFactory;
   @Getter private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
+  @Getter private final TooltipProperties tooltipProperties;
 
   @Getter
   private final TerritoryEffectImageFactory territoryEffectImageFactory =
@@ -152,6 +153,7 @@ public class UiContext {
         log.error("Failed to create cursor from: " + cursorUrl, e);
       }
     }
+    tooltipProperties = new TooltipProperties(this);
   }
 
   public JLabel newUnitImageLabel(final ImageKey imageKey) {

@@ -10,7 +10,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
-import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.UnitCategory;
 import java.awt.Color;
@@ -271,7 +270,8 @@ class OrderOfLossesInputPanel extends JPanel {
             "<html>"
                 + category.getType().getName()
                 + ":  "
-                + new TooltipProperties(uiContext)
+                + uiContext
+                    .getTooltipProperties()
                     .getTooltip(category.getType(), category.getOwner())
                 + "</html>";
         final ImageIcon img = uiContext.getUnitImageFactory().getIcon(ImageKey.of(category));
