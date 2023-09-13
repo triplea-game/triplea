@@ -5,6 +5,7 @@ import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ui.UiContext;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import lombok.experimental.UtilityClass;
@@ -20,19 +21,21 @@ class UnitHelpMenu {
     return SwingAction.of(
         unitHelpTitle,
         e -> {
-          final Result<String> result =
+          final Result<JDialog> result =
               Interruptibles.awaitResult(
                   () ->
                       BackgroundTaskRunner.runInBackgroundAndReturn(
                           "Calculating Data",
-                          () -> UnitStatsTable.getUnitStatsTable(gameData, uiContext)));
-          final JEditorPane editorPane =
-              new JEditorPane("text/html", result.result.orElse("Failed to calculate Data"));
-          editorPane.setEditable(false);
-          editorPane.setCaretPosition(0);
-          final JScrollPane scroll = new JScrollPane(editorPane);
-          scroll.setBorder(BorderFactory.createEmptyBorder());
-          InformationDialog.createDialog(scroll, unitHelpTitle).setVisible(true);
+                          () -> {
+                            String text = UnitStatsTable.getUnitStatsTable(gameData, uiContext);
+                            JEditorPane editorPane = new JEditorPane("text/html", text);
+                            editorPane.setEditable(false);
+                            editorPane.setCaretPosition(0);
+                            JScrollPane scroll = new JScrollPane(editorPane);
+                            scroll.setBorder(BorderFactory.createEmptyBorder());
+                            return InformationDialog.createDialog(scroll, unitHelpTitle);
+                          }));
+          result.result.orElseThrow().setVisible(true);
         });
   }
 }
