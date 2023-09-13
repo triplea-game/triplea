@@ -5,7 +5,6 @@ import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.ui.ScrollableTextField;
@@ -38,7 +37,7 @@ public class UnitPanel extends JPanel {
             + ":  "
             + costs.getInt(category.getType())
             + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; "
-            + new TooltipProperties(uiContext).getTooltip(category.getType(), category.getOwner())
+            + uiContext.getTooltipProperties().getTooltip(category.getType(), category.getOwner())
             + "</html>";
     setCount(category.getUnits().size());
     setLayout(new GridBagLayout());
