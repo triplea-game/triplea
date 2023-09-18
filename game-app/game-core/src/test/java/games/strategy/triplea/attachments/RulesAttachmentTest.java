@@ -94,7 +94,8 @@ class RulesAttachmentTest {
       final int testItalianPU = italianPuAmount;
       final int testItalianResources = italianOreAmount + italianFuelAmount + italianPuAmount;
       final int testPUs = testItalianPU + germanPuAmount;
-      final int testResources = testItalianResources + germanPuAmount + germanFuelAmount + germanOreAmount;
+      final int testResources =
+          testItalianResources + germanPuAmount + germanFuelAmount + germanOreAmount;
 
       /* testing with 1 player */
       final List<GamePlayer> players = List.of(italians);
@@ -116,8 +117,7 @@ class RulesAttachmentTest {
       assertFalse(attachment.checkHaveResources(players1));
       attachment.setHaveResources(concatWithColon(String.valueOf(testPUs), sumString, PUS));
       assertTrue(attachment.checkHaveResources(players1));
-      attachment.setHaveResources(
-          concatWithColon(String.valueOf(testResources), sumString, PUS));
+      attachment.setHaveResources(concatWithColon(String.valueOf(testResources), sumString, PUS));
       assertFalse(attachment.checkHaveResources(players1));
       attachment.setHaveResources(
           concatWithColon(String.valueOf(testResources), sumString, PUS, fuel));
@@ -125,9 +125,8 @@ class RulesAttachmentTest {
       attachment.setHaveResources(
           concatWithColon(String.valueOf(testResources), sumString, PUS, fuel, ore));
       assertTrue(attachment.checkHaveResources(players1));
-
     }
-      @Test
+
     private String concatWithColon(final String... args) {
       return String.join(":", args);
     }
