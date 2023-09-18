@@ -170,7 +170,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (n < 1) {
       throw new GameParseException("haveResources must be a positive integer" + thisErrorMsg());
     }
-    for (int i = 1;i < s.length; i++) {
+    for (int i = 1; i < s.length; i++) {
       if (s[i].equalsIgnoreCase("sum") || s[i].equalsIgnoreCase("add")) {
         i++;
       }

@@ -9,11 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.gameparser.GameParseException;
-import java.security.SecureRandom;
-import java.util.List;
-
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.security.SecureRandom;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
