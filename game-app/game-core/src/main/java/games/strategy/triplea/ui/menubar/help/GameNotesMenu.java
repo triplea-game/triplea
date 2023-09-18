@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.menubar.help;
 
 import games.strategy.engine.framework.ui.GameNotesView;
+import java.awt.Dimension;
 import java.nio.file.Path;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -24,18 +25,12 @@ class GameNotesMenu {
                   final JDialog dialog =
                       InformationDialog.createDialog(
                           notesPanel(gameNotes, mapLocation), gameNotesTitle);
-                  if (dialog.getWidth() < 400) {
-                    dialog.setSize(400, dialog.getHeight());
-                  }
-                  if (dialog.getHeight() < 300) {
-                    dialog.setSize(dialog.getWidth(), 300);
-                  }
-                  if (dialog.getWidth() > 800) {
-                    dialog.setSize(800, dialog.getHeight());
-                  }
-                  if (dialog.getHeight() > 600) {
-                    dialog.setSize(dialog.getWidth(), 600);
-                  }
+                  Dimension size = dialog.getSize();
+                  size.width = Math.min(size.width, 400);
+                  size.height = Math.min(size.height, 300);
+                  size.width = Math.max(size.width, 800);
+                  size.height = Math.max(size.height, 600);
+                  dialog.setSize(size);
                   dialog.setVisible(true);
                 }));
   }

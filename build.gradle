@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.ben-manes.versions' version '0.47.0'
+    id 'com.github.ben-manes.versions' version '0.48.0'
     id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
     id 'com.diffplug.spotless' version '6.21.0' apply false
 }
@@ -55,7 +55,7 @@ subprojects {
         commonsIoVersion = '2.13.0'
         commonsMathVersion = '3.6.1'
         commonsTextVersion = '1.10.0'
-        databaseRiderVersion = '1.40.0'
+        databaseRiderVersion = '1.41.0'
         dropwizardVersion = '2.1.0'
         dropwizardWebsocketsVersion = '1.3.14'
         equalsVerifierVersion = '3.15.1'
@@ -74,7 +74,7 @@ subprojects {
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '4.0.3'
         jaxbImplVersion = '4.0.3'
-        jdbiVersion = '3.41.0'
+        jdbiVersion = '3.41.1'
         jetbrainsAnnotationsVersion = '24.0.1'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.10.0'

@@ -7,7 +7,7 @@ jobs:
     runs-on: Ubuntu-20.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Load SSH private key into ssh-agent
         uses: webfactory/ssh-agent@v0.8.0
         with:

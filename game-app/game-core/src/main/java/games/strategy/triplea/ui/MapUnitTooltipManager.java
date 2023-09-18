@@ -129,7 +129,7 @@ public final class MapUnitTooltipManager implements ActionListener {
             count == 1 ? "" : (count + " "),
             StringUtils.capitalize(unitType.getName()),
             player.getName());
-    return firstLine + new TooltipProperties(uiContext).getTooltip(unitType, player);
+    return firstLine + uiContext.getTooltipProperties().getTooltip(unitType, player);
   }
 
   /**

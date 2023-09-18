@@ -337,7 +337,7 @@ class ProductionPanel extends JPanel {
           tooltip
               .append(type.getName())
               .append(": ")
-              .append(new TooltipProperties(uiContext).getTooltip(type, player));
+              .append(uiContext.getTooltipProperties().getTooltip(type, player));
           name.setText(type.getName());
           if (attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);
