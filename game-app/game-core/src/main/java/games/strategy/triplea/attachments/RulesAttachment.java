@@ -3,6 +3,7 @@ package games.strategy.triplea.attachments;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
@@ -13,6 +14,7 @@ import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -55,9 +57,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private int techCount = -1;
   // condition for having specific relationships
   private @Nullable List<String> relationship = null;
+  // condition for checking ai player
+  private boolean checkAIPlayer = false;
   // condition for being at war
   private @Nullable Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
+  // condition for checking resources
+  private @Nullable String[] haveResources = null;
   // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according
   // to
   // the prices the defender pays for the units]
@@ -143,6 +149,50 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     return natObjs;
+  }
+
+  @VisibleForTesting
+  public void setHaveResources(final String value) throws GameParseException {
+    final String[] s = splitOnColon(value);
+    if (s.length <= 1) {
+      throw new GameParseException(
+          "haveResources must have at least 2 fields. Format value=resource1 count=number, or "
+              + "value=resource1:resource2:resource3 count=number"
+              + thisErrorMsg());
+    }
+    if ((s.length <= 2) && (s[1].equalsIgnoreCase("sum") || s[1].equalsIgnoreCase("add"))) {
+      throw new GameParseException(
+          "haveResources must have at least 3 fields when used with 'Sum' or 'Add'. Format value=Sum:resource1 "
+              + "count=number, or value=Sum:resource1:resource2:resource3 count=number"
+              + thisErrorMsg());
+    }
+    final int n = getInt(s[0]);
+    if (n < 1) {
+      throw new GameParseException("haveResources must be a positive integer" + thisErrorMsg());
+    }
+    for (int i = 1;i < s.length; i++) {
+      if (s[i].equalsIgnoreCase("sum") || s[i].equalsIgnoreCase("add")) {
+        i++;
+      }
+      // validate that this resource exists in the xml
+      final Resource r = getData().getResourceList().getResource(s[i]);
+      if (r == null) {
+        throw new GameParseException("No resource called: " + s[i] + thisErrorMsg());
+      }
+    }
+    haveResources = s;
+  }
+
+  private void setHaveResources(final String[] value) {
+    haveResources = value;
+  }
+
+  public String[] getHaveResources() {
+    return haveResources;
+  }
+
+  private void resetHaveResources() {
+    haveResources = null;
   }
 
   private void setDestroyedTuv(final String value) throws GameParseException {
@@ -489,6 +539,22 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     unitPresence = null;
   }
 
+  private void setCheckAIPlayer(final String s) {
+    checkAIPlayer = getBool(s);
+  }
+
+  private void setCheckAIPlayer(final Boolean s) {
+    checkAIPlayer = s;
+  }
+
+  public boolean getCheckAIPlayer() {
+    return checkAIPlayer;
+  }
+
+  private void resetCheckAIPlayer() {
+    checkAIPlayer = false;
+  }
+
   private int getAtWarCount() {
     return atWarCount;
   }
@@ -735,11 +801,21 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
       objectiveMet = checkDirectOwnership(listedTerritories, players);
     }
+    // check for ai controlled player
+    if (objectiveMet && getCheckAIPlayer()) {
+      objectiveMet = checkCheckAIPlayer(players);
+    }
+    // check for resources
+    if (objectiveMet && haveResources != null) {
+      objectiveMet = checkHaveResources(players);
+    }
     // get attached to player
     final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
+    // check for players at war
     if (objectiveMet && !getAtWarPlayers().isEmpty()) {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount());
     }
+    // check for techs
     if (objectiveMet && !getTechs().isEmpty()) {
       objectiveMet = checkTechs(playerAttachedTo, data.getTechnologyFrontier());
     }
@@ -1001,6 +1077,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return numberMet >= getTerritoryCount();
   }
 
+  private boolean checkCheckAIPlayer(final List<GamePlayer> players) {
+    boolean bcheck = true;
+    for (GamePlayer player : players) {
+      bcheck = (bcheck && player.isAi());
+    }
+    return bcheck;
+  }
+
   private boolean checkAtWar(
       final GamePlayer player, final Set<GamePlayer> enemies, final int count) {
     int found = CollectionUtils.countMatches(enemies, player::isAtWar);
@@ -1031,6 +1115,21 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return found >= techCount;
   }
 
+  @VisibleForTesting
+  public boolean checkHaveResources(final List<GamePlayer> players) {
+    final boolean toSum =
+        haveResources[1].equalsIgnoreCase("sum") || haveResources[1].equalsIgnoreCase("add");
+    int itotal = 0;
+    for (GamePlayer player : players) {
+      for (int i = toSum ? 2 : 1; i < haveResources.length; i++) {
+        final Resource resource = getData().getResourceList().getResource(haveResources[i]);
+        int iamount = player.getResources().getQuantity(resource);
+        itotal = toSum ? itotal + iamount : Math.max(itotal, iamount);
+      }
+    }
+    return itotal >= getInt(haveResources[0]);
+  }
+
   @Override
   public void validate(final GameState data) {
     validateNames(alliedOwnershipTerritories);
@@ -1057,6 +1156,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             this::setRelationship,
             this::getRelationship,
             this::resetRelationship);
+      case "checkAIPlayer":
+        return MutableProperty.of(
+            this::setCheckAIPlayer,
+            this::setCheckAIPlayer,
+            this::getCheckAIPlayer,
+            this::resetCheckAIPlayer);
       case "atWarPlayers":
         return MutableProperty.of(
             this::setAtWarPlayers,
@@ -1065,6 +1170,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             this::resetAtWarPlayers);
       case "atWarCount":
         return MutableProperty.ofReadOnly(this::getAtWarCount);
+      case "haveResources":
+        return MutableProperty.of(
+            this::setHaveResources,
+            this::setHaveResources,
+            this::getHaveResources,
+            this::resetHaveResources);
       case "destroyedTUV":
         return MutableProperty.ofString(
             this::setDestroyedTuv, this::getDestroyedTuv, this::resetDestroyedTuv);
