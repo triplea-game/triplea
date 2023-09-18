@@ -37,7 +37,7 @@ class RulesAttachmentTest {
     private final String fuel = "Fuel";
     private final String ore = "Ore";
     private final String addString = "add";
-    private final String sumString ="SUM";
+    private final String sumString = "SUM";
 
     /* Length test for haveResources */
     @Test
@@ -53,34 +53,18 @@ class RulesAttachmentTest {
     @Test
     void setHaveResourcesInvalidArgs() {
       /* Not a number (NAN) test */
-      assertThrows(
-              IllegalArgumentException.class,
-              () -> attachment.setHaveResources("NAN:PUs"));
-      assertThrows(
-              IllegalArgumentException.class,
-              () -> attachment.setHaveResources("NAN:add:PUs"));
+      assertThrows(IllegalArgumentException.class, () -> attachment.setHaveResources("NAN:PUs"));
+      assertThrows(IllegalArgumentException.class, () -> attachment.setHaveResources("NAN:add:PUs"));
       /* -1 value test */
-      assertThrows(
-              GameParseException.class,
-              () -> attachment.setHaveResources("0:PUs"));
-      assertThrows(
-              GameParseException.class,
-              () -> attachment.setHaveResources("0:add:PUs"));
+      assertThrows(GameParseException.class, () -> attachment.setHaveResources("0:PUs"));
+      assertThrows(GameParseException.class, () -> attachment.setHaveResources("0:add:PUs"));
       /* Not a resource test */
-      assertThrows(
-              GameParseException.class,
-              () -> attachment.setHaveResources("1:NOT A RESOURCE"));
-      assertThrows(
-              GameParseException.class,
-              () -> attachment.setHaveResources("1:Sum:NOT A RESOURCE"));
-      assertThrows(
-              GameParseException.class, () -> attachment.setHaveResources("0:w"));
-      assertThrows(
-              GameParseException.class, () -> attachment.setHaveResources("0:w:e"));
-      assertThrows(
-              GameParseException.class, () -> attachment.setHaveResources("0:add:w"));
-      assertThrows(
-              GameParseException.class, () -> attachment.setHaveResources("0:add:w:e"));
+      assertThrows(GameParseException.class, () -> attachment.setHaveResources("1:NOT A RESOURCE"));
+      assertThrows(GameParseException.class, () -> attachment.setHaveResources("1:Sum:NOT A RESOURCE"));
+      assertThrows(GameParseException.class, () -> attachment.setHaveResources("0:w"));
+      assertThrows(GameParseException.class, () -> attachment.setHaveResources("0:w:e"));
+      assertThrows(GameParseException.class, () -> attachment.setHaveResources("0:add:w"));
+      assertThrows(GameParseException.class, () -> attachment.setHaveResources("0:add:w:e"));
     }
 
     /* Testing stored values with getHaveResources */
@@ -90,14 +74,9 @@ class RulesAttachmentTest {
       final String random1 = Integer.toString(Math.abs(rand.nextInt()));
       final String[] expected1 = new String[] {random1, PUS};
 
-      attachment.setHaveResources(
-              concatWithColon(random1, addString, PUS));
-      assertEquals(
-              expected1[0],
-              attachment.getHaveResources()[0]);
-      assertEquals(
-              expected1[1],
-              attachment.getHaveResources()[2]);
+      attachment.setHaveResources(concatWithColon(random1, addString, PUS));
+      assertEquals(expected1[0], attachment.getHaveResources()[0]);
+      assertEquals(expected1[1], attachment.getHaveResources()[2]);
     }
 
     /* Testing checkHaveResources */
@@ -117,41 +96,27 @@ class RulesAttachmentTest {
 
         /* testing with 1 player */
         final List<GamePlayer> players = List.of(italians);
-        attachment.setHaveResources(
-                concatWithColon(String.valueOf(testItalianPU), PUS));
-        assertTrue(
-                attachment.checkHaveResources(players));
-        attachment.setHaveResources(
-                concatWithColon(String.valueOf(testItalianResources), addString, PUS));
-        assertFalse(
-                attachment.checkHaveResources(players));
-        attachment.setHaveResources(
-                concatWithColon(String.valueOf(testItalianResources), addString, PUS, fuel));
-        assertFalse(
-                attachment.checkHaveResources(players));
-        attachment.setHaveResources(
-                concatWithColon(String.valueOf(testItalianResources), addString, PUS, fuel, ore));
-        assertTrue(
-                attachment.checkHaveResources(players));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testItalianPU), PUS));
+        assertTrue(attachment.checkHaveResources(players));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testItalianResources), addString, PUS));
+        assertFalse(attachment.checkHaveResources(players));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testItalianResources), addString, PUS, fuel));
+        assertFalse(attachment.checkHaveResources(players));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testItalianResources), addString, PUS, fuel, ore));
+        assertTrue(attachment.checkHaveResources(players));
 
         /* testing with 2 players */
         final List<GamePlayer> players1 = List.of(italians, germans);
-        attachment.setHaveResources(
-                concatWithColon(String.valueOf(testPUs), sumString, PUS));
-        assertTrue(
-                attachment.checkHaveResources(players1));
-        attachment.setHaveResources(
-                concatWithColon(String.valueOf(testResources), sumString, PUS));
-        assertFalse(
-                attachment.checkHaveResources(players1));
-        attachment.setHaveResources(
-                concatWithColon(String.valueOf(testResources), sumString, PUS, fuel));
-        assertFalse(
-                attachment.checkHaveResources(players1));
-        attachment.setHaveResources(
-                concatWithColon(String.valueOf(testResources), sumString, PUS, fuel, ore));
-        assertTrue(
-                attachment.checkHaveResources(players1));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testPUs), PUS));
+        assertFalse(attachment.checkHaveResources(players1));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testPUs), sumString, PUS));
+        assertTrue(attachment.checkHaveResources(players1));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testResources), sumString, PUS));
+        assertFalse(attachment.checkHaveResources(players1));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testResources), sumString, PUS, fuel));
+        assertFalse(attachment.checkHaveResources(players1));
+        attachment.setHaveResources(concatWithColon(String.valueOf(testResources), sumString, PUS, fuel, ore));
+        assertTrue(attachment.checkHaveResources(players1));
 
     }
       @Test
