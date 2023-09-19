@@ -146,7 +146,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     // the gamedata:
     // (ISomeDelegate) getPlayerBridge().getRemote()
     // We should never touch the game data directly. All changes to game data are done through the
-    // remote,  which then changes the game using the DelegateBridge -> change factory
+    // remote, which then changes the game using the DelegateBridge -> change factory
     ui.requiredTurnSeries(this.getGamePlayer());
     enableEditModeMenu();
     boolean badStep = false;
