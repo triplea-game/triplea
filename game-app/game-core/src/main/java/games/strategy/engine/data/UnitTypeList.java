@@ -24,6 +24,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   // Cached support rules. Marked transient as the cache does not need to be part of saved games.
   private transient @Nullable Set<UnitSupportAttachment> supportRules;
   private transient @Nullable Set<UnitSupportAttachment> supportAaRules;
+  private transient @Nullable Set<UnitSupportAttachment> supportAirRules;
 
   public UnitTypeList(final GameData data) {
     super(data);
@@ -79,6 +80,21 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
               .collect(Collectors.toSet());
     }
     return supportAaRules;
+  }
+
+  /**
+   * Returns the unit support rules for the unit types. Computed once and cached afterwards.
+   *
+   * @return The unit support rules.
+   */
+  public Set<UnitSupportAttachment> getSupportAirRules() {
+    if (supportAirRules == null) {
+      supportAirRules =
+          UnitSupportAttachment.get(this).stream()
+               .filter(usa -> (usa.getAirRoll() || usa.getAirStrength()))
+               .collect(Collectors.toSet());
+    }
+    return supportAirRules;
   }
 
   public int size() {

@@ -696,9 +696,10 @@ public class AirBattle extends AbstractBattle {
                       bridge,
                       "Attackers Fire, ",
                       CombatValueBuilder.airBattleCombatValue()
+                          .enemyUnits(defendingUnits)
+                          .friendlyUnits(attackingUnits)
                           .side(BattleState.Side.OFFENSE)
-                          .lhtrHeavyBombers(
-                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportAirRules())
                           .gameDiceSides(bridge.getData().getDiceSides())
                           .build());
             }
@@ -713,16 +714,12 @@ public class AirBattle extends AbstractBattle {
                   CasualtySelector.selectCasualties(
                       defender,
                       defendingUnits,
-                      CombatValueBuilder.mainCombatValue()
+                      CombatValueBuilder.airBattleCombatValue()
                           .enemyUnits(attackingUnits)
                           .friendlyUnits(defendingUnits)
                           .side(BattleState.Side.DEFENSE)
-                          .gameSequence(bridge.getData().getSequence())
-                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
-                          .lhtrHeavyBombers(
-                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportAirRules())
                           .gameDiceSides(bridge.getData().getDiceSides())
-                          .territoryEffects(List.of())
                           .build(),
                       battleSite,
                       bridge,
@@ -776,9 +773,10 @@ public class AirBattle extends AbstractBattle {
                       bridge,
                       "Defenders Fire, ",
                       CombatValueBuilder.airBattleCombatValue()
+                          .enemyUnits(attackingUnits)
+                          .friendlyUnits(defendingUnits)
                           .side(BattleState.Side.DEFENSE)
-                          .lhtrHeavyBombers(
-                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportAirRules())
                           .gameDiceSides(bridge.getData().getDiceSides())
                           .build());
             }
@@ -793,16 +791,12 @@ public class AirBattle extends AbstractBattle {
                   CasualtySelector.selectCasualties(
                       attacker,
                       attackingUnits,
-                      CombatValueBuilder.mainCombatValue()
+                      CombatValueBuilder.airBattleCombatValue()
                           .enemyUnits(defendingUnits)
                           .friendlyUnits(attackingUnits)
                           .side(BattleState.Side.OFFENSE)
-                          .gameSequence(bridge.getData().getSequence())
-                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
-                          .lhtrHeavyBombers(
-                              Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                          .supportAttachments(bridge.getData().getUnitTypeList().getSupportAirRules())
                           .gameDiceSides(bridge.getData().getDiceSides())
-                          .territoryEffects(List.of())
                           .build(),
                       battleSite,
                       bridge,

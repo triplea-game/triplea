@@ -68,6 +68,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private @Nullable IntegerMap<UnitType> attackRollsBonus = null;
   private @Nullable IntegerMap<UnitType> defenseRollsBonus = null;
   private @Nullable IntegerMap<UnitType> bombingBonus = null;
+  private @Nullable IntegerMap<UnitType> tuvBonus = null;
 
   public TechAbilityAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -692,6 +693,24 @@ public class TechAbilityAttachment extends DefaultAttachment {
     bombingBonus = null;
   }
 
+  private void setTUVBonus(final String value) throws GameParseException {
+    if (tuvBonus == null) {
+      tuvBonus = new IntegerMap<>();
+    }
+    applyCheckedValue("tuvBonus", value, tuvBonus::put);
+  }
+
+  private void setTUVBonus(final IntegerMap<UnitType> value) {
+    tuvBonus = value;
+  }
+
+  public IntegerMap<UnitType> getTUVBonus() {
+    return getIntegerMapProperty(tuvBonus);
+  }
+
+  private void resetTUVBonus() {
+    tuvBonus = null;
+  }
   public static boolean getAllowAirborneForces(final Collection<TechAdvance> techAdvances) {
     return techAdvances.stream()
         .map(TechAbilityAttachment::get)
@@ -1029,6 +1048,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
             this::setBombingBonus,
             this::getBombingBonus,
             this::resetBombingBonus);
+      case "tuvBonus":
+        return MutableProperty.of(
+            this::setTUVBonus,
+            this::setTUVBonus,
+            this::getTUVBonus,
+            this::resetTUVBonus);
       default:
         return null;
     }

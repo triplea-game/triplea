@@ -23,7 +23,10 @@ class AirBattleOffenseCombatValue implements CombatValue {
 
   @Nonnull Integer gameDiceSides;
 
-  @Nonnull Boolean lhtrHeavyBombers;
+  @Nonnull AvailableSupports strengthSupportFromFriends;
+  @Nonnull AvailableSupports strengthSupportFromEnemies;
+  @Nonnull AvailableSupports rollSupportFromFriends;
+  @Nonnull AvailableSupports rollSupportFromEnemies;
 
   @Getter(onMethod_ = @Override)
   @Nonnull
@@ -37,12 +40,15 @@ class AirBattleOffenseCombatValue implements CombatValue {
 
   @Override
   public RollCalculator getRoll() {
-    return new AirBattleOffenseRoll();
+    return new AirBattleOffenseRoll(rollSupportFromFriends.copy(), rollSupportFromEnemies.copy());
   }
 
   @Override
   public StrengthCalculator getStrength() {
-    return new AirBattleOffenseStrength(gameDiceSides);
+    return new AirBattleOffenseStrength(
+            gameDiceSides,
+            strengthSupportFromFriends.copy(),
+            strengthSupportFromEnemies.copy());
   }
 
   @Override
@@ -57,14 +63,19 @@ class AirBattleOffenseCombatValue implements CombatValue {
 
   @Override
   public boolean chooseBestRoll(final Unit unit) {
-    return lhtrHeavyBombers || unit.getUnitAttachment().getChooseBestRoll();
+    return false;
   }
 
   @Override
   public CombatValue buildWithNoUnitSupports() {
     return AirBattleOffenseCombatValue.builder()
         .gameDiceSides(gameDiceSides)
-        .lhtrHeavyBombers(lhtrHeavyBombers)
+        .rollSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .strengthSupportFromFriends(AvailableSupports.EMPTY_RESULT)
+        .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
+        .friendUnits(List.of())
+        .enemyUnits(List.of())
         .build();
   }
 
@@ -72,21 +83,30 @@ class AirBattleOffenseCombatValue implements CombatValue {
   public CombatValue buildOppositeCombatValue() {
     return AirBattleDefenseCombatValue.builder()
         .gameDiceSides(gameDiceSides)
-        .lhtrHeavyBombers(lhtrHeavyBombers)
+        .rollSupportFromFriends(rollSupportFromEnemies)
+        .rollSupportFromEnemies(rollSupportFromFriends)
+        .strengthSupportFromFriends(strengthSupportFromEnemies)
+        .strengthSupportFromEnemies(strengthSupportFromFriends)
+        .friendUnits(enemyUnits)
+        .enemyUnits(friendUnits)
         .build();
   }
 
   @Value
   static class AirBattleOffenseRoll implements RollCalculator {
+    AvailableSupports supportFromFriends;
+    AvailableSupports supportFromEnemies;
 
     @Override
     public RollValue getRoll(final Unit unit) {
-      return RollValue.of(unit.getUnitAttachment().getAttackRolls(unit.getOwner()));
+      return RollValue.of(1)
+              .add(supportFromFriends.giveSupportToUnit(unit))
+              .add(supportFromEnemies.giveSupportToUnit(unit));
     }
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return Map.of();
+      return SupportCalculator.getCombinedSupportGiven(supportFromFriends, supportFromEnemies);
     }
   }
 
@@ -94,15 +114,20 @@ class AirBattleOffenseCombatValue implements CombatValue {
   static class AirBattleOffenseStrength implements StrengthCalculator {
 
     int diceSides;
+    AvailableSupports supportFromFriends;
+    AvailableSupports supportFromEnemies;
 
     @Override
     public StrengthValue getStrength(final Unit unit) {
-      return StrengthValue.of(diceSides, unit.getUnitAttachment().getAirAttack(unit.getOwner()));
+      return StrengthValue.of(diceSides,
+                      unit.getUnitAttachment().getAirAttack(unit.getOwner()))
+              .add(supportFromFriends.giveSupportToUnit(unit))
+              .add(supportFromEnemies.giveSupportToUnit(unit));
     }
 
     @Override
     public Map<Unit, IntegerMap<Unit>> getSupportGiven() {
-      return Map.of();
+      return SupportCalculator.getCombinedSupportGiven(supportFromFriends, supportFromEnemies);
     }
   }
 }

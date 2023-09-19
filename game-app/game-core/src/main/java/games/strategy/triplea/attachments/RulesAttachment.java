@@ -160,20 +160,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
               + "value=resource1:resource2:resource3 count=number"
               + thisErrorMsg());
     }
-    if ((s.length <= 2) && (s[1].equalsIgnoreCase("sum") || s[1].equalsIgnoreCase("add"))) {
-      throw new GameParseException(
-          "haveResources must have at least 3 fields when used with 'Sum' or 'Add'. Format value=Sum:resource1 "
-              + "count=number, or value=Sum:resource1:resource2:resource3 count=number"
-              + thisErrorMsg());
-    }
     final int n = getInt(s[0]);
     if (n < 1) {
       throw new GameParseException("haveResources must be a positive integer" + thisErrorMsg());
     }
     for (int i = 1; i < s.length; i++) {
-      if (s[i].equalsIgnoreCase("sum") || s[i].equalsIgnoreCase("add")) {
-        i++;
-      }
       // validate that this resource exists in the xml
       final Resource r = getData().getResourceList().getResource(s[i]);
       if (r == null) {
@@ -1117,14 +1108,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   @VisibleForTesting
   public boolean checkHaveResources(final List<GamePlayer> players) {
-    final boolean toSum =
-        haveResources[1].equalsIgnoreCase("sum") || haveResources[1].equalsIgnoreCase("add");
     int itotal = 0;
     for (GamePlayer player : players) {
-      for (int i = toSum ? 2 : 1; i < haveResources.length; i++) {
+      for (int i = 1; i < haveResources.length; i++) {
         final Resource resource = getData().getResourceList().getResource(haveResources[i]);
-        int iamount = player.getResources().getQuantity(resource);
-        itotal = toSum ? itotal + iamount : Math.max(itotal, iamount);
+        itotal += player.getResources().getQuantity(resource);
       }
     }
     return itotal >= getInt(haveResources[0]);
