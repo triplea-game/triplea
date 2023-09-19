@@ -120,6 +120,14 @@ public class TechTracker {
     return getCached(player, type, "canBombard", getter);
   }
 
+  public int tuv(GamePlayer player, UnitType type) {
+    //sum will be 0 if there are no TUV bonus
+    //the return value must be checked against -1 calculate
+    final Supplier<Integer> getter =
+        () -> getSumOfBonuses(TechAbilityAttachment::getTUVBonus, type, player);
+    return getCached(player, type, "getTUVBonus", getter);
+  }
+
   public int getMinimumTerritoryValueForProductionBonus(final GamePlayer player) {
     final Supplier<Integer> getter =
         () ->

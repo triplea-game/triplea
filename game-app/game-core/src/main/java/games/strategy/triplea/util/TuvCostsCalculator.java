@@ -52,7 +52,7 @@ public class TuvCostsCalculator {
     // Override with XML TUV or consumesUnit sum
     final IntegerMap<UnitType> result = new IntegerMap<>(costs);
     for (final UnitType unitType : costs.keySet()) {
-      result.put(unitType, getTotalTuv(unitType, costs, new HashSet<>()));
+      result.put(unitType, getTotalTuv(player, unitType, costs, new HashSet<>()));
     }
 
     return result;
@@ -88,6 +88,7 @@ public class TuvCostsCalculator {
    */
   private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(
       final GameData data) {
+    final GamePlayer nullPlayer = data.getPlayerList().getNullPlayer();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final Map<UnitType, List<Integer>> differentCosts = new HashMap<>();
@@ -120,19 +121,19 @@ public class TuvCostsCalculator {
     // Add any units that have XML TUV even if they aren't purchasable
     for (final UnitType unitType : data.getUnitTypeList()) {
       final UnitAttachment ua = unitType.getUnitAttachment();
-      if (ua.getTuv() > -1) {
-        costs.put(unitType, ua.getTuv());
+      if (ua.getTuv(nullPlayer) > -1) {
+        costs.put(unitType, ua.getTuv(nullPlayer));
       }
     }
 
     return costs;
   }
 
-  private static int getTotalTuv(
+  private static int getTotalTuv(final GamePlayer player,
       final UnitType unitType, final IntegerMap<UnitType> costs, final Set<UnitType> alreadyAdded) {
     final UnitAttachment ua = unitType.getUnitAttachment();
-    if (ua.getTuv() > -1) {
-      return ua.getTuv();
+    if (ua.getTuv(player) > -1) {
+      return ua.getTuv(player);
     }
     int tuv = costs.getInt(unitType);
     if (ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
@@ -140,7 +141,7 @@ public class TuvCostsCalculator {
     }
     alreadyAdded.add(unitType);
     for (final UnitType ut : ua.getConsumesUnits().keySet()) {
-      tuv += ua.getConsumesUnits().getInt(ut) * getTotalTuv(ut, costs, alreadyAdded);
+      tuv += ua.getConsumesUnits().getInt(ut) * getTotalTuv(player, ut, costs, alreadyAdded);
     }
     alreadyAdded.remove(unitType);
     return tuv;

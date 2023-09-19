@@ -149,16 +149,52 @@ public class CombatValueBuilder {
 
   @Builder(builderMethodName = "airBattleCombatValue", builderClassName = "AirBattleBuilder")
   static CombatValue buildAirBattleCombatValue(
-      final BattleState.Side side, final boolean lhtrHeavyBombers, final int gameDiceSides) {
+          final Collection<Unit> enemyUnits,
+          final Collection<Unit> friendlyUnits,
+          final BattleState.Side side,
+          final Collection<UnitSupportAttachment> supportAttachments,
+          final int gameDiceSides) {
+
+    // Get all friendly supports
+    final AvailableSupports supportFromFriends =
+            AvailableSupports.getSortedSupport(
+                    new SupportCalculator(
+                            friendlyUnits, //
+                            supportAttachments,
+                            side,
+                            true));
+
+    // Get all enemy supports
+    final AvailableSupports supportFromEnemies =
+            AvailableSupports.getSortedSupport(
+                    new SupportCalculator(
+                            enemyUnits, //
+                            supportAttachments,
+                            side.getOpposite(),
+                            false));
 
     return side == BattleState.Side.DEFENSE
-        ? AirBattleDefenseCombatValue.builder()
+            ? AirBattleDefenseCombatValue.builder()
+            .strengthSupportFromFriends(
+                    supportFromFriends.filter(UnitSupportAttachment::getAirStrength))
+            .strengthSupportFromEnemies(
+                    supportFromEnemies.filter(UnitSupportAttachment::getAirStrength))
+            .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getAirRoll))
+            .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getAirRoll))
+            .friendUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
             .gameDiceSides(gameDiceSides)
-            .lhtrHeavyBombers(lhtrHeavyBombers)
             .build()
-        : AirBattleOffenseCombatValue.builder()
+            : AirBattleOffenseCombatValue.builder()
+            .strengthSupportFromFriends(
+                    supportFromFriends.filter(UnitSupportAttachment::getAirStrength))
+            .strengthSupportFromEnemies(
+                    supportFromEnemies.filter(UnitSupportAttachment::getAirStrength))
+            .rollSupportFromFriends(supportFromFriends.filter(UnitSupportAttachment::getAirRoll))
+            .rollSupportFromEnemies(supportFromEnemies.filter(UnitSupportAttachment::getAirRoll))
+            .friendUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
             .gameDiceSides(gameDiceSides)
-            .lhtrHeavyBombers(lhtrHeavyBombers)
             .build();
   }
 }

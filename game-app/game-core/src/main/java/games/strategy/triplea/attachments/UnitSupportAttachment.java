@@ -45,6 +45,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private boolean strength = false;
   private boolean aaRoll = false;
   private boolean aaStrength = false;
+  private boolean airRoll = false;
+  private boolean airStrength = false;
   private int bonus = 0;
   private int number = 0;
   private boolean allied = false;
@@ -184,9 +186,13 @@ public class UnitSupportAttachment extends DefaultAttachment {
         aaRoll = true;
       } else if (element.equalsIgnoreCase("AAstrength")) {
         aaStrength = true;
+      } else if (element.equalsIgnoreCase("airRoll")) {
+        airRoll = true;
+      } else if (element.equalsIgnoreCase("airStrength")) {
+        airStrength = true;
       } else {
         throw new GameParseException(
-            dice + " dice must be roll, strength, AAroll, or AAstrength: " + thisErrorMsg());
+            dice + " dice must be roll, strength, AAroll, AAstrength, airRoll, or airStrength: " + thisErrorMsg());
       }
     }
     return this;
@@ -203,6 +209,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
     strength = false;
     aaRoll = false;
     aaStrength = false;
+    airRoll = false;
+    airStrength = false;
   }
 
   private void setBonus(final String bonus) {
@@ -327,6 +335,14 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return aaStrength;
   }
 
+  public boolean getAirRoll() {
+    return airRoll;
+  }
+
+  public boolean getAirStrength() {
+    return airStrength;
+  }
+
   public boolean getDefence() {
     return defence;
   }
@@ -437,6 +453,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
         return MutableProperty.ofReadOnly(this::getAaRoll);
       case "aaStrength":
         return MutableProperty.ofReadOnly(this::getAaStrength);
+      case "airRoll":
+        return MutableProperty.ofReadOnly(this::getAirRoll);
+      case "airStrength":
+        return MutableProperty.ofReadOnly(this::getAirStrength);
       case BONUS:
         return MutableProperty.of(this::setBonus, this::setBonus, this::getBonus, this::resetBonus);
       case "number":

@@ -2525,12 +2525,18 @@ public class UnitAttachment extends DefaultAttachment {
     tuv = getInt(s);
   }
 
-  private void setTuv(final Integer s) {
+  @VisibleForTesting
+  public void setTuv(final Integer s) {
     tuv = s;
   }
 
-  public int getTuv() {
+  private int getTuv() {
     return tuv;
+  }
+  public int getTuv(final GamePlayer player) {
+    // must account for -1 value, so that TUV can be calculated
+    final int bonus = getTechTracker().tuv(player, getUnitType());
+    return Math.max(-1, bonus + tuv);
   }
 
   private void resetTuv() {

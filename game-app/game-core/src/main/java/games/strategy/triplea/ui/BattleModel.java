@@ -109,8 +109,10 @@ final class BattleModel extends DefaultTableModel {
       if (isAirPreBattleOrPreRaid) {
         combatValue =
             CombatValueBuilder.airBattleCombatValue()
+                .enemyUnits(new ArrayList<>(enemyBattleModel.getUnits()))
+                .friendlyUnits(units)
                 .side(BattleState.Side.DEFENSE)
-                .lhtrHeavyBombers(lhtrHeavyBombers)
+                .supportAttachments(gameData.getUnitTypeList().getSupportAirRules())
                 .gameDiceSides(gameData.getDiceSides())
                 .build();
       } else {
