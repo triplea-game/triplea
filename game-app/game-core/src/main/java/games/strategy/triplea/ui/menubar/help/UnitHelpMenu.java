@@ -30,7 +30,6 @@ class UnitHelpMenu {
                             String text = UnitStatsTable.getUnitStatsTable(gameData, uiContext);
                             JEditorPane editorPane = new JEditorPane("text/html", text);
                             editorPane.setEditable(false);
-                            editorPane.setCaretPosition(0);
                             JScrollPane scroll = new JScrollPane(editorPane);
                             scroll.setBorder(BorderFactory.createEmptyBorder());
                             return InformationDialog.createDialog(scroll, unitHelpTitle);
