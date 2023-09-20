@@ -2,17 +2,12 @@ package games.strategy.triplea.ui.menubar.help;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.triplea.ui.UiContext;
-import java.awt.Dimension;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import lombok.experimental.UtilityClass;
-import org.triplea.java.Interruptibles;
-import org.triplea.java.Interruptibles.Result;
 import org.triplea.swing.SwingAction;
 
 @UtilityClass
