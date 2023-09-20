@@ -79,9 +79,7 @@ public final class BackgroundTaskRunner {
   }
 
   public static <T> T runInBackgroundAndReturn(
-      Consumer<T> runOnEdtBeforeDialogClose,
-      final String message,
-      final Supplier<T> backgroundAction)
+      Consumer<T> runOnEdtBeforeDialogClose, String message, Supplier<T> backgroundAction)
       throws InterruptedException {
     return runInBackgroundAndReturn(
         message, backgroundAction::get, runOnEdtBeforeDialogClose, RuntimeException.class);
