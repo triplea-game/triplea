@@ -677,7 +677,7 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private static String formatPercentage(final double percentage) {
-    return new DecimalFormat("#%").format(percentage);
+    return new DecimalFormat("#%.##").format(percentage);
   }
 
   private static String formatValue(final double value) {
