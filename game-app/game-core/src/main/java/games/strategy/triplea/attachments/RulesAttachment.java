@@ -55,6 +55,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private int techCount = -1;
   // condition for having specific relationships
   private @Nullable List<String> relationship = null;
+  // condition for checking ai player
+  private boolean checkAIPlayers = false;
   // condition for being at war
   private @Nullable Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
@@ -489,6 +491,22 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     unitPresence = null;
   }
 
+  private void setCheckAIPlayers(final String s) {
+    checkAIPlayers = getBool(s);
+  }
+
+  private void setCheckAIPlayers(final Boolean s) {
+    checkAIPlayers = s;
+  }
+
+  public boolean getCheckAIPlayers() {
+    return checkAIPlayers;
+  }
+
+  private void resetCheckAIPlayers() {
+    checkAIPlayers = false;
+  }
+
   private int getAtWarCount() {
     return atWarCount;
   }
@@ -735,11 +753,17 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
       objectiveMet = checkDirectOwnership(listedTerritories, players);
     }
+    // check for ai controlled player
+    if (objectiveMet && getCheckAIPlayers()) {
+      objectiveMet = checkCheckAIPlayers(players);
+    }
     // get attached to player
     final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
+    // check for players at war
     if (objectiveMet && !getAtWarPlayers().isEmpty()) {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount());
     }
+    // check for techs
     if (objectiveMet && !getTechs().isEmpty()) {
       objectiveMet = checkTechs(playerAttachedTo, data.getTechnologyFrontier());
     }
@@ -1001,6 +1025,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return numberMet >= getTerritoryCount();
   }
 
+  private boolean checkCheckAIPlayers(final List<GamePlayer> players) {
+    boolean bcheck = true;
+    for (GamePlayer player : players) {
+      bcheck = (bcheck && player.isAi());
+    }
+    return bcheck;
+  }
+
   private boolean checkAtWar(
       final GamePlayer player, final Set<GamePlayer> enemies, final int count) {
     int found = CollectionUtils.countMatches(enemies, player::isAtWar);
@@ -1057,6 +1089,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             this::setRelationship,
             this::getRelationship,
             this::resetRelationship);
+      case "checkAIPlayer":
+        return MutableProperty.of(
+            this::setCheckAIPlayers,
+            this::setCheckAIPlayers,
+            this::getCheckAIPlayers,
+            this::resetCheckAIPlayers);
       case "atWarPlayers":
         return MutableProperty.of(
             this::setAtWarPlayers,
