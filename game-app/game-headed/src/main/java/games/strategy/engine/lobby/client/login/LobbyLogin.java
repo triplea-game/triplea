@@ -235,6 +235,7 @@ public class LobbyLogin {
                                   .username(panel.getUserName())
                                   .email(panel.getEmail())
                                   .build()),
+                  null,
                   IOException.class)
               .getResponseMessage();
       DialogBuilder.builder()
