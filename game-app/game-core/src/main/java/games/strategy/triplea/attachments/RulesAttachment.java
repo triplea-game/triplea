@@ -55,8 +55,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private int techCount = -1;
   // condition for having specific relationships
   private @Nullable List<String> relationship = null;
-  // condition for checking ai player
-  private Boolean isAIPlayers = null;
+  // condition for checking AI player
+  private Boolean isAI = null;
   // condition for being at war
   private @Nullable Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
@@ -491,20 +491,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     unitPresence = null;
   }
 
-  private void setIsAIPlayers(final String s) {
-    isAIPlayers = (s == null) ? null : getBool(s);
+  private void setIsAI(final String s) {
+    isAI = (s == null) ? null : getBool(s);
   }
 
-  private void setIsAIPlayers(final Boolean s) {
-    isAIPlayers = s;
+  private void setIsAI(final Boolean s) {
+    isAI = s;
   }
 
-  public Boolean getIsAIPlayers() {
-    return isAIPlayers;
+  public Boolean getIsAI() {
+    return isAI;
   }
 
-  private void resetIsAIPlayers() {
-    isAIPlayers = null;
+  private void resetIsAI() {
+    isAI = null;
   }
 
   private int getAtWarCount() {
@@ -753,9 +753,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
       objectiveMet = checkDirectOwnership(listedTerritories, players);
     }
-    // check for ai controlled player
-    if (objectiveMet && getIsAIPlayers() != null) {
-      objectiveMet = checkIsAIPlayers(players);
+    // check for AI controlled player
+    if (objectiveMet && getIsAI() != null) {
+      objectiveMet = checkIsAI(players);
     }
     // get attached to player
     final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
@@ -1025,11 +1025,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return numberMet >= getTerritoryCount();
   }
 
-  private boolean checkIsAIPlayers(final List<GamePlayer> players) {
+  private boolean checkIsAI(final List<GamePlayer> players) {
     boolean bcheck = true;
     for (GamePlayer player : players) {
-      // need to retain true/false
-      bcheck = (bcheck && (getIsAIPlayers() == player.isAi()));
+      bcheck = (bcheck && (getIsAI() == player.isAi()));
     }
     return bcheck;
   }
@@ -1090,12 +1089,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             this::setRelationship,
             this::getRelationship,
             this::resetRelationship);
-      case "isAIPlayers":
+      case "isAI":
         return MutableProperty.of(
-            this::setIsAIPlayers,
-            this::setIsAIPlayers,
-            this::getIsAIPlayers,
-            this::resetIsAIPlayers);
+            this::setIsAI,
+            this::setIsAI,
+            this::getIsAI,
+            this::resetIsAI);
       case "atWarPlayers":
         return MutableProperty.of(
             this::setAtWarPlayers,
