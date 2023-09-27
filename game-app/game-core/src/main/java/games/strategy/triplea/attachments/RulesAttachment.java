@@ -1090,11 +1090,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             this::getRelationship,
             this::resetRelationship);
       case "isAI":
-        return MutableProperty.of(
-            this::setIsAI,
-            this::setIsAI,
-            this::getIsAI,
-            this::resetIsAI);
+        return MutableProperty.of(this::setIsAI, this::setIsAI, this::getIsAI, this::resetIsAI);
       case "atWarPlayers":
         return MutableProperty.of(
             this::setAtWarPlayers,
