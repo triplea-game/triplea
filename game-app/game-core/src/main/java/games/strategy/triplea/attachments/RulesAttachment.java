@@ -37,6 +37,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.VisibleForTesting;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -491,7 +493,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     unitPresence = null;
   }
 
-  private void setIsAI(final String s) {
+  @VisibleForTesting
+  public void setIsAI(final String s) {
     isAI = (s == null) ? null : getBool(s);
   }
 
@@ -1025,7 +1028,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return numberMet >= getTerritoryCount();
   }
 
-  private boolean checkIsAI(final List<GamePlayer> players) {
+  @VisibleForTesting
+  public boolean checkIsAI(final List<GamePlayer> players) {
     boolean bcheck = true;
     for (GamePlayer player : players) {
       bcheck = (bcheck && (getIsAI() == player.isAi()));
