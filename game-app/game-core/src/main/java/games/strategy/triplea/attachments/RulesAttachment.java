@@ -37,7 +37,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
-
 import org.jetbrains.annotations.VisibleForTesting;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
