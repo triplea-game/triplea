@@ -56,7 +56,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   // condition for having specific relationships
   private @Nullable List<String> relationship = null;
   // condition for checking AI player
-  private Boolean isAI = null;
+  private @Nullable Boolean isAI = null;
   // condition for being at war
   private @Nullable Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
