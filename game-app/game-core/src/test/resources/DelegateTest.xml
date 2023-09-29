@@ -964,6 +964,7 @@
 
         <attachment name="playerAttachment" attachTo="British" javaClass="PlayerAttachment" type="player">
             <option name="placementLimit" value="owned:battleship:carrier" count="3"/>
+            <option name="placementLimit" value="allied:factory:factory2" count="1"/>
             <option name="movementLimit" value="owned:infantry" count="7"/>
         </attachment>
 

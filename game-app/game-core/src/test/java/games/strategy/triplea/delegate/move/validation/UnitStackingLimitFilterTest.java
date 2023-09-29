@@ -55,7 +55,7 @@ class UnitStackingLimitFilterTest extends AbstractDelegateTestCase {
     assertThat(callFilterUnits(fourTanks, british, uk), hasSize(2));
 
     // but we can include other units that don't have stacking limits in the list
-    // note: still with the two tanks already in the uk
+    // note: still with the two tanks already in the UK
     List<Unit> twoInfantryAndFourTanks = infantry.create(2, british);
     twoInfantryAndFourTanks.addAll(fourTanks);
     assertThat(twoInfantryAndFourTanks, hasSize(6));

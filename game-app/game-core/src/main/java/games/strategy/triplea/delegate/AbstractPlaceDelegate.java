@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -185,6 +184,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (error != null) {
       return new PlaceableUnits(error);
     }
+    // Here!
     final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, player);
     final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, player);
     return new PlaceableUnits(placeableUnits, maxUnits);
@@ -801,6 +801,15 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (allowedUnits == null || !allowedUnits.containsAll(units)) {
       return "Cannot place these units in " + to.getName();
     }
+    // Although getUnitsToBePlaced() has checked stacking limits, it did it on a per-unit type
+    // basis, which is not sufficient, since units may be mutually exclusive. So we need to also
+    // check stacking limits over the full collection.
+    Collection<Unit> filteredUnits =
+        UnitStackingLimitFilter.filterUnits(
+            units, PLACEMENT_LIMIT, player, to, produced.getOrDefault(to, List.of()));
+    if (units.size() != filteredUnits.size()) {
+      return "Cannot place these units in " + to.getName();
+    }
     final IntegerMap<String> constructionMap =
         howManyOfEachConstructionCanPlace(to, to, units, player);
     for (final Unit currentUnit : CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
@@ -976,13 +985,25 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       placeableUnits2 = placeableUnits;
     }
     // Limit count of each unit type to the max that can be placed based on unit requirements.
-    for (UnitType ut : placeableUnits2.stream().map(Unit::getType).collect(Collectors.toSet())) {
+    for (UnitType ut : UnitUtils.getUnitTypesFromUnitList(placeableUnits)) {
       var unitsOfType = CollectionUtils.getMatches(placeableUnits2, Matches.unitIsOfType(ut));
       placeableUnits2.removeAll(getUnitsThatCantBePlacedThatRequireUnits(unitsOfType, to));
     }
     // now check stacking limits
-    return UnitStackingLimitFilter.filterUnits(
-        placeableUnits2, PLACEMENT_LIMIT, player, to, produced.getOrDefault(to, List.of()));
+    // Filter each type separately, since we don't want a max on one type to filter out all units of
+    // another type, if the two types have a combined limit. UnitStackingLimitFilter doesn't do
+    // that directly since other call sites (e.g. move validation) do need the combined filtering.
+    final var result = new ArrayList<Unit>();
+    for (UnitType ut : UnitUtils.getUnitTypesFromUnitList(units)) {
+      result.addAll(
+          UnitStackingLimitFilter.filterUnits(
+              CollectionUtils.getMatches(placeableUnits2, Matches.unitIsOfType(ut)),
+              PLACEMENT_LIMIT,
+              player,
+              to,
+              produced.getOrDefault(to, List.of())));
+    }
+    return result;
   }
 
   private Predicate<Unit> unitIsCarrierOwnedByCombinedPlayers(GamePlayer player) {
