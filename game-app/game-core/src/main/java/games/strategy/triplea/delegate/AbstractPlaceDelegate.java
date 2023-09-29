@@ -184,7 +184,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (error != null) {
       return new PlaceableUnits(error);
     }
-    // Here!
     final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, player);
     final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, player);
     return new PlaceableUnits(placeableUnits, maxUnits);
