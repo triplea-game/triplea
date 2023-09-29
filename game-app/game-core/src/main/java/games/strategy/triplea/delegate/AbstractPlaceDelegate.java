@@ -992,6 +992,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // Filter each type separately, since we don't want a max on one type to filter out all units of
     // another type, if the two types have a combined limit. UnitStackingLimitFilter doesn't do
     // that directly since other call sites (e.g. move validation) do need the combined filtering.
+    // But we need to do it this way here, since the result will be shown for choosing which units
+    // to build (where we want to show all the types that can be built).
     final var result = new ArrayList<Unit>();
     for (UnitType ut : UnitUtils.getUnitTypesFromUnitList(units)) {
       result.addAll(
