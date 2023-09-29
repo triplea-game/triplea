@@ -16,6 +16,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.AbstractUserActionAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -220,8 +221,7 @@ public final class Matches {
       Territory battleSite,
       int battleRound,
       Collection<Unit> enemyUnits) {
-    final Set<UnitType> enemyUnitTypes =
-        enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet());
+    final Collection<UnitType> enemyUnitTypes = UnitUtils.getUnitTypesFromUnitList(enemyUnits);
     return u -> {
       final boolean landBattle = !battleSite.isWater();
       if (!landBattle && Matches.unitIsLand().test(u)) {

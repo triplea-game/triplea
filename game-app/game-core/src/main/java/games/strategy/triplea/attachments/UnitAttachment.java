@@ -18,6 +18,7 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -257,10 +258,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
     return getAttachment(type, nameOfAttachment, UnitAttachment.class);
-  }
-
-  private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
-    return units.stream().map(Unit::getType).collect(Collectors.toSet());
   }
 
   private TechTracker getTechTracker() {
@@ -1161,7 +1158,7 @@ public class UnitAttachment extends DefaultAttachment {
       final UnitTypeList unitTypeList) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
-        getUnitTypesFromUnitList(
+        UnitUtils.getUnitTypesFromUnitList(
             CollectionUtils.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = ut.getUnitAttachment().getReceivesAbilityWhenWith();

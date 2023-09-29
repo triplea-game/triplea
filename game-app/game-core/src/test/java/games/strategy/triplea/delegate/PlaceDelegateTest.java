@@ -8,6 +8,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBrid
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -228,6 +229,17 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     // but not 2 battleships and 2 carriers
     units.addAll(create(british, carrier, 1));
     assertError(delegate.canUnitsBePlaced(northSea, units, british));
+    // However, getPlaceableUnits() should return 2 of each, since that's what's for filtering the
+    // options given to the user.
+    assertThat(
+        delegate.getPlaceableUnits(units, northSea).getUnits(),
+        containsInAnyOrder(units.toArray()));
+    units.addAll(create(british, carrier, 5));
+    units.addAll(create(british, battleship, 7));
+    var result = delegate.getPlaceableUnits(units, northSea).getUnits();
+    assertThat(result, hasSize(6));
+    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(battleship)), hasSize(3));
+    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(carrier)), hasSize(3));
   }
 
   @Test
@@ -237,7 +249,7 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     // Add a carrier to the sea zone.
     westCanadaSeaZone.getUnitCollection().addAll(create(british, carrier, 1));
 
-    // if we filter list of 2 battleships and 2 carriers, the 2 carriers should be selected.
+    // If we filter list of 2 battleships and 2 carriers, the 2 carriers should be selected.
     List<Unit> units = create(british, battleship, 2);
     units.addAll(create(british, carrier, 2));
     // First, we can't place all of them (expected).
