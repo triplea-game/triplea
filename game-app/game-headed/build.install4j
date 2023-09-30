@@ -296,6 +296,7 @@ return Math.min(is32BitJavaRuntime ? 1024L : 2048L, halfMemoryMiB);</property>
                     <element index="0">-Xmx${installer:heapSizeMiB}M</element>
                     <element index="1">-Xms${installer:heapSizeMiB}M</element>
                     <element index="2">-Xss1250K</element>
+                    <element index="3">--add-opens java.desktop/com.apple.eawt.event=ALL-UNNAMED</element>
                   </property>
                 </serializedBean>
               </action>
