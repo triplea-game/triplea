@@ -97,14 +97,8 @@ public class ImageScrollerLargeView extends JComponent {
     final MouseWheelListener mouseWheelListener =
         e -> {
           if (e.isControlDown()) {
-            final int oldWidth = model.getBoxWidth();
-            final int oldHeight = model.getBoxHeight();
             final float zoomFactor = ClientSetting.mapZoomFactor.getValueOrThrow() / 100f;
-            setScale(scale - zoomFactor * e.getPreciseWheelRotation());
-            final Point mouse = getMousePosition();
-            final int dx = (int) (mouse.getX() / getWidth() * (oldWidth - model.getBoxWidth()));
-            final int dy = (int) (mouse.getY() / getHeight() * (oldHeight - model.getBoxHeight()));
-            model.set(model.getX() + dx, model.getY() + dy);
+            setScaleViaMouseZoom(scale - zoomFactor * e.getPreciseWheelRotation());
           } else {
             if (edge == NONE) {
               insideCount = 0;
@@ -225,16 +219,7 @@ public class ImageScrollerLargeView extends JComponent {
           notifyScollListeners();
         });
     Gestures.registerMagnificationListener(
-        this,
-        (double factor) -> {
-          final int oldWidth = model.getBoxWidth();
-          final int oldHeight = model.getBoxHeight();
-          setScale(scale * factor);
-          final Point mouse = getMousePosition();
-          final int dx = (int) (mouse.getX() / getWidth() * (oldWidth - model.getBoxWidth()));
-          final int dy = (int) (mouse.getY() / getHeight() * (oldHeight - model.getBoxHeight()));
-          model.set(model.getX() + dx, model.getY() + dy);
-        });
+        this, (double factor) -> setScaleViaMouseZoom(scale * factor));
   }
 
   public boolean wasLastActionDraggingAndReset() {
@@ -319,6 +304,16 @@ public class ImageScrollerLargeView extends JComponent {
   public void setScale(final double value) {
     scale = constrainScale(value);
     refreshBoxSize();
+  }
+
+  private void setScaleViaMouseZoom(double newScale) {
+    final int oldWidth = model.getBoxWidth();
+    final int oldHeight = model.getBoxHeight();
+    setScale(newScale);
+    final Point mouse = getMousePosition();
+    final int dx = (int) (mouse.getX() / getWidth() * (oldWidth - model.getBoxWidth()));
+    final int dy = (int) (mouse.getY() / getHeight() * (oldHeight - model.getBoxHeight()));
+    model.set(model.getX() + dx, model.getY() + dy);
   }
 
   public double getMinScale() {
