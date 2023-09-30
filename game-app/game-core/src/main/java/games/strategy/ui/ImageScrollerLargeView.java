@@ -22,6 +22,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import org.triplea.swing.gestures.Gestures;
 
 /**
  * A large image that can be scrolled according to a ImageScrollModel. Generally used in conjunction
@@ -222,6 +223,17 @@ public class ImageScrollerLargeView extends JComponent {
         () -> {
           repaint();
           notifyScollListeners();
+        });
+    Gestures.registerMagnificationListener(
+        this,
+        (double factor) -> {
+          final int oldWidth = model.getBoxWidth();
+          final int oldHeight = model.getBoxHeight();
+          setScale(scale * factor);
+          final Point mouse = getMousePosition();
+          final int dx = (int) (mouse.getX() / getWidth() * (oldWidth - model.getBoxWidth()));
+          final int dy = (int) (mouse.getY() / getHeight() * (oldHeight - model.getBoxHeight()));
+          model.set(model.getX() + dx, model.getY() + dy);
         });
   }
 
