@@ -22,7 +22,7 @@ allprojects {
     spotless {
         format 'allFiles', {
             target '*'
-
+            targetExclude 'gradlew.bat'
             endWithNewline()
             indentWithSpaces()
             trimTrailingWhitespace()
