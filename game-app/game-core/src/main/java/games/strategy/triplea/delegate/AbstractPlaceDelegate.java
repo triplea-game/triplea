@@ -716,7 +716,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       if (howManyOfEachConstructionCanPlace(to, producer, testUnits, player).totalValues() > 0) {
         return null;
       }
-      return "No more Constructions Allowed in " + producer.getName();
+      return "No more constructions allowed in " + producer.getName();
     }
     // check we haven't just put a factory there (should we be checking producer?)
     if (getAlreadyProduced(producer).stream().anyMatch(Matches.unitCanProduceUnits())
