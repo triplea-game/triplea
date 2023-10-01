@@ -707,7 +707,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public void notifyError(final String message) {
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    showMessageDialog(displayMessage, "Error");
+    showMessageDialog(displayMessage, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
   /** We do NOT want to block the next player from beginning their turn. */
@@ -736,10 +736,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    showMessageDialog(displayMessage, title);
+    showMessageDialog(displayMessage, title, JOptionPane.INFORMATION_MESSAGE);
   }
 
-  private void showMessageDialog(String displayMessage, String title) {
+  private void showMessageDialog(String displayMessage, String title, int type) {
     try {
       messageAndDialogThreadPool.submit(
           () ->
@@ -747,7 +747,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   TripleAFrame.this,
                   displayMessage,
                   title,
-                  JOptionPane.INFORMATION_MESSAGE,
+                  type,
                   getUiContext().getCountDownLatchHandler()));
     } catch (RejectedExecutionException e) {
       // The thread pool may have been shutdown. Nothing to do.
