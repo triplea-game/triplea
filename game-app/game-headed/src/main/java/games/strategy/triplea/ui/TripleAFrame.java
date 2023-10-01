@@ -109,6 +109,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -706,14 +707,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public void notifyError(final String message) {
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    messageAndDialogThreadPool.submit(
-        () ->
-            EventThreadJOptionPane.showMessageDialogWithScrollPane(
-                TripleAFrame.this,
-                displayMessage,
-                "Error",
-                JOptionPane.ERROR_MESSAGE,
-                getUiContext().getCountDownLatchHandler()));
+    showMessageDialog(displayMessage, "Error");
   }
 
   /** We do NOT want to block the next player from beginning their turn. */
@@ -742,14 +736,22 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    messageAndDialogThreadPool.submit(
-        () ->
-            EventThreadJOptionPane.showMessageDialogWithScrollPane(
-                TripleAFrame.this,
-                displayMessage,
-                title,
-                JOptionPane.INFORMATION_MESSAGE,
-                getUiContext().getCountDownLatchHandler()));
+    showMessageDialog(displayMessage, title);
+  }
+
+  private void showMessageDialog(String displayMessage, String title) {
+    try {
+      messageAndDialogThreadPool.submit(
+          () ->
+              EventThreadJOptionPane.showMessageDialogWithScrollPane(
+                  TripleAFrame.this,
+                  displayMessage,
+                  title,
+                  JOptionPane.INFORMATION_MESSAGE,
+                  getUiContext().getCountDownLatchHandler()));
+    } catch (RejectedExecutionException e) {
+      // The thread pool may have been shutdown. Nothing to do.
+    }
   }
 
   /**
