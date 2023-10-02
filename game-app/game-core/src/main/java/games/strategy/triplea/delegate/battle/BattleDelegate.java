@@ -309,8 +309,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    */
   private Map<Territory, Collection<IBattle>> getPossibleBombardingTerritories() {
     final Map<Territory, Collection<IBattle>> possibleBombardingTerritories = new HashMap<>();
-    for (final Territory t : battleTracker.getPendingBattleSites(false)) {
-      final IBattle battle = battleTracker.getPendingBattle(t, BattleType.NORMAL);
+    for (final IBattle battle : battleTracker.getPendingBattles(BattleType.NORMAL)) {
       // we only care about battles where we must fight
       // this check is really to avoid implementing getAttackingFrom() in other battle subclasses
       if (!(battle instanceof MustFightBattle)) {
