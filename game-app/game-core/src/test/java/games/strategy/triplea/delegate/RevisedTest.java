@@ -732,8 +732,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
     String error =
         moveDelegate.move(sz50.getUnitCollection().getMatches(Matches.unitIsAir()), sz50To45);
     assertNull(error);
-    assertEquals(
-        1, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites(false).size());
+    final var battleTracker = AbstractMoveDelegate.getBattleTracker(gameData);
+    assertEquals(1, battleTracker.getPendingBattleSites(false).size());
     // we should be able to move the sub out of the sz
     final Route sz45To50 = new Route(sz45, sz50);
     final List<Unit> japSub =
@@ -743,16 +743,14 @@ class RevisedTest extends AbstractClientSettingTestCase {
     // make sure no error
     assertNull(error);
     // make sure the battle is still there
-    assertEquals(
-        1, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites(false).size());
+    assertEquals(1, battleTracker.getPendingBattleSites(false).size());
     // we should be able to undo the move of the sub
     error = moveDelegate.undoMove(1);
     assertNull(error);
     // undo the move of the fighter, should be no battles now
     error = moveDelegate.undoMove(0);
     assertNull(error);
-    assertEquals(
-        0, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites(false).size());
+    assertEquals(0, battleTracker.getPendingBattleSites(false).size());
   }
 
   @Test
