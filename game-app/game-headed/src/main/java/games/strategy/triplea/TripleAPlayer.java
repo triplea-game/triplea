@@ -661,7 +661,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       final Territory unitTerritory,
       final Collection<Territory> territories,
       final boolean noneAvailable) {
-    return ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
+    return ui.getBattlePanel().getBombardment(unit, unitTerritory, territories);
   }
 
   @Override
