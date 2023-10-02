@@ -6,6 +6,9 @@ servers:
     message: |
       Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
+      
+      Hello TripleA community! We still need to run the donation drive! Donations can be made through the "Donate" button at the bottom of the forum. You may include a note with your user-name through the PayPal link unless you wish to be anonymous. Thanks again and have fun gaming.
+      https://forums.triplea-game.org/topic/3659/donation-drive-2024
   - version: "2.0.20057"
     inactive: true
   - version: "0.0"
