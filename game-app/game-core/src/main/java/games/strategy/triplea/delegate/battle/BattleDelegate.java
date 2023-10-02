@@ -319,6 +319,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // Bombarding only allowed in amphibious battles.
       if (!battle.isAmphibious()) {
         continue;
+      }
       // bombarding can only occur in territories from which at least 1 land unit attacked
       final Map<Territory, Collection<Unit>> attackingFromMap =
           ((MustFightBattle) battle).getAttackingFromMap();
