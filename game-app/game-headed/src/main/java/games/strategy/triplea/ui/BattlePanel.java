@@ -288,10 +288,7 @@ public final class BattlePanel extends ActionPanel {
 
   /** Ask user which territory to bombard with a given unit. */
   public @Nullable Territory getBombardment(
-      final Unit unit,
-      final Territory unitTerritory,
-      final Collection<Territory> territories,
-      final boolean noneAvailable) {
+      final Unit unit, final Territory unitTerritory, final Collection<Territory> territories) {
     final Supplier<SelectTerritoryComponent> action =
         () -> {
           final var panel = new SelectTerritoryComponent(unitTerritory, territories, map);
@@ -311,7 +308,7 @@ public final class BattlePanel extends ActionPanel {
                       JOptionPane.OK_CANCEL_OPTION,
                       JOptionPane.PLAIN_MESSAGE,
                       null,
-                      noneAvailable ? new String[] {"OK", "None"} : new String[] {"OK"},
+                      new String[] {"OK", "None"},
                       null,
                       getMap().getUiContext().getCountDownLatchHandler());
               if (choice != JOptionPane.OK_OPTION) {

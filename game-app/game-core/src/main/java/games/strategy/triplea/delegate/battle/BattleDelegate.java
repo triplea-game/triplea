@@ -86,7 +86,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       doInitialize(battleTracker, bridge);
       needToInitialize = false;
     }
-    // do pre-combat stuff, like scrambling, after we have setup all battles, but before we have
+    // do pre-combat stuff, like scrambling, after we have set up all battles, but before we have
     // bombardment, etc.
     // the order of all of this stuff matters quite a bit.
     if (needToScramble) {
@@ -270,7 +270,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Territory t : adjBombardment.keySet()) {
       if (!battleTracker.hasPendingNonBombingBattle(t)) {
         Collection<IBattle> battles = adjBombardment.get(t);
-        battles = CollectionUtils.getMatches(battles, Matches.battleIsAmphibious());
         if (!battles.isEmpty()) {
           final Collection<Unit> bombardUnits =
               t.getUnitCollection().getMatches(ownedAndCanBombard);
@@ -317,17 +316,21 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (!(battle instanceof MustFightBattle)) {
         continue;
       }
+      // Bombarding only allowed in amphibious battles.
+      if (!battle.isAmphibious()) {
+        continue;
+      }
       // bombarding can only occur in territories from which at least 1 land unit attacked
       final Map<Territory, Collection<Unit>> attackingFromMap =
           ((MustFightBattle) battle).getAttackingFromMap();
       for (final Territory neighbor : ((MustFightBattle) battle).getAttackingFrom()) {
         // we do not allow bombarding from certain sea zones (like if there was a kamikaze suicide
-        // attack there, etc)
+        // attack there, etc.)
         if (battleTracker.noBombardAllowedFromHere(neighbor)) {
           continue;
         }
         final Collection<Unit> neighbourUnits = attackingFromMap.get(neighbor);
-        // If all units from a territory are air- no bombard
+        // If all units from a territory are air - no bombard
         if (!neighbourUnits.isEmpty() && neighbourUnits.stream().allMatch(Matches.unitIsAir())) {
           continue;
         }
@@ -399,10 +402,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   /**
-   * Setup the battles where the battle occurs because units are in the same territory. This happens
-   * when subs emerge (after being submerged), and when naval units are placed in enemy occupied sea
-   * zones, and also when political relationships change and potentially leave units in now-hostile
-   * territories.
+   * Set up the battles where the battle occurs because units are in the same territory. This
+   * happens when subs emerge (after being submerged), and when naval units are placed in enemy
+   * occupied sea zones, and also when political relationships change and potentially leave units in
+   * now-hostile territories.
    */
   private static void setupUnitsInSameTerritoryBattles(
       final BattleTracker battleTracker, final IDelegateBridge bridge) {
@@ -411,7 +414,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final boolean ignoreTransports = Properties.getIgnoreTransportInMovement(data.getProperties());
     final Predicate<Unit> seaTransports =
         Matches.unitIsSeaTransportButNotCombatSeaTransport().and(Matches.unitIsSea());
-    final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitCanEvade());
+    final Predicate<Unit> seaTransportsOrSubs = seaTransports.or(Matches.unitCanEvade());
     // we want to match all sea zones with our units and enemy units
     final Predicate<Territory> anyTerritoryWithOwnAndEnemy =
         Matches.territoryHasUnitsOwnedBy(player).and(Matches.territoryHasEnemyUnits(player));
@@ -585,7 +588,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // if only enemy transports and subs... attack them?
         if (ignoreTransports
             && !enemyUnits.isEmpty()
-            && enemyUnits.stream().allMatch(seaTranportsOrSubs)
+            && enemyUnits.stream().allMatch(seaTransportsOrSubs)
             && !remotePlayer.selectAttackUnits(territory)) {
           final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
           battleTracker
@@ -606,7 +609,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   /**
-   * Setup the battles where we have abandoned a contested territory during combat move to the
+   * Set up the battles where we have abandoned a contested territory during combat move to the
    * enemy. The enemy then takes over the territory in question.
    */
   private static void setupTerritoriesAbandonedToTheEnemy(
@@ -672,15 +675,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 + territory.getName()
                 + " and have abandoned or only bombing there too.");
       }
-      bridge
-          .getHistoryWriter()
-          .startEvent(
-              player.getName()
-                  + " has abandoned "
-                  + territory.getName()
-                  + " to "
-                  + abandonedToPlayer.getName(),
-              abandonedToUnits);
+      final var historyWriter = bridge.getHistoryWriter();
+      historyWriter.startEvent(
+          String.format(
+              "%s has abandoned %s to %s",
+              player.getName(), territory.getName(), abandonedToPlayer.getName()),
+          abandonedToUnits);
       battleTracker.takeOver(territory, abandonedToPlayer, bridge, null, abandonedToUnits);
       // TODO: if there are multiple defending unit owners, allow picking which one takes over the
       // territory
@@ -749,14 +749,14 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
         // verify max allowed
         for (final Territory t : scramblers.keySet()) {
-          if (toScramble.get(t) == null) {
+          Collection<Unit> units = toScramble.get(t);
+          if (units == null) {
             continue;
           }
-          if (toScramble.get(t).size()
-              > ScrambleLogic.getMaxScrambleCount(scramblers.get(t).getFirst())) {
+          if (units.size() > ScrambleLogic.getMaxScrambleCount(scramblers.get(t).getFirst())) {
             throw new IllegalStateException(
                 "Trying to scramble "
-                    + toScramble.get(t).size()
+                    + units.size()
                     + " out of "
                     + t.getName()
                     + ", but max allowed is "
@@ -829,17 +829,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
           change.add(ChangeFactory.moveUnits(t, to, scrambling));
-          bridge
-              .getHistoryWriter()
-              .startEvent(
-                  defender.getName()
-                      + " scrambles "
-                      + scrambling.size()
-                      + " units out of "
-                      + t.getName()
-                      + " to defend against the attack in "
-                      + to.getName(),
-                  scrambling);
+          final var historyWriter = bridge.getHistoryWriter();
+          historyWriter.startEvent(
+              String.format(
+                  "%s scrambles %d units out of %s to defend against the attack in %s",
+                  defender.getName(), scrambling.size(), t.getName(), to.getName()),
+              scrambling);
           scrambledHere = true;
         }
         if (!change.isEmpty()) {
@@ -863,10 +858,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (attackingUnits.isEmpty()) {
           continue;
         }
-        bridge
-            .getHistoryWriter()
-            .startEvent(
-                defender.getName() + " scrambles to create a battle in territory " + to.getName());
+        final var historyWriter = bridge.getHistoryWriter();
+        historyWriter.startEvent(
+            defender.getName() + " scrambles to create a battle in territory " + to.getName());
         // TODO: the attacking sea units do not remember where they came from, so they cannot
         // retreat anywhere. Need to fix.
         battleTracker.addBattle(new RouteScripted(to), attackingUnits, player, bridge, null, null);
@@ -886,13 +880,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             // TODO: for now, we will hack and say that the attackers came from Everywhere, and hope
             // the user will choose the correct place to retreat to! (TODO: Fix this)
             final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
-            final Collection<Territory> neighbors =
-                data.getMap()
-                    .getNeighbors(
-                        to,
-                        (Matches.territoryIsLand().test(to)
-                            ? Matches.territoryIsLand()
-                            : Matches.territoryIsWater()));
+            final Predicate<Territory> predicate =
+                to.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand();
+            final Collection<Territory> neighbors = data.getMap().getNeighbors(to, predicate);
             // neighbors.removeAll(territoriesWithBattles);
             // neighbors.removeAll(Matches.getMatches(neighbors,
             // Matches.territoryHasEnemyUnits(player, data)));
@@ -937,23 +927,20 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Collection<Unit> wasScrambled =
           t.getUnitCollection().getMatches(Matches.unitWasScrambled());
       for (final Unit u : wasScrambled) {
+        final GamePlayer owner = u.getOwner();
         final CompositeChange change = new CompositeChange();
         Territory landingTerr = null;
         final String historyText;
         if (!mustReturnToBase
             || !Matches.isTerritoryAllied(u.getOwner()).test(u.getOriginatedFrom())) {
           final Collection<Territory> possible =
-              whereCanAirLand(u, t, u.getOwner(), data, battleTracker, carrierCostOfCurrentTerr);
+              whereCanAirLand(u, t, owner, data, battleTracker, carrierCostOfCurrentTerr);
           if (possible.size() > 1) {
-            landingTerr =
-                getRemotePlayer(u.getOwner())
-                    .selectTerritoryForAirToLand(
-                        possible,
-                        t,
-                        "Select territory for air units to land. (Current territory is "
-                            + t.getName()
-                            + "): "
-                            + MyFormatter.unitsToText(List.of(u)));
+            String text =
+                String.format(
+                    "Select territory for air units to land. (Current territory is %s): %s",
+                    t.getName(), MyFormatter.unitsToText(List.of(u)));
+            landingTerr = getRemotePlayer(owner).selectTerritoryForAirToLand(possible, t, text);
           } else if (possible.size() == 1) {
             landingTerr = CollectionUtils.getAny(possible);
           }
@@ -967,15 +954,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         } else {
           landingTerr = u.getOriginatedFrom();
           historyText =
-              "Moving scrambled unit from "
-                  + t.getName()
-                  + " back to originating territory: "
-                  + landingTerr.getName();
+              String.format(
+                  "Moving scrambled unit from %s  back to originating territory: %s",
+                  t.getName(), landingTerr.getName());
         }
         if (landingTerr != null && !landingTerr.equals(t)) {
           change.add(ChangeFactory.moveUnits(t, landingTerr, List.of(u)));
-          change.add(
-              Route.getFuelChanges(Set.of(u), new Route(t, landingTerr), u.getOwner(), data));
+          change.add(Route.getFuelChanges(Set.of(u), new Route(t, landingTerr), owner, data));
         }
         change.add(ChangeFactory.unitPropertyChange(u, null, Unit.ORIGINATED_FROM));
         change.add(ChangeFactory.unitPropertyChange(u, false, Unit.WAS_SCRAMBLED));
@@ -1132,22 +1117,21 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
         }
       } else if (!canLandHere.isEmpty()) {
-        // now defending air has what cant stay, is there a place we can go?
+        // now defending air has what can't stay, is there a place we can go?
         // check for an island in this sea zone
         for (final Territory currentTerritory : canLandHere) {
-          // only one neighbor, its an island.
+          // only one neighbor, it's an island.
           if (data.getMap().getNeighbors(currentTerritory).size() == 1) {
             moveAirAndLand(bridge, defendingAir, defendingAir, currentTerritory, battleSite);
           }
         }
       }
       if (!defendingAir.isEmpty()) {
-        // no where to go, they must die
-        bridge
-            .getHistoryWriter()
-            .addChildToEvent(
-                MyFormatter.unitsToText(defendingAir) + " could not land and were killed",
-                new ArrayList<>(defendingAir));
+        // nowhere to go, they must die
+        final var historyWriter = bridge.getHistoryWriter();
+        historyWriter.addChildToEvent(
+            MyFormatter.unitsToText(defendingAir) + " could not land and were killed",
+            new ArrayList<>(defendingAir));
         final Change change = ChangeFactory.removeUnits(battleSite, defendingAir);
         bridge.addChange(change);
       }
