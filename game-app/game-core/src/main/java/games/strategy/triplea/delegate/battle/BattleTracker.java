@@ -1032,6 +1032,11 @@ public class BattleTracker implements Serializable {
         .orElse(null);
   }
 
+  public Collection<IBattle> getPendingBattles(BattleType type) {
+    return CollectionUtils.getMatches(
+        pendingBattles, b -> !b.isEmpty() && b.getBattleType() == type);
+  }
+
   public Collection<IBattle> getPendingBattles(final Territory t) {
     return pendingBattles.stream()
         .filter(b -> b.getTerritory().equals(t))
@@ -1082,11 +1087,6 @@ public class BattleTracker implements Serializable {
       }
     }
     return battles;
-  }
-
-  public Collection<IBattle> getPendingBattles(BattleType type) {
-    return CollectionUtils.getMatches(
-        pendingBattles, b -> !b.isEmpty() && b.getBattleType() == type);
   }
 
   public BattleListing getPendingBattleSites() {
