@@ -349,7 +349,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (battles.size() == 1) {
       return CollectionUtils.getAny(battles);
     }
-    final Set<Territory> territories = new HashSet<>();
+    final List<Territory> territories = new ArrayList<>();
     final Map<Territory, IBattle> battleTerritories = new HashMap<>();
     for (final IBattle battle : battles) {
       // If Restricted & # of bombarding units => landing units, don't add territory to list to
