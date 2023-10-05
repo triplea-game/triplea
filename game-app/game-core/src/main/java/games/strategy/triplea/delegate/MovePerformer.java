@@ -403,7 +403,7 @@ public class MovePerformer implements Serializable {
       }
       dependentAirTransportableUnits.put(entry.getKey(), dependents);
     }
-    
+
     // load the transports
     if (route.isLoad() || paratroopsLanding) {
       // mark transports as having transported
