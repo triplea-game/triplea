@@ -22,7 +22,7 @@ allprojects {
     spotless {
         format 'allFiles', {
             target '*'
-
+            targetExclude 'gradlew.bat'
             endWithNewline()
             indentWithSpaces()
             trimTrailingWhitespace()
@@ -52,7 +52,7 @@ subprojects {
         checkstyleVersion = '8.45'
         commonsCliVersion = '1.5.0'
         commonsCodecVersion = '1.16.0'
-        commonsIoVersion = '2.13.0'
+        commonsIoVersion = '2.14.0'
         commonsMathVersion = '3.6.1'
         commonsTextVersion = '1.10.0'
         databaseRiderVersion = '1.41.0'
@@ -74,7 +74,7 @@ subprojects {
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '4.0.3'
         jaxbImplVersion = '4.0.3'
-        jdbiVersion = '3.41.2'
+        jdbiVersion = '3.41.3'
         jetbrainsAnnotationsVersion = '24.0.1'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.10.0'
