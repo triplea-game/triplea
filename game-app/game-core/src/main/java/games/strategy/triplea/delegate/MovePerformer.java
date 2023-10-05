@@ -403,15 +403,7 @@ public class MovePerformer implements Serializable {
       }
       dependentAirTransportableUnits.put(entry.getKey(), dependents);
     }
-
-    // If paratroops moved normally (within their normal movement) remove their dependency to the
-    // airTransports
-    // So they can all continue to move normally
-    if (!paratroopsLanding && !dependentAirTransportableUnits.isEmpty()) {
-      final Collection<Unit> airTransports =
-          CollectionUtils.getMatches(arrived, Matches.unitIsAirTransport());
-      airTransports.addAll(dependentAirTransportableUnits.keySet());
-    }
+    
     // load the transports
     if (route.isLoad() || paratroopsLanding) {
       // mark transports as having transported
