@@ -38,12 +38,12 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
     // Clear all units in Norway since we just want to land uncontested there.
     norway.getUnitCollection().clear();
 
-    Unit battleship = getSingleUnit(sz2, battleship(pos2GameData));
-    Unit transport = getSingleUnit(sz2, transport(pos2GameData));
-    Unit tank = getSingleUnit(uk, armour(pos2GameData));
+    final Unit battleship = getSingleUnit(sz2, battleship(pos2GameData));
+    final Unit transport = getSingleUnit(sz2, transport(pos2GameData));
+    final Unit tank = getSingleUnit(uk, armour(pos2GameData));
 
-    GamePlayer british = GameDataTestUtil.british(pos2GameData);
-    IDelegateBridge bridge = newDelegateBridge(british);
+    final GamePlayer british = GameDataTestUtil.british(pos2GameData);
+    final IDelegateBridge bridge = newDelegateBridge(british);
 
     advanceToStep(bridge, "CombatMove");
     MoveDelegate moveDelegate = GameDataTestUtil.moveDelegate(pos2GameData);
