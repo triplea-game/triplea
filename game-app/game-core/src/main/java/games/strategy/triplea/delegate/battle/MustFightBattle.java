@@ -823,7 +823,11 @@ public class MustFightBattle extends DependentBattle
   }
 
   public Optional<String> findStepNameForFiringUnits(Collection<Unit> firingUnits) {
+    System.err.println("Checking:" + firingUnits);
     for (final var entry : Optional.ofNullable(stepFiringUnits).orElse(Map.of()).entrySet()) {
+      System.err.println(entry.getKey() + " / " + entry.getValue());
+      System.err.println(
+          " --> " + CollectionUtils.getAny(entry.getValue()).getUnitAttachment().getCanNotTarget());
       if (entry.getValue().containsAll(firingUnits)) {
         return Optional.of(entry.getKey());
       }
@@ -1284,7 +1288,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   /**
-   * Returns only the relevant non-combatant units present in the specified collection.
+   * Returns only the relevant combatant units present in the specified collection.
    *
    * @return a collection containing all the combatants in units non-combatants include such things
    *     as factories, aa guns, land units in a water battle.
