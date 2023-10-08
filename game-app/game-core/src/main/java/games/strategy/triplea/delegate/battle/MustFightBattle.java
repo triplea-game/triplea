@@ -823,11 +823,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   public Optional<String> findStepNameForFiringUnits(Collection<Unit> firingUnits) {
-    System.err.println("Checking:" + firingUnits);
     for (final var entry : Optional.ofNullable(stepFiringUnits).orElse(Map.of()).entrySet()) {
-      System.err.println(entry.getKey() + " / " + entry.getValue());
-      System.err.println(
-          " --> " + CollectionUtils.getAny(entry.getValue()).getUnitAttachment().getCanNotTarget());
       if (entry.getValue().containsAll(firingUnits)) {
         return Optional.of(entry.getKey());
       }
