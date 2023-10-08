@@ -205,7 +205,7 @@ public class MockGameData {
       lenient().when(unitType.getData()).thenReturn(gameData);
       unitTypeList.addUnitType(unitType);
     }
-    when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
+    lenient().when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
     return this;
   }
 }

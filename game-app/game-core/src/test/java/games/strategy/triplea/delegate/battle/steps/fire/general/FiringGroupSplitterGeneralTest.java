@@ -1,12 +1,12 @@
 package games.strategy.triplea.delegate.battle.steps.fire.general;
 
-import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AIR_FIRE_NON_SUBS;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaBattleSite;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrike;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsSea;
@@ -232,14 +232,12 @@ class FiringGroupSplitterGeneralTest {
   @Test
   void excludeSuicideOnDefenseTargetsIfOffense() {
     final Unit targetUnit = givenAnyUnit();
-    final UnitAttachment targetUnitAttachment =
-        (UnitAttachment) targetUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    final UnitAttachment targetUnitAttachment = targetUnit.getUnitAttachment();
     // this isn't actually called, so mark it as lenient in case the code later changes to call it
     // inadvertently
     lenient().when(targetUnitAttachment.getIsSuicideOnAttack()).thenReturn(true);
     final Unit suicideUnit = givenAnyUnit();
-    final UnitAttachment suicideUnitAttachment =
-        (UnitAttachment) suicideUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    final UnitAttachment suicideUnitAttachment = suicideUnit.getUnitAttachment();
     when(suicideUnitAttachment.getIsSuicideOnDefense()).thenReturn(true);
     final Unit fireUnit = givenAnyUnit();
 
@@ -263,14 +261,12 @@ class FiringGroupSplitterGeneralTest {
   @Test
   void excludeSuicideOnAttackTargetsIfDefense() {
     final Unit targetUnit = givenAnyUnit();
-    final UnitAttachment targetUnitAttachment =
-        (UnitAttachment) targetUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    final UnitAttachment targetUnitAttachment = targetUnit.getUnitAttachment();
     // this isn't actually called, so mark it as lenient in case the code later changes to call it
     // inadvertently
     lenient().when(targetUnitAttachment.getIsSuicideOnDefense()).thenReturn(true);
     final Unit suicideUnit = givenAnyUnit();
-    final UnitAttachment suicideUnitAttachment =
-        (UnitAttachment) suicideUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    final UnitAttachment suicideUnitAttachment = suicideUnit.getUnitAttachment();
     when(suicideUnitAttachment.getIsSuicideOnAttack()).thenReturn(true);
     final Unit fireUnit = givenAnyUnit();
 
@@ -295,8 +291,7 @@ class FiringGroupSplitterGeneralTest {
   void excludeInfrastructureTargets() {
     final Unit targetUnit = givenAnyUnit();
     final Unit infrastructureUnit = givenAnyUnit();
-    final UnitAttachment infrastructureUnitAttachment =
-        (UnitAttachment) infrastructureUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    final UnitAttachment infrastructureUnitAttachment = infrastructureUnit.getUnitAttachment();
     when(infrastructureUnitAttachment.getIsInfrastructure()).thenReturn(true);
     final Unit fireUnit = givenAnyUnit();
 
@@ -304,7 +299,15 @@ class FiringGroupSplitterGeneralTest {
         FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
-                    .gameData(givenGameData().withAlliedAirIndependent(true).build())
+                    .gameData(
+                        givenGameData()
+                            .withUnitTypeList(
+                                List.of(
+                                    targetUnit.getType(),
+                                    infrastructureUnit.getType(),
+                                    fireUnit.getType()))
+                            .withAlliedAirIndependent(true)
+                            .build())
                     .attacker(attacker)
                     .defender(defender)
                     .attackingUnits(List.of(fireUnit))
@@ -320,8 +323,7 @@ class FiringGroupSplitterGeneralTest {
   @Test
   void noFiringGroupIfAllTargetsAreExcluded() {
     final Unit targetUnit = givenAnyUnit();
-    final UnitAttachment infrastructureUnitAttachment =
-        (UnitAttachment) targetUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    final UnitAttachment infrastructureUnitAttachment = targetUnit.getUnitAttachment();
     when(infrastructureUnitAttachment.getIsInfrastructure()).thenReturn(true);
     final Unit fireUnit = givenAnyUnit();
 
@@ -329,7 +331,11 @@ class FiringGroupSplitterGeneralTest {
         FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.NORMAL, "")
             .apply(
                 givenBattleStateBuilder()
-                    .gameData(givenGameData().withAlliedAirIndependent(true).build())
+                    .gameData(
+                        givenGameData()
+                            .withUnitTypeList(List.of(targetUnit.getType(), fireUnit.getType()))
+                            .withAlliedAirIndependent(true)
+                            .build())
                     .attacker(attacker)
                     .defender(defender)
                     .attackingUnits(List.of(fireUnit))
@@ -392,17 +398,15 @@ class FiringGroupSplitterGeneralTest {
 
   @Test
   void twoGroupsWhenAirAndSeaVsSub() {
-
     final Unit airUnit = givenUnitIsAir();
     final UnitType airUnitType = airUnit.getType();
 
-    final Unit attackingSeaUnit = givenAnyUnit();
+    final Unit attackingSeaUnit = givenUnitIsSea();
 
     final Unit subUnit = givenUnitIsSea();
-    final UnitAttachment subUnitAttachment =
-        (UnitAttachment) subUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    final UnitAttachment subUnitAttachment = subUnit.getUnitAttachment();
     when(subUnitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(airUnitType));
-    final Unit defendingSeaUnit = givenAnyUnit();
+    final Unit defendingSeaUnit = givenUnitIsSea();
 
     final List<FiringGroup> firingGroups =
         FiringGroupSplitterGeneral.of(OFFENSE, FiringGroupSplitterGeneral.Type.NORMAL, UNITS)
@@ -413,6 +417,7 @@ class FiringGroupSplitterGeneralTest {
                     .defender(defender)
                     .attackingUnits(List.of(airUnit, attackingSeaUnit))
                     .defendingUnits(List.of(subUnit, defendingSeaUnit))
+                    .battleSite(givenSeaBattleSite())
                     .build());
 
     assertThat(firingGroups, hasSize(2));

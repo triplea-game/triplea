@@ -185,7 +185,7 @@ public class BattleStepsTest {
 
   public static Unit givenUnitSeaTransport() {
     final UnitAndAttachment unitAndAttachment = newSeaUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getTransportCapacity()).thenReturn(2);
+    lenient().when(unitAndAttachment.unitAttachment.getTransportCapacity()).thenReturn(2);
     return unitAndAttachment.unit;
   }
 
@@ -2040,5 +2040,51 @@ public class BattleStepsTest {
                 .build());
 
     assertThat(steps, is(basicFightStepStrings()));
+  }
+
+  @Test
+  @DisplayName("Verify that extra steps won't be created due to canNotTarget and non-participants")
+  void nonParticipantsOnDefenseDontCreateExtraStepsWithCannotTarget() {
+    // Two attacking air units of different types.
+    final Unit unit1Plane = givenUnitIsAir();
+    lenient().when(unit1Plane.getOwner()).thenReturn(attacker);
+    final Unit unit2Plane = givenUnitIsAir();
+    lenient().when(unit2Plane.getOwner()).thenReturn(attacker);
+
+    // Defending transport with infantry on board.
+    final Unit unit3Transport = givenUnitSeaTransport();
+    lenient().when(unit3Transport.getOwner()).thenReturn(defender);
+    final Unit unit4Infantry = givenAnyUnit();
+    lenient().when(unit4Infantry.getOwner()).thenReturn(defender);
+    lenient().when(unit4Infantry.getTransportedBy()).thenReturn(unit3Transport);
+
+    // One of the planes can't target the infantry. This shouldn't matter since the infantry is a
+    // non-combatant.
+    final UnitType unit4InfantryType = unit4Infantry.getType();
+    when(unit1Plane.getUnitAttachment().getCanNotTarget()).thenReturn(Set.of(unit4InfantryType));
+
+    final var unitTypeList =
+        List.of(
+            unit1Plane.getType(),
+            unit2Plane.getType(),
+            unit3Transport.getType(),
+            unit4Infantry.getType());
+
+    final List<String> steps =
+        givenBattleSteps(
+            givenBattleStateBuilder()
+                .gameData(
+                    givenGameDataWithLenientProperties().withUnitTypeList(unitTypeList).build())
+                .attacker(attacker)
+                .defender(defender)
+                .attackingUnits(List.of(unit1Plane, unit2Plane))
+                .defendingUnits(List.of(unit3Transport, unit4Infantry))
+                .battleSite(givenSeaBattleSite())
+                .amphibious(false)
+                .build());
+
+    List<String> expectedSteps = basicFightStepStrings();
+    expectedSteps.add(attacker.getName() + ATTACKER_WITHDRAW);
+    assertThat(steps, is(expectedSteps));
   }
 }

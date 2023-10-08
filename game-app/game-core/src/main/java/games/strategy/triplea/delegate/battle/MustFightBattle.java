@@ -245,7 +245,7 @@ public class MustFightBattle extends DependentBattle
     // mark units with no movement for all but air
     Collection<Unit> nonAir = CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotAir());
     // we don't want to change the movement of transported land units if this is a sea battle
-    // so restrict non air to remove land units
+    // so restrict non-air to remove land units
     if (battleSite.isWater()) {
       nonAir = CollectionUtils.getMatches(nonAir, Matches.unitIsNotLand());
     }
@@ -705,7 +705,7 @@ public class MustFightBattle extends DependentBattle
         List.of());
     display.listBattleSteps(battleId, stepStrings);
     if (!headless) {
-      // take the casualties with least movement first
+      // take the casualties with the least movement first
       CasualtySortingUtil.sortPreBattle(attackingUnits);
       CasualtySortingUtil.sortPreBattle(defendingUnits);
       SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
@@ -844,9 +844,9 @@ public class MustFightBattle extends DependentBattle
         || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
       return Set.of(battleSite);
     }
-    // its possible that a sub retreated to a territory we came from, if so we can no longer retreat
-    // there
-    // or if we are moving out of a territory containing enemy units, we cannot retreat back there
+    // it's possible that a sub retreated to a territory we came from, if so we can no longer
+    // retreat there or if we are moving out of a territory containing enemy units, we cannot
+    // retreat back there
     final Predicate<Unit> enemyUnitsThatPreventRetreat =
         PredicateBuilder.of(Matches.enemyUnit(attacker))
             .and(Matches.unitIsNotInfrastructure())
@@ -1260,7 +1260,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   /**
-   * Removes non combatants from the requested battle side and returns them
+   * Removes non-combatants from the requested battle side and returns them.
    *
    * @return the removed units
    */
@@ -1284,7 +1284,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   /**
-   * Returns only the relevant non-combatant units present in the specified collection.
+   * Returns only the relevant combatant units present in the specified collection.
    *
    * @return a collection containing all the combatants in units non-combatants include such things
    *     as factories, aa guns, land units in a water battle.
