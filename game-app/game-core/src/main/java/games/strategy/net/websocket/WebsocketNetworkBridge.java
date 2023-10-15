@@ -2,6 +2,7 @@ package games.strategy.net.websocket;
 
 import games.strategy.triplea.settings.ClientSetting;
 import java.net.URI;
+import java.util.Map;
 import java.util.function.Consumer;
 import lombok.extern.java.Log;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
@@ -18,6 +19,7 @@ public class WebsocketNetworkBridge implements ClientNetworkBridge {
           GenericWebSocketClient.builder()
               .websocketUri(serverUri)
               .errorHandler(log::warning)
+              .headers(Map.of())
               .build();
 
       log.info("Connecting to game server: " + serverUri);
