@@ -211,6 +211,11 @@ public class MustFightBattle extends DependentBattle
     if (!Properties.getAlliedAirIndependent(gameData.getProperties())) {
       // allied air can not participate in the battle so set transportedBy on each allied air unit
       // and remove them from the attacking units
+      // Note: This is done only for the duration of the battle, so that these dependent planes can
+      // correctly be destroyed if their carrier sinks and so the combat screen shows which planes
+      // are loaded on which carrier when selecting casualties. It's cleared by
+      // clearTransportedByForAlliedAirOnCarrier(). Note: These will also be cleared if the battle
+      // is canceled by virtue of units moving out further.
       final TransportTracker.AlliedAirTransportChange alliedAirTransportChange =
           TransportTracker.markTransportedByForAlliedAirOnCarrier(units, attacker);
       change.add(alliedAirTransportChange.getChange());

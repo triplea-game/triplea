@@ -970,8 +970,7 @@ public class BattleTracker implements Serializable {
       final GamePlayer gamePlayer,
       final GameData data) {
     // it is possible to add a battle with a route that is just the start territory, ie the units
-    // did not move into the
-    // country they were there to start with
+    // did not move into the country they were there to start with
     // this happens when you have submerged subs emerging
     Territory site = route.getEnd();
     if (site == null) {
