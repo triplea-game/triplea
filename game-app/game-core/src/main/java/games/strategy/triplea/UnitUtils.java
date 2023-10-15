@@ -5,6 +5,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -14,7 +15,10 @@ import games.strategy.triplea.delegate.TechTracker;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -27,6 +31,10 @@ import org.triplea.java.collections.IntegerMap;
  */
 @UtilityClass
 public class UnitUtils {
+
+  public static Set<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
+    return units.stream().map(Unit::getType).collect(Collectors.toSet());
+  }
 
   public static int getProductionPotentialOfTerritory(
       final Collection<Unit> unitsAtStartOfStepInTerritory,
@@ -150,7 +158,7 @@ public class UnitUtils {
             (Properties.getWW2V2(properties) || Properties.getWW2V3(properties)) ? 0 : 1;
       }
     }
-    // Increase production if have industrial technology
+    // Increase production if we have industrial technology
     if (territoryProduction
         >= techTracker.getMinimumTerritoryValueForProductionBonus(unit.getOwner())) {
       productionCapacity += techTracker.getProductionBonus(unit.getOwner(), unit.getType());
@@ -240,5 +248,22 @@ public class UnitUtils {
               IntegerMap.of(Map.of(receivingUnit, transferDamage)), List.of(territory)));
     }
     return unitChange;
+  }
+
+  public static @Nullable GamePlayer findPlayerWithMostUnits(final Iterable<Unit> units) {
+    final IntegerMap<GamePlayer> playerUnitCount = new IntegerMap<>();
+    for (final Unit unit : units) {
+      playerUnitCount.add(unit.getOwner(), 1);
+    }
+    int max = -1;
+    GamePlayer player = null;
+    for (final GamePlayer current : playerUnitCount.keySet()) {
+      final int count = playerUnitCount.getInt(current);
+      if (count > max) {
+        max = count;
+        player = current;
+      }
+    }
+    return player;
   }
 }

@@ -15,8 +15,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.AbstractUserActionAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -221,8 +221,7 @@ public final class Matches {
       Territory battleSite,
       int battleRound,
       Collection<Unit> enemyUnits) {
-    final Set<UnitType> enemyUnitTypes =
-        enemyUnits.stream().map(Unit::getType).collect(Collectors.toSet());
+    final Collection<UnitType> enemyUnitTypes = UnitUtils.getUnitTypesFromUnitList(enemyUnits);
     return u -> {
       final boolean landBattle = !battleSite.isWater();
       if (!landBattle && Matches.unitIsLand().test(u)) {
@@ -612,14 +611,6 @@ public final class Matches {
     return obj -> unitTypeIsRocket().test(obj.getType());
   }
 
-  public static Predicate<Unit> unitHasMovementLimit() {
-    return u -> u.getUnitAttachment().getMovementLimit() != null;
-  }
-
-  public static Predicate<Unit> unitHasAttackingLimit() {
-    return u -> u.getUnitAttachment().getAttackingLimit() != null;
-  }
-
   public static Predicate<UnitType> unitTypeCanNotMoveDuringCombatMove() {
     return u -> u.getUnitAttachment().getCanNotMoveDuringCombatMove();
   }
@@ -996,8 +987,7 @@ public final class Matches {
       if (!Properties.getMovementByTerritoryRestricted(player.getData().getProperties())) {
         return true;
       }
-      final RulesAttachment ra =
-          (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+      final RulesAttachment ra = player.getRulesAttachment();
       if (ra == null || ra.getMovementRestrictionTerritories() == null) {
         return true;
       }
@@ -1047,9 +1037,7 @@ public final class Matches {
         return false;
       }
       if (Properties.getMovementByTerritoryRestricted(properties)) {
-        final RulesAttachment ra =
-            (RulesAttachment)
-                playerWhoOwnsAllTheUnitsMoving.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+        final RulesAttachment ra = playerWhoOwnsAllTheUnitsMoving.getRulesAttachment();
         if (ra != null && ra.getMovementRestrictionTerritories() != null) {
           final String movementRestrictionType = ra.getMovementRestrictionType();
           final Collection<Territory> listedTerritories =
@@ -1669,32 +1657,23 @@ public final class Matches {
       }
       final Predicate<Unit> unitIsOwnedByAndNotDisabled =
           unitIsOwnedBy(unitWhichRequiresUnits.getOwner()).and(unitIsNotDisabled());
-      unitsInTerritoryAtStartOfTurn.retainAll(
-          CollectionUtils.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
-      boolean canBuild = false;
+      final Collection<Unit> unitsInTerritoryAtStartOfTurnWithSameOwnerAndNotDisabled =
+          CollectionUtils.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled);
       final UnitAttachment ua = unitWhichRequiresUnits.getUnitAttachment();
-      final List<String[]> unitComboPossibilities = ua.getRequiresUnits();
-      for (final String[] combo : unitComboPossibilities) {
-        if (combo != null) {
-          boolean haveAll = true;
-          final Collection<UnitType> requiredUnits = ua.getListedUnits(combo);
-          for (final UnitType ut : requiredUnits) {
-            if (CollectionUtils.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOfType(ut)) < 1) {
-              haveAll = false;
-            }
-            if (!haveAll) {
-              break;
-            }
-          }
-          if (haveAll) {
-            canBuild = true;
+      for (final String[] combo : ua.getRequiresUnits()) {
+        boolean haveAll = true;
+        for (final UnitType ut : ua.getListedUnits(combo)) {
+          if (unitsInTerritoryAtStartOfTurnWithSameOwnerAndNotDisabled.stream()
+              .noneMatch(unitIsOfType(ut))) {
+            haveAll = false;
+            break;
           }
         }
-        if (canBuild) {
-          break;
+        if (haveAll) {
+          return true;
         }
       }
-      return canBuild;
+      return false;
     };
   }
 

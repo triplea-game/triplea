@@ -70,18 +70,21 @@ final class BattleModel extends DefaultTableModel {
   }
 
   void notifyRetreat(final Collection<Unit> retreating) {
-    units.removeAll(retreating);
-    refresh();
+    if (units.removeAll(retreating)) {
+      refresh();
+    }
   }
 
   void removeCasualties(final Collection<Unit> killed) {
-    units.removeAll(killed);
-    refresh();
+    if (units.removeAll(killed)) {
+      refresh();
+    }
   }
 
   void addUnits(final Collection<Unit> units) {
-    this.units.addAll(units);
-    refresh();
+    if (this.units.addAll(units)) {
+      refresh();
+    }
   }
 
   Collection<Unit> getUnits() {
@@ -100,13 +103,14 @@ final class BattleModel extends DefaultTableModel {
     final List<Unit> units = new ArrayList<>(this.units);
     final TotalPowerAndTotalRolls unitPowerAndRollsMap;
     final boolean isAirPreBattleOrPreRaid = battleType.isAirBattle();
+    final boolean lhtrHeavyBombers = Properties.getLhtrHeavyBombers(gameData.getProperties());
     try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       final CombatValue combatValue;
       if (isAirPreBattleOrPreRaid) {
         combatValue =
             CombatValueBuilder.airBattleCombatValue()
                 .side(BattleState.Side.DEFENSE)
-                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                .lhtrHeavyBombers(lhtrHeavyBombers)
                 .gameDiceSides(gameData.getDiceSides())
                 .build();
       } else {
@@ -117,7 +121,7 @@ final class BattleModel extends DefaultTableModel {
                 .side(side)
                 .gameSequence(gameData.getSequence())
                 .supportAttachments(gameData.getUnitTypeList().getSupportRules())
-                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+                .lhtrHeavyBombers(lhtrHeavyBombers)
                 .gameDiceSides(gameData.getDiceSides())
                 .territoryEffects(territoryEffects)
                 .build();

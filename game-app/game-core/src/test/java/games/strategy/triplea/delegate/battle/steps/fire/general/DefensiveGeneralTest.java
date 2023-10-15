@@ -37,7 +37,7 @@ class DefensiveGeneralTest {
               .gameData(gameData)
               .build();
       final DefensiveGeneral defensiveGeneral = new DefensiveGeneral(battleState, battleActions);
-      assertThat(defensiveGeneral.getNames(), hasSize(3));
+      assertThat(defensiveGeneral.getAllStepDetails(), hasSize(3));
     }
 
     @Test
@@ -51,7 +51,7 @@ class DefensiveGeneralTest {
               .gameData(gameData)
               .build();
       final DefensiveGeneral defensiveGeneral = new DefensiveGeneral(battleState, battleActions);
-      assertThat(defensiveGeneral.getNames(), is(empty()));
+      assertThat(defensiveGeneral.getAllStepDetails(), is(empty()));
     }
   }
 }

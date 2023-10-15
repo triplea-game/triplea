@@ -303,12 +303,12 @@ final class GameMenu extends JMenu {
   private void addStatistics() {
     add(
         SwingAction.of(
-            "Game statistics",
+            "Game Statistics",
             e ->
                 JOptionPane.showMessageDialog(
                     frame,
                     new StatisticsDialog(gameData, uiContext.getMapData()),
-                    "Game statistics",
+                    "Game Statistics",
                     JOptionPane.INFORMATION_MESSAGE)));
   }
 }

@@ -78,20 +78,21 @@ class LobbyChatIntegrationTest extends ControllerIntegrationTest {
 
   private final URI localhost;
 
-  private List<PlayerStatusUpdateReceivedMessage> modPlayerStatusEvents = new ArrayList<>();
-  private List<PlayerLeftMessage> modPlayerLeftEvents = new ArrayList<>();
-  private List<PlayerJoinedMessage> modPlayerJoinedEvents = new ArrayList<>();
-  private List<PlayerSlapReceivedMessage> modPlayerSlappedEvents = new ArrayList<>();
-  private List<ChatReceivedMessage> modMessageEvents = new ArrayList<>();
-  private List<ChatterListingMessage> modConnectedEvents = new ArrayList<>();
+  private final List<PlayerStatusUpdateReceivedMessage> modPlayerStatusEvents = new ArrayList<>();
+  private final List<PlayerLeftMessage> modPlayerLeftEvents = new ArrayList<>();
+  private final List<PlayerJoinedMessage> modPlayerJoinedEvents = new ArrayList<>();
+  private final List<PlayerSlapReceivedMessage> modPlayerSlappedEvents = new ArrayList<>();
+  private final List<ChatReceivedMessage> modMessageEvents = new ArrayList<>();
+  private final List<ChatterListingMessage> modConnectedEvents = new ArrayList<>();
   private PlayerToLobbyConnection moderator;
 
-  private List<PlayerStatusUpdateReceivedMessage> chatterPlayerStatusEvents = new ArrayList<>();
-  private List<PlayerLeftMessage> chatterPlayerLeftEvents = new ArrayList<>();
-  private List<PlayerJoinedMessage> chatterPlayerJoinedEvents = new ArrayList<>();
-  private List<PlayerSlapReceivedMessage> chatterPlayerSlappedEvents = new ArrayList<>();
-  private List<ChatReceivedMessage> chatterMessageEvents = new ArrayList<>();
-  private List<ChatterListingMessage> chatterConnectedEvents = new ArrayList<>();
+  private final List<PlayerStatusUpdateReceivedMessage> chatterPlayerStatusEvents =
+      new ArrayList<>();
+  private final List<PlayerLeftMessage> chatterPlayerLeftEvents = new ArrayList<>();
+  private final List<PlayerJoinedMessage> chatterPlayerJoinedEvents = new ArrayList<>();
+  private final List<PlayerSlapReceivedMessage> chatterPlayerSlappedEvents = new ArrayList<>();
+  private final List<ChatReceivedMessage> chatterMessageEvents = new ArrayList<>();
+  private final List<ChatterListingMessage> chatterConnectedEvents = new ArrayList<>();
   private PlayerToLobbyConnection chatter;
 
   private PlayerToLobbyConnection createModerator() {

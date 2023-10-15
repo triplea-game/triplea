@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PlayerIsMutedMessageTest {
   private static final Instant CURRENT_TIME = utcInstantOf(2020, 11, 1, 2, 20);
 
-  private Function<Instant, String> formattingFunction =
+  private final Function<Instant, String> formattingFunction =
       PlayerIsMutedMessage.MuteDurationRemainingCalculator.builder()
           .clock(Clock.fixed(CURRENT_TIME, ZoneOffset.UTC))
           .build();

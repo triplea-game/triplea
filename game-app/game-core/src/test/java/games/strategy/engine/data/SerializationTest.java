@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.triplea.io.IoUtils;
 
 class SerializationTest {
-  private GameData gameDataSource = TestMapGameData.TEST.getGameData();
-  private GameState gameDataSink = TestMapGameData.TEST.getGameData();
+  private final GameData gameDataSource = TestMapGameData.TEST.getGameData();
+  private final GameState gameDataSink = TestMapGameData.TEST.getGameData();
 
   private Object serialize(final Object anObject) throws Exception {
     final byte[] bytes =

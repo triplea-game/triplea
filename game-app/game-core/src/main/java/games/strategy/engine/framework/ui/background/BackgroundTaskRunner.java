@@ -4,13 +4,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Throwables;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.function.ThrowingSupplier;
@@ -19,7 +22,7 @@ import org.triplea.swing.SwingAction;
 /** Provides methods for running tasks in the background to avoid blocking the UI. */
 @UtilityClass
 public final class BackgroundTaskRunner {
-  private static JFrame mainFrame;
+  @Getter private static JFrame mainFrame;
 
   public static void setMainFrame(final JFrame mainFrame) {
     checkState(BackgroundTaskRunner.mainFrame == null);
@@ -72,7 +75,14 @@ public final class BackgroundTaskRunner {
    */
   public static <T> T runInBackgroundAndReturn(
       final String message, final Supplier<T> backgroundAction) throws InterruptedException {
-    return runInBackgroundAndReturn(message, backgroundAction::get, RuntimeException.class);
+    return runInBackgroundAndReturn(message, backgroundAction::get, null, RuntimeException.class);
+  }
+
+  public static <T> T runInBackgroundAndReturn(
+      Consumer<T> runOnEdtBeforeDialogClose, String message, Supplier<T> backgroundAction)
+      throws InterruptedException {
+    return runInBackgroundAndReturn(
+        message, backgroundAction::get, runOnEdtBeforeDialogClose, RuntimeException.class);
   }
 
   /**
@@ -88,6 +98,9 @@ public final class BackgroundTaskRunner {
    * @param <E> The type of exception thrown by the background action.
    * @param message The message displayed to the user while the background action is running.
    * @param backgroundAction The action to run in the background.
+   * @param runOnEdtBeforeDialogClose Work to be done on EDT with the result, before closing the
+   *     dialog. Some Swing operations can be slow (e.g. layout of lots of HTML like unit help), so
+   *     this can be used to ensure we only close the progress dialog once this work has been done.
    * @param exceptionType The type of exception thrown by the background action.
    * @return The value returned by {@code backgroundAction}.
    * @throws IllegalStateException If this method is not called from the EDT.
@@ -98,6 +111,7 @@ public final class BackgroundTaskRunner {
   public static <T, E extends Exception> T runInBackgroundAndReturn(
       final String message,
       final ThrowingSupplier<T, E> backgroundAction,
+      final Consumer<T> runOnEdtBeforeDialogClose,
       final Class<E> exceptionType)
       throws E, InterruptedException {
     checkState(SwingUtilities.isEventDispatchThread());
@@ -117,16 +131,18 @@ public final class BackgroundTaskRunner {
 
           @Override
           protected void done() {
-            waitDialog.setVisible(false);
-            waitDialog.dispose();
-
             try {
-              resultRef.set(get());
+              T t = get();
+              resultRef.set(t);
+              Optional.ofNullable(runOnEdtBeforeDialogClose).ifPresent(c -> c.accept(t));
             } catch (final ExecutionException e) {
               exceptionRef.set(e.getCause());
             } catch (final InterruptedException e) {
               Thread.currentThread().interrupt();
               exceptionRef.set(e);
+            } finally {
+              waitDialog.setVisible(false);
+              waitDialog.dispose();
             }
           }
         };

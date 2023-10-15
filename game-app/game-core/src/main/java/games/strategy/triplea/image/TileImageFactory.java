@@ -222,7 +222,7 @@ public final class TileImageFactory {
       fromFile.flush();
       return image;
     } catch (final IOException e) {
-      log.error("Could not load image, url: " + imageLocation.toString(), e);
+      log.error("Could not load image, url: " + imageLocation, e);
       return new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
   }

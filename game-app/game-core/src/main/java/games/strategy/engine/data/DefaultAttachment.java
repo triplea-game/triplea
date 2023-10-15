@@ -96,7 +96,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   protected String thisErrorMsg() {
-    return ",   for: " + toString();
+    return ",   for: " + this;
   }
 
   /** Returns null or the toString() of the field value. */

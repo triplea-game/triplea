@@ -99,7 +99,9 @@ public class AirBattle extends AbstractBattle {
   @Override
   public Change addAttackChange(
       final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {
-    attackingUnits.addAll(units);
+    // Avoid duplicates. Note: This is needed as scrambling code calls addAirBattle(), but the
+    // battle may have already been created with the same attackers. They should not be added twice.
+    units.stream().filter(not(attackingUnits::contains)).forEach(attackingUnits::add);
     return ChangeFactory.EMPTY_CHANGE;
   }
 
@@ -251,7 +253,9 @@ public class AirBattle extends AbstractBattle {
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!isOver && canAttackerRetreat()) {
-              attackerRetreat(bridge);
+              // planes retreat to the same square the battle is in, and then should move during
+              // non combat to their landing site, or be scrapped if they can't find one.
+              queryRetreat(false, bridge, battleSite);
             }
           }
         });
@@ -262,7 +266,9 @@ public class AirBattle extends AbstractBattle {
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!isOver && canDefenderRetreat()) {
-              defenderRetreat(bridge);
+              // planes retreat to the same square the battle is in, and then should move during
+              // non combat to their landing site, or be scrapped if they can't find one
+              queryRetreat(true, bridge, battleSite);
             }
           }
         });
@@ -473,79 +479,53 @@ public class AirBattle extends AbstractBattle {
     battleTracker.removeBattle(AirBattle.this, bridge.getData());
   }
 
-  private void attackerRetreat(final IDelegateBridge bridge) {
-    // planes retreat to the same square the battle is in, and then should
-    // move during non combat to their landing site, or be scrapped if they can't find one.
-    // retreat planes
-    if (!attackingUnits.isEmpty()) {
-      queryRetreat(false, bridge, Set.of(battleSite));
-    }
-  }
-
-  private void defenderRetreat(final IDelegateBridge bridge) {
-    // planes retreat to the same square the battle is in, and then should
-    // move during non combat to their landing site, or be scrapped if they can't find one.
-    // retreat planes
-    if (!defendingUnits.isEmpty()) {
-      queryRetreat(true, bridge, Set.of(battleSite));
-    }
-  }
-
   private void queryRetreat(
-      final boolean defender,
-      final IDelegateBridge bridge,
-      final Collection<Territory> availableTerritories) {
-    if (availableTerritories.isEmpty()) {
-      return;
-    }
+      final boolean defender, final IDelegateBridge bridge, final Territory battleSite) {
     final Collection<Unit> units =
         defender ? new ArrayList<>(defendingUnits) : new ArrayList<>(attackingUnits);
     if (units.isEmpty()) {
       return;
     }
-    final GamePlayer retreatingPlayer = defender ? this.defender : attacker;
-    final String text = retreatingPlayer.getName() + " retreat?";
     final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
-
     if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
       bridge.sendMessage(new IDisplay.GoToBattleStepMessage(battleId.toString(), step));
     } else {
       bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, step);
     }
+
+    final GamePlayer retreatingPlayer = defender ? this.defender : attacker;
+    final String text = retreatingPlayer.getName() + " retreat?";
     final Territory retreatTo =
         getRemote(retreatingPlayer, bridge)
-            .retreatQuery(battleId, false, battleSite, availableTerritories, text);
-    if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
-      log.error(
-          "Invalid retreat selection :"
-              + retreatTo
-              + " not in "
-              + MyFormatter.defaultNamedToTextList(availableTerritories));
+            .retreatQuery(battleId, false, battleSite, List.of(battleSite), text);
+    if (retreatTo == null) {
       return;
     }
-    if (retreatTo != null) {
-      if (!headless) {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
-      }
-      retreat(units, defender, bridge);
-      final String messageShort = retreatingPlayer.getName() + " retreats";
-      final String messageLong =
-          retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
-      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-        bridge.sendMessage(
-            IDisplay.NotifyRetreatMessage.builder()
-                .shortMessage(messageShort)
-                .message(messageLong)
-                .step(step)
-                .retreatingPlayerName(retreatingPlayer.getName())
-                .build());
-      } else {
-        bridge
-            .getDisplayChannelBroadcaster()
-            .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
-      }
+    if (!retreatTo.equals(battleSite)) {
+      log.error("Invalid retreat selection : {} does not equal {}", retreatTo, battleSite);
+      return;
+    }
+    if (!headless) {
+      bridge
+          .getSoundChannelBroadcaster()
+          .playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
+    }
+    retreat(units, defender, bridge);
+    final String messageShort = retreatingPlayer.getName() + " retreats";
+    final String messageLong =
+        retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
+    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+      bridge.sendMessage(
+          IDisplay.NotifyRetreatMessage.builder()
+              .shortMessage(messageShort)
+              .message(messageLong)
+              .step(step)
+              .retreatingPlayerName(retreatingPlayer.getName())
+              .build());
+    } else {
+      bridge
+          .getDisplayChannelBroadcaster()
+          .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
     }
   }
 

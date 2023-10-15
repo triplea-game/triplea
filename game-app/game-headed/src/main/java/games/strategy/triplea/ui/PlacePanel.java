@@ -8,6 +8,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -208,9 +209,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       if (!territory.isWater() && !territory.isOwnedBy(getCurrentPlayer())) {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
-          if ((pa == null
-                  || pa.getGiveUnitControl() == null
-                  || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
+          if ((pa == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
               && !territory.anyUnitsMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return new PlaceableUnits();
           }
@@ -221,9 +220,10 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       // get the units that can be placed on this territory.
       Collection<Unit> units = getCurrentPlayer().getUnits();
       if (territory.isWater()) {
-        if (!(Properties.getProduceFightersOnCarriers(getData().getProperties())
-            || Properties.getProduceNewFightersOnOldCarriers(getData().getProperties())
-            || Properties.getLhtrCarrierProductionRules(getData().getProperties())
+        GameProperties properties = getData().getProperties();
+        if (!(Properties.getProduceFightersOnCarriers(properties)
+            || Properties.getProduceNewFightersOnOldCarriers(properties)
+            || Properties.getLhtrCarrierProductionRules(properties)
             || GameStepPropertiesHelper.isBid(getData()))) {
           units = CollectionUtils.getMatches(units, Matches.unitIsSea());
         } else {
@@ -243,8 +243,8 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       if (production.isError()) {
         JOptionPane.showMessageDialog(
             getTopLevelAncestor(),
-            production.getErrorMessage(),
-            "No units",
+            production.getErrorMessage() + "\n\n",
+            "Cannot produce units",
             JOptionPane.INFORMATION_MESSAGE);
       }
       return production;

@@ -34,6 +34,8 @@ public abstract class AbstractDelegateTestCase extends AbstractClientSettingTest
   protected Territory sfeSeaZone = gameData.getMap().getTerritory("Soviet Far East Sea Zone");
   protected Territory brazil = gameData.getMap().getTerritory("Brazil");
   protected Territory westCanada = gameData.getMap().getTerritory("West Canada");
+  protected Territory eastCanada = gameData.getMap().getTerritory("East Canada");
+  protected Territory westCanadaSeaZone = gameData.getMap().getTerritory("West Canada Sea Zone");
   protected Territory germany = gameData.getMap().getTerritory("Germany");
   protected Territory syria = gameData.getMap().getTerritory("Syria Jordan");
   protected Territory manchuria = gameData.getMap().getTerritory("Manchuria");
@@ -81,6 +83,7 @@ public abstract class AbstractDelegateTestCase extends AbstractClientSettingTest
   protected UnitType aaGun = GameDataTestUtil.aaGun(gameData);
   protected UnitType fighter = GameDataTestUtil.fighter(gameData);
   protected UnitType bomber = GameDataTestUtil.bomber(gameData);
+  protected UnitType battleship = GameDataTestUtil.battleship(gameData);
   protected UnitType carrier = GameDataTestUtil.carrier(gameData);
   protected Resource pus = gameData.getResourceList().getResource("PUs");
 

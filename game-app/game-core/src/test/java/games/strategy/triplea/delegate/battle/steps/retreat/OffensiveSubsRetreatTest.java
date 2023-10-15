@@ -71,7 +71,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
+    assertThat(offensiveSubsRetreat.getAllStepDetails(), hasSize(1));
   }
 
   @Test
@@ -85,7 +85,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
+    assertThat(offensiveSubsRetreat.getAllStepDetails(), hasSize(1));
   }
 
   @Test
@@ -100,7 +100,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), hasSize(1));
+    assertThat(offensiveSubsRetreat.getAllStepDetails(), hasSize(1));
   }
 
   @Test
@@ -116,7 +116,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
     assertThat(
         "The destroyer could be killed during the AA phase which would allow the sub to retreat.",
-        offensiveSubsRetreat.getNames(),
+        offensiveSubsRetreat.getAllStepDetails(),
         hasSize(1));
   }
 
@@ -131,7 +131,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), is(empty()));
+    assertThat(offensiveSubsRetreat.getAllStepDetails(), is(empty()));
   }
 
   @Test
@@ -150,7 +150,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), is(empty()));
+    assertThat(offensiveSubsRetreat.getAllStepDetails(), is(empty()));
   }
 
   @Test
@@ -163,7 +163,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getNames(), is(empty()));
+    assertThat(offensiveSubsRetreat.getAllStepDetails(), is(empty()));
   }
 
   static Unit givenRealUnitCanEvade(final GameData gameData, final GamePlayer player) {

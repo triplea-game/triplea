@@ -11,7 +11,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
-import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class UnitStatsTable {
               .append(costs.get(player).get(ut).toStringForHtml())
               .append("</td>")
               .append("<td>")
-              .append(new TooltipProperties(uiContext).getTooltip(ut, player))
+              .append(uiContext.getTooltipProperties().getTooltip(ut, player))
               .append("</td></tr>");
         }
       }

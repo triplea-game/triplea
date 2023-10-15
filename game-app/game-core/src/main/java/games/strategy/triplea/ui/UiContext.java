@@ -70,6 +70,7 @@ public class UiContext {
   @Getter private final TileImageFactory tileImageFactory = new TileImageFactory();
   @Getter private UnitImageFactory unitImageFactory;
   @Getter private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
+  @Getter private final TooltipProperties tooltipProperties;
 
   @Getter
   private final TerritoryEffectImageFactory territoryEffectImageFactory =
@@ -152,6 +153,7 @@ public class UiContext {
         log.error("Failed to create cursor from: " + cursorUrl, e);
       }
     }
+    tooltipProperties = new TooltipProperties(this);
   }
 
   public JLabel newUnitImageLabel(final ImageKey imageKey) {
@@ -334,12 +336,9 @@ public class UiContext {
     // waiting for that lock, then you have a deadlock.
     // A real life example: player disconnects while you have the battle calc open.
     // Non-EDT thread does shutdown on IGame and UiContext, causing btl calc to shutdown,
-    // which calls the
-    // window closed event on the EDT, and waits for the lock on UiContext to
-    // removeShutdownWindow, meanwhile
-    // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait,
-    // resulting in a
-    // deadlock.
+    // which calls the window closed event on the EDT, and waits for the lock on UiContext to
+    // removeShutdownWindow, meanwhile our non-EDT tries to dispose the battle panel, which requires
+    // the EDT with a invokeAndWait, resulting in a deadlock.
     SwingUtilities.invokeLater(window::dispose);
   }
 

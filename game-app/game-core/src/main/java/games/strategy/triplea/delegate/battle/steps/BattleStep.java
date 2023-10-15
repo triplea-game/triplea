@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetr
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.List;
+import lombok.Value;
 
 /**
  * This is used to break up the battle into separate atomic pieces. If there is a network error, or
@@ -80,10 +81,16 @@ public interface BattleStep extends IExecutable {
     FIRE_ROUND_REMOVE_CASUALTIES,
   }
 
+  @Value
+  class StepDetails {
+    String name;
+    BattleStep step;
+  }
+
   /**
    * @return a list of names that will be shown in the UI.
    */
-  List<String> getNames();
+  List<StepDetails> getAllStepDetails();
 
   /**
    * @return The order in which this step should be called

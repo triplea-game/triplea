@@ -24,8 +24,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
-import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
@@ -58,6 +58,7 @@ import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 import org.triplea.util.Tuple;
 
@@ -1762,7 +1763,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             getClearFirstNewValue(property.getSecond());
 
         for (final TerritoryEffect territoryEffect : t.getTerritoryEffects()) {
-
           // covers TerritoryEffectAttachment
           if (t.getTerritoryEffectAttachmentName().getFirst().equals("TerritoryEffectAttachment")) {
             final TerritoryEffectAttachment attachment =
@@ -1909,6 +1909,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs =
         filterSatisfiedTriggers(satisfiedTriggers, techAvailableMatch(), fireTriggerParams);
+    IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
     for (final TriggerAttachment t : trigs) {
       if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
@@ -1926,25 +1927,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
           for (final TechAdvance ta : t.getAvailableTech().get(cat).keySet()) {
             if (t.getAvailableTech().get(cat).get(ta)) {
-              bridge
-                  .getHistoryWriter()
-                  .startEvent(
-                      MyFormatter.attachmentNameToText(t.getName())
-                          + ": "
-                          + player.getName()
-                          + " gains access to "
-                          + ta);
+              historyWriter.startEvent(
+                  MyFormatter.attachmentNameToText(t.getName())
+                      + ": "
+                      + player.getName()
+                      + " gains access to "
+                      + ta);
               final Change change = ChangeFactory.addAvailableTech(tf, ta, player);
               bridge.addChange(change);
             } else {
-              bridge
-                  .getHistoryWriter()
-                  .startEvent(
-                      MyFormatter.attachmentNameToText(t.getName())
-                          + ": "
-                          + player.getName()
-                          + " loses access to "
-                          + ta);
+              historyWriter.startEvent(
+                  MyFormatter.attachmentNameToText(t.getName())
+                      + ": "
+                      + player.getName()
+                      + " loses access to "
+                      + ta);
               final Change change = ChangeFactory.removeAvailableTech(tf, ta, player);
               bridge.addChange(change);
             }
@@ -1961,6 +1958,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs =
         filterSatisfiedTriggers(satisfiedTriggers, techMatch(), fireTriggerParams);
+    IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
     for (final TriggerAttachment t : trigs) {
       if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
@@ -1973,14 +1971,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (ta.hasTech(player.getTechAttachment())) {
             continue;
           }
-          bridge
-              .getHistoryWriter()
-              .startEvent(
-                  MyFormatter.attachmentNameToText(t.getName())
-                      + ": "
-                      + player.getName()
-                      + " activates "
-                      + ta);
+          historyWriter.startEvent(
+              MyFormatter.attachmentNameToText(t.getName())
+                  + ": "
+                  + player.getName()
+                  + " activates "
+                  + ta);
           TechTracker.addAdvance(player, bridge, ta);
         }
       }
@@ -2002,16 +1998,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
+      IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
       for (final GamePlayer player : t.getPlayers()) {
         change.add(ChangeFactory.changeProductionFrontier(player, t.getFrontier()));
-        bridge
-            .getHistoryWriter()
-            .startEvent(
-                MyFormatter.attachmentNameToText(t.getName())
-                    + ": "
-                    + player.getName()
-                    + " has their production frontier changed to: "
-                    + t.getFrontier().getName());
+        historyWriter.startEvent(
+            MyFormatter.attachmentNameToText(t.getName())
+                + ": "
+                + player.getName()
+                + " has their production frontier changed to: "
+                + t.getFrontier().getName());
       }
     }
     if (!change.isEmpty()) {
@@ -2046,29 +2041,26 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 final ProductionRule productionRule =
                     data.getProductionRuleList().getProductionRule(ruleName);
                 final boolean ruleAdded = !rule.startsWith("-");
+                final IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
                 if (ruleAdded) {
                   if (!front.getRules().contains(productionRule)) {
                     change.add(ChangeFactory.addProductionRule(productionRule, front));
-                    bridge
-                        .getHistoryWriter()
-                        .startEvent(
-                            MyFormatter.attachmentNameToText(triggerAttachment.getName())
-                                + ": "
-                                + productionRule.getName()
-                                + " added to "
-                                + front.getName());
+                    historyWriter.startEvent(
+                        MyFormatter.attachmentNameToText(triggerAttachment.getName())
+                            + ": "
+                            + productionRule.getName()
+                            + " added to "
+                            + front.getName());
                   }
                 } else {
                   if (front.getRules().contains(productionRule)) {
                     change.add(ChangeFactory.removeProductionRule(productionRule, front));
-                    bridge
-                        .getHistoryWriter()
-                        .startEvent(
-                            MyFormatter.attachmentNameToText(triggerAttachment.getName())
-                                + ": "
-                                + productionRule.getName()
-                                + " removed from "
-                                + front.getName());
+                    historyWriter.startEvent(
+                        MyFormatter.attachmentNameToText(triggerAttachment.getName())
+                            + ": "
+                            + productionRule.getName()
+                            + " removed from "
+                            + front.getName());
                   }
                 }
               });
@@ -2160,6 +2152,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         final GamePlayer oldOwner = data.getPlayerList().getPlayerId(s[1]);
         final GamePlayer newOwner = data.getPlayerList().getPlayerId(s[2]);
         final boolean captured = getBool(s[3]);
+        final IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
         for (final Territory terr : territories) {
           final GamePlayer currentOwner = terr.getOwner();
           if (TerritoryAttachment.get(terr) == null) {
@@ -2169,14 +2162,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (oldOwner != null && !oldOwner.equals(currentOwner)) {
             continue;
           }
-          bridge
-              .getHistoryWriter()
-              .startEvent(
-                  MyFormatter.attachmentNameToText(t.getName())
-                      + ": "
-                      + newOwner.getName()
-                      + (captured ? " captures territory " : " takes ownership of territory ")
-                      + terr.getName());
+          historyWriter.startEvent(
+              MyFormatter.attachmentNameToText(t.getName())
+                  + ": "
+                  + newOwner.getName()
+                  + (captured ? " captures territory " : " takes ownership of territory ")
+                  + terr.getName());
           if (!captured) {
             bridge.addChange(ChangeFactory.changeOwner(terr, newOwner));
           } else {
@@ -2406,13 +2397,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 testUsesToFire,
                 testChanceToFire,
                 false);
+        IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
         for (int i = 0; i < numberOfTimesToFire * eachMultiple; ++i) {
-          bridge
-              .getHistoryWriter()
-              .startEvent(
-                  MyFormatter.attachmentNameToText(t.getName())
-                      + " activates a trigger called: "
-                      + MyFormatter.attachmentNameToText(toFire.getName()));
+          historyWriter.startEvent(
+              MyFormatter.attachmentNameToText(t.getName())
+                  + " activates a trigger called: "
+                  + MyFormatter.attachmentNameToText(toFire.getName()));
           fireTriggers(toFireSet, testedConditionsSoFar, bridge, toFireTriggerParams);
         }
       }
@@ -2461,20 +2451,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final String sounds = notificationMessages.getSoundsKey(t.getVictory().trim());
       if (victoryMessage != null) {
         if (sounds != null) { // only play the sound if we are also notifying everyone
-          bridge
-              .getSoundChannelBroadcaster()
-              .playSoundToPlayers(
-                  SoundPath.CLIP_TRIGGERED_VICTORY_SOUND + sounds.trim(),
-                  t.getPlayers(),
-                  null,
-                  true);
-          bridge
-              .getSoundChannelBroadcaster()
-              .playSoundToPlayers(
-                  SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND + sounds.trim(),
-                  data.getPlayerList().getPlayers(),
-                  t.getPlayers(),
-                  false);
+          ISound sound = bridge.getSoundChannelBroadcaster();
+          sound.playSoundToPlayers(
+              SoundPath.CLIP_TRIGGERED_VICTORY_SOUND + sounds.trim(), t.getPlayers(), null, true);
+          sound.playSoundToPlayers(
+              SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND + sounds.trim(),
+              data.getPlayerList().getPlayers(),
+              t.getPlayers(),
+              false);
         }
         String messageForRecord = victoryMessage.trim();
         if (messageForRecord.length() > 150) {
@@ -2485,16 +2469,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
         }
         try {
-          bridge
-              .getHistoryWriter()
-              .startEvent(
-                  "Players: "
-                      + MyFormatter.defaultNamedToTextList(t.getPlayers())
-                      + " have just won the game, with this victory: "
-                      + messageForRecord);
-          final IDelegate delegateEndRound = data.getDelegate("endRound");
-          ((EndRoundDelegate) delegateEndRound)
-              .signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
+          IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
+          historyWriter.startEvent(
+              "Players: "
+                  + MyFormatter.defaultNamedToTextList(t.getPlayers())
+                  + " have just won the game, with this victory: "
+                  + messageForRecord);
+          final EndRoundDelegate delegateEndRound = (EndRoundDelegate) data.getDelegate("endRound");
+          delegateEndRound.signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
         } catch (final Exception e) {
           log.error("Failed to signal game over", e);
         }

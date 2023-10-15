@@ -7,6 +7,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -36,8 +37,8 @@ public class SelectCasualties implements BattleStep {
   private final BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails> selectCasualties;
 
   @Override
-  public List<String> getNames() {
-    return List.of(getName());
+  public List<StepDetails> getAllStepDetails() {
+    return List.of(new StepDetails(getName(), this));
   }
 
   private String getName() {
@@ -56,27 +57,19 @@ public class SelectCasualties implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    final DiceRoll diceRoll = fireRoundState.getDice();
+    final String stepName =
+        MarkCasualties.getPossibleOldNameForNotifyingBattleDisplay(
+            battleState, firingGroup, side, getName());
     if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
       bridge.sendMessage(
-          new IDisplay.NotifyDiceMessage(
-              fireRoundState.getDice(),
-              MarkCasualties.getPossibleOldNameForNotifyingBattleDisplay(
-                  battleState, firingGroup, side, getName()),
-              fireRoundState.getDice().getPlayerName()));
+          new IDisplay.NotifyDiceMessage(diceRoll, stepName, diceRoll.getPlayerName()));
     } else {
-      bridge
-          .getDisplayChannelBroadcaster()
-          .notifyDice(
-              fireRoundState.getDice(),
-              MarkCasualties.getPossibleOldNameForNotifyingBattleDisplay(
-                  battleState, firingGroup, side, getName()));
+      bridge.getDisplayChannelBroadcaster().notifyDice(diceRoll, stepName);
     }
 
     final CasualtyDetails details = selectCasualties.apply(bridge, this);
-
     fireRoundState.setCasualties(details);
-
-    BattleDelegate.markDamaged(
-        fireRoundState.getCasualties().getDamaged(), bridge, battleState.getBattleSite());
+    BattleDelegate.markDamaged(details.getDamaged(), bridge, battleState.getBattleSite());
   }
 }

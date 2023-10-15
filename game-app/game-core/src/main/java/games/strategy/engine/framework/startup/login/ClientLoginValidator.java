@@ -27,7 +27,7 @@ public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
 
   private final Version engineVersion;
-  private IServerMessenger serverMessenger;
+  private final IServerMessenger serverMessenger;
   @Nullable private String password;
 
   @Builder

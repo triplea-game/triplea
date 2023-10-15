@@ -184,11 +184,10 @@ public final class UnitChooser extends JPanel {
       return;
     }
     final int selected = getSelectedCount();
-    leftToSelect.setText("Left to select:" + (total - selected));
     for (final ChooserEntry entry : entries) {
       entry.setLeftToSelect(total - selected);
     }
-    leftToSelect.setText("Left to select:" + (total - selected));
+    leftToSelect.setText("Left to select: " + (total - selected));
   }
 
   private void checkMatches() {

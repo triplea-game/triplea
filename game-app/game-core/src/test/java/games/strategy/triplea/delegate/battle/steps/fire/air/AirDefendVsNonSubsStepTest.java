@@ -26,7 +26,7 @@ class AirDefendVsNonSubsStepTest {
   @MethodSource
   void stepName(final String displayName, final BattleState battleState, final boolean expected) {
     final AirDefendVsNonSubsStep airDefendVsNonSubsStep = new AirDefendVsNonSubsStep(battleState);
-    assertThat(airDefendVsNonSubsStep.getNames(), hasSize(expected ? 1 : 0));
+    assertThat(airDefendVsNonSubsStep.getAllStepDetails(), hasSize(expected ? 1 : 0));
   }
 
   static List<Arguments> stepName() {

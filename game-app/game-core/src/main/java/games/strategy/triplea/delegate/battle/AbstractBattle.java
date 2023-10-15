@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.triplea.java.ObjectUtils;
@@ -101,19 +102,28 @@ abstract class AbstractBattle implements IBattle {
   }
 
   void clearTransportedBy(final IDelegateBridge bridge) {
-    // Clear the transported_by for successfully off loaded units
+    // This battle may be a dependent battle for an amphibious landing. In such a case, the
+    // TRANSPORTED_BY property hasn't yet been cleared for any landing units (even if they've
+    // already been put in the new territory), since technically they haven't really landed until
+    // the battle has been won. This code is responsible for clearing this property for those units.
+    // Note: We find transports from among all attacker's units in the territory (and not just those
+    // that are attacking) because some may not actually be participating in the combat (e.g. if an
+    // empty convoy zone was taken over by another ship first).
+    final Predicate<Unit> attackerTransports =
+        Matches.unitIsOwnedBy(attacker).and(Matches.unitIsSeaTransport());
     final Collection<Unit> transports =
-        CollectionUtils.getMatches(attackingUnits, Matches.unitIsSeaTransport());
+        CollectionUtils.getMatches(getTerritory().getUnits(), attackerTransports);
     if (!transports.isEmpty()) {
-      final CompositeChange change = new CompositeChange();
       final Collection<Unit> dependents = getTransportDependents(transports);
-      if (!dependents.isEmpty()) {
-        for (final Unit unit : dependents) {
-          // clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
-          if (Matches.unitWasUnloadedThisTurn().test(unit)) {
-            change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.TRANSPORTED_BY));
-          }
-        }
+      // Clear TRANSPORTED_BY only for combat unloads. Non-combat unloads are handled by
+      // markTransportsMovement().
+      final Collection<Unit> dependentsUnloadedThisTurn =
+          CollectionUtils.getMatches(dependents, Matches.unitWasUnloadedThisTurn());
+      final CompositeChange change = new CompositeChange();
+      for (final Unit unit : dependentsUnloadedThisTurn) {
+        change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.TRANSPORTED_BY));
+      }
+      if (!change.isEmpty()) {
         bridge.addChange(change);
       }
     }
@@ -313,23 +323,6 @@ abstract class AbstractBattle implements IBattle {
       return data.getPlayerList().getNullPlayer();
     }
     return defender;
-  }
-
-  static GamePlayer findPlayerWithMostUnits(final Collection<Unit> units) {
-    final IntegerMap<GamePlayer> playerUnitCount = new IntegerMap<>();
-    for (final Unit unit : units) {
-      playerUnitCount.add(unit.getOwner(), 1);
-    }
-    int max = -1;
-    GamePlayer player = null;
-    for (final GamePlayer current : playerUnitCount.keySet()) {
-      final int count = playerUnitCount.getInt(current);
-      if (count > max) {
-        max = count;
-        player = current;
-      }
-    }
-    return player;
   }
 
   void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {

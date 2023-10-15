@@ -1,11 +1,13 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter.PLACEMENT_LIMIT;
+import static java.util.function.Predicate.not;
+
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.PlayerAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,11 +41,11 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     // we can place if no enemy units and its water
     if (to.isWater()) {
       if (units.stream().anyMatch(Matches.unitIsLand())) {
-        return "Cant place land units at sea";
+        return "Can't place land units at sea";
       } else if (to.anyUnitsMatch(Matches.enemyUnit(player))) {
-        return "Cant place in sea zone containing enemy units";
+        return "Can't place in sea zone containing enemy units";
       } else if (!to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
-        return "Cant place in sea zone that does not contain a unit owned by you";
+        return "Can't place in sea zone that does not contain a unit owned by you";
       } else {
         return null;
       }
@@ -51,17 +53,15 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
 
     // we can place on territories we own
     if (units.stream().anyMatch(Matches.unitIsSea())) {
-      return "Cant place sea units on land";
+      return "Can't place sea units on land";
     } else if (!to.isOwnedBy(player)) {
       final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
-      if (pa != null
-          && pa.getGiveUnitControl() != null
-          && pa.getGiveUnitControl().contains(player)) {
+      if (pa != null && pa.getGiveUnitControl().contains(player)) {
         return null;
       } else if (to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
         return null;
       }
-      return "You dont own " + to.getName();
+      return "You don't own " + to.getName();
     } else {
       return null;
     }
@@ -113,8 +113,11 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
 
   // Return collection of bid units which can placed in a land territory
   @Override
-  protected Collection<Unit> getUnitsToBePlacedLand(
+  protected Collection<Unit> getUnitsToBePlaced(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
+    if (to.isWater()) {
+      return super.getUnitsToBePlaced(to, units, player);
+    }
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<>();
     // we add factories and constructions later
@@ -131,8 +134,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
           // we are doing this because we could have multiple unitTypes with the same
-          // constructionType, so we have to be
-          // able to place the max placement by constructionType of each unitType
+          // constructionType, so we have to be able to place the max placement by constructionType
+          // of each unitType
           if (skipUnit.contains(currentUnit)) {
             continue;
           }
@@ -145,38 +148,10 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     }
     // remove any units that require other units to be consumed on creation (veqryn)
-    if (placeableUnits.stream().anyMatch(Matches.unitConsumesUnitsOnCreation())) {
-      final Collection<Unit> unitsWhichConsume =
-          CollectionUtils.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
-      for (final Unit unit : unitsWhichConsume) {
-        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)
-            .negate()
-            .test(unit)) {
-          placeableUnits.remove(unit);
-        }
-      }
-    }
+    placeableUnits.removeIf(
+        Matches.unitConsumesUnitsOnCreation()
+            .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
     // now check stacking limits
-    final Collection<Unit> placeableUnits2 = new ArrayList<>();
-    final Collection<UnitType> typesAlreadyChecked = new ArrayList<>();
-    for (final Unit currentUnit : placeableUnits) {
-      final UnitType ut = currentUnit.getType();
-      if (typesAlreadyChecked.contains(ut)) {
-        continue;
-      }
-      typesAlreadyChecked.add(ut);
-      placeableUnits2.addAll(
-          CollectionUtils.getNMatches(
-              placeableUnits,
-              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                  "placementLimit",
-                  ut,
-                  to,
-                  player,
-                  getData().getRelationshipTracker(),
-                  getData().getProperties()),
-              Matches.unitIsOfType(ut)));
-    }
-    return placeableUnits2;
+    return UnitStackingLimitFilter.filterUnits(placeableUnits, PLACEMENT_LIMIT, player, to);
   }
 }

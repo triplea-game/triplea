@@ -185,13 +185,9 @@ public class PurchaseDelegate extends BaseTripleADelegate
 
           final int allowedBuild = maxBuilt - currentlyBuilt;
           if (allowedBuild - quantity < 0) {
-            return "May only build "
-                + allowedBuild
-                + " of "
-                + type.getName()
-                + " this turn, may only build "
-                + maxBuilt
-                + " total";
+            return String.format(
+                "May only build %s of %s this turn, may only build %s total",
+                allowedBuild, type.getName(), maxBuilt);
           }
         }
       }

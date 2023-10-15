@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class PlayerIsMutedMessage {
-  private static Function<Instant, String> muteDurationFormatter =
+  private static final Function<Instant, String> muteDurationFormatter =
       MuteDurationRemainingCalculator.builder().build();
 
   String build(final Instant muteExpiry) {

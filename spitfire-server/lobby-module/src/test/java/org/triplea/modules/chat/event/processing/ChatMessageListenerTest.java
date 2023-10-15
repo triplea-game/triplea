@@ -42,7 +42,7 @@ class ChatMessageListenerTest {
   @Mock private WebSocketSession session;
   @Mock private WebSocketMessageContext<ChatSentMessage> messageContext;
 
-  private ArgumentCaptor<ChatReceivedMessage> messageCaptor =
+  private final ArgumentCaptor<ChatReceivedMessage> messageCaptor =
       ArgumentCaptor.forClass(ChatReceivedMessage.class);
 
   private ChatterSession chatterSession;

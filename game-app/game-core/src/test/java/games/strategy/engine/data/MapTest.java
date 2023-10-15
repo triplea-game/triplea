@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MapTest {
-  private GameData gameData = givenGameData().build();
+  private final GameData gameData = givenGameData().build();
 
   private Territory aa;
   private Territory ab;
@@ -98,6 +99,7 @@ class MapTest {
     map.addConnection(bd, cd);
     map.addConnection(cd, dd);
     nowhere = new Territory("nowhere", false, gameData);
+    when(gameData.getMap()).thenReturn(map);
   }
 
   @Test

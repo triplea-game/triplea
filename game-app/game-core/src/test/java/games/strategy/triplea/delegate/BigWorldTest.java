@@ -15,7 +15,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.Test;
 
 class BigWorldTest {
-  private GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+  private final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
 
   @Test
   void testCanalMovementNotStartingInCanalZone() {

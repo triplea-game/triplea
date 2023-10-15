@@ -57,7 +57,7 @@ class NavalBombardmentTest {
             .build();
 
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getNames(), hasSize(3));
+    assertThat(navalBombardment.getAllStepDetails(), hasSize(3));
 
     navalBombardment.execute(executionStack, delegateBridge);
     verify(executionStack, times(3)).push(any());
@@ -72,7 +72,7 @@ class NavalBombardmentTest {
             .battleRound(2)
             .build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getNames(), is(empty()));
+    assertThat(navalBombardment.getAllStepDetails(), is(empty()));
     navalBombardment.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
   }
@@ -86,7 +86,7 @@ class NavalBombardmentTest {
             .battleRound(1)
             .build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getNames(), is(empty()));
+    assertThat(navalBombardment.getAllStepDetails(), is(empty()));
     navalBombardment.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
   }
@@ -101,7 +101,7 @@ class NavalBombardmentTest {
             .battleSite(givenSeaBattleSite())
             .build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getNames(), is(empty()));
+    assertThat(navalBombardment.getAllStepDetails(), is(empty()));
     navalBombardment.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
   }

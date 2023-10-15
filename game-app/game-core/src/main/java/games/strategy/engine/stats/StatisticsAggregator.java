@@ -4,6 +4,8 @@ import com.google.common.collect.HashBasedTable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -13,14 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.tree.TreeNode;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Analyzes a game's history and aggregates interesting statistics in a {@link Statistics} object.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class StatisticsAggregator {
   private static final Map<OverTimeStatisticType, IStat> defaultStatisticsMapping =
       Map.of(
@@ -31,6 +31,18 @@ public class StatisticsAggregator {
   private final Statistics underConstruction = new Statistics();
   private final GameData game;
   private final MapData mapData;
+
+  public StatisticsAggregator(GameData gameData, MapData map) {
+    this.game = cloneGameData(gameData);
+    this.mapData = map;
+  }
+
+  private static GameData cloneGameData(GameData gameData) {
+    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+    final GameData clone = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
+    clone.getHistory().enableSeeking(null);
+    return clone;
+  }
 
   private static Map<OverTimeStatisticType, IStat> createOverTimeStatisticsMapping(
       final List<Resource> resources) {

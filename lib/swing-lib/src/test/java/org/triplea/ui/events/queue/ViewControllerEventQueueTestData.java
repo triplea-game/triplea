@@ -30,7 +30,7 @@ class ViewControllerEventQueueTestData {
      * controller class.
      */
     enum ViewEventSample {
-      UI_EVENT;
+      UI_EVENT
     }
 
     @Override
@@ -57,7 +57,7 @@ class ViewControllerEventQueueTestData {
      * view class.
      */
     enum ControllerEventSample {
-      CONTROLLER_EVENT_SAMPLE;
+      CONTROLLER_EVENT_SAMPLE
     }
 
     final AtomicBoolean uiEventReceived = new AtomicBoolean(false);

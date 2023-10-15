@@ -109,6 +109,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -418,6 +419,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     gameCenterPanel =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
     gameCenterPanel.setOneTouchExpandable(true);
+    gameCenterPanel.setContinuousLayout(true);
     gameCenterPanel.setDividerSize(8);
     gameCenterPanel.setResizeWeight(1.0);
     gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
@@ -631,9 +633,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     bottomBar.setStatus(msg, mapPanel.getWarningImage());
   }
 
-  public IntegerMap<ProductionRule> getProduction(final GamePlayer player, final boolean bid) {
+  public IntegerMap<ProductionRule> getProduction(
+      final GamePlayer player, final boolean bid, final boolean keepCurrentPurchase) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToProduce(player);
+    actionButtons.changeToProduce(player, keepCurrentPurchase);
     return actionButtons.waitForPurchase(bid);
   }
 
@@ -704,14 +707,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public void notifyError(final String message) {
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    messageAndDialogThreadPool.submit(
-        () ->
-            EventThreadJOptionPane.showMessageDialogWithScrollPane(
-                TripleAFrame.this,
-                displayMessage,
-                "Error",
-                JOptionPane.ERROR_MESSAGE,
-                getUiContext().getCountDownLatchHandler()));
+    showMessageDialog(displayMessage, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
   /** We do NOT want to block the next player from beginning their turn. */
@@ -740,14 +736,22 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    messageAndDialogThreadPool.submit(
-        () ->
-            EventThreadJOptionPane.showMessageDialogWithScrollPane(
-                TripleAFrame.this,
-                displayMessage,
-                title,
-                JOptionPane.INFORMATION_MESSAGE,
-                getUiContext().getCountDownLatchHandler()));
+    showMessageDialog(displayMessage, title, JOptionPane.INFORMATION_MESSAGE);
+  }
+
+  private void showMessageDialog(String displayMessage, String title, int type) {
+    try {
+      messageAndDialogThreadPool.submit(
+          () ->
+              EventThreadJOptionPane.showMessageDialogWithScrollPane(
+                  TripleAFrame.this,
+                  displayMessage,
+                  title,
+                  type,
+                  getUiContext().getCountDownLatchHandler()));
+    } catch (RejectedExecutionException e) {
+      // The thread pool may have been shutdown. Nothing to do.
+    }
   }
 
   /**
@@ -1926,6 +1930,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               });
           final JSplitPane split = new JSplitPane();
           split.setOneTouchExpandable(true);
+          split.setContinuousLayout(true);
           split.setDividerSize(8);
           historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
           split.setLeftComponent(historyPanel);

@@ -50,7 +50,7 @@ public class MapImage {
   private static final Color UNIT_HIT_DAMAGE_COLOR_DEFAULT = Color.BLACK;
   private static final Color UNIT_HIT_DAMAGE_OUTLINE_DEFAULT = Color.LIGHT_GRAY;
 
-  private BufferedImage smallMapImage;
+  private final BufferedImage smallMapImage;
 
   public static Font getPropertyMapFont() {
     if (propertyMapFont == null) {

@@ -57,28 +57,19 @@ public class FiringGroupSplitterGeneral
 
   @Override
   public List<FiringGroup> apply(final BattleState battleState) {
-    final Collection<Unit> enemyUnits =
+    final Collection<Unit> ourUnits = battleState.filterUnits(ACTIVE, side);
+    final Collection<Unit> enemyUnits = battleState.filterUnits(ALIVE, side.getOpposite());
+    final Collection<Unit> enemyCombatants =
         CollectionUtils.getMatches(
-            battleState.filterUnits(ALIVE, side.getOpposite()),
+            getCombatParticipants(battleState, side.getOpposite(), enemyUnits, ourUnits),
             PredicateBuilder.of(Matches.unitIsNotInfrastructure())
                 .andIf(side == DEFENSE, Matches.unitIsSuicideOnAttack().negate())
                 .andIf(side == OFFENSE, Matches.unitIsSuicideOnDefense().negate())
                 .build());
-
-    // Filter participants (same as is done in MustFightBattle.removeNonCombatants()), so that we
-    // don't end up generating combat step names for units that will be excluded.
-    final Predicate<Unit> canParticipateInCombat =
-        Matches.unitCanParticipateInCombat(
-            side == OFFENSE,
-            battleState.getPlayer(OFFENSE),
-            battleState.getBattleSite(),
-            1,
-            enemyUnits);
     final Collection<Unit> canFire =
         CollectionUtils.getMatches(
-            battleState.filterUnits(ACTIVE, side),
+            getCombatParticipants(battleState, side, ourUnits, enemyUnits),
             PredicateBuilder.of(getFiringUnitPredicate(battleState))
-                .and(canParticipateInCombat)
                 // Remove offense allied units if allied air can not participate
                 .andIf(
                     side == OFFENSE
@@ -88,24 +79,38 @@ public class FiringGroupSplitterGeneral
                 .build());
 
     final List<FiringGroup> firingGroups = new ArrayList<>();
-
-    final List<TargetGroup> targetGroups = TargetGroup.newTargetGroups(canFire, enemyUnits);
-
+    final List<TargetGroup> targetGroups = TargetGroup.newTargetGroups(canFire, enemyCombatants);
     if (targetGroups.size() == 1) {
-      firingGroups.addAll(buildFiringGroups(groupName, canFire, enemyUnits, targetGroups.get(0)));
+      firingGroups.addAll(
+          buildFiringGroups(groupName, canFire, enemyCombatants, targetGroups.get(0)));
     } else {
       // General firing groups don't have individual names so find commonly used groups and
       // give them unique names
       final List<TargetGroup> airVsSubGroups =
-          targetGroups.stream()
-              .filter(this.filterAirVsSubTargetGroups(enemyUnits))
-              .collect(Collectors.toList());
-      generateNamedGroups(AIR_FIRE_NON_SUBS, firingGroups, airVsSubGroups, canFire, enemyUnits);
+          CollectionUtils.getMatches(targetGroups, filterAirVsSubTargetGroups(enemyUnits));
+      generateNamedGroups(
+          AIR_FIRE_NON_SUBS, firingGroups, airVsSubGroups, canFire, enemyCombatants);
       targetGroups.removeAll(airVsSubGroups);
-
-      generateNamedGroups(groupName, firingGroups, targetGroups, canFire, enemyUnits);
+      generateNamedGroups(groupName, firingGroups, targetGroups, canFire, enemyCombatants);
     }
     return firingGroups;
+  }
+
+  private Collection<Unit> getCombatParticipants(
+      BattleState battleState,
+      BattleState.Side side,
+      Collection<Unit> units,
+      Collection<Unit> enemyUnits) {
+    // Filter participants (same as is done in MustFightBattle.removeNonCombatants()), so that we
+    // don't end up generating combat step names for units that will be excluded.
+    return CollectionUtils.getMatches(
+        units,
+        Matches.unitCanParticipateInCombat(
+            side == OFFENSE,
+            battleState.getPlayer(side),
+            battleState.getBattleSite(),
+            1,
+            enemyUnits));
   }
 
   private Predicate<Unit> getFiringUnitPredicate(final BattleState battleState) {

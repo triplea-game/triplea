@@ -395,7 +395,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         final Predicate<Unit> givesBonusUnit =
             Matches.alliedUnit(player).and(Matches.unitCanGiveBonusMovementToThisUnit(u));
         final Collection<Unit> givesBonusUnits =
-            new ArrayList<>(CollectionUtils.getMatches(t.getUnits(), givesBonusUnit));
+            CollectionUtils.getMatches(t.getUnits(), givesBonusUnit);
         if (Matches.unitIsSea().test(u)) {
           final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(Matches.unitIsLand());
           final Set<Territory> neighbors =

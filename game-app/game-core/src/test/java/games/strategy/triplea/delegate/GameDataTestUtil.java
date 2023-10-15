@@ -55,9 +55,9 @@ public final class GameDataTestUtil {
   /**
    * Get the italian PlayerId for the given GameData object.
    *
-   * @return A italian PlayerId.
+   * @return An italian PlayerId.
    */
-  static GamePlayer italians(final GameState data) {
+  public static GamePlayer italians(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_ITALIANS);
   }
 
@@ -77,7 +77,7 @@ public final class GameDataTestUtil {
   /**
    * Get the american PlayerId for the given GameData object.
    *
-   * @return A american PlayerId.
+   * @return An american PlayerId.
    */
   public static GamePlayer americans(final GameState data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_AMERICANS);
@@ -103,6 +103,10 @@ public final class GameDataTestUtil {
 
   public static GamePlayer britain(final GameState data) {
     return data.getPlayerList().getPlayerId("Britain");
+  }
+
+  public static GamePlayer french(final GameState data) {
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_FRENCH);
   }
 
   /**
@@ -389,7 +393,7 @@ public final class GameDataTestUtil {
     return (BidPlaceDelegate) data.getDelegate("placeBid");
   }
 
-  static void load(final Collection<Unit> units, final Route route) {
+  public static void load(final Collection<Unit> units, final Route route) {
     Preconditions.checkArgument(!units.isEmpty());
     final MoveDelegate moveDelegate = moveDelegate(route.getStart().getData());
     final Collection<Unit> transports =

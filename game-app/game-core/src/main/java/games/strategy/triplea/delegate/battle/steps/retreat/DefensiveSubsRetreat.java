@@ -37,7 +37,7 @@ public class DefensiveSubsRetreat implements BattleStep {
   protected final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     // even though the #execute method checks for destroyers, we don't do it here
     // because this is called at the beginning of the round and any destroyer that exists
     // might die before the #execute is called
@@ -45,7 +45,7 @@ public class DefensiveSubsRetreat implements BattleStep {
       return List.of();
     }
 
-    return List.of(getName());
+    return List.of(new StepDetails(getName(), this));
   }
 
   private String getName() {

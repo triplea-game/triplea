@@ -19,8 +19,8 @@ public class ClearGeneralCasualties implements BattleStep {
   private final BattleActions battleActions;
 
   @Override
-  public List<String> getNames() {
-    return List.of(REMOVE_CASUALTIES);
+  public List<StepDetails> getAllStepDetails() {
+    return List.of(new StepDetails(REMOVE_CASUALTIES, this));
   }
 
   @Override

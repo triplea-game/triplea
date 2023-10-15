@@ -15,7 +15,7 @@ public class BoxLayoutBuilder {
   private final JPanelBuilder panelBuilder;
   private final BoxLayoutOrientation boxLayoutOrientation;
 
-  private List<Component> components = new ArrayList<>();
+  private final List<Component> components = new ArrayList<>();
 
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   enum BoxLayoutOrientation {

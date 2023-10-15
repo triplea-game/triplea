@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.util.TuvUtils;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.triplea.java.collections.CollectionUtils;
@@ -253,7 +252,7 @@ public class ProOddsCalculator {
             t,
             attackingUnits,
             defendingUnits,
-            new ArrayList<>(bombardingUnits),
+            bombardingUnits,
             TerritoryEffectHelper.getEffects(t),
             retreatWhenOnlyAirLeft,
             runCount);
@@ -304,22 +303,18 @@ public class ProOddsCalculator {
     }
 
     // Create battle result object
-    final List<Territory> territoryList = new ArrayList<>();
-    territoryList.add(t);
-    return territoryList.stream().allMatch(Matches.territoryIsLand())
-        ? new ProBattleResult(
-            winPercentage,
-            tuvSwing,
-            averageAttackersRemaining.stream().anyMatch(Matches.unitIsLand()),
-            averageAttackersRemaining,
-            averageDefendersRemaining,
-            results.getAverageBattleRoundsFought())
-        : new ProBattleResult(
-            winPercentage,
-            tuvSwing,
-            !averageAttackersRemaining.isEmpty(),
-            averageAttackersRemaining,
-            averageDefendersRemaining,
-            results.getAverageBattleRoundsFought());
+    final boolean hasLandUnitsRemaining;
+    if (t.isWater()) {
+      hasLandUnitsRemaining = !averageAttackersRemaining.isEmpty();
+    } else {
+      hasLandUnitsRemaining = averageAttackersRemaining.stream().anyMatch(Matches.unitIsLand());
+    }
+    return new ProBattleResult(
+        winPercentage,
+        tuvSwing,
+        hasLandUnitsRemaining,
+        averageAttackersRemaining,
+        averageDefendersRemaining,
+        results.getAverageBattleRoundsFought());
   }
 }

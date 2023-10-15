@@ -40,7 +40,7 @@ class DefensiveFirstStrikeTest {
 
     final DefensiveFirstStrike defensiveFirstStrike =
         new DefensiveFirstStrike(battleState, battleActions);
-    assertThat(defensiveFirstStrike.getNames(), is(empty()));
+    assertThat(defensiveFirstStrike.getAllStepDetails(), is(empty()));
 
     defensiveFirstStrike.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
@@ -54,7 +54,7 @@ class DefensiveFirstStrikeTest {
 
     final DefensiveFirstStrike defensiveFirstStrike =
         new DefensiveFirstStrike(battleState, battleActions);
-    assertThat(defensiveFirstStrike.getNames(), hasSize(3));
+    assertThat(defensiveFirstStrike.getAllStepDetails(), hasSize(3));
     assertThat(defensiveFirstStrike.getOrder(), is(stepOrder));
 
     defensiveFirstStrike.execute(executionStack, delegateBridge);

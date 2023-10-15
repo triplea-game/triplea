@@ -187,13 +187,10 @@ public final class ProTerritoryValueUtils {
         final int[] landMassSize = new int[1];
         new BreadthFirstSearch(t, cond)
             .traverse(
-                new BreadthFirstSearch.Visitor() {
-                  @Override
-                  public boolean visit(Territory territory, int distance) {
-                    visited.add(territory);
-                    landMassSize[0]++;
-                    return true;
-                  }
+                (territory, distance) -> {
+                  visited.add(territory);
+                  landMassSize[0]++;
+                  return true;
                 });
         if (landMassSize[0] > maxLandMassSize) {
           maxLandMassSize = landMassSize[0];
@@ -462,7 +459,7 @@ public final class ProTerritoryValueUtils {
               }
 
               public boolean shouldContinueSearch() {
-                return currentDistance < MIN_FACTORY_CHECK_DISTANCE || found.isEmpty();
+                return currentDistance <= MIN_FACTORY_CHECK_DISTANCE || found.isEmpty();
               }
             });
     return found;

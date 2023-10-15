@@ -33,7 +33,7 @@ class SlapListenerTest {
   @Mock private WebSocketSession session;
   @Mock private WebSocketMessageContext<PlayerSlapSentMessage> messageContext;
 
-  private ArgumentCaptor<PlayerSlapReceivedMessage> messageCaptor =
+  private final ArgumentCaptor<PlayerSlapReceivedMessage> messageCaptor =
       ArgumentCaptor.forClass(PlayerSlapReceivedMessage.class);
 
   @Test

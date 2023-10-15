@@ -233,6 +233,7 @@ public interface Player extends IRemote {
    * @param battleId - the battle
    * @param submerge - is submerging possible (means the retreat territory CAN be the current battle
    *     territory)
+   * @param battleTerritory - where the battle is taking place
    * @param possibleTerritories - where the player can retreat to
    * @param message - user displayable message
    * @return the territory to retreat to, or null if the player doesnt wish to retreat

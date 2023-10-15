@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -15,6 +14,8 @@ import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.util.TuvCostsCalculator;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -69,13 +70,13 @@ class BattleCalculator implements IBattleCalculator {
               : gameData.getPlayerList().getPlayerId(defender.getName());
       final Territory location2 = gameData.getMap().getTerritory(location.getName());
       final Collection<Unit> attackingUnits =
-          GameDataUtils.translateIntoOtherGameData(attacking, gameData);
+          translateCollectionIntoOtherGameData(attacking, gameData);
       final Collection<Unit> defendingUnits =
-          GameDataUtils.translateIntoOtherGameData(defending, gameData);
+          translateCollectionIntoOtherGameData(defending, gameData);
       final Collection<Unit> bombardingUnits =
-          GameDataUtils.translateIntoOtherGameData(bombarding, gameData);
+          translateCollectionIntoOtherGameData(bombarding, gameData);
       final Collection<TerritoryEffect> territoryEffects2 =
-          GameDataUtils.translateIntoOtherGameData(territoryEffects, gameData);
+          translateCollectionIntoOtherGameData(territoryEffects, gameData);
       gameData.performChange(ChangeFactory.removeUnits(location2, location2.getUnits()));
       gameData.performChange(
           ChangeFactory.addUnits(location2, mergeUnitCollections(attackingUnits, defendingUnits)));
@@ -106,17 +107,7 @@ class BattleCalculator implements IBattleCalculator {
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);
         if (amphibious) {
-          attackingUnits.forEach(
-              unit ->
-                  unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
-                      .ifPresent(
-                          property -> {
-                            try {
-                              property.setValue(true);
-                            } catch (final MutableProperty.InvalidValueException e) {
-                              // ignore
-                            }
-                          }));
+          attackingUnits.forEach(unit -> unit.setWasAmphibious(true));
         }
         battle.setUnits(
             defendingUnits, attackingUnits, bombardingUnits, defender2, territoryEffects2);
@@ -134,6 +125,16 @@ class BattleCalculator implements IBattleCalculator {
     } finally {
       isRunning.set(false);
     }
+  }
+
+  private <T> Collection<T> translateCollectionIntoOtherGameData(
+      Collection<T> collection, GameData otherData) {
+    // translateIntoOtherGameData() uses serialization, so if the collection is not serializable,
+    // copy it into one that is. In particular, HashMap.keySet() and similar are not serializable.
+    if (!(collection instanceof Serializable)) {
+      collection = new ArrayList<>(collection);
+    }
+    return GameDataUtils.translateIntoOtherGameData(collection, otherData);
   }
 
   private Collection<Unit> mergeUnitCollections(Collection<Unit> c1, Collection<Unit> c2) {

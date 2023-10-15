@@ -226,19 +226,36 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
 
   @Override
   public boolean remove(final Object object) {
-    final boolean result = units.remove(object);
-    holder.notifyChanged();
-    return result;
+    final boolean changed = units.remove(object);
+    if (changed) {
+      holder.notifyChanged();
+    }
+    return changed;
+  }
+
+  @Override
+  public boolean removeIf(final Predicate<? super Unit> predicate) {
+    final boolean changed = units.removeIf(predicate);
+    if (changed) {
+      holder.notifyChanged();
+    }
+    return changed;
   }
 
   @Override
   public boolean retainAll(final Collection<?> collection) {
-    return units.retainAll(collection);
+    final boolean changed = units.retainAll(collection);
+    if (changed) {
+      holder.notifyChanged();
+    }
+    return changed;
   }
 
   @Override
   public void clear() {
-    units.clear();
-    holder.notifyChanged();
+    if (!units.isEmpty()) {
+      units.clear();
+      holder.notifyChanged();
+    }
   }
 }

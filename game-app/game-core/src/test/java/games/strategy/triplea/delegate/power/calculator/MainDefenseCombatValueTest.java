@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.power.calculator;
 
-import static games.strategy.triplea.Constants.RULES_ATTACHMENT_NAME;
 import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
@@ -240,7 +239,7 @@ class MainDefenseCombatValueTest {
       final GamePlayer attacker = mock(GamePlayer.class);
       final RulesAttachment rulesAttachment = mock(RulesAttachment.class);
       when(rulesAttachment.getDominatingFirstRoundAttack()).thenReturn(true);
-      when(attacker.getAttachment(RULES_ATTACHMENT_NAME)).thenReturn(rulesAttachment);
+      when(attacker.getRulesAttachment()).thenReturn(rulesAttachment);
 
       final GameData gameData = givenGameData().withDiceSides(6).withRound(1, attacker).build();
 

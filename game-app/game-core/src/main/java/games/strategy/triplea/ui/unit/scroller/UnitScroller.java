@@ -73,7 +73,7 @@ public class UnitScroller {
 
   private final Supplier<GamePlayer> currentPlayerSupplier;
   private final Supplier<MovePhase> movePhaseSupplier;
-  private Supplier<Boolean> parentPanelIsVisible;
+  private final Supplier<Boolean> parentPanelIsVisible;
 
   private final AvatarPanelFactory avatarPanelFactory;
   private final JLabel territoryNameLabel = new JLabelBuilder().biggerFont().centerAlign().build();

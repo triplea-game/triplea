@@ -82,7 +82,7 @@ public final class GameParser {
   private final XmlGameElementMapper xmlGameElementMapper;
   private GameDataVariables variables;
   private final Version engineVersion;
-  private boolean collectAttachmentOrderAndValues;
+  private final boolean collectAttachmentOrderAndValues;
 
   private GameParser(
       final Path xmlUri,

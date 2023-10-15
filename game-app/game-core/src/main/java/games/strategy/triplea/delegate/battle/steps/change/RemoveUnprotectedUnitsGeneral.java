@@ -11,7 +11,7 @@ public class RemoveUnprotectedUnitsGeneral extends RemoveUnprotectedUnits {
   }
 
   @Override
-  public List<String> getNames() {
+  public List<StepDetails> getAllStepDetails() {
     return List.of();
   }
 

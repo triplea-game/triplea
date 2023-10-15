@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
 	<info name="Imperialism 1974 Board Game" version="0.5"/>
-	<triplea minimumVersion="2.5"/>
 	<loader javaClass="games.strategy.triplea.TripleA"/>
+	<triplea minimumVersion="2.5"/>
 	<variableList>
 		<variable name="nums_1_to_6">
 			<element name="1"/>
@@ -724,12 +724,12 @@
 		<unit name="wealth_roll_5"/>
 		<unit name="wealth_roll_6"/>
 	</unitList>
-    <territoryEffectList>
-        <territoryEffect name="Mountains"/>
-    </territoryEffectList>
+	<territoryEffectList>
+		<territoryEffect name="Mountains"/>
+	</territoryEffectList>
 	<gamePlay>
 		<delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
-        <delegate name="randomStartDelegate" javaClass="games.strategy.triplea.delegate.RandomStartDelegate" display="Choose Starting Locations"/>
+		<delegate name="randomStartDelegate" javaClass="games.strategy.triplea.delegate.RandomStartDelegate" display="Choose Starting Locations"/>
 		<delegate name="fleet_place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Initial Fleets"/>
 		<delegate name="wealth_place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Accumulate Wealth"/>
 		<delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
@@ -782,7 +782,7 @@
 			<step name="BlueStructuresPlace" delegate="structures_place" player="Blue"/>
 			<step name="BlueUpdateVPsPlace" delegate="update_vps" player="Blue"/>
 			<step name="BlueCombatMove" delegate="move" player="Blue">
-                <stepProperty name="resetUnitStateAtStart" value="true"/>
+				<stepProperty name="resetUnitStateAtStart" value="true"/>
 			</step>
 			<step name="BlueBattle" delegate="battle" player="Blue"/>
 			<step name="BlueUpdateVPsPlace" delegate="update_vps" player="Blue"/>
@@ -795,7 +795,7 @@
 			<step name="RedStructuresPlace" delegate="structures_place" player="Red"/>
 			<step name="RedUpdateVPsPlace" delegate="update_vps" player="Red"/>
 			<step name="RedCombatMove" delegate="move" player="Red">
-                <stepProperty name="resetUnitStateAtStart" value="true"/>
+				<stepProperty name="resetUnitStateAtStart" value="true"/>
 			</step>
 			<step name="RedBattle" delegate="battle" player="Red"/>
 			<step name="RedUpdateVPsPlace" delegate="update_vps" player="Red"/>
@@ -808,7 +808,7 @@
 			<step name="GreenStructuresPlace" delegate="structures_place" player="Green"/>
 			<step name="GreenUpdateVPsPlace" delegate="update_vps" player="Green"/>
 			<step name="GreenCombatMove" delegate="move" player="Green">
-                <stepProperty name="resetUnitStateAtStart" value="true"/>
+				<stepProperty name="resetUnitStateAtStart" value="true"/>
 			</step>
 			<step name="GreenBattle" delegate="battle" player="Green"/>
 			<step name="GreenUpdateVPsPlace" delegate="update_vps" player="Green"/>
@@ -821,7 +821,7 @@
 			<step name="YellowStructuresPlace" delegate="structures_place" player="Yellow"/>
 			<step name="YellowUpdateVPsPlace" delegate="update_vps" player="Yellow"/>
 			<step name="YellowCombatMove" delegate="move" player="Yellow">
-                <stepProperty name="resetUnitStateAtStart" value="true"/>
+				<stepProperty name="resetUnitStateAtStart" value="true"/>
 			</step>
 			<step name="YellowBattle" delegate="battle" player="Yellow"/>
 			<step name="YellowUpdateVPsPlace" delegate="update_vps" player="Yellow"/>
@@ -834,7 +834,7 @@
 			<step name="OrangeStructuresPlace" delegate="structures_place" player="Orange"/>
 			<step name="OrangeUpdateVPsPlace" delegate="update_vps" player="Orange"/>
 			<step name="OrangeCombatMove" delegate="move" player="Orange">
-                <stepProperty name="resetUnitStateAtStart" value="true"/>
+				<stepProperty name="resetUnitStateAtStart" value="true"/>
 			</step>
 			<step name="OrangeBattle" delegate="battle" player="Orange"/>
 			<step name="OrangeUpdateVPsPlace" delegate="update_vps" player="Orange"/>
@@ -847,7 +847,7 @@
 			<step name="CyanStructuresPlace" delegate="place" player="Cyan"/>
 			<step name="CyanUpdateVPsPlace" delegate="update_vps" player="Cyan"/>
 			<step name="CyanCombatMove" delegate="move" player="Cyan">
-                <stepProperty name="resetUnitStateAtStart" value="true"/>
+				<stepProperty name="resetUnitStateAtStart" value="true"/>
 			</step>
 			<step name="CyanBattle" delegate="battle" player="Cyan"/>
 			<step name="CyanUpdateVPsPlace" delegate="update_vps" player="Cyan"/>
@@ -860,7 +860,7 @@
 			<step name="PurpleStructuresPlace" delegate="place" player="Purple"/>
 			<step name="PurpleUpdateVPsPlace" delegate="update_vps" player="Purple"/>
 			<step name="PurpleCombatMove" delegate="move" player="Purple">
-                <stepProperty name="resetUnitStateAtStart" value="true"/>
+				<stepProperty name="resetUnitStateAtStart" value="true"/>
 			</step>
 			<step name="PurpleBattle" delegate="battle" player="Purple"/>
 			<step name="PurpleUpdateVPsPlace" delegate="update_vps" player="Purple"/>
@@ -873,7 +873,7 @@
 			<step name="BrownStructuresPlace" delegate="structures_place" player="Brown"/>
 			<step name="BrownUpdateVPsPlace" delegate="update_vps" player="Brown"/>
 			<step name="BrownCombatMove" delegate="move" player="Brown">
-                <stepProperty name="resetUnitStateAtStart" value="true"/>
+				<stepProperty name="resetUnitStateAtStart" value="true"/>
 			</step>
 			<step name="BrownBattle" delegate="battle" player="Brown"/>
 			<step name="BrownUpdateVPsPlace" delegate="update_vps" player="Brown"/>
@@ -884,8 +884,6 @@
 			<step name="endRoundStep" delegate="endRound"/>
 		</sequence>
 	</gamePlay>
-	<!-- Needed so that the UI doesn't show default technologies. -->
-	<technology/>
 	<production>
 		<productionRule name="buyArmy">
 			<cost resource="PUs" quantity="1"/>
@@ -923,6 +921,8 @@
 		<playerProduction player="Purple" frontier="production"/>
 		<playerProduction player="Brown" frontier="production"/>
 	</production>
+	<!-- Needed so that the UI doesn't show default technologies. -->
+	<technology/>
 	<attachmentList>
 		<attachment name="unitAttachment" attachTo="wealth" javaClass="UnitAttachment">
 			<option name="movement" value="1"/>
@@ -1028,12 +1028,10 @@
 			<option name="constructionsPerTerrPerTypePerTurn" value="1"/>
 			<option name="maxConstructionsPerTypePerTerr" value="1"/>
 		</attachment>
-		<attachment name="territoryAttachment" attachTo="@land_territories@" foreach="$land_territories$"
-			javaClass="TerritoryAttachment" type="territory">
+		<attachment name="territoryAttachment" attachTo="@land_territories@" foreach="$land_territories$" javaClass="TerritoryAttachment" type="territory">
 			<option name="production" value="100"/>
 		</attachment>
-		<attachment name="territoryAttachment" attachTo="@water_territories@" foreach="$water_territories$"
-			javaClass="TerritoryAttachment" type="territory">
+		<attachment name="territoryAttachment" attachTo="@water_territories@" foreach="$water_territories$" javaClass="TerritoryAttachment" type="territory">
 			<option name="production" value="0"/>
 		</attachment>
 		<attachment name="territoryAttachment" attachTo="Wealth Roll" javaClass="TerritoryAttachment" type="territory">
@@ -1056,39 +1054,32 @@
 		<attachment name="cond_true_@players_and_neutral@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$" javaClass="RulesAttachment" type="player">
 			<option name="switch" value="true"/>
 		</attachment>
-
-        <attachment name="set_territory_effects" attachTo="Neutrals" javaClass="TriggerAttachment" type="player">
-            <option name="when" value="after:gameInitDelegate"/>
+		<attachment name="set_territory_effects" attachTo="Neutrals" javaClass="TriggerAttachment" type="player">
+			<option name="when" value="after:gameInitDelegate"/>
 			<option name="conditions" value="cond_true_Neutrals"/>
-            <option name="territories" value="$mountains$"/>
-		    <option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
-		    <option name="territoryProperty" value="territoryEffect" count="Mountains"/>
-        </attachment>
-
+			<option name="territories" value="$mountains$"/>
+			<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttachment"/>
+			<option name="territoryProperty" value="territoryEffect" count="Mountains"/>
+		</attachment>
 		<!-- Generate wealth units in territories, based on the wealth die roll and territory wealth values. -->
 		<!-- Roll one dice and set its result in Wealth Roll. -->
 		<attachment name="wealth_die_not_present_@nums_1_to_6@_@players@" attachTo="@players@" foreach="$players$^$nums_1_to_6$" javaClass="RulesAttachment" type="player">
 			<option name="directExclusionTerritories" value="Wealth Roll"/>
-			<option name="unitPresence" count="0"
-				value="wealth_roll_1:wealth_roll_2:wealth_roll_3:wealth_roll_4:wealth_roll_5:wealth_roll_6"/>
+			<option name="unitPresence" count="0" value="wealth_roll_1:wealth_roll_2:wealth_roll_3:wealth_roll_4:wealth_roll_5:wealth_roll_6"/>
 		</attachment>
-		<attachment name="notify_die_roll_@nums_1_to_6@_@players@" attachTo="@players@" foreach="$players$^$nums_1_to_6$"
-			javaClass="TriggerAttachment" type="player">
+		<attachment name="notify_die_roll_@nums_1_to_6@_@players@" attachTo="@players@" foreach="$players$^$nums_1_to_6$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="after:DummyNever"/>
 			<option name="notification" value="@players@_Roll_Wealth_@nums_1_to_6@"/>
-	        <option name="players" value="$players$"/>
+			<option name="players" value="$players$"/>
 		</attachment>
-		<attachment name="roll_wealth_die_@nums_1_to_6@_@players@" attachTo="@players@" foreach="$players$^$nums_1_to_6$"
-			javaClass="TriggerAttachment" type="player">
+		<attachment name="roll_wealth_die_@nums_1_to_6@_@players@" attachTo="@players@" foreach="$players$^$nums_1_to_6$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="wealth_die_not_present_@nums_1_to_6@_@players@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="Wealth Roll:wealth_roll_@nums_1_to_6@" count="1"/>
 			<option name="chance" value="1:@nums_1_to_6@"/>
 			<option name="activateTrigger" value="notify_die_roll_@nums_1_to_6@_@players@:1:false:false:false:false"/>
 		</attachment>
-
-		<attachment name="roll_wealth_die_@players@" attachTo="@players@" foreach="$players$"
-			javaClass="TriggerAttachment" type="player">
+		<attachment name="roll_wealth_die_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="wealth_die_not_present_6_@players@"/>
 			<option name="when" value="before:@players@WealthPlace"/>
 			<!-- triggerName:numberOfTimes:useUses:testUses:testConditions:testChance, we want to test both the cond and the chance. -->
@@ -1100,9 +1091,7 @@
 			<option name="activateTrigger" value="roll_wealth_die_2_@players@:1:false:false:true:true"/>
 			<option name="activateTrigger" value="roll_wealth_die_1_@players@:1:false:false:true:false"/>
 		</attachment>
-
-		<attachment name="remove_wealth_die_@players@" attachTo="@players@" foreach="$players$"
-			javaClass="TriggerAttachment" type="player">
+		<attachment name="remove_wealth_die_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_true_@players@"/>
 			<option name="when" value="after:@players@EndTurn"/>
 			<option name="removeUnits" value="Wealth Roll:wealth_roll_6" count="1"/>
@@ -1112,7 +1101,7 @@
 			<option name="removeUnits" value="Wealth Roll:wealth_roll_2" count="1"/>
 			<option name="removeUnits" value="Wealth Roll:wealth_roll_1" count="1"/>
 		</attachment>
-		
+
 		<attachment name="cond_has_city_@players@_@land_territories@" attachTo="@players@" foreach="$players$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="city" count="1"/>
@@ -1212,7 +1201,7 @@
 			<option name="when" value="after:@players@WealthPlace"/>
 			<option name="placement" value="@land_territories@:wealth" count="1"/>
 		</attachment>
-		
+
 		<attachment name="trigger_wealth_prod_4_@players@_@land_territories@" attachTo="@players@" foreach="$players$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_territory_wealth_4_@players@_@land_territories@"/>
 			<option name="conditions" value="cond_no_city_@players@_@land_territories@"/>
@@ -1241,7 +1230,7 @@
 			<option name="when" value="after:@players@WealthPlace"/>
 			<option name="placement" value="@land_territories@:wealth" count="1"/>
 		</attachment>
-		
+
 		<attachment name="trigger_wealth_prod_6_@players@_@land_territories@" attachTo="@players@" foreach="$players$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_territory_wealth_6_@players@_@land_territories@"/>
 			<option name="when" value="after:@players@WealthPlace"/>
@@ -1270,33 +1259,33 @@
 			<option name="resource" value="PUs"/>
 			<option name="resourceCount" value="1"/>
 		</attachment>
-		<attachment name="enable_city_and_port_production_@players@" attachTo="@players@" foreach="$players$"  javaClass="TriggerAttachment" type="player">
+		<attachment name="enable_city_and_port_production_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="has_wealth_4_@players@"/>
 			<option name="when" value="before:Never"/>
-			<option name='unitType' value='build_city:build_port'/>
-			<option name='unitProperty' value='maxBuiltPerPlayer' count='-1'/>
+			<option name="unitType" value="build_city:build_port"/>
+			<option name="unitProperty" value="maxBuiltPerPlayer" count="-1"/>
 		</attachment>
-		<attachment name="disable_city_and_port_production_@players@" attachTo="@players@" foreach="$players$"  javaClass="TriggerAttachment" type="player">
+		<attachment name="disable_city_and_port_production_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_true_@players@"/>
 			<option name="when" value="before:@players@Purchase"/>
 			<!-- First, disable it. -->
-			<option name='unitType' value='build_city:build_port'/>
-			<option name='unitProperty' value='maxBuiltPerPlayer' count='0'/>
+			<option name="unitType" value="build_city:build_port"/>
+			<option name="unitProperty" value="maxBuiltPerPlayer" count="0"/>
 			<!-- Then, enable it, if there's a port with 4+ wealth. -->
 			<option name="activateTrigger" value="enable_city_and_port_production_@players@:1:false:false:true:false"/>
 		</attachment>
-		<attachment name="enable_fort_production_@players@" attachTo="@players@" foreach="$players$"  javaClass="TriggerAttachment" type="player">
+		<attachment name="enable_fort_production_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="has_wealth_3_@players@"/>
 			<option name="when" value="before:Never"/>
-			<option name='unitType' value='build_fort'/>
-			<option name='unitProperty' value='maxBuiltPerPlayer' count='-1'/>
+			<option name="unitType" value="build_fort"/>
+			<option name="unitProperty" value="maxBuiltPerPlayer" count="-1"/>
 		</attachment>
-		<attachment name="disable_fort_production_@players@" attachTo="@players@" foreach="$players$"  javaClass="TriggerAttachment" type="player">
+		<attachment name="disable_fort_production_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_true_@players@"/>
 			<option name="when" value="before:@players@Purchase"/>
 			<!-- First, disable it. -->
-			<option name='unitType' value='build_fort'/>
-			<option name='unitProperty' value='maxBuiltPerPlayer' count='0'/>
+			<option name="unitType" value="build_fort"/>
+			<option name="unitProperty" value="maxBuiltPerPlayer" count="0"/>
 			<!-- Then, enable it, if there's a port with 3+ wealth. -->
 			<option name="activateTrigger" value="enable_fort_production_@players@:1:false:false:true:false"/>
 		</attachment>
@@ -1335,88 +1324,88 @@
 			<option name="conditions" value="cond_need_territory_wealth6_@players@_@new_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@new_world_land_territories@:territory_wealth_6" count="1"/>
-            <option name="territories" value="@new_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="6"/>
+			<option name="territories" value="@new_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="6"/>
 			<option name="chance" value="1:6"/>
 		</attachment>
 		<attachment name="set_territory_wealth5_@players@_@new_world_land_territories@" attachTo="@players@" foreach="$players$^$new_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth5_@players@_@new_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@new_world_land_territories@:territory_wealth_5" count="1"/>
-            <option name="territories" value="@new_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="5"/>
+			<option name="territories" value="@new_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="5"/>
 			<option name="chance" value="1:5"/>
 		</attachment>
 		<attachment name="set_territory_wealth4_@players@_@new_world_land_territories@" attachTo="@players@" foreach="$players$^$new_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth4_@players@_@new_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@new_world_land_territories@:territory_wealth_4" count="1"/>
-            <option name="territories" value="@new_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="4"/>
+			<option name="territories" value="@new_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="4"/>
 			<option name="chance" value="1:4"/>
 		</attachment>
 		<attachment name="set_territory_wealth3_@players@_@new_world_land_territories@" attachTo="@players@" foreach="$players$^$new_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth3_@players@_@new_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@new_world_land_territories@:territory_wealth_3" count="1"/>
-            <option name="territories" value="@new_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="3"/>
+			<option name="territories" value="@new_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="3"/>
 			<option name="chance" value="1:3"/>
 		</attachment>
 		<attachment name="set_territory_wealth2_@players@_@new_world_land_territories@" attachTo="@players@" foreach="$players$^$new_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth2_@players@_@new_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@new_world_land_territories@:territory_wealth_2" count="1"/>
-            <option name="territories" value="@new_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="2"/>
+			<option name="territories" value="@new_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="2"/>
 			<option name="chance" value="1:2"/>
 		</attachment>
 		<attachment name="set_territory_wealth1_@players@_@new_world_land_territories@" attachTo="@players@" foreach="$players$^$new_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth1_@players@_@new_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@new_world_land_territories@:territory_wealth_1" count="1"/>
-            <option name="territories" value="@new_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="1"/>
+			<option name="territories" value="@new_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="1"/>
 			<option name="chance" value="1:1"/>
 		</attachment>
 		<attachment name="set_territory_wealth4_@players@_@old_world_land_territories@" attachTo="@players@" foreach="$players$^$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth4_@players@_@old_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@old_world_land_territories@:territory_wealth_4" count="1"/>
-            <option name="territories" value="@old_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="4"/>
+			<option name="territories" value="@old_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="4"/>
 			<option name="chance" value="1:6"/>
 		</attachment>
 		<attachment name="set_territory_wealth3_@players@_@old_world_land_territories@" attachTo="@players@" foreach="$players$^$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth3_@players@_@old_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@old_world_land_territories@:territory_wealth_3" count="1"/>
-            <option name="territories" value="@old_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="3"/>
+			<option name="territories" value="@old_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="3"/>
 			<option name="chance" value="1:5"/>
 		</attachment>
 		<attachment name="set_territory_wealth2_@players@_@old_world_land_territories@" attachTo="@players@" foreach="$players$^$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth2_@players@_@old_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@old_world_land_territories@:territory_wealth_2" count="1"/>
-            <option name="territories" value="@old_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="2"/>
+			<option name="territories" value="@old_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="2"/>
 			<option name="chance" value="1:4"/>
 		</attachment>
 		<attachment name="set_territory_wealth1_@players@_@old_world_land_territories@" attachTo="@players@" foreach="$players$^$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth1_@players@_@old_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@old_world_land_territories@:territory_wealth_1" count="1"/>
-            <option name="territories" value="@old_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="1"/>
+			<option name="territories" value="@old_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="1"/>
 			<option name="chance" value="1:3"/>
 		</attachment>
 		<attachment name="set_territory_wealth0_@players@_@old_world_land_territories@" attachTo="@players@" foreach="$players$^$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_need_territory_wealth6_@players@_@old_world_land_territories@"/>
 			<option name="when" value="after:DummyNever"/>
 			<option name="placement" value="@old_world_land_territories@:territory_wealth_0" count="1"/>
-            <option name="territories" value="@old_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="0"/>
+			<option name="territories" value="@old_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="0"/>
 			<option name="chance" value="1:1"/>
 		</attachment>
 		<attachment name="set_territory_wealth_@players@_@old_world_land_territories@" attachTo="@players@" foreach="$players$^$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
@@ -1471,13 +1460,11 @@
 			<option name="removeUnits" value="all:build_city" count="1"/>
 			<option name="purchase" value="city" count="1"/>
 		</attachment>
-		<attachment name="cond_build_fleet_@players@_@nums_1_to_25@" attachTo="@players@"
-				foreach="$players$^$nums_1_to_25$" javaClass="RulesAttachment" type="player">
+		<attachment name="cond_build_fleet_@players@_@nums_1_to_25@" attachTo="@players@" foreach="$players$^$nums_1_to_25$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="map" count="1"/>
 			<option name="unitPresence" value="build_fleet" count="1"/>
 		</attachment>
-		<attachment name="trigger_build_fleet_@players@_@nums_1_to_25@" attachTo="@players@"
-				foreach="$players$^$nums_1_to_25$" javaClass="TriggerAttachment" type="player">
+		<attachment name="trigger_build_fleet_@players@_@nums_1_to_25@" attachTo="@players@" foreach="$players$^$nums_1_to_25$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_build_fleet_@players@_@nums_1_to_25@"/>
 			<option name="when" value="before:@players@Never"/>
 			<option name="removeUnits" value="all:build_fleet" count="1"/>
@@ -1521,50 +1508,45 @@
 			<option name="directPresenceTerritories" value="@old_world_land_territories@" count="1"/>
 			<option name="unitPresence" value="port" count="1"/>
 		</attachment>
-        <attachment name="place_initial_units_@players@_@old_world_land_territories@" attachTo="@players@" foreach="$players$^$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
-            <option name="when" value="after:setupRandomStartDelegate"/>
+		<attachment name="place_initial_units_@players@_@old_world_land_territories@" attachTo="@players@" foreach="$players$^$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
+			<option name="when" value="after:setupRandomStartDelegate"/>
 			<option name="conditions" value="has_port_@players@_@old_world_land_territories@"/>
-            <option name="territories" value="@old_world_land_territories@"/>
-            <option name="territoryProperty" value="production" count="6"/>
+			<option name="territories" value="@old_world_land_territories@"/>
+			<option name="territoryProperty" value="production" count="6"/>
 			<option name="placement" value="@old_world_land_territories@:territory_wealth_6" count="1"/>
 			<option name="placement" value="@old_world_land_territories@:fort" count="1"/>
 			<option name="placement" value="@old_world_land_territories@:army" count="10"/>
-        </attachment>
-		
-		<attachment name="is_neutral_@old_world_land_territories@" attachTo="Neutrals"
-			foreach="$old_world_land_territories$" javaClass="RulesAttachment" type="player">
+		</attachment>
+		<attachment name="is_neutral_@old_world_land_territories@" attachTo="Neutrals" foreach="$old_world_land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directOwnershipTerritories" value="@old_world_land_territories@"/>
 			<option name="players" value="Neutrals:Neutral"/>
 		</attachment>
-        <attachment name="set_up_old_world_neutrals_@old_world_land_territories@" attachTo="Blue" foreach="$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
-            <option name="when" value="after:setupRandomStartDelegate"/>
+		<attachment name="set_up_old_world_neutrals_@old_world_land_territories@" attachTo="Blue" foreach="$old_world_land_territories$" javaClass="TriggerAttachment" type="player">
+			<option name="when" value="after:setupRandomStartDelegate"/>
 			<option name="conditions" value="is_neutral_@old_world_land_territories@"/>
 			<option name="players" value="Neutrals"/>
 			<option name="removeUnits" value="@old_world_land_territories@:army" count="1"/>
 			<option name="removeUnits" value="@old_world_land_territories@:fort" count="1"/>
 			<option name="placement" value="@old_world_land_territories@:army" count="1"/>
 			<option name="placement" value="@old_world_land_territories@:fort" count="1"/>
-			<option name='changeOwnership' value='@old_world_land_territories@:any:Neutrals:false'/>
-        </attachment>
-        <attachment name="produce_initial_fleet_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
+			<option name="changeOwnership" value="@old_world_land_territories@:any:Neutrals:false"/>
+		</attachment>
+		<attachment name="produce_initial_fleet_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:@players@FleetPlace"/>
 			<option name="conditions" value="has_port_@players@"/>
 			<option name="purchase" value="fleet" count="5"/>
 			<option name="uses" value="1"/>
-        </attachment>
-
-		<attachment name="was_territory_abandoned_@players@_@land_territories@" attachTo="@players@"
-			foreach="$players$^$land_territories$" javaClass="RulesAttachment" type="player">
+		</attachment>
+		<attachment name="was_territory_abandoned_@players@_@land_territories@" attachTo="@players@" foreach="$players$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directOwnershipTerritories" value="@land_territories@"/>
 			<option name="directExclusionTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army:new_army" count="0"/>
 		</attachment>
-        <attachment name="abandon_territory_@players@_@land_territories@" attachTo="@players@"
-			foreach="$players$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		<attachment name="abandon_territory_@players@_@land_territories@" attachTo="@players@" foreach="$players$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="after:@players@CombatMove"/>
 			<option name="conditions" value="was_territory_abandoned_@players@_@land_territories@"/>
-			<option name="changeOwnership" value="@land_territories@:@players@:Neutrals:true"/>			
-        </attachment>
+			<option name="changeOwnership" value="@land_territories@:@players@:Neutrals:true"/>
+		</attachment>
 		<attachment name="remove_new_armies_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_true_@players@"/>
 			<option name="when" value="after:@players@EndTurn"/>
@@ -1626,8 +1608,7 @@
 			<option name="resourceCount" value="2"/>
 		</attachment>
 		<!-- For each territory matching a count of armies, give 1 Victory Point.-->
-		<attachment name="zones_with_army_count_@nums_1_to_25@_@players@" attachTo="@players@"
-			foreach="$nums_1_to_25$^$players$" javaClass="RulesAttachment" type="player">
+		<attachment name="zones_with_army_count_@nums_1_to_25@_@players@" attachTo="@players@" foreach="$nums_1_to_25$^$players$" javaClass="RulesAttachment" type="player">
 			<!-- Use 'each' so that multiple territories matching this multiply the resource award. -->
 			<option name="directPresenceTerritories" value="map" count="each"/>
 			<option name="unitPresence" value="army:new_army" count="@nums_1_to_25@"/>
@@ -1639,8 +1620,7 @@
 			<option name="resourceCount" value="1"/>
 		</attachment>
 		<!-- For each territory matching a count of fleet, give 2 Victory Points.-->
-		<attachment name="zones_with_fleet_count_@nums_1_to_25@_@players@" attachTo="@players@"
-			foreach="$nums_1_to_25$^$players$" javaClass="RulesAttachment" type="player">
+		<attachment name="zones_with_fleet_count_@nums_1_to_25@_@players@" attachTo="@players@" foreach="$nums_1_to_25$^$players$" javaClass="RulesAttachment" type="player">
 			<!-- Use 'each' so that multiple territories matching this multiply the resource award. -->
 			<option name="directPresenceTerritories" value="map" count="each"/>
 			<option name="unitPresence" value="fleet" count="@nums_1_to_25@"/>
@@ -1652,262 +1632,213 @@
 			<option name="resourceCount" value="2"/>
 		</attachment>
 		<!-- For each territory matching territory wealth, give 2 * value Victory Points.-->
-		<attachment name="territory_wealth_@nums_1_to_6@_count_@players@" attachTo="@players@"
-			foreach="$nums_1_to_6$^$players$" javaClass="RulesAttachment" type="player">
+		<attachment name="territory_wealth_@nums_1_to_6@_count_@players@" attachTo="@players@" foreach="$nums_1_to_6$^$players$" javaClass="RulesAttachment" type="player">
 			<!-- Use 'each' so that multiple territories matching this multiply the resource award. -->
 			<option name="directPresenceTerritories" value="controlledNoWater" count="each"/>
 			<option name="unitPresence" value="territory_wealth_@nums_1_to_6@" count="1"/>
 		</attachment>
-		<attachment name="add_VPs_for_territory_wealth_@nums_1_to_6@_@players@" attachTo="@players@"
-			foreach="$nums_1_to_6$^$players$" javaClass="TriggerAttachment" type="player">
+		<attachment name="add_VPs_for_territory_wealth_@nums_1_to_6@_@players@" attachTo="@players@" foreach="$nums_1_to_6$^$players$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="after:Never"/>
 			<option name="resource" value="Victory Points"/>
 			<option name="resourceCount" value="@nums_1_to_6@"/>
 		</attachment>
-		<attachment name="add_VPs_per_territory_wealth_@nums_1_to_6@_@players@" attachTo="@players@"
-			foreach="$nums_1_to_6$^$players$" javaClass="TriggerAttachment" type="player">
+		<attachment name="add_VPs_per_territory_wealth_@nums_1_to_6@_@players@" attachTo="@players@" foreach="$nums_1_to_6$^$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="territory_wealth_@nums_1_to_6@_count_@players@"/>
 			<option name="when" value="after:@players@UpdateVPsPlace"/>
 			<!-- Activate twice, since we want 2 VPs per wealth value. -->
 			<option name="activateTrigger" value="add_VPs_for_territory_wealth_@nums_1_to_6@_@players@:1:false:false:false:false"/>
 			<option name="activateTrigger" value="add_VPs_for_territory_wealth_@nums_1_to_6@_@players@:1:false:false:false:false"/>
 		</attachment>
-
-		<attachment name="has_fort_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="has_fort_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directOwnershipTerritories" value="@land_territories@"/>
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="fort" count="1"/>
 		</attachment>
-		
-		<attachment name="army_count_1_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_1_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="1"/>
 		</attachment>
-		<attachment name="army_count_2_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_2_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="2"/>
 		</attachment>
-		<attachment name="army_count_3_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_3_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="3"/>
 		</attachment>
-		<attachment name="army_count_4_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_4_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="4"/>
 		</attachment>
-		<attachment name="army_count_5_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_5_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="5"/>
 		</attachment>
-		<attachment name="army_count_6_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_6_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="6"/>
 		</attachment>
-		<attachment name="army_count_7_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_7_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="7"/>
 		</attachment>
-		<attachment name="army_count_8_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_8_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="8"/>
 		</attachment>
-		<attachment name="army_count_9_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_9_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="9"/>
 		</attachment>
-		<attachment name="army_count_10_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_10_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="10"/>
 		</attachment>
-		<attachment name="army_count_11_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_11_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="11"/>
 		</attachment>
-		<attachment name="army_count_12_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_12_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="12"/>
 		</attachment>
-		<attachment name="army_count_13_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_13_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="13"/>
 		</attachment>
-		<attachment name="army_count_14_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_14_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="14"/>
 		</attachment>
-		<attachment name="army_count_15_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_15_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="15"/>
 		</attachment>
-		<attachment name="army_count_16_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_16_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="16"/>
 		</attachment>
-		<attachment name="army_count_17_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_17_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="17"/>
 		</attachment>
-		<attachment name="army_count_18_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_18_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="18"/>
 		</attachment>
-		<attachment name="army_count_19_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_19_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="19"/>
 		</attachment>
-		<attachment name="army_count_20_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
+		<attachment name="army_count_20_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="RulesAttachment" type="player">
 			<option name="directPresenceTerritories" value="@land_territories@" count="1"/>
 			<option name="unitPresence" value="army" count="20"/>
 		</attachment>
-        <attachment name="add_fort_defense_1_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		<attachment name="add_fort_defense_1_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_1_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_2_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_2_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_2_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_3_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_3_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_3_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_4_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_4_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_4_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_5_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_5_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_5_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_6_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_6_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_6_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_7_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_7_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_7_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_8_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_8_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_8_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_9_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_9_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_9_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_10_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_10_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_10_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_11_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_11_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_11_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_12_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_12_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_12_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_13_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_13_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_13_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_14_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_14_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_14_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_15_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_15_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_15_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_16_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_16_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_16_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_17_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_17_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_17_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_18_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_18_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_18_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_19_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_19_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_19_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-        <attachment name="add_fort_defense_20_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="add_fort_defense_20_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="before:Never"/>
 			<option name="conditions" value="army_count_20_@players_and_neutral@_@land_territories@"/>
 			<option name="placement" value="@land_territories@:fort_defense" count="1"/>
-        </attachment>
-
-		<attachment name="remove_fort_defenses_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		</attachment>
+		<attachment name="remove_fort_defenses_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="after:Never"/>
 			<option name="removeUnits" value="@land_territories@:fort_defense" count="1000"/>
 		</attachment>
-		<attachment name="add_fort_defenses_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		<attachment name="add_fort_defenses_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<option name="when" value="after:Never"/>
 			<option name="conditions" value="has_fort_@players_and_neutral@_@land_territories@"/>
 			<!-- triggerName:numberOfTimes:useUses:testUses:testConditions:testChance, we want to test the cond. -->
@@ -1932,9 +1863,7 @@
 			<option name="activateTrigger" value="add_fort_defense_19_@players_and_neutral@_@land_territories@:1:false:false:true:false"/>
 			<option name="activateTrigger" value="add_fort_defense_20_@players_and_neutral@_@land_territories@:1:false:false:true:false"/>
 		</attachment>
-
-		<attachment name="update_fort_defenses_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@"
-			foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
+		<attachment name="update_fort_defenses_@players_and_neutral@_@land_territories@" attachTo="@players_and_neutral@" foreach="$players_and_neutral$^$land_territories$" javaClass="TriggerAttachment" type="player">
 			<!-- We need to do it for all players' phases because we're adding units for the defender. -->
 			<option name="when" value="before:BlueWealthPlace"/>
 			<option name="when" value="before:RedWealthPlace"/>
@@ -1951,9 +1880,7 @@
 			<option name="activateTrigger" value="remove_fort_defenses_@players_and_neutral@_@land_territories@:1:false:false:false:false"/>
 			<option name="activateTrigger" value="add_fort_defenses_@players_and_neutral@_@land_territories@:1:false:false:true:false"/>
 		</attachment>
-
-		<attachment name="remove_own_fort_defense_@players@" attachTo="@players@" foreach="$players$"
-			javaClass="TriggerAttachment" type="player">
+		<attachment name="remove_own_fort_defense_@players@" attachTo="@players@" foreach="$players$" javaClass="TriggerAttachment" type="player">
 			<option name="conditions" value="cond_true_@players@"/>
 			<option name="when" value="after:@players@WealthPlace"/>
 			<option name="removeUnits" value="all:fort_defense" count="1000"/>
@@ -1961,10 +1888,10 @@
 	</attachmentList>
 	<initialize>
 		<ownerInitialize>
-	        <territoryOwner territory="Anyang" owner="Neutrals"/>
-	        <territoryOwner territory="Bac Lieu" owner="Neutrals"/>
-	        <territoryOwner territory="Pskov" owner="Neutrals"/>
-	        <territoryOwner territory="Tomsk" owner="Neutrals"/>
+			<territoryOwner territory="Anyang" owner="Neutrals"/>
+			<territoryOwner territory="Bac Lieu" owner="Neutrals"/>
+			<territoryOwner territory="Pskov" owner="Neutrals"/>
+			<territoryOwner territory="Tomsk" owner="Neutrals"/>
 			<territoryOwner territory="Aduwa" owner="Neutrals"/>
 			<territoryOwner territory="Aki-Aki" owner="Neutrals"/>
 			<territoryOwner territory="Ambo" owner="Neutrals"/>
@@ -1995,15 +1922,15 @@
 			<territoryOwner territory="Threat" owner="Neutrals"/>
 		</ownerInitialize>
 		<unitInitialize>
-            <unitPlacement unitType="army" territory="Threat" quantity="1" owner="Neutrals"/>
-            <unitPlacement unitType="fort" territory="Anyang" quantity="1" owner="Neutrals"/>
-            <unitPlacement unitType="army" territory="Anyang" quantity="1" owner="Neutrals"/>
-            <unitPlacement unitType="fort" territory="Bac Lieu" quantity="1" owner="Neutrals"/>
-            <unitPlacement unitType="army" territory="Bac Lieu" quantity="1" owner="Neutrals"/>
-            <unitPlacement unitType="fort" territory="Pskov" quantity="1" owner="Neutrals"/>
-            <unitPlacement unitType="army" territory="Pskov" quantity="1" owner="Neutrals"/>
-            <unitPlacement unitType="fort" territory="Tomsk" quantity="1" owner="Neutrals"/>
-            <unitPlacement unitType="army" territory="Tomsk" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="army" territory="Threat" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="fort" territory="Anyang" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="army" territory="Anyang" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="fort" territory="Bac Lieu" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="army" territory="Bac Lieu" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="fort" territory="Pskov" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="army" territory="Pskov" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="fort" territory="Tomsk" quantity="1" owner="Neutrals"/>
+			<unitPlacement unitType="army" territory="Tomsk" quantity="1" owner="Neutrals"/>
 			<heldUnits unitType="port" quantity="1" player="Blue"/>
 			<heldUnits unitType="port" quantity="1" player="Red"/>
 			<heldUnits unitType="port" quantity="1" player="Green"/>
@@ -2015,14 +1942,14 @@
 		</unitInitialize>
 		<resourceInitialize>
 			<!-- Set VPs to the starting amount, before they get recalculated. -->
-            <resourceGiven player="Blue" resource="Victory Points" quantity="44"/>
-            <resourceGiven player="Red" resource="Victory Points" quantity="44"/>
-            <resourceGiven player="Green" resource="Victory Points" quantity="44"/>
-            <resourceGiven player="Yellow" resource="Victory Points" quantity="44"/>
-            <resourceGiven player="Orange" resource="Victory Points" quantity="44"/>
-            <resourceGiven player="Cyan" resource="Victory Points" quantity="44"/>
-            <resourceGiven player="Purple" resource="Victory Points" quantity="44"/>
-            <resourceGiven player="Brown" resource="Victory Points" quantity="44"/>			
+			<resourceGiven player="Blue" resource="Victory Points" quantity="44"/>
+			<resourceGiven player="Red" resource="Victory Points" quantity="44"/>
+			<resourceGiven player="Green" resource="Victory Points" quantity="44"/>
+			<resourceGiven player="Yellow" resource="Victory Points" quantity="44"/>
+			<resourceGiven player="Orange" resource="Victory Points" quantity="44"/>
+			<resourceGiven player="Cyan" resource="Victory Points" quantity="44"/>
+			<resourceGiven player="Purple" resource="Victory Points" quantity="44"/>
+			<resourceGiven player="Brown" resource="Victory Points" quantity="44"/>
 		</resourceInitialize>
 	</initialize>
 	<propertyList>
@@ -2069,8 +1996,7 @@
 		<!-- Can remove if we support 2.6+ -->
 		<property name="mapName" value="imperialism_1974_board_game"/>
 		<property name="notes">
-			<value><![CDATA[
-				<h1>Imperialism - 1974 Board Game</h1>
+			<value><![CDATA[<h1>Imperialism - 1974 Board Game</h1>
 
 				<p>This map is an adaptation of the 1974 board game Imperialism to the TripleA engine:<br>
 				<a href="https://boardgamegeek.com/boardgame/14544/imperialism">https://boardgamegeek.com/boardgame/14544/imperialism</a>
@@ -2099,15 +2025,16 @@
 				<h3>Additional rules</h3>
 				<ul>
 					<li>Players choose their starting territory, which must be on a coast in the old world (top left island).</li>
+					<li>Battles are optional and are limited to one round. When not decisive, armies will remain and territory control does not change.</li>
 					<li>Armies and fleets attack and defend on 2. Forts provide defense support with an extra strength 2 first strike roll per defending army. Note: This is different from the original board game combat rules, which TripleA isn't able to support.</li>
 					<li>Armies, fleet and wealth have a movement of 1. A fleet can transport an army or a wealth.</li>
 					<li>Structures and wealth are capturable.</li>
 					<li>Production and placement are before movement. No separate non-combat move.</li>
 					<li>Newly-built armies cannot participate in attacks.</li>
-					<li>Territories with no armies in them will revert back to Neutral control and will not generate wealth.</li>
+					<li>Territories with no armies in them will revert to Neutral control and will not generate wealth.</li>
 					<li>Unit production is done at ports and requires spending wealth units present in the port. To build structures, you will first purchase and place corresponding "build" units in the port territory with the required wealth, following which you'll be given the actual unit to place elsewhere on the map.</li>
 					<li>Ships are built in a similar way as structures, except the player should (honor system) then place them next to the port where they were built.</li>
-					<li>Loading and unloading units requires fleets to be on coasts, represented by seperate sea zones.</li>
+					<li>Loading and unloading units requires fleets to be on coasts, represented by separate sea zones.</li>
 					<li>Armies attacking mountain territories attack on a 1 instead of 2.</li>
 				</ul>
 
@@ -2131,7 +2058,7 @@
 
 				<p>The board game specifies that the game ends when the last card is drawn from the deck,
 				but the card mechanics are not implemented in this version. Players can instead agree on a
-				pretedetermined round number to end the game - or play until surrender.</p>
+				predetermined round number to end the game - or play until surrender.</p>
 				<br>
 
 				<h3>Original board game functionality missing from this adaptation</h3>

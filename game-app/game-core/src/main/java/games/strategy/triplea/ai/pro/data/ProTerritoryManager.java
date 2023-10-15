@@ -241,11 +241,7 @@ public class ProTerritoryManager {
               combinedUnits.addAll(patd.getMaxAmphibUnits());
               final ProBattleResult strafeResult =
                   calc.callBattleCalcWithRetreatAir(
-                      proData,
-                      t,
-                      new ArrayList<>(combinedUnits),
-                      defenders,
-                      patd.getMaxBombardUnits());
+                      proData, t, combinedUnits, defenders, patd.getMaxBombardUnits());
 
               // Check allied result with strafe
               final Set<Unit> enemyDefendersAfterStrafe =
@@ -923,9 +919,7 @@ public class ProTerritoryManager {
     if (isCombatMove && !Matches.unitIsLandTransport().test(u)) {
       Collection<Unit> enemyUnits =
           CollectionUtils.getMatches(to.getUnits(), Matches.unitIsEnemyOf(player));
-      if (!Matches.unitCanParticipateInCombat(true, player, to, 1, enemyUnits).test(u)) {
-        return false;
-      }
+      return Matches.unitCanParticipateInCombat(true, player, to, 1, enemyUnits).test(u);
     }
     return true;
   }
@@ -1036,7 +1030,7 @@ public class ProTerritoryManager {
                     possibleLandingTerritories,
                     ProMatches.territoryCanLandAirUnits(
                         player, isCombatMove, enemyTerritories, alliedTerritories));
-            List<Territory> carrierTerritories = new ArrayList<>();
+            List<Territory> carrierTerritories = List.of();
             if (Matches.unitCanLandOnCarrier().test(myAirUnit)) {
               carrierTerritories =
                   CollectionUtils.getMatches(
@@ -1126,7 +1120,7 @@ public class ProTerritoryManager {
               Predicate<Unit> canFitOnTransport =
                   canBeTransported.and(u -> u.getUnitAttachment().getTransportCost() <= capacity);
               for (Territory loadTerritory : map.getNeighbors(from)) {
-                if (loadTerritory.getUnitCollection().anyMatch(canFitOnTransport)) {
+                if (loadTerritory.anyUnitsMatch(canFitOnTransport)) {
                   loadFromTerritories.add(loadTerritory);
                   haveUnitsToTransport = true;
                 }
@@ -1312,15 +1306,12 @@ public class ProTerritoryManager {
     BreadthFirstSearch bfs = new BreadthFirstSearch(fromTerritories, canMove.or(isDestination));
     MutableObject<Territory> destination = new MutableObject<>();
     bfs.traverse(
-        new BreadthFirstSearch.Visitor() {
-          @Override
-          public boolean visit(Territory territory, int distance) {
-            if (isDestination.test(territory)) {
-              destination.setValue(territory);
-              return false;
-            }
-            return true;
+        (territory, distance) -> {
+          if (isDestination.test(territory)) {
+            destination.setValue(territory);
+            return false;
           }
+          return true;
         });
     return Optional.ofNullable(destination.getValue());
   }

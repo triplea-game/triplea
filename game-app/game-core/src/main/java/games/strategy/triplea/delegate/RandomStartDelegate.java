@@ -75,8 +75,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     final List<Territory> allPickableTerritories =
         CollectionUtils.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
     final List<GamePlayer> playersCanPick =
-        new ArrayList<>(
-            CollectionUtils.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
+        CollectionUtils.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch);
     // we need a main event
     if (!playersCanPick.isEmpty()) {
       bridge.getHistoryWriter().startEvent("Assigning Territories");

@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.data.util.BreadthFirstSearch;
 import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   @SuppressWarnings("unused")
   @Deprecated
   @RemoveOnNextMajorRelease
-  private int[] gridDimensions = null;
+  private final int[] gridDimensions = null;
 
   GameMap(final GameData data) {
     super(data);
@@ -375,37 +376,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1.equals(t2)) {
       return 0;
     }
-    return getDistance(0, new HashSet<>(), Set.of(t1), t2, routeCond);
-  }
-
-  /**
-   * Guaranteed that frontier doesn't contain target. Territories on the frontier are not target.
-   * They represent the extent of paths already searched. Territories in searched have already been
-   * on the frontier.
-   */
-  private int getDistance(
-      final int distance,
-      final Set<Territory> searched,
-      final Set<Territory> frontier,
-      final Territory target,
-      final BiPredicate<Territory, Territory> routeCond) {
-
-    // add the frontier to the searched
-    searched.addAll(frontier);
-    // find the new frontier
-
-    final Set<Territory> newFrontier =
-        frontier.stream()
-            .flatMap(f -> getNeighbors(f, routeCond).stream())
-            .collect(Collectors.toSet());
-    if (newFrontier.contains(target)) {
-      return distance + 1;
-    }
-    newFrontier.removeAll(searched);
-    if (newFrontier.isEmpty()) {
-      return -1;
-    }
-    return getDistance(distance + 1, searched, newFrontier, target, routeCond);
+    var territoryFinder = new BreadthFirstSearch.TerritoryFinder(t2);
+    new BreadthFirstSearch(List.of(t1), routeCond).traverse(territoryFinder);
+    return territoryFinder.getDistanceFound();
   }
 
   public IntegerMap<Territory> getDistance(

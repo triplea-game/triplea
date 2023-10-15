@@ -20,8 +20,8 @@ public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   @Override
-  public List<String> getNames() {
-    return valid() ? List.of(AIR_ATTACK_NON_SUBS) : List.of();
+  public List<StepDetails> getAllStepDetails() {
+    return valid() ? List.of(new StepDetails(AIR_ATTACK_NON_SUBS, this)) : List.of();
   }
 
   @Override

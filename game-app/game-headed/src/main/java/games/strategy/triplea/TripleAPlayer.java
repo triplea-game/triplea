@@ -120,13 +120,20 @@ public class TripleAPlayer extends AbstractBasePlayer {
   public void start(final String name) {
     // must call super.start
     super.start(name);
+    try {
+      startImpl(name);
+    } catch (GameOverException e) {
+      // Return cleanly.
+    }
+  }
+
+  private void startImpl(final String name) {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
     if (ui == null) {
       // We will get here if we are loading a save game of a map that we do not have. Caller code
-      // should be doing
-      // the error handling, so just return..
+      // should be doing the error handling, so just return..
       return;
     }
     // TODO: parsing which UI thing we should run based on the string name of a possibly extended
@@ -139,15 +146,14 @@ public class TripleAPlayer extends AbstractBasePlayer {
     // the gamedata:
     // (ISomeDelegate) getPlayerBridge().getRemote()
     // We should never touch the game data directly. All changes to game data are done through the
-    // remote,
-    // which then changes the game using the DelegateBridge -> change factory
+    // remote, which then changes the game using the DelegateBridge -> change factory
     ui.requiredTurnSeries(this.getGamePlayer());
     enableEditModeMenu();
     boolean badStep = false;
     if (GameStep.isTechStep(name)) {
       tech();
     } else if (GameStep.isPurchaseOrBidStep(name)) {
-      purchase(GameStepPropertiesHelper.isBid(getGameData()));
+      purchase(GameStepPropertiesHelper.isBid(getGameData()), false);
       if (!GameStepPropertiesHelper.isBid(getGameData())) {
         ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
         // TODO only do forum post if there is a combat
@@ -414,7 +420,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDie(unitsCantFight));
   }
 
-  private void purchase(final boolean bid) {
+  private void purchase(final boolean bid, final boolean keepCurrentPurchase) {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
@@ -464,7 +470,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
           if (error != null) {
             ui.notifyError(error);
             // don't give up, keep going
-            purchase(bid);
+            purchase(bid, true);
           }
         }
       }
@@ -472,7 +478,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (isOnlyRepairIfDisabled) {
       return;
     }
-    final IntegerMap<ProductionRule> prod = ui.getProduction(gamePlayer, bid);
+    final IntegerMap<ProductionRule> prod = ui.getProduction(gamePlayer, bid, keepCurrentPurchase);
     if (prod == null) {
       return;
     }
@@ -492,7 +498,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (purchaseError != null) {
       ui.notifyError(purchaseError);
       // don't give up, keep going
-      purchase(bid);
+      purchase(bid, true);
     }
   }
 
@@ -655,7 +661,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       final Territory unitTerritory,
       final Collection<Territory> territories,
       final boolean noneAvailable) {
-    return ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
+    return ui.getBattlePanel().getBombardment(unit, unitTerritory, territories);
   }
 
   @Override

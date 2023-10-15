@@ -54,14 +54,14 @@ class DefensiveAaFireTest {
               .defendingUnits(List.of(aaUnit))
               .build();
       final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
-      assertThat(defensiveAaFire.getNames(), hasSize(3));
+      assertThat(defensiveAaFire.getAllStepDetails(), hasSize(3));
     }
 
     @Test
     void hasNoNamesIfNoAaIsAvailable() {
       final BattleState battleState = givenBattleStateBuilder().defendingUnits(List.of()).build();
       final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
-      assertThat(defensiveAaFire.getNames(), is(empty()));
+      assertThat(defensiveAaFire.getAllStepDetails(), is(empty()));
     }
   }
 

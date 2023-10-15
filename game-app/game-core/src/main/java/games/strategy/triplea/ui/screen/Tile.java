@@ -21,7 +21,7 @@ import lombok.Getter;
 /** Responsible for rendering a single map tile. */
 public class Tile {
   private volatile boolean isDirty = true;
-  private AtomicBoolean isDrawing = new AtomicBoolean(false);
+  private final AtomicBoolean isDrawing = new AtomicBoolean(false);
 
   /** Current de facto immutable state of this tile. */
   @Getter private Image image;

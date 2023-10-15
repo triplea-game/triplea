@@ -50,7 +50,9 @@ public class UnitDamageReceivedChange extends Change {
     newTotalDamage.forEach(
         (unitId, damage) -> {
           final Unit unit = data.getUnits().get(UUID.fromString(unitId));
-          unit.setHits(damage);
+          if (unit != null) {
+            unit.setHits(damage);
+          }
         });
     // invoke territory change listeners
     for (final String territory : territoriesToNotify) {

@@ -23,9 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class CasualtyDetailsTest {
 
-  private GameData gameData = givenGameData().build();
-  private GamePlayer player1 = new GamePlayer("player1", gameData);
-  private GamePlayer player2 = new GamePlayer("player2", gameData);
+  private final GameData gameData = givenGameData().build();
+  private final GamePlayer player1 = new GamePlayer("player1", gameData);
+  private final GamePlayer player2 = new GamePlayer("player2", gameData);
 
   private UnitType givenUnitType(final String name) {
     final UnitType unitType = new UnitType(name, gameData);

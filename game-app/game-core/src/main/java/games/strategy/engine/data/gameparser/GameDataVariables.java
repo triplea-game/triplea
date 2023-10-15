@@ -13,7 +13,7 @@ import lombok.Getter;
 import org.triplea.map.data.elements.VariableList;
 
 class GameDataVariables {
-  @Getter private Map<String, List<String>> variables;
+  @Getter private final Map<String, List<String>> variables;
 
   private GameDataVariables(Map<String, List<String>> variables) {
     this.variables = variables;

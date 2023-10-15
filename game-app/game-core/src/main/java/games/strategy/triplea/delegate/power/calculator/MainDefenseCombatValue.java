@@ -4,7 +4,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -172,18 +171,16 @@ class MainDefenseCombatValue implements CombatValue {
     }
 
     private boolean isNegateDominatingFirstRoundAttack(final GamePlayer player) {
-      final RulesAttachment rulesAttachment =
-          (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-      return rulesAttachment != null && rulesAttachment.getNegateDominatingFirstRoundAttack();
+      final RulesAttachment ra = player.getRulesAttachment();
+      return ra != null && ra.getNegateDominatingFirstRoundAttack();
     }
 
     private boolean isDominatingFirstRoundAttack(final GamePlayer player) {
       if (player == null) {
         return false;
       }
-      final RulesAttachment rulesAttachment =
-          (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-      return rulesAttachment != null && rulesAttachment.getDominatingFirstRoundAttack();
+      final RulesAttachment ra = player.getRulesAttachment();
+      return ra != null && ra.getDominatingFirstRoundAttack();
     }
 
     @Override

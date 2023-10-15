@@ -52,7 +52,7 @@ public class ProTerritory {
   private ProBattleResult battleResult;
 
   // Non-combat move variables
-  private final List<Unit> cantMoveUnits;
+  private final Set<Unit> cantMoveUnits;
   private List<Unit> maxEnemyUnits;
   private Set<Unit> maxEnemyBombardUnits;
   private ProBattleResult minBattleResult;
@@ -89,7 +89,7 @@ public class ProTerritory {
     currentlyWins = false;
     battleResult = null;
 
-    cantMoveUnits = new ArrayList<>();
+    cantMoveUnits = new HashSet<>();
     maxEnemyUnits = new ArrayList<>();
     maxEnemyBombardUnits = new HashSet<>();
     minBattleResult = new ProBattleResult();
@@ -126,7 +126,7 @@ public class ProTerritory {
     currentlyWins = patd.isCurrentlyWins();
     battleResult = patd.getBattleResult();
 
-    cantMoveUnits = new ArrayList<>(patd.getCantMoveUnits());
+    cantMoveUnits = new HashSet<>(patd.getCantMoveUnits());
     maxEnemyUnits = new ArrayList<>(patd.getMaxEnemyUnits());
     maxEnemyBombardUnits = new HashSet<>(patd.getMaxEnemyBombardUnits());
     minBattleResult = patd.getMinBattleResult();
@@ -261,7 +261,7 @@ public class ProTerritory {
   }
 
   public void putAllAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap) {
-    amphibAttackMap.forEach((unit, amphibUnits) -> putAmphibAttackMap(unit, amphibUnits));
+    amphibAttackMap.forEach(this::putAmphibAttackMap);
   }
 
   public void putAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits) {
@@ -332,8 +332,8 @@ public class ProTerritory {
     return sb.toString();
   }
 
-  public List<Unit> getCantMoveUnits() {
-    return Collections.unmodifiableList(cantMoveUnits);
+  public Collection<Unit> getCantMoveUnits() {
+    return Collections.unmodifiableCollection(cantMoveUnits);
   }
 
   public void addCantMoveUnit(final Unit unit) {
@@ -344,8 +344,8 @@ public class ProTerritory {
     this.cantMoveUnits.addAll(units);
   }
 
-  public void setMaxEnemyUnits(final List<Unit> maxEnemyUnits) {
-    this.maxEnemyUnits = maxEnemyUnits;
+  public void setMaxEnemyUnits(final Collection<Unit> maxEnemyUnits) {
+    this.maxEnemyUnits = new ArrayList<>(maxEnemyUnits);
   }
 
   public List<Unit> getMaxEnemyUnits() {

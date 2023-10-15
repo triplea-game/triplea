@@ -130,8 +130,7 @@ public class RocketsFireHelper implements Serializable {
         Unit unitTarget = null;
         if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
           final Collection<Unit> rocketTargets =
-              new ArrayList<>(
-                  CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
+              CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player));
           final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
           // a hack for now, we let the rockets fire at anyone who could be targeted by any rocket
           // Not sure if that comment is still current
