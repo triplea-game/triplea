@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
@@ -30,7 +29,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.junit.jupiter.api.Assertions;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
@@ -505,11 +503,5 @@ public final class GameDataTestUtil {
         .flatMap(
             entry -> from.getUnitCollection().getUnits(entry.getKey(), entry.getValue()).stream())
         .collect(Collectors.toList());
-  }
-
-  public static Unit getSingleUnit(Territory t, UnitType type) {
-    Collection<Unit> units = CollectionUtils.getMatches(t.getUnits(), Matches.unitIsOfType(type));
-    assertEquals(1, units.size());
-    return CollectionUtils.getAny(units);
   }
 }
