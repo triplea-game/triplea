@@ -184,32 +184,6 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void removeAttack(final Route route, final Collection<Unit> units) {
-    attackingUnits.removeAll(units);
-    // the route could be null, in the case of a unit in a territory where a sub is submerged.
-    if (route == null) {
-      return;
-    }
-    final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    final Collection<Unit> attackingFromMapUnits =
-        attackingFromMap.getOrDefault(attackingFrom, new ArrayList<>());
-    attackingFromMapUnits.removeAll(units);
-    if (attackingFromMapUnits.isEmpty()) {
-      this.attackingFromMap.remove(attackingFrom);
-    }
-    // deal with amphibious assaults
-    if (attackingFrom.isWater()) {
-      // if none of the units is a land unit, the attack from that territory is no longer an
-      // amphibious assault
-      if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
-        getAmphibiousAttackTerritories().remove(attackingFrom);
-        // do we have any amphibious attacks left?
-        isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
-      }
-    }
-  }
-
-  @Override
   public boolean isEmpty() {
     return attackingUnits.isEmpty() && attackingWaitingToDie.isEmpty();
   }
@@ -237,6 +211,11 @@ public class MustFightBattle extends DependentBattle
     if (!Properties.getAlliedAirIndependent(gameData.getProperties())) {
       // allied air can not participate in the battle so set transportedBy on each allied air unit
       // and remove them from the attacking units
+      // Note: This is done only for the duration of the battle, so that these dependent planes can
+      // correctly be destroyed if their carrier sinks and so the combat screen shows which planes
+      // are loaded on which carrier when selecting casualties. It's cleared by
+      // clearTransportedByForAlliedAirOnCarrier(). Note: These will also be cleared if the battle
+      // is canceled by virtue of units moving out further.
       final TransportTracker.AlliedAirTransportChange alliedAirTransportChange =
           TransportTracker.markTransportedByForAlliedAirOnCarrier(units, attacker);
       change.add(alliedAirTransportChange.getChange());
