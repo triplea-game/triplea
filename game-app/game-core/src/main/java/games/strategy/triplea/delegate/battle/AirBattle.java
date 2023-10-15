@@ -106,7 +106,6 @@ public class AirBattle extends AbstractBattle {
   }
 
   @Override
-  public void removeAttack(final Route route, final Collection<Unit> units) {
     attackingUnits.removeAll(units);
   }
 
@@ -341,14 +340,11 @@ public class AirBattle extends AbstractBattle {
       recordUnitsWereInAirBattle(attackingUnits, bridge);
       recordUnitsWereInAirBattle(defendingUnits, bridge);
     }
-    // so as of right now, Air Battles are created before both normal battles and strategic bombing
-    // raids
-    // once completed, the air battle will create a strategic bombing raid, if that is the purpose
-    // of those aircraft
-    // however, if the purpose is a normal battle, it will have already been created by the battle
-    // tracker / combat move
-    // so we do not have to create normal battles, only bombing raids
-    // setup new battle here
+    // As of right now, Air Battles are created before both normal battles and strategic bombing
+    // raids. Once completed, the air battle will create a strategic bombing raid, if that is the
+    // purpose of those aircraft. However, if the purpose is a normal battle, it will have already
+    // been created by the battle tracker / combat move.
+    // So we do not have to create normal battles, only bombing raids setup new battle here.
     if (isBombingRun) {
       final Collection<Unit> bombers =
           CollectionUtils.getMatches(attackingUnits, Matches.unitIsStrategicBomber());

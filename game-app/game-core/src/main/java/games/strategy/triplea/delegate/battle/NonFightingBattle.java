@@ -56,7 +56,7 @@ public class NonFightingBattle extends DependentBattle {
     }
     // create event
     bridge.getHistoryWriter().startEvent("Battle in " + battleSite, battleSite);
-    // if any attacking non air units then win
+    // if any attacking non-air units then win
     final boolean someAttacking = hasAttackingUnits();
     if (someAttacking) {
       whoWon = WhoWon.ATTACKER;
@@ -84,32 +84,6 @@ public class NonFightingBattle extends DependentBattle {
   boolean hasAttackingUnits() {
     final Predicate<Unit> attackingLand = Matches.alliedUnit(attacker).and(Matches.unitIsLand());
     return battleSite.anyUnitsMatch(attackingLand);
-  }
-
-  @Override
-  public void removeAttack(final Route route, final Collection<Unit> units) {
-    attackingUnits.removeAll(units);
-    // the route could be null, in the case of a unit in a territory where a sub is submerged.
-    if (route == null) {
-      return;
-    }
-    final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    final Collection<Unit> attackingFromMapUnits =
-        attackingFromMap.getOrDefault(attackingFrom, new ArrayList<>());
-    attackingFromMapUnits.removeAll(units);
-    if (attackingFromMapUnits.isEmpty()) {
-      this.attackingFromMap.remove(attackingFrom);
-    }
-    // deal with amphibious assaults
-    if (attackingFrom.isWater()) {
-      // if none of the units is a land unit, the attack from that territory is no longer an
-      // amphibious assault
-      if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
-        getAmphibiousAttackTerritories().remove(attackingFrom);
-        // do we have any amphibious attacks left?
-        isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
-      }
-    }
   }
 
   @Override

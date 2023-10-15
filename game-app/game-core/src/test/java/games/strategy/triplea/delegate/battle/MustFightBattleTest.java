@@ -4,10 +4,14 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britain;
+import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britishArtillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britishInfantry;
+import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.chinese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
+import static games.strategy.triplea.delegate.GameDataTestUtil.french;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japan;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japaneseInfantry;
@@ -15,15 +19,18 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withDiceValues;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.in;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,6 +51,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.GameDataTestUtil;
+import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
@@ -211,6 +219,42 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
 
     battle.fight(bridge);
     assertThat(indoChina.getUnits(), containsInAnyOrder(attackers.toArray()));
+  }
+
+  @Test
+  void testAlliedCarriedPlanesTransportedByIsResetWhenCancelingBattle() throws Exception {
+    // Note: Test uses germans, british and france since other countries aren't at war on t1.
+    final GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
+
+    // SZ 45 has a german transport.
+    final Territory sz45 = territory("45 Sea Zone", gameData);
+    removeFrom(sz45, sz45.getUnits());
+    addTo(sz45, transport(gameData).create(1, germans(gameData)));
+
+    // SZ 46 has a british carrier with 2 french planes.
+    final Territory sz46 = territory("46 Sea Zone", gameData);
+    removeFrom(sz46, sz46.getUnits());
+    Unit carrier = carrier(gameData).create(1, british(gameData)).get(0);
+    addTo(sz46, List.of(carrier));
+    List<Unit> fighters = fighter(gameData).create(2, french(gameData));
+    addTo(sz46, fighters);
+
+    final Territory sz42 = territory("42 Sea Zone", gameData);
+
+    final IDelegateBridge bridge = newDelegateBridge(british(gameData));
+
+    advanceToStep(bridge, "CombatMove");
+    MoveDelegate moveDelegate = GameDataTestUtil.moveDelegate(gameData);
+    moveDelegate.setDelegateBridgeAndPlayer(bridge);
+    moveDelegate.start();
+
+    Collection<Unit> units = List.of(carrier, fighters.get(0), fighters.get(1));
+    GameDataTestUtil.move(units, new Route(sz46, sz45));
+    assertThat(fighters.get(0).getTransportedBy(), is(carrier));
+    assertThat(fighters.get(1).getTransportedBy(), is(carrier));
+    GameDataTestUtil.move(units, new Route(sz45, sz42));
+    assertThat(fighters.get(0).getTransportedBy(), is(nullValue()));
+    assertThat(fighters.get(1).getTransportedBy(), is(nullValue()));
   }
 
   private static <T> void setPropertyValue(GameData gameData, String propertyName, T value) {

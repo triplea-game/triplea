@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate.battle;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
@@ -134,8 +135,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   @Override
-  public void removeAttack(final Route route, final Collection<Unit> units) {
+  public Change removeAttack(final Route route, final Collection<Unit> units) {
     removeAttackers(units, true);
+    return new CompositeChange();
   }
 
   private void removeAttackers(final Collection<Unit> units, final boolean removeTarget) {

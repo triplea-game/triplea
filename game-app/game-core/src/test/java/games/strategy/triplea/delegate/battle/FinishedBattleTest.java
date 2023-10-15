@@ -38,9 +38,9 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
     // Clear all units in Norway since we just want to land uncontested there.
     norway.getUnitCollection().clear();
 
-    final Unit battleship = getSingleUnit(sz2, battleship(pos2GameData));
-    final Unit transport = getSingleUnit(sz2, transport(pos2GameData));
-    final Unit tank = getSingleUnit(uk, armour(pos2GameData));
+    final Unit battleship = GameDataTestUtil.getSingleUnit(sz2, battleship(pos2GameData));
+    final Unit transport = GameDataTestUtil.getSingleUnit(sz2, transport(pos2GameData));
+    final Unit tank = GameDataTestUtil.getSingleUnit(uk, armour(pos2GameData));
 
     final GamePlayer british = GameDataTestUtil.british(pos2GameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
@@ -65,11 +65,5 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
     battleDelegate.start();
     // TRANSPORTED_BY should now be cleared since the dependent battle has been resolved.
     assertEquals(null, tank.getTransportedBy());
-  }
-
-  private Unit getSingleUnit(Territory t, UnitType type) {
-    Collection<Unit> units = CollectionUtils.getMatches(t.getUnits(), Matches.unitIsOfType(type));
-    assertEquals(1, units.size());
-    return CollectionUtils.getAny(units);
   }
 }
