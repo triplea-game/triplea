@@ -56,7 +56,7 @@ public class NonFightingBattle extends DependentBattle {
     }
     // create event
     bridge.getHistoryWriter().startEvent("Battle in " + battleSite, battleSite);
-    // if any attacking non air units then win
+    // if any attacking non-air units then win
     final boolean someAttacking = hasAttackingUnits();
     if (someAttacking) {
       whoWon = WhoWon.ATTACKER;

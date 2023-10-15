@@ -1,11 +1,14 @@
 package games.strategy.triplea.delegate.battle;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,11 +34,12 @@ public abstract class DependentBattle extends AbstractBattle {
   }
 
   @Override
-  public void removeAttack(final Route route, final Collection<Unit> units) {
+  public Change removeAttack(final Route route, final Collection<Unit> units) {
+    // Note: This code is also duplicated in FinishedBattle, which is not a subclass.
     attackingUnits.removeAll(units);
     // the route could be null, in the case of a unit in a territory where a sub is submerged.
     if (route == null) {
-      return;
+      return new CompositeChange();
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     final Collection<Unit> attackingFromMapUnits =
@@ -49,11 +53,14 @@ public abstract class DependentBattle extends AbstractBattle {
       // if none of the units is a land unit, the attack from that territory is no longer an
       // amphibious assault
       if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
-        getAmphibiousAttackTerritories().remove(attackingFrom);
+        amphibiousAttackFrom.remove(attackingFrom);
         // do we have any amphibious attacks left?
-        isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
+        isAmphibious = !amphibiousAttackFrom.isEmpty();
       }
     }
+    // Clear transportedBy for allied air on carriers as these are only set during the battle.
+    return TransportTracker.clearTransportedByForAlliedAirOnCarrier(
+        units, battleSite, attacker, gameData);
   }
 
   /** Return attacking from Collection. */

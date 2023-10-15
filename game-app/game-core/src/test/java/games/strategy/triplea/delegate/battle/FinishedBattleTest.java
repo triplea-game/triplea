@@ -67,7 +67,7 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
     assertEquals(null, tank.getTransportedBy());
   }
 
-  private Unit getSingleUnit(Territory t, UnitType type) {
+  public static Unit getSingleUnit(Territory t, UnitType type) {
     Collection<Unit> units = CollectionUtils.getMatches(t.getUnits(), Matches.unitIsOfType(type));
     assertEquals(1, units.size());
     return CollectionUtils.getAny(units);

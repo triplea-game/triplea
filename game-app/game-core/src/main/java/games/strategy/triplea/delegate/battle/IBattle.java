@@ -29,7 +29,7 @@ public interface IBattle extends Serializable {
     DEFENDER
   }
 
-  /** The type of a battle. */
+  /** The type of battle. */
   @AllArgsConstructor
   @ToString(of = "type")
   enum BattleType {
@@ -68,14 +68,6 @@ public interface IBattle extends Serializable {
    */
   Change addAttackChange(Route route, Collection<Unit> units, Map<Unit, Set<Unit>> targets);
 
-  /**
-   * There are two distinct super-types of battles: Bombing battles, and Fighting battles. There may
-   * be sub-types of each of these.
-   *
-   * @return whether this battle is a bombing run
-   */
-  boolean isBombingRun();
-
   /** The type of battle occurring, example: MustFightBattle, StrategicBombingRaidBattle, etc. */
   BattleType getBattleType();
 
@@ -112,8 +104,9 @@ public interface IBattle extends Serializable {
    *
    * @param route - attacking route
    * @param units - attacking units
+   * @return any changes to be performed as a result.
    */
-  void removeAttack(Route route, Collection<Unit> units);
+  Change removeAttack(Route route, Collection<Unit> units);
 
   /** If we need to cancel the battle, we may need to perform some cleanup. */
   void cancelBattle(IDelegateBridge bridge);

@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
@@ -10,6 +11,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.util.TuvUtils;
@@ -90,29 +92,33 @@ public class FinishedBattle extends AbstractBattle {
   }
 
   @Override
-  public void removeAttack(final Route route, final Collection<Unit> units) {
+  public Change removeAttack(final Route route, final Collection<Unit> units) {
+    // Note: This is the same code as in DependentBattle, but this is not a subclass.
     attackingUnits.removeAll(units);
     // the route could be null, in the case of a unit in a territory where a sub is submerged.
     if (route == null) {
-      return;
+      return new CompositeChange();
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
-    // handle possible null pointer
-    if (attackingFromMapUnits == null) {
-      attackingFromMapUnits = new ArrayList<>();
-    }
+    final Collection<Unit> attackingFromMapUnits =
+        attackingFromMap.getOrDefault(attackingFrom, new ArrayList<>());
     attackingFromMapUnits.removeAll(units);
+    if (attackingFromMapUnits.isEmpty()) {
+      this.attackingFromMap.remove(attackingFrom);
+    }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
-      // if none of the units is a land unit, the attack from
-      // that territory is no longer an amphibious assault
+      // if none of the units is a land unit, the attack from that territory is no longer an
+      // amphibious assault
       if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
         amphibiousAttackFrom.remove(attackingFrom);
         // do we have any amphibious attacks left?
         isAmphibious = !amphibiousAttackFrom.isEmpty();
       }
     }
+    // Clear transportedBy for allied air on carriers as these are only set during the battle.
+    return TransportTracker.clearTransportedByForAlliedAirOnCarrier(
+        units, battleSite, attacker, gameData);
   }
 
   @Override
