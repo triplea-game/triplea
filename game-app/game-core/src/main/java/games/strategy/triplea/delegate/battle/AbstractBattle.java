@@ -200,11 +200,6 @@ abstract class AbstractBattle implements IBattle {
   public void cancelBattle(final IDelegateBridge bridge) {}
 
   @Override
-  public boolean isBombingRun() {
-    return battleType.isBombingRun();
-  }
-
-  @Override
   public BattleType getBattleType() {
     return battleType;
   }

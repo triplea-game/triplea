@@ -106,7 +106,9 @@ public class AirBattle extends AbstractBattle {
   }
 
   @Override
+  public Change removeAttack(final Route route, final Collection<Unit> units) {
     attackingUnits.removeAll(units);
+    return new CompositeChange();
   }
 
   @Override
