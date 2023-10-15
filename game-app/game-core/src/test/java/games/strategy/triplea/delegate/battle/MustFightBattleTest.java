@@ -242,16 +242,18 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     final Territory sz42 = territory("42 Sea Zone", gameData);
 
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
-
     advanceToStep(bridge, "CombatMove");
     MoveDelegate moveDelegate = GameDataTestUtil.moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
 
     Collection<Unit> units = List.of(carrier, fighters.get(0), fighters.get(1));
+    // For the battle, transportedBy will be set to the carrier so that it's shown in the UI and
+    // the units destroyed if the carrier is sunk.
     GameDataTestUtil.move(units, new Route(sz46, sz45));
     assertThat(fighters.get(0).getTransportedBy(), is(carrier));
     assertThat(fighters.get(1).getTransportedBy(), is(carrier));
+    // But if the units move out, then transportedBy should be cleared.
     GameDataTestUtil.move(units, new Route(sz45, sz42));
     assertThat(fighters.get(0).getTransportedBy(), is(nullValue()));
     assertThat(fighters.get(1).getTransportedBy(), is(nullValue()));
