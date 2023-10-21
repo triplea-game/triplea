@@ -5,7 +5,7 @@ dependencies {
     implementation project(":lib:java-extras")
     implementation project(":lib:websocket-client")
     testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"
-    testImplementation "com.github.tomakehurst:wiremock:$wireMockVersion"
+    testImplementation "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
     testImplementation "com.google.code.gson:gson:$gsonVersion"
     testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
     testImplementation project(":lib:test-common")
