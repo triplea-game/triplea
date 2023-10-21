@@ -4,6 +4,6 @@ dependencies {
     implementation project(":http-clients:feign-common")
     implementation project(":lib:java-extras")
     testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
-    testImplementation "com.github.tomakehurst:wiremock-jre8:$  wireMockVersion"
+    testImplementation "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
     testImplementation project(":lib:test-common")
 }
