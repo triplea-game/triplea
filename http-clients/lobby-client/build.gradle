@@ -8,5 +8,6 @@ dependencies {
     testImplementation "com.github.tomakehurst:wiremock:$wireMockVersion"
     testImplementation "com.google.code.gson:gson:$gsonVersion"
     testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
+    testImplementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     testImplementation project(":lib:test-common")
 }
