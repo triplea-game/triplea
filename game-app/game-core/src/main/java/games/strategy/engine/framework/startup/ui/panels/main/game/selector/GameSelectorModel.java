@@ -87,7 +87,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
       ClientSetting.defaultGameUri.resetValue();
     } else {
       ClientSetting.defaultGameName.setValue(gameData.getGameName());
-      ClientSetting.defaultGameUri.setValue(xmlFile.toAbsolutePath().toString());
+      ClientSetting.defaultGameUri.setValue(xmlFile.toUri().toString());
     }
     ClientSetting.flush();
   }
@@ -213,9 +213,8 @@ public class GameSelectorModel extends Observable implements GameSelector {
       final Path gameFile = pathFromGameUri(gameUri);
 
       // starts with check is because we don't want to load a game file by default that is not
-      // within
-      // the map folders. (ie: if a previous version of triplea was using running a game within its
-      // root folder, we shouldn't open it)
+      // within the map folders. (ie: if a previous version of triplea was using running a game
+      // within its root folder, we shouldn't open it)
       return Files.exists(gameFile)
           && gameFile.startsWith(ClientFileSystemHelper.getUserRootFolder());
     } catch (final IllegalArgumentException e) {
