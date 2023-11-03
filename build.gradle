@@ -177,8 +177,7 @@ subprojects {
     }
 
     lombok {
-        version = '1.18.20'
-        sha256 = 'ce947be6c2fbe759fbbe8ef3b42b6825f814c98c8853f1013f2d9630cedf74b0'
+        version = '1.18.22'
     }
 
     pmd {
