@@ -50,6 +50,6 @@ set -eu
 
 checkDependency "docker" || installDocker
 "$scriptDir/.build/setup-database"
-"$scriptDir/gradlew" check $@
+"$scriptDir/gradlew" --parallel check $@
 "$scriptDir/.build/find-unused-dbunit-datasets"
 "$scriptDir/.build/code-convention-checks/check-custom-style" spitfire-server
