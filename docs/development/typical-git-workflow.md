@@ -38,4 +38,4 @@ git push origin
 ## Follow the 'create PR' web link
 ```
 
-Read more about TripleA's  [pull requests process here](../../project/pull-requests.md).
+Read more about TripleA's  [pull requests process here](../project/pull-requests.md).

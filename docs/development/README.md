@@ -18,7 +18,7 @@ Set up WSL, this will give you a command line that can be used to run docker, gr
 
 - Fork & Clone: <https://github.com/triplea-game/triplea>
 - Setup IDE: [/docs/development/how-to/ide-setup](how-to/ide-setup)
-- Use a feature-branch workflow, see: [typical git workflow](reference/typical-git-workflow.md))
+- Use a feature-branch workflow, see: [typical git workflow](typical-git-workflow.md))
 - Submit pull request, see: [pull requests process](../project/pull-requests.md).
 
 If you are new to Open Source & Github:
@@ -33,7 +33,7 @@ If you are new to Open Source & Github:
 ```
 
 For more detailed steps on building the project with CLI, see:
-- [reference/cli-build-commands.md](reference/cli-build-commands.md)
+- [reference/cli-build-commands.md](cli-build-commands.md)
 
 ## Compile and launch TripleA (IDEA)
 
@@ -60,7 +60,7 @@ PR builds will fail if the code is not formatted with spotless.
 
 ## Code Conventions (Style Guide)
 
-Full list of coding conventions can be found at: [reference/code-conventions](./reference/code-conventions)
+Full list of coding conventions can be found at: [reference/code-conventions](code-conventions)
 
 Please be sure to check these out so that you can fit the general style of the project.
 
