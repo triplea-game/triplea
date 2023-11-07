@@ -9,6 +9,7 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.selectio
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.odds.calculator.BattleCalculatorPanel;
 import games.strategy.triplea.settings.lobby.LobbySelectionViewFactory;
 import java.util.Collection;
 import javax.swing.JComponent;
@@ -72,7 +73,10 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Default battle simulation count in dice games") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.battleCalcSimulationCountDice, 10, 100000);
+      return intValueRange(
+          ClientSetting.battleCalcSimulationCountDice,
+          10,
+          BattleCalculatorPanel.MAX_NUMBER_OF_RUNS);
     }
   },
 

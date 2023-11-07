@@ -62,9 +62,10 @@ import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
 
 @Slf4j
-class BattleCalculatorPanel extends JPanel {
+public class BattleCalculatorPanel extends JPanel {
   private static final long serialVersionUID = -3559687618320469183L;
   private static final String NO_EFFECTS = "*None*";
+  public static final int MAX_NUMBER_OF_RUNS = 100_000;
   private final JLabel attackerWin = new JLabel();
   private final JLabel defenderWin = new JLabel();
   private final JLabel draw = new JLabel();
@@ -150,9 +151,9 @@ class BattleCalculatorPanel extends JPanel {
     attackerCombo.setRenderer(new PlayerRenderer());
     defendingUnitsPanel = new PlayerUnitsPanel(data, uiContext, true);
     attackingUnitsPanel = new PlayerUnitsPanel(data, uiContext, false);
-    numRuns.setColumns(4);
+    numRuns.setColumns(5);
     numRuns.setMin(1);
-    numRuns.setMax(20000);
+    numRuns.setMax(MAX_NUMBER_OF_RUNS);
 
     final int simulationCount =
         Properties.getLowLuck(data.getProperties())
@@ -616,9 +617,11 @@ class BattleCalculatorPanel extends JPanel {
       // For "unrestricted" average methods, this cannot happen as we ensure that at least 1 round
       // is simulated. However, the ...IfAbcWon() methods restrict that set of results which might
       // become empty. In this case we display N/A (not applicable) instead of NaN (not a number).
-      attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
-      defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
-      draw.setText(formatPercentage(results.get().getDrawPercent()));
+      attackerWin.setText(
+          formatPercentage(results.get().getAttackerWinPercent(), numRuns.getValue()));
+      defenderWin.setText(
+          formatPercentage(results.get().getDefenderWinPercent(), numRuns.getValue()));
+      draw.setText(formatPercentage(results.get().getDrawPercent(), numRuns.getValue()));
       final boolean isLand = isLand();
       final List<Unit> mainCombatAttackers =
           CollectionUtils.getMatches(
@@ -676,8 +679,14 @@ class BattleCalculatorPanel extends JPanel {
     return location;
   }
 
-  private static String formatPercentage(final double percentage) {
-    return new DecimalFormat("#%.##").format(percentage);
+  private static String formatPercentage(final double percentage, int numberOfRounds) {
+    if (numberOfRounds < 10_000) {
+      return new DecimalFormat("0%.##").format(percentage);
+    } else if (numberOfRounds < 100_000) {
+      return new DecimalFormat("0%.0#").format(percentage);
+    } else {
+      return new DecimalFormat("0%.00").format(percentage);
+    }
   }
 
   private static String formatValue(final double value) {
