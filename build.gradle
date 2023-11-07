@@ -77,7 +77,7 @@ subprojects {
         jdbiVersion = '3.41.3'
         jetbrainsAnnotationsVersion = '24.0.1'
         jlayerVersion = '1.0.1.4'
-        junitJupiterVersion = '5.10.0'
+        junitJupiterVersion = '5.10.1'
         junitPlatformLauncherVersion = '1.10.1'
         logbackClassicVersion = '1.2.11'
         mockitoVersion = '5.7.0'
