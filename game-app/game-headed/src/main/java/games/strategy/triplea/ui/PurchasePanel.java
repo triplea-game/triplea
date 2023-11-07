@@ -61,6 +61,7 @@ public class PurchasePanel extends ActionPanel {
                   bid,
                   purchase,
                   getMap().getUiContext());
+          data.setPendingProductionRules(purchase);
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
           if (purchase.totalValues() == 0) {
             purchasedLabel.setText("");
@@ -92,7 +93,12 @@ public class PurchasePanel extends ActionPanel {
     if (keepCurrentPurchase) {
       keepCurrentPurchase = false;
     } else {
-      purchase = new IntegerMap<>();
+      GameData gameData = getData();
+      if (gameData.getPendingProductionRules() != null) {
+        purchase = gameData.getPendingProductionRules();
+      } else {
+        purchase = new IntegerMap<>();
+      }
     }
     SwingUtilities.invokeLater(
         () -> {
@@ -191,6 +197,7 @@ public class PurchasePanel extends ActionPanel {
         }
       }
     }
+    getData().setPendingProductionRules(null);
     release();
   }
 
