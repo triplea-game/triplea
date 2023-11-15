@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
-import games.strategy.engine.data.events.ZoomMapListener;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.GameDataManager;
@@ -81,7 +80,7 @@ public class GameData implements Serializable, GameState {
   @RemoveOnNextMajorRelease @Deprecated private Version gameVersion;
   private int diceSides;
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
-  private final transient List<ZoomMapListener> zoomMapListeners = new CopyOnWriteArrayList<>();
+
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
   private transient Map<String, IDelegate> delegates = new HashMap<>();
   private final AllianceTracker alliances = new AllianceTracker();
@@ -103,12 +102,12 @@ public class GameData implements Serializable, GameState {
   private final GameProperties properties = new GameProperties(this);
   private final UnitsList unitsList = new UnitsList();
   private final TechnologyFrontier technologyFrontier =
-          new TechnologyFrontier("allTechsForGame", this);
+      new TechnologyFrontier("allTechsForGame", this);
   @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
-          new ArrayList<>();
+      new ArrayList<>();
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
   private transient GameDataEventListeners gameDataEventListeners = new GameDataEventListeners();
@@ -260,10 +259,6 @@ public class GameData implements Serializable, GameState {
     return properties;
   }
 
-  public void addZoomMapListeners(final ZoomMapListener listener) {
-    zoomMapListeners.add(listener);
-  }
-
   public void addTerritoryListener(final TerritoryListener listener) {
     territoryListeners.add(listener);
   }
@@ -288,10 +283,6 @@ public class GameData implements Serializable, GameState {
 
   void notifyTerritoryUnitsChanged(final Territory t) {
     territoryListeners.forEach(territoryListener -> territoryListener.unitsChanged(t));
-  }
-
-  public void notifyMapZoomChanged(Integer newZoom) {
-    zoomMapListeners.forEach(zoomMapListener -> zoomMapListener.zoomMapChanged(newZoom));
   }
 
   void notifyTerritoryAttachmentChanged(final Territory t) {
@@ -371,9 +362,9 @@ public class GameData implements Serializable, GameState {
     final boolean oldForceInSwingEventThread = forceInSwingEventThread;
     forceInSwingEventThread = false;
     gameHistory
-            .getHistoryWriter()
-            .startNextStep(
-                    step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
+        .getHistoryWriter()
+        .startNextStep(
+            step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
     forceInSwingEventThread = oldForceInSwingEventThread;
   }
 
@@ -456,7 +447,7 @@ public class GameData implements Serializable, GameState {
   }
 
   public void addToAttachmentOrderAndValues(
-          final Tuple<IAttachment, List<Tuple<String, String>>> attachmentAndValues) {
+      final Tuple<IAttachment, List<Tuple<String, String>>> attachmentAndValues) {
     attachmentOrderAndValues.add(attachmentAndValues);
   }
 
@@ -465,7 +456,7 @@ public class GameData implements Serializable, GameState {
   }
 
   public void setAttachmentOrderAndValues(
-          List<Tuple<IAttachment, List<Tuple<String, String>>>> values) {
+      List<Tuple<IAttachment, List<Tuple<String, String>>>> values) {
     attachmentOrderAndValues = values;
   }
 
@@ -530,12 +521,12 @@ public class GameData implements Serializable, GameState {
   public void preGameDisablePlayers(final Predicate<GamePlayer> shouldDisablePlayer) {
     final Set<GamePlayer> playersWhoShouldBeRemoved = new HashSet<>();
     playerList.getPlayers().stream()
-            .filter(p -> (p.getCanBeDisabled() && shouldDisablePlayer.test(p)))
-            .forEach(
-                    p -> {
-                      p.setIsDisabled(true);
-                      playersWhoShouldBeRemoved.add(p);
-                    });
+        .filter(p -> (p.getCanBeDisabled() && shouldDisablePlayer.test(p)))
+        .forEach(
+            p -> {
+              p.setIsDisabled(true);
+              playersWhoShouldBeRemoved.add(p);
+            });
     if (!playersWhoShouldBeRemoved.isEmpty()) {
       removePlayerStepsFromSequence(playersWhoShouldBeRemoved);
     }
@@ -574,12 +565,12 @@ public class GameData implements Serializable, GameState {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-            .add("diceSides", diceSides)
-            .add("gameName", gameName)
-            .add("gameVersion", gameVersion)
-            .add("loader", loader)
-            .add("playerList", playerList)
-            .toString();
+        .add("diceSides", diceSides)
+        .add("gameName", gameName)
+        .add("gameVersion", gameVersion)
+        .add("loader", loader)
+        .add("playerList", playerList)
+        .toString();
   }
 
   /**
@@ -613,11 +604,11 @@ public class GameData implements Serializable, GameState {
   public Optional<Path> getGameXmlPath(final Path mapLocation) {
     // Given a game name, the map.yml file can tell us the path to the game xml file.
     return findMapDescriptionYaml(mapLocation)
-            .flatMap(yaml -> yaml.getGameXmlPathByGameName(getGameName()));
+        .flatMap(yaml -> yaml.getGameXmlPathByGameName(getGameName()));
   }
 
   private Optional<MapDescriptionYaml> findMapDescriptionYaml(final Path mapLocation) {
     return FileUtils.findFileInParentFolders(mapLocation, MapDescriptionYaml.MAP_YAML_FILE_NAME)
-            .flatMap(MapDescriptionYaml::fromFile);
+        .flatMap(MapDescriptionYaml::fromFile);
   }
 }

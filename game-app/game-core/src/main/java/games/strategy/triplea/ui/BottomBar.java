@@ -18,7 +18,6 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -57,7 +56,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   private final JLabel playerLabel = new JLabel("xxxxxx");
   private final JLabel stepLabel = new JLabel("xxxxxx");
   private final JLabel roundLabel = new JLabel("xxxxxx");
-  private final JLabel zoomLabel = new JLabel("Zoom: 100%");
+  private final JLabel zoomLabel = new JLabel("");
 
   public BottomBar(final UiContext uiContext, final GameData data, final boolean usingDiceServer) {
     this.uiContext = uiContext;
@@ -66,32 +65,30 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     setLayout(new BorderLayout());
     add(createCenterPanel(), BorderLayout.CENTER);
     add(createStepPanel(usingDiceServer), BorderLayout.EAST);
-
-    data.addZoomMapListeners(this);
   }
 
   private JPanel createCenterPanel() {
     final JPanel centerPanel = new JPanel();
     centerPanel.setLayout(new GridBagLayout());
     final var gridBuilder =
-            new GridBagConstraintsBuilder().weightY(1).fill(GridBagConstraintsFill.BOTH);
+        new GridBagConstraintsBuilder().weightY(1).fill(GridBagConstraintsFill.BOTH);
 
     centerPanel.add(
-            resourceBar, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.WEST).build());
+        resourceBar, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.WEST).build());
 
     territoryInfo.setPreferredSize(new Dimension(0, 0));
     territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
-            territoryInfo,
-            gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.CENTER).build());
+        territoryInfo,
+        gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.CENTER).build());
 
     statusMessage.setVisible(false);
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
-            statusMessage, gridBuilder.gridX(2).anchor(GridBagConstraintsAnchor.EAST).build());
+        statusMessage, gridBuilder.gridX(2).anchor(GridBagConstraintsAnchor.EAST).build());
     centerPanel.add(
-            zoomLabel, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.EAST).build());
+        zoomLabel, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.EAST).build());
     return centerPanel;
   }
 
@@ -130,10 +127,10 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
     if (territory == null) {
       SwingUtilities.invokeLater(
-              () -> {
-                territoryInfo.removeAll();
-                SwingComponents.redraw(territoryInfo);
-              });
+          () -> {
+            territoryInfo.removeAll();
+            SwingComponents.redraw(territoryInfo);
+          });
       return;
     }
 
@@ -141,9 +138,9 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     try (GameData.Unlocker ignored = territory.getData().acquireReadLock()) {
       final String territoryName = territory.getName();
       final Collection<UnitCategory> units =
-              uiContext.isShowUnitsInStatusBar()
-                      ? UnitSeparator.categorize(territory.getUnits())
-                      : List.of();
+          uiContext.isShowUnitsInStatusBar()
+              ? UnitSeparator.categorize(territory.getUnits())
+              : List.of();
       final TerritoryAttachment ta = TerritoryAttachment.get(territory);
       final IntegerMap<Resource> resources = new IntegerMap<>();
       final List<String> territoryEffectNames;
@@ -151,9 +148,9 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
         territoryEffectNames = List.of();
       } else {
         territoryEffectNames =
-                ta.getTerritoryEffect().stream()
-                        .map(TerritoryEffect::getName)
-                        .collect(Collectors.toList());
+            ta.getTerritoryEffect().stream()
+                .map(TerritoryEffect::getName)
+                .collect(Collectors.toList());
         final int production = ta.getProduction();
         if (production > 0) {
           resources.add(new Resource(Constants.PUS, territory.getData()), production);
@@ -162,15 +159,15 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       }
 
       SwingUtilities.invokeLater(
-              () -> updateTerritoryInfo(territoryName, territoryEffectNames, units, resources));
+          () -> updateTerritoryInfo(territoryName, territoryEffectNames, units, resources));
     }
   }
 
   private void updateTerritoryInfo(
-          String territoryName,
-          List<String> territoryEffectNames,
-          Collection<UnitCategory> units,
-          IntegerMap<Resource> resources) {
+      String territoryName,
+      List<String> territoryEffectNames,
+      Collection<UnitCategory> units,
+      IntegerMap<Resource> resources) {
     // Box layout with horizontal glue on both sides achieves the following desirable properties:
     //   1. If the content is narrower than the available space, it will be centered.
     //   2. If the content is wider than the available space, then the beginning will be shown,
@@ -253,7 +250,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   }
 
   public void setStepInfo(
-          int roundNumber, String stepName, @Nullable GamePlayer player, boolean isRemotePlayer) {
+      int roundNumber, String stepName, @Nullable GamePlayer player, boolean isRemotePlayer) {
     roundLabel.setText("Round:" + roundNumber + " ");
     stepLabel.setText(stepName);
     if (player != null) {
@@ -263,11 +260,11 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
   public void setCurrentPlayer(GamePlayer player, boolean isRemotePlayer) {
     final CompletableFuture<?> future =
-            CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
-                    .thenApplyAsync(ImageIcon::new)
-                    .thenAccept(icon -> SwingUtilities.invokeLater(() -> roundLabel.setIcon(icon)));
+        CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
+            .thenApplyAsync(ImageIcon::new)
+            .thenAccept(icon -> SwingUtilities.invokeLater(() -> roundLabel.setIcon(icon)));
     CompletableFutureUtils.logExceptionWhenComplete(
-            future, throwable -> log.error("Failed to set round icon for " + player, throwable));
+        future, throwable -> log.error("Failed to set round icon for " + player, throwable));
     playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
   }
 
@@ -275,26 +272,26 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     // Run async, as this is called while holding a GameData lock so we shouldn't grab a different
     // data's lock in this case.
     AsyncRunner.runAsync(
-                    () -> {
-                      GameData oldGameData = currentTerritory != null ? currentTerritory.getData() : null;
-                      GameData newGameData = territory != null ? territory.getData() : null;
-                      // Re-subscribe listener on the right GameData, which could change when toggling
-                      // between history and the current game.
-                      if (!ObjectUtils.referenceEquals(oldGameData, newGameData)) {
-                        if (oldGameData != null) {
-                          try (GameData.Unlocker ignored = oldGameData.acquireWriteLock()) {
-                            oldGameData.removeTerritoryListener(this);
-                          }
-                        }
-                        if (newGameData != null) {
-                          try (GameData.Unlocker ignored = newGameData.acquireWriteLock()) {
-                            newGameData.addTerritoryListener(this);
-                          }
-                        }
-                      }
-                      currentTerritory = territory;
-                    })
-            .exceptionally(e -> log.error("Territory listener error:", e));
+            () -> {
+              GameData oldGameData = currentTerritory != null ? currentTerritory.getData() : null;
+              GameData newGameData = territory != null ? territory.getData() : null;
+              // Re-subscribe listener on the right GameData, which could change when toggling
+              // between history and the current game.
+              if (!ObjectUtils.referenceEquals(oldGameData, newGameData)) {
+                if (oldGameData != null) {
+                  try (GameData.Unlocker ignored = oldGameData.acquireWriteLock()) {
+                    oldGameData.removeTerritoryListener(this);
+                  }
+                }
+                if (newGameData != null) {
+                  try (GameData.Unlocker ignored = newGameData.acquireWriteLock()) {
+                    newGameData.addTerritoryListener(this);
+                  }
+                }
+              }
+              currentTerritory = territory;
+            })
+        .exceptionally(e -> log.error("Territory listener error:", e));
   }
 
   @Override
@@ -312,8 +309,6 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
   @Override
   public void zoomMapChanged(Integer newZoom) {
-    if (Objects.nonNull(newZoom)) {
-      zoomLabel.setText(String.format("Zoom: %d%%", newZoom));
-    }
+    zoomLabel.setText(String.format("Zoom: %d%%", newZoom));
   }
 }
