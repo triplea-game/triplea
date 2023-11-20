@@ -28,6 +28,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -679,14 +680,32 @@ public class BattleCalculatorPanel extends JPanel {
     return location;
   }
 
+//  private static String formatPercentage(final double percentage, int numberOfRounds) {
+//    if (numberOfRounds < 10_000) {
+//      return new DecimalFormat("0%.##").format(percentage);
+//    } else if (numberOfRounds < 100_000) {
+//      return new DecimalFormat("0%.0#").format(percentage);
+//    } else {
+//      return new DecimalFormat("0%.00").format(percentage);
+//    }
+//  }
+
   private static String formatPercentage(final double percentage, int numberOfRounds) {
+    String pattern;
     if (numberOfRounds < 10_000) {
-      return new DecimalFormat("0%.##").format(percentage);
+      pattern = "0%.##";
     } else if (numberOfRounds < 100_000) {
-      return new DecimalFormat("0%.0#").format(percentage);
+      pattern = "0%.0#";
     } else {
-      return new DecimalFormat("0%.00").format(percentage);
+      pattern = "0%.00";
     }
+
+
+    DecimalFormat decimalFormat = new DecimalFormat(pattern);
+    decimalFormat.setRoundingMode(RoundingMode.HALF_UP); // Round the value
+    System.out.println(percentage);
+    System.out.println(decimalFormat.format(percentage));
+    return decimalFormat.format(percentage);
   }
 
   private static String formatValue(final double value) {
