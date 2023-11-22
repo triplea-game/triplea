@@ -326,7 +326,7 @@ final class ViewMenu extends JMenu {
   }
 
   private void addShowZoomMenu() {
-    final JCheckBoxMenuItem showMapZoomBox = new JCheckBoxMenuItem("Show Map Zoom");
+    final JCheckBoxMenuItem showMapZoomBox = new JCheckBoxMenuItem("Show Zoom Percentage");
 
     showMapZoomBox.addActionListener(
         e -> {
