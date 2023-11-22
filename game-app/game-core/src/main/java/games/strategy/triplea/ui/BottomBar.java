@@ -85,6 +85,10 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     statusMessage.setVisible(false);
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
+    zoomLabel.setVisible(false);
+    zoomLabel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
     centerPanel.add(
         statusMessage, gridBuilder.gridX(2).anchor(GridBagConstraintsAnchor.EAST).build());
     centerPanel.add(
@@ -266,6 +270,10 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     CompletableFutureUtils.logExceptionWhenComplete(
         future, throwable -> log.error("Failed to set round icon for " + player, throwable));
     playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
+  }
+
+  public void setMapZoomEnabled(boolean enabled) {
+    zoomLabel.setVisible(enabled);
   }
 
   private void listenForTerritoryUpdates(@Nullable Territory territory) {
