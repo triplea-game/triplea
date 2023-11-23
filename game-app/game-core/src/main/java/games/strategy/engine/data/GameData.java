@@ -13,6 +13,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
@@ -41,7 +42,6 @@ import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.RemoveOnNextMajorRelease;
-import org.triplea.java.collections.IntegerMap;
 import org.triplea.map.description.file.MapDescriptionYaml;
 import org.triplea.map.game.notes.GameNotes;
 import org.triplea.util.Tuple;
@@ -89,7 +89,6 @@ public class GameData implements Serializable, GameState {
   private final GameMap map = new GameMap(this);
   private final PlayerList playerList = new PlayerList(this);
   private final ProductionFrontierList productionFrontierList = new ProductionFrontierList(this);
-  private IntegerMap<ProductionRule> pendingProductionRules;
   private final ProductionRuleList productionRuleList = new ProductionRuleList(this);
   private final RepairFrontierList repairFrontierList = new RepairFrontierList(this);
   private final RepairRules repairRules = new RepairRules(this);
@@ -241,14 +240,6 @@ public class GameData implements Serializable, GameState {
 
   public IDelegate getDelegate(final String name) {
     return delegates.get(name);
-  }
-
-  public IntegerMap<ProductionRule> getPendingProductionRules() {
-    return pendingProductionRules;
-  }
-
-  public void setPendingProductionRules(IntegerMap<ProductionRule> pendingProductionRules) {
-    this.pendingProductionRules = pendingProductionRules;
   }
 
   @Override
@@ -498,6 +489,11 @@ public class GameData implements Serializable, GameState {
   @Override
   public PoliticsDelegate getPoliticsDelegate() {
     return (PoliticsDelegate) findDelegate("politics");
+  }
+
+  @Override
+  public PurchaseDelegate getPurchaseDelegate() {
+    return (PurchaseDelegate) findDelegate("purchase");
   }
 
   private IDelegate findDelegate(final String delegateName) {

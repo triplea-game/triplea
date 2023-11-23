@@ -11,6 +11,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitSeparator;
@@ -53,6 +54,12 @@ public class PurchasePanel extends ActionPanel {
         public void actionPerformed(final ActionEvent e) {
           final GamePlayer player = getCurrentPlayer();
           final GameData data = getData();
+          final PurchaseDelegate purchaseDelegate = data.getPurchaseDelegate();
+
+          // load pending production from file it there is any
+          if (purchaseDelegate.getPendingProductionRules() != null) {
+            purchase = purchaseDelegate.getPendingProductionRules();
+          }
           purchase =
               TabbedProductionPanel.getProduction(
                   player,
@@ -61,7 +68,10 @@ public class PurchasePanel extends ActionPanel {
                   bid,
                   purchase,
                   getMap().getUiContext());
-          data.setPendingProductionRules(purchase);
+
+          // keeping actualized pending production in purchase delegate for later saving game
+          purchaseDelegate.setPendingProductionRules(purchase);
+
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
           if (purchase.totalValues() == 0) {
             purchasedLabel.setText("");
@@ -93,12 +103,7 @@ public class PurchasePanel extends ActionPanel {
     if (keepCurrentPurchase) {
       keepCurrentPurchase = false;
     } else {
-      GameData gameData = getData();
-      if (gameData.getPendingProductionRules() != null) {
-        purchase = gameData.getPendingProductionRules();
-      } else {
-        purchase = new IntegerMap<>();
-      }
+      purchase = new IntegerMap<>();
     }
     SwingUtilities.invokeLater(
         () -> {
@@ -197,7 +202,6 @@ public class PurchasePanel extends ActionPanel {
         }
       }
     }
-    getData().setPendingProductionRules(null);
     release();
   }
 
