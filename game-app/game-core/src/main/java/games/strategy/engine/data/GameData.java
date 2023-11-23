@@ -80,6 +80,7 @@ public class GameData implements Serializable, GameState {
   @RemoveOnNextMajorRelease @Deprecated private Version gameVersion;
   private int diceSides;
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
+
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
   private transient Map<String, IDelegate> delegates = new HashMap<>();
   private final AllianceTracker alliances = new AllianceTracker();

@@ -448,6 +448,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     data.addGameDataEventListener(
         GameDataEvent.TECH_ATTACHMENT_CHANGED, this::clearCachedUnitImages);
     uiContext.addShutdownWindow(this);
+    mapPanel.addZoomMapListener(bottomBar);
   }
 
   private void clearCachedUnitImages() {
