@@ -59,6 +59,7 @@ dependencies {
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testImplementation project(':lib:test-common')
     testImplementation project(':servers:server-test-support')
     testImplementation project(':spitfire-server:database-test-support')
 }

@@ -14,11 +14,13 @@ import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.maps.MapsModuleDatabaseTestSupport;
+import org.triplea.test.common.RequiresDatabase;
 
 @AllArgsConstructor
 @DataSet(value = "map_index.yml", useSequenceFiltering = false)
 @ExtendWith(MapsModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
+@RequiresDatabase
 class MapIndexDaoTest {
 
   private final MapIndexDao mapIndexDao;
