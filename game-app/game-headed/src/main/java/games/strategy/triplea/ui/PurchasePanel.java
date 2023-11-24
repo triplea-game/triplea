@@ -11,6 +11,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitSeparator;
@@ -53,6 +54,10 @@ public class PurchasePanel extends ActionPanel {
         public void actionPerformed(final ActionEvent e) {
           final GamePlayer player = getCurrentPlayer();
           final GameData data = getData();
+          final PurchaseDelegate purchaseDelegate = data.getPurchaseDelegate();
+
+          // Restore pending production that was loaded from the save game.
+          purchase = purchaseDelegate.getPendingProductionRules();
           purchase =
               TabbedProductionPanel.getProduction(
                   player,
@@ -61,6 +66,10 @@ public class PurchasePanel extends ActionPanel {
                   bid,
                   purchase,
                   getMap().getUiContext());
+
+          // Keeping actualized pending production in PurchaseDelegate for later saving game.
+          purchaseDelegate.setPendingProductionRules(purchase);
+
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
           if (purchase.totalValues() == 0) {
             purchasedLabel.setText("");

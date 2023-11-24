@@ -52,6 +52,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
       Comparator.comparing(o -> (UnitType) o.getAnyResultKey(), new UnitTypeComparator());
 
   private boolean needToInitialize = true;
+  private IntegerMap<ProductionRule> pendingProductionRules;
 
   @Override
   public void start() {
@@ -102,6 +103,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
   @Override
   public void end() {
     super.end();
+    pendingProductionRules = null;
     needToInitialize = true;
   }
 
@@ -110,6 +112,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
     final PurchaseExtendedDelegateState state = new PurchaseExtendedDelegateState();
     state.superState = super.saveState();
     state.needToInitialize = needToInitialize;
+    state.pendingProductionRules = pendingProductionRules;
     return state;
   }
 
@@ -118,6 +121,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
     final PurchaseExtendedDelegateState s = (PurchaseExtendedDelegateState) state;
     super.loadState(s.superState);
     needToInitialize = s.needToInitialize;
+    pendingProductionRules = s.pendingProductionRules;
   }
 
   @Override
@@ -380,6 +384,14 @@ public class PurchaseDelegate extends BaseTripleADelegate
       changes.add(change);
     }
     return returnString.toString();
+  }
+
+  public IntegerMap<ProductionRule> getPendingProductionRules() {
+    return pendingProductionRules;
+  }
+
+  public void setPendingProductionRules(IntegerMap<ProductionRule> pendingProductionRules) {
+    this.pendingProductionRules = pendingProductionRules;
   }
 
   @Override
