@@ -40,23 +40,18 @@ For more detailed steps on building the project with CLI, see:
 IDE setup has the needed configurations for the project to compile. There are checked in launchers that
 IDEA should automatically find.  Look in 'run configurations' to launch the game-client.
 
-## Running all tests locally before PR (CLI)
+## Running build checks locally (CLI)
 
+Verify will run all checks (including additional custom checks):
 ```
-./game-app/run/check
-```
-
-## Run Tests
-
-```
-./gradlew test
+./verify
 ```
 
-## Run Tests that need a running database
+Tests are split between those that need a database (which runs on docker), vs those that do not.
 
-```
-./gradlew testWithDatabase
-```
+- `./gradlew test`: Runs all tests that do not require database
+- `./gradlew testWithDatabase`: Runs tests that require a local database
+- `./gradlew allTest`: Runs all tests
 
 
 ## Run Formatting
@@ -68,7 +63,7 @@ from IDE. Everything can also be formatted from CLI:
 ./gradew spotlessApply
 ```
 
-PR builds will fail if the code is not formatted with spotless.
+PR builds will fail if the code is not formatted.
 
 
 ## Code Conventions (Style Guide)
@@ -84,16 +79,9 @@ Please be sure to check these out so that you can fit the general style of the p
 Local database is needed to run the servers (lobby).
 
 ```bash
-# requires docker to be installed
-./spitfire-server/database/start_docker_db
+## start database
+./gradlew composeUp
 ```
-
-This will launch a postgres database on docker and will install the latest
-TripleA schema with a small sample dataset for local testing.
-
-After the database is launched you can:
-- run the full set of tests
-- launch a local lobby
 
 ### Launch local lobby
 
@@ -101,7 +89,6 @@ Lobby can be launched via the checked-in run configurations from IDE, or from CL
 ```bash
 ./gradlew :spitfire-server:dropwizard-server:run
 ```
-
 To connect to local lobby, from the game client:
   - 'settings > testing > local lobby'
   - play online
@@ -134,7 +121,7 @@ The deployment code is inside of the '[/infrastructure](./infrastructure)' folde
 We use [ansible](https://www.ansible.com/) to execute deployments.
 
 You can test out deployment code by first launching a virtual machine and then running a deployment
-against that virtual machine. See '[infrastructure/vagrant/README.md](./infrastructure/vagrant/README.md)'
+against that virtual machine. See '[infrastructure/vagrant/REAMDE.md](./infrastructure/vagrant/REAMDE.md)'
 for more information.
 
 # Pitfalls and Pain Points to be aware of
@@ -177,7 +164,7 @@ In short:
 
 ### Google formatter does not work
 
-IDEA needs a tweak to overcome a JDk9 problem. See the IDE setup for the needed config that needs
-to be added to your vmoptions file.
+IDEA needs a tweak to overcome a JDk9 problem. The google java format plugin should show a warning dialog about
+this if it is a problem.
 
 

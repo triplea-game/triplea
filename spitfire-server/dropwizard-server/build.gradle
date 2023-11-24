@@ -9,6 +9,8 @@ ext {
     releasesDir = file("$buildDir/releases")
 }
 
+run.dependsOn rootProject.composeUp
+
 jar {
     manifest {
         attributes 'Main-Class': mainClassName

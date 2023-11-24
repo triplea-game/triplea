@@ -3,9 +3,12 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.50.0'
     id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
     id 'com.diffplug.spotless' version '6.22.0' apply false
+    id 'com.avast.gradle.docker-compose' version '0.17.5'
 }
 
 apply plugin: 'eclipse'
+apply plugin: 'docker-compose'
+
 
 ext {
     schemasDir = file('config/triplea/schemas')
@@ -206,6 +209,7 @@ subprojects {
         description = 'Runs integration tests.'
         group = 'verification'
 
+        dependsOn(":composeUp")
         dependsOn(":spitfire-server:database:flywayMigrateLobbyDb")
         dependsOn(":spitfire-server:database:flywayMigrateErrorReportDb")
 
@@ -223,4 +227,7 @@ subprojects {
     //  - 'check' should run ALL validations, tests, spotlessChecks, everything..
     check.dependsOn testAll
 
+    dockerCompose {
+        useComposeFiles = ['.docker/docker-compose.yml' ]
+    }
 }
