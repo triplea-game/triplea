@@ -56,10 +56,8 @@ public class PurchasePanel extends ActionPanel {
           final GameData data = getData();
           final PurchaseDelegate purchaseDelegate = data.getPurchaseDelegate();
 
-          // load pending production from file it there is any
-          if (purchaseDelegate.getPendingProductionRules() != null) {
-            purchase = purchaseDelegate.getPendingProductionRules();
-          }
+          // Restore pending production that was loaded from the save game.
+          purchase = purchaseDelegate.getPendingProductionRules();
           purchase =
               TabbedProductionPanel.getProduction(
                   player,
@@ -69,7 +67,7 @@ public class PurchasePanel extends ActionPanel {
                   purchase,
                   getMap().getUiContext());
 
-          // keeping actualized pending production in purchase delegate for later saving game
+          // Keeping actualized pending production in PurchaseDelegate for later saving game.
           purchaseDelegate.setPendingProductionRules(purchase);
 
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);

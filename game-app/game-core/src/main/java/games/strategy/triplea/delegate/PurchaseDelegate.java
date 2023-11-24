@@ -161,7 +161,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
   }
 
   @Override
-  public String  purchase(final IntegerMap<ProductionRule> productionRules) {
+  public String purchase(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = getCosts(productionRules);
     final IntegerMap<NamedAttachable> results = getResults(productionRules);
     if (!canAfford(costs, player)) {
