@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
+import org.triplea.test.common.RequiresDatabase;
 
 @DataSet(
     value =
@@ -24,6 +25,7 @@ import org.triplea.db.LobbyModuleDatabaseTestSupport;
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
+@RequiresDatabase
 class GameChatHistoryDaoTest {
   private static final String SIR_HOSTS_A_LOT = "sir_hosts_a_lot";
   private static final String SIR_HOSTS_A_LITTLE = "sir_hosts_a_little";

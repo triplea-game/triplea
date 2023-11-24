@@ -46,6 +46,19 @@ IDEA should automatically find.  Look in 'run configurations' to launch the game
 ./game-app/run/check
 ```
 
+## Run Tests
+
+```
+./gradlew test
+```
+
+## Run Tests that need a running database
+
+```
+./gradlew testWithDatabase
+```
+
+
 ## Run Formatting
 
 We use 'google java format', be sure to install the plugin in your IDE to properly format
@@ -121,7 +134,7 @@ The deployment code is inside of the '[/infrastructure](./infrastructure)' folde
 We use [ansible](https://www.ansible.com/) to execute deployments.
 
 You can test out deployment code by first launching a virtual machine and then running a deployment
-against that virtual machine. See '[infrastructure/vagrant/REAMDE.md](./infrastructure/vagrant/REAMDE.md)'
+against that virtual machine. See '[infrastructure/vagrant/README.md](./infrastructure/vagrant/README.md)'
 for more information.
 
 # Pitfalls and Pain Points to be aware of

@@ -11,11 +11,10 @@ import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
+import org.triplea.test.common.RequiresDatabase;
 
 @ExtendWith(ErrorReportServerTestExtension.class)
-// @ExtendWith(SpitfireDatabaseTestSupport.class)
-// @ExtendWith(DBUnitExtension.class)
-// @DataSet(value = ControllerIntegrationTest.DATA_SETS, useSequenceFiltering = false)
+@RequiresDatabase
 class ErrorReportControllerIntegrationTest {
   private final ErrorReportClient client;
 

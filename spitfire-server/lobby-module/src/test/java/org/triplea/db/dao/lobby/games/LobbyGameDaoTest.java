@@ -11,10 +11,12 @@ import org.triplea.db.LobbyModuleDatabaseTestSupport;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
+import org.triplea.test.common.RequiresDatabase;
 
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
+@RequiresDatabase
 class LobbyGameDaoTest {
   private final LobbyGameDao lobbyGameDao;
 

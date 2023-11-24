@@ -194,7 +194,33 @@ subprojects {
         }
     }
 
+    //  'test' runs only the tests that do _not_ need a database
     test {
-        useJUnitPlatform()
+        useJUnitPlatform() {
+            excludeTags 'RequiresDatabase'
+        }
     }
+
+    //  'testWithDatabase' runs only the tests that need a database
+    tasks.register('testWithDatabase', Test) {
+        description = 'Runs integration tests.'
+        group = 'verification'
+
+        dependsOn(":spitfire-server:database:flywayMigrateLobbyDb")
+        dependsOn(":spitfire-server:database:flywayMigrateErrorReportDb")
+
+        useJUnitPlatform() {
+            includeTags 'RequiresDatabase'
+        }
+    }
+
+    //  - 'testAll' runs all tests
+    task testAll {
+        dependsOn testWithDatabase
+        dependsOn test
+    }
+
+    //  - 'check' should run ALL validations, tests, spotlessChecks, everything..
+    check.dependsOn testAll
+
 }

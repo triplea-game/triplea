@@ -16,6 +16,7 @@ import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
+import org.triplea.test.common.RequiresDatabase;
 
 @RequiredArgsConstructor
 @DataSet(
@@ -26,6 +27,7 @@ import org.triplea.db.LobbyModuleDatabaseTestSupport;
     useSequenceFiltering = false)
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
+@RequiresDatabase
 class ModeratorAuditHistoryDaoTest {
 
   private static final int MODERATOR_ID = 900000;

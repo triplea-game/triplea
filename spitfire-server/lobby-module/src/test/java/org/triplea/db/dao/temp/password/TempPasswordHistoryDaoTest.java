@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
+import org.triplea.test.common.RequiresDatabase;
 
 @DataSet(
     cleanBefore = true,
@@ -15,6 +16,7 @@ import org.triplea.db.LobbyModuleDatabaseTestSupport;
     useSequenceFiltering = false)
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
+@RequiresDatabase
 class TempPasswordHistoryDaoTest {
 
   private static final String USERNAME = "username";
