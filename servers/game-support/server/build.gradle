@@ -51,7 +51,7 @@ dependencies {
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
     implementation project(':http-clients:github-client')
     implementation project(':lib:http-client-lib')
-    implementation project(':servers:error-reporting:client')
+    implementation project(':servers:game-support:client')
     implementation project(':servers:server-lib')
 
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
