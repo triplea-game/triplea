@@ -48,6 +48,7 @@ logging:
     io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper: INFO
 
 server:
+  rootPath: /game-support
   applicationConnectors:
     - type: http
       port: ${HTTP_PORT:-8090}
