@@ -1,7 +1,7 @@
 dependencies {
     implementation "io.github.openfeign:feign-core:$feignCoreVersion"
     implementation "io.github.openfeign:feign-gson:$feignGsonVersion"
-    implementation project(":http-clients:feign-common")
+    implementation project(":lib:feign-common")
     implementation project(":lib:java-extras")
     testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
     testImplementation "com.github.tomakehurst:wiremock:$wireMockVersion"
