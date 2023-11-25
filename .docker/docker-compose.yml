@@ -9,5 +9,8 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql
     ports:
-      - 5432:5432
-
+      - "127.0.0.1:5432:5432"
+  nginx:
+    image: nginx:stable-alpine-perl
+    ports:
+      - "127.0.0.1:80:80"
