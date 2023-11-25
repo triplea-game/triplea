@@ -29,7 +29,7 @@ If you are new to Open Source & Github:
 ## Compile and launch TripleA (CLI)
 
 ```bash
-./game-app/run/run
+"./gradlew :game-app:game-headed:run"
 ```
 
 For more detailed steps on building the project with CLI, see:
