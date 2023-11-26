@@ -15,9 +15,5 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
-      - uses: isbang/compose-action@v1.5.1
-        with:
-          compose-file: ".docker/docker-compose.yml"
       - name: Run Build Checks
-        run: ./verify --exclude-task composeUp
-
+        run: ./verify
