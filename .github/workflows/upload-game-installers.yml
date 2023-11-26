@@ -4,10 +4,11 @@ on:
     branches:
       - master
     paths:
+      - 'build.gradle'
       - 'game-app/**'
       - 'http-clients/**'
       - 'lib/**'
-      - 'build.gradle'
+      - 'servers/*/client/**'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
