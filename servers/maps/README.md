@@ -1,4 +1,4 @@
-# Maps-Index Server - Overview
+# Maps Server - Overview
 
 The maps-index server indexes all of the maps and provides an API
 for game-clients to get a listing of maps and to interact with

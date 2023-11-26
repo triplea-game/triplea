@@ -8,8 +8,8 @@ import org.triplea.http.client.lib.HttpClientHeaders;
 
 /** Http client to upload error reports to the http lobby server. */
 public interface ErrorReportClient {
-  String ERROR_REPORT_PATH = "/error-report";
-  String CAN_UPLOAD_ERROR_REPORT_PATH = "/error-report-check";
+  String ERROR_REPORT_PATH = "/game-support/error-report";
+  String CAN_UPLOAD_ERROR_REPORT_PATH = "/game-support/error-report-check";
   int MAX_REPORTS_PER_DAY = 5;
 
   /** Creates an error report uploader clients, sends error reports and gets a response back. */
