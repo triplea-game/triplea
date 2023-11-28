@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.java.ThreadRunner;
 
 /**

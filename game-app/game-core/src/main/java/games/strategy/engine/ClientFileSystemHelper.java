@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.ApplicationContext;
-import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.io.FileUtils;
 import org.triplea.util.Services;
 

@@ -7,7 +7,6 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.maps.listing.MapsClient;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 final class ClientFileSystemHelperTest {
@@ -18,7 +17,8 @@ final class ClientFileSystemHelperTest {
       final Path result =
           ClientFileSystemHelper.getUserMapsFolder(() -> Path.of("/path/to/current"));
 
-      assertThat(result, is(Path.of("/path", "to", "current", ClientFileSystemHelper.MAPS_FOLDER_NAME)));
+      assertThat(
+          result, is(Path.of("/path", "to", "current", ClientFileSystemHelper.MAPS_FOLDER_NAME)));
     }
   }
 }
