@@ -59,10 +59,10 @@ dependencies {
     implementation project(':lib:java-extras')
     implementation project(':lib:websocket-client')
     implementation project(':lib:websocket-server')
+    implementation project(':servers:maps:server')
     implementation project(':servers:server-lib')
     implementation project(':spitfire-server:latest-version-module')
     implementation project(':spitfire-server:lobby-module')
-    implementation project(':spitfire-server:maps-module')
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testImplementation "io.github.openfeign:feign-core:$feignCoreVersion"
