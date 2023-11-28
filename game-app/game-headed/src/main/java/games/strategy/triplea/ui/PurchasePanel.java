@@ -57,7 +57,12 @@ public class PurchasePanel extends ActionPanel {
           final PurchaseDelegate purchaseDelegate = data.getPurchaseDelegate();
 
           // Restore pending production that was loaded from the save game.
-          purchase = purchaseDelegate.getPendingProductionRules();
+          if (purchaseDelegate.getPendingProductionRules() == null) {
+            purchase = new IntegerMap<>();
+          } else {
+            purchase = purchaseDelegate.getPendingProductionRules();
+          }
+
           purchase =
               TabbedProductionPanel.getProduction(
                   player,

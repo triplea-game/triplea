@@ -60,7 +60,37 @@ public class SmallMapImageManager {
     if (t.isWater()) {
       return;
     }
+    // create a large image for the territory
     final Rectangle bounds = new Rectangle(mapData.getBoundingRect(t.getName()));
+    final Image largeImage = createLargeImage(t, bounds, mapData);
+
+    // scale it down
+    final double ratioX = view.getRatioX();
+    final double ratioY = view.getRatioY();
+    int thumbWidth = (int) (bounds.width * ratioX);
+    int thumbHeight = (int) (bounds.height * ratioY);
+    // the images won't overlap perfectly after being scaled, make them a little bigger to
+    // re-balance that
+    thumbWidth += 3;
+    thumbHeight += 3;
+    final int thumbsX = (int) (bounds.x * ratioX) - 1;
+    final int thumbsY = (int) (bounds.y * ratioY) - 1;
+    // create the thumb image
+    final Image thumbImage = Util.newImage(thumbWidth, thumbHeight, true);
+    {
+      final Graphics g = thumbImage.getGraphics();
+      g.drawImage(largeImage, 0, 0, thumbWidth, thumbHeight, null);
+      g.dispose();
+    }
+    {
+      final Graphics g = offscreen.getGraphics();
+      // draw it on our offscreen
+      g.drawImage(thumbImage, thumbsX, thumbsY, thumbWidth, thumbHeight, null);
+      g.dispose();
+    }
+  }
+
+  private Image createLargeImage(Territory t, Rectangle bounds, MapData mapData) {
     // create a large image for the territory
     final Image largeImage = Util.newImage(bounds.width, bounds.height, true);
     // make it transparent
@@ -82,35 +112,10 @@ public class SmallMapImageManager {
           RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
       g.setRenderingHint(
           RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-      final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
-      drawable.draw(bounds, data, g, mapData, mapData.getSmallMapTerritorySaturation());
+      final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t);
+      drawable.draw(bounds, g, mapData, mapData.getSmallMapTerritorySaturation());
       g.dispose();
     }
-
-    // scale it down
-    final double ratioX = view.getRatioX();
-    final double ratioY = view.getRatioX();
-    int thumbWidth = (int) (bounds.width * ratioX);
-    int thumbHeight = (int) (bounds.height * ratioY);
-    // make the image a little bigger
-    // the images wont overlap perfectly after being scaled, make them a little bigger to re-balance
-    // that
-    thumbWidth += 3;
-    thumbHeight += 3;
-    final int thumbsX = (int) (bounds.x * ratioX) - 1;
-    final int thumbsY = (int) (bounds.y * ratioY) - 1;
-    // create the thumb image
-    final Image thumbImage = Util.newImage(thumbWidth, thumbHeight, true);
-    {
-      final Graphics g = thumbImage.getGraphics();
-      g.drawImage(largeImage, 0, 0, thumbWidth, thumbHeight, null);
-      g.dispose();
-    }
-    {
-      final Graphics g = offscreen.getGraphics();
-      // draw it on our offscreen
-      g.drawImage(thumbImage, thumbsX, thumbsY, thumbWidth, thumbHeight, null);
-      g.dispose();
-    }
+    return largeImage;
   }
 }
