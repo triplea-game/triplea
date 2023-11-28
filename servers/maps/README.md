@@ -15,6 +15,3 @@ Eventually this was evolved to be a YML file. The maps-index server
 is a further step on this evolution to where maps are dynamically
 read from the triplea-maps github organization and then the list
 fo maps is maintained in a database.
-
-
-
