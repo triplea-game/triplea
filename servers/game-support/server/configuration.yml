@@ -50,7 +50,7 @@ logging:
 server:
   applicationConnectors:
     - type: http
-      port: ${HTTP_PORT:-8090}
+      port: ${HTTP_PORT:-8080}
       # useForwardedHeaders is important for when behind a reverse proxy (NGINX)
       # Without this 'getRemoteAddr' will return the IP of the reverse proxy server.
       # By default when building locally useForwardedPorts should be 'false', but

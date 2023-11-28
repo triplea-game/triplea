@@ -1,11 +1,3 @@
-plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-}
-
-shadowJar {
-    archiveClassifier.set ''
-}
-
 dependencies {
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"

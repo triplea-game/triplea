@@ -16,6 +16,8 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 /**

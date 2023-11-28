@@ -3,7 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-archivesBaseName = "$group-$name"
+archivesBaseName = "game-support-server"
 mainClassName = 'org.triplea.server.error.reporting.ErrorReportingServer'
 ext {
     releasesDir = file("$buildDir/releases")
