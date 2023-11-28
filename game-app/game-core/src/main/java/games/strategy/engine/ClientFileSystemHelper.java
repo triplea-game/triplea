@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.ApplicationContext;
-import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.io.FileUtils;
 import org.triplea.util.Services;
 
@@ -21,6 +20,8 @@ import org.triplea.util.Services;
 @Slf4j
 public final class ClientFileSystemHelper {
   public static final String USER_ROOT_FOLDER_NAME = "triplea";
+
+  @VisibleForTesting static final String MAPS_FOLDER_NAME = "downloadedMaps";
   private static Path codeSourceLocation;
 
   private ClientFileSystemHelper() {}
@@ -111,7 +112,7 @@ public final class ClientFileSystemHelper {
   @VisibleForTesting
   static Path getUserMapsFolder(final Supplier<Path> userHomeRootFolderSupplier) {
     final Path defaultDownloadedMapsFolder =
-        userHomeRootFolderSupplier.get().resolve(MapsClient.MAPS_FOLDER_NAME);
+        userHomeRootFolderSupplier.get().resolve(MAPS_FOLDER_NAME);
 
     // make sure folder override location is valid, if not notify user and reset it.
     final Optional<Path> path = ClientSetting.mapFolderOverride.getValue();

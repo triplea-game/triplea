@@ -12,7 +12,6 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
  */
 public interface MapsClient {
   String MAPS_LISTING_PATH = "/maps/listing";
-  String MAPS_FOLDER_NAME = "downloadedMaps";
 
   static MapsClient newClient(URI mapsServerUri) {
     return HttpClient.newClient(
