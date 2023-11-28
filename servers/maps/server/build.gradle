@@ -6,8 +6,8 @@ dependencies {
     implementation project(':http-clients:github-client')
     implementation project(':http-clients:lobby-client')
     implementation project(':lib:java-extras')
+    implementation project(':servers:server-lib')
     implementation project(':spitfire-server:database')
-    implementation project(':spitfire-server:lib:scheduled-tasks')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
