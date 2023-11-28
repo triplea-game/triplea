@@ -18,7 +18,7 @@ final class ClientFileSystemHelperTest {
       final Path result =
           ClientFileSystemHelper.getUserMapsFolder(() -> Path.of("/path/to/current"));
 
-      assertThat(result, is(Path.of("/path", "to", "current", MapsClient.MAPS_FOLDER_NAME)));
+      assertThat(result, is(Path.of("/path", "to", "current", ClientFileSystemHelper.MAPS_FOLDER_NAME)));
     }
   }
 }

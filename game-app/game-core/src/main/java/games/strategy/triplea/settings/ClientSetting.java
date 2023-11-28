@@ -149,10 +149,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
           UnitsDrawer.UnitFlagDrawMode.class,
           "UNIT_FLAG_DRAW_MODE",
           UnitsDrawer.UnitFlagDrawMode.NONE);
-  public static final ClientSetting<Path> userMapsFolderPath =
-      new PathClientSetting(
-          "USER_MAPS_FOLDER_PATH",
-          ClientFileSystemHelper.getUserRootFolder().resolve(MapsClient.MAPS_FOLDER_NAME));
   public static final ClientSetting<Integer> wheelScrollAmount =
       new IntegerClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting<String> playerName =
