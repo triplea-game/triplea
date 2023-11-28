@@ -6,6 +6,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.events.TerritoryListener;
+import games.strategy.engine.data.events.ZoomMapListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.util.UnitCategory;
@@ -43,7 +44,7 @@ import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
 
 @Slf4j
-public class BottomBar extends JPanel implements TerritoryListener {
+public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListener {
   private final UiContext uiContext;
 
   private final ResourceBar resourceBar;
@@ -55,6 +56,7 @@ public class BottomBar extends JPanel implements TerritoryListener {
   private final JLabel playerLabel = new JLabel("xxxxxx");
   private final JLabel stepLabel = new JLabel("xxxxxx");
   private final JLabel roundLabel = new JLabel("xxxxxx");
+  private final JLabel zoomLabel = new JLabel("");
 
   public BottomBar(final UiContext uiContext, final GameData data, final boolean usingDiceServer) {
     this.uiContext = uiContext;
@@ -83,8 +85,14 @@ public class BottomBar extends JPanel implements TerritoryListener {
     statusMessage.setVisible(false);
     statusMessage.setPreferredSize(new Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
+    zoomLabel.setVisible(false);
+    zoomLabel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
     centerPanel.add(
         statusMessage, gridBuilder.gridX(2).anchor(GridBagConstraintsAnchor.EAST).build());
+    centerPanel.add(
+        zoomLabel, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.EAST).build());
     return centerPanel;
   }
 
@@ -264,6 +272,10 @@ public class BottomBar extends JPanel implements TerritoryListener {
     playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
   }
 
+  public void setMapZoomEnabled(boolean enabled) {
+    zoomLabel.setVisible(enabled);
+  }
+
   private void listenForTerritoryUpdates(@Nullable Territory territory) {
     // Run async, as this is called while holding a GameData lock so we shouldn't grab a different
     // data's lock in this case.
@@ -302,4 +314,9 @@ public class BottomBar extends JPanel implements TerritoryListener {
 
   @Override
   public void attachmentChanged(Territory territory) {}
+
+  @Override
+  public void zoomMapChanged(Integer newZoom) {
+    zoomLabel.setText(String.format("Zoom: %d%%", newZoom));
+  }
 }

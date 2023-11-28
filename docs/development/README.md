@@ -18,7 +18,7 @@ Set up WSL, this will give you a command line that can be used to run docker, gr
 
 - Fork & Clone: <https://github.com/triplea-game/triplea>
 - Setup IDE: [/docs/development/how-to/ide-setup](how-to/ide-setup)
-- Use a feature-branch workflow, see: [typical git workflow](reference/typical-git-workflow.md))
+- Use a feature-branch workflow, see: [typical git workflow](typical-git-workflow.md))
 - Submit pull request, see: [pull requests process](../project/pull-requests.md).
 
 If you are new to Open Source & Github:
@@ -29,22 +29,30 @@ If you are new to Open Source & Github:
 ## Compile and launch TripleA (CLI)
 
 ```bash
-./game-app/run/run
+"./gradlew :game-app:game-headed:run"
 ```
 
 For more detailed steps on building the project with CLI, see:
-- [reference/cli-build-commands.md](reference/cli-build-commands.md)
+- [reference/cli-build-commands.md](cli-build-commands.md)
 
 ## Compile and launch TripleA (IDEA)
 
 IDE setup has the needed configurations for the project to compile. There are checked in launchers that
 IDEA should automatically find.  Look in 'run configurations' to launch the game-client.
 
-## Running all tests locally before PR (CLI)
+## Running build checks locally (CLI)
 
+Verify will run all checks (including additional custom checks):
 ```
-./game-app/run/check
+./verify
 ```
+
+Tests are split between those that need a database (which runs on docker), vs those that do not.
+
+- `./gradlew test`: Runs all tests that do not require database
+- `./gradlew testWithDatabase`: Runs tests that require a local database
+- `./gradlew allTest`: Runs all tests
+
 
 ## Run Formatting
 
@@ -55,12 +63,12 @@ from IDE. Everything can also be formatted from CLI:
 ./gradew spotlessApply
 ```
 
-PR builds will fail if the code is not formatted with spotless.
+PR builds will fail if the code is not formatted.
 
 
 ## Code Conventions (Style Guide)
 
-Full list of coding conventions can be found at: [reference/code-conventions](./reference/code-conventions)
+Full list of coding conventions can be found at: [reference/code-conventions](code-conventions)
 
 Please be sure to check these out so that you can fit the general style of the project.
 
@@ -71,16 +79,9 @@ Please be sure to check these out so that you can fit the general style of the p
 Local database is needed to run the servers (lobby).
 
 ```bash
-# requires docker to be installed
-./spitfire-server/database/start_docker_db
+## start database
+./gradlew composeUp
 ```
-
-This will launch a postgres database on docker and will install the latest
-TripleA schema with a small sample dataset for local testing.
-
-After the database is launched you can:
-- run the full set of tests
-- launch a local lobby
 
 ### Launch local lobby
 
@@ -88,7 +89,6 @@ Lobby can be launched via the checked-in run configurations from IDE, or from CL
 ```bash
 ./gradlew :spitfire-server:dropwizard-server:run
 ```
-
 To connect to local lobby, from the game client:
   - 'settings > testing > local lobby'
   - play online
@@ -164,7 +164,7 @@ In short:
 
 ### Google formatter does not work
 
-IDEA needs a tweak to overcome a JDk9 problem. See the IDE setup for the needed config that needs
-to be added to your vmoptions file.
+IDEA needs a tweak to overcome a JDk9 problem. The google java format plugin should show a warning dialog about
+this if it is a problem.
 
 

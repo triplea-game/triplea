@@ -4,10 +4,11 @@ on:
     branches:
       - master
     paths:
+      - 'build.gradle'
       - 'game-app/**'
       - 'http-clients/**'
       - 'lib/**'
-      - 'build.gradle'
+      - 'servers/*/client/**'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
@@ -25,8 +26,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
-      - name: Run Build Checks
-        run: ./game-app/run/check
       - name: Build Installers
         run: ./game-app/run/package
         env:

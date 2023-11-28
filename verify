@@ -19,9 +19,9 @@ function checkDependency {
   fi
 }
 
-# Installs python
-# Installs docker & docker-compose using pip
-# Adds current user to 'docker' group (allows for sudo-less docker)
+# Installs Docker and dependencies
+# Docker is installed through python, we install python & pip first, then docker.
+# Last, we add current user to the 'docker' group to enable sudo-less docker.
 function installDocker {
   echo "Installing python and pip, a dependency of docker"
   if hash yum; then
@@ -49,7 +49,6 @@ set -o pipefail
 set -eu
 
 checkDependency "docker" || installDocker
-"$scriptDir/.build/setup-database"
 "$scriptDir/gradlew" check $@
 "$scriptDir/.build/find-unused-dbunit-datasets"
 "$scriptDir/.build/code-convention-checks/check-custom-style" spitfire-server

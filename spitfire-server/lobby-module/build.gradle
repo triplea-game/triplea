@@ -11,9 +11,9 @@ dependencies {
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation project(':game-app:domain-data')
-    implementation project(':http-clients:feign-common')
-    implementation project(':http-clients:lobby-client')
     implementation project(':http-clients:github-client')
+    implementation project(':http-clients:lobby-client')
+    implementation project(':lib:feign-common')
     implementation project(':lib:java-extras')
     implementation project(':lib:websocket-client')
     implementation project(':lib:websocket-server')

@@ -1,0 +1,49 @@
+# This docker-compose file depends on './gradlew shadowJar'
+#
+# Launches all of the background servers used by TripleA.
+# The main entrypoint to those services is NGINX which
+# is listening on localhost:80
+#
+version: '3'
+services:
+  lobby:
+    build:
+      context: ../spitfire-server/dropwizard-server/
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_USER=lobby_user
+      - DATABASE_PASSWORD=lobby
+      - DB_URL=database:5432/lobby_db
+    depends_on:
+      - database
+  game-support-server:
+    build:
+      context: ../servers/game-support/server/
+      dockerfile: Dockerfile
+    environment:
+      - DB_URL=database:5432/error_report
+    depends_on:
+      - database
+  database:
+    image: postgres:10
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: echo 'select 1' | psql -h localhost -U postgres  | grep -q '1 row'
+      interval: 3s
+      retries: 10
+      timeout: 3s
+  nginx:
+    image: nginx:stable-alpine-perl
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    links:
+      - game-support-server

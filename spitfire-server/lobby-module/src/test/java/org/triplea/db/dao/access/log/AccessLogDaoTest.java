@@ -14,10 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
+import org.triplea.test.common.RequiresDatabase;
 
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
+@RequiresDatabase
 class AccessLogDaoTest {
   private static final String EMPTY_ACCESS_LOG =
       "access_log/user_role.yml,access_log/lobby_user.yml";

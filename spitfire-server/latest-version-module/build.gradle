@@ -1,7 +1,7 @@
 dependencies {
     implementation project(':http-clients:github-client')
+    implementation project(':lib:feign-common')
     implementation project(':lib:java-extras')
-    implementation project(":http-clients:feign-common")
     implementation project(':spitfire-server:lib:scheduled-tasks')
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     testImplementation project(":lib:test-common")

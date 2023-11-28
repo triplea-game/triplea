@@ -253,7 +253,7 @@ public class TileManager {
     drawing.add(new BattleDrawable(territory.getName()));
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (!territory.isWater()) {
-      drawing.add(new LandTerritoryDrawable(territory.getName()));
+      drawing.add(new LandTerritoryDrawable(territory));
     } else {
       if (ta != null) {
         // Kamikaze Zones
@@ -482,7 +482,7 @@ public class TileManager {
   }
 
   /**
-   * Returns the rectangle within which all of the specified units will be drawn stacked or {@code
+   * Returns the rectangle within which all the specified units will be drawn stacked or {@code
    * null} if no such rectangle exists. Because the units are assumed to be drawn stacked, the
    * returned rectangle will always have a size equal to the standard unit image size.
    */

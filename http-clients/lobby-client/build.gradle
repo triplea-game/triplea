@@ -1,7 +1,7 @@
 dependencies {
     implementation "io.github.openfeign:feign-core:$feignCoreVersion"
     implementation project(":game-app:domain-data")
-    implementation project(":http-clients:feign-common")
+    implementation project(":lib:feign-common")
     implementation project(":lib:java-extras")
     implementation project(":lib:websocket-client")
     testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"

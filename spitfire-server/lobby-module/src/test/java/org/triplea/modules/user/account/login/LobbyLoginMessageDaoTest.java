@@ -9,10 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
+import org.triplea.test.common.RequiresDatabase;
 
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
+@RequiresDatabase
 class LobbyLoginMessageDaoTest {
 
   private final LobbyLoginMessageDao lobbyLoginMessageDao;
