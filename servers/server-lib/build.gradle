@@ -3,6 +3,7 @@ dependencies {
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
+    implementation project(":lib:java-extras")
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
 }
