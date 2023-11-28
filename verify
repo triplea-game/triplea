@@ -49,6 +49,6 @@ set -o pipefail
 set -eu
 
 checkDependency "docker" || installDocker
-"$scriptDir/gradlew" check $@
+"$scriptDir/gradlew" spotlessApply check $@
 "$scriptDir/.build/find-unused-dbunit-datasets"
 "$scriptDir/.build/code-convention-checks/check-custom-style" spitfire-server

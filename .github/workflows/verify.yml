@@ -16,4 +16,7 @@ jobs:
           distribution: temurin
           java-version: 11
       - name: Run Build Checks
-        run: ./verify
+        # We skip 'spotlessApply' such that only 'spotlessCheck' will run to validate formatting.
+        # This is a good setup for a CI server, meanwhile if a developer runs 'verify', they
+        # will have the 'spotlessApply' task run and it will automatically format the code.
+        run: ./verify --exclude-task spotlessApply
