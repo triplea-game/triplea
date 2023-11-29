@@ -194,23 +194,17 @@ class LobbyGamePanel extends JPanel {
         .forEach(menu::add);
 
     if (lobbyClient.isModerator()) {
-      final Collection<Action> generalAdminActions = getGeneralAdminGamesListContextActions();
-      if (!generalAdminActions.isEmpty()) {
-        menu.addSeparator();
-        generalAdminActions.forEach(menu::add);
-      }
+      menu.addSeparator();
+      List.of(
+              SwingAction.of("Show Chat History", e -> showChatHistory()),
+              SwingAction.of("Boot Game", e -> bootGame()),
+              SwingAction.of("Shutdown", e -> shutdown()))
+          .forEach(menu::add);
     }
 
     if (menu.getComponentCount() > 0) {
       menu.show(gameTable, mouseEvent.getX(), mouseEvent.getY());
     }
-  }
-
-  private Collection<Action> getGeneralAdminGamesListContextActions() {
-    return List.of(
-        SwingAction.of("Show Chat History", e -> showChatHistory()),
-        SwingAction.of("Boot Game", e -> bootGame()),
-        SwingAction.of("Shutdown", e -> shutdown()));
   }
 
   private void joinGame() {
