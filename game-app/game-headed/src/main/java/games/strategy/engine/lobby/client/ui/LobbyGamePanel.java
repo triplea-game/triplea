@@ -51,7 +51,7 @@ class LobbyGamePanel extends JPanel {
     this.gameTableModel = lobbyGameTableModel;
     this.lobbyUri = lobbyUri;
 
-    final JButton hostGame = new JButton("Host Game");
+    final JButton hostGameButton = new JButton("Host Game");
     joinGame = new JButton("Join Game");
 
     gameTable =
@@ -71,6 +71,19 @@ class LobbyGamePanel extends JPanel {
             return component;
           }
         };
+    gameTable
+        .getSelectionModel()
+        .addListSelectionListener(
+            e -> {
+              final boolean selected = gameTable.getSelectedRow() >= 0;
+              joinGame.setEnabled(selected);
+            });
+    gameTable.addMouseListener(
+        new MouseListenerBuilder()
+            .mouseClicked(this::mouseClicked)
+            .mousePressed(this::mousePressed)
+            .mouseReleased(this::mouseOnGamesList)
+            .build());
 
     final TableRowSorter<LobbyGameTableModel> tableSorter = new TableRowSorter<>(gameTableModel);
     // by default, sort by host
@@ -123,26 +136,14 @@ class LobbyGamePanel extends JPanel {
     setLayout(new BorderLayout());
     add(scroll, BorderLayout.CENTER);
     final JToolBar toolBar = new JToolBar();
-    toolBar.add(hostGame);
+    toolBar.add(hostGameButton);
     toolBar.add(joinGame);
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
 
-    hostGame.addActionListener(e -> hostGame(lobbyUri));
+    hostGameButton.addActionListener(e -> hostGame(lobbyUri));
     joinGame.addActionListener(e -> joinGame());
-    gameTable
-        .getSelectionModel()
-        .addListSelectionListener(
-            e -> {
-              final boolean selected = gameTable.getSelectedRow() >= 0;
-              joinGame.setEnabled(selected);
-            });
-    gameTable.addMouseListener(
-        new MouseListenerBuilder()
-            .mouseClicked(this::mouseClicked)
-            .mousePressed(this::mousePressed)
-            .mouseReleased(this::mouseOnGamesList)
-            .build());
+
   }
 
   private void mouseClicked(final MouseEvent mouseEvent) {
