@@ -35,7 +35,7 @@ import org.triplea.swing.SwingAction;
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
   private final JFrame parent;
-  private final JButton joinGame;
+  private final JButton joinGameButton;
   private final LobbyGameTableModel gameTableModel;
   private final LobbyClient lobbyClient;
   private final URI lobbyUri;
@@ -52,7 +52,7 @@ class LobbyGamePanel extends JPanel {
     this.lobbyUri = lobbyUri;
 
     final JButton hostGameButton = new JButton("Host Game");
-    joinGame = new JButton("Join Game");
+    joinGameButton = new JButton("Join Game");
 
     gameTable =
         new JTable(gameTableModel) {
@@ -76,7 +76,7 @@ class LobbyGamePanel extends JPanel {
         .addListSelectionListener(
             e -> {
               final boolean selected = gameTable.getSelectedRow() >= 0;
-              joinGame.setEnabled(selected);
+              joinGameButton.setEnabled(selected);
             });
     gameTable.addMouseListener(
         new MouseListenerBuilder()
@@ -137,12 +137,12 @@ class LobbyGamePanel extends JPanel {
     add(scroll, BorderLayout.CENTER);
     final JToolBar toolBar = new JToolBar();
     toolBar.add(hostGameButton);
-    toolBar.add(joinGame);
+    toolBar.add(joinGameButton);
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
 
     hostGameButton.addActionListener(e -> hostGame(lobbyUri));
-    joinGame.addActionListener(e -> joinGame());
+    joinGameButton.addActionListener(e -> joinGame());
 
   }
 
