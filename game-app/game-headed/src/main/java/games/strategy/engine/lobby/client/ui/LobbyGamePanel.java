@@ -10,9 +10,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -143,7 +141,6 @@ class LobbyGamePanel extends JPanel {
 
     hostGameButton.addActionListener(e -> hostGame(lobbyUri));
     joinGameButton.addActionListener(e -> joinGame());
-
   }
 
   private void mouseClicked(final MouseEvent mouseEvent) {
