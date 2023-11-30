@@ -1,6 +1,9 @@
 package games.strategy.engine.data;
 
+import lombok.Getter;
+
 /** Fake attachment used for testing. */
+@Getter
 public class TestAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 4886924951201479496L;
 
@@ -28,10 +31,6 @@ public class TestAttachment extends DefaultAttachment {
 
   public void setValue(final String value) {
     this.value = value;
-  }
-
-  public String getValue() {
-    return value;
   }
 
   public void resetValue() {

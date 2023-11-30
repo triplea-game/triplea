@@ -13,13 +13,14 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 /** Describes an action that moves one or more units along a specific route. */
+@Getter
 public class MoveDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = 2199608152808948043L;
-  @Getter private final Route route;
+  private final Route route;
   // Maps units to the sea transports that are carrying them.
-  @Getter private final Map<Unit, Unit> unitsToSeaTransports;
+  private final Map<Unit, Unit> unitsToSeaTransports;
   // Maps air transports to units they're transporting on this move.
-  @Getter private final Map<Unit, Collection<Unit>> airTransportsDependents;
+  private final Map<Unit, Collection<Unit>> airTransportsDependents;
 
   public MoveDescription(
       final Collection<Unit> units,

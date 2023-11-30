@@ -2,12 +2,13 @@ package games.strategy.engine.history;
 
 import games.strategy.engine.data.GamePlayer;
 import javax.annotation.Nullable;
+import lombok.Getter;
 
 /** A history node that represents one step of game play (e.g. "Britain Combat Move"). */
 public class Step extends IndexedHistoryNode {
   private static final long serialVersionUID = 1015799886178275645L;
   private final @Nullable GamePlayer player;
-  private final String stepName;
+  @Getter private final String stepName;
   private final String delegateName;
 
   Step(
@@ -29,9 +30,5 @@ public class Step extends IndexedHistoryNode {
   @Override
   public SerializationWriter getWriter() {
     return new StepHistorySerializer(stepName, delegateName, player, super.getTitle());
-  }
-
-  public String getStepName() {
-    return stepName;
   }
 }

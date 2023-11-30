@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
@@ -36,7 +37,9 @@ import org.triplea.util.Tuple;
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
 
-  private final Territory start;
+  /** -- GETTER -- Returns start territory for this route. */
+  @Getter private final Territory start;
+
   private final List<Territory> steps = new ArrayList<>();
 
   public Route(final Territory start, final List<Territory> territories) {
@@ -121,11 +124,6 @@ public class Route implements Serializable, Iterable<Territory> {
   @Override
   public final int hashCode() {
     return Objects.hash(start, steps);
-  }
-
-  /** Returns start territory for this route. */
-  public Territory getStart() {
-    return start;
   }
 
   /**

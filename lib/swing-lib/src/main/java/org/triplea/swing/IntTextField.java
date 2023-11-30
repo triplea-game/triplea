@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
+import lombok.Getter;
 
 /**
  * Text field for entering int values. Ensures valid integers are entered, and can limit the range
@@ -15,9 +16,9 @@ import javax.swing.text.PlainDocument;
  */
 public class IntTextField extends JTextField {
   private static final long serialVersionUID = -7993942326354823887L;
-  private int max = Integer.MAX_VALUE;
-  private int min = Integer.MIN_VALUE;
-  private String terr;
+  @Getter private int max = Integer.MAX_VALUE;
+  @Getter private int min = Integer.MIN_VALUE;
+  @Getter private String terr;
   private final List<IntTextFieldChangeListener> listeners = new ArrayList<>();
 
   public IntTextField() {
@@ -103,18 +104,6 @@ public class IntTextField extends JTextField {
     if (getValue() < this.min) {
       setText(String.valueOf(min));
     }
-  }
-
-  public int getMax() {
-    return max;
-  }
-
-  public String getTerr() {
-    return terr;
-  }
-
-  public int getMin() {
-    return min;
   }
 
   private boolean isGood(final int value) {

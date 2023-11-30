@@ -8,8 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /** A collection of units placed in a single territory. */
+@Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class PlaceData {
-  @Getter private final Collection<Unit> units;
-  @Getter private final Territory at;
+  private final Collection<Unit> units;
+  private final Territory at;
 }

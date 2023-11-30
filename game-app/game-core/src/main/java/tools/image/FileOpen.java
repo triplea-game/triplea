@@ -8,9 +8,12 @@ import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+import lombok.Getter;
 
 /** A file chooser for use by map making tools to prompt the user to select a file to open. */
+@Getter
 public class FileOpen {
+  /** -- GETTER -- Returns the newly selected file. Will return null if no file is selected. */
   @Nullable private Path file;
 
   public FileOpen(final String title, final Path currentDirectory, final String... extensions) {
@@ -72,10 +75,5 @@ public class FileOpen {
           null, "Warning! Could not load the file!", "Warning!", JOptionPane.WARNING_MESSAGE);
       file = null;
     }
-  }
-
-  /** Returns the newly selected file. Will return null if no file is selected. */
-  public Path getFile() {
-    return file;
   }
 }

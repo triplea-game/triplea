@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import lombok.Value;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
@@ -91,7 +92,7 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean artillery = false;
   private boolean artillerySupportable = false;
   private int unitSupportCount = -1;
-  private int isMarine = 0;
+  @Getter private int isMarine = 0;
   private boolean isSuicideOnAttack = false;
   private boolean isSuicideOnDefense = false;
   private boolean isSuicideOnHit = false;
@@ -113,13 +114,13 @@ public class UnitAttachment extends DefaultAttachment {
   // transportation related
   private boolean isCombatTransport = false;
   // -1 if cant transport
-  private int transportCapacity = -1;
+  @Getter private int transportCapacity = -1;
   // -1 if cant be transported
-  private int transportCost = -1;
+  @Getter private int transportCost = -1;
   // -1 if cant act as a carrier
-  private int carrierCapacity = -1;
+  @Getter private int carrierCapacity = -1;
   // -1 if cant land on a carrier
-  private int carrierCost = -1;
+  @Getter private int carrierCost = -1;
   private boolean isAirTransport = false;
   private boolean isAirTransportable = false;
   private boolean isLandTransport = false;
@@ -137,11 +138,11 @@ public class UnitAttachment extends DefaultAttachment {
   private int attackAaMaxDieSides = -1;
   private int offensiveAttackAaMaxDieSides = -1;
   // -1 means infinite
-  private int maxAaAttacks = -1;
+  @Getter private int maxAaAttacks = -1;
   // -1 means infinite
-  private int maxRoundsAa = 1;
+  @Getter private int maxRoundsAa = 1;
   // default value for when it is not set
-  private String typeAa = "AA";
+  @Getter private String typeAa = "AA";
   // null means targeting air units only
   private @Nullable Set<UnitType> targetsAa = null;
   // if false, we cannot shoot more times than there are number of planes
@@ -153,8 +154,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   // strategic bombing related
   private boolean isStrategicBomber = false;
-  private int bombingMaxDieSides = -1;
-  private int bombingBonus = 0;
+  @Getter private int bombingMaxDieSides = -1;
+  @Getter private int bombingBonus = 0;
   private boolean canIntercept = false;
   private boolean requiresAirBaseToIntercept = false;
   private boolean canEscort = false;
@@ -169,30 +170,30 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean canProduceUnits = false;
   // -1 means either it can't produce any, or it produces at the value of the territory it is
   // located in
-  private int canProduceXUnits = -1;
+  @Getter private int canProduceXUnits = -1;
   private @Nullable IntegerMap<UnitType> createsUnitsList = null;
   private @Nullable IntegerMap<Resource> createsResourcesList = null;
 
   // damage related
-  private int hitPoints = 1;
+  @Getter private int hitPoints = 1;
   private boolean canBeDamaged = false;
   // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the
   // territory value they are in, of damage.
-  private int maxDamage = 2;
+  @Getter private int maxDamage = 2;
   // -1 if can't be disabled
-  private int maxOperationalDamage = -1;
+  @Getter private int maxOperationalDamage = -1;
   private boolean canDieFromReachingMaxDamage = false;
 
   // placement related
   private boolean isConstruction = false;
   // can be any String except for "none" if isConstruction is true
-  private String constructionType = "none";
+  @Getter private String constructionType = "none";
   // -1 if not set, is meaningless
-  private int constructionsPerTerrPerTypePerTurn = -1;
+  @Getter private int constructionsPerTerrPerTypePerTurn = -1;
   // -1 if not set, is meaningless
-  private int maxConstructionsPerTypePerTerr = -1;
+  @Getter private int maxConstructionsPerTypePerTerr = -1;
   // -1 means anywhere
-  private int canOnlyBePlacedInTerritoryValuedAtX = -1;
+  @Getter private int canOnlyBePlacedInTerritoryValuedAtX = -1;
   // multiple colon delimited lists of the unit combos required for this unit to be built somewhere.
   // (units must be in the same territory, owned by player, not be disabled)
   private @Nullable List<String[]> requiresUnits = null;
@@ -203,23 +204,23 @@ public class UnitAttachment extends DefaultAttachment {
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates unitPlacementRestrictions with an inverted list of territories
-  private @Nullable String[] unitPlacementRestrictions = null;
+  @Getter private @Nullable String[] unitPlacementRestrictions = null;
   // -1 if infinite (infinite is default)
-  private int maxBuiltPerPlayer = -1;
+  @Getter private int maxBuiltPerPlayer = -1;
   private @Nullable Tuple<Integer, String> placementLimit = null;
 
   // scrambling related
   private boolean canScramble = false;
   private boolean isAirBase = false;
   // -1 if can't scramble
-  private int maxScrambleDistance = -1;
+  @Getter private int maxScrambleDistance = -1;
   // -1 for infinite
-  private int maxScrambleCount = -1;
+  @Getter private int maxScrambleCount = -1;
   // -1 for infinite
-  private int maxInterceptCount = -1;
+  @Getter private int maxInterceptCount = -1;
 
   // special abilities
-  private int blockade = 0;
+  @Getter private int blockade = 0;
   // a colon delimited list of the units this unit can repair.
   // (units must be in same territory, unless this unit is land and the repaired unit is sea)
   private @Nullable IntegerMap<UnitType> repairsUnits = null;
@@ -230,7 +231,7 @@ public class UnitAttachment extends DefaultAttachment {
   private @Nullable Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsDamagedChangesInto = null;
   private @Nullable Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsRepairedChangesInto = null;
   private @Nullable Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto = null;
-  private int whenCapturedSustainsDamage = 0;
+  @Getter private int whenCapturedSustainsDamage = 0;
   private @Nullable List<GamePlayer> canBeCapturedOnEnteringBy = null;
   private @Nullable List<GamePlayer> canBeGivenByTerritoryTo = null;
 
@@ -246,7 +247,7 @@ public class UnitAttachment extends DefaultAttachment {
   // currently used for: placement in original territories only
   private @Nullable Set<String> special = null;
   // Manually set TUV
-  private int tuv = -1;
+  @Getter private int tuv = -1;
 
   // combo properties
   private boolean isSub = false;
@@ -544,10 +545,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setWhenCapturedSustainsDamage(final int s) {
     whenCapturedSustainsDamage = s;
-  }
-
-  public int getWhenCapturedSustainsDamage() {
-    return whenCapturedSustainsDamage;
   }
 
   private void setDestroyedWhenCapturedBy(final String initialValue) throws GameParseException {
@@ -866,10 +863,6 @@ public class UnitAttachment extends DefaultAttachment {
     canProduceXUnits = s;
   }
 
-  public int getCanProduceXUnits() {
-    return canProduceXUnits;
-  }
-
   private void resetCanProduceXUnits() {
     canProduceXUnits = -1;
   }
@@ -880,10 +873,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setCanOnlyBePlacedInTerritoryValuedAtX(final Integer s) {
     canOnlyBePlacedInTerritoryValuedAtX = s;
-  }
-
-  public int getCanOnlyBePlacedInTerritoryValuedAtX() {
-    return canOnlyBePlacedInTerritoryValuedAtX;
   }
 
   private void resetCanOnlyBePlacedInTerritoryValuedAtX() {
@@ -898,10 +887,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setUnitPlacementRestrictions(final String[] value) {
     unitPlacementRestrictions = value;
-  }
-
-  public String[] getUnitPlacementRestrictions() {
-    return unitPlacementRestrictions;
   }
 
   public boolean unitPlacementRestrictionsContain(Territory territory) {
@@ -1223,10 +1208,6 @@ public class UnitAttachment extends DefaultAttachment {
     constructionType = s;
   }
 
-  public String getConstructionType() {
-    return constructionType;
-  }
-
   private void resetConstructionType() {
     constructionType = "none";
   }
@@ -1239,10 +1220,6 @@ public class UnitAttachment extends DefaultAttachment {
     constructionsPerTerrPerTypePerTurn = s;
   }
 
-  public int getConstructionsPerTerrPerTypePerTurn() {
-    return constructionsPerTerrPerTypePerTurn;
-  }
-
   private void resetConstructionsPerTerrPerTypePerTurn() {
     constructionsPerTerrPerTypePerTurn = -1;
   }
@@ -1253,10 +1230,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setMaxConstructionsPerTypePerTerr(final Integer s) {
     maxConstructionsPerTypePerTerr = s;
-  }
-
-  public int getMaxConstructionsPerTypePerTerr() {
-    return maxConstructionsPerTypePerTerr;
   }
 
   private void resetMaxConstructionsPerTypePerTerr() {
@@ -1277,10 +1250,6 @@ public class UnitAttachment extends DefaultAttachment {
   public UnitAttachment setIsMarine(final Integer s) {
     isMarine = s;
     return this;
-  }
-
-  public int getIsMarine() {
-    return isMarine;
   }
 
   private void resetIsMarine() {
@@ -1327,10 +1296,6 @@ public class UnitAttachment extends DefaultAttachment {
     transportCapacity = s;
   }
 
-  public int getTransportCapacity() {
-    return transportCapacity;
-  }
-
   private void setIsTwoHit(final String s) {
     setIsTwoHit(getBool(s));
   }
@@ -1344,16 +1309,8 @@ public class UnitAttachment extends DefaultAttachment {
     hitPoints = value;
   }
 
-  public int getHitPoints() {
-    return hitPoints;
-  }
-
   private void setTransportCost(final Integer s) {
     transportCost = s;
-  }
-
-  public int getTransportCost() {
-    return transportCost;
   }
 
   private void setMaxBuiltPerPlayer(final String s) {
@@ -1362,10 +1319,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setMaxBuiltPerPlayer(final Integer s) {
     maxBuiltPerPlayer = s;
-  }
-
-  public int getMaxBuiltPerPlayer() {
-    return maxBuiltPerPlayer;
   }
 
   private void resetMaxBuiltPerPlayer() {
@@ -1380,10 +1333,6 @@ public class UnitAttachment extends DefaultAttachment {
     carrierCapacity = s;
   }
 
-  public int getCarrierCapacity() {
-    return carrierCapacity;
-  }
-
   private void resetCarrierCapacity() {
     carrierCapacity = -1;
   }
@@ -1394,10 +1343,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setCarrierCost(final Integer s) {
     carrierCost = s;
-  }
-
-  public int getCarrierCost() {
-    return carrierCost;
   }
 
   private void resetCarrierCost() {
@@ -1645,10 +1590,6 @@ public class UnitAttachment extends DefaultAttachment {
     maxScrambleCount = s;
   }
 
-  public int getMaxScrambleCount() {
-    return maxScrambleCount;
-  }
-
   private void resetMaxScrambleCount() {
     maxScrambleCount = -1;
   }
@@ -1659,10 +1600,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setMaxScrambleDistance(final Integer s) {
     maxScrambleDistance = s;
-  }
-
-  public int getMaxScrambleDistance() {
-    return maxScrambleDistance;
   }
 
   private void resetMaxScrambleDistance() {
@@ -1677,10 +1614,6 @@ public class UnitAttachment extends DefaultAttachment {
     maxInterceptCount = s;
   }
 
-  public int getMaxInterceptCount() {
-    return maxInterceptCount;
-  }
-
   private void resetMaxInterceptCount() {
     maxInterceptCount = -1;
   }
@@ -1693,10 +1626,6 @@ public class UnitAttachment extends DefaultAttachment {
     maxOperationalDamage = s;
   }
 
-  public int getMaxOperationalDamage() {
-    return maxOperationalDamage;
-  }
-
   private void resetMaxOperationalDamage() {
     maxOperationalDamage = -1;
   }
@@ -1707,10 +1636,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setMaxDamage(final Integer s) {
     maxDamage = s;
-  }
-
-  public int getMaxDamage() {
-    return maxDamage;
   }
 
   private void resetMaxDamage() {
@@ -1856,10 +1781,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setBlockade(final Integer s) {
     blockade = s;
-  }
-
-  public int getBlockade() {
-    return blockade;
   }
 
   private void resetBlockade() {
@@ -2035,10 +1956,6 @@ public class UnitAttachment extends DefaultAttachment {
     bombingBonus = s;
   }
 
-  public int getBombingBonus() {
-    return bombingBonus;
-  }
-
   private void resetBombingBonus() {
     bombingBonus = -1;
   }
@@ -2049,10 +1966,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setBombingMaxDieSides(final Integer s) {
     bombingMaxDieSides = s;
-  }
-
-  public int getBombingMaxDieSides() {
-    return bombingMaxDieSides;
   }
 
   private void resetBombingMaxDieSides() {
@@ -2213,10 +2126,6 @@ public class UnitAttachment extends DefaultAttachment {
     return this;
   }
 
-  public int getMaxAaAttacks() {
-    return maxAaAttacks;
-  }
-
   private void resetMaxAaAttacks() {
     maxAaAttacks = -1;
   }
@@ -2234,10 +2143,6 @@ public class UnitAttachment extends DefaultAttachment {
   public UnitAttachment setMaxRoundsAa(final Integer s) {
     maxRoundsAa = s;
     return this;
-  }
-
-  public int getMaxRoundsAa() {
-    return maxRoundsAa;
   }
 
   private void resetMaxRoundsAa() {
@@ -2348,10 +2253,6 @@ public class UnitAttachment extends DefaultAttachment {
   @VisibleForTesting
   public void setTypeAa(final String s) {
     typeAa = s.intern();
-  }
-
-  public String getTypeAa() {
-    return typeAa;
   }
 
   private void resetTypeAa() {
@@ -2524,10 +2425,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setTuv(final Integer s) {
     tuv = s;
-  }
-
-  public int getTuv() {
-    return tuv;
   }
 
   private void resetTuv() {

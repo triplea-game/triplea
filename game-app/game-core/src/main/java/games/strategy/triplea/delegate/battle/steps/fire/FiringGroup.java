@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.Value;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
@@ -31,8 +32,8 @@ public class FiringGroup implements Serializable {
 
   String displayName;
   String groupName;
-  Collection<Unit> firingUnits;
-  Collection<Unit> targetUnits;
+  @Getter Collection<Unit> firingUnits;
+  @Getter Collection<Unit> targetUnits;
   boolean suicideOnHit;
 
   @Value(staticConstructor = "of")
@@ -78,14 +79,6 @@ public class FiringGroup implements Serializable {
     this.firingUnits = firingUnits;
     this.targetUnits = targetUnits;
     this.suicideOnHit = suicideOnHit;
-  }
-
-  public Collection<Unit> getTargetUnits() {
-    return targetUnits;
-  }
-
-  public Collection<Unit> getFiringUnits() {
-    return firingUnits;
   }
 
   /**

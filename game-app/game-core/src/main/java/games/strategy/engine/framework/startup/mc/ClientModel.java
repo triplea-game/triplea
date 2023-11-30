@@ -87,7 +87,7 @@ public class ClientModel implements IMessengerErrorListener {
   private IClientMessenger messenger;
   private ClientNetworkBridge clientNetworkBridge;
   private Component ui;
-  private ChatPanel chatPanel;
+  @Getter private ChatPanel chatPanel;
   private ClientGame game;
   private boolean hostIsHeadlessBot = false;
   // we set the game data to be null, since we are a client game, and the game data lives on the
@@ -449,10 +449,6 @@ public class ClientModel implements IMessengerErrorListener {
         "Connection to game host lost.\nPlease save and restart.",
         "Connection Lost!",
         JOptionPane.ERROR_MESSAGE);
-  }
-
-  public ChatPanel getChatPanel() {
-    return chatPanel;
   }
 
   private boolean getIsServerHeadlessTest() {

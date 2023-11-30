@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -34,7 +35,7 @@ public class PlayerUnitsPanel extends JPanel {
   private final UiContext uiContext;
   private final boolean defender;
   private boolean isLand = true;
-  private List<UnitCategory> categories = null;
+  @Getter private List<UnitCategory> categories = null;
   private final List<Runnable> listeners = new ArrayList<>();
   private final List<UnitPanel> unitPanels = new ArrayList<>();
 
@@ -55,10 +56,6 @@ public class PlayerUnitsPanel extends JPanel {
         .map(UnitPanel::getUnits)
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
-  }
-
-  public List<UnitCategory> getCategories() {
-    return categories;
   }
 
   /** Sets up components to an initial state. */

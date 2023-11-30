@@ -6,12 +6,14 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.UUID;
+import lombok.Getter;
 
 /**
  * A request forwarded by the hub node to invoke a remote method on a spoke node. Instances of this
  * class should only be created by the messaging framework on the hub node. All remote method
  * invocations should originate as an instance of {@link HubInvoke}.
  */
+@Getter
 public class SpokeInvoke extends Invoke {
   private static final long serialVersionUID = -2007645463748969L;
   private INode invoker;
@@ -25,10 +27,6 @@ public class SpokeInvoke extends Invoke {
       final INode invoker) {
     super(methodCallId, needReturnValues, call);
     this.invoker = invoker;
-  }
-
-  public INode getInvoker() {
-    return invoker;
   }
 
   @Override

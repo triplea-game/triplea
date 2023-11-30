@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -52,7 +53,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
       Comparator.comparing(o -> (UnitType) o.getAnyResultKey(), new UnitTypeComparator());
 
   private boolean needToInitialize = true;
-  private IntegerMap<ProductionRule> pendingProductionRules;
+  @Getter private IntegerMap<ProductionRule> pendingProductionRules;
 
   @Override
   public void start() {
@@ -384,10 +385,6 @@ public class PurchaseDelegate extends BaseTripleADelegate
       changes.add(change);
     }
     return returnString.toString();
-  }
-
-  public IntegerMap<ProductionRule> getPendingProductionRules() {
-    return pendingProductionRules;
   }
 
   public void setPendingProductionRules(IntegerMap<ProductionRule> pendingProductionRules) {

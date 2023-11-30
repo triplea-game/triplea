@@ -8,13 +8,14 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import javax.annotation.Nullable;
+import lombok.Getter;
 
 /** All the info necessary to describe a method call in one handy serializable package. */
 public class RemoteMethodCall implements Externalizable {
   private static final long serialVersionUID = 4630825927685836207L;
-  private String remoteName;
-  private String methodName;
-  private Object[] args;
+  @Getter private String remoteName;
+  @Getter private String methodName;
+  @Getter private Object[] args;
   // to save space, we don't serialize method name/types
   // instead we just serialize a number which can be translated into the correct method.
   private int methodNumber;
@@ -36,18 +37,6 @@ public class RemoteMethodCall implements Externalizable {
     this.args = args;
     this.argTypes = classesToString(method.getParameterTypes(), args);
     methodNumber = RemoteInterfaceHelper.getNumber(method);
-  }
-
-  public String getRemoteName() {
-    return remoteName;
-  }
-
-  public String getMethodName() {
-    return methodName;
-  }
-
-  public Object[] getArgs() {
-    return args;
   }
 
   public Class<?>[] getArgTypes() {

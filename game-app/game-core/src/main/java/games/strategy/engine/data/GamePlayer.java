@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** A game player (nation, power, etc.). */
@@ -44,11 +45,11 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   private final boolean isHidden;
   private boolean isDisabled = false;
   private final UnitCollection unitsHeld;
-  private final ResourceCollection resources;
-  private ProductionFrontier productionFrontier;
-  private RepairFrontier repairFrontier;
+  @Getter private final ResourceCollection resources;
+  @Getter private ProductionFrontier productionFrontier;
+  @Getter private RepairFrontier repairFrontier;
   private final TechnologyFrontierList technologyFrontiers;
-  private String whoAmI = "null:no_one";
+  @Getter private String whoAmI = "null:no_one";
   private TechAttachment techAttachment;
 
   public GamePlayer(final String name, final GameData data) {
@@ -96,10 +97,6 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     return unitsHeld;
   }
 
-  public ResourceCollection getResources() {
-    return resources;
-  }
-
   public TechnologyFrontierList getTechnologyFrontierList() {
     return technologyFrontiers;
   }
@@ -108,16 +105,8 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     productionFrontier = frontier;
   }
 
-  public ProductionFrontier getProductionFrontier() {
-    return productionFrontier;
-  }
-
   public void setRepairFrontier(final RepairFrontier frontier) {
     repairFrontier = frontier;
-  }
-
-  public RepairFrontier getRepairFrontier() {
-    return repairFrontier;
   }
 
   @Override
@@ -161,10 +150,6 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
 
   private static List<String> tokenizeEncodedType(final String encodedType) {
     return Splitter.on(':').splitToList(encodedType);
-  }
-
-  public String getWhoAmI() {
-    return whoAmI;
   }
 
   public Type getPlayerType() {

@@ -1,11 +1,13 @@
 package games.strategy.engine.random;
 
 import java.io.Serializable;
+import lombok.Getter;
 
 /**
  * Captures statistics for rolling a series of dice, including sum (total), average, median,
  * variance, and standard deviation.
  */
+@Getter
 public class DiceStatistic implements Serializable {
   private static final long serialVersionUID = -1422839840110240480L;
 
@@ -26,25 +28,5 @@ public class DiceStatistic implements Serializable {
     this.median = median;
     this.stdDeviation = stdDeviation;
     this.variance = variance;
-  }
-
-  public double getAverage() {
-    return average;
-  }
-
-  public int getTotal() {
-    return total;
-  }
-
-  public double getMedian() {
-    return median;
-  }
-
-  public double getStdDeviation() {
-    return stdDeviation;
-  }
-
-  public double getVariance() {
-    return variance;
   }
 }

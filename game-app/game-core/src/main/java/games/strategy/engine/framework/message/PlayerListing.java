@@ -23,6 +23,7 @@ import lombok.Getter;
  * that it is playing the same game as the server. Besides game options, determines the starting
  * setup for game. ie: who is playing what.
  */
+@Getter
 @NetworkData
 public class PlayerListing implements Serializable {
   private static final long serialVersionUID = -8913538086737733980L;
@@ -30,14 +31,14 @@ public class PlayerListing implements Serializable {
   /**
    * Maps String player name -> node Name if node name is null then the player is available to play.
    */
-  @Getter private final Map<String, String> playerToNodeListing;
+  private final Map<String, String> playerToNodeListing;
 
-  @Getter private final Map<String, Boolean> playersEnabledListing;
-  @Getter private final Map<String, String> localPlayerTypes;
-  @Getter private final Collection<String> playersAllowedToBeDisabled;
-  @Getter private final String gameName;
-  @Getter private final String gameRound;
-  @Getter private final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder;
+  private final Map<String, Boolean> playersEnabledListing;
+  private final Map<String, String> localPlayerTypes;
+  private final Collection<String> playersAllowedToBeDisabled;
+  private final String gameName;
+  private final String gameRound;
+  private final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder;
 
   public PlayerListing(
       final Map<String, Boolean> playersEnabledListing,

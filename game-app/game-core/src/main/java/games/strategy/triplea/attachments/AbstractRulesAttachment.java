@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import org.triplea.java.RenameOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -36,9 +37,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   // only used if the attachment begins with "objectiveAttachment"
   // Note: Subclasses should use getPlayers() which take into account getAttachedTo().
   private @Nullable List<GamePlayer> players = null;
-  protected int objectiveValue = 0;
+  @Getter protected int objectiveValue = 0;
+
+  /**
+   * -- GETTER -- "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do
+   * NOT apply to the condition, and therefore should not be tested for in isSatisfied.
+   */
   // only matters for objectiveValue, does not affect the condition
-  protected int uses = -1;
+  @Getter protected int uses = -1;
 
   // condition for what turn it is
   @RenameOnNextMajorRelease(newName = "rounds")
@@ -92,10 +98,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     objectiveValue = value;
   }
 
-  public int getObjectiveValue() {
-    return objectiveValue;
-  }
-
   private void resetObjectiveValue() {
     objectiveValue = 0;
   }
@@ -130,14 +132,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   private void setUses(final int u) {
     uses = u;
-  }
-
-  /**
-   * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to
-   * the condition, and therefore should not be tested for in isSatisfied.
-   */
-  public int getUses() {
-    return uses;
   }
 
   private void resetUses() {

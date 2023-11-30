@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -27,7 +28,7 @@ import org.triplea.java.collections.CollectionUtils;
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
 
-  private String canalName = "";
+  @Getter private String canalName = "";
   private @Nullable Set<Territory> landTerritories = null;
   private @Nullable Set<UnitType> excludedUnits = null;
   private boolean canNotMoveThroughDuringCombatMove = false;
@@ -74,10 +75,6 @@ public class CanalAttachment extends DefaultAttachment {
 
   private void setCanalName(final String name) {
     canalName = name.intern();
-  }
-
-  public String getCanalName() {
-    return canalName;
   }
 
   private void resetCanalName() {

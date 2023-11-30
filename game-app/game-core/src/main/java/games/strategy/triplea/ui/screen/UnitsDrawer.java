@@ -24,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.List;
 import java.util.function.Predicate;
+import lombok.Getter;
 
 /**
  * Draws units for the associated territory.
@@ -36,7 +37,7 @@ public class UnitsDrawer extends AbstractDrawable {
   private final int count;
   private final String unitType;
   private final String playerName;
-  private final Point placementPoint;
+  @Getter private final Point placementPoint;
   private final int damaged;
   private final int bombingUnitDamage;
   private final boolean disabled;
@@ -72,10 +73,6 @@ public class UnitsDrawer extends AbstractDrawable {
     this.overflow = overflow;
     this.territoryName = territoryName;
     this.uiContext = uiContext;
-  }
-
-  public Point getPlacementPoint() {
-    return placementPoint;
   }
 
   public Rectangle getPlacementRectangle() {

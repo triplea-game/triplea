@@ -14,7 +14,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   @Getter private final List<GameStep> steps = new ArrayList<>();
   private int currentIndex;
   private int round = 1;
-  private int roundOffset = 0;
+  @Getter private int roundOffset = 0;
 
   public GameSequence(final GameData data) {
     super(data);
@@ -56,10 +56,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 
   public int getRound() {
     return round + roundOffset;
-  }
-
-  public int getRoundOffset() {
-    return roundOffset;
   }
 
   public void setRoundOffset(final int roundOffset) {

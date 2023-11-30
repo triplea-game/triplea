@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -19,7 +20,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   private static final long serialVersionUID = -3534037864426122864L;
 
   private final List<Unit> units = new ArrayList<>();
-  private final NamedUnitHolder holder;
+  @Getter private final NamedUnitHolder holder;
 
   public UnitCollection(final NamedUnitHolder holder, final GameData data) {
     super(data);
@@ -170,10 +171,6 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
 
   public boolean hasUnitsFromMultiplePlayers() {
     return getPlayersWithUnits().size() > 1;
-  }
-
-  public NamedUnitHolder getHolder() {
-    return holder;
   }
 
   public boolean allMatch(final Predicate<Unit> matcher) {

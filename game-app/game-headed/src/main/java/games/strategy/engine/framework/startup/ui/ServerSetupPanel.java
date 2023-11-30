@@ -37,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import lombok.Getter;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.collections.CollectionUtils;
@@ -387,8 +388,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private final JLabel playerLabel;
     private final JCheckBox localCheckBox;
     private final JCheckBox enabledCheckBox;
-    private final JComboBox<PlayerTypes.Type> type;
-    private final JButton alliance;
+    @Getter private final JComboBox<PlayerTypes.Type> type;
+    @Getter private final JButton alliance;
 
     PlayerRow(
         final String playerName,
@@ -450,16 +451,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       setWidgetActivation();
     }
 
-    public JComboBox<PlayerTypes.Type> getType() {
-      return type;
-    }
-
     public JLabel getName() {
       return nameLabel;
-    }
-
-    public JButton getAlliance() {
-      return alliance;
     }
 
     public JLabel getPlayer() {

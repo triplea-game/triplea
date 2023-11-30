@@ -165,10 +165,10 @@ import org.triplea.util.Tuple;
 public final class TripleAFrame extends JFrame implements QuitHandler {
   private static final long serialVersionUID = 7640069668264418976L;
 
-  private final LocalPlayers localPlayers;
+  @Getter private final LocalPlayers localPlayers;
   private final GameData data;
-  private final IGame game;
-  private final MapPanel mapPanel;
+  @Getter private final IGame game;
+  @Getter private final MapPanel mapPanel;
   private final ImageScrollerSmallView smallView;
 
   private final ActionButtons actionButtons;
@@ -181,11 +181,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private @Nullable ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetails;
   private final JPanel historyComponent = new JPanel();
-  private HistoryPanel historyPanel;
+  @Getter private HistoryPanel historyPanel;
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
   private final AtomicBoolean inGame = new AtomicBoolean(true);
   private HistorySynchronizer historySyncher;
-  private UiContext uiContext;
+  @Getter private UiContext uiContext;
   private final JPanel mapAndChatPanel;
   private final ChatPanel chatPanel;
   private final CommentPanel commentPanel;
@@ -225,6 +225,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         }
       };
 
+  @Getter
   private final Action showHistoryAction =
       SwingAction.of(
           "Show history",
@@ -233,6 +234,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
           });
 
+  @Getter
   private final Action showGameAction =
       new AbstractAction("Show current game") {
         private static final long serialVersionUID = -7551760679570164254L;
@@ -550,10 +552,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         this,
         hotkey,
         () -> tabsPanel.setSelectedIndex(List.of(tabsPanel.getComponents()).indexOf(component)));
-  }
-
-  public LocalPlayers getLocalPlayers() {
-    return localPlayers;
   }
 
   /** Stops the game and closes this frame window. */
@@ -1763,10 +1761,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     tabsPanel.setSelectedIndex(0);
   }
 
-  public HistoryPanel getHistoryPanel() {
-    return historyPanel;
-  }
-
   private void showHistory() {
     inHistory.set(true);
     inGame.set(false);
@@ -2059,22 +2053,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     return actionButtons.getBattlePanel();
   }
 
-  public Action getShowGameAction() {
-    return showGameAction;
-  }
-
-  public Action getShowHistoryAction() {
-    return showHistoryAction;
-  }
-
-  public UiContext getUiContext() {
-    return uiContext;
-  }
-
-  public MapPanel getMapPanel() {
-    return mapPanel;
-  }
-
   /** Displays the map located in the directory/archive {@code mapdir}. */
   public void changeMapSkin(final String skinName) {
     uiContext = UiContext.changeMapSkin(data, skinName);
@@ -2092,10 +2070,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     mapPanel.changeSmallMapOffscreenMap();
     // redraw territories
     mapPanel.resetMap();
-  }
-
-  public IGame getGame() {
-    return game;
   }
 
   public Optional<InGameLobbyWatcherWrapper> getInGameLobbyWatcher() {

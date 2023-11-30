@@ -10,8 +10,10 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
 /** Contains all the data to describe a placement and to undo it. */
+@Getter
 public class UndoablePlacement extends AbstractUndoableMove {
   private static final long serialVersionUID = -1493488646587233451L;
 
@@ -28,16 +30,8 @@ public class UndoablePlacement extends AbstractUndoableMove {
     this.producerTerritory = producerTerritory;
   }
 
-  public Territory getProducerTerritory() {
-    return producerTerritory;
-  }
-
   public void setProducerTerritory(final Territory producerTerritory) {
     this.producerTerritory = producerTerritory;
-  }
-
-  public Territory getPlaceTerritory() {
-    return placeTerritory;
   }
 
   @Override

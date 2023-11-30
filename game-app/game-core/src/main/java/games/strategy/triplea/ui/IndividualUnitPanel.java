@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import lombok.Getter;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
@@ -30,7 +31,7 @@ public class IndividualUnitPanel extends JPanel {
   private static final long serialVersionUID = -4222938655315991715L;
   private final List<SingleUnitPanel> entries = new ArrayList<>();
   private final JTextArea title;
-  private int max = -1;
+  @Getter private int max = -1;
   private final JLabel leftToSelect = new JLabel();
   private final UiContext uiContext;
   private ScrollableTextField textFieldPurelyForListening;
@@ -127,10 +128,6 @@ public class IndividualUnitPanel extends JPanel {
     if (countOptionalTextFieldListener != null) {
       textFieldPurelyForListening.addChangeListener(countOptionalTextFieldListener);
     }
-  }
-
-  public int getMax() {
-    return max;
   }
 
   void setMaxAndUpdate(final int newMax) {

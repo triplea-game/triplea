@@ -54,7 +54,7 @@ import org.triplea.util.Tuple;
 /** Pro AI. */
 public abstract class AbstractProAi extends AbstractAi {
 
-  private final ProOddsCalculator calc;
+  @Getter private final ProOddsCalculator calc;
   @Getter private final ProData proData;
 
   // Phases
@@ -97,10 +97,6 @@ public abstract class AbstractProAi extends AbstractAi {
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
     calc.stop();
-  }
-
-  public ProOddsCalculator getCalc() {
-    return calc;
   }
 
   private void initializeData() {

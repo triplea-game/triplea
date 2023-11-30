@@ -4,8 +4,10 @@ import games.strategy.engine.data.AbstractMoveDescription;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
+import lombok.Getter;
 
 /** Describes an action that places one or more units within a territory. */
+@Getter
 public class PlacementDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = -3141153168992624631L;
   private final Territory territory;
@@ -13,10 +15,6 @@ public class PlacementDescription extends AbstractMoveDescription {
   public PlacementDescription(final Collection<Unit> units, final Territory territory) {
     super(units);
     this.territory = territory;
-  }
-
-  public Territory getTerritory() {
-    return territory;
   }
 
   @Override
