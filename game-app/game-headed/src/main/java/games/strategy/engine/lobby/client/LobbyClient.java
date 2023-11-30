@@ -1,7 +1,7 @@
 package games.strategy.engine.lobby.client;
 
 import games.strategy.engine.lobby.client.login.LoginResult;
-import java.net.URI;
+import games.strategy.triplea.settings.ClientSetting;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,11 +20,11 @@ public class LobbyClient {
   private final boolean passwordChangeRequired;
   private final String lobbyMessage;
 
-  public static LobbyClient newLobbyClient(final URI lobbyUri, final LoginResult loginResult) {
+  public static LobbyClient newLobbyClient(final LoginResult loginResult) {
     return LobbyClient.builder()
         .playerToLobbyConnection(
             new PlayerToLobbyConnection(
-                lobbyUri,
+                ClientSetting.lobbyUri.getValueOrThrow(),
                 loginResult.getApiKey(),
                 error -> SwingComponents.showError(null, "Error communicating with lobby", error)))
         .anonymousLogin(loginResult.isAnonymousLogin())
