@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -49,15 +50,15 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private @Nullable IntegerMap<UnitType> airDefenseBonus = null;
   private @Nullable IntegerMap<UnitType> productionBonus = null;
   // -1 means not set
-  private int minimumTerritoryValueForProductionBonus = -1;
+  @Getter private int minimumTerritoryValueForProductionBonus = -1;
   // -1 means not set
   private int repairDiscount = -1;
   // -1 means not set
   private int warBondDiceSides = -1;
   private int warBondDiceNumber = 0;
   private @Nullable IntegerMap<UnitType> rocketDiceNumber = null;
-  private int rocketDistance = 0;
-  private int rocketNumberPerTerritory = 1;
+  @Getter private int rocketDistance = 0;
+  @Getter private int rocketNumberPerTerritory = 1;
   private @Nullable Map<UnitType, Set<String>> unitAbilitiesGained = null;
   private boolean airborneForces = false;
   private @Nullable IntegerMap<UnitType> airborneCapacity = null;
@@ -266,10 +267,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     minimumTerritoryValueForProductionBonus = value;
   }
 
-  public int getMinimumTerritoryValueForProductionBonus() {
-    return minimumTerritoryValueForProductionBonus;
-  }
-
   private void resetMinimumTerritoryValueForProductionBonus() {
     minimumTerritoryValueForProductionBonus = -1;
   }
@@ -385,10 +382,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     rocketDistance = value;
   }
 
-  public int getRocketDistance() {
-    return rocketDistance;
-  }
-
   private void resetRocketDistance() {
     rocketDistance = 0;
   }
@@ -399,10 +392,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   private void setRocketNumberPerTerritory(final Integer value) {
     rocketNumberPerTerritory = value;
-  }
-
-  public int getRocketNumberPerTerritory() {
-    return rocketNumberPerTerritory;
   }
 
   private void resetRocketNumberPerTerritory() {

@@ -33,6 +33,7 @@ import java.util.Optional;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,8 +64,11 @@ public class UnitImageFactory {
   // Temporary colorized image files used for URLs for html views (e.g. unit stats table).
   private final Map<ImageKey, URL> colorizedTempFiles = new HashMap<>();
   private final List<File> tempFiles = new ArrayList<>();
+
+  /** -- GETTER -- Return the unit scaling factor. */
   // Scaling factor for unit images
-  private final double scaleFactor;
+  @Getter private final double scaleFactor;
+
   private final ResourceLoader resourceLoader;
   private final MapData mapData;
 
@@ -198,11 +202,6 @@ public class UnitImageFactory {
     return this.scaleFactor == scaleFactor
         ? this
         : new UnitImageFactory(resourceLoader, scaleFactor, mapData);
-  }
-
-  /** Return the unit scaling factor. */
-  public double getScaleFactor() {
-    return scaleFactor;
   }
 
   /** Return the width of scaled units. */

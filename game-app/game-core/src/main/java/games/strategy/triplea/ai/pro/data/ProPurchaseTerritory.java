@@ -14,12 +14,13 @@ import lombok.ToString;
 import org.triplea.java.collections.CollectionUtils;
 
 /** The result of an AI purchase analysis for a single territory. */
+@Getter
 @ToString
 public class ProPurchaseTerritory {
 
-  @Getter private final Territory territory;
-  @Getter @Setter private int unitProduction;
-  @Getter private final List<ProPlaceTerritory> canPlaceTerritories;
+  private final Territory territory;
+  @Setter private int unitProduction;
+  private final List<ProPlaceTerritory> canPlaceTerritories;
 
   public ProPurchaseTerritory(
       final Territory territory,

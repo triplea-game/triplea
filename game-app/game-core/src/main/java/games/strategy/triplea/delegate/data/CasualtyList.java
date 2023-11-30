@@ -7,11 +7,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import lombok.Getter;
 
 /** A collection of units either killed or damaged during a battle. */
+@Getter
 public class CasualtyList implements Serializable {
   private static final long serialVersionUID = 6501752134047891398L;
+
+  /** -- GETTER -- Returns the list of killed units. */
   final List<Unit> killed;
+
+  /** -- GETTER -- Can have multiple of the same unit, to show multiple hits to that unit. */
   final List<Unit> damaged;
 
   /**
@@ -30,16 +36,6 @@ public class CasualtyList implements Serializable {
   /** Creates a new blank CasualtyList with empty lists. */
   public CasualtyList() {
     this(new ArrayList<>(), new ArrayList<>());
-  }
-
-  /** Returns the list of killed units. */
-  public List<Unit> getKilled() {
-    return killed;
-  }
-
-  /** Can have multiple of the same unit, to show multiple hits to that unit. */
-  public List<Unit> getDamaged() {
-    return damaged;
   }
 
   public void addToKilled(final Unit deadUnit) {

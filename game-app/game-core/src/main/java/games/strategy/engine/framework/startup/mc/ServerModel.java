@@ -87,7 +87,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
   private final LaunchAction launchAction;
-  private ChatModel chatModel;
+  @Getter private ChatModel chatModel;
   private ChatController chatController;
   private final Map<String, PlayerTypes.Type> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
@@ -449,10 +449,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     for (final String player : free) {
       takePlayerInternal(node, false, player);
     }
-  }
-
-  public ChatModel getChatModel() {
-    return chatModel;
   }
 
   private void disallowRemoveConnections() {

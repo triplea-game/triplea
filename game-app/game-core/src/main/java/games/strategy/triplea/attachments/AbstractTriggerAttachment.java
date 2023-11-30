@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.util.Tuple;
@@ -39,7 +40,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   // "setTrigger" is also a valid setter, and it just calls "setConditions" in
   // AbstractConditionsAttachment. Kept for
   // backwards compatibility.
-  private int uses = -1;
+  @Getter private int uses = -1;
   private boolean usedThisRound = false;
   private @Nullable String notification = null;
   private @Nullable List<Tuple<String, String>> when = null;
@@ -113,10 +114,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   private void resetUsedThisRound() {
     usedThisRound = false;
-  }
-
-  public int getUses() {
-    return uses;
   }
 
   private void setWhen(final String when) throws GameParseException {

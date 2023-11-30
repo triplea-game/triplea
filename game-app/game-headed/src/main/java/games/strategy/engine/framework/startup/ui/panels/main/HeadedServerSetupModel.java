@@ -38,7 +38,7 @@ import org.triplea.game.client.HeadedGameRunner;
 @RequiredArgsConstructor
 public class HeadedServerSetupModel {
   @Getter protected final GameSelectorModel gameSelectorModel;
-  protected SetupPanel panel = null;
+  @Getter protected SetupPanel panel = null;
 
   @Setter private Consumer<SetupPanel> panelChangeListener;
   @Setter private JFrame ui;
@@ -121,10 +121,6 @@ public class HeadedServerSetupModel {
     this.panel = panel;
 
     Optional.ofNullable(panelChangeListener).ifPresent(listener -> listener.accept(panel));
-  }
-
-  public SetupPanel getPanel() {
-    return panel;
   }
 
   /**

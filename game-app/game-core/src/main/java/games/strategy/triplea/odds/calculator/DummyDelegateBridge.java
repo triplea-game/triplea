@@ -20,6 +20,7 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.HeadlessSoundChannel;
@@ -36,7 +37,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
   private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final CompositeChange allChanges;
   private final GameData gameData;
-  private MustFightBattle battle = null;
+  @Getter private MustFightBattle battle = null;
   private final TuvCostsCalculator tuvCalculator;
 
   public DummyDelegateBridge(
@@ -158,10 +159,6 @@ public class DummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void stopGameSequence(String status, String title) {}
-
-  public MustFightBattle getBattle() {
-    return battle;
-  }
 
   public void setBattle(final MustFightBattle battle) {
     this.battle = battle;

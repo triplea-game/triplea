@@ -7,9 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import lombok.Getter;
 
 /** A file chooser for use by map making tools to prompt the user to select a file to save. */
+@Getter
 public class FileSave {
+  /** -- GETTER -- Returns the directory path as a File object. */
   private final Path file;
 
   public FileSave(final String title, final String name, final Path currentDirectory) {
@@ -82,10 +85,5 @@ public class FileSave {
         chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION
             ? chooser.getSelectedFile().toPath().resolve(Strings.nullToEmpty(name))
             : null;
-  }
-
-  /** Returns the directory path as a File object. */
-  public Path getFile() {
-    return file;
   }
 }

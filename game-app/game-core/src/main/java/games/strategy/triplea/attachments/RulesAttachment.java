@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
@@ -57,7 +58,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   // condition for having specific relationships
   private @Nullable List<String> relationship = null;
   // condition for checking AI player
-  private @Nullable Boolean isAI = null;
+  @Getter private @Nullable Boolean isAI = null;
   // condition for being at war
   private @Nullable Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
@@ -499,10 +500,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   private void setIsAI(final Boolean s) {
     isAI = s;
-  }
-
-  public Boolean getIsAI() {
-    return isAI;
   }
 
   private void resetIsAI() {

@@ -8,6 +8,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
+import lombok.Getter;
 
 /** An attachment for instances of {@link RelationshipType}. */
 public class RelationshipTypeAttachment extends DefaultAttachment {
@@ -21,7 +22,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
   private static final long serialVersionUID = -4367286684249791984L;
 
-  private String archeType = ARCHETYPE_WAR;
+  /**
+   * -- GETTER -- Returns the ArcheType of this relationshipType, this really shouldn't be called,
+   * typically you should call isNeutral, isAllied or isWar().
+   */
+  @Getter private String archeType = ARCHETYPE_WAR;
+
   private String canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
   private String canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
   private String alliancesCanChainTogether = PROPERTY_DEFAULT;
@@ -85,14 +91,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
                 + " for "
                 + thisErrorMsg());
     }
-  }
-
-  /**
-   * Returns the ArcheType of this relationshipType, this really shouldn't be called, typically you
-   * should call isNeutral, isAllied or isWar().
-   */
-  public String getArcheType() {
-    return archeType;
   }
 
   private void resetArcheType() {

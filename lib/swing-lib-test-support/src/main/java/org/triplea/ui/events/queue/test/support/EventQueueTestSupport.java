@@ -41,15 +41,15 @@ import org.triplea.ui.events.queue.ViewData;
  *   </code>
  * </pre>
  */
+@Getter
 public class EventQueueTestSupport<
     EventQueueTypeT extends ViewControllerEventQueue<?, ?, ViewDataT, ControllerEventTypeT, ?>,
     ControllerEventTypeT,
     ViewDataT extends ViewData> {
 
-  @Getter private final EventQueueTypeT eventQueue;
+  private final EventQueueTypeT eventQueue;
 
   /** List of all controller events received. */
-  @Getter
   private final Deque<ControllerEvent<ControllerEventTypeT, ViewDataT>> controllerEvents =
       new LinkedList<>();
 

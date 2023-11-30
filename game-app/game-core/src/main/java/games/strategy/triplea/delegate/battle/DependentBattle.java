@@ -14,12 +14,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Battle with possible dependencies Includes MustFightBattle and NonFightingBattle. */
 public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
-  protected Map<Territory, Collection<Unit>> attackingFromMap;
+
+  /** -- GETTER -- Return attacking from Map. */
+  @Getter protected Map<Territory, Collection<Unit>> attackingFromMap;
+
   @RemoveOnNextMajorRelease protected Set<Territory> attackingFrom;
   private final Collection<Territory> amphibiousAttackFrom;
 
@@ -66,11 +70,6 @@ public abstract class DependentBattle extends AbstractBattle {
   /** Return attacking from Collection. */
   public Collection<Territory> getAttackingFrom() {
     return attackingFromMap.keySet();
-  }
-
-  /** Return attacking from Map. */
-  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return attackingFromMap;
   }
 
   /** Returns territories where there are amphibious attacks. */

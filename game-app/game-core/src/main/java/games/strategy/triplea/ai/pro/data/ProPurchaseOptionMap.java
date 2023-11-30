@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.Getter;
 
 /**
  * Takes all available purchase options, filters out those which the AI can't handle, and sorts them
@@ -19,17 +20,17 @@ import java.util.Set;
  */
 public class ProPurchaseOptionMap {
 
-  private final List<ProPurchaseOption> landFodderOptions;
-  private final List<ProPurchaseOption> landAttackOptions;
-  private final List<ProPurchaseOption> landDefenseOptions;
-  private final List<ProPurchaseOption> landZeroMoveOptions;
-  private final List<ProPurchaseOption> airOptions;
-  private final List<ProPurchaseOption> seaDefenseOptions;
-  private final List<ProPurchaseOption> seaTransportOptions;
+  @Getter private final List<ProPurchaseOption> landFodderOptions;
+  @Getter private final List<ProPurchaseOption> landAttackOptions;
+  @Getter private final List<ProPurchaseOption> landDefenseOptions;
+  @Getter private final List<ProPurchaseOption> landZeroMoveOptions;
+  @Getter private final List<ProPurchaseOption> airOptions;
+  @Getter private final List<ProPurchaseOption> seaDefenseOptions;
+  @Getter private final List<ProPurchaseOption> seaTransportOptions;
   private final List<ProPurchaseOption> seaCarrierOptions;
   private final List<ProPurchaseOption> seaSubOptions;
-  private final List<ProPurchaseOption> aaOptions;
-  private final List<ProPurchaseOption> factoryOptions;
+  @Getter private final List<ProPurchaseOption> aaOptions;
+  @Getter private final List<ProPurchaseOption> factoryOptions;
   private final List<ProPurchaseOption> specialOptions;
 
   public ProPurchaseOptionMap(final GamePlayer player, final GameData data) {
@@ -174,42 +175,6 @@ public class ProPurchaseOptionMap {
     seaOptions.addAll(seaCarrierOptions);
     seaOptions.addAll(seaSubOptions);
     return new ArrayList<>(seaOptions);
-  }
-
-  public List<ProPurchaseOption> getLandFodderOptions() {
-    return landFodderOptions;
-  }
-
-  public List<ProPurchaseOption> getLandAttackOptions() {
-    return landAttackOptions;
-  }
-
-  public List<ProPurchaseOption> getLandDefenseOptions() {
-    return landDefenseOptions;
-  }
-
-  public List<ProPurchaseOption> getLandZeroMoveOptions() {
-    return landZeroMoveOptions;
-  }
-
-  public List<ProPurchaseOption> getAirOptions() {
-    return airOptions;
-  }
-
-  public List<ProPurchaseOption> getSeaDefenseOptions() {
-    return seaDefenseOptions;
-  }
-
-  public List<ProPurchaseOption> getSeaTransportOptions() {
-    return seaTransportOptions;
-  }
-
-  public List<ProPurchaseOption> getAaOptions() {
-    return aaOptions;
-  }
-
-  public List<ProPurchaseOption> getFactoryOptions() {
-    return factoryOptions;
   }
 
   private static void logOptions(final List<ProPurchaseOption> purchaseOptions, final String name) {

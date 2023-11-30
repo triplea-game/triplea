@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import lombok.Getter;
 
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold
@@ -50,9 +51,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   // successful
   protected String chance = DEFAULT_CHANCE;
   // if chance fails, we should increment the chance by x
-  protected int chanceIncrementOnFailure = 0;
+  @Getter protected int chanceIncrementOnFailure = 0;
   // if chance succeeds, we should decrement the chance by x
-  protected int chanceDecrementOnSuccess = 0;
+  @Getter protected int chanceDecrementOnSuccess = 0;
 
   protected AbstractConditionsAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -304,16 +305,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     chanceIncrementOnFailure = value;
   }
 
-  public int getChanceIncrementOnFailure() {
-    return chanceIncrementOnFailure;
-  }
-
   private void setChanceDecrementOnSuccess(final int value) {
     chanceDecrementOnSuccess = value;
-  }
-
-  public int getChanceDecrementOnSuccess() {
-    return chanceDecrementOnSuccess;
   }
 
   /**

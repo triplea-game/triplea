@@ -4,6 +4,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import lombok.Getter;
 
 /**
  * The results of a method execution. Note that either one of returnValue or exception will be null,
@@ -13,7 +14,7 @@ public class RemoteMethodCallResults implements Externalizable {
   private static final long serialVersionUID = 4562274411264858613L;
   private Object returnValue;
   // throwable implements Serializable
-  private Throwable exception;
+  @Getter private Throwable exception;
 
   public RemoteMethodCallResults() {}
 
@@ -25,10 +26,6 @@ public class RemoteMethodCallResults implements Externalizable {
   public RemoteMethodCallResults(final Throwable exception) {
     returnValue = null;
     this.exception = exception;
-  }
-
-  public Throwable getException() {
-    return exception;
   }
 
   public Object getRVal() {

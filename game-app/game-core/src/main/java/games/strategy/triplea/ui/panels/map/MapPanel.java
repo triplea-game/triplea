@@ -105,7 +105,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
   private ResourceCollection movementFuelCost;
-  private final UiContext uiContext;
+  @Getter private final UiContext uiContext;
   private final ExecutorService executor =
       Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   @Getter private Collection<Collection<Unit>> highlightedUnits = List.of();
@@ -971,10 +971,6 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void clearTerritoryOverlay(final Territory territory) {
     tileManager.clearTerritoryOverlay(territory, gameData, uiContext.getMapData());
-  }
-
-  public UiContext getUiContext() {
-    return uiContext;
   }
 
   public void hideMouseCursor() {

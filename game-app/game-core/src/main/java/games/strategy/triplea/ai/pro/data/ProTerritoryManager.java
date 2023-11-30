@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
@@ -44,12 +45,12 @@ public class ProTerritoryManager {
   private final ProData proData;
   private final GamePlayer player;
 
-  private ProMyMoveOptions attackOptions;
+  @Getter private ProMyMoveOptions attackOptions;
   private ProMyMoveOptions potentialAttackOptions;
-  private ProMyMoveOptions defendOptions;
-  private ProOtherMoveOptions alliedAttackOptions;
-  private ProOtherMoveOptions enemyDefendOptions;
-  private ProOtherMoveOptions enemyAttackOptions;
+  @Getter private ProMyMoveOptions defendOptions;
+  @Getter private ProOtherMoveOptions alliedAttackOptions;
+  @Getter private ProOtherMoveOptions enemyDefendOptions;
+  @Getter private ProOtherMoveOptions enemyAttackOptions;
 
   public ProTerritoryManager(final ProOddsCalculator calc, final ProData proData) {
     this.calc = calc;
@@ -313,26 +314,6 @@ public class ProTerritoryManager {
         alliedAttackOptions,
         enemyDefendOptions,
         true);
-  }
-
-  public ProMyMoveOptions getAttackOptions() {
-    return attackOptions;
-  }
-
-  public ProMyMoveOptions getDefendOptions() {
-    return defendOptions;
-  }
-
-  public ProOtherMoveOptions getAlliedAttackOptions() {
-    return alliedAttackOptions;
-  }
-
-  public ProOtherMoveOptions getEnemyDefendOptions() {
-    return enemyDefendOptions;
-  }
-
-  public ProOtherMoveOptions getEnemyAttackOptions() {
-    return enemyAttackOptions;
   }
 
   public List<Territory> getDefendTerritories() {

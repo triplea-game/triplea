@@ -31,19 +31,22 @@ import org.triplea.java.collections.CollectionUtils;
  * </ul>
  */
 public class UnitCategory implements Comparable<UnitCategory> {
-  private final UnitType type;
+  @Getter private final UnitType type;
+
+  /** -- GETTER -- Collection of UnitOwners, the type of our dependents, not the dependents. */
   // Collection of UnitOwners, the type of our dependents, not the dependents
-  private Collection<UnitOwner> dependents;
+  @Getter private Collection<UnitOwner> dependents;
+
   // movement of the units
-  private final BigDecimal movement;
+  @Getter private final BigDecimal movement;
   // movement of the units
   @Getter private final int transportCost;
   private final boolean canRetreat;
-  private final GamePlayer owner;
+  @Getter private final GamePlayer owner;
   // the units in the category, may be duplicates.
-  private final List<Unit> units = new ArrayList<>();
-  private int damaged = 0;
-  private int bombingDamage = 0;
+  @Getter private final List<Unit> units = new ArrayList<>();
+  @Getter private int damaged = 0;
+  @Getter private int bombingDamage = 0;
   private boolean disabled = false;
 
   public UnitCategory(final UnitType type, final GamePlayer owner) {
@@ -78,14 +81,6 @@ public class UnitCategory implements Comparable<UnitCategory> {
 
   public UnitAttachment getUnitAttachment() {
     return getType().getUnitAttachment();
-  }
-
-  public int getDamaged() {
-    return damaged;
-  }
-
-  public int getBombingDamage() {
-    return bombingDamage;
   }
 
   public boolean hasDamageOrBombingUnitDamage() {
@@ -162,33 +157,12 @@ public class UnitCategory implements Comparable<UnitCategory> {
         + canRetreat;
   }
 
-  /** Collection of UnitOwners, the type of our dependents, not the dependents. */
-  public Collection<UnitOwner> getDependents() {
-    return dependents;
-  }
-
-  public List<Unit> getUnits() {
-    return units;
-  }
-
-  public BigDecimal getMovement() {
-    return movement;
-  }
-
-  public GamePlayer getOwner() {
-    return owner;
-  }
-
   public boolean isOwnedBy(GamePlayer player) {
     return owner.equals(player);
   }
 
   public void addUnit(final Unit unit) {
     units.add(unit);
-  }
-
-  public UnitType getType() {
-    return type;
   }
 
   @Override

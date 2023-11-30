@@ -4,17 +4,15 @@ import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.INode;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import lombok.Getter;
 
 /** Implementation of IChannelMessenger built on top of an IMessenger. */
+@Getter
 public class ChannelMessenger implements IChannelMessenger {
   private final UnifiedMessenger unifiedMessenger;
 
   public ChannelMessenger(final UnifiedMessenger messenger) {
     unifiedMessenger = messenger;
-  }
-
-  public UnifiedMessenger getUnifiedMessenger() {
-    return unifiedMessenger;
   }
 
   @Override

@@ -3,6 +3,7 @@ package org.triplea.util;
 import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
  * A heterogeneous container of two values.
@@ -18,6 +19,7 @@ import lombok.EqualsAndHashCode;
  * }
  * }</pre>
  */
+@Getter
 @EqualsAndHashCode
 @Deprecated
 public final class Tuple<T, S> implements Serializable {
@@ -47,14 +49,6 @@ public final class Tuple<T, S> implements Serializable {
    */
   public static <T, S> Tuple<T, S> of(final T first, final S second) {
     return new Tuple<>(first, second);
-  }
-
-  public T getFirst() {
-    return first;
-  }
-
-  public S getSecond() {
-    return second;
   }
 
   @Override

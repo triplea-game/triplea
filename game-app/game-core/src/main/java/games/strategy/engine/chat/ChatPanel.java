@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import lombok.Getter;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.sound.ClipPlayer;
@@ -24,7 +25,7 @@ public class ChatPanel extends JPanel implements ChatModel {
   private static final long serialVersionUID = -6177517517279779486L;
   private static final int DIVIDER_SIZE = 5;
   private final ChatPlayerPanel chatPlayerPanel;
-  private final ChatMessagePanel chatMessagePanel;
+  @Getter private final ChatMessagePanel chatMessagePanel;
 
   public ChatPanel(
       final Chat chat, final ChatSoundProfile chatSoundProfile, final ClipPlayer clipPlayer) {
@@ -83,9 +84,5 @@ public class ChatPanel extends JPanel implements ChatModel {
     // gets remaining width from parent component, so setting the width is not really necessary
     chatMessagePanel.setPreferredSize(
         new Dimension(30, chatMessagePanel.getPreferredSize().height));
-  }
-
-  public ChatMessagePanel getChatMessagePanel() {
-    return chatMessagePanel;
   }
 }

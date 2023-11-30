@@ -8,10 +8,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import lombok.Getter;
 
 /**
  * Sent by the battle delegate to the game player to indicate which battles are left to be fought.
  */
+@Getter
 public class BattleListing implements Serializable {
   private static final long serialVersionUID = 2700129486225793827L;
   private final Map<BattleType, Collection<Territory>> battles;
@@ -23,10 +25,6 @@ public class BattleListing implements Serializable {
    */
   public BattleListing(final Map<BattleType, Collection<Territory>> battles) {
     this.battles = battles;
-  }
-
-  public Map<BattleType, Collection<Territory>> getBattles() {
-    return battles;
   }
 
   public Set<Territory> getNormalBattlesIncludingAirBattles() {

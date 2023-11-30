@@ -28,9 +28,16 @@ import org.triplea.util.Tuple;
  * <p>This class does not restrict the added battle result to come from the same battle setup. If
  * this is desired, the user must ensure that the results added have that property.
  */
+@Getter
 public class AggregateResults {
+  /**
+   * -- GETTER -- Returns the stored battle results.
+   *
+   * <p>Note: The returned list is the encapsulated list and not a copy.
+   */
   private final List<BattleResults> results;
-  @Getter @Setter private long time;
+
+  @Setter private long time;
 
   /**
    * Creates a new aggregator and sets the internal storage size to {@code expectedCount}. Choosing
@@ -69,15 +76,6 @@ public class AggregateResults {
    */
   public void addResults(final Collection<BattleResults> results) {
     this.results.addAll(results);
-  }
-
-  /**
-   * Returns the stored battle results.
-   *
-   * <p>Note: The returned list is the encapsulated list and not a copy.
-   */
-  public List<BattleResults> getResults() {
-    return results;
   }
 
   private Optional<BattleResults> getBattleResultsClosestToAverage() {

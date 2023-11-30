@@ -10,6 +10,7 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.util.Collection;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 
@@ -35,7 +36,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   // player. They are
   // not related to conditions at all.
   protected @Nullable String movementRestrictionType = null;
-  protected @Nullable String[] movementRestrictionTerritories = null;
+  @Getter protected @Nullable String[] movementRestrictionTerritories = null;
   // allows placing units in any owned land
   protected boolean placementAnyTerritory = false;
   // allows placing units in any sea by owned land
@@ -54,10 +55,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   protected @Nullable IntegerMap<UnitType> productionPerXTerritories = null;
   // type per every X territories owned
   // stops the user from placing units in any territory that already contains more than this
-  protected int placementPerTerritory = -1;
+  @Getter protected int placementPerTerritory = -1;
   // number of owned units
   // maximum number of units that can be placed in each territory.
-  protected int maxPlacePerTerritory = -1;
+  @Getter protected int maxPlacePerTerritory = -1;
 
   // It would wreck most map xmls to move the rulesAttachment's to another class, so don't move them
   // out of here please!
@@ -123,10 +124,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 
   private void setMovementRestrictionTerritories(final String[] value) {
     movementRestrictionTerritories = value;
-  }
-
-  public String[] getMovementRestrictionTerritories() {
-    return movementRestrictionTerritories;
   }
 
   private void resetMovementRestrictionTerritories() {
@@ -195,10 +192,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     placementPerTerritory = value;
   }
 
-  public int getPlacementPerTerritory() {
-    return placementPerTerritory;
-  }
-
   private void resetPlacementPerTerritory() {
     placementPerTerritory = -1;
   }
@@ -209,10 +202,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 
   private void setMaxPlacePerTerritory(final Integer value) {
     maxPlacePerTerritory = value;
-  }
-
-  public int getMaxPlacePerTerritory() {
-    return maxPlacePerTerritory;
   }
 
   private void resetMaxPlacePerTerritory() {

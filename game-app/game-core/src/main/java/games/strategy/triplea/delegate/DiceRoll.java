@@ -24,16 +24,17 @@ import org.triplea.java.ChangeOnNextMajorRelease;
  *
  * <p>Externalizable so we can efficiently write out our dice as ints rather than as full objects.
  */
+@Getter
 @ChangeOnNextMajorRelease("This class should be moved to dice.calculator")
 public class DiceRoll implements Externalizable {
   private static final long serialVersionUID = -1167204061937566271L;
-  @Getter private List<Die> rolls;
+  private List<Die> rolls;
   // this does not need to match the Die with isHit true since for low luck we get many hits with
   // few dice
   private int hits;
   private double expectedHits;
   // keep track of the randomness stats for the player
-  @Getter private String playerName = null;
+  private String playerName = null;
 
   /**
    * Initializes a new instance of the DiceRoll class.
@@ -103,14 +104,6 @@ public class DiceRoll implements Externalizable {
         + territory.getName()
         + ", round "
         + (battleRound + 1);
-  }
-
-  public int getHits() {
-    return hits;
-  }
-
-  public double getExpectedHits() {
-    return expectedHits;
   }
 
   /**

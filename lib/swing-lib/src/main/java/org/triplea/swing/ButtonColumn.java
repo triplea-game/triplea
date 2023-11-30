@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import lombok.Getter;
 
 /**
  * Based on code from: http://www.camick.com/java/source/ButtonColumn.java
@@ -39,9 +40,15 @@ public class ButtonColumn extends AbstractCellEditor
   private static final long serialVersionUID = -9142097942528738143L;
   private final JTable table;
   private final Action action;
-  private int mnemonic;
+  @Getter private int mnemonic;
   private final Border originalBorder;
-  private Border focusBorder;
+
+  /**
+   * -- GETTER -- Get foreground color of the button when the cell has focus.
+   *
+   * @return the foreground color
+   */
+  @Getter private Border focusBorder;
 
   private final JButton renderButton;
   private final JButton editButton;
@@ -103,15 +110,6 @@ public class ButtonColumn extends AbstractCellEditor
   }
 
   /**
-   * Get foreground color of the button when the cell has focus.
-   *
-   * @return the foreground color
-   */
-  public Border getFocusBorder() {
-    return focusBorder;
-  }
-
-  /**
    * The foreground color of the button when the cell has focus.
    *
    * @param focusBorder the foreground color
@@ -119,10 +117,6 @@ public class ButtonColumn extends AbstractCellEditor
   private void setFocusBorder(final Border focusBorder) {
     this.focusBorder = focusBorder;
     editButton.setBorder(focusBorder);
-  }
-
-  public int getMnemonic() {
-    return mnemonic;
   }
 
   /**

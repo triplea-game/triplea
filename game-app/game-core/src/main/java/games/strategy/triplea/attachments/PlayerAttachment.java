@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
@@ -24,11 +25,11 @@ import org.triplea.util.Triple;
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
 
-  private int vps = 0;
+  @Getter private int vps = 0;
   // need to store some data during a turn
-  private int captureVps = 0;
+  @Getter private int captureVps = 0;
   // number of capitals needed before we lose all our money
-  private int retainCapitalNumber = 1;
+  @Getter private int retainCapitalNumber = 1;
   // number of capitals needed before we lose ability to gain money and produce units
   private int retainCapitalProduceNumber = 1;
   private @Nullable List<GamePlayer> giveUnitControl = null;
@@ -211,20 +212,12 @@ public class PlayerAttachment extends DefaultAttachment {
     vps = value;
   }
 
-  public int getVps() {
-    return vps;
-  }
-
   private void setCaptureVps(final String value) {
     captureVps = getInt(value);
   }
 
   private void setCaptureVps(final Integer value) {
     captureVps = value;
-  }
-
-  public int getCaptureVps() {
-    return captureVps;
   }
 
   private void resetCaptureVps() {
@@ -237,10 +230,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   private void setRetainCapitalNumber(final Integer value) {
     retainCapitalNumber = value;
-  }
-
-  public int getRetainCapitalNumber() {
-    return retainCapitalNumber;
   }
 
   private void resetRetainCapitalNumber() {

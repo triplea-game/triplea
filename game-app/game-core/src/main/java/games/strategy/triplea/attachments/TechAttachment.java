@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
 /**
  * An attachment for instances of {@link GamePlayer} that defines properties related to technology
@@ -20,7 +21,8 @@ import java.util.Map;
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
 
-  private int techCost = 5;
+  // getters
+  @Getter private int techCost = 5;
   private boolean heavyBomber = false;
   private boolean longRangeAir = false;
   private boolean jetPower = false;
@@ -35,7 +37,7 @@ public class TechAttachment extends DefaultAttachment {
   private boolean mechanizedInfantry = false;
   private boolean aaRadar = false;
   private boolean shipyards = false;
-  private final Map<String, Boolean> genericTech = new HashMap<>();
+  @Getter private final Map<String, Boolean> genericTech = new HashMap<>();
 
   public TechAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -231,11 +233,6 @@ public class TechAttachment extends DefaultAttachment {
     shipyards = false;
   }
 
-  // getters
-  public int getTechCost() {
-    return techCost;
-  }
-
   public boolean getHeavyBomber() {
     return heavyBomber;
   }
@@ -309,10 +306,6 @@ public class TechAttachment extends DefaultAttachment {
   public void setGenericTech(final String name, final boolean value) {
     genericTech.put(name, value);
     getData().getTechTracker().clearCache();
-  }
-
-  public Map<String, Boolean> getGenericTech() {
-    return genericTech;
   }
 
   @Override

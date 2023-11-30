@@ -26,7 +26,7 @@ public class Tile {
   /** Current de facto immutable state of this tile. */
   @Getter private Image image;
 
-  private final Rectangle bounds;
+  @Getter private final Rectangle bounds;
   private final Object mutex = new Object();
   private final Queue<IDrawable> contents = new PriorityQueue<>();
 
@@ -103,9 +103,5 @@ public class Tile {
     synchronized (mutex) {
       return new ArrayList<>(contents);
     }
-  }
-
-  public Rectangle getBounds() {
-    return bounds;
   }
 }
