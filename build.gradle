@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.50.0'
     id 'io.franzbecker.gradle-lombok' version '5.0.0' apply false
-    id 'com.diffplug.spotless' version '6.23.0' apply false
+    id 'com.diffplug.spotless' version '6.23.2' apply false
     id 'com.avast.gradle.docker-compose' version '0.17.5'
 }
 
