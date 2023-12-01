@@ -22,9 +22,7 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LoginMode;
 import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dimension;
-import java.net.URI;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.JFrame;
@@ -129,19 +127,14 @@ public class HeadedServerSetupModel {
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
   public void login() {
-    promptLobbyLogin(ClientSetting.lobbyUri.getValueOrThrow());
-  }
-
-  private void promptLobbyLogin(final URI lobbyUri) {
-    new LobbyLogin(ui, lobbyUri)
+    new LobbyLogin(ui)
         .promptLogin(LoginMode.REGISTRATION_NOT_REQUIRED)
-        .ifPresent(loginResult -> showLobbyWindow(loginResult, lobbyUri));
+        .ifPresent(this::showLobbyWindow);
   }
 
-  private void showLobbyWindow(final LoginResult loginResult, final URI lobbyUri) {
-    final var lobbyClient = LobbyClient.newLobbyClient(lobbyUri, loginResult);
-
-    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyUri);
+  private void showLobbyWindow(final LoginResult loginResult) {
+    final var lobbyClient = LobbyClient.newLobbyClient(loginResult);
+    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient);
     MainFrame.hide();
     lobbyFrame.setVisible(true);
   }

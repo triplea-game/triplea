@@ -18,7 +18,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.Action;
@@ -39,7 +38,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
   private final ChatTransmitter chatTransmitter;
   private final LobbyGameTableModel tableModel;
 
-  public LobbyFrame(final LobbyClient lobbyClient, final URI lobbyUri) {
+  public LobbyFrame(final LobbyClient lobbyClient) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     SwingComponents.addWindowClosedListener(this, HeadedGameRunner::exitGameIfNoWindowsVisible);
@@ -61,7 +60,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     tableModel =
         new LobbyGameTableModel(
             lobbyClient.isModerator(), lobbyClient.getPlayerToLobbyConnection());
-    final LobbyGamePanel gamePanel = new LobbyGamePanel(this, lobbyClient, lobbyUri, tableModel);
+    final LobbyGamePanel gamePanel = new LobbyGamePanel(this, lobbyClient, tableModel);
 
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);

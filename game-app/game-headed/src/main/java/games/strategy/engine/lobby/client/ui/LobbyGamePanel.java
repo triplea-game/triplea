@@ -5,11 +5,11 @@ import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.action.FetchChatHistory;
 import games.strategy.engine.lobby.client.ui.action.ShowPlayersAction;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
-import java.net.URI;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,18 +36,15 @@ class LobbyGamePanel extends JPanel {
   private final JButton joinGameButton;
   private final LobbyGameTableModel gameTableModel;
   private final LobbyClient lobbyClient;
-  private final URI lobbyUri;
   private final JTable gameTable;
 
   LobbyGamePanel(
       final JFrame parent,
       final LobbyClient lobbyClient,
-      final URI lobbyUri,
       final LobbyGameTableModel lobbyGameTableModel) {
     this.parent = parent;
     this.lobbyClient = lobbyClient;
     this.gameTableModel = lobbyGameTableModel;
-    this.lobbyUri = lobbyUri;
 
     final JButton hostGameButton = new JButton("Host Game");
     joinGameButton = new JButton("Join Game");
@@ -139,7 +136,7 @@ class LobbyGamePanel extends JPanel {
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
 
-    hostGameButton.addActionListener(e -> hostGame(lobbyUri));
+    hostGameButton.addActionListener(e -> hostGame());
     joinGameButton.addActionListener(e -> joinGame());
   }
 
@@ -178,7 +175,7 @@ class LobbyGamePanel extends JPanel {
 
     List.of(
             SwingAction.of("Join Game", this::joinGame),
-            SwingAction.of("Host Game", () -> hostGame(lobbyUri)),
+            SwingAction.of("Host Game", this::hostGame),
             ShowPlayersAction.builder()
                 .parentWindow(parent)
                 .gameIdSelection(
@@ -215,7 +212,7 @@ class LobbyGamePanel extends JPanel {
     GameProcess.joinGame(description, lobbyClient.getUserName());
   }
 
-  private void hostGame(final URI lobbyUri) {
+  private void hostGame() {
     final ServerOptions options =
         new ServerOptions(
             JOptionPane.getFrameForComponent(this), lobbyClient.getUserName(), 3300, true);
@@ -230,7 +227,7 @@ class LobbyGamePanel extends JPanel {
         options.getName(),
         options.getComments(),
         options.getPassword(),
-        lobbyUri);
+        ClientSetting.lobbyUri.getValueOrThrow());
   }
 
   private void showChatHistory() {

@@ -6,7 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.Window;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -187,12 +186,12 @@ public final class ChangePasswordPanel extends JPanel {
   }
 
   public static boolean doPasswordChange(
-      final Window lobbyFrame,
-      final URI lobbyUri,
-      final ApiKey apiKey,
-      final AllowCancelMode allowCancelMode) {
+      final Window lobbyFrame, final ApiKey apiKey, final AllowCancelMode allowCancelMode) {
     return doPasswordChange(
-        lobbyFrame, new HttpLobbyClient(lobbyUri, apiKey).getUserAccountClient(), allowCancelMode);
+        lobbyFrame,
+        new HttpLobbyClient(ClientSetting.lobbyUri.getValueOrThrow(), apiKey)
+            .getUserAccountClient(),
+        allowCancelMode);
   }
 
   public static boolean doPasswordChange(
