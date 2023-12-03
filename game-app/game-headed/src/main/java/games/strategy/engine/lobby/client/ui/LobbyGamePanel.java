@@ -2,7 +2,7 @@ package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.engine.framework.GameProcess;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.action.FetchChatHistory;
 import games.strategy.engine.lobby.client.ui.action.ShowPlayersAction;
 import games.strategy.triplea.settings.ClientSetting;
@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.MouseListenerBuilder;
 import org.triplea.swing.SwingAction;
@@ -35,16 +36,19 @@ class LobbyGamePanel extends JPanel {
   private final JFrame parent;
   private final JButton joinGameButton;
   private final LobbyGameTableModel gameTableModel;
-  private final LobbyClient lobbyClient;
+  private final LoginResult loginResult;
   private final JTable gameTable;
+  private final PlayerToLobbyConnection playerToLobbyConnection;
 
   LobbyGamePanel(
       final JFrame parent,
-      final LobbyClient lobbyClient,
-      final LobbyGameTableModel lobbyGameTableModel) {
+      final LoginResult loginResult,
+      final LobbyGameTableModel lobbyGameTableModel,
+      final PlayerToLobbyConnection playerToLobbyConnection) {
     this.parent = parent;
-    this.lobbyClient = lobbyClient;
+    this.loginResult = loginResult;
     this.gameTableModel = lobbyGameTableModel;
+    this.playerToLobbyConnection = playerToLobbyConnection;
 
     final JButton hostGameButton = new JButton("Host Game");
     joinGameButton = new JButton("Join Game");
@@ -104,7 +108,7 @@ class LobbyGamePanel extends JPanel {
         .getColumnModel()
         .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P))
         .setPreferredWidth(12);
-    if (lobbyClient.isModerator()) {
+    if (loginResult.isModerator()) {
       gameTable
           .getColumnModel()
           .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
@@ -182,12 +186,12 @@ class LobbyGamePanel extends JPanel {
                     () ->
                         gameTableModel.getGameListingForRow(
                             gameTable.convertRowIndexToModel(gameTable.getSelectedRow())))
-                .playerToLobbyConnection(lobbyClient.getPlayerToLobbyConnection())
+                .playerToLobbyConnection(playerToLobbyConnection)
                 .build()
                 .buildSwingAction())
         .forEach(menu::add);
 
-    if (lobbyClient.isModerator()) {
+    if (loginResult.isModerator()) {
       menu.addSeparator();
       List.of(
               SwingAction.of("Show Chat History", e -> showChatHistory()),
@@ -209,13 +213,13 @@ class LobbyGamePanel extends JPanel {
     // we sort the table, so get the correct index
     final GameDescription description =
         gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
-    GameProcess.joinGame(description, lobbyClient.getUserName());
+    GameProcess.joinGame(description, loginResult.getUsername());
   }
 
   private void hostGame() {
     final ServerOptions options =
         new ServerOptions(
-            JOptionPane.getFrameForComponent(this), lobbyClient.getUserName(), 3300, true);
+            JOptionPane.getFrameForComponent(this), loginResult.getUsername(), 3300, true);
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
     options.setNameEditable(false);
     options.setVisible(true);
@@ -240,7 +244,7 @@ class LobbyGamePanel extends JPanel {
         .parentWindow(parent)
         .gameId(gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex)))
         .gameHostName(gameTableModel.get(selectedIndex).getHostedBy().getName())
-        .playerToLobbyConnection(lobbyClient.getPlayerToLobbyConnection())
+        .playerToLobbyConnection(playerToLobbyConnection)
         .build()
         .fetchAndShowChatHistory();
   }
@@ -282,7 +286,7 @@ class LobbyGamePanel extends JPanel {
 
     final String gameId =
         gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
-    lobbyClient.getPlayerToLobbyConnection().sendShutdownRequest(gameId);
+    playerToLobbyConnection.sendShutdownRequest(gameId);
     JOptionPane.showMessageDialog(null, "The game you selected was sent a shutdown signal");
   }
 }

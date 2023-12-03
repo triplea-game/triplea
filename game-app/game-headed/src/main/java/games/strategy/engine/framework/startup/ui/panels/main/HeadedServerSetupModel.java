@@ -17,7 +17,6 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.startup.ui.posted.game.pbem.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.PbfSetupPanel;
 import games.strategy.engine.framework.ui.MainFrame;
-import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LoginMode;
 import games.strategy.engine.lobby.client.login.LoginResult;
@@ -133,8 +132,7 @@ public class HeadedServerSetupModel {
   }
 
   private void showLobbyWindow(final LoginResult loginResult) {
-    final var lobbyClient = LobbyClient.newLobbyClient(loginResult);
-    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient);
+    final LobbyFrame lobbyFrame = new LobbyFrame(loginResult);
     MainFrame.hide();
     lobbyFrame.setVisible(true);
   }
