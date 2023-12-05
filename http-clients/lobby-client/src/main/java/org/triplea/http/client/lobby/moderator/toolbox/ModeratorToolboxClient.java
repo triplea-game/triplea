@@ -9,8 +9,6 @@ import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClien
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
 import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
-import org.triplea.http.client.maps.listing.MapsClient;
-import org.triplea.http.client.maps.tag.admin.MapTagAdminClient;
 
 @Getter
 public class ModeratorToolboxClient {
@@ -21,8 +19,6 @@ public class ModeratorToolboxClient {
   private final ToolboxModeratorManagementClient toolboxModeratorManagementClient;
   private final ToolboxBadWordsClient toolboxBadWordsClient;
   private final ToolboxEventLogClient toolboxEventLogClient;
-  private final MapsClient mapsClient;
-  private final MapTagAdminClient mapTagAdminClient;
 
   private ModeratorToolboxClient(final URI lobbyUri, final ApiKey apiKey) {
     toolboxAccessLogClient = ToolboxAccessLogClient.newClient(lobbyUri, apiKey);
@@ -31,8 +27,6 @@ public class ModeratorToolboxClient {
     toolboxModeratorManagementClient = ToolboxModeratorManagementClient.newClient(lobbyUri, apiKey);
     toolboxBadWordsClient = ToolboxBadWordsClient.newClient(lobbyUri, apiKey);
     toolboxEventLogClient = ToolboxEventLogClient.newClient(lobbyUri, apiKey);
-    mapsClient = MapsClient.newClient(lobbyUri);
-    mapTagAdminClient = MapTagAdminClient.newClient(lobbyUri, apiKey);
   }
 
   public static ModeratorToolboxClient newClient(final URI lobbyUri, final ApiKey apiKey) {

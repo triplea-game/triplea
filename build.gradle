@@ -236,5 +236,6 @@ subprojects {
 
     // compose builds need WAR files for packaging, so we must run the corresponding package (shadowJar) tasks
     composeBuild.dependsOn ":servers:game-support:server:shadowJar"
+    composeBuild.dependsOn ":servers:maps:server:shadowJar"
     composeBuild.dependsOn ":spitfire-server:dropwizard-server:shadowJar"
 }

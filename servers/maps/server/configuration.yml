@@ -1,21 +1,18 @@
 githubApiToken: ${GITHUB_API_TOKEN:-}
 githubWebServiceUrl: https://api.github.com
-githubGameOrg: triplea-game
-githubGameRepo: triplea
+githubMapsOrgName: triplea-maps
 
-# When disabled, API calls to github to create error reports will not
-# be made and instead a hardcoded value returned.
-errorReportToGithubEnabled: ${ERROR_REPORT_TO_GITHUB_ENABLED:-false}
 
+# Whether to print out SQL statements as executed, useful for debugging.
+logSqlStatements: false
 
 database:
   driverClass: org.postgresql.Driver
-  user: ${DATABASE_USER:-error_report_user}
-  password: ${DATABASE_PASSWORD:-error_report}
-  url: jdbc:postgresql://${DB_URL:-localhost:5432/error_report}
+  user: ${DATABASE_USER:-lobby_user}
+  password: ${DATABASE_PASSWORD:-lobby}
+  url: jdbc:postgresql://${DB_URL:-localhost:5432/lobby_db}
   properties:
     charSet: UTF-8
-
   # the maximum amount of time to wait on an empty pool before throwing an exception
   maxWaitForConnection: 1s
 

@@ -1,39 +1,11 @@
 githubApiToken: ${GITHUB_API_TOKEN:-}
 githubWebServiceUrl: https://api.github.com
 githubGameOrg: triplea-game
-githubGameRepo: triplea
-githubMapsOrgName: triplea-maps
 
 latestVersionFetcherEnabled: ${LATEST_VERSION_FETCHER_ENABLED:-true}
 
-# If map indexing is enabled, it will begin shortly after server startup.
-# If disabled no map indexing will occur.
-mapIndexingEnabled: ${MAP_INDEXING_ENABLED:-false}
-
-# How often between map indexing runs. On each map indexing run we will
-# index all maps. If the previous map indexing run is still going
-# we will then have multiple indexing jobs running at the same time.
-# To avoid overlapping indexing jobs, this value needs to be greater than:
-#  (number of maps) * (processing time) * (indexingTaskDelaySeconds / 60)
-mapIndexingPeriodMinutes: ${MAP_INDEXING_PERIOD_MINUTES:-300}
-
-# Time period in seconds between indexing each individual map. This must
-# be configured to avoid github API rate limiting.
-# Eg:
-#      1 -> one indexing task per second -> 3600 requests per hour.
-#      5 -> one indexing task every 5 seconds -> 720 requests per hour.
-#     60 -> one indexing task per minute -> 60 requests per hour.
-#    120 -> one indexing task every other minute -> 30 requests per hour.
-# Unauthenticated Github API requests are limited to 60 request per hour.
-# Authenticated Github API requests are limited to 1000 requests per hour.
-indexingTaskDelaySeconds: ${MAP_INDEXING_DELAY_SECONDS:-120}
-
 # this is to help guarantee that we do not accidentally use test configuration in prod.
 gameHostConnectivityCheckEnabled: ${GAME_HOST_CONNECTIVITY_CHECK_ENABLED:-false}
-
-# When disabled, API calls to github to create error reports will not
-# be made and instead a hardcoded value returned.
-errorReportToGithubEnabled: ${ERROR_REPORT_TO_GITHUB_ENABLED:-false}
 
 # Whether to print out SQL statements as executed, useful for debugging.
 logSqlStatements: false
@@ -79,9 +51,5 @@ server:
     - type: http
       port: ${HTTP_PORT:-8080}
       # useForwardedHeaders is important for when behind a reverse proxy (NGINX)
-      # Without this 'getRemoteAddr' will return the IP of the reverse proxy server.
-      # By default when building locally useForwardedPorts should be 'false', but
-      # for all other environments that do have a NGINX server, the value should be
-      # set to true.
-      useForwardedHeaders: ${USE_FORWARDED_HEADERS:-false}
+      useForwardedHeaders: true
   adminConnectors: []

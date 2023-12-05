@@ -1,4 +1,4 @@
-package org.triplea.http.client.maps.tag.admin;
+package org.triplea.http.client.maps.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package org.triplea.spitfire.server.maps;
+package org.triplea.maps;
 
 import java.util.List;
 import java.util.function.Supplier;

@@ -101,10 +101,7 @@ public final class HeadedGameRunner {
 
     LobbyHttpClientConfig.setConfig(
         LobbyHttpClientConfig.builder()
-            .clientVersion(
-                ProductVersionReader.getCurrentVersion().getMajor()
-                    + "."
-                    + ProductVersionReader.getCurrentVersion().getMinor())
+            .clientVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
             .systemId(SystemIdLoader.load().getValue())
             .build());
 

@@ -57,7 +57,6 @@ dependencies {
     implementation project(':lib:java-extras')
     implementation project(':lib:websocket-client')
     implementation project(':lib:websocket-server')
-    implementation project(':servers:maps:server')
     implementation project(':servers:server-lib')
     implementation project(':spitfire-server:latest-version-module')
     implementation project(':spitfire-server:lobby-module')

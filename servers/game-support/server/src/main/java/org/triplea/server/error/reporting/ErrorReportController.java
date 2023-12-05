@@ -18,7 +18,7 @@ import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.GithubApiClient;
-import org.triplea.http.client.lib.HttpClientHeaders;
+import org.triplea.http.client.lib.ClientIdentifiers;
 import org.triplea.server.error.reporting.upload.CanUploadErrorReportStrategy;
 import org.triplea.server.error.reporting.upload.CreateIssueParams;
 import org.triplea.server.error.reporting.upload.ErrorReportModule;
@@ -71,7 +71,7 @@ public class ErrorReportController {
     return errorReportIngestion.createErrorReport(
         CreateIssueParams.builder()
             .ip(IpAddressExtractor.extractIpAddress(request))
-            .systemId(request.getHeader(HttpClientHeaders.VERSION_HEADER))
+            .systemId(request.getHeader(ClientIdentifiers.VERSION_HEADER))
             .errorReportRequest(errorReport)
             .build());
   }

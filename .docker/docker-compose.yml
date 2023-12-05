@@ -24,6 +24,14 @@ services:
       - DB_URL=database:5432/error_report
     depends_on:
       - database
+  maps-server:
+    build:
+      context: ../servers/maps/server/
+      dockerfile: Dockerfile
+    environment:
+      - DB_URL=database:5432/maps
+    depends_on:
+      - database
   database:
     image: postgres:10
     environment:

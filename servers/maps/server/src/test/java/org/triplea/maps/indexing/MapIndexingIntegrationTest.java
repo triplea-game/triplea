@@ -5,25 +5,28 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.StringContains.containsString;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.github.MapRepoListing;
+import org.triplea.maps.MapsServerConfig;
+import org.triplea.test.common.RequiresDatabase;
 
 /**
  * Test that does a live indexing (goes over network to github) of 'triplea-maps/test-map'. We'll
  * build an indexer and then run indexing on the test map. The test map will be in a known state and
  * we'll then verify the returned indexing results are as expected.
  */
-@Disabled
+@RequiresDatabase
 public class MapIndexingIntegrationTest {
 
   @Test
   void runIndexingOnTestMap() {
+    MapsServerConfig mapsServerConfig = new MapsServerConfig();
+    mapsServerConfig.setGithubMapsOrgName("triplea-maps");
+    mapsServerConfig.setGithubWebServiceUrl("https://api.github.com");
+
     final MapIndexingTask mapIndexingTaskRunner =
         MapsIndexingObjectFactory.mapIndexingTask(
-            MapsIndexingObjectFactory.githubApiClient(
-                "triplea-maps", "https://api.github.com", null),
-            (repo, repoLastCommitDate) -> false);
+            mapsServerConfig.createGithubApiClient(), (repo, repoLastCommitDate) -> false);
 
     final MapIndexingResult result =
         mapIndexingTaskRunner

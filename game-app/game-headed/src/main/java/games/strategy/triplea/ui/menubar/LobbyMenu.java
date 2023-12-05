@@ -10,6 +10,11 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import javax.swing.JMenuBar;
+import org.triplea.config.product.ProductVersionReader;
+import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.lib.ClientIdentifiers;
+import org.triplea.http.client.maps.admin.MapTagAdminClient;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.sound.SoundOptions;
 import org.triplea.swing.JMenuBuilder;
@@ -51,6 +56,12 @@ public final class LobbyMenu extends JMenuBar {
     }
 
     if (loginResult.isModerator()) {
+      ClientIdentifiers clientIdentifiers =
+          ClientIdentifiers.builder()
+              .applicationVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
+              .systemId(SystemIdLoader.load().getValue())
+              .apiKey(loginResult.getApiKey().getValue())
+              .build();
       add(
           new JMenuBuilder("Admin", 'M')
               .addMenuItem(
@@ -58,7 +69,12 @@ public final class LobbyMenu extends JMenuBar {
                   'T',
                   () ->
                       ToolBoxWindow.showWindow(
-                          lobbyFrame, playerToLobbyConnection.getHttpModeratorToolboxClient()))
+                          lobbyFrame,
+                          playerToLobbyConnection.getHttpModeratorToolboxClient(),
+                          MapsClient.newClient(
+                              ClientSetting.lobbyUri.getValueOrThrow(), clientIdentifiers),
+                          MapTagAdminClient.newClient(
+                              ClientSetting.lobbyUri.getValueOrThrow(), clientIdentifiers)))
               .build());
     }
 

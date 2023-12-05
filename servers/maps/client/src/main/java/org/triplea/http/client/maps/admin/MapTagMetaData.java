@@ -1,4 +1,4 @@
-package org.triplea.http.client.maps.tag.admin;
+package org.triplea.http.client.maps.admin;
 
 import java.util.List;
 import javax.annotation.Nonnull;

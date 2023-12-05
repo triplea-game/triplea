@@ -14,8 +14,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.maps.tag.admin.MapTagMetaData;
-import org.triplea.http.client.maps.tag.admin.UpdateMapTagRequest;
+import org.triplea.http.client.maps.admin.MapTagMetaData;
+import org.triplea.http.client.maps.admin.UpdateMapTagRequest;
 
 @ExtendWith(MockitoExtension.class)
 class MapTagAdminModuleTest {
