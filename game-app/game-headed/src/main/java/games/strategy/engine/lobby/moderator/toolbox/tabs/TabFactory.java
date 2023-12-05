@@ -14,6 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import lombok.Builder;
 import org.triplea.http.client.lobby.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.http.client.maps.admin.MapTagAdminClient;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.swing.JTabbedPaneBuilder;
 
 /** Factory class to construct the 'tabs' that go in the moderator toolbox tabbed window. */
@@ -21,6 +23,8 @@ import org.triplea.swing.JTabbedPaneBuilder;
 public final class TabFactory {
   @Nonnull private final JFrame frame;
   @Nonnull private final ModeratorToolboxClient moderatorToolboxClient;
+  @Nonnull private final MapsClient mapsClient;
+  @Nonnull private final MapTagAdminClient mapTagAdminClient;
 
   public JTabbedPane buildTabs() {
     return JTabbedPaneBuilder.builder()
@@ -64,16 +68,13 @@ public final class TabFactory {
   private Component buildMapsTab() {
     return MapsTab.builder()
         .parentWindowHeight(frame.getWidth())
-        .mapsTabModel(buildMapsTabModel())
+        .mapsTabModel(
+            MapsTabModel.builder()
+                .mapsClient(mapsClient)
+                .mapTagAdminClient(mapTagAdminClient)
+                .build())
         .build()
         .get();
-  }
-
-  private MapsTabModel buildMapsTabModel() {
-    return MapsTabModel.builder()
-        .mapsClient(moderatorToolboxClient.getMapsClient())
-        .mapTagAdminClient(moderatorToolboxClient.getMapTagAdminClient())
-        .build();
   }
 
   private Component buildEventLogTab() {

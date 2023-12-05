@@ -4,7 +4,7 @@ import feign.FeignException;
 import feign.RequestLine;
 import java.net.URI;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.lib.HttpClientHeaders;
+import org.triplea.http.client.lib.ClientIdentifiers;
 
 /** Http client to upload error reports to the http lobby server. */
 public interface ErrorReportClient {
@@ -13,11 +13,8 @@ public interface ErrorReportClient {
   int MAX_REPORTS_PER_DAY = 5;
 
   /** Creates an error report uploader clients, sends error reports and gets a response back. */
-  static ErrorReportClient newClient(URI uri, String clientVersion) {
-    return HttpClient.newClient(
-        ErrorReportClient.class,
-        uri,
-        HttpClientHeaders.defaultHeadersWithClientVersion(clientVersion));
+  static ErrorReportClient newClient(URI uri, ClientIdentifiers clientIdentifiers) {
+    return HttpClient.newClient(ErrorReportClient.class, uri, clientIdentifiers.createHeaders());
   }
 
   /**

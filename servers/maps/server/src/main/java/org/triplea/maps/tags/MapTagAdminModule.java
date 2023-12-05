@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.client.maps.tag.admin.MapTagMetaData;
-import org.triplea.http.client.maps.tag.admin.UpdateMapTagRequest;
+import org.triplea.http.client.maps.admin.MapTagMetaData;
+import org.triplea.http.client.maps.admin.UpdateMapTagRequest;
 
 @AllArgsConstructor
 public class MapTagAdminModule {

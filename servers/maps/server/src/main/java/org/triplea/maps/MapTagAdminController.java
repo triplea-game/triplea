@@ -1,17 +1,15 @@
-package org.triplea.spitfire.server.maps;
+package org.triplea.maps;
 
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.client.GenericServerResponse;
-import org.triplea.http.client.maps.tag.admin.MapTagAdminClient;
-import org.triplea.http.client.maps.tag.admin.MapTagMetaData;
-import org.triplea.http.client.maps.tag.admin.UpdateMapTagRequest;
+import org.triplea.http.client.maps.admin.MapTagAdminClient;
+import org.triplea.http.client.maps.admin.MapTagMetaData;
+import org.triplea.http.client.maps.admin.UpdateMapTagRequest;
 import org.triplea.maps.tags.MapTagAdminModule;
 import org.triplea.maps.tags.UpdateMapTagResult;
 import org.triplea.spitfire.server.HttpController;
@@ -30,7 +28,7 @@ public class MapTagAdminController extends HttpController {
    */
   @GET
   @Path(MapTagAdminClient.GET_MAP_TAGS_META_DATA_PATH)
-  @RolesAllowed(UserRole.MODERATOR)
+  //  @RolesAllowed(UserRole.MODERATOR)
   public List<MapTagMetaData> fetchAvailableMapTags() {
     return mapTagAdminModule.fetchMapTags();
   }
@@ -41,7 +39,7 @@ public class MapTagAdminController extends HttpController {
    */
   @POST
   @Path(MapTagAdminClient.UPDATE_MAP_TAG_PATH)
-  @RolesAllowed(UserRole.MODERATOR)
+  //  @RolesAllowed(UserRole.MODERATOR)
   public GenericServerResponse updateMapTag(final UpdateMapTagRequest updateMapTagRequest) {
     final UpdateMapTagResult result = mapTagAdminModule.updateMapTag(updateMapTagRequest);
 

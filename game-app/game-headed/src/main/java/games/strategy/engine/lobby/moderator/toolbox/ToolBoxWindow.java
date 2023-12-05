@@ -5,6 +5,8 @@ import games.strategy.triplea.EngineImageLoader;
 import java.awt.Component;
 import lombok.experimental.UtilityClass;
 import org.triplea.http.client.lobby.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.http.client.maps.admin.MapTagAdminClient;
+import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.JPanelBuilder;
@@ -18,7 +20,10 @@ public final class ToolBoxWindow {
 
   /** Shows the moderator toolbox UI window. */
   public static void showWindow(
-      final Component parent, final ModeratorToolboxClient moderatorToolboxClient) {
+      final Component parent,
+      final ModeratorToolboxClient moderatorToolboxClient,
+      final MapsClient mapsClient,
+      final MapTagAdminClient mapTagAdminClient) {
     SwingAction.invokeNowOrLater(
         () ->
             JFrameBuilder.builder()
@@ -36,6 +41,8 @@ public final class ToolBoxWindow {
                                 TabFactory.builder()
                                     .frame(frame)
                                     .moderatorToolboxClient(moderatorToolboxClient)
+                                    .mapsClient(mapsClient)
+                                    .mapTagAdminClient(mapTagAdminClient)
                                     .build()
                                     .buildTabs())
                             .build())

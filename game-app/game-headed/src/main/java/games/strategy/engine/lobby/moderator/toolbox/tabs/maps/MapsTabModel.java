@@ -9,11 +9,11 @@ import lombok.Builder;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.GenericServerResponse;
+import org.triplea.http.client.maps.admin.MapTagAdminClient;
+import org.triplea.http.client.maps.admin.MapTagMetaData;
+import org.triplea.http.client.maps.admin.UpdateMapTagRequest;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.listing.MapsClient;
-import org.triplea.http.client.maps.tag.admin.MapTagAdminClient;
-import org.triplea.http.client.maps.tag.admin.MapTagMetaData;
-import org.triplea.http.client.maps.tag.admin.UpdateMapTagRequest;
 
 @Slf4j
 public class MapsTabModel {

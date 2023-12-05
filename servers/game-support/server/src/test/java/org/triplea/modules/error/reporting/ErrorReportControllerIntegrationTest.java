@@ -11,6 +11,7 @@ import org.triplea.http.client.error.report.CanUploadRequest;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
+import org.triplea.http.client.lib.ClientIdentifiers;
 import org.triplea.test.common.RequiresDatabase;
 
 @ExtendWith(ErrorReportServerTestExtension.class)
@@ -19,7 +20,10 @@ class ErrorReportControllerIntegrationTest {
   private final ErrorReportClient client;
 
   ErrorReportControllerIntegrationTest(final URI localhost) {
-    client = ErrorReportClient.newClient(localhost, "0.0");
+    client =
+        ErrorReportClient.newClient(
+            localhost,
+            ClientIdentifiers.builder().applicationVersion("0.0").systemId("system").build());
   }
 
   @Test

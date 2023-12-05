@@ -5,6 +5,9 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.config.product.ProductVersionReader;
+import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.lib.ClientIdentifiers;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.listing.MapsClient;
 
@@ -16,7 +19,13 @@ public class MapListingFetcher {
   public static List<MapDownloadItem> getMapDownloadList() {
     final var serverUri = ClientSetting.lobbyUri.getValueOrThrow();
     try {
-      return MapsClient.newClient(serverUri).fetchMapListing();
+      return MapsClient.newClient(
+              serverUri,
+              ClientIdentifiers.builder()
+                  .applicationVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
+                  .systemId(SystemIdLoader.load().getValue())
+                  .build())
+          .fetchMapListing();
     } catch (FeignException e) {
       log.warn(
           "Failed to download the list of available maps from TripleA servers.\n"
