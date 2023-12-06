@@ -4,7 +4,7 @@ plugins {
 }
 
 archivesBaseName = "game-support-server"
-mainClassName = 'org.triplea.server.error.reporting.ErrorReportingServer'
+mainClassName = 'org.triplea.server.GameSupportServerApplication'
 ext {
     releasesDir = file("$buildDir/releases")
 }

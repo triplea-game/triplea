@@ -1,8 +1,8 @@
 package org.triplea.modules.error.reporting;
 
 import io.dropwizard.testing.DropwizardTestSupport;
-import org.triplea.server.error.reporting.ErrorReportingConfiguration;
-import org.triplea.server.error.reporting.ErrorReportingServer;
+import org.triplea.server.GameSupportServerApplication;
+import org.triplea.server.GameSupportServerConfiguration;
 import org.triplea.test.common.RequiresDatabase;
 import org.triplea.test.support.DropwizardServerExtension;
 
@@ -13,13 +13,13 @@ import org.triplea.test.support.DropwizardServerExtension;
  */
 @RequiresDatabase
 public class ErrorReportServerTestExtension
-    extends DropwizardServerExtension<ErrorReportingConfiguration> {
+    extends DropwizardServerExtension<GameSupportServerConfiguration> {
 
-  private static final DropwizardTestSupport<ErrorReportingConfiguration> testSupport =
-      new DropwizardTestSupport<>(ErrorReportingServer.class, "configuration.yml");
+  private static final DropwizardTestSupport<GameSupportServerConfiguration> testSupport =
+      new DropwizardTestSupport<>(GameSupportServerApplication.class, "configuration.yml");
 
   @Override
-  public DropwizardTestSupport<ErrorReportingConfiguration> getSupport() {
+  public DropwizardTestSupport<GameSupportServerConfiguration> getSupport() {
     return testSupport;
   }
 }

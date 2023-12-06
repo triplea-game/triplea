@@ -1,4 +1,4 @@
-package org.triplea.server.error.reporting;
+package org.triplea.server;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-public class ErrorReportingConfiguration extends Configuration {
+public class GameSupportServerConfiguration extends Configuration {
 
   String githubApiToken;
   String githubWebServiceUrl;

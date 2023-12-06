@@ -1,4 +1,4 @@
-package org.triplea.server.error.reporting;
+package org.triplea.server;
 
 import io.dropwizard.Application;
 import io.dropwizard.jdbi3.JdbiFactory;
@@ -8,24 +8,25 @@ import java.net.URI;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.dropwizard.common.ServerConfiguration;
 import org.triplea.http.client.github.GithubApiClient;
+import org.triplea.server.error.reporting.ErrorReportController;
 
-public class ErrorReportingServer extends Application<ErrorReportingConfiguration> {
+public class GameSupportServerApplication extends Application<GameSupportServerConfiguration> {
   private static final String[] DEFAULT_ARGS = new String[] {"server", "configuration.yml"};
 
-  private ServerConfiguration<ErrorReportingConfiguration> serverConfiguration;
+  private ServerConfiguration<GameSupportServerConfiguration> serverConfiguration;
 
   /**
    * Main entry-point method, launches the drop-wizard http server. If no args are passed then will
    * use default values suitable for local development.
    */
   public static void main(String[] args) throws Exception {
-    final ErrorReportingServer application = new ErrorReportingServer();
+    final GameSupportServerApplication application = new GameSupportServerApplication();
     // if no args are provided then we will use default values.
     application.run(args.length == 0 ? DEFAULT_ARGS : args);
   }
 
   @Override
-  public void initialize(Bootstrap<ErrorReportingConfiguration> bootstrap) {
+  public void initialize(Bootstrap<GameSupportServerConfiguration> bootstrap) {
     serverConfiguration =
         ServerConfiguration.build(bootstrap)
             .enableBetterJdbiExceptions()
@@ -33,7 +34,7 @@ public class ErrorReportingServer extends Application<ErrorReportingConfiguratio
   }
 
   @Override
-  public void run(ErrorReportingConfiguration configuration, Environment environment) {
+  public void run(GameSupportServerConfiguration configuration, Environment environment) {
     serverConfiguration.enableEnvironmentVariablesInConfig();
 
     final Jdbi jdbi =
