@@ -1,4 +1,4 @@
-package org.triplea.server.error.reporting;
+package org.triplea.server;
 
 import io.dropwizard.Application;
 import io.dropwizard.jdbi3.JdbiFactory;
@@ -8,6 +8,7 @@ import java.net.URI;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.dropwizard.common.ServerConfiguration;
 import org.triplea.http.client.github.GithubApiClient;
+import org.triplea.server.error.reporting.ErrorReportController;
 
 public class GameSupportServerApplication extends Application<GameSupportServerConfiguration> {
   private static final String[] DEFAULT_ARGS = new String[] {"server", "configuration.yml"};

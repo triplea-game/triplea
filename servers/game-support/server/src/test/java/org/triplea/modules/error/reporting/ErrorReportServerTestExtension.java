@@ -1,8 +1,8 @@
 package org.triplea.modules.error.reporting;
 
 import io.dropwizard.testing.DropwizardTestSupport;
-import org.triplea.server.error.reporting.GameSupportServerApplication;
-import org.triplea.server.error.reporting.GameSupportServerConfiguration;
+import org.triplea.server.GameSupportServerApplication;
+import org.triplea.server.GameSupportServerConfiguration;
 import org.triplea.test.common.RequiresDatabase;
 import org.triplea.test.support.DropwizardServerExtension;
 

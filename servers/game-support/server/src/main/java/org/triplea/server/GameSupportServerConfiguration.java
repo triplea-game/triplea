@@ -1,4 +1,4 @@
-package org.triplea.server.error.reporting;
+package org.triplea.server;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
