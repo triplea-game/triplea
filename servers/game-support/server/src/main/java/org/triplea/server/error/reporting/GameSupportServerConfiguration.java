@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-public class ErrorReportingConfiguration extends Configuration {
+public class GameSupportServerConfiguration extends Configuration {
 
   String githubApiToken;
   String githubWebServiceUrl;
