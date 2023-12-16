@@ -26,16 +26,8 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.Util;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Window;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,21 +40,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.TableCellRenderer;
@@ -108,73 +86,78 @@ public class BattleDisplay extends JPanel {
   private final JLabel labelNoneDefender = new JLabel("None");
   private final JLabel messageLabel = new JLabel();
   private final Action nullAction = SwingAction.of(" ", e -> {});
+
+  private JDialog battleWindow;
+
   @Getter private final String description;
 
   BattleDisplay(
-      final GameData data,
-      final Territory territory,
-      final GamePlayer attacker,
-      final GamePlayer defender,
-      final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final Collection<Unit> killedUnits,
-      final Collection<Unit> attackingWaitingToDie,
-      final Collection<Unit> defendingWaitingToDie,
-      final MapPanel mapPanel,
-      final BattleType battleType) {
+          final GameData data,
+          final Territory territory,
+          final GamePlayer attacker,
+          final GamePlayer defender,
+          final Collection<Unit> attackingUnits,
+          final Collection<Unit> defendingUnits,
+          final Collection<Unit> killedUnits,
+          final Collection<Unit> attackingWaitingToDie,
+          final Collection<Unit> defendingWaitingToDie,
+          final MapPanel mapPanel,
+          final BattleType battleType,
+          JDialog battleWindow) {
     this.defender = defender;
     this.attacker = attacker;
     this.battleLocation = territory;
     this.gameData = data;
     this.mapPanel = mapPanel;
     this.uiContext = mapPanel.getUiContext();
+    this.battleWindow = battleWindow;
 
     final String battleStr =
-        (battleType == BattleType.NORMAL)
-            ? ""
-            : String.format("  (%s)", battleType.toDisplayText());
+            (battleType == BattleType.NORMAL)
+                    ? ""
+                    : String.format("  (%s)", battleType.toDisplayText());
     this.description =
-        attacker.getName()
-            + " attacks "
-            + defender.getName()
-            + " in "
-            + battleLocation.getName()
-            + battleStr;
+            attacker.getName()
+                    + " attacks "
+                    + defender.getName()
+                    + " in "
+                    + battleLocation.getName()
+                    + battleStr;
 
     final Collection<TerritoryEffect> territoryEffects =
-        TerritoryEffectHelper.getEffects(territory);
+            TerritoryEffectHelper.getEffects(territory);
     defenderModel =
-        new BattleModel(
-            defendingUnits,
-            BattleState.Side.DEFENSE,
-            battleType,
-            gameData,
-            territoryEffects,
-            uiContext);
+            new BattleModel(
+                    defendingUnits,
+                    BattleState.Side.DEFENSE,
+                    battleType,
+                    gameData,
+                    territoryEffects,
+                    uiContext);
     attackerModel =
-        new BattleModel(
-            attackingUnits,
-            BattleState.Side.OFFENSE,
-            battleType,
-            gameData,
-            territoryEffects,
-            uiContext);
+            new BattleModel(
+                    attackingUnits,
+                    BattleState.Side.OFFENSE,
+                    battleType,
+                    gameData,
+                    territoryEffects,
+                    uiContext);
     defenderModel.setEnemyBattleModel(attackerModel);
     attackerModel.setEnemyBattleModel(defenderModel);
     defenderModel.refresh();
     attackerModel.refresh();
     casualties = new CasualtyNotificationPanel(uiContext);
     if (!killedUnits.isEmpty()
-        || !attackingWaitingToDie.isEmpty()
-        || !defendingWaitingToDie.isEmpty()) {
+            || !attackingWaitingToDie.isEmpty()
+            || !defendingWaitingToDie.isEmpty()) {
       final Collection<Unit> attackerUnitsKilled =
-          CollectionUtils.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
+              CollectionUtils.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
       attackerUnitsKilled.addAll(attackingWaitingToDie);
       if (!attackerUnitsKilled.isEmpty()) {
         updateKilledUnits(attackerUnitsKilled, attacker);
       }
       final Collection<Unit> defenderUnitsKilled =
-          CollectionUtils.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
+              CollectionUtils.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
       defenderUnitsKilled.addAll(defendingWaitingToDie);
       if (!defenderUnitsKilled.isEmpty()) {
         updateKilledUnits(defenderUnitsKilled, defender);
@@ -208,7 +191,7 @@ public class BattleDisplay extends JPanel {
    * @param gamePlayer player kills belongs to
    */
   private Collection<Unit> updateKilledUnits(
-      final Collection<Unit> killedUnits, final GamePlayer gamePlayer) {
+          final Collection<Unit> killedUnits, final GamePlayer gamePlayer) {
     final JPanel casualtyPanel;
     if (gamePlayer.equals(defender)) {
       casualtyPanel = casualtiesInstantPanelDefender;
@@ -231,9 +214,9 @@ public class BattleDisplay extends JPanel {
       dependentUnitsReturned.addAll(dependentCollection);
     }
     for (final UnitCategory category :
-        UnitSeparator.categorize(
-            killedUnits,
-            UnitSeparator.SeparatorCategories.builder().dependents(dependentsMap).build())) {
+            UnitSeparator.categorize(
+                    killedUnits,
+                    UnitSeparator.SeparatorCategories.builder().dependents(dependentsMap).build())) {
       final JPanel panel = new JPanel();
       JLabel unit = uiContext.newUnitImageLabel(category.getType(), category.getOwner());
       panel.add(unit);
@@ -250,12 +233,12 @@ public class BattleDisplay extends JPanel {
   }
 
   void casualtyNotification(
-      final String step,
-      final DiceRoll dice,
-      final GamePlayer player,
-      final Collection<Unit> killed,
-      final Collection<Unit> damaged,
-      final Map<Unit, Collection<Unit>> dependents) {
+          final String step,
+          final DiceRoll dice,
+          final GamePlayer player,
+          final Collection<Unit> killed,
+          final Collection<Unit> damaged,
+          final Map<Unit, Collection<Unit>> dependents) {
     setStep(step);
     final boolean isEditMode = (dice == null);
     if (!isEditMode) {
@@ -272,9 +255,9 @@ public class BattleDisplay extends JPanel {
   }
 
   void deadUnitNotification(
-      final GamePlayer player,
-      final Collection<Unit> killed,
-      final Map<Unit, Collection<Unit>> dependents) {
+          final GamePlayer player,
+          final Collection<Unit> killed,
+          final Map<Unit, Collection<Unit>> dependents) {
     casualties.setNotificationShort(killed, dependents);
     killed.addAll(updateKilledUnits(killed, player));
     if (player.equals(defender)) {
@@ -286,9 +269,9 @@ public class BattleDisplay extends JPanel {
   }
 
   void changedUnitsNotification(
-      final GamePlayer player,
-      final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits) {
+          final GamePlayer player,
+          final Collection<Unit> removedUnits,
+          final Collection<Unit> addedUnits) {
     if (player.equals(defender)) {
       if (removedUnits != null) {
         defenderModel.removeCasualties(removedUnits);
@@ -330,8 +313,8 @@ public class BattleDisplay extends JPanel {
   void endBattle(final String message, final Window enclosingFrame) {
     steps.walkToLastStep();
     final Action close =
-        SwingAction.of(
-            message + " : (Press Space to Close)", e -> enclosingFrame.setVisible(false));
+            SwingAction.of(
+                    message + " : (Press Space to Close)", e -> enclosingFrame.setVisible(false));
     SwingUtilities.invokeLater(() -> actionButton.setAction(close));
   }
 
@@ -342,7 +325,7 @@ public class BattleDisplay extends JPanel {
 
   @Nullable
   Territory getRetreat(
-      final String message, final Collection<Territory> possible, final boolean submerge) {
+          final String message, final Collection<Territory> possible, final boolean submerge) {
     Util.ensureNotOnEventDispatchThread();
     final String title;
     final Supplier<RetreatResult> supplier;
@@ -356,29 +339,29 @@ public class BattleDisplay extends JPanel {
     final CompletableFuture<Territory> future = new CompletableFuture<>();
     final Action action = getPlayerAction(title, supplier, future);
     SwingUtilities.invokeLater(
-        () -> {
-          actionButton.setAction(action);
-          action.actionPerformed(null);
-        });
+            () -> {
+              actionButton.setAction(action);
+              action.actionPerformed(null);
+            });
 
     return uiContext.awaitUserInput(future).orElse(null);
   }
 
   private Action getPlayerAction(
-      final String title,
-      final Supplier<RetreatResult> showDialog,
-      final CompletableFuture<Territory> future) {
+          final String title,
+          final Supplier<RetreatResult> showDialog,
+          final CompletableFuture<Territory> future) {
     return SwingAction.of(
-        title,
-        e -> {
-          actionButton.setEnabled(false);
-          final RetreatResult retreatResult = showDialog.get();
-          if (retreatResult.isConfirmed()) {
-            future.complete(retreatResult.getTarget());
-            actionButton.setAction(nullAction);
-          }
-          actionButton.setEnabled(true);
-        });
+            title,
+            e -> {
+              actionButton.setEnabled(false);
+              final RetreatResult retreatResult = showDialog.get();
+              if (retreatResult.isConfirmed()) {
+                future.complete(retreatResult.getTarget());
+                actionButton.setAction(nullAction);
+              }
+              actionButton.setEnabled(true);
+            });
   }
 
   private RetreatResult showSubmergeDialog(final String message) {
@@ -387,15 +370,15 @@ public class BattleDisplay extends JPanel {
     final String wait = "Ask Me Later";
     final String[] options = {ok, cancel, wait};
     final int choice =
-        JOptionPane.showOptionDialog(
-            BattleDisplay.this,
-            message,
-            "Submerge Subs?",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            options,
-            cancel);
+            JOptionPane.showOptionDialog(
+                    BattleDisplay.this,
+                    message,
+                    "Submerge Subs?",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    options,
+                    cancel);
     // dialog dismissed
     if (choice == JOptionPane.CLOSED_OPTION || choice == JOptionPane.CANCEL_OPTION) {
       return RetreatResult.noResult();
@@ -409,24 +392,24 @@ public class BattleDisplay extends JPanel {
   }
 
   private RetreatResult showRetreatDialog(
-      final String message, final Collection<Territory> possible) {
+          final String message, final Collection<Territory> possible) {
     final String yes =
-        possible.size() == 1
-            ? "Retreat to " + CollectionUtils.getAny(possible).getName()
-            : "Retreat";
+            possible.size() == 1
+                    ? "Retreat to " + CollectionUtils.getAny(possible).getName()
+                    : "Retreat";
     final String no = "Remain";
     final String cancel = "Ask Me Later";
     final String[] options = {yes, no, cancel};
     final int choice =
-        JOptionPane.showOptionDialog(
-            BattleDisplay.this,
-            message,
-            "Retreat?",
-            JOptionPane.YES_NO_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            options,
-            no);
+            JOptionPane.showOptionDialog(
+                    BattleDisplay.this,
+                    message,
+                    "Retreat?",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    options,
+                    no);
     // dialog dismissed
     if (choice == JOptionPane.CLOSED_OPTION || choice == JOptionPane.CANCEL_OPTION) {
       return RetreatResult.noResult();
@@ -445,81 +428,81 @@ public class BattleDisplay extends JPanel {
   }
 
   private RetreatResult showRetreatOptions(
-      final String message, final Collection<Territory> possible) {
+          final String message, final Collection<Territory> possible) {
     final SelectTerritoryComponent comp =
-        new SelectTerritoryComponent(battleLocation, possible, mapPanel);
+            new SelectTerritoryComponent(battleLocation, possible, mapPanel);
     final int option =
-        JOptionPane.showConfirmDialog(
-            BattleDisplay.this,
-            comp,
-            message,
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null);
+            JOptionPane.showConfirmDialog(
+                    BattleDisplay.this,
+                    comp,
+                    message,
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null);
     return option == JOptionPane.OK_OPTION && comp.getSelection() != null
-        ? RetreatResult.retreatTo(comp.getSelection())
-        : RetreatResult.noResult();
+            ? RetreatResult.retreatTo(comp.getSelection())
+            : RetreatResult.noResult();
   }
 
   CasualtyDetails getCasualties(
-      final Collection<Unit> selectFrom,
-      final Map<Unit, Collection<Unit>> dependents,
-      final int count,
-      final String message,
-      final DiceRoll dice,
-      final GamePlayer hit,
-      final CasualtyList defaultCasualties,
-      final boolean allowMultipleHitsPerUnit) {
+          final Collection<Unit> selectFrom,
+          final Map<Unit, Collection<Unit>> dependents,
+          final int count,
+          final String message,
+          final DiceRoll dice,
+          final GamePlayer hit,
+          final CasualtyList defaultCasualties,
+          final boolean allowMultipleHitsPerUnit) {
     Util.ensureNotOnEventDispatchThread();
     final AtomicReference<CasualtyDetails> casualtyDetails =
-        new AtomicReference<>(new CasualtyDetails());
+            new AtomicReference<>(new CasualtyDetails());
     final CountDownLatch continueLatch = new CountDownLatch(1);
 
     SwingUtilities.invokeLater(
-        () -> {
-          final boolean isEditMode = EditDelegate.getEditMode(gameData.getProperties());
-          if (!isEditMode) {
-            dicePanel.setDiceRoll(dice);
-            casualties.setVisible(false);
-          }
-          final boolean plural = isEditMode || (count > 1);
-          final String countStr = isEditMode ? "" : "" + count;
-          final String btnText =
-              hit.getName() + " select " + countStr + (plural ? " casualties" : " casualty");
-          final var casualtySelection =
-              new CasualtySelection(
-                  selectFrom,
-                  dependents,
-                  count,
-                  message + " " + btnText + ".",
-                  hit,
-                  defaultCasualties,
-                  allowMultipleHitsPerUnit,
-                  uiContext,
-                  BattleDisplay.this,
-                  isEditMode);
+            () -> {
+              final boolean isEditMode = EditDelegate.getEditMode(gameData.getProperties());
+              if (!isEditMode) {
+                dicePanel.setDiceRoll(dice);
+                casualties.setVisible(false);
+              }
+              final boolean plural = isEditMode || (count > 1);
+              final String countStr = isEditMode ? "" : "" + count;
+              final String btnText =
+                      hit.getName() + " select " + countStr + (plural ? " casualties" : " casualty");
+              final var casualtySelection =
+                      new CasualtySelection(
+                              selectFrom,
+                              dependents,
+                              count,
+                              message + " " + btnText + ".",
+                              hit,
+                              defaultCasualties,
+                              allowMultipleHitsPerUnit,
+                              uiContext,
+                              BattleDisplay.this,
+                              isEditMode);
 
-          actionButton.setAction(
-              new AbstractAction(btnText) {
-                @Override
-                public void actionPerformed(final ActionEvent e) {
-                  actionButton.setEnabled(false);
+              actionButton.setAction(
+                      new AbstractAction(btnText) {
+                        @Override
+                        public void actionPerformed(final ActionEvent e) {
+                          actionButton.setEnabled(false);
 
-                  final CasualtyDetails selectedCasualties =
-                      casualtySelection.showModalDialog().orElse(null);
+                          final CasualtyDetails selectedCasualties =
+                                  casualtySelection.showModalDialog().orElse(null);
 
-                  if (selectedCasualties != null) {
-                    casualtyDetails.set(selectedCasualties);
-                    dicePanel.removeAll();
-                    continueLatch.countDown();
-                    actionButton.setAction(nullAction);
-                    actionButton.setEnabled(false);
-                  } else {
-                    actionButton.setEnabled(true);
-                  }
-                }
-              });
-        });
+                          if (selectedCasualties != null) {
+                            casualtyDetails.set(selectedCasualties);
+                            dicePanel.removeAll();
+                            continueLatch.countDown();
+                            actionButton.setAction(nullAction);
+                            actionButton.setEnabled(false);
+                          } else {
+                            actionButton.setEnabled(true);
+                          }
+                        }
+                      });
+            });
 
     uiContext.addShutdownLatch(continueLatch);
     Interruptibles.await(continueLatch);
@@ -567,9 +550,35 @@ public class BattleDisplay extends JPanel {
     actionPanel.add(casualties, BorderLayout.SOUTH);
 
     final JPanel diceAndSteps = new JPanel();
-    diceAndSteps.setLayout(new BorderLayout());
-    diceAndSteps.add(steps, BorderLayout.WEST);
-    diceAndSteps.add(actionPanel, BorderLayout.CENTER);
+    diceAndSteps.setLayout(new GridBagLayout());
+    diceAndSteps.add(
+            steps,
+            new GridBagConstraints(
+                    0,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0.9d,
+                    GridBagConstraints.CENTER,
+                    GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0),
+                    0,
+                    0));
+    diceAndSteps.add(
+            actionPanel,
+            new GridBagConstraints(
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    0.9d,
+                    GridBagConstraints.CENTER,
+                    GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0),
+                    0,
+                    0));
 
     casualtiesInstantPanelAttacker.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
     casualtiesInstantPanelAttacker.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -583,48 +592,52 @@ public class BattleDisplay extends JPanel {
     final JLabel casualtiesLabel = new JLabel("Casualties", SwingConstants.CENTER);
     casualtiesLabel.setFont(getPlayerComponent(attacker).getFont().deriveFont(Font.BOLD, 14));
     instantCasualtiesPanel.add(
-        casualtiesLabel,
-        new GridBagConstraints(
-            0,
-            0,
-            2,
-            1,
-            1.0d,
-            1.0d,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
+            casualtiesLabel,
+            new GridBagConstraints(
+                    0,
+                    0,
+                    2,
+                    1,
+                    1.0d,
+                    0,
+                    GridBagConstraints.CENTER,
+                    GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0),
+                    0,
+                    0));
+    final JPanel casualties = new JPanel();
+    casualties.setLayout(new GridLayout(0, 2));
+    casualties.add(casualtiesInstantPanelAttacker);
+    casualties.add(casualtiesInstantPanelDefender);
     instantCasualtiesPanel.add(
-        casualtiesInstantPanelAttacker,
-        new GridBagConstraints(
-            0,
-            2,
-            1,
-            1,
-            1.0d,
-            1.0d,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    instantCasualtiesPanel.add(
-        casualtiesInstantPanelDefender,
-        new GridBagConstraints(
-            1,
-            2,
-            1,
-            1,
-            1.0d,
-            1.0d,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    diceAndSteps.add(instantCasualtiesPanel, BorderLayout.SOUTH);
+            casualties,
+            new GridBagConstraints(
+                    0,
+                    1,
+                    2,
+                    1,
+                    1.0d,
+                    1.0d,
+                    GridBagConstraints.CENTER,
+                    GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0),
+                    0,
+                    0));
+
+    diceAndSteps.add(
+            instantCasualtiesPanel,
+            new GridBagConstraints(
+                    0,
+                    1,
+                    2,
+                    2,
+                    1.0d,
+                    1.1d,
+                    GridBagConstraints.CENTER,
+                    GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0),
+                    0,
+                    0));
     setLayout(new BorderLayout());
     add(north, BorderLayout.NORTH);
     add(diceAndSteps, BorderLayout.CENTER);
@@ -635,11 +648,11 @@ public class BattleDisplay extends JPanel {
 
     // press space to continue
     SwingKeyBinding.addKeyBinding(
-        this,
-        KeyCode.SPACE,
-        () ->
-            Optional.ofNullable(actionButton.getAction()) //
-                .ifPresent(a -> a.actionPerformed(null)));
+            this,
+            KeyCode.SPACE,
+            () ->
+                    Optional.ofNullable(actionButton.getAction()) //
+                            .ifPresent(a -> a.actionPerformed(null)));
   }
 
   /** Shorten columns with no units. */
@@ -710,12 +723,12 @@ public class BattleDisplay extends JPanel {
 
     @Override
     public Component getTableCellRendererComponent(
-        final JTable table,
-        final Object value,
-        final boolean isSelected,
-        final boolean hasFocus,
-        final int row,
-        final int column) {
+            final JTable table,
+            final Object value,
+            final boolean isSelected,
+            final boolean hasFocus,
+            final int row,
+            final int column) {
       ((BattleModel.TableData) value).updateStamp(stamp);
       return stamp;
     }
@@ -735,65 +748,65 @@ public class BattleDisplay extends JPanel {
     }
 
     void setNotification(
-        final Collection<Unit> killed,
-        final Collection<Unit> damaged,
-        final Map<Unit, Collection<Unit>> dependents) {
+            final Collection<Unit> killed,
+            final Collection<Unit> damaged,
+            final Map<Unit, Collection<Unit>> dependents) {
       this.killed.removeAll();
       this.damaged.removeAll();
       if (!killed.isEmpty()) {
         this.killed.add(new JLabel("Killed"));
       }
       final Iterable<UnitCategory> killedIter =
-          UnitSeparator.categorize(
-              killed, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
+              UnitSeparator.categorize(
+                      killed, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
       categorizeUnits(killedIter, false, false);
       damaged.removeAll(killed);
       if (!damaged.isEmpty()) {
         this.damaged.add(new JLabel("Damaged"));
       }
       final Iterable<UnitCategory> damagedIter =
-          UnitSeparator.categorize(
-              damaged, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
+              UnitSeparator.categorize(
+                      damaged, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
       categorizeUnits(damagedIter, true, true);
       invalidate();
       validate();
     }
 
     void setNotificationShort(
-        final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents) {
+            final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents) {
       this.killed.removeAll();
       if (!killed.isEmpty()) {
         this.killed.add(new JLabel("Killed"));
       }
       final Iterable<UnitCategory> killedIter =
-          UnitSeparator.categorize(
-              killed, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
+              UnitSeparator.categorize(
+                      killed, UnitSeparator.SeparatorCategories.builder().dependents(dependents).build());
       categorizeUnits(killedIter, false, false);
       invalidate();
       validate();
     }
 
     private void categorizeUnits(
-        final Iterable<UnitCategory> categoryIter, final boolean damaged, final boolean disabled) {
+            final Iterable<UnitCategory> categoryIter, final boolean damaged, final boolean disabled) {
       for (final UnitCategory category : categoryIter) {
         final JPanel panel = new JPanel();
         final ImageIcon unitImage =
-            uiContext
-                .getUnitImageFactory()
-                .getIcon(
-                    ImageKey.builder()
-                        .player(category.getOwner())
-                        .type(category.getType())
-                        .damaged(damaged && category.hasDamageOrBombingUnitDamage())
-                        .disabled(disabled && category.getDisabled())
-                        .build());
+                uiContext
+                        .getUnitImageFactory()
+                        .getIcon(
+                                ImageKey.builder()
+                                        .player(category.getOwner())
+                                        .type(category.getType())
+                                        .damaged(damaged && category.hasDamageOrBombingUnitDamage())
+                                        .disabled(disabled && category.getDisabled())
+                                        .build());
         final JLabel unit = new JLabel(unitImage);
         panel.add(unit);
         // Add a tooltip, with a count of 1 so that the tooltip doesn't have a number label (so it
         // won't get out of date
         // when units are killed.)
         MapUnitTooltipManager.setUnitTooltip(
-            unit, category.getType(), category.getOwner(), 1, uiContext);
+                unit, category.getType(), category.getOwner(), 1, uiContext);
         for (final UnitOwner owner : category.getDependents()) {
           unit.add(uiContext.newUnitImageLabel(owner.getType(), owner.getOwner()));
         }

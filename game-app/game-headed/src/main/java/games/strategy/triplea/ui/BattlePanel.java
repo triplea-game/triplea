@@ -70,7 +70,7 @@ public final class BattlePanel extends ActionPanel {
         });
     final Dimension screenSize = Util.getScreenSize(battleWindow);
     if (screenSize.width > 1024 && screenSize.height > 768) {
-      battleWindow.setMinimumSize(new Dimension(1024, 768));
+      battleWindow.setMinimumSize(new Dimension(1024, 1088));
     } else {
       battleWindow.setMinimumSize(new Dimension(800, 600));
     }
@@ -259,7 +259,8 @@ public final class BattlePanel extends ActionPanel {
                   attackingWaitingToDieCopy,
                   defendingWaitingToDieCopy,
                   BattlePanel.this.getMap(),
-                  battleType);
+                  battleType,
+                  battleWindow);
           battleWindow.setTitle(battleDisplay.getDescription());
           battleWindow.getContentPane().add(battleDisplay);
 
