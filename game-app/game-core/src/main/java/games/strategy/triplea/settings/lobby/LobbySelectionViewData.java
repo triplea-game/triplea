@@ -28,7 +28,7 @@ class LobbySelectionViewData implements ViewData {
   @Getter
   enum LobbyChoice {
     PROD("Latest Stable", () -> UrlConstants.PROD_LOBBY, true),
-    LOCAL("Local", () -> "http://localhost:8080", true),
+    LOCAL("Local", () -> "http://localhost", true),
     OTHER("Other", () -> ClientSetting.lobbyUri.getValueOrThrow().toString(), false);
 
     private final String displayString;

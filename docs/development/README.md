@@ -29,69 +29,74 @@ If you are new to Open Source & Github:
 ## Compile and launch TripleA (CLI)
 
 ```bash
-"./gradlew :game-app:game-headed:run"
-```
+# Build & Launch TripleA Game-Client
+./gradlew :game-app:game-headed:run
 
-For more detailed steps on building the project with CLI, see:
-- [reference/cli-build-commands.md](cli-build-commands.md)
-
-## Compile and launch TripleA (IDEA)
-
-IDE setup has the needed configurations for the project to compile. There are checked in launchers that
-IDEA should automatically find.  Look in 'run configurations' to launch the game-client.
-
-## Running build checks locally (CLI)
-
-Verify will run all checks (including additional custom checks):
-```
+# Run all build checks
 ./verify
+
+# Run formatting
+./gradew spotlessApply
+
+# Launch a Postgres DB, build & launch TripleA Servers
+./gradlew composeUp
+
+# Connect to locally running database
+./docker/connect-to-db.sh
+
+# Runs all tests that do not require database
+./gradlew test
+
+./gradlew testWithDatabase
+
+# Runs all tests
+./gradlew allTest
+
+# Run game-app tests
+./game-app/run/check
+
+# Run tests for a (sub)project
+./gradlew :game-app:game-core:test
+
+# Run a specific test
+./gradlew :game-app:game-core:test --tests games.strategy.triplea.UnitUtilsTest
+
+# Runs a specific  test method
+./gradlew :game-app:game-core:test --tests games.strategy.triplea.UnitUtilsTest.multipleTransportedUnitsAreTransferred
+
+# Run specific tests using wildcard (be sure to use quotes around wildcard)
+./gradlew :game-app:game-core:test --tests 'games.strategy.triplea.UnitUtilsTest.*Units*'
 ```
 
-Tests are split between those that need a database (which runs on docker), vs those that do not.
-
-- `./gradlew test`: Runs all tests that do not require database
-- `./gradlew testWithDatabase`: Runs tests that require a local database
-- `./gradlew allTest`: Runs all tests
-
+`gradle` uses caches heavily, thus, if nothing has changed, re-running a test will not actually run the test again.
+To really re-execute a test use the `--rerun-tasks` option:
+```
+./gradlew --rerun-tasks :game-app:game-core:test
+```
 
 ## Run Formatting
 
-We use 'google java format', be sure to install the plugin in your IDE to properly format
-from IDE. Everything can also be formatted from CLI:
-
-```
-./gradew spotlessApply
-```
-
-PR builds will fail if the code is not formatted.
+We use 'google java format', be sure to install the plugin in your IDE to properly format from IDE.
 
 
 ## Code Conventions (Style Guide)
 
 Full list of coding conventions can be found at: [reference/code-conventions](code-conventions)
 
-Please be sure to check these out so that you can fit the general style of the project.
+## Lobby / Server Development
 
-## Lobby Development
- 
-### Launch Local Database
-
-Local database is needed to run the servers (lobby).
-
-```bash
-## start database
+Run:
+```
 ./gradlew composeUp
-```
+./gradlew :game-app:game-headed:run
+``` 
+Nginx will be running on port 80 following the 'composeUp'.
+All requests are sent to NGINX and then routed to the correct
+docker container.
 
-### Launch local lobby
-
-Lobby can be launched via the checked-in run configurations from IDE, or from CLI:
-```bash
-./gradlew :spitfire-server:dropwizard-server:run
-```
 To connect to local lobby, from the game client:
   - 'settings > testing > local lobby'
-  - play online
+  - click play online button
   - use 'test:test' to login to local lobby as a moderator
 
 ### Working with database
@@ -139,11 +144,6 @@ save games from loading.
 
 '@RemoteMethod' indicates methods invoked over network. The API of these methods may not change.
 
-## Lots of Manual Testing Required
-
-A lot of code is not automatically verified via tests. If reasonable tests can be added, do so!
-Generally though even the smallest of changes will need to be manually and thoroughly tested
-in a variety of maps and scenarios.
 
 # FAQ - common problems
 

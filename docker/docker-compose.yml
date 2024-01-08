@@ -21,7 +21,7 @@ services:
       context: ../servers/game-support/server/
       dockerfile: Dockerfile
     environment:
-      - DB_URL=database:5432/error_report
+      - DB_URL=database:5432/lobby_db
     depends_on:
       - database
   maps-server:
@@ -29,7 +29,7 @@ services:
       context: ../servers/maps/server/
       dockerfile: Dockerfile
     environment:
-      - DB_URL=database:5432/maps
+      - DB_URL=database:5432/lobby_db
     depends_on:
       - database
   database:
