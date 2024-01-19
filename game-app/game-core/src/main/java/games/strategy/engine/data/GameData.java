@@ -487,11 +487,6 @@ public class GameData implements Serializable, GameState {
     return (PoliticsDelegate) findDelegate("politics");
   }
 
-  @Override
-  public PurchaseDelegate getPurchaseDelegate() {
-    return (PurchaseDelegate) findDelegate("purchase");
-  }
-
   private IDelegate findDelegate(final String delegateName) {
     final IDelegate delegate = this.getDelegate(delegateName);
     if (delegate == null) {

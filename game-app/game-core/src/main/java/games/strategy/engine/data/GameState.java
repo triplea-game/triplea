@@ -71,8 +71,6 @@ public interface GameState {
 
   PoliticsDelegate getPoliticsDelegate();
 
-  PurchaseDelegate getPurchaseDelegate();
-
   AbstractMoveDelegate getMoveDelegate();
 
   TechnologyDelegate getTechDelegate();
