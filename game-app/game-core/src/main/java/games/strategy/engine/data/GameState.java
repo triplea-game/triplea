@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
-import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
