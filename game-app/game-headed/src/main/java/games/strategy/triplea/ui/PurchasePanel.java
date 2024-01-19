@@ -60,7 +60,7 @@ public class PurchasePanel extends ActionPanel {
           // Use the delegate from the step, since it may not actually be named 'purchase'.
           final IDelegate delegate = data.getSequence().getStep().getDelegate();
           if (delegate instanceof PurchaseDelegate) {
-            purchase = ((PurchaseDelegate)delegate).getPendingProductionRules();
+            purchase = ((PurchaseDelegate) delegate).getPendingProductionRules();
           }
           if (purchase == null) {
             purchase = new IntegerMap<>();
@@ -77,7 +77,7 @@ public class PurchasePanel extends ActionPanel {
 
           if (delegate instanceof PurchaseDelegate) {
             // Set pending production on the PurchaseDelegate for saving the game.
-            ((PurchaseDelegate)delegate).setPendingProductionRules(purchase);
+            ((PurchaseDelegate) delegate).setPendingProductionRules(purchase);
           }
 
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
