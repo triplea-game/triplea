@@ -13,7 +13,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
-import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
@@ -485,11 +484,6 @@ public class GameData implements Serializable, GameState {
   @Override
   public PoliticsDelegate getPoliticsDelegate() {
     return (PoliticsDelegate) findDelegate("politics");
-  }
-
-  @Override
-  public PurchaseDelegate getPurchaseDelegate() {
-    return (PurchaseDelegate) findDelegate("purchase");
   }
 
   private IDelegate findDelegate(final String delegateName) {

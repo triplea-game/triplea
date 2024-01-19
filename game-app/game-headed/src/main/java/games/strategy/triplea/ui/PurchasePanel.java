@@ -7,6 +7,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -54,13 +55,15 @@ public class PurchasePanel extends ActionPanel {
         public void actionPerformed(final ActionEvent e) {
           final GamePlayer player = getCurrentPlayer();
           final GameData data = getData();
-          final PurchaseDelegate purchaseDelegate = data.getPurchaseDelegate();
 
           // Restore pending production that was loaded from the save game.
-          if (purchaseDelegate.getPendingProductionRules() == null) {
+          // Use the delegate from the step, since it may not actually be named 'purchase'.
+          final IDelegate delegate = data.getSequence().getStep().getDelegate();
+          if (delegate instanceof PurchaseDelegate) {
+            purchase = ((PurchaseDelegate) delegate).getPendingProductionRules();
+          }
+          if (purchase == null) {
             purchase = new IntegerMap<>();
-          } else {
-            purchase = purchaseDelegate.getPendingProductionRules();
           }
 
           purchase =
@@ -72,8 +75,10 @@ public class PurchasePanel extends ActionPanel {
                   purchase,
                   getMap().getUiContext());
 
-          // Keeping actualized pending production in PurchaseDelegate for later saving game.
-          purchaseDelegate.setPendingProductionRules(purchase);
+          if (delegate instanceof PurchaseDelegate) {
+            // Set pending production on the PurchaseDelegate for saving the game.
+            ((PurchaseDelegate) delegate).setPendingProductionRules(purchase);
+          }
 
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
           if (purchase.totalValues() == 0) {
