@@ -60,35 +60,35 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   // the transport that is currently transporting us
   private Unit transportedBy = null;
   // the units we have unloaded this turn
-  private List<Unit> unloaded = List.of();
+  @Getter private List<Unit> unloaded = List.of();
   // was this unit loaded this turn?
   private boolean wasLoadedThisTurn = false;
   // the territory this unit was unloaded to this turn
-  private Territory unloadedTo = null;
+  @Getter private Territory unloadedTo = null;
   // was this unit unloaded in combat phase this turn?
   private boolean wasUnloadedInCombatPhase = false;
   // movement used this turn
-  private BigDecimal alreadyMoved = BigDecimal.ZERO;
+  @Getter private BigDecimal alreadyMoved = BigDecimal.ZERO;
   // movement used this turn
-  private int bonusMovement = 0;
+  @Getter private int bonusMovement = 0;
   // amount of damage unit has sustained
-  private int unitDamage = 0;
+  @Getter private int unitDamage = 0;
   // is this submarine submerged
   private boolean submerged = false;
   // original owner of this unit
-  private GamePlayer originalOwner = null;
+  @Getter private GamePlayer originalOwner = null;
   // Was this unit in combat
   private boolean wasInCombat = false;
   private boolean wasLoadedAfterCombat = false;
   private boolean wasAmphibious = false;
   // the territory this unit started in (for use with scrambling)
-  private Territory originatedFrom = null;
+  @Getter private Territory originatedFrom = null;
   private boolean wasScrambled = false;
-  private int maxScrambleCount = -1;
+  @Getter private int maxScrambleCount = -1;
   private boolean wasInAirBattle = false;
   private boolean disabled = false;
   // the number of airborne units launched by this unit this turn
-  private int launched = 0;
+  @Getter private int launched = 0;
   // was this unit airborne and launched this turn
   private boolean airborne = false;
   // was charged flat fuel cost already this turn
@@ -281,10 +281,6 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     }
   }
 
-  public int getUnitDamage() {
-    return unitDamage;
-  }
-
   public void setUnitDamage(final int unitDamage) {
     this.unitDamage = unitDamage;
   }
@@ -295,10 +291,6 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
   public void setSubmerged(final boolean submerged) {
     this.submerged = submerged;
-  }
-
-  public GamePlayer getOriginalOwner() {
-    return originalOwner;
   }
 
   private void setOriginalOwner(final GamePlayer originalOwner) {
@@ -321,16 +313,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     wasScrambled = value;
   }
 
-  public int getMaxScrambleCount() {
-    return maxScrambleCount;
-  }
-
   private void setMaxScrambleCount(final int value) {
     maxScrambleCount = value;
-  }
-
-  public int getLaunched() {
-    return launched;
   }
 
   private void setLaunched(final int value) {
@@ -431,10 +415,6 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         CollectionUtils.getMatches(transportedUnitsPossible, o -> equals(o.getTransportedBy())));
   }
 
-  public List<Unit> getUnloaded() {
-    return unloaded;
-  }
-
   @VisibleForTesting
   public void setUnloaded(final List<Unit> unloaded) {
     if (unloaded == null || unloaded.isEmpty()) {
@@ -452,16 +432,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     wasLoadedThisTurn = value;
   }
 
-  public Territory getUnloadedTo() {
-    return unloadedTo;
-  }
-
   private void setUnloadedTo(final Territory unloadedTo) {
     this.unloadedTo = unloadedTo;
-  }
-
-  public Territory getOriginatedFrom() {
-    return originatedFrom;
   }
 
   private void setOriginatedFrom(final Territory t) {
@@ -476,20 +448,12 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     wasUnloadedInCombatPhase = value;
   }
 
-  public BigDecimal getAlreadyMoved() {
-    return alreadyMoved;
-  }
-
   public void setAlreadyMoved(final BigDecimal alreadyMoved) {
     this.alreadyMoved = alreadyMoved;
   }
 
   private void setBonusMovement(final int bonusMovement) {
     this.bonusMovement = bonusMovement;
-  }
-
-  public int getBonusMovement() {
-    return bonusMovement;
   }
 
   /** Does not account for any movement already made. Generally equal to UnitType movement */

@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.triplea.http.client.github.GithubApiClient;
-import org.triplea.maps.MapsModuleConfig;
 import org.triplea.modules.LobbyModuleConfig;
 import org.triplea.modules.latest.version.LatestVersionModuleConfig;
 
@@ -20,7 +19,8 @@ import org.triplea.modules.latest.version.LatestVersionModuleConfig;
  * YML configuration file.
  */
 public class SpitfireServerConfig extends Configuration
-    implements LobbyModuleConfig, MapsModuleConfig, LatestVersionModuleConfig {
+    implements LobbyModuleConfig, LatestVersionModuleConfig {
+
   /**
    * Flag that indicates if we are running in production. This can be used to verify we do not have
    * any magic stubbing and to do any additional configuration checks to be really sure production
@@ -50,22 +50,6 @@ public class SpitfireServerConfig extends Configuration
 
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
-  private String githubMapsOrgName;
-
-  @Getter(onMethod_ = {@JsonProperty})
-  @Setter(onMethod_ = {@JsonProperty})
-  private boolean mapIndexingEnabled;
-
-  @Getter(onMethod_ = {@JsonProperty, @Override})
-  @Setter(onMethod_ = {@JsonProperty})
-  private int mapIndexingPeriodMinutes;
-
-  @Getter(onMethod_ = {@JsonProperty, @Override})
-  @Setter(onMethod_ = {@JsonProperty})
-  private int indexingTaskDelaySeconds;
-
-  @Getter(onMethod_ = {@JsonProperty})
-  @Setter(onMethod_ = {@JsonProperty})
   private boolean errorReportToGithubEnabled;
 
   @Getter(onMethod_ = {@JsonProperty})
@@ -88,16 +72,6 @@ public class SpitfireServerConfig extends Configuration
         .uri(URI.create(githubWebServiceUrl))
         .org(githubGameOrg)
         .repo(githubGameRepo)
-        .build();
-  }
-
-  @Override
-  public GithubApiClient createMapsRepoGithubApiClient() {
-    return GithubApiClient.builder()
-        .stubbingModeEnabled(!errorReportToGithubEnabled)
-        .authToken(githubApiToken)
-        .uri(URI.create(githubWebServiceUrl))
-        .org(githubMapsOrgName)
         .build();
   }
 }

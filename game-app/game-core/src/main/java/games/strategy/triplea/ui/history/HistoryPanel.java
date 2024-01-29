@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import lombok.Getter;
 
 /** Shows the history as a tree. */
 public class HistoryPanel extends JPanel {
@@ -45,7 +46,7 @@ public class HistoryPanel extends JPanel {
   private final GameData data;
   private final JTree tree;
   private final HistoryDetailsPanel details;
-  private HistoryNode currentPopupNode;
+  @Getter private HistoryNode currentPopupNode;
   private final JPopupMenu popup;
   // remember which paths were expanded
   private final Collection<TreePath> stayExpandedPaths = new ArrayList<>();
@@ -282,10 +283,6 @@ public class HistoryPanel extends JPanel {
   public HistoryNode getCurrentNode() {
     final TreePath path = tree.getSelectionPath();
     return (HistoryNode) path.getLastPathComponent();
-  }
-
-  public HistoryNode getCurrentPopupNode() {
-    return currentPopupNode;
   }
 
   public void clearCurrentPopupNode() {

@@ -54,6 +54,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -63,7 +64,7 @@ import org.triplea.util.Tuple;
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate {
   private static final String MUST_COMPLETE_BATTLE_PREFIX = "Must complete ";
 
-  private BattleTracker battleTracker = new BattleTracker();
+  @Getter private BattleTracker battleTracker = new BattleTracker();
   private boolean needToInitialize = true;
   private boolean needToScramble = true;
   private boolean needToKamikazeSuicideAttacks = true;
@@ -253,10 +254,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @Override
   public BattleListing getBattles() {
     return battleTracker.getPendingBattleSites();
-  }
-
-  public BattleTracker getBattleTracker() {
-    return battleTracker;
   }
 
   /** Add bombardment units to battles. */

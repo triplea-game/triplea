@@ -12,12 +12,10 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.net.URI;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.client.HeadedApplicationContext;
 import org.triplea.lobby.common.GameDescription;
 
-@Slf4j
 public class GameProcess {
 
   private static String getMainClassName() {

@@ -1,5 +1,7 @@
 package games.strategy.triplea;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
@@ -25,7 +27,6 @@ import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.game.Exceptions;
-import org.triplea.io.ImageLoader;
 import org.triplea.io.PathUtils;
 import org.triplea.java.UrlStreams;
 
@@ -75,8 +76,19 @@ public class ResourceLoader implements Closeable {
    * with the game are downloaded to this location. Check the gradle build file download images task
    * for more information on what will be contained in that folder.
    */
-  public static Image loadImageAsset(final Path path) {
-    return ImageLoader.getImage(Path.of(ASSETS_FOLDER).resolve(path));
+  public static Image loadImageAsset(Path pathRelativeToAssetsFolder) {
+    Path imagePath = Path.of(ASSETS_FOLDER).resolve(pathRelativeToAssetsFolder);
+
+    checkArgument(
+        Files.exists(imagePath),
+        "File must exist at path: %s, "
+            + "Build with the checked in launcher, or run gradle task 'downloadAssets'.",
+        imagePath.toAbsolutePath());
+    try {
+      return ImageIO.read(imagePath.toFile());
+    } catch (final IOException e) {
+      throw new RuntimeException("Unable to load image at path: " + imagePath.toAbsolutePath(), e);
+    }
   }
 
   private static class GameAssetsNotFoundException extends RuntimeException {

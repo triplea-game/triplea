@@ -11,6 +11,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 
@@ -38,7 +39,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private final SocketChannel channel;
   private final NioSocket socket;
   private Step step = Step.READ_NAME;
-  private String remoteName;
+  @Getter private String remoteName;
   private String remoteMac;
   private Map<String, String> challenge;
   private final ServerMessenger serverMessenger;
@@ -52,10 +53,6 @@ public class ServerQuarantineConversation extends QuarantineConversation {
     this.socket = socket;
     this.channel = channel;
     this.serverMessenger = serverMessenger;
-  }
-
-  public String getRemoteName() {
-    return remoteName;
   }
 
   @Override

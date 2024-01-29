@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import lombok.Getter;
 
 /**
  * The result of validating a unit movement action. For an invalid movement action, provides details
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult> {
   private static final long serialVersionUID = 6648363112533514955L;
-  private String error = null;
+  @Getter private String error = null;
   private final List<String> disallowedUnitWarnings;
   private final List<Collection<Unit>> disallowedUnitsList;
   private final List<String> unresolvedUnitWarnings;
@@ -74,10 +75,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   public MoveValidationResult setErrorReturnResult(final String error) {
     this.error = error;
     return this;
-  }
-
-  public String getError() {
-    return error;
   }
 
   public Collection<Unit> getUnresolvedUnits(final String warning) {

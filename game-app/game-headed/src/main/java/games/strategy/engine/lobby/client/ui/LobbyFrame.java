@@ -6,19 +6,19 @@ import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.chat.ChatTransmitter;
 import games.strategy.engine.chat.LobbyChatTransmitter;
-import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.MutePlayerAction;
 import games.strategy.engine.lobby.client.ui.action.player.info.ShowPlayerInformationAction;
 import games.strategy.triplea.EngineImageLoader;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.QuitHandler;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.Action;
@@ -27,6 +27,7 @@ import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.game.client.HeadedGameRunner;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
@@ -35,33 +36,51 @@ import org.triplea.swing.SwingComponents;
 public class LobbyFrame extends JFrame implements QuitHandler {
   private static final long serialVersionUID = -388371674076362572L;
 
-  @Getter private final LobbyClient lobbyClient;
+  @Getter private final LoginResult loginResult;
   private final ChatTransmitter chatTransmitter;
   private final LobbyGameTableModel tableModel;
 
-  public LobbyFrame(final LobbyClient lobbyClient, final URI lobbyUri) {
+  public LobbyFrame(final LoginResult loginResult) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     SwingComponents.addWindowClosedListener(this, HeadedGameRunner::exitGameIfNoWindowsVisible);
     setIconImage(EngineImageLoader.loadFrameIcon());
-    this.lobbyClient = lobbyClient;
-    setJMenuBar(new LobbyMenu(this));
-    chatTransmitter =
-        new LobbyChatTransmitter(
-            lobbyClient.getPlayerToLobbyConnection(), lobbyClient.getUserName());
+    this.loginResult = loginResult;
+
+    PlayerToLobbyConnection playerToLobbyConnection =
+        new PlayerToLobbyConnection(
+            ClientSetting.lobbyUri.getValueOrThrow(),
+            loginResult.getApiKey(),
+            error -> SwingComponents.showError(null, "Error communicating with lobby", error));
+
+    setJMenuBar(new LobbyMenu(this, loginResult, playerToLobbyConnection));
+    playerToLobbyConnection.addConnectionTerminatedListener(
+        reason -> {
+          DialogBuilder.builder()
+              .parent(this)
+              .title("Connection to Lobby Closed")
+              .errorMessage("Connection closed: " + reason)
+              .showDialog();
+          shutdown();
+        });
+    playerToLobbyConnection.addConnectionClosedListener(this::shutdown);
+
+    chatTransmitter = new LobbyChatTransmitter(playerToLobbyConnection, loginResult.getUsername());
     final Chat chat = new Chat(chatTransmitter);
     final ChatMessagePanel chatMessagePanel =
         new ChatMessagePanel(chat, ChatSoundProfile.LOBBY, new ClipPlayer());
-    Optional.ofNullable(lobbyClient.getLobbyMessage())
+    Optional.ofNullable(loginResult.getLoginMessage())
         .ifPresent(chatMessagePanel::addServerMessage);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
-    chatPlayers.addActionFactory(this::lobbyPlayerRightClickMenuActions);
+    chatPlayers.addActionFactory(
+        clickedChatter ->
+            lobbyPlayerRightClickMenuActions(
+                this, loginResult, clickedChatter, playerToLobbyConnection));
 
-    tableModel =
-        new LobbyGameTableModel(
-            lobbyClient.isModerator(), lobbyClient.getPlayerToLobbyConnection());
-    final LobbyGamePanel gamePanel = new LobbyGamePanel(this, lobbyClient, lobbyUri, tableModel);
+    tableModel = new LobbyGameTableModel(loginResult.isModerator(), playerToLobbyConnection);
+    final LobbyGamePanel gamePanel =
+        new LobbyGamePanel(this, loginResult, tableModel, playerToLobbyConnection);
 
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -79,18 +98,6 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    lobbyClient
-        .getPlayerToLobbyConnection()
-        .addConnectionTerminatedListener(
-            reason -> {
-              DialogBuilder.builder()
-                  .parent(this)
-                  .title("Connection to Lobby Closed")
-                  .errorMessage("Connection closed: " + reason)
-                  .showDialog();
-              shutdown();
-            });
-    lobbyClient.getPlayerToLobbyConnection().addConnectionClosedListener(this::shutdown);
     addWindowListener(
         new WindowAdapter() {
           @Override
@@ -100,43 +107,45 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         });
   }
 
-  private List<Action> lobbyPlayerRightClickMenuActions(final ChatParticipant clickedOn) {
-    if (clickedOn.getUserName().equals(lobbyClient.getUserName())) {
+  private static List<Action> lobbyPlayerRightClickMenuActions(
+      JFrame parentWindow,
+      LoginResult loginResult,
+      ChatParticipant clickedOn,
+      PlayerToLobbyConnection playerToLobbyConnection) {
+    if (clickedOn.getUserName().equals(loginResult.getUsername())) {
       return List.of();
     }
 
-    final var playerToLobbyConnection = lobbyClient.getPlayerToLobbyConnection();
-
     final var showPlayerInformationAction =
         ShowPlayerInformationAction.builder()
-            .parent(this)
+            .parent(parentWindow)
             .playerChatId(clickedOn.getPlayerChatId())
             .playerName(clickedOn.getUserName())
             .playerToLobbyConnection(playerToLobbyConnection)
             .build()
             .toSwingAction();
 
-    if (!lobbyClient.isModerator()) {
+    if (!loginResult.isModerator()) {
       return List.of(showPlayerInformationAction);
     }
     return List.of(
         showPlayerInformationAction,
         MutePlayerAction.builder()
-            .parent(this)
+            .parent(parentWindow)
             .playerChatId(clickedOn.getPlayerChatId())
             .playerToLobbyConnection(playerToLobbyConnection)
             .playerName(clickedOn.getUserName().getValue())
             .build()
             .toSwingAction(),
         DisconnectPlayerModeratorAction.builder()
-            .parent(this)
+            .parent(parentWindow)
             .playerToLobbyConnection(playerToLobbyConnection)
             .playerChatId(clickedOn.getPlayerChatId())
             .userName(clickedOn.getUserName())
             .build()
             .toSwingAction(),
         BanPlayerModeratorAction.builder()
-            .parent(this)
+            .parent(parentWindow)
             .playerToLobbyConnection(playerToLobbyConnection)
             .playerChatIdToBan(clickedOn.getPlayerChatId())
             .playerName(clickedOn.getUserName().getValue())

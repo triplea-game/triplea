@@ -7,10 +7,12 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitSeparator;
@@ -53,6 +55,17 @@ public class PurchasePanel extends ActionPanel {
         public void actionPerformed(final ActionEvent e) {
           final GamePlayer player = getCurrentPlayer();
           final GameData data = getData();
+
+          // Restore pending production that was loaded from the save game.
+          // Use the delegate from the step, since it may not actually be named 'purchase'.
+          final IDelegate delegate = data.getSequence().getStep().getDelegate();
+          if (delegate instanceof PurchaseDelegate) {
+            purchase = ((PurchaseDelegate) delegate).getPendingProductionRules();
+          }
+          if (purchase == null) {
+            purchase = new IntegerMap<>();
+          }
+
           purchase =
               TabbedProductionPanel.getProduction(
                   player,
@@ -61,6 +74,12 @@ public class PurchasePanel extends ActionPanel {
                   bid,
                   purchase,
                   getMap().getUiContext());
+
+          if (delegate instanceof PurchaseDelegate) {
+            // Set pending production on the PurchaseDelegate for saving the game.
+            ((PurchaseDelegate) delegate).setPendingProductionRules(purchase);
+          }
+
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
           if (purchase.totalValues() == 0) {
             purchasedLabel.setText("");

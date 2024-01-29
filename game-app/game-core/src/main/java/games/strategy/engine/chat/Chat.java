@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
@@ -42,7 +43,7 @@ public class Chat implements ChatClient {
   private final Collection<ChatMessage> chatHistory =
       Collections.synchronizedCollection(EvictingQueue.create(50));
 
-  private final ChatIgnoreList ignoreList = new ChatIgnoreList();
+  private final Collection<UserName> ignoreList = new HashSet<>();
   @Getter private final UserName localUserName;
   private final Collection<BiConsumer<UserName, String>> statusUpdateListeners = new ArrayList<>();
 
@@ -171,7 +172,7 @@ public class Chat implements ChatClient {
   }
 
   boolean isIgnored(final UserName userName) {
-    return ignoreList.shouldIgnore(userName);
+    return ignoreList.contains(userName);
   }
 
   Collection<UserName> getOnlinePlayers() {

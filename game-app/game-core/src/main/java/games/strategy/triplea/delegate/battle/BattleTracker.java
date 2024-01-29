@@ -50,6 +50,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
@@ -73,17 +74,23 @@ public class BattleTracker implements Serializable {
   private final Map<IBattle, Set<IBattle>> dependencies = new HashMap<>();
   // enemy and neutral territories that have been conquered
   // blitzed is a subset of this
-  private final Set<Territory> conquered = new HashSet<>();
+  @Getter private final Set<Territory> conquered = new HashSet<>();
   // blitzed territories
   private final Set<Territory> blitzed = new HashSet<>();
   // territories where a battle occurred
   private final Set<Territory> foughtBattles = new HashSet<>();
+
   // list of territory we have conquered in a FinishedBattle and where from and if amphibious
+  @Getter
   private final Map<Territory, Map<Territory, Collection<Unit>>> finishedBattlesUnitAttackFromMap =
       new HashMap<>();
+
   // things like kamikaze suicide attacks disallow bombarding from that sea zone for that turn
   private final Set<Territory> noBombardAllowed = new HashSet<>();
+
+  @Getter
   private final Map<Territory, Collection<Unit>> defendingAirThatCanNotLand = new HashMap<>();
+
   private BattleRecords battleRecords = null;
   // to keep track of all relationships that have changed this turn
   // (so we can validate things like transports loading in newly created hostile zones)
@@ -102,10 +109,6 @@ public class BattleTracker implements Serializable {
    */
   public boolean wasConquered(final Territory t) {
     return conquered.contains(t);
-  }
-
-  public Set<Territory> getConquered() {
-    return conquered;
   }
 
   /**
@@ -127,10 +130,6 @@ public class BattleTracker implements Serializable {
 
   public void addNoBombardAllowedFromHere(final Territory t) {
     noBombardAllowed.add(t);
-  }
-
-  public Map<Territory, Map<Territory, Collection<Unit>>> getFinishedBattlesUnitAttackFromMap() {
-    return finishedBattlesUnitAttackFromMap;
   }
 
   public void addRelationshipChangesThisTurn(
@@ -970,8 +969,7 @@ public class BattleTracker implements Serializable {
       final GamePlayer gamePlayer,
       final GameData data) {
     // it is possible to add a battle with a route that is just the start territory, ie the units
-    // did not move into the
-    // country they were there to start with
+    // did not move into the country they were there to start with
     // this happens when you have submerged subs emerging
     Territory site = route.getEnd();
     if (site == null) {
@@ -1176,10 +1174,6 @@ public class BattleTracker implements Serializable {
     }
     current.addAll(units);
     defendingAirThatCanNotLand.put(szTerritoryTheyAreIn, current);
-  }
-
-  public Map<Territory, Collection<Unit>> getDefendingAirThatCanNotLand() {
-    return defendingAirThatCanNotLand;
   }
 
   public void clearBattleRecords() {

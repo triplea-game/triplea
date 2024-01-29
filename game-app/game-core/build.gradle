@@ -18,10 +18,12 @@ dependencies {
     implementation project(":game-app:map-data")
     implementation project(":game-app:game-relay-server")
     implementation project(":http-clients:lobby-client")
+    implementation project(":lib:http-client-lib")
     implementation project(":lib:java-extras")
     implementation project(":lib:swing-lib")
     implementation project(":lib:websocket-client")
     implementation project(":lib:xml-reader")
+    implementation project(":servers:maps:client")
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testImplementation project(":lib:swing-lib-test-support")

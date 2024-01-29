@@ -8,6 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import java.io.Serializable;
 import java.util.Collection;
+import lombok.Getter;
 
 /** Contains all the data to describe an abstract move (move or placement) and to undo it. */
 public abstract class AbstractUndoableMove implements Serializable {
@@ -20,8 +21,8 @@ public abstract class AbstractUndoableMove implements Serializable {
    */
   protected final CompositeChange change;
 
-  protected int index;
-  protected final Collection<Unit> units;
+  @Getter protected int index;
+  @Getter protected final Collection<Unit> units;
 
   public AbstractUndoableMove(final CompositeChange change, final Collection<Unit> units) {
     this.change = change;
@@ -47,14 +48,6 @@ public abstract class AbstractUndoableMove implements Serializable {
 
   public final void addChange(final Change change) {
     this.change.add(change);
-  }
-
-  public Collection<Unit> getUnits() {
-    return units;
-  }
-
-  public int getIndex() {
-    return index;
   }
 
   public void setIndex(final int index) {

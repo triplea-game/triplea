@@ -12,7 +12,7 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 class SampleMessage implements WebSocketMessage {
   static final MessageType<SampleMessage> TYPE = MessageType.of(SampleMessage.class);
 
-  @Getter private final String contents;
+  private final String contents;
 
   @Override
   public MessageEnvelope toEnvelope() {

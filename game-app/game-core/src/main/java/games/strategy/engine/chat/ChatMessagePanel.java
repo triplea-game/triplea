@@ -22,6 +22,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.DateTimeUtil;
@@ -52,7 +53,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   private JTextField nextMessage;
   private JButton send;
   private JButton setStatus;
-  private Chat chat;
+  @Getter private Chat chat;
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
@@ -115,10 +116,6 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
                     text.setEnabled(false);
                   }
                 }));
-  }
-
-  public Chat getChat() {
-    return chat;
   }
 
   private void layoutComponents() {

@@ -1,4 +1,0 @@
-dependencies {
-    implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
-    implementation project(':lib:java-extras')
-}

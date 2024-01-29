@@ -19,49 +19,50 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 
 /** The result of an AI territory analysis. */
 public class ProTerritory {
 
   private final ProData proData;
-  private final Territory territory;
-  private final Set<Unit> maxUnits;
-  private final List<Unit> units;
-  private final List<Unit> bombers;
-  private ProBattleResult maxBattleResult;
-  private double value;
-  private double seaValue;
-  private boolean canHold;
-  private boolean canAttack;
-  private double strengthEstimate;
+  @Getter private final Territory territory;
+  @Getter private final Set<Unit> maxUnits;
+  @Getter private final List<Unit> units;
+  @Getter private final List<Unit> bombers;
+  @Getter private ProBattleResult maxBattleResult;
+  @Getter private double value;
+  @Getter private double seaValue;
+  @Getter private boolean canHold;
+  @Getter private boolean canAttack;
+  @Getter private double strengthEstimate;
 
   // Amphib variables
-  private final List<Unit> maxAmphibUnits;
-  private final Map<Unit, List<Unit>> amphibAttackMap;
-  private final Map<Unit, Territory> transportTerritoryMap;
-  private boolean needAmphibUnits;
-  private boolean strafing;
-  private final Map<Unit, Boolean> isTransportingMap;
-  private final Set<Unit> maxBombardUnits;
-  private final Map<Unit, Set<Territory>> bombardOptionsMap;
-  private final Map<Unit, Territory> bombardTerritoryMap;
+  @Getter private final List<Unit> maxAmphibUnits;
+  @Getter private final Map<Unit, List<Unit>> amphibAttackMap;
+  @Getter private final Map<Unit, Territory> transportTerritoryMap;
+  @Getter private boolean needAmphibUnits;
+  @Getter private boolean strafing;
+  @Getter private final Map<Unit, Boolean> isTransportingMap;
+  @Getter private final Set<Unit> maxBombardUnits;
+  @Getter private final Map<Unit, Set<Territory>> bombardOptionsMap;
+  @Getter private final Map<Unit, Territory> bombardTerritoryMap;
 
   // Determine territory to attack variables
-  private boolean currentlyWins;
-  private ProBattleResult battleResult;
+  @Getter private boolean currentlyWins;
+  @Getter private ProBattleResult battleResult;
 
   // Non-combat move variables
   private final Set<Unit> cantMoveUnits;
-  private List<Unit> maxEnemyUnits;
-  private Set<Unit> maxEnemyBombardUnits;
-  private ProBattleResult minBattleResult;
-  private final List<Unit> tempUnits;
-  private final Map<Unit, List<Unit>> tempAmphibAttackMap;
-  private double loadValue;
+  @Getter private List<Unit> maxEnemyUnits;
+  @Getter private Set<Unit> maxEnemyBombardUnits;
+  @Getter private ProBattleResult minBattleResult;
+  @Getter private final List<Unit> tempUnits;
+  @Getter private final Map<Unit, List<Unit>> tempAmphibAttackMap;
+  @Getter private double loadValue;
 
   // Scramble variables
-  private final List<Unit> maxScrambleUnits;
+  @Getter private final List<Unit> maxScrambleUnits;
 
   public ProTerritory(final Territory territory, final ProData proData) {
     this.territory = territory;
@@ -208,56 +209,20 @@ public class ProTerritory {
     this.maxUnits.addAll(units);
   }
 
-  public Territory getTerritory() {
-    return territory;
-  }
-
-  public Set<Unit> getMaxUnits() {
-    return maxUnits;
-  }
-
   public void setValue(final double value) {
     this.value = value;
-  }
-
-  public double getValue() {
-    return value;
-  }
-
-  public List<Unit> getUnits() {
-    return units;
   }
 
   public void setCanHold(final boolean canHold) {
     this.canHold = canHold;
   }
 
-  public boolean isCanHold() {
-    return canHold;
-  }
-
-  public List<Unit> getMaxAmphibUnits() {
-    return maxAmphibUnits;
-  }
-
   public void setNeedAmphibUnits(final boolean needAmphibUnits) {
     this.needAmphibUnits = needAmphibUnits;
   }
 
-  public boolean isNeedAmphibUnits() {
-    return needAmphibUnits;
-  }
-
-  public boolean isStrafing() {
-    return strafing;
-  }
-
   public void setStrafing(final boolean strafing) {
     this.strafing = strafing;
-  }
-
-  public Map<Unit, List<Unit>> getAmphibAttackMap() {
-    return amphibAttackMap;
   }
 
   public void putAllAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap) {
@@ -274,20 +239,8 @@ public class ProTerritory {
     this.canAttack = canAttack;
   }
 
-  public boolean isCanAttack() {
-    return canAttack;
-  }
-
   public void setStrengthEstimate(final double strengthEstimate) {
     this.strengthEstimate = strengthEstimate;
-  }
-
-  public double getStrengthEstimate() {
-    return strengthEstimate;
-  }
-
-  public boolean isCurrentlyWins() {
-    return currentlyWins;
   }
 
   public void estimateBattleResult(final ProOddsCalculator calc, final GamePlayer player) {
@@ -314,10 +267,6 @@ public class ProTerritory {
     if (battleResult == null) {
       setBattleResult(supplier.get());
     }
-  }
-
-  public ProBattleResult getBattleResult() {
-    return battleResult;
   }
 
   /** Returns a description of the battle result in this territory. */
@@ -348,20 +297,8 @@ public class ProTerritory {
     this.maxEnemyUnits = new ArrayList<>(maxEnemyUnits);
   }
 
-  public List<Unit> getMaxEnemyUnits() {
-    return maxEnemyUnits;
-  }
-
   public void setMinBattleResult(final ProBattleResult minBattleResult) {
     this.minBattleResult = minBattleResult;
-  }
-
-  public ProBattleResult getMinBattleResult() {
-    return minBattleResult;
-  }
-
-  public List<Unit> getTempUnits() {
-    return tempUnits;
   }
 
   public void addTempUnit(final Unit unit) {
@@ -372,52 +309,20 @@ public class ProTerritory {
     this.tempUnits.addAll(units);
   }
 
-  public Map<Unit, List<Unit>> getTempAmphibAttackMap() {
-    return tempAmphibAttackMap;
-  }
-
   public void putTempAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits) {
     this.tempAmphibAttackMap.put(transport, amphibUnits);
-  }
-
-  public Map<Unit, Territory> getTransportTerritoryMap() {
-    return transportTerritoryMap;
   }
 
   public void setLoadValue(final double loadValue) {
     this.loadValue = loadValue;
   }
 
-  public double getLoadValue() {
-    return loadValue;
-  }
-
-  public Map<Unit, Boolean> getIsTransportingMap() {
-    return isTransportingMap;
-  }
-
   public void setSeaValue(final double seaValue) {
     this.seaValue = seaValue;
   }
 
-  public double getSeaValue() {
-    return seaValue;
-  }
-
-  public Map<Unit, Territory> getBombardTerritoryMap() {
-    return bombardTerritoryMap;
-  }
-
-  public Set<Unit> getMaxBombardUnits() {
-    return maxBombardUnits;
-  }
-
   void addMaxBombardUnit(final Unit unit) {
     this.maxBombardUnits.add(unit);
-  }
-
-  public Map<Unit, Set<Territory>> getBombardOptionsMap() {
-    return bombardOptionsMap;
   }
 
   void addBombardOptionsMap(final Unit unit, final Territory t) {
@@ -434,24 +339,8 @@ public class ProTerritory {
     this.maxEnemyBombardUnits = maxEnemyBombardUnits;
   }
 
-  public Set<Unit> getMaxEnemyBombardUnits() {
-    return maxEnemyBombardUnits;
-  }
-
   public void setMaxBattleResult(final ProBattleResult maxBattleResult) {
     this.maxBattleResult = maxBattleResult;
-  }
-
-  public ProBattleResult getMaxBattleResult() {
-    return maxBattleResult;
-  }
-
-  public List<Unit> getMaxScrambleUnits() {
-    return maxScrambleUnits;
-  }
-
-  public List<Unit> getBombers() {
-    return bombers;
   }
 
   public Set<Territory> getNeighbors(Predicate<Territory> predicate) {

@@ -24,26 +24,7 @@ Incrementing version number will cause a new lobby to be deployed.
 
 ## Finalize Release Notes
 
-## Release Note Script
-
-Run this script to parse release notes from merged PRs (this script could use some work! YMMV)
-
-```
-#!/bin/bash
-
-for page in $(seq 1 4); do
-curl "https://api.github.com/repos/triplea-game/triplea/pulls?state=closed&page=$page" \
-  | grep -Eo "merged_at\":|number\":.*|RELEASE_NOTE.*END_RELEASE_NOTE" \
-  | grep -B3 "merged_at\":" \
-  | grep -B1 RELEASE_NOTE  \
-  | sed 's@^number": \([0-9]*\),$@|[#\1](https://github.com/triplea-game/triplea/pull/\1)|@' \
-  | sed 's/RELEASE_NOTE-->//' \
-  | sed 's/<!--END_RELEASE_NOTE$/|/' \
-  | paste -d '' - -
-done >> release-notes
-```
-
-Clean up the above output and update the release-notes.md page on website.
+Update the release-notes.md page on website.
 
 ## Update servers.yml
 

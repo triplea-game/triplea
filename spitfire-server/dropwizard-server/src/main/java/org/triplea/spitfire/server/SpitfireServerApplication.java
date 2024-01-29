@@ -11,12 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.LobbyModuleRowMappers;
 import org.triplea.dropwizard.common.AuthenticationConfiguration;
+import org.triplea.dropwizard.common.IllegalArgumentMapper;
 import org.triplea.dropwizard.common.JdbiLogging;
 import org.triplea.dropwizard.common.ServerConfiguration;
 import org.triplea.dropwizard.common.ServerConfiguration.WebsocketConfig;
 import org.triplea.http.client.web.socket.WebsocketPaths;
-import org.triplea.maps.MapsModuleRowMappers;
-import org.triplea.maps.indexing.MapsIndexingObjectFactory;
 import org.triplea.modules.chat.ChatMessagingService;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.game.listing.GameListing;
@@ -45,8 +44,6 @@ import org.triplea.spitfire.server.controllers.user.account.ForgotPasswordContro
 import org.triplea.spitfire.server.controllers.user.account.LoginController;
 import org.triplea.spitfire.server.controllers.user.account.PlayerInfoController;
 import org.triplea.spitfire.server.controllers.user.account.UpdateAccountController;
-import org.triplea.spitfire.server.maps.MapTagAdminController;
-import org.triplea.spitfire.server.maps.MapsController;
 import org.triplea.web.socket.GameConnectionWebSocket;
 import org.triplea.web.socket.GenericWebSocket;
 import org.triplea.web.socket.PlayerConnectionWebSocket;
@@ -93,24 +90,10 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
         new JdbiFactory()
             .build(environment, configuration.getDatabase(), "postgresql-connection-pool");
 
-    MapsModuleRowMappers.rowMappers().forEach(jdbi::registerRowMapper);
     LobbyModuleRowMappers.rowMappers().forEach(jdbi::registerRowMapper);
 
     if (configuration.isLogSqlStatements()) {
       JdbiLogging.registerSqlLogger(jdbi);
-    }
-
-    if (configuration.isMapIndexingEnabled()) {
-      environment
-          .lifecycle()
-          .manage(MapsIndexingObjectFactory.buildMapsIndexingSchedule(configuration, jdbi));
-      log.info(
-          "Map indexing is enabled to run every:"
-              + " {} minutes with one map indexing request every {} seconds",
-          configuration.getMapIndexingPeriodMinutes(),
-          configuration.getIndexingTaskDelaySeconds());
-    } else {
-      log.info("Map indexing is disabled");
     }
 
     final LatestVersionModule latestVersionModule = new LatestVersionModule();
@@ -178,10 +161,6 @@ public class SpitfireServerApplication extends Application<SpitfireServerConfig>
             PlayersInGameController.build(gameListing),
             RemoteActionsController.build(jdbi, gameConnectionMessagingBus),
             UpdateAccountController.build(jdbi),
-
-            // maps module controllers
-            MapsController.build(jdbi),
-            MapTagAdminController.build(jdbi),
             LatestVersionController.build(latestVersionModule))
         .forEach(controller -> environment.jersey().register(controller));
   }

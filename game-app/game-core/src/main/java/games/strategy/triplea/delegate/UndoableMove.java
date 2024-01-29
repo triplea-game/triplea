@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Contains all the data to describe a move and to undo it. */
@@ -40,7 +41,7 @@ public class UndoableMove extends AbstractUndoableMove {
   private final Set<Unit> loaded = new HashSet<>();
   // transports unloaded by this move
   private final Set<Unit> unloaded = new HashSet<>();
-  private final Route route;
+  @Getter private final Route route;
 
   public UndoableMove(final Collection<Unit> units, final Route route) {
     super(new CompositeChange(), units);
@@ -49,10 +50,6 @@ public class UndoableMove extends AbstractUndoableMove {
 
   public void addToConquered(final Territory t) {
     conquered.add(t);
-  }
-
-  public Route getRoute() {
-    return route;
   }
 
   public boolean getCanUndo() {

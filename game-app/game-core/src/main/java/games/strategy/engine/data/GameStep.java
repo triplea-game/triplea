@@ -16,13 +16,34 @@ import lombok.Getter;
 public class GameStep extends GameDataComponent {
   private static final long serialVersionUID = -7944468945162840931L;
 
-  @Nullable private final String name;
+  @Getter @Nullable private final String name;
   @Nullable private final String displayName;
   @Nullable private final GamePlayer player;
   @Getter private final String delegateName;
   private int runCount = 0;
-  private int maxRunCount = -1;
-  private final Properties properties;
+  @Getter private int maxRunCount = -1;
+
+  /**
+   * -- GETTER -- Returns the properties of the game step. Allowed Properties so far:<br>
+   * EndTurn delegates -> skipPosting = true/false<br>
+   * EndTurn delegates -> turnSummaryPlayers = colon separated list of players for this turn summary
+   * <br>
+   * Move delegates -> airborneMove = true/false<br>
+   * Move delegates -> combatMove = true/false<br>
+   * Move delegates -> nonCombatMove = true/false<br>
+   * Move delegates -> fireRocketsAfter = true/false<br>
+   * Move & EndTurn delegates -> repairUnits = true/false<br>
+   * Move delegates -> giveBonusMovement = true/false<br>
+   * Move & Place delegates -> removeAirThatCanNotLand = true/false<br>
+   * Move delegates -> resetUnitStateAtStart = true/false<br>
+   * Move delegates -> resetUnitStateAtEnd = true/false<br>
+   * Purchase & Place delegates -> bid = true/false<br>
+   * Purchase delegates -> repairPlayers = colon separated list of players which you can repair for
+   * <br>
+   * Move delegates -> combinedTurns = colon separated list of players which have intermeshed phases
+   * <br>
+   */
+  @Getter private final Properties properties;
 
   /**
    * The keys for all supported game step properties.
@@ -72,10 +93,6 @@ public class GameStep extends GameDataComponent {
     properties = stepProperties;
   }
 
-  public String getName() {
-    return name;
-  }
-
   public GamePlayer getPlayerId() {
     return player;
   }
@@ -107,10 +124,6 @@ public class GameStep extends GameDataComponent {
     maxRunCount = count;
   }
 
-  public int getMaxRunCount() {
-    return maxRunCount;
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(name, delegateName, player);
@@ -122,30 +135,6 @@ public class GameStep extends GameDataComponent {
       return delegate != null ? delegate.getDisplayName() : delegateName;
     }
     return displayName;
-  }
-
-  /**
-   * Returns the properties of the game step. Allowed Properties so far:<br>
-   * EndTurn delegates -> skipPosting = true/false<br>
-   * EndTurn delegates -> turnSummaryPlayers = colon separated list of players for this turn summary
-   * <br>
-   * Move delegates -> airborneMove = true/false<br>
-   * Move delegates -> combatMove = true/false<br>
-   * Move delegates -> nonCombatMove = true/false<br>
-   * Move delegates -> fireRocketsAfter = true/false<br>
-   * Move & EndTurn delegates -> repairUnits = true/false<br>
-   * Move delegates -> giveBonusMovement = true/false<br>
-   * Move & Place delegates -> removeAirThatCanNotLand = true/false<br>
-   * Move delegates -> resetUnitStateAtStart = true/false<br>
-   * Move delegates -> resetUnitStateAtEnd = true/false<br>
-   * Purchase & Place delegates -> bid = true/false<br>
-   * Purchase delegates -> repairPlayers = colon separated list of players which you can repair for
-   * <br>
-   * Move delegates -> combinedTurns = colon separated list of players which have intermeshed phases
-   * <br>
-   */
-  public Properties getProperties() {
-    return properties;
   }
 
   @Override

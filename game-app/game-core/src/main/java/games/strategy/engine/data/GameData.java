@@ -78,8 +78,9 @@ public class GameData implements Serializable, GameState {
   private transient volatile boolean forceInSwingEventThread = false;
   private String gameName;
   @RemoveOnNextMajorRelease @Deprecated private Version gameVersion;
-  private int diceSides;
+  @Getter private int diceSides;
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
+
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
   private transient Map<String, IDelegate> delegates = new HashMap<>();
   private final AllianceTracker alliances = new AllianceTracker();
@@ -105,8 +106,11 @@ public class GameData implements Serializable, GameState {
   @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
+
+  @Getter
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
+
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
   private transient GameDataEventListeners gameDataEventListeners = new GameDataEventListeners();
@@ -339,10 +343,6 @@ public class GameData implements Serializable, GameState {
     }
   }
 
-  public int getDiceSides() {
-    return diceSides;
-  }
-
   public History getHistory() {
     // don't ensure the lock is held when getting the history
     // history operations often acquire the write lock and we can't acquire the write lock if we
@@ -448,10 +448,6 @@ public class GameData implements Serializable, GameState {
   public void addToAttachmentOrderAndValues(
       final Tuple<IAttachment, List<Tuple<String, String>>> attachmentAndValues) {
     attachmentOrderAndValues.add(attachmentAndValues);
-  }
-
-  public List<Tuple<IAttachment, List<Tuple<String, String>>>> getAttachmentOrderAndValues() {
-    return attachmentOrderAndValues;
   }
 
   public void setAttachmentOrderAndValues(

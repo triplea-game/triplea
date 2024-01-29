@@ -14,11 +14,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.db.dao.user.role.UserRoleLookup;
+import org.triplea.test.common.RequiresDatabase;
 
 @DataSet(value = "user/user_role.yml,user/lobby_user.yml", useSequenceFiltering = false)
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
+@RequiresDatabase
 class UserJdbiDaoTest {
 
   private static final int USER_ID = 900000;

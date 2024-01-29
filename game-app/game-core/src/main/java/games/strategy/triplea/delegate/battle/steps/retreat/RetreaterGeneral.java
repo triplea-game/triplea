@@ -132,7 +132,7 @@ class RetreaterGeneral implements Retreater {
     for (final IBattle dependent : dependentBattles) {
       final Route route = new Route(battleState.getBattleSite(), dependent.getTerritory());
       final Collection<Unit> retreatedUnits = dependent.getDependentUnits(units);
-      dependent.removeAttack(route, retreatedUnits);
+      change.add(dependent.removeAttack(route, retreatedUnits));
       TransportTracker.reloadTransports(units, change);
       change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
     }

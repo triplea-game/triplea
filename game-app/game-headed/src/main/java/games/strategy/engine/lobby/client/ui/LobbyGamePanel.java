@@ -2,15 +2,15 @@ package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.engine.framework.GameProcess;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.action.FetchChatHistory;
 import games.strategy.engine.lobby.client.ui.action.ShowPlayersAction;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
-import java.net.URI;
-import java.util.Collection;
 import java.util.List;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -20,7 +20,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.MouseListenerBuilder;
 import org.triplea.swing.SwingAction;
@@ -28,26 +34,62 @@ import org.triplea.swing.SwingAction;
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
   private final JFrame parent;
-  private final JButton joinGame;
+  private final JButton joinGameButton;
   private final LobbyGameTableModel gameTableModel;
-  private final LobbyClient lobbyClient;
+  private final LoginResult loginResult;
   private final JTable gameTable;
-  private final URI lobbyUri;
+  private final PlayerToLobbyConnection playerToLobbyConnection;
 
   LobbyGamePanel(
       final JFrame parent,
-      final LobbyClient lobbyClient,
-      final URI lobbyUri,
-      final LobbyGameTableModel lobbyGameTableModel) {
+      final LoginResult loginResult,
+      final LobbyGameTableModel lobbyGameTableModel,
+      final PlayerToLobbyConnection playerToLobbyConnection) {
     this.parent = parent;
-    this.lobbyClient = lobbyClient;
+    this.loginResult = loginResult;
     this.gameTableModel = lobbyGameTableModel;
-    this.lobbyUri = lobbyUri;
+    this.playerToLobbyConnection = playerToLobbyConnection;
 
-    final JButton hostGame = new JButton("Host Game");
-    joinGame = new JButton("Join Game");
+    final JButton hostGameButton = new JButton("Host Game");
+    joinGameButton = new JButton("Join Game");
 
-    gameTable = new LobbyGameTable(gameTableModel);
+    gameTable =
+        new JTable(gameTableModel) {
+          @Override
+          // Custom renderer to show 'bot' rows in italic font
+          public Component prepareRenderer(
+              final TableCellRenderer renderer, final int rowIndex, final int colIndex) {
+
+            final Component component = super.prepareRenderer(renderer, rowIndex, colIndex);
+            final GameDescription gameDescription =
+                lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
+            component.setFont(
+                gameDescription.isBot()
+                    ? UIManager.getDefaults().getFont("Table.font").deriveFont(Font.ITALIC)
+                    : UIManager.getDefaults().getFont("Table.font"));
+            return component;
+          }
+        };
+    gameTable
+        .getSelectionModel()
+        .addListSelectionListener(
+            e -> {
+              final boolean selected = gameTable.getSelectedRow() >= 0;
+              joinGameButton.setEnabled(selected);
+            });
+    gameTable.addMouseListener(
+        new MouseListenerBuilder()
+            .mouseClicked(this::mouseClicked)
+            .mousePressed(this::mousePressed)
+            .mouseReleased(this::mouseOnGamesList)
+            .build());
+
+    final TableRowSorter<LobbyGameTableModel> tableSorter = new TableRowSorter<>(gameTableModel);
+    // by default, sort by host
+    final int hostColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host);
+    tableSorter.setSortKeys(List.of(new RowSorter.SortKey(hostColumn, SortOrder.DESCENDING)));
+    gameTable.setRowSorter(tableSorter);
+
     // only allow one row to be selected
     gameTable.setColumnSelectionAllowed(false);
     gameTable.setCellSelectionEnabled(false);
@@ -66,7 +108,7 @@ class LobbyGamePanel extends JPanel {
         .getColumnModel()
         .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P))
         .setPreferredWidth(12);
-    if (lobbyClient.isModerator()) {
+    if (loginResult.isModerator()) {
       gameTable
           .getColumnModel()
           .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
@@ -93,26 +135,13 @@ class LobbyGamePanel extends JPanel {
     setLayout(new BorderLayout());
     add(scroll, BorderLayout.CENTER);
     final JToolBar toolBar = new JToolBar();
-    toolBar.add(hostGame);
-    toolBar.add(joinGame);
+    toolBar.add(hostGameButton);
+    toolBar.add(joinGameButton);
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
 
-    hostGame.addActionListener(e -> hostGame(lobbyUri));
-    joinGame.addActionListener(e -> joinGame());
-    gameTable
-        .getSelectionModel()
-        .addListSelectionListener(
-            e -> {
-              final boolean selected = gameTable.getSelectedRow() >= 0;
-              joinGame.setEnabled(selected);
-            });
-    gameTable.addMouseListener(
-        new MouseListenerBuilder()
-            .mouseClicked(this::mouseClicked)
-            .mousePressed(this::mousePressed)
-            .mouseReleased(this::mouseOnGamesList)
-            .build());
+    hostGameButton.addActionListener(e -> hostGame());
+    joinGameButton.addActionListener(e -> joinGame());
   }
 
   private void mouseClicked(final MouseEvent mouseEvent) {
@@ -150,36 +179,30 @@ class LobbyGamePanel extends JPanel {
 
     List.of(
             SwingAction.of("Join Game", this::joinGame),
-            SwingAction.of("Host Game", () -> hostGame(lobbyUri)),
+            SwingAction.of("Host Game", this::hostGame),
             ShowPlayersAction.builder()
                 .parentWindow(parent)
                 .gameIdSelection(
                     () ->
                         gameTableModel.getGameListingForRow(
                             gameTable.convertRowIndexToModel(gameTable.getSelectedRow())))
-                .playerToLobbyConnection(lobbyClient.getPlayerToLobbyConnection())
+                .playerToLobbyConnection(playerToLobbyConnection)
                 .build()
                 .buildSwingAction())
         .forEach(menu::add);
 
-    if (lobbyClient.isModerator()) {
-      final Collection<Action> generalAdminActions = getGeneralAdminGamesListContextActions();
-      if (!generalAdminActions.isEmpty()) {
-        menu.addSeparator();
-        generalAdminActions.forEach(menu::add);
-      }
+    if (loginResult.isModerator()) {
+      menu.addSeparator();
+      List.of(
+              SwingAction.of("Show Chat History", e -> showChatHistory()),
+              SwingAction.of("Boot Game", e -> bootGame()),
+              SwingAction.of("Shutdown", e -> shutdown()))
+          .forEach(menu::add);
     }
 
     if (menu.getComponentCount() > 0) {
       menu.show(gameTable, mouseEvent.getX(), mouseEvent.getY());
     }
-  }
-
-  private Collection<Action> getGeneralAdminGamesListContextActions() {
-    return List.of(
-        SwingAction.of("Show Chat History", e -> showChatHistory()),
-        SwingAction.of("Boot Game", e -> bootGame()),
-        SwingAction.of("Shutdown", e -> shutdown()));
   }
 
   private void joinGame() {
@@ -190,13 +213,13 @@ class LobbyGamePanel extends JPanel {
     // we sort the table, so get the correct index
     final GameDescription description =
         gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
-    GameProcess.joinGame(description, lobbyClient.getUserName());
+    GameProcess.joinGame(description, loginResult.getUsername());
   }
 
-  private void hostGame(final URI lobbyUri) {
+  private void hostGame() {
     final ServerOptions options =
         new ServerOptions(
-            JOptionPane.getFrameForComponent(this), lobbyClient.getUserName(), 3300, true);
+            JOptionPane.getFrameForComponent(this), loginResult.getUsername(), 3300, true);
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
     options.setNameEditable(false);
     options.setVisible(true);
@@ -208,7 +231,7 @@ class LobbyGamePanel extends JPanel {
         options.getName(),
         options.getComments(),
         options.getPassword(),
-        lobbyUri);
+        ClientSetting.lobbyUri.getValueOrThrow());
   }
 
   private void showChatHistory() {
@@ -221,7 +244,7 @@ class LobbyGamePanel extends JPanel {
         .parentWindow(parent)
         .gameId(gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex)))
         .gameHostName(gameTableModel.get(selectedIndex).getHostedBy().getName())
-        .playerToLobbyConnection(lobbyClient.getPlayerToLobbyConnection())
+        .playerToLobbyConnection(playerToLobbyConnection)
         .build()
         .fetchAndShowChatHistory();
   }
@@ -263,7 +286,7 @@ class LobbyGamePanel extends JPanel {
 
     final String gameId =
         gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
-    lobbyClient.getPlayerToLobbyConnection().sendShutdownRequest(gameId);
+    playerToLobbyConnection.sendShutdownRequest(gameId);
     JOptionPane.showMessageDialog(null, "The game you selected was sent a shutdown signal");
   }
 }

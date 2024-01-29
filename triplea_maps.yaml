@@ -2037,7 +2037,7 @@
 - mapName: Global 40 House Rules
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_house_rules/archive/master.zip
-  version: 17
+  version: 18
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
   description:
     <br>
@@ -2803,6 +2803,6 @@
 - mapName: UHD World War II Global
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/uhd_world_war_ii_global/archive/master.zip
-  version: 1
+  version: 2
   img: https://github.com/triplea-maps/uhd_world_war_ii_global/master/preview.png
   description: <br>This is UHD World War II Global using the Black Elk Mega Map

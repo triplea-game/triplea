@@ -12,8 +12,9 @@ import java.util.stream.Stream;
 import lombok.Getter;
 import org.triplea.map.data.elements.VariableList;
 
+@Getter
 class GameDataVariables {
-  @Getter private final Map<String, List<String>> variables;
+  private final Map<String, List<String>> variables;
 
   private GameDataVariables(Map<String, List<String>> variables) {
     this.variables = variables;

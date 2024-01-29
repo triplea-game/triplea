@@ -85,6 +85,7 @@ final class ViewMenu extends JMenu {
     }
     addShowMapDetails();
     addShowMapBlends();
+    addShowZoomMenu();
     addMapFontAndColorEditorMenu();
     addChatTimeMenu();
     addShowCommentLog();
@@ -322,6 +323,17 @@ final class ViewMenu extends JMenu {
           frame.getMapPanel().resetMap();
         });
     add(showUnitsBox);
+  }
+
+  private void addShowZoomMenu() {
+    final JCheckBoxMenuItem showMapZoomBox = new JCheckBoxMenuItem("Show Zoom Percentage");
+
+    showMapZoomBox.addActionListener(
+        e -> {
+          this.frame.getBottomBar().setMapZoomEnabled(showMapZoomBox.isSelected());
+        });
+
+    add(showMapZoomBox);
   }
 
   private void addShowUnitsInStatusBarMenu() {

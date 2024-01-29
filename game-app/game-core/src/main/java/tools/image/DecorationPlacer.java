@@ -45,6 +45,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
 import org.triplea.swing.SwingAction;
@@ -870,6 +871,7 @@ public final class DecorationPlacer {
     }
   }
 
+  @Getter
   enum ImagePointType {
     decorations(
         "decorations.txt",
@@ -1080,46 +1082,6 @@ public final class DecorationPlacer {
         kamikaze_place,
         territory_effects
       };
-    }
-
-    public String getFileName() {
-      return fileName;
-    }
-
-    public String getFolderName() {
-      return folderName;
-    }
-
-    public String getImageName() {
-      return imageName;
-    }
-
-    public boolean isUseFolder() {
-      return useFolder;
-    }
-
-    public boolean isEndInPng() {
-      return endInPng;
-    }
-
-    public boolean isFillAll() {
-      return fillAll;
-    }
-
-    public boolean isCanUseBottomLeftPoint() {
-      return canUseBottomLeftPoint;
-    }
-
-    public boolean isCanHaveMultiplePoints() {
-      return canHaveMultiplePoints;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public String getInstructions() {
-      return instructions;
     }
   }
 }

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +45,8 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   private final Function<URI, WebSocketConnection> webSocketConnectionFactory;
 
   private WebSocketConnection webSocketConnection;
-  private final Set<MessageListener<? extends WebSocketMessage>> listeners = new HashSet<>();
+  private final Set<MessageListener<? extends WebSocketMessage>> listeners =
+      Collections.synchronizedSet(new HashSet<>());
 
   @Builder
   private static class MessageListener<T extends WebSocketMessage> {
@@ -147,6 +149,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
 
   @Override
   public void handleError(final Throwable exception) {
+    log.error("Web Socket error", exception);
     errorHandler.accept(exception.getMessage());
   }
 }

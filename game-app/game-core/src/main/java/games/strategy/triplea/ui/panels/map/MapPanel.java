@@ -13,6 +13,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
+import games.strategy.engine.data.events.ZoomMapListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -88,6 +89,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final List<MapSelectionListener> mapSelectionListeners = new ArrayList<>();
   private final List<UnitSelectionListener> unitSelectionListeners = new ArrayList<>();
   private final List<MouseOverUnitListener> mouseOverUnitsListeners = new ArrayList<>();
+  private final List<ZoomMapListener> zoomMapListeners = new ArrayList<>();
   private GameData gameData;
   // the territory that the mouse is currently over
   @Getter private @Nullable Territory currentTerritory;
@@ -103,7 +105,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
   private ResourceCollection movementFuelCost;
-  private final UiContext uiContext;
+  @Getter private final UiContext uiContext;
   private final ExecutorService executor =
       Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   @Getter private Collection<Collection<Unit>> highlightedUnits = List.of();
@@ -468,6 +470,14 @@ public class MapPanel extends ImageScrollerLargeView {
     }
     routeDescription = newRouteDescription;
     SwingUtilities.invokeLater(this::repaint);
+  }
+
+  public void addZoomMapListener(final ZoomMapListener listener) {
+    zoomMapListeners.add(listener);
+  }
+
+  public void removeZoomMapListener(final ZoomMapListener listener) {
+    zoomMapListeners.remove(listener);
   }
 
   public void addMapSelectionListener(final MapSelectionListener listener) {
@@ -841,6 +851,8 @@ public class MapPanel extends ImageScrollerLargeView {
   @Override
   public void setScale(final double newScale) {
     super.setScale(newScale);
+    zoomMapListeners.forEach(
+        (zoomMapListener -> zoomMapListener.zoomMapChanged((int) (scale * 100))));
     // setScale will check bounds, and normalize the scale correctly
     uiContext.setScale(scale);
     repaint();
@@ -959,10 +971,6 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void clearTerritoryOverlay(final Territory territory) {
     tileManager.clearTerritoryOverlay(territory, gameData, uiContext.getMapData());
-  }
-
-  public UiContext getUiContext() {
-    return uiContext;
   }
 
   public void hideMouseCursor() {

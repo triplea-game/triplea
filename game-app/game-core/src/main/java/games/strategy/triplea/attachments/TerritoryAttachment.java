@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -43,10 +44,10 @@ public class TerritoryAttachment extends DefaultAttachment {
   private boolean originalFactory = false;
   // "setProduction" will set both production and unitProduction.
   // While "setProductionOnly" sets only production.
-  private int production = 0;
-  private int victoryCity = 0;
+  @Getter private int production = 0;
+  @Getter private int victoryCity = 0;
   private boolean isImpassable = false;
-  private GamePlayer originalOwner = null;
+  @Getter private GamePlayer originalOwner = null;
   private boolean convoyRoute = false;
   private @Nullable Set<Territory> convoyAttached = null;
   private @Nullable List<GamePlayer> changeUnitOwners = null;
@@ -54,7 +55,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   private boolean navalBase = false;
   private boolean airBase = false;
   private boolean kamikazeZone = false;
-  private int unitProduction = 0;
+  @Getter private int unitProduction = 0;
   private boolean blockadeZone = false;
   private @Nullable List<TerritoryEffect> territoryEffect = null;
   private @Nullable List<String> whenCapturedByGoesTo = null;
@@ -199,10 +200,6 @@ public class TerritoryAttachment extends DefaultAttachment {
     return ta.getProduction();
   }
 
-  public int getProduction() {
-    return production;
-  }
-
   /** Convenience method since TerritoryAttachment.get could return null. */
   public static int getUnitProduction(final Territory t) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
@@ -210,10 +207,6 @@ public class TerritoryAttachment extends DefaultAttachment {
       return 0;
     }
     return ta.getUnitProduction();
-  }
-
-  public int getUnitProduction() {
-    return unitProduction;
   }
 
   private void setResources(final String value) throws GameParseException {
@@ -280,10 +273,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   private void setVictoryCity(final int value) {
     victoryCity = value;
-  }
-
-  public int getVictoryCity() {
-    return victoryCity;
   }
 
   private void setOriginalFactory(final String value) {
@@ -353,10 +342,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   private void setOriginalOwner(final String player) throws GameParseException {
     originalOwner = getPlayerOrThrow(player);
-  }
-
-  public GamePlayer getOriginalOwner() {
-    return originalOwner;
   }
 
   private void resetOriginalOwner() {

@@ -2,6 +2,7 @@ package games.strategy.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import lombok.Getter;
 
 /**
  * Model for an ImageScroller. Generally one large view and one small view will be connected to the
@@ -10,14 +11,14 @@ import java.util.Collection;
  * <p>notifies its observers when changes occur.
  */
 public class ImageScrollModel {
-  private int x;
+  @Getter private int x;
 
-  private int y;
+  @Getter private int y;
 
-  private int boxWidth = 5;
-  private int boxHeight = 5;
-  private int maxWidth;
-  private int maxHeight;
+  @Getter private int boxWidth = 5;
+  @Getter private int boxHeight = 5;
+  @Getter private int maxWidth;
+  @Getter private int maxHeight;
   private boolean scrollX;
   private boolean scrollY;
 
@@ -100,30 +101,6 @@ public class ImageScrollModel {
 
   public boolean getScrollY() {
     return scrollY;
-  }
-
-  public int getX() {
-    return x;
-  }
-
-  public int getY() {
-    return y;
-  }
-
-  public int getBoxWidth() {
-    return boxWidth;
-  }
-
-  public int getBoxHeight() {
-    return boxHeight;
-  }
-
-  public int getMaxWidth() {
-    return maxWidth;
-  }
-
-  public int getMaxHeight() {
-    return maxHeight;
   }
 
   void set(final int x, final int y) {

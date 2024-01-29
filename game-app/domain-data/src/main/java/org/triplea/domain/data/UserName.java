@@ -13,12 +13,13 @@ import lombok.Getter;
  * AKA username, represents the display name of a player. This is the name used when taking a
  * game-seat or when chatting.
  */
+@Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class UserName implements Serializable {
 
   private static final long serialVersionUID = 8356372044000232198L;
-  @Getter private final String value;
+  private final String value;
 
   public static UserName of(final String name) {
     Preconditions.checkNotNull(name);

@@ -2,14 +2,21 @@ package games.strategy.triplea.delegate.data;
 
 import java.io.Serializable;
 import java.util.List;
+import lombok.Getter;
 
 /** The result of spending tech tokens. */
+@Getter
 public class TechResults implements Serializable {
   private static final long serialVersionUID = 5574673305892105782L;
   private final int[] rolls;
   private final int hits;
   private final int remainder;
   private final List<String> advances;
+
+  /**
+   * -- GETTER -- Returns string error or null if no error occurred (use isError to see if there was
+   * an error).
+   */
   private final String errorString;
 
   public TechResults(final String errorString) {
@@ -32,28 +39,5 @@ public class TechResults implements Serializable {
   /** Indicates whether there was an error. */
   public boolean isError() {
     return errorString != null;
-  }
-
-  /**
-   * Returns string error or null if no error occurred (use isError to see if there was an error).
-   */
-  public String getErrorString() {
-    return errorString;
-  }
-
-  public int getHits() {
-    return hits;
-  }
-
-  public int getRemainder() {
-    return remainder;
-  }
-
-  public int[] getRolls() {
-    return rolls;
-  }
-
-  public List<String> getAdvances() {
-    return advances;
   }
 }

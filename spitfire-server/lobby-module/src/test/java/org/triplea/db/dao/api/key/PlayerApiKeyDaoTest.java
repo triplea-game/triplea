@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.db.LobbyModuleDatabaseTestSupport;
 import org.triplea.db.dao.user.role.UserRole;
+import org.triplea.test.common.RequiresDatabase;
 
 @DataSet(
     value =
@@ -24,6 +25,7 @@ import org.triplea.db.dao.user.role.UserRole;
 @RequiredArgsConstructor
 @ExtendWith(LobbyModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
+@RequiresDatabase
 class PlayerApiKeyDaoTest {
 
   private static final int USER_ID = 50;

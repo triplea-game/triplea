@@ -210,7 +210,7 @@ public class ClientSetupPanel extends SetupPanel {
     private final JCheckBox enabledCheckBox = new JCheckBox();
     private final JLabel playerNameLabel = new JLabel();
     private final JLabel playerLabel = new JLabel();
-    private final JButton alliance;
+    @Getter private final JButton alliance;
     @Getter private JComponent playerComponent = new JLabel();
     @Getter private JComponent allianceComponent = new JLabel();
     private final Action takeAction =
@@ -244,10 +244,6 @@ public class ClientSetupPanel extends SetupPanel {
 
     public JLabel getPlayer() {
       return playerLabel;
-    }
-
-    public JButton getAlliance() {
-      return alliance;
     }
 
     public JCheckBox getEnabledPlayer() {

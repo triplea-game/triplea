@@ -17,14 +17,11 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.startup.ui.posted.game.pbem.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.PbfSetupPanel;
 import games.strategy.engine.framework.ui.MainFrame;
-import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LoginMode;
 import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dimension;
-import java.net.URI;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.JFrame;
@@ -38,7 +35,7 @@ import org.triplea.game.client.HeadedGameRunner;
 @RequiredArgsConstructor
 public class HeadedServerSetupModel {
   @Getter protected final GameSelectorModel gameSelectorModel;
-  protected SetupPanel panel = null;
+  @Getter protected SetupPanel panel = null;
 
   @Setter private Consumer<SetupPanel> panelChangeListener;
   @Setter private JFrame ui;
@@ -123,29 +120,19 @@ public class HeadedServerSetupModel {
     Optional.ofNullable(panelChangeListener).ifPresent(listener -> listener.accept(panel));
   }
 
-  public SetupPanel getPanel() {
-    return panel;
-  }
-
   /**
    * Executes a login sequence prompting the user for their lobby username+password and sends it to
    * server. If successful the user is presented with the lobby frame. Failure cases are handled and
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
   public void login() {
-    promptLobbyLogin(ClientSetting.lobbyUri.getValueOrThrow());
-  }
-
-  private void promptLobbyLogin(final URI lobbyUri) {
-    new LobbyLogin(ui, lobbyUri)
+    new LobbyLogin(ui)
         .promptLogin(LoginMode.REGISTRATION_NOT_REQUIRED)
-        .ifPresent(loginResult -> showLobbyWindow(loginResult, lobbyUri));
+        .ifPresent(this::showLobbyWindow);
   }
 
-  private void showLobbyWindow(final LoginResult loginResult, final URI lobbyUri) {
-    final var lobbyClient = LobbyClient.newLobbyClient(lobbyUri, loginResult);
-
-    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyUri);
+  private void showLobbyWindow(final LoginResult loginResult) {
+    final LobbyFrame lobbyFrame = new LobbyFrame(loginResult);
     MainFrame.hide();
     lobbyFrame.setVisible(true);
   }

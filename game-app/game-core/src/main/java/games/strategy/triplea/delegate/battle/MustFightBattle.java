@@ -184,32 +184,6 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void removeAttack(final Route route, final Collection<Unit> units) {
-    attackingUnits.removeAll(units);
-    // the route could be null, in the case of a unit in a territory where a sub is submerged.
-    if (route == null) {
-      return;
-    }
-    final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    final Collection<Unit> attackingFromMapUnits =
-        attackingFromMap.getOrDefault(attackingFrom, new ArrayList<>());
-    attackingFromMapUnits.removeAll(units);
-    if (attackingFromMapUnits.isEmpty()) {
-      this.attackingFromMap.remove(attackingFrom);
-    }
-    // deal with amphibious assaults
-    if (attackingFrom.isWater()) {
-      // if none of the units is a land unit, the attack from that territory is no longer an
-      // amphibious assault
-      if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
-        getAmphibiousAttackTerritories().remove(attackingFrom);
-        // do we have any amphibious attacks left?
-        isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
-      }
-    }
-  }
-
-  @Override
   public boolean isEmpty() {
     return attackingUnits.isEmpty() && attackingWaitingToDie.isEmpty();
   }
@@ -237,6 +211,11 @@ public class MustFightBattle extends DependentBattle
     if (!Properties.getAlliedAirIndependent(gameData.getProperties())) {
       // allied air can not participate in the battle so set transportedBy on each allied air unit
       // and remove them from the attacking units
+      // Note: This is done only for the duration of the battle, so that these dependent planes can
+      // correctly be destroyed if their carrier sinks and so the combat screen shows which planes
+      // are loaded on which carrier when selecting casualties. It's cleared by
+      // clearTransportedByForAlliedAirOnCarrier(). Note: These will also be cleared if the battle
+      // is canceled by virtue of units moving out further.
       final TransportTracker.AlliedAirTransportChange alliedAirTransportChange =
           TransportTracker.markTransportedByForAlliedAirOnCarrier(units, attacker);
       change.add(alliedAirTransportChange.getChange());
@@ -245,7 +224,7 @@ public class MustFightBattle extends DependentBattle
     // mark units with no movement for all but air
     Collection<Unit> nonAir = CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotAir());
     // we don't want to change the movement of transported land units if this is a sea battle
-    // so restrict non air to remove land units
+    // so restrict non-air to remove land units
     if (battleSite.isWater()) {
       nonAir = CollectionUtils.getMatches(nonAir, Matches.unitIsNotLand());
     }
@@ -705,7 +684,7 @@ public class MustFightBattle extends DependentBattle
         List.of());
     display.listBattleSteps(battleId, stepStrings);
     if (!headless) {
-      // take the casualties with least movement first
+      // take the casualties with the least movement first
       CasualtySortingUtil.sortPreBattle(attackingUnits);
       CasualtySortingUtil.sortPreBattle(defendingUnits);
       SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
@@ -844,9 +823,9 @@ public class MustFightBattle extends DependentBattle
         || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
       return Set.of(battleSite);
     }
-    // its possible that a sub retreated to a territory we came from, if so we can no longer retreat
-    // there
-    // or if we are moving out of a territory containing enemy units, we cannot retreat back there
+    // it's possible that a sub retreated to a territory we came from, if so we can no longer
+    // retreat there or if we are moving out of a territory containing enemy units, we cannot
+    // retreat back there
     final Predicate<Unit> enemyUnitsThatPreventRetreat =
         PredicateBuilder.of(Matches.enemyUnit(attacker))
             .and(Matches.unitIsNotInfrastructure())
@@ -1260,7 +1239,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   /**
-   * Removes non combatants from the requested battle side and returns them
+   * Removes non-combatants from the requested battle side and returns them.
    *
    * @return the removed units
    */
@@ -1284,7 +1263,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   /**
-   * Returns only the relevant non-combatant units present in the specified collection.
+   * Returns only the relevant combatant units present in the specified collection.
    *
    * @return a collection containing all the combatants in units non-combatants include such things
    *     as factories, aa guns, land units in a water battle.

@@ -5,14 +5,15 @@ import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.battle.IBattle.WhoWon;
 import java.util.Collection;
+import lombok.Getter;
 
 /** The results of an in-progress or complete battle. */
 public class BattleResults extends GameDataComponent {
   private static final long serialVersionUID = 1L;
 
-  private final int battleRoundsFought;
-  private final Collection<Unit> remainingAttackingUnits;
-  private final Collection<Unit> remainingDefendingUnits;
+  @Getter private final int battleRoundsFought;
+  @Getter private final Collection<Unit> remainingAttackingUnits;
+  @Getter private final Collection<Unit> remainingDefendingUnits;
   private final WhoWon whoWon;
 
   // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also
@@ -42,18 +43,6 @@ public class BattleResults extends GameDataComponent {
     remainingAttackingUnits = battle.getRemainingAttackingUnits();
     remainingDefendingUnits = battle.getRemainingDefendingUnits();
     whoWon = scriptedWhoWon;
-  }
-
-  public Collection<Unit> getRemainingAttackingUnits() {
-    return remainingAttackingUnits;
-  }
-
-  public Collection<Unit> getRemainingDefendingUnits() {
-    return remainingDefendingUnits;
-  }
-
-  public int getBattleRoundsFought() {
-    return battleRoundsFought;
   }
 
   // These could easily screw up an AI into thinking it has won when it really hasn't. Must make

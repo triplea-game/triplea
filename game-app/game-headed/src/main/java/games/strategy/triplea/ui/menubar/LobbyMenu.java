@@ -3,12 +3,19 @@ package games.strategy.triplea.ui.menubar;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.ChangeEmailPanel;
 import games.strategy.engine.lobby.client.login.ChangePasswordPanel;
+import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import javax.swing.JMenuBar;
+import org.triplea.config.product.ProductVersionReader;
+import org.triplea.domain.data.SystemIdLoader;
+import org.triplea.http.client.lib.ClientIdentifiers;
+import org.triplea.http.client.maps.admin.MapTagAdminClient;
+import org.triplea.http.client.maps.listing.MapsClient;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.sound.SoundOptions;
 import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
@@ -20,7 +27,8 @@ public final class LobbyMenu extends JMenuBar {
 
   private final LobbyFrame lobbyFrame;
 
-  public LobbyMenu(final LobbyFrame frame) {
+  public LobbyMenu(
+      LobbyFrame frame, LoginResult loginResult, PlayerToLobbyConnection playerToLobbyConnection) {
     lobbyFrame = frame;
     // file only has one value, and on mac it is in the apple menu
     if (!SystemProperties.isMac()) {
@@ -29,27 +37,31 @@ public final class LobbyMenu extends JMenuBar {
       MacOsIntegration.setQuitHandler(lobbyFrame);
     }
 
-    if (!lobbyFrame.getLobbyClient().isAnonymousLogin()) {
+    if (!loginResult.isAnonymousLogin()) {
       add(
           new JMenuBuilder("Account", 'A')
               .addMenuItem(
                   "Update Email",
                   'E',
-                  () ->
-                      ChangeEmailPanel.promptUserForNewEmail(
-                          frame, frame.getLobbyClient().getPlayerToLobbyConnection()))
+                  () -> ChangeEmailPanel.promptUserForNewEmail(frame, playerToLobbyConnection))
               .addMenuItem(
                   "Update Password",
                   'P',
                   () ->
                       ChangePasswordPanel.doPasswordChange(
                           frame,
-                          frame.getLobbyClient().getPlayerToLobbyConnection(),
+                          playerToLobbyConnection,
                           ChangePasswordPanel.AllowCancelMode.SHOW_CANCEL_BUTTON))
               .build());
     }
 
-    if (lobbyFrame.getLobbyClient().isModerator()) {
+    if (loginResult.isModerator()) {
+      ClientIdentifiers clientIdentifiers =
+          ClientIdentifiers.builder()
+              .applicationVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
+              .systemId(SystemIdLoader.load().getValue())
+              .apiKey(loginResult.getApiKey().getValue())
+              .build();
       add(
           new JMenuBuilder("Admin", 'M')
               .addMenuItem(
@@ -58,10 +70,11 @@ public final class LobbyMenu extends JMenuBar {
                   () ->
                       ToolBoxWindow.showWindow(
                           lobbyFrame,
-                          lobbyFrame
-                              .getLobbyClient()
-                              .getPlayerToLobbyConnection()
-                              .getHttpModeratorToolboxClient()))
+                          playerToLobbyConnection.getHttpModeratorToolboxClient(),
+                          MapsClient.newClient(
+                              ClientSetting.lobbyUri.getValueOrThrow(), clientIdentifiers),
+                          MapTagAdminClient.newClient(
+                              ClientSetting.lobbyUri.getValueOrThrow(), clientIdentifiers)))
               .build());
     }
 

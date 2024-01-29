@@ -94,4 +94,11 @@ public final class Version implements Serializable, Comparable<Version> {
     return major > mapMinimumEngineVersion.major
         || (major == mapMinimumEngineVersion.major && minor >= mapMinimumEngineVersion.minor);
   }
+
+  /**
+   * @return String with 'major.minor' format.
+   */
+  public String toMajorMinorString() {
+    return major + "." + minor;
+  }
 }
