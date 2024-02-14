@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui;
 
-import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
