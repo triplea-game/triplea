@@ -422,7 +422,7 @@ public final class GameDataTestUtil {
     }
   }
 
-  static void assertMoveError(final Collection<Unit> units, final Route route) {
+  public static void assertMoveError(final Collection<Unit> units, final Route route) {
     Preconditions.checkArgument(!units.isEmpty());
     final String error = moveDelegate(route.getStart().getData()).move(units, route);
     if (error == null) {

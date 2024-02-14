@@ -125,6 +125,7 @@ public class CasualtySelector {
 
     final CasualtyDetails casualtyDetails =
         hitsRemaining >= totalHitpoints
+                || sortedTargetsToPickFrom.size() == 1
                 || allTargetsOneTypeOneHitPoint(
                     sortedTargetsToPickFrom,
                     dependents,
