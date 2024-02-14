@@ -13,8 +13,10 @@ import org.triplea.java.collections.IntegerMap;
 public class HistoryChangeFactory {
 
   public TransformDamagedUnitsHistoryChange transformDamagedUnits(
-      final Territory location, final Collection<Unit> damagedUnits) {
-    return new TransformDamagedUnitsHistoryChange(location, damagedUnits);
+      final Territory location,
+      final Collection<Unit> damagedUnits,
+      final boolean markNoMovementOnNewUnits) {
+    return new TransformDamagedUnitsHistoryChange(location, damagedUnits, markNoMovementOnNewUnits);
   }
 
   public RemoveUnitsHistoryChange removeUnitsFromTerritory(

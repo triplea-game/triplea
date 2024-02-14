@@ -62,7 +62,7 @@ public class RemoveUnitsHistoryChange implements HistoryChange {
         });
 
     transformDamagedUnitsHistoryChange =
-        new TransformDamagedUnitsHistoryChange(location, killedUnits);
+        new TransformDamagedUnitsHistoryChange(location, killedUnits, false);
 
     killedUnits.forEach(unit -> unit.setHits(originalHits.getInt(unit)));
 

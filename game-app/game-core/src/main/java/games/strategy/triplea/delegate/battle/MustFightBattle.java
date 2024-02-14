@@ -527,7 +527,6 @@ public class MustFightBattle extends DependentBattle
       final Collection<Unit> unitsKilledDuringRound,
       final IDelegateBridge bridge,
       final Side side) {
-
     final List<Unit> unitsThatMightTransform =
         CollectionUtils.getMatches(
             units,
@@ -536,7 +535,8 @@ public class MustFightBattle extends DependentBattle
         CollectionUtils.getMatches(
             unitsKilledDuringRound, Matches.unitAtMaxHitPointDamageChangesInto()));
     final TransformDamagedUnitsHistoryChange transformDamagedUnitsHistoryChange =
-        HistoryChangeFactory.transformDamagedUnits(battleSite, unitsThatMightTransform);
+        HistoryChangeFactory.transformDamagedUnits(battleSite, unitsThatMightTransform, true);
+
     transformDamagedUnitsHistoryChange.perform(bridge);
 
     cleanupKilledUnits(
