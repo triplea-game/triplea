@@ -11,6 +11,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.chinese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.french;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germanBattleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japan;
@@ -20,6 +21,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
@@ -32,6 +34,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -51,6 +54,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.GameDataTestUtil;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -58,6 +62,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.CollectionUtils;
 
 class MustFightBattleTest extends AbstractClientSettingTestCase {
   @Test
@@ -222,7 +227,7 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  void testAlliedCarriedPlanesTransportedByIsResetWhenCancelingBattle() throws Exception {
+  void testAlliedCarriedPlanesTransportedByIsResetWhenCancelingBattle() {
     // Note: Test uses germans, british and france since other countries aren't at war on t1.
     final GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
 
@@ -259,11 +264,50 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     assertThat(fighters.get(1).getTransportedBy(), is(nullValue()));
   }
 
+  @Test
+  void testCantMoveAfterHitTransform() {
+    final GameData gameData = TestMapGameData.TWW.getGameData();
+    final Territory sz23 = territory("23 Sea Zone", gameData);
+    removeFrom(sz23, sz23.getUnits());
+    final Territory sz25 = territory("25 Sea Zone", gameData);
+    removeFrom(sz25, sz25.getUnits());
+
+    addTo(sz25, germanBattleship(gameData).create(1, GameDataTestUtil.germany(gameData)));
+    addTo(sz23, unitType("americanDestroyer", gameData).create(1, GameDataTestUtil.usa(gameData)));
+
+    final Collection<Unit> attackers = List.copyOf(sz25.getUnits());
+    final IDelegateBridge bridge =
+        performCombatMove(GameDataTestUtil.germany(gameData), attackers, new Route(sz25, sz23));
+
+    final IBattle battle = AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz23);
+    assertNotNull(battle);
+    // Attacking battleship rolls a die with a hit, killing the destroyer.
+    // Defenders should roll a die with a hit, damaging the battleship.
+    whenGetRandom(bridge).thenAnswer(withDiceValues(1)).thenAnswer(withDiceValues(1));
+    battle.fight(bridge);
+    // The unit left should be the damaged german battleship.
+    assertEquals(1, sz23.getUnits().size());
+    final Unit unit = CollectionUtils.getAny(sz23.getUnits());
+    assertEquals("germanBattleship-damaged", unit.getType().getName());
+    // And it should have no movement left.
+    assertFalse(Matches.unitHasMovementLeft().test(unit));
+
+    // And just to double check, we can't move it.
+    advanceToNonCombatMove(bridge);
+    GameDataTestUtil.assertMoveError(sz23.getUnits(), new Route(sz23, sz25));
+  }
+
   private static <T> void setPropertyValue(GameData gameData, String propertyName, T value) {
     IEditableProperty<T> property =
         (IEditableProperty<T>)
             gameData.getProperties().getEditablePropertiesByName().get(propertyName);
     property.setValue(value);
+  }
+
+  private void advanceToNonCombatMove(IDelegateBridge bridge) {
+    advanceToStep(bridge, "NonCombatMove");
+    moveDelegate(bridge.getData()).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(bridge.getData()).start();
   }
 
   private IDelegateBridge performCombatMove(
