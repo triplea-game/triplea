@@ -13,6 +13,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,10 +129,10 @@ public class TransformDamagedUnitsHistoryChange implements HistoryChange {
   }
 
   public Collection<Unit> getOldUnits() {
-    return new ArrayList<>(transformingUnits.keySet());
+    return Collections.unmodifiableCollection(transformingUnits.keySet());
   }
 
   public Collection<Unit> getNewUnits() {
-    return new ArrayList<>(transformingUnits.values());
+    return Collections.unmodifiableCollection(transformingUnits.values());
   }
 }
