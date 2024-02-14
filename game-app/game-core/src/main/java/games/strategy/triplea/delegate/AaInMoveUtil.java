@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
@@ -279,7 +278,7 @@ class AaInMoveUtil implements Serializable {
         territoriesWhereAaWillFire.add(route.getStart());
       }
     }
-    return ImmutableList.copyOf(territoriesWhereAaWillFire);
+    return Collections.unmodifiableList(territoriesWhereAaWillFire);
   }
 
   private BattleTracker getBattleTracker() {

@@ -55,8 +55,7 @@ public class ExtendedStats extends StatPanel {
 
   private void fillExtendedStats(final GameState data) {
     // add other resources, other than PUs and tech tokens
-    final List<Resource> resources = data.getResourceList().getResources();
-    for (final Resource r : resources) {
+    for (final Resource r : data.getResourceList().getResources()) {
       if (r.getName().equals(Constants.PUS) || r.getName().equals(Constants.TECH_TOKENS)) {
         continue;
       }

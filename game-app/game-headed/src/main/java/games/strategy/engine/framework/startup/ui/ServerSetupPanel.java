@@ -525,7 +525,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
               actions.add(new EditGameCommentAction(watcher, ServerSetupPanel.this));
               actions.add(new RemoveGameFromLobbyAction(watcher));
             });
-    return ImmutableList.copyOf(actions);
+    return actions;
   }
 
   @Override

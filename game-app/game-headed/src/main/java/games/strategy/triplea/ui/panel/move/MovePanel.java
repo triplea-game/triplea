@@ -929,7 +929,9 @@ public class MovePanel extends AbstractMovePanel {
         }
       }
     }
-    return ImmutableList.copyOf(selectedUnitsToUnload);
+    // Return an unmodifiable list for consistent semantics for the caller, which sometimes returns
+    // List.of() and sometimes the result of this functiom.
+    return Collections.unmodifiableList(selectedUnitsToUnload);
   }
 
   public boolean confirmUnitChooserDialog(final UnitChooser chooser, final String title) {
