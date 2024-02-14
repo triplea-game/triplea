@@ -293,10 +293,7 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     assertFalse(Matches.unitHasMovementLeft().test(unit));
 
     // And just to double check, we can't move it.
-    advanceToStep(bridge, "NonCombatMove");
-    MoveDelegate moveDelegate = GameDataTestUtil.moveDelegate(gameData);
-    moveDelegate.setDelegateBridgeAndPlayer(bridge);
-    moveDelegate.start();
+    advanceToNonCombatMove(bridge);
     GameDataTestUtil.assertMoveError(sz23.getUnits(), new Route(sz23, sz25));
   }
 
@@ -305,6 +302,12 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
         (IEditableProperty<T>)
             gameData.getProperties().getEditablePropertiesByName().get(propertyName);
     property.setValue(value);
+  }
+
+  private void advanceToNonCombatMove(IDelegateBridge bridge) {
+    advanceToStep(bridge, "NonCombatMove");
+    moveDelegate(bridge.getData()).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(bridge.getData()).start();
   }
 
   private IDelegateBridge performCombatMove(
