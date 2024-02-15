@@ -1,9 +1,9 @@
 package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /** A collection of {@link Resource}s keyed on the resource name. */
@@ -29,7 +29,7 @@ public class ResourceList extends GameDataComponent {
     return resources.get(name);
   }
 
-  public List<Resource> getResources() {
-    return new ArrayList<>(resources.values());
+  public Collection<Resource> getResources() {
+    return Collections.unmodifiableCollection(resources.values());
   }
 }

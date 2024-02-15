@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.pro.util;
 
 import static java.util.function.Predicate.not;
 
-import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
@@ -247,7 +246,7 @@ public final class ProTransportUtils {
               .thenComparing(getDecreasingAttackComparator(player)));
       results.addAll(selectUnitsToTransportFromList(unit, units));
     }
-    return ImmutableList.copyOf(results);
+    return Collections.unmodifiableList(results);
   }
 
   private static Comparator<Unit> getDecreasingAttackComparator(final GamePlayer player) {

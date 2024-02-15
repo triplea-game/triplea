@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
-import java.util.List;
+import java.util.Collection;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -54,7 +54,7 @@ public class ResourceImageFactory extends AbstractImageFactory {
   private JPanel getResourcesPanel(
       final ResourceCollection resources, final boolean showEmpty, final GamePlayer player) {
     final JPanel resourcePanel = new JPanel();
-    final List<Resource> resourcesInOrder;
+    final Collection<Resource> resourcesInOrder;
     final GameData data = resources.getData();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       resourcesInOrder = data.getResourceList().getResources();
