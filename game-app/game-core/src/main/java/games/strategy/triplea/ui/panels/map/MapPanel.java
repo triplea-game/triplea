@@ -21,7 +21,6 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.triplea.ui.UnitIconProperties;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
