@@ -21,6 +21,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.UnitIconProperties;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
@@ -140,7 +141,11 @@ public class MapPanel extends ImageScrollerLargeView {
           // find the players with tech changes
           final Set<GamePlayer> playersWithTechChange = new HashSet<>();
           getPlayersWithTechChanges(change, playersWithTechChange);
-          if (!playersWithTechChange.isEmpty()) {
+          if (!playersWithTechChange.isEmpty()
+              || uiContext
+                  .getUnitIconImageFactory()
+                  .getUnitIconProperties()
+                  .testIfConditionsHaveChanged(gameData)) {
             tileManager.resetTiles(gameData, uiContext.getMapData());
             SwingUtilities.invokeLater(
                 () -> {
@@ -243,10 +248,9 @@ public class MapPanel extends ImageScrollerLargeView {
             if (lastActive == -1) {
               ThreadRunner.runInNewThread(
                   () -> {
-                    // Mouse Events are different than key events
+                    // Mouse Events are different from key events
                     // That's why we're "simulating" multiple clicks while the mouse button is
-                    // held down
-                    // so the map keeps scrolling
+                    // held down so the map keeps scrolling
                     while (lastActive != -1) {
                       final int diffPixel = computeScrollSpeed.get();
                       if (lastActive == 5) {
@@ -382,10 +386,7 @@ public class MapPanel extends ImageScrollerLargeView {
     return screenBounds.contains(territoryCenter);
   }
 
-  /**
-   * the units must all be in the same stack on the map, and exist in the given territory. call with
-   * an null args
-   */
+  /** the units must all be in the same stack on the map, and exist in the given territory. */
   public void setUnitHighlight(@Nonnull final Collection<Collection<Unit>> units) {
     highlightedUnits = checkNotNull(units);
     SwingUtilities.invokeLater(this::repaint);
@@ -393,7 +394,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void centerOnTerritoryIgnoringMapLock(final @Nonnull Territory territory) {
     final Point p = uiContext.getMapData().getCenter(territory);
-    // when centering don't want the map to wrap around, eg if centering on hawaii
+    // when centering don't want the map to wrap around, e.g. if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
   }
 
@@ -797,7 +798,7 @@ public class MapPanel extends ImageScrollerLargeView {
   /** If we have nothing left undrawn, draw the tiles within preDrawMargin of us. */
   private void updateUndrawnTiles(final List<Tile> undrawnTiles, final int preDrawMargin) {
     // draw tiles near us if we have nothing left to draw
-    // that way when we scroll slowly we wont notice a glitch
+    // that way when we scroll slowly we won't notice a glitch
     if (undrawnTiles.isEmpty()) {
       final Rectangle2D extendedBounds =
           new Rectangle2D.Double(

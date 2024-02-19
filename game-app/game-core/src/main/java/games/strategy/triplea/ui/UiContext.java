@@ -14,6 +14,7 @@ import games.strategy.triplea.image.PuImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TerritoryEffectImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -42,7 +43,7 @@ import org.triplea.debug.error.reporting.StackTraceReportModel;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 import org.triplea.sound.ClipPlayer;
 
-/** A place to find images and map data for a ui. */
+/** A place to find images and map data for the ui. */
 @Slf4j
 public class UiContext {
   private static final String UNIT_SCALE_PREF = "UnitScale";
@@ -69,6 +70,7 @@ public class UiContext {
   @Getter private final ResourceLoader resourceLoader;
   @Getter private final TileImageFactory tileImageFactory = new TileImageFactory();
   @Getter private UnitImageFactory unitImageFactory;
+  @Getter private final UnitIconImageFactory unitIconImageFactory;
   @Getter private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
   @Getter private final TooltipProperties tooltipProperties;
 
@@ -128,6 +130,7 @@ public class UiContext {
     unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
+    unitIconImageFactory = new UnitIconImageFactory(data, resourceLoader);
     flagImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setResourceLoader(resourceLoader);
@@ -139,7 +142,7 @@ public class UiContext {
     // load a new cursor
     cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
-    // URL's use "/" not "\"
+    // URLs use "/" not "\"
     final URL cursorUrl = resourceLoader.getResource("misc/cursor.gif");
     if (cursorUrl != null) {
       try {
@@ -335,7 +338,7 @@ public class UiContext {
     // If you are calling this method while holding a lock on an object, while the EDT is separately
     // waiting for that lock, then you have a deadlock.
     // A real life example: player disconnects while you have the battle calc open.
-    // Non-EDT thread does shutdown on IGame and UiContext, causing btl calc to shutdown,
+    // Non-EDT thread does shutdown on IGame and UiContext, causing btl calc to shut down,
     // which calls the window closed event on the EDT, and waits for the lock on UiContext to
     // removeShutdownWindow, meanwhile our non-EDT tries to dispose the battle panel, which requires
     // the EDT with a invokeAndWait, resulting in a deadlock.
