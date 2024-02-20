@@ -131,12 +131,12 @@ public class UnitsDrawer extends AbstractDrawable {
       // If unit is not in the "excluded list" it will get drawn
       if (maxRange != 0) {
         final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
-        final int xoffset = img.getWidth(null) / 2 - flag.getWidth(null) / 2;
-        final int yoffset = img.getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;
+        final int xOffset = img.getWidth(null) / 2 - flag.getWidth(null) / 2;
+        final int yOffset = img.getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;
         graphics.drawImage(
             flag,
-            (placementPoint.x - bounds.x) + xoffset,
-            (placementPoint.y - bounds.y) + yoffset,
+            (placementPoint.x - bounds.x) + xOffset,
+            (placementPoint.y - bounds.y) + yOffset,
             null);
       }
       drawUnit(graphics, img, bounds);
@@ -145,22 +145,22 @@ public class UnitsDrawer extends AbstractDrawable {
       // If unit is not in the "excluded list" it will get drawn
       if (maxRange != 0) {
         final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
-        final int xoffset = img.getWidth(null) - flag.getWidth(null);
-        final int yoffset = img.getHeight(null) - flag.getHeight(null);
+        final int xOffset = img.getWidth(null) - flag.getWidth(null);
+        final int yOffset = img.getHeight(null) - flag.getHeight(null);
         // This Method draws the Flag in the lower right corner of the unit image. Since the
-        // position is the upper
-        // left corner we have to move the picture up by the height and left by the width.
+        // position is the upper left corner we have to move the picture up by the height and
+        // left by the width.
         graphics.drawImage(
             flag,
-            (placementPoint.x - bounds.x) + xoffset,
-            (placementPoint.y - bounds.y) + yoffset,
+            (placementPoint.x - bounds.x) + xOffset,
+            (placementPoint.y - bounds.y) + yOffset,
             null);
       }
     } else {
       drawUnit(graphics, img, bounds);
     }
 
-    // more then 1 unit of this category
+    // more than 1 unit of this category
     if (count != 1) {
       final int stackSize = mapData.getDefaultUnitsStackSize();
       if (stackSize > 0) { // Display more units as a stack
@@ -218,10 +218,19 @@ public class UnitsDrawer extends AbstractDrawable {
   /** This draws the given image onto the given graphics object. */
   private void drawUnit(final Graphics2D graphics, final Image image, final Rectangle bounds) {
     graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+
+    // draw unit icons in top right corner
+    final List<Image> unitIcons =
+        uiContext.getUnitIconImageFactory().getImages(playerName, unitType);
+    for (final Image unitIcon : unitIcons) {
+      final int xOffset = image.getWidth(null) - unitIcon.getWidth(null);
+      graphics.drawImage(
+          unitIcon, (placementPoint.x - bounds.x) + xOffset, (placementPoint.y - bounds.y), null);
+    }
   }
 
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
-    if (territoryName.length() != 0 && damaged > 1) {
+    if (!territoryName.isEmpty() && damaged > 1) {
       final String s = String.valueOf(damaged);
       final int x =
           placementPoint.x - bounds.x + uiContext.getUnitImageFactory().getUnitImageWidth() * 3 / 4;
@@ -238,7 +247,7 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   private void displayFactoryDamage(final Rectangle bounds, final Graphics2D graphics) {
-    if (territoryName.length() != 0 && bombingUnitDamage > 0) {
+    if (!territoryName.isEmpty() && bombingUnitDamage > 0) {
       final String s = String.valueOf(bombingUnitDamage);
       final int x =
           placementPoint.x - bounds.x + uiContext.getUnitImageFactory().getUnitImageWidth() / 4;
@@ -277,8 +286,8 @@ public class UnitsDrawer extends AbstractDrawable {
 
   List<Unit> getUnits(final GameState data) {
     // note - it may be the case where the territory is being changed as a result to a mouse click,
-    // and the map units
-    // haven't updated yet, so the unit count from the territory wont match the units in count
+    // and the map units haven't updated yet, so the unit count from the territory won't match the
+    // units in count
     final Territory t = data.getMap().getTerritory(territoryName);
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
     final Predicate<Unit> selectedUnits =
