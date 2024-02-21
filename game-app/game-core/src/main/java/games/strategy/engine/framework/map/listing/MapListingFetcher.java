@@ -40,7 +40,7 @@ public class MapListingFetcher {
               .downloadUrl(entry.getUrl())
               .description(entry.getDescription())
               .previewImageUrl(entry.getImg())
-              .downloadSizeInBytes(0L)
+              .downloadSizeInBytes(-1L)
               .lastCommitDateEpochMilli(0L)
               .mapTags(List.of())
               .build());
