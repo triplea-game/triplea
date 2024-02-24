@@ -539,19 +539,13 @@ public class MustFightBattle extends DependentBattle
 
     transformDamagedUnitsHistoryChange.perform(bridge);
 
-    cleanupKilledUnits(
-        bridge,
-        side,
-        transformDamagedUnitsHistoryChange.getOldUnits(),
-        transformDamagedUnitsHistoryChange.getNewUnits());
+    // Copy the unit lists to ensure they're serializable for the notification.
+    final var oldUnits = List.copyOf(transformDamagedUnitsHistoryChange.getOldUnits());
+    final var newUnits = List.copyOf(transformDamagedUnitsHistoryChange.getNewUnits());
+    cleanupKilledUnits(bridge, side, oldUnits, newUnits);
     bridge
         .getDisplayChannelBroadcaster()
-        .changedUnitsNotification(
-            battleId,
-            player,
-            transformDamagedUnitsHistoryChange.getOldUnits(),
-            transformDamagedUnitsHistoryChange.getNewUnits(),
-            null);
+        .changedUnitsNotification(battleId, player, oldUnits, newUnits, null);
   }
 
   @Override
