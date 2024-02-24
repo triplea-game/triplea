@@ -1,10 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
 import com.google.common.base.MoreObjects;
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.map.listing.MapDownloadListing;
-import java.io.File;
-import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -53,53 +49,6 @@ public final class DownloadFileDescription {
     public String toString() {
       return outputLabel;
     }
-
-    private static MapCategory fromString(final String category) {
-      return Arrays.stream(values())
-          .filter(mapCategory -> mapCategory.outputLabel.equalsIgnoreCase(category))
-          .findAny()
-          .orElse(EXPERIMENTAL);
-    }
-  }
-
-  public static DownloadFileDescription ofMapDownloadListing(
-      final MapDownloadListing mapDownloadListing) {
-    return DownloadFileDescription.builder()
-        .url(mapDownloadListing.getUrl())
-        .description(mapDownloadListing.getDescription())
-        .mapName(mapDownloadListing.getMapName())
-        .version(new Version(mapDownloadListing.getVersion()))
-        .downloadType(DownloadType.MAP)
-        .mapCategory(MapCategory.fromString(mapDownloadListing.getMapCategory()))
-        .img(mapDownloadListing.getPreviewImage())
-        .build();
-  }
-
-  boolean isMap() {
-    return downloadType == DownloadType.MAP;
-  }
-
-  boolean isMapSkin() {
-    return downloadType == DownloadType.MAP_SKIN;
-  }
-
-  boolean isMapTool() {
-    return downloadType == DownloadType.MAP_TOOL;
-  }
-
-  /** Returns the name of the zip file. */
-  String getMapZipFileName() {
-    return (url != null && url.contains("/")) ? url.substring(url.lastIndexOf('/') + 1) : "";
-  }
-
-  /** File reference for where to install the file. */
-  File getInstallLocation() {
-    final String masterSuffix =
-        getMapZipFileName().toLowerCase().endsWith("master.zip") ? "-master" : "";
-    final String normalizedMapName =
-        getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
-    return new File(
-        ClientFileSystemHelper.getUserMapsFolder() + File.separator + normalizedMapName);
   }
 
   @Override
@@ -109,14 +58,5 @@ public final class DownloadFileDescription {
         .addValue(mapName)
         .addValue(version)
         .toString();
-  }
-
-  String toHtmlString() {
-    String text = "<h1>" + getMapName() + "</h1>\n";
-    if (!img.isEmpty()) {
-      text += "<img src='" + img + "' />\n";
-    }
-    text += getDescription();
-    return text;
   }
 }
