@@ -162,10 +162,12 @@ public class DownloadMapsWindow extends JFrame {
     sb.append("<html>").append(map.getMapName()).append(doubleSpace);
 
     if (!downloadMapsWindowModel.isInstalled(map)) {
-      sb.append(doubleSpace)
-          .append(" (")
-          .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
-          .append(")");
+      if (map.getDownloadSizeInBytes() != -1L) {
+        sb.append(doubleSpace)
+            .append(" (")
+            .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
+            .append(")");
+      }
     } else {
       downloadMapsWindowModel
           .getInstallLocation(map)
