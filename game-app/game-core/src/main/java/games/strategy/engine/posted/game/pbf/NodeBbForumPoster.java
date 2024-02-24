@@ -71,14 +71,14 @@ public class NodeBbForumPoster {
         return new NodeBbForumPoster(
             ForumPostingParameters.builder()
                 .topicId(topicId)
-                .token(ClientSetting.tripleaForumToken.getValueOrThrow())
+                .token(ClientSetting.tripleaForumToken.getValue().orElse(new char[0]))
                 .forumUrl(UrlConstants.TRIPLEA_FORUM)
                 .build());
       case NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME:
         return new NodeBbForumPoster(
             ForumPostingParameters.builder()
                 .topicId(topicId)
-                .token(ClientSetting.aaForumToken.getValueOrThrow())
+                .token(ClientSetting.aaForumToken.getValue().orElse(new char[0]))
                 .forumUrl(UrlConstants.AXIS_AND_ALLIES_FORUM)
                 .build());
       default:
@@ -97,7 +97,6 @@ public class NodeBbForumPoster {
    *
    * @param summary the forum summary
    * @param title the forum title
-   * @return true if the post was successful
    */
   public CompletableFuture<String> postTurnSummary(
       final String summary, final String title, @Nullable final SaveGameParameter saveGame) {
