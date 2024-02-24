@@ -23,7 +23,7 @@ public class MapListingFetcher {
 
   /** Fetches the full listing of maps that are available for download. */
   public static List<MapDownloadItem> getMapDownloadList() {
-    if (true) {
+    if (!ClientSetting.useMapsServerBetaFeature.getValue().orElse(false)) {
       return getMapDownloadListFromGithub();
     }
 
