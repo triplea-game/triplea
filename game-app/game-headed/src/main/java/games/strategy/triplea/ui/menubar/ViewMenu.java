@@ -119,7 +119,7 @@ final class ViewMenu extends JMenu {
               model.setMaximum(UiContext.MAP_SCALE_MAX_VALUE * 100);
               model.setMinimum(Math.ceil(frame.getMapPanel().getMinScale() * 100));
               model.setStepSize(1);
-              model.setValue((double) Math.round(frame.getMapPanel().getScale() * 100));
+              setSpinnerValue(model, Math.round(frame.getMapPanel().getScale() * 100));
               final JSpinner spinner = new JSpinner(model);
               final JPanel panel = new JPanel();
               panel.setLayout(new BorderLayout());
@@ -140,7 +140,7 @@ final class ViewMenu extends JMenu {
                     double ratio = screenWidth / mapWidth;
                     ratio = Math.max(frame.getMapPanel().getMinScale(), ratio);
                     ratio = Math.min(1, ratio);
-                    model.setValue((int) Math.round(ratio * 100));
+                    setSpinnerValue(model, (int) Math.round(ratio * 100));
                   });
               fitHeight.addActionListener(
                   event -> {
@@ -148,9 +148,9 @@ final class ViewMenu extends JMenu {
                     final double mapHeight = frame.getMapPanel().getImageHeight();
                     double ratio = screenHeight / mapHeight;
                     ratio = Math.max(frame.getMapPanel().getMinScale(), ratio);
-                    model.setValue((int) Math.round(ratio * 100));
+                    setSpinnerValue(model, (int) Math.round(ratio * 100));
                   });
-              reset.addActionListener(event -> model.setValue(100));
+              reset.addActionListener(event -> setSpinnerValue(model, 100));
               final int result =
                   JOptionPane.showOptionDialog(
                       frame,
@@ -168,6 +168,13 @@ final class ViewMenu extends JMenu {
               frame.getMapPanel().setScale(value.doubleValue() / 100);
             });
     add(mapZoom).setMnemonic(KeyEvent.VK_Z);
+  }
+
+  private void setSpinnerValue(SpinnerNumberModel model, double value) {
+    // Some L&Fs hit errors when setValue() is called with a non-Double param.
+    // This wrapper function ensures that we're always setting it as a double.
+    // See: https://github.com/triplea-game/triplea/issues/12126
+    model.setValue(value);
   }
 
   private void addUnitSizeMenu() {
