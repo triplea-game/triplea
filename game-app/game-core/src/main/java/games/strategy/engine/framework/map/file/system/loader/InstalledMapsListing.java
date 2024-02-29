@@ -123,7 +123,16 @@ public class InstalledMapsListing {
    * directory of the 'map.yml' file describing that map.
    */
   public Optional<Path> findMapFolderByName(final String mapName) {
-    return findContentRootForMapName(mapName).map(Path::getParent);
+    return findContentRootForMapName(mapName)
+        .map(
+            p -> {
+              Path parent = p.getParent();
+              // Some maps have their content root be the map folder itself.
+              if (parent.equals(ClientFileSystemHelper.getUserMapsFolder())) {
+                return p;
+              }
+              return parent;
+            });
   }
 
   public Optional<Path> findMapSkin(final String mapName, final String skinName) {
