@@ -10,9 +10,9 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -20,20 +20,20 @@ import org.triplea.java.collections.IntegerMap;
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
   // Allow production of any number of units
   @Override
-  protected String checkProduction(
+  protected @Nullable String checkProduction(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     return null;
   }
 
   // Return whether we can place bid in a certain territory
   @Override
-  protected String canProduce(
+  protected @Nullable String canProduce(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     return canProduce(to, to, units, player);
   }
 
   @Override
-  protected String canProduce(
+  protected @Nullable String canProduce(
       final Territory producer,
       final Territory to,
       final Collection<Unit> units,
@@ -68,16 +68,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   }
 
   @Override
-  protected List<Territory> getAllProducers(
-      final Territory to, final GamePlayer player, final Collection<Unit> unitsToPlace) {
-    final List<Territory> producers = new ArrayList<>();
-    producers.add(to);
-    return producers;
-  }
-
-  @Override
   protected int getMaxUnitsToBePlaced(
-      final Collection<Unit> units, final Territory to, final GamePlayer player) {
+      final @Nullable Collection<Unit> units, final Territory to, final GamePlayer player) {
     if (units == null) {
       return -1;
     }
@@ -87,7 +79,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   @Override
   protected int getMaxUnitsToBePlacedFrom(
       final Territory producer,
-      final Collection<Unit> units,
+      final @Nullable Collection<Unit> units,
       final Territory to,
       final GamePlayer player,
       final boolean countSwitchedProductionToNeighbors,
@@ -102,7 +94,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   @Override
   protected int getMaxUnitsToBePlacedFrom(
       final Territory producer,
-      final Collection<Unit> units,
+      final @Nullable Collection<Unit> units,
       final Territory to,
       final GamePlayer player) {
     if (units == null) {
