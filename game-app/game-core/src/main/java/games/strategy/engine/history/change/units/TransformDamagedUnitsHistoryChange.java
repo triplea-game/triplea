@@ -13,6 +13,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,9 +41,14 @@ public class TransformDamagedUnitsHistoryChange implements HistoryChange {
 
   CompositeChange attributeChanges = new CompositeChange();
 
+  final boolean markNoMovementOnNewUnits;
+
   public TransformDamagedUnitsHistoryChange(
-      final Territory location, final Collection<Unit> damagedUnits) {
+      final Territory location,
+      final Collection<Unit> damagedUnits,
+      final boolean markNoMovementOnNewUnits) {
     this.location = location;
+    this.markNoMovementOnNewUnits = markNoMovementOnNewUnits;
 
     // check if each of the damaged units are supposed to change when they take damage
     // if it is supposed to change, create the new unit and translate attributes from the old unit
@@ -68,11 +74,15 @@ public class TransformDamagedUnitsHistoryChange implements HistoryChange {
       return;
     }
 
-    this.change.add(
+    final CompositeChange compositeChange =
         new CompositeChange(
             ChangeFactory.addUnits(location, getNewUnits()),
             ChangeFactory.removeUnits(location, getOldUnits()),
-            attributeChanges));
+            attributeChanges);
+    if (markNoMovementOnNewUnits) {
+      compositeChange.add(ChangeFactory.markNoMovementChange(getNewUnits()));
+    }
+    this.change.add(compositeChange);
 
     bridge.addChange(this.change);
 
@@ -119,10 +129,10 @@ public class TransformDamagedUnitsHistoryChange implements HistoryChange {
   }
 
   public Collection<Unit> getOldUnits() {
-    return new ArrayList<>(transformingUnits.keySet());
+    return Collections.unmodifiableCollection(transformingUnits.keySet());
   }
 
   public Collection<Unit> getNewUnits() {
-    return new ArrayList<>(transformingUnits.values());
+    return Collections.unmodifiableCollection(transformingUnits.values());
   }
 }

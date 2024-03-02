@@ -10,6 +10,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +46,7 @@ public class StatisticsAggregator {
   }
 
   private static Map<OverTimeStatisticType, IStat> createOverTimeStatisticsMapping(
-      final List<Resource> resources) {
+      final Collection<Resource> resources) {
     final Map<OverTimeStatisticType, IStat> statisticsMapping =
         new HashMap<>(defaultStatisticsMapping);
     resources.forEach(

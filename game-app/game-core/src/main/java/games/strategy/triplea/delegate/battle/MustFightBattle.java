@@ -527,7 +527,6 @@ public class MustFightBattle extends DependentBattle
       final Collection<Unit> unitsKilledDuringRound,
       final IDelegateBridge bridge,
       final Side side) {
-
     final List<Unit> unitsThatMightTransform =
         CollectionUtils.getMatches(
             units,
@@ -536,22 +535,17 @@ public class MustFightBattle extends DependentBattle
         CollectionUtils.getMatches(
             unitsKilledDuringRound, Matches.unitAtMaxHitPointDamageChangesInto()));
     final TransformDamagedUnitsHistoryChange transformDamagedUnitsHistoryChange =
-        HistoryChangeFactory.transformDamagedUnits(battleSite, unitsThatMightTransform);
+        HistoryChangeFactory.transformDamagedUnits(battleSite, unitsThatMightTransform, true);
+
     transformDamagedUnitsHistoryChange.perform(bridge);
 
-    cleanupKilledUnits(
-        bridge,
-        side,
-        transformDamagedUnitsHistoryChange.getOldUnits(),
-        transformDamagedUnitsHistoryChange.getNewUnits());
+    // Copy the unit lists to ensure they're serializable for the notification.
+    final var oldUnits = List.copyOf(transformDamagedUnitsHistoryChange.getOldUnits());
+    final var newUnits = List.copyOf(transformDamagedUnitsHistoryChange.getNewUnits());
+    cleanupKilledUnits(bridge, side, oldUnits, newUnits);
     bridge
         .getDisplayChannelBroadcaster()
-        .changedUnitsNotification(
-            battleId,
-            player,
-            transformDamagedUnitsHistoryChange.getOldUnits(),
-            transformDamagedUnitsHistoryChange.getNewUnits(),
-            null);
+        .changedUnitsNotification(battleId, player, oldUnits, newUnits, null);
   }
 
   @Override

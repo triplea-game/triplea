@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
@@ -163,7 +164,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   @Override
-  public String undoMove(final int moveIndex) {
+  public @Nullable String undoMove(final int moveIndex) {
     if (moveIndex < placements.size() && moveIndex >= 0) {
       final UndoablePlacement undoPlace = placements.get(moveIndex);
       undoPlace.undo(bridge);
@@ -190,7 +191,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   @Override
-  public String placeUnits(
+  public @Nullable String placeUnits(
       final Collection<Unit> units, final Territory at, final BidMode bidMode) {
     if (units.isEmpty()) {
       return null;
@@ -363,7 +364,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   /**
    * frees the requested amount of capacity for the given producer by trying to hand over already
    * made placements to other territories. This only works if one of the placements is done for
-   * another territory, more specific for a sea zone. If such placements exists it will be tried to
+   * another territory, more specific for a sea zone. If such placements exist it will be tried to
    * let them be done by other adjacent territories.
    *
    * @param producer territory that needs more placement capacity
@@ -504,7 +505,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   // TODO Here's the spot for special air placement rules
-  private String moveAirOntoNewCarriers(
+  private @Nullable String moveAirOntoNewCarriers(
       final Territory at,
       final Territory producer,
       final Collection<Unit> units,
@@ -586,7 +587,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   /** Make sure the player has enough in hand to place the units. */
-  private static String playerHasEnoughUnits(
+  private static @Nullable String playerHasEnoughUnits(
       final Collection<Unit> units, final GamePlayer player) {
     // make sure the player has enough units in hand to place
     if (!player.getUnits().containsAll(units)) {
@@ -599,7 +600,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * Test whether the territory has the factory resources to support the placement. AlreadyProduced
    * maps territory->units already produced this turn by that territory.
    */
-  protected String canProduce(
+  protected @Nullable String canProduce(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     final Collection<Territory> producers = getAllProducers(to, player, units, true);
     // the only reason it could be empty is if its water and no territories adjacent have factories
@@ -629,7 +630,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return null;
   }
 
-  protected String canProduce(
+  protected @Nullable String canProduce(
       final Territory producer,
       final Territory to,
       final Collection<Unit> units,
@@ -646,17 +647,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * @param player - Player doing the placing.
    * @param simpleCheck If true you return true even if a factory is not present. Used when you do
    *     not want an infinite loop (getAllProducers -> canProduce ->
-   *     howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
+   *     howManyOfEachConstructionCanPlace -> getAllProducers -> etc.)
    * @return - null if allowed to produce, otherwise an error String.
    */
-  private String canProduce(
+  private @Nullable String canProduce(
       final Territory producer,
       final Territory to,
-      final Collection<Unit> units,
+      final @Nullable Collection<Unit> units,
       final GamePlayer player,
       final boolean simpleCheck) {
     // units can be null if we are just testing the territory itself...
-    final Collection<Unit> testUnits = (units == null ? new ArrayList<>() : units);
+    final Collection<Unit> testUnits = (units == null ? List.of() : units);
     final boolean canProduceInConquered = isPlacementAllowedInCapturedTerritory(player);
     if (!producer.isOwnedBy(player)) {
       // sea constructions require either owning the sea zone or owning a surrounding land territory
@@ -735,13 +736,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * @param unitsToPlace - Can be null, otherwise is the units that will be produced.
    * @param simpleCheck If true you return true even if a factory is not present. Used when you do
    *     not want an infinite loop (getAllProducers -> canProduce ->
-   *     howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
+   *     howManyOfEachConstructionCanPlace -> getAllProducers -> etc.)
    * @return - List of territories that can produce here.
    */
   private List<Territory> getAllProducers(
       final Territory to,
       final GamePlayer player,
-      final Collection<Unit> unitsToPlace,
+      final @Nullable Collection<Unit> unitsToPlace,
       final boolean simpleCheck) {
     final List<Territory> producers = new ArrayList<>();
     // if not water then must produce in that territory
@@ -762,7 +763,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return producers;
   }
 
-  protected List<Territory> getAllProducers(
+  private List<Territory> getAllProducers(
       final Territory to, final GamePlayer player, final Collection<Unit> unitsToPlace) {
     return getAllProducers(to, player, unitsToPlace, false);
   }
@@ -771,7 +772,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * Test whether the territory has the factory resources to support the placement. AlreadyProduced
    * maps territory->units already produced this turn by that territory.
    */
-  protected String checkProduction(
+  protected @Nullable String checkProduction(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     final List<Territory> producers = getAllProducers(to, player, units);
     if (producers.isEmpty()) {
@@ -794,7 +795,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * Returns {@code null} if the specified units can be placed in the specified territory; otherwise
    * returns an error message explaining why the units cannot be placed in the territory.
    */
-  public String canUnitsBePlaced(
+  public @Nullable String canUnitsBePlaced(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     final Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
     if (allowedUnits == null || !allowedUnits.containsAll(units)) {
@@ -885,7 +886,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return null;
   }
 
-  protected Collection<Unit> getUnitsToBePlaced(
+  protected @Nullable Collection<Unit> getUnitsToBePlaced(
       final Territory to, final Collection<Unit> allUnits, final GamePlayer player) {
     final GameProperties properties = getData().getProperties();
     final boolean water = to.isWater();
@@ -1014,7 +1015,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private boolean canWeConsumeUnits(
-      final Collection<Unit> units, final Territory to, final CompositeChange change) {
+      final Collection<Unit> units, final Territory to, final @Nullable CompositeChange change) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> removedUnits = new ArrayList<>();
     final Collection<Unit> unitsWhichConsume =
@@ -1302,7 +1303,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   IntegerMap<String> howManyOfEachConstructionCanPlace(
       final Territory to,
       final Territory producer,
-      final Collection<Unit> units,
+      final @Nullable Collection<Unit> units,
       final GamePlayer player) {
     // constructions can ONLY be produced BY the same territory that they are going into!
     if (!to.equals(producer)
@@ -1593,7 +1594,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    *
    * @param to referring territory.
    */
-  public Collection<Unit> unitsAtStartOfStepInTerritory(final Territory to) {
+  public Collection<Unit> unitsAtStartOfStepInTerritory(final @Nullable Territory to) {
     if (to == null) {
       return new ArrayList<>();
     }
@@ -1609,9 +1610,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private Collection<Unit> unitsPlacedInTerritorySoFar(final Territory to) {
-    if (to == null) {
-      return new ArrayList<>();
-    }
     final Collection<Unit> unitsInTo = new ArrayList<>(to.getUnits());
     final Collection<Unit> unitsAtStartOfStep = unitsAtStartOfStepInTerritory(to);
     unitsInTo.removeAll(unitsAtStartOfStep);
@@ -1659,7 +1657,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * The rule is that new fighters can be produced on new carriers. This does not allow for fighters
    * to be produced on old carriers. THIS ISN'T CORRECT.
    */
-  private static String validateNewAirCanLandOnCarriers(
+  private static @Nullable String validateNewAirCanLandOnCarriers(
       final Territory to, final Collection<Unit> units) {
     final int cost = AirMovementValidator.carrierCost(units);
     int capacity = AirMovementValidator.carrierCapacity(units, to);

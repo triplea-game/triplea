@@ -9,7 +9,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Load SSH private key into ssh-agent
-        uses: webfactory/ssh-agent@v0.8.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
       - name: Run Ansible to Deploy
