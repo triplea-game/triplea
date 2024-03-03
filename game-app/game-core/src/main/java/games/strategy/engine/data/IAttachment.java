@@ -17,7 +17,8 @@ public interface IAttachment extends Serializable, DynamicallyModifiable {
 
   void setAttachedTo(Attachable attachable);
 
-  @Nullable String getName();
+  @Nullable
+  String getName();
 
   void setName(String name);
 }
