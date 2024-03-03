@@ -7,11 +7,13 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -95,6 +97,12 @@ public abstract class AbstractDelegateTestCase extends AbstractClientSettingTest
     addTechAttachment(japanese);
     addTechAttachment(russians);
     addTechAttachment(germans);
+  }
+
+  protected List<Unit> create(GamePlayer player, UnitType unitType, int quantity) {
+    var units = unitType.create(quantity, player);
+    player.getUnitCollection().addAll(units);
+    return units;
   }
 
   private void addTechAttachment(final GamePlayer player) {

@@ -24,14 +24,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 
-class PlaceDelegateTest extends AbstractDelegateTestCase {
-  private PlaceDelegate delegate;
+class BidPlaceDelegateTest extends AbstractDelegateTestCase {
+  private BidPlaceDelegate delegate;
 
   @BeforeEach
   void setupPlaceDelegate() {
     final IDelegateBridge bridge = newDelegateBridge(british);
-    delegate = new PlaceDelegate();
-    delegate.initialize("place");
+    delegate = new BidPlaceDelegate();
+    delegate.initialize("bid");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
   }
@@ -135,38 +135,37 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testCanNotProduceThatManyUnits() {
+  void testCanProduceAboveTerritoryLimit() {
     final PlaceableUnits response =
-        delegate.getPlaceableUnits(create(british, infantry, 3), westCanada);
-    assertEquals(2, response.getMaxUnits());
+        delegate.getPlaceableUnits(create(british, infantry, 25), westCanada);
+    assertFalse(response.isError());
+    assertEquals(25, response.getMaxUnits());
   }
 
   @Test
-  void testCanNotProduceThatManyUnitsDueToRequiresUnits() {
+  void testRequiresUnitsDoesNotLimitBidPlacement() {
     gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
     // Needed for canProduceXUnits to work. (!)
     gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
-    final var factory2 = unitType("factory2", gameData);
     final var infantry2 = unitType("infantry2", gameData);
 
     final var threeInfantry2 = create(british, infantry2, 3);
     final var fourInfantry2 = create(british, infantry2, 4);
 
     uk.getUnitCollection().clear();
-    assertError(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
-    uk.getUnitCollection().addAll(create(british, factory2, 1));
     assertValid(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
-    assertError(delegate.canUnitsBePlaced(uk, fourInfantry2, british));
+    assertValid(delegate.canUnitsBePlaced(uk, fourInfantry2, british));
     final PlaceableUnits response = delegate.getPlaceableUnits(fourInfantry2, uk);
-    assertThat(response.getUnits(), hasSize(3));
+    assertThat(response.getUnits(), hasSize(4));
   }
 
   @Test
-  void testAlreadyProducedUnits() {
+  void testAlreadyProducedUnitsIgnoredForBid() {
     delegate.setProduced(Map.of(westCanada, create(british, infantry, 2)));
     final PlaceableUnits response =
-        delegate.getPlaceableUnits(create(british, infantry, 1), westCanada);
-    assertEquals(0, response.getMaxUnits());
+        delegate.getPlaceableUnits(create(british, infantry, 25), westCanada);
+    assertFalse(response.isError());
+    assertEquals(25, response.getMaxUnits());
   }
 
   @Test
