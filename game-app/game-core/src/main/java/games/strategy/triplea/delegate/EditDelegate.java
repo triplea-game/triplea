@@ -210,7 +210,8 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public @Nullable String addTechAdvance(final GamePlayer player, final Collection<TechAdvance> advances) {
+  public @Nullable String addTechAdvance(
+      final GamePlayer player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -378,7 +379,8 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
     return null;
   }
 
-  @Nullable String checkEditMode() {
+  @Nullable
+  String checkEditMode() {
     final String result = checkPlayerId();
     if (null != result) {
       return result;

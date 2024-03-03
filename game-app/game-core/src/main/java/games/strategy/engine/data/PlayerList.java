@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.ToString;
 import org.triplea.java.RemoveOnNextMajorRelease;
@@ -61,10 +62,11 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
     return players.size();
   }
 
-  public GamePlayer getPlayerId(final String name) {
+  public @Nullable GamePlayer getPlayerId(final String name) {
     if (getNullPlayer().getName().equals(name)) {
       return getNullPlayer();
     }
+    // Can return null if a bogus name was passed.
     return players.get(name);
   }
 

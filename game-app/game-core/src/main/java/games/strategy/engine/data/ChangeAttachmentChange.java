@@ -2,7 +2,6 @@ package games.strategy.engine.data;
 
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
-import java.util.Optional;
 import lombok.Getter;
 
 /** A game data change that captures a change to an attachment property value. */
@@ -62,11 +61,8 @@ public class ChangeAttachmentChange extends Change {
       final Object oldValue,
       final String property,
       final boolean clearFirst) {
-    this.attachmentName =
-        Optional.ofNullable(attachmentName)
-            // replace-all to automatically correct legacy (1.8) attachment spelling
-            .map(name -> name.replaceAll("ttatch", "ttach"))
-            .orElse(null);
+    // replace-all to automatically correct legacy (1.8) attachment spelling
+    this.attachmentName = attachmentName.replaceAll("ttatch", "ttach");
     attachedTo = attachTo;
     this.newValue = newValue;
     this.oldValue = oldValue;

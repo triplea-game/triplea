@@ -80,7 +80,8 @@ class PlayerChooser extends JOptionPane {
    *
    * @return the player or null
    */
-  @Nullable GamePlayer getSelected() {
+  @Nullable
+  GamePlayer getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();
     }

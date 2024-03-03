@@ -64,7 +64,8 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
 
   @RemoteActionCode(17)
   @Override
-  @Nullable String undoMove(int moveIndex);
+  @Nullable
+  String undoMove(int moveIndex);
 
   @RemoteActionCode(10)
   @Override

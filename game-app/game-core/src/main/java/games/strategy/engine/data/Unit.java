@@ -222,7 +222,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "owner":
         return MutableProperty.ofSimple(this::setOwner, this::getOwner);

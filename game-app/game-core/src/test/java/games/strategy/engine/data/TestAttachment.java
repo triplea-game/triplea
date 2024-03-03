@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import javax.annotation.Nullable;
 import lombok.Getter;
 
 /** Fake attachment used for testing. */
@@ -41,7 +42,7 @@ public class TestAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "value":
         return MutableProperty.ofString(this::setValue, this::getValue, this::resetValue);

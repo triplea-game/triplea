@@ -209,7 +209,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "text":
         return MutableProperty.ofString(this::setText, this::getText, this::resetText);

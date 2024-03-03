@@ -55,7 +55,8 @@ public interface IMoveDelegate
 
   @RemoteActionCode(19)
   @Override
-  @Nullable String undoMove(int moveIndex);
+  @Nullable
+  String undoMove(int moveIndex);
 
   @RemoteActionCode(5)
   @Override

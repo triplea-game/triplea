@@ -285,7 +285,8 @@ public interface Player extends IRemote {
 
   /** Asks the player if they wish to perform any kamikaze suicide attacks. */
   @RemoteActionCode(21)
-  @Nullable Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+  @Nullable
+  Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       Map<Territory, Collection<Unit>> possibleUnitsToAttack);
 
   /**

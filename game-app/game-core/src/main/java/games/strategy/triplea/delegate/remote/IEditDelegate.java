@@ -22,33 +22,43 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
   void setEditMode(boolean editMode);
 
   @RemoteActionCode(11)
-  @Nullable String removeUnits(Territory t, Collection<Unit> units);
+  @Nullable
+  String removeUnits(Territory t, Collection<Unit> units);
 
   @RemoteActionCode(2)
-  @Nullable String addUnits(Territory t, Collection<Unit> units);
+  @Nullable
+  String addUnits(Territory t, Collection<Unit> units);
 
   @RemoteActionCode(6)
-  @Nullable String changeTerritoryOwner(Territory t, GamePlayer player);
+  @Nullable
+  String changeTerritoryOwner(Territory t, GamePlayer player);
 
   @RemoteActionCode(13)
-  @Nullable String changeResource(GamePlayer player, String resourceName, int newTotal);
+  @Nullable
+  String changeResource(GamePlayer player, String resourceName, int newTotal);
 
   @RemoteActionCode(1)
-  @Nullable String addTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
+  @Nullable
+  String addTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
 
   @RemoteActionCode(10)
-  @Nullable String removeTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
+  @Nullable
+  String removeTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
 
   @RemoteActionCode(8)
-  @Nullable String changeUnitHitDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
+  @Nullable
+  String changeUnitHitDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
 
   @RemoteActionCode(7)
-  @Nullable String changeUnitBombingDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
+  @Nullable
+  String changeUnitBombingDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
 
   @RemoteActionCode(0)
-  @Nullable String addComment(String message);
+  @Nullable
+  String addComment(String message);
 
   @RemoteActionCode(4)
-  @Nullable String changePoliticalRelationships(
+  @Nullable
+  String changePoliticalRelationships(
       Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> relationshipChanges);
 }

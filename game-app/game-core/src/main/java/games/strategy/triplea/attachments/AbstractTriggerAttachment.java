@@ -275,7 +275,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   public void validate(final GameState data) {}
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "uses":
         return MutableProperty.ofMapper(

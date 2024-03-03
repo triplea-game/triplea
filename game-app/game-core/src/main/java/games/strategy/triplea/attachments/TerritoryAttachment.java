@@ -725,7 +725,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "capital":
         return MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital);

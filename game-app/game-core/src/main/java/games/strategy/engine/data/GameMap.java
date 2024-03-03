@@ -87,7 +87,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *
    * @param s name of the searched territory (case sensitive)
    */
-  public Territory getTerritory(final String s) {
+  public @Nullable Territory getTerritory(final String s) {
     return territoryLookup.get(s);
   }
 

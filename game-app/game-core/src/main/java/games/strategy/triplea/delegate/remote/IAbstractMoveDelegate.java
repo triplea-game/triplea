@@ -29,7 +29,8 @@ public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
    * @return an error string if the move could not be undone, null otherwise
    */
   @RemoteActionCode(12)
-  @Nullable String undoMove(int moveIndex);
+  @Nullable
+  String undoMove(int moveIndex);
 
   @RemoteActionCode(7)
   @Override
