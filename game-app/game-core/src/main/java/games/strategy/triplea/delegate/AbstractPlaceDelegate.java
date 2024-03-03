@@ -225,14 +225,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
       // units may have special restrictions like RequiresUnits
       final List<Unit> unitsCanBePlacedByThisProducer;
-      if (bidMode == BidMode.BID) {
-        unitsCanBePlacedByThisProducer = new ArrayList<>(unitsLeftToPlace);
-      } else {
+      if (hasUnitPlacementRestrictions()) {
         unitsCanBePlacedByThisProducer =
-            (Properties.getUnitPlacementRestrictions(getProperties())
-                ? CollectionUtils.getMatches(
-                    unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, false))
-                : new ArrayList<>(unitsLeftToPlace));
+            CollectionUtils.getMatches(
+                unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, false));
+      } else {
+        unitsCanBePlacedByThisProducer = new ArrayList<>(unitsLeftToPlace);
       }
 
       unitsCanBePlacedByThisProducer.sort(getHardestToPlaceWithRequiresUnitsRestrictions());
@@ -389,7 +387,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         // around at all
         if (placeTerritory.isWater()
             && !placeTerritory.equals(producer)
-            && (!Properties.getUnitPlacementRestrictions(getProperties())
+            && (!hasUnitPlacementRestrictions()
                 || placement.getUnits().stream()
                     .noneMatch(Matches.unitRequiresUnitsOnCreation()))) {
           // found placement move of producer that can be taken over
@@ -697,7 +695,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return null;
     }
     // make sure some unit has fulfilled requiresUnits requirements
-    if (Properties.getUnitPlacementRestrictions(getProperties())
+    if (hasUnitPlacementRestrictions()
         && !testUnits.isEmpty()
         && testUnits.stream().noneMatch(unitWhichRequiresUnitsHasRequiredUnits(producer, false))) {
       return "You do not have the required units to build in " + producer.getName();
@@ -857,7 +855,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return "Not Enough Units To Upgrade or Be Consumed";
     }
     // now return null (valid placement) if we have placement restrictions disabled in game options
-    if (!Properties.getUnitPlacementRestrictions(getProperties())) {
+    if (!hasUnitPlacementRestrictions()) {
       return null;
     }
     // account for any unit placement restrictions by territory
@@ -884,6 +882,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     return null;
+  }
+
+  protected boolean hasUnitPlacementRestrictions() {
+    // Note: Overridden by BidPlaceDelegate.
+    return Properties.getUnitPlacementRestrictions(getProperties());
   }
 
   protected @Nullable Collection<Unit> getUnitsToBePlaced(
@@ -960,7 +963,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
 
     final Collection<Unit> placeableUnits2;
-    if (Properties.getUnitPlacementRestrictions(properties)) {
+    if (hasUnitPlacementRestrictions()) {
       final int territoryProduction = TerritoryAttachment.getProduction(to);
       placeableUnits2 = new ArrayList<>();
       for (final Unit currentUnit : placeableUnits) {
@@ -1116,13 +1119,16 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Collection<Territory> notUsableAsOtherProducers,
       final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
     final GameProperties properties = getProperties();
-    final boolean unitPlacementRestrictions = Properties.getUnitPlacementRestrictions(properties);
+    final boolean unitPlacementRestrictions = hasUnitPlacementRestrictions();
     // we may have special units with requiresUnits restrictions
-    final Collection<Unit> unitsCanBePlacedByThisProducer =
-        (unitPlacementRestrictions
-            ? CollectionUtils.getMatches(
-                units, unitWhichRequiresUnitsHasRequiredUnits(producer, false))
-            : new ArrayList<>(units));
+    final Collection<Unit> unitsCanBePlacedByThisProducer;
+    if (unitPlacementRestrictions) {
+      unitsCanBePlacedByThisProducer =
+          CollectionUtils.getMatches(
+              units, unitWhichRequiresUnitsHasRequiredUnits(producer, false));
+    } else {
+      unitsCanBePlacedByThisProducer = new ArrayList<>(units);
+    }
     if (unitsCanBePlacedByThisProducer.isEmpty()) {
       return 0;
     }
@@ -1216,7 +1222,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           // TODO: Units which have the unit attachment property, requiresUnits, are too difficult
           // to mess with logically, so we ignore them for our special 'move shit around' methods.
           if (!placeTerritory.isWater()
-              || (Properties.getUnitPlacementRestrictions(properties)
+              || (hasUnitPlacementRestrictions()
                   && unitsPlacedByCurrentPlacementMove.stream()
                       .anyMatch(Matches.unitRequiresUnitsOnCreation()))) {
             productionCanNotBeMoved += unitsPlacedByCurrentPlacementMove.size();
@@ -1300,11 +1306,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   IntegerMap<String> howManyOfEachConstructionCanPlace(
       final Territory to,
       final Territory producer,
-      final @Nullable Collection<Unit> units,
+      final Collection<Unit> units,
       final GamePlayer player) {
     // constructions can ONLY be produced BY the same territory that they are going into!
     if (!to.equals(producer)
-        || units == null
         || units.isEmpty()
         || units.stream().noneMatch(Matches.unitIsConstruction())) {
       return new IntegerMap<>();
@@ -1327,7 +1332,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     for (final Unit currentUnit : CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
       final UnitAttachment ua = currentUnit.getUnitAttachment();
       // account for any unit placement restrictions by territory
-      if (Properties.getUnitPlacementRestrictions(getProperties())) {
+      if (hasUnitPlacementRestrictions()) {
         if (ua.unitPlacementRestrictionsContain(to)) {
           continue;
         }
@@ -1475,7 +1480,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   private Collection<Unit> getUnitsThatCantBePlacedThatRequireUnits(
       final Collection<Unit> units, final Territory to) {
-    if (!Properties.getUnitPlacementRestrictions(getProperties())
+    if (!hasUnitPlacementRestrictions()
         || units.stream().noneMatch(Matches.unitRequiresUnitsOnCreation())) {
       return List.of();
     }
