@@ -8,6 +8,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import java.io.Serializable;
 import java.util.Map;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.IntegerMap;
 
 /** Logic for purchasing and repairing units. */
@@ -19,11 +20,11 @@ public interface IPurchaseDelegate extends IAbstractForumPosterDelegate {
    * @return null if units bought, otherwise an error message
    */
   @RemoteActionCode(10)
-  String purchase(IntegerMap<ProductionRule> productionRules);
+  @Nullable String purchase(IntegerMap<ProductionRule> productionRules);
 
   /** Returns an error code, or null if all is good. */
   @RemoteActionCode(11)
-  String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> productionRules);
+  @Nullable String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> productionRules);
 
   @RemoteActionCode(14)
   @Override

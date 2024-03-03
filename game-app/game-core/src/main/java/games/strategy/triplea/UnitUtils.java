@@ -65,7 +65,7 @@ public class UnitUtils {
    * @param accountForDamage {@code true} if the production capacity should account for unit damage;
    *     otherwise {@code false}.
    */
-  public static Unit getBiggestProducer(
+  public static @Nullable Unit getBiggestProducer(
       final Collection<Unit> units,
       final Territory producer,
       final GamePlayer player,
@@ -104,7 +104,7 @@ public class UnitUtils {
    *     {@code false} to allow a negative production capacity.
    */
   public static int getHowMuchCanUnitProduce(
-      final Unit unit,
+      final @Nullable Unit unit,
       final Territory producer,
       final TechTracker techTracker,
       final GameProperties properties,
