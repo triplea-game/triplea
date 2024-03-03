@@ -41,8 +41,7 @@ class DiceChooser extends JPanel {
     createComponents();
   }
 
-  @Nullable
-  int[] getDice() {
+  @Nullable int[] getDice() {
     if (diceCount < numRolls) {
       return null;
     }

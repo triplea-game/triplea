@@ -6,6 +6,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import java.io.Serializable;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * Remote interface for MoveDelegate and PlaceDelegate.
@@ -28,7 +29,7 @@ public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
    * @return an error string if the move could not be undone, null otherwise
    */
   @RemoteActionCode(12)
-  String undoMove(int moveIndex);
+  @Nullable String undoMove(int moveIndex);
 
   @RemoteActionCode(7)
   @Override

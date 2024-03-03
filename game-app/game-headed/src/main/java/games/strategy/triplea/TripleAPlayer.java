@@ -48,6 +48,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -790,7 +791,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
   }
 
   @Override
-  public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+  public @Nullable Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
     final GamePlayer gamePlayer = this.getGamePlayer();
     final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);

@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -134,11 +135,11 @@ public abstract class AbstractMovePanel extends ActionPanel {
     disableCancelButton();
   }
 
-  final String undoMove(final int moveIndex) {
+  final @Nullable String undoMove(final int moveIndex) {
     return undoMove(moveIndex, false);
   }
 
-  final String undoMove(final int moveIndex, final boolean suppressError) {
+  final @Nullable String undoMove(final int moveIndex, final boolean suppressError) {
     // clean up any state we may have
     cancelMove();
     // undo the move

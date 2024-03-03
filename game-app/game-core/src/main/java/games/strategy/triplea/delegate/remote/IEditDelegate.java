@@ -9,6 +9,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.util.Collection;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
@@ -21,33 +22,33 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
   void setEditMode(boolean editMode);
 
   @RemoteActionCode(11)
-  String removeUnits(Territory t, Collection<Unit> units);
+  @Nullable String removeUnits(Territory t, Collection<Unit> units);
 
   @RemoteActionCode(2)
-  String addUnits(Territory t, Collection<Unit> units);
+  @Nullable String addUnits(Territory t, Collection<Unit> units);
 
   @RemoteActionCode(6)
-  String changeTerritoryOwner(Territory t, GamePlayer player);
+  @Nullable String changeTerritoryOwner(Territory t, GamePlayer player);
 
   @RemoteActionCode(13)
-  String changeResource(GamePlayer player, String resourceName, int newTotal);
+  @Nullable String changeResource(GamePlayer player, String resourceName, int newTotal);
 
   @RemoteActionCode(1)
-  String addTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
+  @Nullable String addTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
 
   @RemoteActionCode(10)
-  String removeTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
+  @Nullable String removeTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
 
   @RemoteActionCode(8)
-  String changeUnitHitDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
+  @Nullable String changeUnitHitDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
 
   @RemoteActionCode(7)
-  String changeUnitBombingDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
+  @Nullable String changeUnitBombingDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
 
   @RemoteActionCode(0)
-  String addComment(String message);
+  @Nullable String addComment(String message);
 
   @RemoteActionCode(4)
-  String changePoliticalRelationships(
+  @Nullable String changePoliticalRelationships(
       Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> relationshipChanges);
 }

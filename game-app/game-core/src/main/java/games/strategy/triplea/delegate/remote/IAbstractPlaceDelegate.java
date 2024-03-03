@@ -9,6 +9,7 @@ import games.strategy.triplea.delegate.UndoablePlacement;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.io.Serializable;
 import java.util.Collection;
+import javax.annotation.Nullable;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Logic for placing units within a territory. */
@@ -63,7 +64,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
 
   @RemoteActionCode(17)
   @Override
-  String undoMove(int moveIndex);
+  @Nullable String undoMove(int moveIndex);
 
   @RemoteActionCode(10)
   @Override
