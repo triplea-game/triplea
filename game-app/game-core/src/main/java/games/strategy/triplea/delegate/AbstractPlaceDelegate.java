@@ -761,7 +761,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return producers;
   }
 
-  private List<Territory> getAllProducers(
+  protected List<Territory> getAllProducers(
       final Territory to, final GamePlayer player, final Collection<Unit> unitsToPlace) {
     return getAllProducers(to, player, unitsToPlace, false);
   }
