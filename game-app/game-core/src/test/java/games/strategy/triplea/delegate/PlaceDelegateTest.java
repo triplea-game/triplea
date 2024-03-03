@@ -162,6 +162,29 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
+  void testRequiresUnitsSea() {
+    gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
+    // Needed for canProduceXUnits to work. (!)
+    gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
+    final var factory2 = unitType("factory2", gameData);
+    final var sub2 = unitType("submarine2", gameData);
+
+    final var threeSub2 = create(british, sub2, 3);
+    final var fourSub2 = create(british, sub2, 4);
+
+    uk.getUnitCollection().clear();
+    northSea.getUnitCollection().clear();
+    assertError(delegate.canUnitsBePlaced(northSea, threeSub2, british));
+    uk.getUnitCollection().addAll(create(british, factory2, 1));
+    assertValid(delegate.canUnitsBePlaced(northSea, threeSub2, british));
+    assertError(delegate.canUnitsBePlaced(northSea, fourSub2, british));
+    final PlaceableUnits response = delegate.getPlaceableUnits(fourSub2, northSea);
+    assertThat(response.getUnits(), hasSize(3));
+    // We also can't place the subs in UK since they're sea units. :)
+    assertError(delegate.canUnitsBePlaced(uk, threeSub2, british));
+  }
+
+  @Test
   void testAlreadyProducedUnits() {
     delegate.setProduced(Map.of(westCanada, create(british, infantry, 2)));
     final PlaceableUnits response =

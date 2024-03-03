@@ -27,7 +27,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
     return placeUnits(units, at, BidMode.NOT_BID);
   }
 
-  /** Indicates whether or not bidding is enabled during placement. */
+  /** Indicates whether bidding is enabled during placement. */
   enum BidMode {
     BID,
     NOT_BID
