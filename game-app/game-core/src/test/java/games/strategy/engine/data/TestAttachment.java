@@ -23,7 +23,7 @@ public class TestAttachment extends DefaultAttachment {
   public void setAttachedTo(final Attachable unused) {}
 
   @Override
-  public String getName() {
+  public @Nullable String getName() {
     return null;
   }
 

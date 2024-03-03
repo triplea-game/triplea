@@ -45,7 +45,7 @@ public final class FakeAttachment implements IAttachment {
   }
 
   @Override
-  public String getName() {
+  public @Nullable String getName() {
     return name;
   }
 
