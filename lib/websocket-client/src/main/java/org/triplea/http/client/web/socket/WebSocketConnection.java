@@ -17,6 +17,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -238,7 +239,7 @@ class WebSocketConnection {
     }
 
     @Override
-    public CompletionStage<?> onText(
+    public @Nullable CompletionStage<?> onText(
         final WebSocket webSocket, final CharSequence data, final boolean last) {
       // No need to synchronize access, this listener is never called concurrently
       // and always called in-order by the API
@@ -253,7 +254,7 @@ class WebSocketConnection {
     }
 
     @Override
-    public CompletionStage<?> onClose(
+    public @Nullable CompletionStage<?> onClose(
         final WebSocket webSocket, final int statusCode, final String reason) {
       pingSender.cancel();
       if (reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {

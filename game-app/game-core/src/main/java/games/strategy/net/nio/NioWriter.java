@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ThreadRunner;
 
@@ -137,7 +138,7 @@ class NioWriter {
     }
   }
 
-  private SocketWriteData getData(final SocketChannel to) {
+  private @Nullable SocketWriteData getData(final SocketChannel to) {
     synchronized (mutex) {
       if (!writing.containsKey(to)) {
         return null;
