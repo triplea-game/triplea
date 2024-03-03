@@ -36,7 +36,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   private static final Splitter COLON_SPLITTER = Splitter.on(':');
 
   @Setter private Attachable attachedTo;
-  private String name;
+  private @Nullable String name;
 
   protected DefaultAttachment(
       final String name, final Attachable attachable, final GameData gameData) {

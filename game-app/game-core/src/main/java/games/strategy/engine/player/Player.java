@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
@@ -284,6 +285,7 @@ public interface Player extends IRemote {
 
   /** Asks the player if they wish to perform any kamikaze suicide attacks. */
   @RemoteActionCode(21)
+  @Nullable
   Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       Map<Territory, Collection<Unit>> possibleUnitsToAttack);
 

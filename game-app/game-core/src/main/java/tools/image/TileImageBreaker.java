@@ -14,6 +14,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -146,7 +147,7 @@ public final class TileImageBreaker {
    *
    * @return The loaded image.
    */
-  private Image loadImage() {
+  private @Nullable Image loadImage() {
     log.info("Select the map");
     final Path mapName =
         new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();

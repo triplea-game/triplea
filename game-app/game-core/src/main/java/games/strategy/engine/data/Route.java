@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
@@ -77,7 +78,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return a new Route starting at r1.start() going to r2.end() along r1, r2, or null if the
    *     routes can't be joined it the joining would form a loop
    */
-  public static Route join(final Route r1, final Route r2) {
+  public static @Nullable Route join(final @Nullable Route r1, final @Nullable Route r2) {
     if (r1 == null || r2 == null) {
       return null;
     }

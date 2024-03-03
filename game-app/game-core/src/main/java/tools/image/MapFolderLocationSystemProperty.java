@@ -11,8 +11,7 @@ import tools.util.ToolArguments;
 @Slf4j
 public class MapFolderLocationSystemProperty {
 
-  @Nullable
-  public Path read() {
+  public @Nullable Path read() {
     final String value = System.getProperty(ToolArguments.MAP_FOLDER);
     if (value != null && value.length() > 0) {
       final Path mapFolder = Path.of(value);

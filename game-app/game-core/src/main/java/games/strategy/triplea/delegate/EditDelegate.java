@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
@@ -48,7 +49,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String removeUnits(final Territory territory, final Collection<Unit> units) {
+  public @Nullable String removeUnits(final Territory territory, final Collection<Unit> units) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -81,7 +82,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String addUnits(final Territory territory, final Collection<Unit> units) {
+  public @Nullable String addUnits(final Territory territory, final Collection<Unit> units) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -147,7 +148,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String changeTerritoryOwner(final Territory territory, final GamePlayer player) {
+  public @Nullable String changeTerritoryOwner(final Territory territory, final GamePlayer player) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -186,7 +187,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String changeResource(
+  public @Nullable String changeResource(
       final GamePlayer player, final String resourceName, final int newTotal) {
     final String result = checkEditMode();
     if (result != null) {
@@ -209,7 +210,8 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String addTechAdvance(final GamePlayer player, final Collection<TechAdvance> advances) {
+  public @Nullable String addTechAdvance(
+      final GamePlayer player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -225,7 +227,8 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String removeTechAdvance(final GamePlayer player, final Collection<TechAdvance> advances) {
+  public @Nullable String removeTechAdvance(
+      final GamePlayer player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -241,7 +244,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String changeUnitHitDamage(
+  public @Nullable String changeUnitHitDamage(
       final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     String result = checkEditMode();
     if (result != null) {
@@ -275,7 +278,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String changeUnitBombingDamage(
+  public @Nullable String changeUnitBombingDamage(
       final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     String result = checkEditMode();
     if (result != null) {
@@ -311,7 +314,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String changePoliticalRelationships(
+  public @Nullable String changePoliticalRelationships(
       final Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> relationshipChanges) {
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {
       return null;
@@ -368,7 +371,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
     return true;
   }
 
-  private String checkPlayerId() {
+  private @Nullable String checkPlayerId() {
     final Player remotePlayer = bridge.getRemotePlayer();
     if (!bridge.getGamePlayer().equals(remotePlayer.getGamePlayer())) {
       return "Edit actions can only be performed during players turn";
@@ -376,6 +379,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
     return null;
   }
 
+  @Nullable
   String checkEditMode() {
     final String result = checkPlayerId();
     if (null != result) {
@@ -398,7 +402,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String addComment(final String message) {
+  public @Nullable String addComment(final String message) {
     final String result = checkPlayerId();
     if (result != null) {
       return result;

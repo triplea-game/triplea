@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import javax.annotation.Nullable;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -58,7 +59,7 @@ public final class ImageShrinker {
                 + "<br>So we suggest you instead shrink the image with paint.net or photoshop or "
                 + "gimp, etc, then clean it up before saving."
                 + "</html>"));
-    final Path mapFile =
+    final @Nullable Path mapFile =
         new FileOpen("Select The Large Image", mapFolderLocation, ".gif", ".png").getFile();
     if (mapFile == null || !Files.exists(mapFile)) {
       throw new IllegalStateException(mapFile + " File does not exist");

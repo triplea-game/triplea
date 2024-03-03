@@ -2557,7 +2557,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "frontier":
         return MutableProperty.of(

@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.MoreObjects;
 import com.google.common.util.concurrent.Runnables;
 import java.util.Objects;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /** Fake implementation of {@link IAttachment} useful for testing. */
@@ -44,7 +45,7 @@ public final class FakeAttachment implements IAttachment {
   }
 
   @Override
-  public String getName() {
+  public @Nullable String getName() {
     return name;
   }
 
@@ -64,7 +65,7 @@ public final class FakeAttachment implements IAttachment {
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "name":
         return MutableProperty.ofString(this::setName, this::getName, Runnables.doNothing());

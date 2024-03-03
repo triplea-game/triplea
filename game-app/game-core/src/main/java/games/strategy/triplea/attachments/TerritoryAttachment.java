@@ -47,7 +47,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   @Getter private int production = 0;
   @Getter private int victoryCity = 0;
   private boolean isImpassable = false;
-  @Getter private GamePlayer originalOwner = null;
+  @Getter private @Nullable GamePlayer originalOwner = null;
   private boolean convoyRoute = false;
   private @Nullable Set<Territory> convoyAttached = null;
   private @Nullable List<GamePlayer> changeUnitOwners = null;
@@ -153,7 +153,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /** Convenience method. Can return null. */
-  public static TerritoryAttachment get(final Territory t) {
+  public static @Nullable TerritoryAttachment get(final Territory t) {
     return (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
   }
 
@@ -725,7 +725,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "capital":
         return MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital);

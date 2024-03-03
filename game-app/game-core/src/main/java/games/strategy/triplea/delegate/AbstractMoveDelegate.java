@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 
 /** An abstraction of MoveDelegate in order to allow other delegates to extend this. */
@@ -74,7 +75,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public String undoMove(final int moveIndex) {
+  public @Nullable String undoMove(final int moveIndex) {
     if (movesToUndo.isEmpty()) {
       return "No moves to undo";
     }
@@ -150,7 +151,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
    * @param end target territory
    * @return the route that a unit used to move into the given territory.
    */
-  public static Route getRouteUsedToMoveInto(
+  public static @Nullable Route getRouteUsedToMoveInto(
       final List<UndoableMove> undoableMoves, final Unit unit, final Territory end) {
     final ListIterator<UndoableMove> iter = undoableMoves.listIterator(undoableMoves.size());
     while (iter.hasPrevious()) {

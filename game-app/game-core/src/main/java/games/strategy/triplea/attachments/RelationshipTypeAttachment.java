@@ -8,6 +8,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
+import javax.annotation.Nullable;
 import lombok.Getter;
 
 /** An attachment for instances of {@link RelationshipType}. */
@@ -434,7 +435,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "archeType":
         return MutableProperty.ofString(

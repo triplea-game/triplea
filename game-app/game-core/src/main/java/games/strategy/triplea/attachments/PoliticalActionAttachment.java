@@ -195,7 +195,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "relationshipChange":
         return MutableProperty.of(

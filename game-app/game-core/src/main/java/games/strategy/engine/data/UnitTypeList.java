@@ -34,7 +34,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
     unitTypes.put(type.getName(), type);
   }
 
-  public UnitType getUnitType(final String name) {
+  public @Nullable UnitType getUnitType(final String name) {
     return unitTypes.get(name);
   }
 

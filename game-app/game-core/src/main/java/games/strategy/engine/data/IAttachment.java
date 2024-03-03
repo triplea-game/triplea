@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import games.strategy.engine.data.gameparser.GameParseException;
 import java.io.Serializable;
+import javax.annotation.Nullable;
 
 /**
  * Behavior or data that can be attached to a game object. Permits open-ended extension of game
@@ -16,6 +17,7 @@ public interface IAttachment extends Serializable, DynamicallyModifiable {
 
   void setAttachedTo(Attachable attachable);
 
+  @Nullable
   String getName();
 
   void setName(String name);

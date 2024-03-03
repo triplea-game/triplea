@@ -21,22 +21,7 @@ public class ToolsUtil {
    */
   public static Optional<String> findTerritoryName(
       final Point p, final Map<String, List<Polygon>> terrPolygons) {
-    return Optional.ofNullable(findTerritoryName(p, terrPolygons, null));
-  }
-
-  /**
-   * Finds a land territory name or some sea zone name where the point is contained in according to
-   * the territory name -> polygons map. If no land or sea territory has been found a default name
-   * is returned.
-   *
-   * @param p A point on the map.
-   * @param terrPolygons a map territory name -> polygons
-   * @param defaultTerrName Default territory name that gets returns if nothing was found.
-   * @return found territory name of defaultTerrName
-   */
-  public static String findTerritoryName(
-      final Point p, final Map<String, List<Polygon>> terrPolygons, final String defaultTerrName) {
-    String lastWaterTerrName = defaultTerrName;
+    String lastWaterTerrName = null;
     // try to find a land territory.
     // sea zones often surround a land territory
     for (final String terrName : terrPolygons.keySet()) {
@@ -46,12 +31,12 @@ public class ToolsUtil {
           if (isTerritoryNameIndicatingWater(terrName)) {
             lastWaterTerrName = terrName;
           } else {
-            return terrName;
+            return Optional.of(terrName);
           }
         } // if p is contained
       } // polygons collection loop
     } // terrPolygons map loop
-    return lastWaterTerrName;
+    return Optional.ofNullable(lastWaterTerrName);
   }
 
   /**

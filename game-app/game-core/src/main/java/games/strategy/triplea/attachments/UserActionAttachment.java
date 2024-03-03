@@ -172,7 +172,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "activateTrigger":
         return MutableProperty.of(
