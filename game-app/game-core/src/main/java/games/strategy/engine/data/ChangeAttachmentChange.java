@@ -63,7 +63,6 @@ public class ChangeAttachmentChange extends Change {
       final Object oldValue,
       final String property,
       final boolean clearFirst) {
-    // replace-all to automatically correct legacy (1.8) attachment spelling
     this.attachmentName =
         Optional.ofNullable(attachmentName)
             // replace-all to automatically correct legacy (1.8) attachment spelling
