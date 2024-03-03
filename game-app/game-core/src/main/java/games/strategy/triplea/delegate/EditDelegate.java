@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
@@ -48,7 +49,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String removeUnits(final Territory territory, final Collection<Unit> units) {
+  public @Nullable String removeUnits(final Territory territory, final Collection<Unit> units) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -81,7 +82,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String addUnits(final Territory territory, final Collection<Unit> units) {
+  public @Nullable String addUnits(final Territory territory, final Collection<Unit> units) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -225,7 +226,8 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String removeTechAdvance(final GamePlayer player, final Collection<TechAdvance> advances) {
+  public @Nullable String removeTechAdvance(
+      final GamePlayer player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -241,7 +243,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   @Override
-  public String changeUnitHitDamage(
+  public @Nullable String changeUnitHitDamage(
       final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     String result = checkEditMode();
     if (result != null) {

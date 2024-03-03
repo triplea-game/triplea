@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 public class FileOpen {
   /** -- GETTER -- Returns the newly selected file. Will return null if no file is selected. */
-  @Nullable private Path file;
+  private @Nullable Path file;
 
   public FileOpen(final String title, final Path currentDirectory, final String... extensions) {
     this(title, currentDirectory, null, extensions);

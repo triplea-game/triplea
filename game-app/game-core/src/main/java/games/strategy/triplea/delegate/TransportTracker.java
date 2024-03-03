@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import lombok.Value;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
@@ -254,7 +255,7 @@ public class TransportTracker {
    * determine why we can't unload an additional unit. Since transports only hold up to two units,
    * we only need to return one territory, not multiple territories.
    */
-  public static Territory getTerritoryTransportHasUnloadedTo(final Unit transport) {
+  public static @Nullable Territory getTerritoryTransportHasUnloadedTo(final Unit transport) {
     final Collection<Unit> unloaded = transport.getUnloaded();
     if (unloaded.isEmpty()) {
       return null;

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -253,6 +254,7 @@ public class PoliticalStateOverview extends JPanel {
     this.revalidate();
   }
 
+  @Nullable
   Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> getEditChanges() {
     if (!editable) {
       return null;

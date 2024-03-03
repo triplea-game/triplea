@@ -62,7 +62,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   /** Convenience method. can be null */
-  public static PlayerAttachment get(final GamePlayer p) {
+  public static @Nullable PlayerAttachment get(final GamePlayer p) {
     // allow null
     return p.getPlayerAttachment();
   }
