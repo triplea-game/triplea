@@ -1306,11 +1306,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   IntegerMap<String> howManyOfEachConstructionCanPlace(
       final Territory to,
       final Territory producer,
-      final @Nullable Collection<Unit> units,
+      final Collection<Unit> units,
       final GamePlayer player) {
     // constructions can ONLY be produced BY the same territory that they are going into!
     if (!to.equals(producer)
-        || units == null
         || units.isEmpty()
         || units.stream().noneMatch(Matches.unitIsConstruction())) {
       return new IntegerMap<>();
