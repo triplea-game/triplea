@@ -3,10 +3,8 @@ package games.strategy.triplea.delegate;
 import static games.strategy.triplea.Constants.DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES;
 import static games.strategy.triplea.Constants.UNIT_PLACEMENT_RESTRICTIONS;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
-import static games.strategy.triplea.delegate.Matches.unitIsOfType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -17,21 +15,20 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 
-class PlaceDelegateTest extends AbstractDelegateTestCase {
-  private PlaceDelegate delegate;
+class BidPlaceDelegateTest extends AbstractDelegateTestCase {
+  private BidPlaceDelegate delegate;
 
   @BeforeEach
   void setupPlaceDelegate() {
     final IDelegateBridge bridge = newDelegateBridge(british);
-    delegate = new PlaceDelegate();
-    delegate.initialize("place");
+    delegate = new BidPlaceDelegate();
+    delegate.initialize("bid");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
   }
@@ -135,38 +132,18 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testCanNotProduceThatManyUnits() {
+  void testCanProduceAboveTerritoryLimit() {
     final PlaceableUnits response =
-        delegate.getPlaceableUnits(create(british, infantry, 3), westCanada);
-    assertEquals(2, response.getMaxUnits());
+        delegate.getPlaceableUnits(create(british, infantry, 25), westCanada);
+    assertFalse(response.isError());
+    assertEquals(25, response.getMaxUnits());
   }
 
   @Test
-  void testCanNotProduceThatManyUnitsDueToRequiresUnits() {
+  void testRequiresUnitsSeaDoesNotLimitBidPlacement() {
     gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
     // Needed for canProduceXUnits to work. (!)
     gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
-    final var factory2 = unitType("factory2", gameData);
-    final var infantry2 = unitType("infantry2", gameData);
-
-    final var threeInfantry2 = create(british, infantry2, 3);
-    final var fourInfantry2 = create(british, infantry2, 4);
-
-    uk.getUnitCollection().clear();
-    assertError(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
-    uk.getUnitCollection().addAll(create(british, factory2, 1));
-    assertValid(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
-    assertError(delegate.canUnitsBePlaced(uk, fourInfantry2, british));
-    final PlaceableUnits response = delegate.getPlaceableUnits(fourInfantry2, uk);
-    assertThat(response.getUnits(), hasSize(3));
-  }
-
-  @Test
-  void testRequiresUnitsSea() {
-    gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
-    // Needed for canProduceXUnits to work. (!)
-    gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
-    final var factory2 = unitType("factory2", gameData);
     final var sub2 = unitType("submarine2", gameData);
 
     final var threeSub2 = create(british, sub2, 3);
@@ -174,22 +151,40 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
 
     uk.getUnitCollection().clear();
     northSea.getUnitCollection().clear();
-    assertError(delegate.canUnitsBePlaced(northSea, threeSub2, british));
-    uk.getUnitCollection().addAll(create(british, factory2, 1));
+    // Need to have one unit already to be able to place more during bid.
+    northSea.getUnitCollection().addAll(create(british, unitType("transport", gameData), 1));
     assertValid(delegate.canUnitsBePlaced(northSea, threeSub2, british));
-    assertError(delegate.canUnitsBePlaced(northSea, fourSub2, british));
+    assertValid(delegate.canUnitsBePlaced(northSea, fourSub2, british));
     final PlaceableUnits response = delegate.getPlaceableUnits(fourSub2, northSea);
-    assertThat(response.getUnits(), hasSize(3));
+    assertThat(response.getUnits(), hasSize(4));
     // We also can't place the subs in UK since they're sea units. :)
     assertError(delegate.canUnitsBePlaced(uk, threeSub2, british));
   }
 
   @Test
-  void testAlreadyProducedUnits() {
+  void testRequiresUnitsDoesNotLimitBidPlacement() {
+    gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
+    // Needed for canProduceXUnits to work. (!)
+    gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
+    final var infantry2 = unitType("infantry2", gameData);
+
+    final var threeInfantry2 = create(british, infantry2, 3);
+    final var fourInfantry2 = create(british, infantry2, 4);
+
+    uk.getUnitCollection().clear();
+    assertValid(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
+    assertValid(delegate.canUnitsBePlaced(uk, fourInfantry2, british));
+    final PlaceableUnits response = delegate.getPlaceableUnits(fourInfantry2, uk);
+    assertThat(response.getUnits(), hasSize(4));
+  }
+
+  @Test
+  void testAlreadyProducedUnitsIgnoredForBid() {
     delegate.setProduced(Map.of(westCanada, create(british, infantry, 2)));
     final PlaceableUnits response =
-        delegate.getPlaceableUnits(create(british, infantry, 1), westCanada);
-    assertEquals(0, response.getMaxUnits());
+        delegate.getPlaceableUnits(create(british, infantry, 25), westCanada);
+    assertFalse(response.isError());
+    assertEquals(25, response.getMaxUnits());
   }
 
   @Test
@@ -258,28 +253,15 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testStackingLimitFilteringHappensAfterPlacementRestrictions() {
+  void testUnitTerritoryPlacementRestrictionsDoNotLimitBidPlacement() {
     // Note: battleship is marked as not placeable in "West Canada Sea Zone" on the test map.
+    // This should be ignored for Bid purposes, like other placement restrictions.
 
     // Add a carrier to the sea zone.
     westCanadaSeaZone.getUnitCollection().addAll(create(british, carrier, 1));
-
-    // If we filter list of 2 battleships and 2 carriers, the 2 carriers should be selected.
-    List<Unit> units = create(british, battleship, 2);
-    units.addAll(create(british, carrier, 2));
-    // First, we can't place all of them (expected).
-    assertError(delegate.canUnitsBePlaced(westCanadaSeaZone, units, british));
-
+    List<Unit> units = create(british, battleship, 1);
+    assertValid(delegate.canUnitsBePlaced(westCanadaSeaZone, units, british));
     PlaceableUnits response = delegate.getPlaceableUnits(units, westCanadaSeaZone);
-    assertThat(response.getUnits(), hasSize(2));
-    assertThat(response.getUnits(), is(CollectionUtils.getMatches(units, unitIsOfType(carrier))));
-
-    // Check that it's the case even if we shuffle the list a few times.
-    for (int i = 0; i < 5; i++) {
-      Collections.shuffle(units);
-      response = delegate.getPlaceableUnits(units, westCanadaSeaZone);
-      assertThat(response.getUnits(), hasSize(2));
-      assertThat(response.getUnits(), is(CollectionUtils.getMatches(units, unitIsOfType(carrier))));
-    }
+    assertThat(response.getUnits(), hasSize(1));
   }
 }

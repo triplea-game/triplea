@@ -146,4 +146,11 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     // now check stacking limits
     return UnitStackingLimitFilter.filterUnits(placeableUnits, PLACEMENT_LIMIT, player, to);
   }
+
+  @Override
+  protected boolean hasUnitPlacementRestrictions() {
+    // Ignore "require units" for bid placements, since that's used for custom factory types, which
+    // bids should be ignoring.
+    return false;
+  }
 }
