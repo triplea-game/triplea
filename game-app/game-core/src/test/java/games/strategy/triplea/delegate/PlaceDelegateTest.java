@@ -70,6 +70,18 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
+  void testCannotPlaceWithoutFactory() {
+    final String response = delegate.placeUnits(create(british, infantry, 2), egypt, NOT_BID);
+    assertError(response);
+  }
+
+  @Test
+  void testCannotPlaceSeaWithoutFactory() {
+    final String response = delegate.placeUnits(create(british, transport, 2), redSea, NOT_BID);
+    assertError(response);
+  }
+
+  @Test
   void testSeaCantGoInSeaInLandZone() {
     final String response = delegate.canUnitsBePlaced(uk, create(british, transport, 2), british);
     assertError(response);
