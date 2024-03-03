@@ -143,6 +143,28 @@ class BidPlaceDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
+  void testRequiresUnitsSeaDoesNotLimitBidPlacement() {
+    gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
+    // Needed for canProduceXUnits to work. (!)
+    gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
+    final var sub2 = unitType("submarine2", gameData);
+
+    final var threeSub2 = create(british, sub2, 3);
+    final var fourSub2 = create(british, sub2, 4);
+
+    uk.getUnitCollection().clear();
+    northSea.getUnitCollection().clear();
+    // Need to have one unit already to be able to place more during bid.
+    northSea.getUnitCollection().addAll(create(british, unitType("transport", gameData), 1));
+    assertValid(delegate.canUnitsBePlaced(northSea, threeSub2, british));
+    assertValid(delegate.canUnitsBePlaced(northSea, fourSub2, british));
+    final PlaceableUnits response = delegate.getPlaceableUnits(fourSub2, northSea);
+    assertThat(response.getUnits(), hasSize(4));
+    // We also can't place the subs in UK since they're sea units. :)
+    assertError(delegate.canUnitsBePlaced(uk, threeSub2, british));
+  }
+
+  @Test
   void testRequiresUnitsDoesNotLimitBidPlacement() {
     gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
     // Needed for canProduceXUnits to work. (!)

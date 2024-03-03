@@ -6,10 +6,12 @@ import static java.util.function.Predicate.not;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -145,5 +147,12 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
             .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
     // now check stacking limits
     return UnitStackingLimitFilter.filterUnits(placeableUnits, PLACEMENT_LIMIT, player, to);
+  }
+
+  @Override
+  protected boolean hasUnitPlacementRestrictions() {
+    // Ignore "require units" for bid placements, since that's used for custom factory types, which
+    // bids should be ignoring.
+    return false;
   }
 }
