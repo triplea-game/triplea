@@ -9,6 +9,7 @@ import games.strategy.triplea.delegate.UndoablePlacement;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.io.Serializable;
 import java.util.Collection;
+import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Logic for placing units within a territory. */
 public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePlacement> {
@@ -27,7 +28,8 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
     return placeUnits(units, at, BidMode.NOT_BID);
   }
 
-  /** Indicates whether bidding is enabled during placement. */
+  /** Indicates whether bidding is enabled during placement. No longer used. */
+  @RemoveOnNextMajorRelease
   enum BidMode {
     BID,
     NOT_BID

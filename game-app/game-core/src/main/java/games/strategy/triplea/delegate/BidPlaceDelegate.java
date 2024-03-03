@@ -92,18 +92,6 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     return units.size();
   }
 
-  @Override
-  protected int getMaxUnitsToBePlacedFrom(
-      final Territory producer,
-      final @Nullable Collection<Unit> units,
-      final Territory to,
-      final GamePlayer player) {
-    if (units == null) {
-      return -1;
-    }
-    return getMaxUnitsToBePlacedFrom(producer, units, to, player, false, null, null);
-  }
-
   // Return collection of bid units which can placed in a land territory
   @Override
   protected Collection<Unit> getUnitsToBePlaced(
