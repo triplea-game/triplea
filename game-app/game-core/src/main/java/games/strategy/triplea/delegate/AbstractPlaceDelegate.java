@@ -1103,7 +1103,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   /** Returns -1 if we can place unlimited units. */
-  protected int getMaxUnitsToBePlacedFrom(
+  private int getMaxUnitsToBePlacedFrom(
       final Territory producer,
       final Collection<Unit> units,
       final Territory to,
@@ -1118,8 +1118,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory to,
       final GamePlayer player,
       final boolean countSwitchedProductionToNeighbors,
-      final Collection<Territory> notUsableAsOtherProducers,
-      final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
+      final @Nullable Collection<Territory> notUsableAsOtherProducers,
+      final @Nullable Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
     final GameProperties properties = getProperties();
     final boolean unitPlacementRestrictions = hasUnitPlacementRestrictions();
     // we may have special units with requiresUnits restrictions
