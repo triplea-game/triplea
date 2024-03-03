@@ -193,6 +193,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   @Override
   public @Nullable String placeUnits(
       final Collection<Unit> units, final Territory at, final BidMode bidMode) {
+    // The bidMode param is unused.
+    return placeUnits(units, at);
+  }
+
+  public @Nullable String placeUnits(final Collection<Unit> units, final Territory at) {
     if (units.isEmpty()) {
       return null;
     }
@@ -217,10 +222,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
       int maxPlaceable = maxPlaceableMap.getInt(producer);
       if (maxPlaceable == 0) {
-        if (bidMode == BidMode.NOT_BID) {
-          continue;
-        }
-        maxPlaceable = 1;
+        continue;
       }
 
       // units may have special restrictions like RequiresUnits
