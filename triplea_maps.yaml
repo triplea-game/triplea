@@ -2804,7 +2804,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/uhd_world_war_ii_global/archive/master.zip
   version: 2
-  img: https://github.com/triplea-maps/uhd_world_war_ii_global/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/uhd_world_war_ii_global/master/preview.png
   description: |
     <br>This is UHD World War II Global using the Black Elk Mega Map
 - mapName: 1941 Global Command Decision
