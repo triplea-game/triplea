@@ -20,11 +20,13 @@ public interface IPurchaseDelegate extends IAbstractForumPosterDelegate {
    * @return null if units bought, otherwise an error message
    */
   @RemoteActionCode(10)
-  @Nullable String purchase(IntegerMap<ProductionRule> productionRules);
+  @Nullable
+  String purchase(IntegerMap<ProductionRule> productionRules);
 
   /** Returns an error code, or null if all is good. */
   @RemoteActionCode(11)
-  @Nullable String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> productionRules);
+  @Nullable
+  String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> productionRules);
 
   @RemoteActionCode(14)
   @Override

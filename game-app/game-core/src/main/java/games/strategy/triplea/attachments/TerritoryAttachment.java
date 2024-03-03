@@ -47,7 +47,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   @Getter private int production = 0;
   @Getter private int victoryCity = 0;
   private boolean isImpassable = false;
-  @Getter private GamePlayer originalOwner = null;
+  @Getter private @Nullable GamePlayer originalOwner = null;
   private boolean convoyRoute = false;
   private @Nullable Set<Territory> convoyAttached = null;
   private @Nullable List<GamePlayer> changeUnitOwners = null;
