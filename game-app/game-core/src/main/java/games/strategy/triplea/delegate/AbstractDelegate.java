@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.websocket.ClientNetworkBridge;
@@ -87,5 +88,9 @@ public abstract class AbstractDelegate implements IDelegate {
 
   protected GameData getData() {
     return bridge.getData();
+  }
+
+  protected GameProperties getProperties() {
+    return getData().getProperties();
   }
 }
