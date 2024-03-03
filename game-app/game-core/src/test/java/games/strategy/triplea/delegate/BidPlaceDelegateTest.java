@@ -256,7 +256,7 @@ class BidPlaceDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testUnitTerritoryPlacementRestrictionssDoesNotLimitBidPlacement() {
+  void testUnitTerritoryPlacementRestrictionsDoNotLimitBidPlacement() {
     // Note: battleship is marked as not placeable in "West Canada Sea Zone" on the test map.
     // This should be ignored for Bid purposes, like other placement restrictions.
 
