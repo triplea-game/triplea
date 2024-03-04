@@ -87,7 +87,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *
    * @param s name of the searched territory (case sensitive)
    */
-  public Territory getTerritory(final String s) {
+  public @Nullable Territory getTerritory(final String s) {
     return territoryLookup.get(s);
   }
 
@@ -295,8 +295,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *
    * @param cond condition that covered territories of the route must match
    */
-  @Nullable
-  public Route getRoute(
+  public @Nullable Route getRoute(
       final Territory start, final Territory end, final Predicate<Territory> cond) {
     checkNotNull(start);
     checkNotNull(end);
@@ -306,8 +305,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /** See {@link #getRouteForUnits(Territory, Territory, Predicate, Collection, GamePlayer)}. */
-  @Nullable
-  public Route getRouteForUnit(
+  public @Nullable Route getRouteForUnit(
       final Territory start,
       final Territory end,
       final Predicate<Territory> cond,
@@ -327,8 +325,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param units checked against canals and for movement costs
    * @param player player used to check canal ownership
    */
-  @Nullable
-  public Route getRouteForUnits(
+  public @Nullable Route getRouteForUnits(
       final Territory start,
       final Territory end,
       final Predicate<Territory> cond,

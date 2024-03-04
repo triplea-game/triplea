@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.UndoableMove;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Remote interface for MoveDelegate. */
 public interface IMoveDelegate
@@ -54,6 +55,7 @@ public interface IMoveDelegate
 
   @RemoteActionCode(19)
   @Override
+  @Nullable
   String undoMove(int moveIndex);
 
   @RemoteActionCode(5)

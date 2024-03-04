@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -140,7 +141,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     return icon;
   }
 
-  protected ImageIcon getIcon(final String playerName) {
+  protected @Nullable ImageIcon getIcon(final String playerName) {
     final GamePlayer player = gameData.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       return null;

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -65,7 +66,7 @@ public final class TileImageReconstructor {
   }
 
   private void runInternal() {
-    Path mapFolderLocation = MapFolderLocationSystemProperty.read();
+    @Nullable Path mapFolderLocation = MapFolderLocationSystemProperty.read();
     JOptionPane.showMessageDialog(
         null,
         new JLabel(

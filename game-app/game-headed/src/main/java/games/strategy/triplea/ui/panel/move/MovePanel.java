@@ -1043,7 +1043,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   /** Get the route ignoring forced territories. */
-  private Route getRouteNonForced(
+  private @Nullable Route getRouteNonForced(
       final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
     // can't rely on current player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
@@ -1057,7 +1057,8 @@ public class MovePanel extends AbstractMovePanel {
         !GameStepPropertiesHelper.isAirborneMove(getData()));
   }
 
-  private void updateUnitsThatCanMoveOnRoute(final Collection<Unit> units, final Route route) {
+  private void updateUnitsThatCanMoveOnRoute(
+      final Collection<Unit> units, final @Nullable Route route) {
     if (route == null || route.hasNoSteps()) {
       clearStatusMessage();
       getMap().showMouseCursor();
@@ -1108,7 +1109,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   /** Route can be null. */
-  final void updateRouteAndMouseShadowUnits(final Route route) {
+  final void updateRouteAndMouseShadowUnits(final @Nullable Route route) {
     routeCached = route;
     getMap().setRoute(route, mouseSelectedPoint, mouseCurrentPoint, currentCursorImage);
     if (route == null) {
@@ -1371,7 +1372,7 @@ public class MovePanel extends AbstractMovePanel {
     return "MovePanel";
   }
 
-  final void setFirstSelectedTerritory(final Territory firstSelectedTerritory) {
+  final void setFirstSelectedTerritory(final @Nullable Territory firstSelectedTerritory) {
     if (Objects.equals(this.firstSelectedTerritory, firstSelectedTerritory)) {
       return;
     }

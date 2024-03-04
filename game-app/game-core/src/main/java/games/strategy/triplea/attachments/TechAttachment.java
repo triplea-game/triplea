@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 import lombok.Getter;
 
 /**
@@ -312,7 +313,7 @@ public class TechAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "techCost":
         return MutableProperty.of(

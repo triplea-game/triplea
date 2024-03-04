@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JDialog;
 import javax.swing.JList;
@@ -59,6 +60,7 @@ class ResourceChooser extends JOptionPane {
    *
    * @return the resource or null
    */
+  @Nullable
   Resource getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();

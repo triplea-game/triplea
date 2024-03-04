@@ -3398,7 +3398,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "isAir":
         return MutableProperty.of(this::setIsAir, this::setIsAir, this::getIsAir, this::resetIsAir);

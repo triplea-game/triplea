@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -247,7 +248,7 @@ public final class PolygonGrabber {
                 for (final String territoryName : centers.keySet()) {
                   final Point center = centers.get(territoryName);
                   log.info("Detecting Polygon for:" + territoryName);
-                  final Polygon p = findPolygon(center.x, center.y);
+                  final @Nullable Polygon p = findPolygon(center.x, center.y);
                   // test if the poly contains the center point (this often fails when there is an
                   // island right above (because findPolygon will grab the island instead)
                   if (p == null || !p.contains(center)) {
@@ -442,7 +443,7 @@ public final class PolygonGrabber {
     /** Loads a pre-defined file with map polygon points. */
     private void loadPolygons() {
       log.info("Load a polygon file");
-      final Path polyName =
+      final @Nullable Path polyName =
           new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getFile();
       if (polyName == null) {
         return;
@@ -456,7 +457,7 @@ public final class PolygonGrabber {
     }
 
     private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
-      final Polygon p = findPolygon(point.x, point.y);
+      final @Nullable Polygon p = findPolygon(point.x, point.y);
       if (p == null) {
         return;
       }
@@ -608,7 +609,7 @@ public final class PolygonGrabber {
     }
 
     /** Algorithm to find a polygon given a x/y coordinates and returns the found polygon. */
-    private Polygon findPolygon(final int x, final int y) {
+    private @Nullable Polygon findPolygon(final int x, final int y) {
       // walk up, find the first black point
       final Point startPoint = new Point(x, y);
       while (inBounds(startPoint.x, startPoint.y - 1, bufferedImage)

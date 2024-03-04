@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -162,7 +163,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
   }
 
   @Override
-  public String purchase(final IntegerMap<ProductionRule> productionRules) {
+  public @Nullable String purchase(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = getCosts(productionRules);
     final IntegerMap<NamedAttachable> results = getResults(productionRules);
     if (!canAfford(costs, player)) {
@@ -252,7 +253,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
   }
 
   @Override
-  public String purchaseRepair(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
+  public @Nullable String purchaseRepair(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
     final IntegerMap<Resource> costs = getRepairCosts(repairRules, player);
     if (!canAfford(costs, player)) {
       return NOT_ENOUGH_RESOURCES;

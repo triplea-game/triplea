@@ -5,6 +5,7 @@ import games.strategy.triplea.image.DiceImageFactory;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -40,6 +41,7 @@ class DiceChooser extends JPanel {
     createComponents();
   }
 
+  @Nullable
   int[] getDice() {
     if (diceCount < numRolls) {
       return null;

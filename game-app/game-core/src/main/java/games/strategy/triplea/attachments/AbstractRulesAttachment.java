@@ -405,7 +405,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "countEach":
         return MutableProperty.ofReadOnly(this::getCountEach);

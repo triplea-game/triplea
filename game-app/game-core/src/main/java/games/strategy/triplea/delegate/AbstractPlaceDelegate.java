@@ -193,6 +193,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   @Override
   public @Nullable String placeUnits(
       final Collection<Unit> units, final Territory at, final BidMode bidMode) {
+    // The bidMode param is unused.
+    return placeUnits(units, at);
+  }
+
+  public @Nullable String placeUnits(final Collection<Unit> units, final Territory at) {
     if (units.isEmpty()) {
       return null;
     }
@@ -217,10 +222,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
       int maxPlaceable = maxPlaceableMap.getInt(producer);
       if (maxPlaceable == 0) {
-        if (bidMode == BidMode.NOT_BID) {
-          continue;
-        }
-        maxPlaceable = 1;
+        continue;
       }
 
       // units may have special restrictions like RequiresUnits
@@ -761,7 +763,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return producers;
   }
 
-  private List<Territory> getAllProducers(
+  protected List<Territory> getAllProducers(
       final Territory to, final GamePlayer player, final Collection<Unit> unitsToPlace) {
     return getAllProducers(to, player, unitsToPlace, false);
   }
@@ -1101,7 +1103,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   /** Returns -1 if we can place unlimited units. */
-  protected int getMaxUnitsToBePlacedFrom(
+  private int getMaxUnitsToBePlacedFrom(
       final Territory producer,
       final Collection<Unit> units,
       final Territory to,
@@ -1116,8 +1118,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory to,
       final GamePlayer player,
       final boolean countSwitchedProductionToNeighbors,
-      final Collection<Territory> notUsableAsOtherProducers,
-      final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
+      final @Nullable Collection<Territory> notUsableAsOtherProducers,
+      final @Nullable Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
     final GameProperties properties = getProperties();
     final boolean unitPlacementRestrictions = hasUnitPlacementRestrictions();
     // we may have special units with requiresUnits restrictions

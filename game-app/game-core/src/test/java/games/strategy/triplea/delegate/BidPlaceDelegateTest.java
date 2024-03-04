@@ -4,7 +4,7 @@ import static games.strategy.triplea.Constants.DAMAGE_FROM_BOMBING_DONE_TO_UNITS
 import static games.strategy.triplea.Constants.UNIT_PLACEMENT_RESTRICTIONS;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
-import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
+import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.BID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -35,14 +35,14 @@ class BidPlaceDelegateTest extends AbstractDelegateTestCase {
 
   @Test
   void testValid() {
-    final String response = delegate.placeUnits(create(british, infantry, 2), uk, NOT_BID);
+    final String response = delegate.placeUnits(create(british, infantry, 2), uk, BID);
     assertValid(response);
   }
 
   @Test
   void testNotCorrectUnitsValid() {
     final var unitsNotHeldByPlayer = infantry.create(3, british);
-    final String response = delegate.placeUnits(unitsNotHeldByPlayer, uk, NOT_BID);
+    final String response = delegate.placeUnits(unitsNotHeldByPlayer, uk, BID);
     assertError(response);
   }
 
@@ -62,7 +62,19 @@ class BidPlaceDelegateTest extends AbstractDelegateTestCase {
 
   @Test
   void testLandCanGoInLandZone() {
-    final String response = delegate.placeUnits(create(british, infantry, 2), uk, NOT_BID);
+    final String response = delegate.placeUnits(create(british, infantry, 2), uk, BID);
+    assertValid(response);
+  }
+
+  @Test
+  void tesCanPlaceWithoutFactory() {
+    final String response = delegate.placeUnits(create(british, infantry, 2), egypt, BID);
+    assertValid(response);
+  }
+
+  @Test
+  void testCanPlaceSeaWithoutFactory() {
+    final String response = delegate.placeUnits(create(british, transport, 2), redSea, BID);
     assertValid(response);
   }
 

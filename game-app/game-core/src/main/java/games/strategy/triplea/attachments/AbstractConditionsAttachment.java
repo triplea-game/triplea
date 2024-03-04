@@ -369,7 +369,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "conditions":
         return MutableProperty.of(

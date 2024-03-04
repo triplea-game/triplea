@@ -265,7 +265,7 @@ public final class CenterPicker {
      * @param p A point on the map.
      */
     private String findTerritoryName(final Point p) {
-      return ToolsUtil.findTerritoryName(p, polygons, "unknown");
+      return ToolsUtil.findTerritoryName(p, polygons).orElse("unknown");
     }
 
     private void mouseEvent(final Point point, final boolean rightMouse) {

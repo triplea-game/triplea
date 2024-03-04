@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundPath;
 
@@ -326,7 +327,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   }
 
   /** if null, the game is not over yet. */
-  public Collection<GamePlayer> getWinners() {
+  public @Nullable Collection<GamePlayer> getWinners() {
     if (!gameOver) {
       return null;
     }

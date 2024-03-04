@@ -41,6 +41,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
@@ -265,7 +266,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   }
 
   @Override
-  public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+  public @Nullable Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
     final GamePlayer gamePlayer = this.getGamePlayer();
     // we are going to just assign random attacks to each unit randomly, til we run out of tokens to

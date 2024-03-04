@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
  * An interface to implement by objects that are dynamically being modified. This will most likely
@@ -17,6 +18,7 @@ public interface DynamicallyModifiable {
    *
    * @return The property with the specified name or null if the property doesn't exist.
    */
+  @Nullable
   MutableProperty<?> getPropertyOrNull(String name);
 
   /**

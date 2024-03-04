@@ -62,7 +62,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   /** Convenience method. can be null */
-  public static PlayerAttachment get(final GamePlayer p) {
+  public static @Nullable PlayerAttachment get(final GamePlayer p) {
     // allow null
     return p.getPlayerAttachment();
   }
@@ -360,7 +360,7 @@ public class PlayerAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "vps":
         return MutableProperty.ofMapper(

@@ -567,7 +567,7 @@ public final class PlacementPicker {
      */
     private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
       if (!rightMouse && !ctrlDown) {
-        currentCountry = ToolsUtil.findTerritoryName(point, polygons, "there be dragons");
+        currentCountry = ToolsUtil.findTerritoryName(point, polygons).orElse("there be dragons");
         // If there isn't an existing array, create one
         if (placements == null || placements.get(currentCountry) == null) {
           currentPlacements = new ArrayList<>();

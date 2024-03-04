@@ -1077,7 +1077,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "techs":
         return MutableProperty.of(this::setTechs, this::setTechs, this::getTechs, this::resetTechs);

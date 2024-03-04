@@ -206,7 +206,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case COMBAT_DEFENSE_EFFECT:
         return MutableProperty.of(

@@ -10,6 +10,7 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -91,18 +92,6 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     return units.size();
   }
 
-  @Override
-  protected int getMaxUnitsToBePlacedFrom(
-      final Territory producer,
-      final @Nullable Collection<Unit> units,
-      final Territory to,
-      final GamePlayer player) {
-    if (units == null) {
-      return -1;
-    }
-    return getMaxUnitsToBePlacedFrom(producer, units, to, player, false, null, null);
-  }
-
   // Return collection of bid units which can placed in a land territory
   @Override
   protected Collection<Unit> getUnitsToBePlaced(
@@ -145,6 +134,14 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
             .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
     // now check stacking limits
     return UnitStackingLimitFilter.filterUnits(placeableUnits, PLACEMENT_LIMIT, player, to);
+  }
+
+  @Override
+  protected List<Territory> getAllProducers(
+      final Territory to, final GamePlayer player, final Collection<Unit> unitsToPlace) {
+    final List<Territory> producers = new ArrayList<>();
+    producers.add(to);
+    return producers;
   }
 
   @Override

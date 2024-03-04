@@ -17,8 +17,7 @@ final class IntegerClientSetting extends ClientSetting<Integer> {
   }
 
   @Override
-  @Nullable
-  protected Integer decodeValue(final String encodedValue) throws ValueEncodingException {
+  protected @Nullable Integer decodeValue(final String encodedValue) throws ValueEncodingException {
     try {
       if (encodedValue.isEmpty()) {
         return null;

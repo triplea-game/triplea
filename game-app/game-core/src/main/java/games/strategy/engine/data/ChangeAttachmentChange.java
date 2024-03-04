@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import lombok.Getter;
 
 /** A game data change that captures a change to an attachment property value. */
@@ -57,7 +58,7 @@ public class ChangeAttachmentChange extends Change {
    */
   public ChangeAttachmentChange(
       final Attachable attachTo,
-      final String attachmentName,
+      final @Nullable String attachmentName,
       final Object newValue,
       final Object oldValue,
       final String property,

@@ -1663,14 +1663,13 @@ public class MoveValidator {
   }
 
   /** Get the route ignoring forced territories. */
-  public static Route getBestRoute(
+  public static @Nullable Route getBestRoute(
       final Territory start,
       final Territory end,
       final GameData data,
       final GamePlayer player,
       final Collection<Unit> units,
       final boolean forceLandOrSeaRoute) {
-
     final boolean hasLand = units.stream().anyMatch(Matches.unitIsLand());
     final boolean hasAir = units.stream().anyMatch(Matches.unitIsAir());
     final boolean isNeutralsImpassable =

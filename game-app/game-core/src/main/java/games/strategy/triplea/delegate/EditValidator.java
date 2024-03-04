@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -25,7 +26,8 @@ import org.triplea.util.Triple;
 final class EditValidator {
   private EditValidator() {}
 
-  private static String validateTerritoryBasic(final GameData data, final Territory territory) {
+  private static @Nullable String validateTerritoryBasic(
+      final GameData data, final Territory territory) {
     // territory cannot be in an UndoableMove route
     final List<UndoableMove> moves = data.getMoveDelegate().getMovesMade();
     for (final UndoableMove move : moves) {
@@ -110,7 +112,7 @@ final class EditValidator {
     return validateTerritoryBasic(data, territory);
   }
 
-  static String validateRemoveUnits(
+  static @Nullable String validateRemoveUnits(
       final GameData data, final Territory territory, final Collection<Unit> units) {
     if (units.isEmpty()) {
       return "No units selected";
@@ -142,8 +144,7 @@ final class EditValidator {
     return null;
   }
 
-  @Nullable
-  static String validateAddTech(
+  static @Nullable String validateAddTech(
       final GameState data, final Collection<TechAdvance> techs, final GamePlayer player) {
     if (techs == null) {
       return "No tech selected";
@@ -169,8 +170,7 @@ final class EditValidator {
     return null;
   }
 
-  @Nullable
-  static String validateRemoveTech(
+  static @Nullable String validateRemoveTech(
       final GameState data, final Collection<TechAdvance> techs, final GamePlayer player) {
     if (techs == null) {
       return "No tech selected";
@@ -199,7 +199,7 @@ final class EditValidator {
     return null;
   }
 
-  static String validateChangeHitDamage(
+  static @Nullable String validateChangeHitDamage(
       final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
@@ -230,7 +230,7 @@ final class EditValidator {
     return null;
   }
 
-  static String validateChangeBombingDamage(
+  static @Nullable String validateChangeBombingDamage(
       final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
@@ -263,12 +263,9 @@ final class EditValidator {
     return null;
   }
 
-  @Nullable
-  static String validateChangePoliticalRelationships(
+  static @Nullable String validateChangePoliticalRelationships(
       final Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> relationshipChanges) {
-    if (relationshipChanges == null || relationshipChanges.isEmpty()) {
-      return "Relationship Changes are empty";
-    }
+    Preconditions.checkArgument(!relationshipChanges.isEmpty());
     for (final Triple<GamePlayer, GamePlayer, RelationshipType> relationshipChange :
         relationshipChanges) {
       if (relationshipChange.getFirst() == null || relationshipChange.getSecond() == null) {

@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
@@ -79,6 +80,7 @@ class PlayerChooser extends JOptionPane {
    *
    * @return the player or null
    */
+  @Nullable
   GamePlayer getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();
