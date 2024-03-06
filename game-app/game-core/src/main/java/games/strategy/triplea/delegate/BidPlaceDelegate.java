@@ -133,7 +133,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
         Matches.unitConsumesUnitsOnCreation()
             .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
     // now check stacking limits
-    return UnitStackingLimitFilter.filterUnits(placeableUnits, PLACEMENT_LIMIT, player, to);
+    return applyStackingLimitsPerUnitType(placeableUnits, to);
   }
 
   @Override
