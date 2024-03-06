@@ -33,10 +33,6 @@ public class ErrorReportBodyFormatter {
       @Nullable final String mapName,
       final LoggerRecord logRecord,
       final Version engineVersion) {
-    String engineVersionLink =
-        String.format(
-            "[%s](https://github.com/triplea-game/triplea/releases/tag/%s)",
-            engineVersion, engineVersion);
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
             .map(description -> "## User Description\n" + description + "\n\n")
             .orElse("")
@@ -46,18 +42,23 @@ public class ErrorReportBodyFormatter {
         + Optional.ofNullable(logRecord.getLogMessage())
             .map(msg -> "## Log Message\n" + msg + "\n\n")
             .orElse("")
-        + "## TripleA Version\n"
-        + engineVersionLink
-        + "\n\n"
-        + "## Java Version\n"
-        + SystemProperties.getJavaVersion()
-        + "\n\n"
-        + "## Operating System\n"
-        + SystemProperties.getOperatingSystem()
-        + "\n\n"
+        + ("## TripleA Version\n" + linkifyEngineVersion(engineVersion) + "\n\n")
+        + ("## Java Version\n" + SystemProperties.getJavaVersion() + "\n\n")
+        + ("## Operating System\n" + SystemProperties.getOperatingSystem() + "\n\n")
+        + ("## Heap Size\n" + getHeapSize() + "\n\n")
         + (logRecord.getExceptions().isEmpty()
             ? ""
             : "\n\n" + ErrorReportBodyFormatter.throwableToString(logRecord.getExceptions()));
+  }
+
+  private String linkifyEngineVersion(Version engineVersion) {
+    return String.format(
+        "[%s](https://github.com/triplea-game/triplea/releases/tag/%s)",
+        engineVersion, engineVersion);
+  }
+
+  private String getHeapSize() {
+    return Runtime.getRuntime().maxMemory() / 1024 / 1024 + "M";
   }
 
   private static String throwableToString(final List<ExceptionDetails> exceptionDetails) {
