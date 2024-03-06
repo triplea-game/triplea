@@ -6,6 +6,7 @@
 .remote-libs/
 .settings
 .checkstyle
+.DS_Store
 
 *.iml
 *.backup
