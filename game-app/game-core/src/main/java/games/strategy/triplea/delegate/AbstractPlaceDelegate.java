@@ -886,7 +886,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return null;
   }
 
-  protected boolean hasUnitPlacementRestrictions() {
+  private boolean hasUnitPlacementRestrictions() {
     // Note: Overridden by BidPlaceDelegate.
     return Properties.getUnitPlacementRestrictions(getProperties());
   }
@@ -1447,7 +1447,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * @param countNeighbors If true, and 'to' is water, then we will test neighboring land
    *     territories to see if they have any of the required units as well.
    */
-  private Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(
+  protected Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(
       final Territory to, final boolean countNeighbors) {
     return unitWhichRequiresUnits -> {
       if (!Matches.unitRequiresUnitsOnCreation().test(unitWhichRequiresUnits)) {

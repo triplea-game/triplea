@@ -99,7 +99,7 @@ public class UiContext {
       throw new IllegalStateException("Map name property not set on game");
     }
     mapName = data.getMapName();
-    StackTraceReportModel.setCurrentMapName(mapName);
+    StackTraceReportModel.setCurrentMapName(mapName + " / " + data.getGameName());
 
     List<Path> resourceLoadingPaths = new ArrayList<>();
 
