@@ -145,9 +145,10 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   }
 
   @Override
-  protected boolean hasUnitPlacementRestrictions() {
+  protected Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(
+      final Territory to, final boolean countNeighbors) {
     // Ignore "require units" for bid placements, since that's used for custom factory types, which
     // bids should be ignoring.
-    return false;
+    return u -> true;
   }
 }
