@@ -73,18 +73,18 @@ public class ErrorReportBodyFormatter {
   private static String formatException(ExceptionDetails e) {
     final var outputStream = new ByteArrayOutputStream();
     if (e.getStackTraceElements() != null && e.getStackTraceElements().length > 0) {
+      outputStream.write('\n');
       try (var printWriter = new PrintWriter(outputStream, false, StandardCharsets.UTF_8)) {
         final var exceptionForStackTracePrinting = new Exception();
         exceptionForStackTracePrinting.setStackTrace(e.getStackTraceElements());
         exceptionForStackTracePrinting.printStackTrace(printWriter);
       }
+      outputStream.write('\n');
     }
     return "Exception: "
         + e.getExceptionClassName()
         + " "
         + Optional.ofNullable(e.getExceptionMessage()).orElse("")
-        + "\n"
-        + outputStream.toString(StandardCharsets.UTF_8)
-        + "\n";
+        + outputStream.toString(StandardCharsets.UTF_8);
   }
 }
