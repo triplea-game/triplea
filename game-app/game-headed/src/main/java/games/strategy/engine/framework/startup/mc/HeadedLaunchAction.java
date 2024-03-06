@@ -92,8 +92,8 @@ public class HeadedLaunchAction implements LaunchAction {
         () -> {
           LookAndFeelSwingFrameListener.register(frame);
           frame.setSize(700, 400);
-          frame.setVisible(true);
           frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+          frame.setVisible(true);
           frame.toFront();
         });
 
