@@ -463,6 +463,9 @@
         <unit name="infantry2"/>
         <unit name="submarine2"/>
     </unitList>
+    <territoryEffectList>
+        <territoryEffect name="marsh"/>
+    </territoryEffectList>
 <gamePlay>
         <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate"/>
         <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate"/>
@@ -948,6 +951,7 @@
         </attachment>
         <attachment name="territoryAttachment" attachTo="West Canada" javaClass="TerritoryAttachment" type="territory">
             <option name="production" value="2" />
+            <option name="territoryEffect" value="marsh"/>
         </attachment>
         <attachment name="territoryAttachment" attachTo="West Europe" javaClass="TerritoryAttachment" type="territory">
             <option name="production" value="2" />
@@ -980,6 +984,10 @@
             <option name="placementAnyTerritory" value="true"/>
             <option name="placementCapturedTerritory" value="true"/>
             <option name="placementPerTerritory" value="3"/>
+        </attachment>
+
+        <attachment name="territoryEffectAttachment" attachTo="marsh" javaClass="TerritoryEffectAttachment" type="territoryEffect">
+            <option name="unitsNotAllowed" value="armour"/>
         </attachment>
 
     </attachmentList>
