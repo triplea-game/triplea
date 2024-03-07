@@ -7,6 +7,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import games.strategy.engine.data.GamePlayer;
@@ -142,6 +143,14 @@ public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
     // we can't place 2
     response = delegate.canUnitsBePlaced(egypt, create(british, factory, 2), british);
     assertError(response);
+  }
+
+  @Test
+  void testTerritoryEffectForbiddenUnits() {
+    List<Unit> units = armour.create(1, british);
+    final PlaceableUnits response = delegate.getPlaceableUnits(units, westCanada);
+    assertThat(response.getUnits(), is(empty()));
+    assertError(delegate.canUnitsBePlaced(westCanada, units, british));
   }
 
   @Test
