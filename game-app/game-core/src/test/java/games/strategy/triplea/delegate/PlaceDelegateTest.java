@@ -13,7 +13,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.util.Collection;
@@ -25,15 +27,22 @@ import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 
 class PlaceDelegateTest extends AbstractDelegateTestCase {
+  private final UnitType factory2 = unitType("factory2", gameData);
+  private final UnitType infantry2 = unitType("infantry2", gameData);
+
   private PlaceDelegate delegate;
 
-  @BeforeEach
-  void setupPlaceDelegate() {
-    final IDelegateBridge bridge = newDelegateBridge(british);
+  private void setupDelegate(GamePlayer player) {
+    final IDelegateBridge bridge = newDelegateBridge(player);
     delegate = new PlaceDelegate();
     delegate.initialize("place");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
+  }
+
+  @BeforeEach
+  void setupPlaceDelegate() {
+    setupDelegate(british);
   }
 
   @Test
@@ -158,8 +167,6 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
     // Needed for canProduceXUnits to work. (!)
     gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
-    final var factory2 = unitType("factory2", gameData);
-    final var infantry2 = unitType("infantry2", gameData);
 
     final var threeInfantry2 = create(british, infantry2, 3);
     final var fourInfantry2 = create(british, infantry2, 4);
@@ -178,7 +185,6 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     gameData.getProperties().set(UNIT_PLACEMENT_RESTRICTIONS, true);
     // Needed for canProduceXUnits to work. (!)
     gameData.getProperties().set(DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
-    final var factory2 = unitType("factory2", gameData);
     final var sub2 = unitType("submarine2", gameData);
 
     final var threeSub2 = create(british, sub2, 3);
@@ -241,7 +247,7 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testPlayerAttachmentStackingLimit() {
+  void testPlayerAttachmentStackingLimitSea() {
     // we can place 3 battleships
     Collection<Unit> units = create(british, battleship, 3);
     assertValid(delegate.canUnitsBePlaced(northSea, units, british));
@@ -267,6 +273,36 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
     assertThat(result, hasSize(6));
     assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(battleship)), hasSize(3));
     assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(carrier)), hasSize(3));
+  }
+
+  @Test
+  void testPlayerAttachmentStackingLimitLand() {
+    setupDelegate(japanese);
+    japan.getUnitCollection().addAll(create(japanese, factory2, 1));
+    // we can place 3 infantry
+    Collection<Unit> units = create(japanese, infantry, 3);
+    assertValid(delegate.canUnitsBePlaced(japan, units, japanese));
+    // but not 4
+    units = create(japanese, infantry, 4);
+    assertError(delegate.canUnitsBePlaced(japan, units, japanese));
+
+    // we can also place 2 infantry and an infantry2
+    units = create(japanese, infantry, 2);
+    units.addAll(create(japanese, infantry2, 1));
+    assertValid(delegate.canUnitsBePlaced(japan, units, japanese));
+    // but not 2 infantry and 2 infantry2
+    units.addAll(create(japanese, infantry2, 1));
+    assertError(delegate.canUnitsBePlaced(japan, units, japanese));
+    // However, getPlaceableUnits() should return 2 of each, since that's what's for filtering the
+    // options given to the user.
+    assertThat(
+        delegate.getPlaceableUnits(units, japan).getUnits(), containsInAnyOrder(units.toArray()));
+    units.addAll(create(japanese, infantry, 7));
+    units.addAll(create(japanese, infantry2, 5));
+    var result = delegate.getPlaceableUnits(units, japan).getUnits();
+    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(infantry)), hasSize(3));
+    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(infantry2)), hasSize(3));
+    assertThat(result, hasSize(6));
   }
 
   @Test

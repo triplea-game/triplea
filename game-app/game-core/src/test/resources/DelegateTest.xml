@@ -439,7 +439,7 @@
         <player name="British" optional="false"/>
         <player name="Chinese" optional="false"/>
         <player name="Americans" optional="false"/>
-        <player name="Russians" optional="false"></player>
+        <player name="Russians" optional="false"/>
         <alliance player="Americans" alliance="imperial"/>
         <alliance player="British" alliance="imperial"/>
         <alliance player="Chinese" alliance="imperial"/>
@@ -474,7 +474,6 @@
         <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate"/>
         <delegate name="endTurnNoPU" javaClass="games.strategy.triplea.delegate.NoPUEndTurnDelegate" display="Turn Complete"/>
         <sequence>
-
             <step name="gameInitDelegate" delegate="initDelegate"/>
 
             <step name="britishTech" delegate="tech" player="British"/>
@@ -625,7 +624,6 @@
             <frontierRules name="buyFactoryIndustrialTechnology"/>
         </productionFrontier>
 
-
         <playerProduction player="British" frontier="production"/>
         <playerProduction player="Japanese" frontier="production"/>
         <playerProduction player="Americans" frontier="production"/>
@@ -715,10 +713,7 @@
             <option name="defense" value="2"/>
         </attachment>
 
-        <attachment name="unitAttachment"
-            attachTo="factory"
-            javaClass="UnitAttachment"
-            type="unitType">
+        <attachment name="unitAttachment" attachTo="factory" javaClass="UnitAttachment" type="unitType">
             <option name="isFactory" value="true"/>
         </attachment>
 
@@ -732,6 +727,7 @@
             <option name="attack" value="1"/>
             <option name="defense" value="2"/>
             <option name="requiresUnits" value="factory2"/>
+            <option name="placementLimit" value="owned" count="4"/>
         </attachment>
         <attachment name="unitAttachment" attachTo="submarine2" javaClass="UnitAttachment" type="unitType">
             <option name="isSub" value="true"/>
@@ -742,10 +738,7 @@
             <option name="requiresUnits" value="factory2"/>
         </attachment>
 
-        <attachment name="unitAttachment"
-            attachTo="aaGun"
-            javaClass="UnitAttachment"
-            type="unitType">
+        <attachment name="unitAttachment"  attachTo="aaGun" javaClass="UnitAttachment" type="unitType">
             <option name="isAA" value="true"/>
             <option name="transportCost" value="2"/>
             <option name="movement" value="1"/>
@@ -975,6 +968,10 @@
             <option name="movementLimit" value="owned:infantry" count="7"/>
         </attachment>
 
+        <attachment name="playerAttachment" attachTo="Japanese" javaClass="PlayerAttachment" type="player">
+            <option name="placementLimit" value="owned:infantry:infantry2" count="3"/>
+        </attachment>
+
         <!-- Chinese Rules -->
         <attachment name="rulesAttachment" attachTo="Chinese" javaClass="RulesAttachment" type="player">
             <option name="movementRestrictionTerritories" value="Yunnan:Manchuria:Kwangtung"/>
@@ -990,7 +987,6 @@
 
         <ownerInitialize>
             <territoryOwner territory="Japan" owner="Japanese"/>
-
 
             <territoryOwner territory="Syria Jordan" owner="Japanese"/>
             <territoryOwner territory="Congo" owner="Japanese"/>
@@ -1014,15 +1010,14 @@
         <unitInitialize>
             <!-- india -->
 
-            <unitPlacement unitType="infantry" territory="India" quantity = "5" owner="Americans"/>
-            <unitPlacement unitType="fighter" territory="India" quantity = "3" owner="Americans"/>
-            <unitPlacement unitType="armour" territory="India" quantity = "2" owner="Americans"/>
+            <unitPlacement unitType="infantry" territory="India" quantity="5" owner="Americans"/>
+            <unitPlacement unitType="fighter" territory="India" quantity="3" owner="Americans"/>
+            <unitPlacement unitType="armour" territory="India" quantity="2" owner="Americans"/>
 
             <unitPlacement unitType="factory" territory="Japan" quantity="1" owner="Japanese"/>
             <unitPlacement unitType="aaGun" territory="Japan" quantity="1" owner="Japanese"/>
             <unitPlacement unitType="transport" territory="Japan Sea Zone" quantity="2" owner="Japanese"/>
             <unitPlacement unitType="battleship" territory="Japan Sea Zone" quantity="1" owner="Japanese"/>
-
 
             <!-- indian ocean-->
             <unitPlacement unitType="transport" territory="Indian Ocean Sea Zone" quantity="2" owner="British"/>
@@ -1038,7 +1033,7 @@
             <unitPlacement unitType="submarine" territory="Baltic Sea Zone" quantity="1" owner="Germans"/>
             <unitPlacement unitType="transport" territory="Baltic Sea Zone" quantity="1" owner="Germans"/>
 
-            <!-- findland norway-->
+            <!-- finland norway-->
             <unitPlacement unitType="armour" territory="Finland Norway" quantity="1" owner="Germans" />
             <unitPlacement unitType="infantry" territory="Finland Norway" quantity="3" owner="Germans" />
             <unitPlacement unitType="fighter" territory="Finland Norway" quantity="1" owner="Germans" />
@@ -1047,8 +1042,7 @@
             <unitPlacement unitType="transport" territory="Red Sea Zone" quantity="2" owner="British"/>
             <unitPlacement unitType="carrier" territory="Red Sea Zone" quantity="2" owner="British"/>
 
-
-            <!--egypt -->
+            <!-- egypt -->
             <unitPlacement unitType="armour" territory="Anglo Sudan Egypt" quantity="6" owner="British"/>
             <unitPlacement unitType="fighter" territory="Anglo Sudan Egypt" quantity="6" owner="British"/>
             <unitPlacement unitType="bomber" territory="Anglo Sudan Egypt" quantity="6" owner="British"/>
@@ -1065,7 +1059,6 @@
             <unitPlacement unitType="carrier" territory="Congo Sea Zone" quantity="2" owner="British"/>
             <unitPlacement unitType="infantry" territory="Congo Sea Zone" quantity="4" owner="British"/>
             <unitPlacement unitType="fighter" territory="Congo Sea Zone" quantity="3" owner="British"/>
-
 
             <!-- congo -->
             <unitPlacement unitType="infantry" territory="Congo" quantity="4" owner="Japanese" />

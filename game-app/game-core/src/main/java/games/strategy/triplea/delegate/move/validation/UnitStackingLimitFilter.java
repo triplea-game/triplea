@@ -121,24 +121,23 @@ public class UnitStackingLimitFilter {
       max = Math.min(max, limitMax - totalInTerritory);
     }
 
-    if (stackingLimit == null) {
-      return max;
+    if (stackingLimit != null) {
+      final Predicate<Unit> stackingMatch;
+      final String stackingType = stackingLimit.getSecond();
+      switch (stackingType) {
+        case "owned":
+          stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
+          break;
+        case "allied":
+          stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner));
+          break;
+        default:
+          stackingMatch = Matches.unitIsOfType(ut);
+          break;
+      }
+      final int totalInTerritory = CollectionUtils.countMatches(existingUnits, stackingMatch);
+      max = Math.min(max, ua.getStackingLimitMax(stackingLimit) - totalInTerritory);
     }
-    max = Math.min(max, ua.getStackingLimitMax(stackingLimit));
-    final Predicate<Unit> stackingMatch;
-    final String stackingType = stackingLimit.getSecond();
-    switch (stackingType) {
-      case "owned":
-        stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
-        break;
-      case "allied":
-        stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner));
-        break;
-      default:
-        stackingMatch = Matches.unitIsOfType(ut);
-        break;
-    }
-    final int totalInTerritory = CollectionUtils.countMatches(existingUnits, stackingMatch);
-    return Math.max(0, max - totalInTerritory);
+    return Math.max(0, max);
   }
 }
