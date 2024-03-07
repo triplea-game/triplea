@@ -1,13 +1,11 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter.PLACEMENT_LIMIT;
 import static java.util.function.Predicate.not;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.PlayerAttachment;
-import games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -133,7 +131,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
         Matches.unitConsumesUnitsOnCreation()
             .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
     // now check stacking limits
-    return UnitStackingLimitFilter.filterUnits(placeableUnits, PLACEMENT_LIMIT, player, to);
+    return applyStackingLimitsPerUnitType(placeableUnits, to);
   }
 
   @Override

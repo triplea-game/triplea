@@ -8,6 +8,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -70,8 +71,12 @@ public class UnitStackingLimitFilter {
     // Note: This must check each unit individually and track the ones that passed in order to
     // correctly handle stacking limits that apply to multiple unit types.
     final var unitsAllowedSoFar = new ArrayList<>(existingUnitsToBePlaced);
+    final var forbiddenTypes = TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t);
     for (final Unit unit : units) {
       UnitType ut = unit.getType();
+      if (forbiddenTypes.contains(ut)) {
+        continue;
+      }
       Tuple<Integer, String> stackingLimit = stackingLimitGetter.apply(ut.getUnitAttachment());
       int maxAllowed =
           getMaximumNumberOfThisUnitTypeToReachStackingLimit(
@@ -121,24 +126,23 @@ public class UnitStackingLimitFilter {
       max = Math.min(max, limitMax - totalInTerritory);
     }
 
-    if (stackingLimit == null) {
-      return max;
+    if (stackingLimit != null) {
+      final Predicate<Unit> stackingMatch;
+      final String stackingType = stackingLimit.getSecond();
+      switch (stackingType) {
+        case "owned":
+          stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
+          break;
+        case "allied":
+          stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner));
+          break;
+        default:
+          stackingMatch = Matches.unitIsOfType(ut);
+          break;
+      }
+      final int totalInTerritory = CollectionUtils.countMatches(existingUnits, stackingMatch);
+      max = Math.min(max, ua.getStackingLimitMax(stackingLimit) - totalInTerritory);
     }
-    max = Math.min(max, ua.getStackingLimitMax(stackingLimit));
-    final Predicate<Unit> stackingMatch;
-    final String stackingType = stackingLimit.getSecond();
-    switch (stackingType) {
-      case "owned":
-        stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
-        break;
-      case "allied":
-        stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner));
-        break;
-      default:
-        stackingMatch = Matches.unitIsOfType(ut);
-        break;
-    }
-    final int totalInTerritory = CollectionUtils.countMatches(existingUnits, stackingMatch);
-    return Math.max(0, max - totalInTerritory);
+    return Math.max(0, max);
   }
 }

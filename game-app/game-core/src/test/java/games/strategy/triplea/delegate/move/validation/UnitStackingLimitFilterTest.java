@@ -103,4 +103,10 @@ class UnitStackingLimitFilterTest extends AbstractDelegateTestCase {
     assertThat(expected, hasSize(3));
     assertThat(callFilterUnits(units, british, uk), is(expected));
   }
+
+  @Test
+  void testTerritoryEffectForbiddenUnits() {
+    List<Unit> units = armour.create(3, british);
+    assertThat(callFilterUnits(units, british, westCanada), is(empty()));
+  }
 }

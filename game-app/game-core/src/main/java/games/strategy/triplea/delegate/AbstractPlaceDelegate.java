@@ -995,6 +995,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       placeableUnits2.removeAll(getUnitsThatCantBePlacedThatRequireUnits(unitsOfType, to));
     }
     // now check stacking limits
+    return applyStackingLimitsPerUnitType(placeableUnits2, to);
+  }
+
+  protected List<Unit> applyStackingLimitsPerUnitType(Collection<Unit> units, Territory to) {
     // Filter each type separately, since we don't want a max on one type to filter out all units of
     // another type, if the two types have a combined limit. UnitStackingLimitFilter doesn't do
     // that directly since other call sites (e.g. move validation) do need the combined filtering.
@@ -1004,7 +1008,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     for (UnitType ut : UnitUtils.getUnitTypesFromUnitList(units)) {
       result.addAll(
           UnitStackingLimitFilter.filterUnits(
-              CollectionUtils.getMatches(placeableUnits2, Matches.unitIsOfType(ut)),
+              CollectionUtils.getMatches(units, Matches.unitIsOfType(ut)),
               PLACEMENT_LIMIT,
               player,
               to,
