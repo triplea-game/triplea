@@ -21,8 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 
-// Base class for tests for PlaceDelegateTest and BidPlaceDelegateTest. Tests defined here are
-// apply to both classes with the same expectations.
+// Base class for PlaceDelegateTest and BidPlaceDelegateTest. Tests defined here are applied to both
+// classes with the same expectations.
 public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
   protected final UnitType infantry2 = unitType("infantry2", gameData);
   protected final UnitType factory2 = unitType("factory2", gameData);
