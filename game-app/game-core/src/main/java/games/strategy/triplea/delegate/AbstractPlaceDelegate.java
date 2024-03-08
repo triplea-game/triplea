@@ -861,10 +861,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return null;
     }
     // account for any unit placement restrictions by territory
+    final int territoryProduction = TerritoryAttachment.getProduction(to);
     for (final Unit currentUnit : units) {
       final UnitAttachment ua = currentUnit.getUnitAttachment();
       final int requiredProduction = ua.getCanOnlyBePlacedInTerritoryValuedAtX();
-      if (requiredProduction != -1 && requiredProduction > TerritoryAttachment.getProduction(to)) {
+      if (requiredProduction != -1 && requiredProduction > territoryProduction) {
         return "Cannot place these units in "
             + to.getName()
             + " due to Unit Placement Restrictions on Territory Value";
