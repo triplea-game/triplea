@@ -978,7 +978,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   protected void addConstructionUnits(
       Collection<Unit> units, Territory to, Collection<Unit> placeableUnits) {
     units = CollectionUtils.getMatches(units, Matches.unitIsConstruction());
-    if (!units.isEmpty()) {
+    if (units.isEmpty()) {
       return;
     }
     IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
