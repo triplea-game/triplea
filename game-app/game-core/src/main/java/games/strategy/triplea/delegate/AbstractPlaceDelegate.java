@@ -1365,21 +1365,25 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
     // build an integer map of each construction unit in the territory
     final IntegerMap<String> unitMapTo = new IntegerMap<>();
-    for (final Unit u : CollectionUtils.getMatches(to.getUnits(), Matches.unitIsConstruction())) {
-      unitMapTo.add(u.getUnitAttachment().getConstructionType(), 1);
-    }
-    // account for units already in the territory, based on max
-    for (final String constructionType : unitMapHeld.keySet()) {
-      int unitMax = unitMapMaxType.getInt(constructionType);
-      if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
-          && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
-        final boolean more = (wasFactoryThereAtStart ? moreWithFactory : moreWithoutFactory);
-        final int production = (more ? territoryProduction : 0);
-        unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10000 : 0));
+    final var existingConstruction =
+        CollectionUtils.getMatches(to.getUnits(), Matches.unitIsConstruction());
+    if (!existingConstruction.isEmpty()) {
+      for (final Unit u : existingConstruction) {
+        unitMapTo.add(u.getUnitAttachment().getConstructionType(), 1);
       }
-      final int existingCount = unitMapTo.getInt(constructionType);
-      final int value = Math.min(unitMax - existingCount, unitMapHeld.getInt(constructionType));
-      unitMapHeld.put(constructionType, Math.max(0, value));
+      // account for units already in the territory, based on max
+      for (final String constructionType : unitMapHeld.keySet()) {
+        int unitMax = unitMapMaxType.getInt(constructionType);
+        if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
+            && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
+          final boolean more = (wasFactoryThereAtStart ? moreWithFactory : moreWithoutFactory);
+          final int production = (more ? territoryProduction : 0);
+          unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10000 : 0));
+        }
+        final int existingCount = unitMapTo.getInt(constructionType);
+        final int value = Math.min(unitMax - existingCount, unitMapHeld.getInt(constructionType));
+        unitMapHeld.put(constructionType, Math.max(0, value));
+      }
     }
     // deal with already placed units
     for (final Unit currentUnit :
