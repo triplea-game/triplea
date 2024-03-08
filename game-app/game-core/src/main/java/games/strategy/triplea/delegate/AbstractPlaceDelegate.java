@@ -886,7 +886,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return null;
   }
 
-  private boolean hasUnitPlacementRestrictions() {
+  protected boolean hasUnitPlacementRestrictions() {
     // Note: Overridden by BidPlaceDelegate.
     return Properties.getUnitPlacementRestrictions(getProperties());
   }
