@@ -935,33 +935,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         }
       }
     }
-    if (units.stream().anyMatch(Matches.unitIsConstruction())) {
-      final IntegerMap<String> constructionsMap =
-          howManyOfEachConstructionCanPlace(to, to, units, player);
-      final var skipUnits = new HashSet<Unit>();
-      for (final Unit currentUnit :
-          CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
-        final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
-        if (maxUnits > 0) {
-          // we are doing this because we could have multiple unitTypes with the same
-          // constructionType, so we have to be able to place the max placement by constructionType
-          // of each unitType
-          if (skipUnits.contains(currentUnit)) {
-            continue;
-          }
-          placeableUnits.addAll(
-              CollectionUtils.getNMatches(
-                  units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
-          skipUnits.addAll(
-              CollectionUtils.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
-        }
-      }
-    }
+    addConstructionUnits(units, to, placeableUnits);
     // remove any units that require other units to be consumed on creation, if we don't have enough
     // to consume (veqryn)
     placeableUnits.removeIf(
-        Matches.unitConsumesUnitsOnCreation()
-            .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
+        not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)));
 
     final Collection<Unit> placeableUnits2;
     if (hasUnitPlacementRestrictions()) {
@@ -995,6 +973,29 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     // now check stacking limits
     return applyStackingLimitsPerUnitType(placeableUnits2, to);
+  }
+
+  protected void addConstructionUnits(
+      Collection<Unit> units, Territory to, Collection<Unit> placeableUnits) {
+    units = CollectionUtils.getMatches(units, Matches.unitIsConstruction());
+    if (units.isEmpty()) {
+      return;
+    }
+    IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
+    for (UnitType ut : UnitUtils.getUnitTypesFromUnitList(units)) {
+      final int max = howManyOfConstructionUnit(ut, constructionsMap);
+      placeableUnits.addAll(CollectionUtils.getNMatches(units, max, Matches.unitIsOfType(ut)));
+    }
+  }
+
+  private static int howManyOfConstructionUnit(UnitType ut, IntegerMap<String> constructionsMap) {
+    final UnitAttachment ua = ut.getUnitAttachment();
+    if (!ua.getIsConstruction()
+        || ua.getConstructionsPerTerrPerTypePerTurn() < 1
+        || ua.getMaxConstructionsPerTypePerTerr() < 1) {
+      return 0;
+    }
+    return Math.max(0, constructionsMap.getInt(ua.getConstructionType()));
   }
 
   protected List<Unit> applyStackingLimitsPerUnitType(Collection<Unit> units, Territory to) {
@@ -1402,16 +1403,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     return unitsAllowed;
-  }
-
-  static int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
-    final UnitAttachment ua = unit.getUnitAttachment();
-    if (!ua.getIsConstruction()
-        || ua.getConstructionsPerTerrPerTypePerTurn() < 1
-        || ua.getMaxConstructionsPerTypePerTerr() < 1) {
-      return 0;
-    }
-    return Math.max(0, constructionsMap.getInt(ua.getConstructionType()));
   }
 
   /**
