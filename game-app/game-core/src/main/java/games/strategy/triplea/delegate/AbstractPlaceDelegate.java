@@ -863,10 +863,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // account for any unit placement restrictions by territory
     for (final Unit currentUnit : units) {
       final UnitAttachment ua = currentUnit.getUnitAttachment();
-      // Can be null!
-      final TerritoryAttachment ta = TerritoryAttachment.get(to);
-      if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
-          && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > (ta == null ? 0 : ta.getProduction())) {
+      final int requiredProduction = ua.getCanOnlyBePlacedInTerritoryValuedAtX();
+      if (requiredProduction != -1 && requiredProduction > TerritoryAttachment.getProduction(to)) {
         return "Cannot place these units in "
             + to.getName()
             + " due to Unit Placement Restrictions on Territory Value";
@@ -886,7 +884,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return null;
   }
 
-  private boolean hasUnitPlacementRestrictions() {
+  protected boolean hasUnitPlacementRestrictions() {
     // Note: Overridden by BidPlaceDelegate.
     return Properties.getUnitPlacementRestrictions(getProperties());
   }
@@ -970,11 +968,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       placeableUnits2 = new ArrayList<>();
       for (final Unit currentUnit : placeableUnits) {
         final UnitAttachment ua = currentUnit.getUnitAttachment();
-        if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
-            && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > territoryProduction) {
+        final int requiredProduction = ua.getCanOnlyBePlacedInTerritoryValuedAtX();
+        if (requiredProduction != -1 && requiredProduction > territoryProduction) {
           continue;
         }
-        if (unitWhichRequiresUnitsHasRequiredUnits(to, true).negate().test(currentUnit)) {
+        if (!unitWhichRequiresUnitsHasRequiredUnits(to, true).test(currentUnit)) {
           continue;
         }
         if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
@@ -1321,7 +1319,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return new IntegerMap<>();
     }
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
-    final Collection<Unit> unitsInTo = to.getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
     // build an integer map of each unit we have in our list of held units, as well as integer maps
     // for maximum units and units per turn
@@ -1329,12 +1326,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final IntegerMap<String> unitMapMaxType = new IntegerMap<>();
     final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<>();
     final int maxFactory = Properties.getFactoriesPerCountry(getProperties());
-    // Can be null!
-    final TerritoryAttachment terrAttachment = TerritoryAttachment.get(to);
-    int toProduction = 0;
-    if (terrAttachment != null) {
-      toProduction = terrAttachment.getProduction();
-    }
+    final int territoryProduction = TerritoryAttachment.getProduction(to);
     for (final Unit currentUnit : CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
       final UnitAttachment ua = currentUnit.getUnitAttachment();
       // account for any unit placement restrictions by territory
@@ -1342,8 +1334,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         if (ua.unitPlacementRestrictionsContain(to)) {
           continue;
         }
-        if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
-            && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > toProduction) {
+        final int requiredProduction = ua.getCanOnlyBePlacedInTerritoryValuedAtX();
+        if (requiredProduction != -1 && requiredProduction > territoryProduction) {
           continue;
         }
         if (unitWhichRequiresUnitsHasRequiredUnits(to, true).negate().test(currentUnit)) {
@@ -1351,18 +1343,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         }
       }
       // remove any units that require other units to be consumed on creation (veqryn)
-      if (Matches.unitConsumesUnitsOnCreation().test(currentUnit)
-          && Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)
-              .negate()
-              .test(currentUnit)) {
+      if (!Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)
+          .test(currentUnit)) {
         continue;
       }
-      unitMapHeld.add(ua.getConstructionType(), 1);
-      unitMapTypePerTurn.put(ua.getConstructionType(), ua.getConstructionsPerTerrPerTypePerTurn());
-      if (ua.getConstructionType().equals(Constants.CONSTRUCTION_TYPE_FACTORY)) {
-        unitMapMaxType.put(ua.getConstructionType(), maxFactory);
+      final String constructionType = ua.getConstructionType();
+      unitMapHeld.add(constructionType, 1);
+      unitMapTypePerTurn.put(constructionType, ua.getConstructionsPerTerrPerTypePerTurn());
+      if (constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)) {
+        unitMapMaxType.put(constructionType, maxFactory);
       } else {
-        unitMapMaxType.put(ua.getConstructionType(), ua.getMaxConstructionsPerTypePerTerr());
+        unitMapMaxType.put(constructionType, ua.getMaxConstructionsPerTypePerTerr());
       }
     }
     final boolean moreWithoutFactory =
@@ -1373,41 +1364,21 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
     // build an integer map of each construction unit in the territory
     final IntegerMap<String> unitMapTo = new IntegerMap<>();
-    if (unitsInTo.stream().anyMatch(Matches.unitIsConstruction())) {
-      for (final Unit currentUnit :
-          CollectionUtils.getMatches(unitsInTo, Matches.unitIsConstruction())) {
-        final UnitAttachment ua = currentUnit.getUnitAttachment();
-        /*
-         * if (Matches.UnitIsFactory.test(currentUnit) && !ua.getIsConstruction())
-         * unitMapTO.add("factory", 1);
-         * else
-         */
-        unitMapTo.add(ua.getConstructionType(), 1);
+    for (final Unit u : CollectionUtils.getMatches(to.getUnits(), Matches.unitIsConstruction())) {
+      unitMapTo.add(u.getUnitAttachment().getConstructionType(), 1);
+    }
+    // account for units already in the territory, based on max
+    for (final String constructionType : unitMapHeld.keySet()) {
+      int unitMax = unitMapMaxType.getInt(constructionType);
+      if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
+          && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
+        final boolean more = (wasFactoryThereAtStart ? moreWithFactory : moreWithoutFactory);
+        final int production = (more ? territoryProduction : 0);
+        unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10000 : 0));
       }
-      // account for units already in the territory, based on max
-      for (final String constructionType : unitMapHeld.keySet()) {
-        int unitMax = unitMapMaxType.getInt(constructionType);
-        if (wasFactoryThereAtStart
-            && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
-            && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
-          unitMax =
-              Math.max(
-                  Math.max(unitMax, (moreWithFactory ? toProduction : 0)),
-                  (unlimitedConstructions ? 10000 : 0));
-        }
-        if (!wasFactoryThereAtStart
-            && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
-            && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
-          unitMax =
-              Math.max(
-                  Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)),
-                  (unlimitedConstructions ? 10000 : 0));
-        }
-        int value =
-            Math.min(
-                unitMax - unitMapTo.getInt(constructionType), unitMapHeld.getInt(constructionType));
-        unitMapHeld.put(constructionType, Math.max(0, value));
-      }
+      final int existingCount = unitMapTo.getInt(constructionType);
+      final int value = Math.min(unitMax - existingCount, unitMapHeld.getInt(constructionType));
+      unitMapHeld.put(constructionType, Math.max(0, value));
     }
     // deal with already placed units
     for (final Unit currentUnit :
@@ -1418,17 +1389,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // modify this list based on how many we can place per turn
     final IntegerMap<String> unitsAllowed = new IntegerMap<>();
     for (final String constructionType : unitMapHeld.keySet()) {
+      final int unitMapTypePerTurnCount = unitMapTypePerTurn.getInt(constructionType);
       final int unitAllowed =
-          Math.max(
-              0,
-              Math.min(
-                  unitMapTypePerTurn.getInt(constructionType),
-                  unitMapHeld.getInt(constructionType)));
+          Math.max(0, Math.min(unitMapTypePerTurnCount, unitMapHeld.getInt(constructionType)));
       if (unitAllowed > 0) {
         unitsAllowed.put(constructionType, unitAllowed);
       }
     }
-    // return our integer map
     return unitsAllowed;
   }
 
