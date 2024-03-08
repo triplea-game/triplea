@@ -6,6 +6,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.PlayerAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -104,6 +105,15 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     placeableUnits.addAll(CollectionUtils.getMatches(units, groundUnits));
     placeableUnits.addAll(CollectionUtils.getMatches(units, airUnits));
     addConstructionUnits(units, to, placeableUnits);
+    if (hasUnitPlacementRestrictions()) {
+      final int territoryProduction = TerritoryAttachment.getProduction(to);
+      final Predicate<Unit> cantBePlacedDueToTerritoryProduction =
+          u -> {
+            int requiredProduction = u.getUnitAttachment().getCanOnlyBePlacedInTerritoryValuedAtX();
+            return requiredProduction != -1 && requiredProduction > territoryProduction;
+          };
+      placeableUnits.removeIf(cantBePlacedDueToTerritoryProduction);
+    }
     // remove any units that require other units to be consumed on creation (veqryn)
     placeableUnits.removeIf(
         not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)));
