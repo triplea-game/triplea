@@ -231,7 +231,7 @@ subprojects {
     // composeBuild is the same as running => docker compose -f .docker/full-stack.yml --ansi never -p triplea build
     dockerCompose {
         projectName = 'triplea'
-        useComposeFiles = ['docker/docker-compose.yml' ]
+        useComposeFiles = ['docker-compose.yml' ]
     }
 
     // compose builds need WAR files for packaging, so we must run the corresponding package (shadowJar) tasks
