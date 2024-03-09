@@ -6,32 +6,6 @@
 #
 version: '3'
 services:
-  lobby:
-    build:
-      context: ../spitfire-server/dropwizard-server/
-      dockerfile: Dockerfile
-    environment:
-      - DATABASE_USER=lobby_user
-      - DATABASE_PASSWORD=lobby
-      - DB_URL=database:5432/lobby_db
-    depends_on:
-      - database
-  game-support-server:
-    build:
-      context: ../servers/game-support/server/
-      dockerfile: Dockerfile
-    environment:
-      - DB_URL=database:5432/lobby_db
-    depends_on:
-      - database
-  maps-server:
-    build:
-      context: ../servers/maps/server/
-      dockerfile: Dockerfile
-    environment:
-      - DB_URL=database:5432/lobby_db
-    depends_on:
-      - database
   database:
     image: postgres:10
     environment:
@@ -39,7 +13,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./.docker-compose/database/01-init.sql:/docker-entrypoint-initdb.d/01-init.sql
     ports:
       - "5432:5432"
     healthcheck:
@@ -47,11 +21,49 @@ services:
       interval: 3s
       retries: 10
       timeout: 3s
+
+  lobby:
+    build:
+      context: spitfire-server/dropwizard-server/
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_USER=lobby_user
+      - DATABASE_PASSWORD=lobby
+      - DB_URL=database:5432/lobby_db
+    ports:
+      - "8080"
+    depends_on:
+      - database
+
+  game-support-server:
+    build:
+      context: servers/game-support/server/
+      dockerfile: Dockerfile
+    environment:
+      - DB_URL=database:5432/lobby_db
+    ports:
+      - "8080"
+    depends_on:
+      - database
+
+  maps-server:
+    build:
+      context: servers/maps/server/
+      dockerfile: Dockerfile
+    environment:
+      - DB_URL=database:5432/lobby_db
+    ports:
+      - "8080"
+    depends_on:
+      - database
+
   nginx:
     image: nginx:stable-alpine-perl
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./.docker-compose/nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     links:
       - game-support-server
+      - maps-server
+      - lobby
