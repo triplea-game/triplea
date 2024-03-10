@@ -1,10 +1,10 @@
 plugins {
-    id 'application'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "application"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 archivesBaseName = "maps-server"
-mainClassName = 'org.triplea.maps.MapsServerApplication'
+mainClassName = "org.triplea.maps.MapsServerApplication"
 
 ext {
     releasesDir = file("$buildDir/releases")
@@ -12,28 +12,28 @@ ext {
 
 jar {
     manifest {
-        attributes 'Main-Class': mainClassName
+        attributes "Main-Class": mainClassName
     }
 }
 
-task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
-    from file('configuration.yml')
+task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
+    from file("configuration.yml")
 
     from(shadowJar.outputs) {
-        into 'bin'
+        into "bin"
     }
 }
 
-task release(group: 'release', dependsOn: portableInstaller) {
+task release(group: "release", dependsOn: portableInstaller) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files)
     }
 }
 
 shadowJar {
-    archiveClassifier.set ''
+    archiveClassifier.set ""
     // mergeServiceFiles is needed by dropwizard
-    // Without this configuration parsing breaks and is unable to find connector type 'http' for
+    // Without this configuration parsing breaks and is unable to find connector type "http" for
     // the following YAML snippet:  server: {applicationConnectors: [{type: http, port: 8080}]
     mergeServiceFiles()
 }
@@ -45,18 +45,18 @@ dependencies {
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
 
-    implementation project(':http-clients:github-client')
-    implementation project(':lib:feign-common')
-    implementation project(':lib:java-extras')
-    implementation project(':servers:maps:client')
-    implementation project(':servers:server-lib')
-    implementation project(':spitfire-server:database')
+    implementation project(":http-clients:github-client")
+    implementation project(":lib:feign-common")
+    implementation project(":lib:java-extras")
+    implementation project(":servers:maps:client")
+    implementation project(":servers:server-lib")
+    implementation project(":spitfire-server:database")
 
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
-    testImplementation project(':lib:test-common')
-    testImplementation project(':spitfire-server:database-test-support')
+    testImplementation project(":lib:test-common")
+    testImplementation project(":spitfire-server:database-test-support")
 }

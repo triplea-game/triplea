@@ -1,4 +1,4 @@
-description = 'TripleA library for utilities and components that depend only on core java, javax.swing, and java.awt'
+description = "TripleA library for utilities and components that depend only on core java, javax.swing, and java.awt"
 
 dependencies {
     implementation "org.awaitility:awaitility:$awaitilityVersion"
@@ -7,6 +7,6 @@ dependencies {
     implementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
     implementation "org.mockito:mockito-core:$mockitoVersion"
     implementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
-    implementation project(':lib:swing-lib')
-    implementation project(':lib:test-common')
+    implementation project(":lib:swing-lib")
+    implementation project(":lib:test-common")
 }
