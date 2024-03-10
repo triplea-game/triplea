@@ -123,9 +123,12 @@ subprojects {
     }
 
     tasks.withType(Test).configureEach {
+        useJUnitPlatform() {
+            excludeTags "RequiresDatabase"
+        }
         testLogging {
             exceptionFormat = "full"
-            showStandardStreams = true
+            events = ["standardOut", "standardError", "skipped", "failed"]
         }
     }
 
@@ -194,13 +197,6 @@ subprojects {
         java {
             googleJavaFormat()
             removeUnusedImports()
-        }
-    }
-
-    //  "test" runs only the tests that do _not_ need a database
-    test {
-        useJUnitPlatform() {
-            excludeTags "RequiresDatabase"
         }
     }
 
