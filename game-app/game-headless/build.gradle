@@ -2,40 +2,40 @@ import org.apache.tools.ant.filters.FixCrLfFilter
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'application'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "application"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 archivesBaseName = "$group-$name"
-mainClassName = 'org.triplea.game.server.HeadlessGameRunner'
+mainClassName = "org.triplea.game.server.HeadlessGameRunner"
 
 dependencies {
-    implementation project(':http-clients:lobby-client')
+    implementation project(":http-clients:lobby-client")
     implementation project(":game-app:ai")
-    implementation project(':game-app:domain-data')
-    implementation project(':game-app:game-core')
-    implementation project(':lib:java-extras')
+    implementation project(":game-app:domain-data")
+    implementation project(":game-app:game-core")
+    implementation project(":lib:java-extras")
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': mainClassName
+        attributes "Main-Class": mainClassName
     }
 }
 
-task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
-    from file('.triplea-root')
-    from file('scripts/run_bot')
-    from(file('scripts/run_bot.bat')) {
+task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
+    from file(".triplea-root")
+    from file("scripts/run_bot")
+    from(file("scripts/run_bot.bat")) {
         filter ReplaceTokens, tokens: [version: project.version]
-        filter FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance('crlf') // workaround for https://github.com/gradle/gradle/issues/1151
+        filter FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("crlf") // workaround for https://github.com/gradle/gradle/issues/1151
     }
     from(shadowJar.outputs) {
-        into 'bin'
+        into "bin"
     }
 }
 
-task release(group: 'release', dependsOn: portableInstaller) {
+task release(group: "release", dependsOn: portableInstaller) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files)
     }
@@ -51,5 +51,5 @@ task copyShadow(dependsOn: shadowJar) {
 }
 
 shadowJar {
-    archiveClassifier.set ''
+    archiveClassifier.set ""
 }

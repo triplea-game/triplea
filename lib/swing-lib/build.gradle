@@ -1,7 +1,7 @@
-description = 'TripleA library for utilities and components that depend only on core java, javax.swing, and java.awt'
+description = "TripleA library for utilities and components that depend only on core java, javax.swing, and java.awt"
 
 dependencies {
-    implementation project(':lib:java-extras')
+    implementation project(":lib:java-extras")
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
-    testImplementation project(':lib:test-common')
+    testImplementation project(":lib:test-common")
 }

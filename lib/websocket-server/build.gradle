@@ -3,8 +3,8 @@ dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
     implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
-    implementation project(':lib:feign-common')
-    implementation project(':lib:java-extras')
-    implementation project(':lib:websocket-client')
+    implementation project(":lib:feign-common")
+    implementation project(":lib:java-extras")
+    implementation project(":lib:websocket-client")
     testImplementation project(":lib:test-common")
 }

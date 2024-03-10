@@ -1,4 +1,4 @@
-description = 'Test utility library, generic test utilities useful for TripleA projects'
+description = "Test utility library, generic test utilities useful for TripleA projects"
 
 dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"

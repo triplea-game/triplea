@@ -1,13 +1,13 @@
 plugins {
-    id 'de.undercouch.download' version '5.6.0'
+    id "de.undercouch.download" version "5.6.0"
 }
 
 dependencies {
-    implementation project(':game-app:domain-data')
-    implementation project(':game-app:game-core')
-    testImplementation project(':game-app:game-headless')
-    testImplementation project(':lib:java-extras')
-    testImplementation project(':lib:test-common')
+    implementation project(":game-app:domain-data")
+    implementation project(":game-app:game-core")
+    testImplementation project(":game-app:game-headless")
+    testImplementation project(":lib:java-extras")
+    testImplementation project(":lib:test-common")
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
 
@@ -23,8 +23,8 @@ task downloadSaveGames {
         mkdir "$projectDir/src/test/resources/save-games/"
 
         def urls = []
-        file('save-game-list.txt').eachLine { path ->
-            if (!path.startsWith('#')) {
+        file("save-game-list.txt").eachLine { path ->
+            if (!path.startsWith("#")) {
                 urls.add(path)
             }
         }
