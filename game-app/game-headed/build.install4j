@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="9.0.6" transformSequenceNumber="9">
+<install4j version="9.0.5" transformSequenceNumber="9">
   <directoryPresets config=".triplea-root" />
   <application name="TripleA" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" createChecksums="false" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="https://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" autoSave="true" convertDotsToUnderscores="false" macVolumeId="af9346379363d40e" javaMinVersion="11" jdkMode="jdk">
     <jreBundles jdkProviderId="AdoptOpenJDK" release="11/jdk-11.0.19+7" />
@@ -277,26 +277,11 @@ return console.askOkCancel(message, true);
                   <property name="itemName" type="string">${compiler:sys.fullName} ${compiler:sys.version}</property>
                 </serializedBean>
               </action>
-              <action id="458" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" rollbackBarrierExitCode="0" failureStrategy="quit">
-                <serializedBean>
-                  <property name="script">
-                    <object class="com.install4j.api.beans.ScriptProperty">
-                      <property name="value" type="string">final boolean is32BitJavaRuntime = "x86".equals(System.getProperty("os.arch"));
-final long halfMemoryMiB = Math.round(SystemInfo.getPhysicalMemory() * 0.5 / 1024L / 1024L);
-return Math.min(is32BitJavaRuntime ? 1024L : 2048L, halfMemoryMiB);</property>
-                    </object>
-                  </property>
-                  <property name="variableName" type="string">heapSizeMiB</property>
-                </serializedBean>
-              </action>
               <action id="457" beanClass="com.install4j.runtime.beans.actions.misc.AddVmOptionsAction" actionElevationType="elevated" rollbackBarrierExitCode="0" failureStrategy="quit">
                 <serializedBean>
                   <property name="launcherId" type="string">33</property>
-                  <property name="vmOptions" type="array" elementType="string" length="3">
-                    <element index="0">-Xmx${installer:heapSizeMiB}M</element>
-                    <element index="1">-Xms${installer:heapSizeMiB}M</element>
-                    <element index="2">-Xss1250K</element>
-                    <element index="3">--add-opens java.desktop/com.apple.eawt.event=ALL-UNNAMED</element>
+                  <property name="vmOptions" type="array" elementType="string" length="1">
+                    <element index="0">-Xss1250K</element>
                   </property>
                 </serializedBean>
               </action>

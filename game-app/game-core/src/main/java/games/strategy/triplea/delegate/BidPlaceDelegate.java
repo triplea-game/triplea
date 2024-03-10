@@ -6,6 +6,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.PlayerAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +14,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
 
 /** Logic for unit placement when bid mode is active. */
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
@@ -104,32 +104,19 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     final Predicate<Unit> airUnits = Matches.unitIsAir().and(Matches.unitIsNotConstruction());
     placeableUnits.addAll(CollectionUtils.getMatches(units, groundUnits));
     placeableUnits.addAll(CollectionUtils.getMatches(units, airUnits));
-    if (units.stream().anyMatch(Matches.unitIsConstruction())) {
-      final IntegerMap<String> constructionsMap =
-          howManyOfEachConstructionCanPlace(to, to, units, player);
-      final Collection<Unit> skipUnit = new ArrayList<>();
-      for (final Unit currentUnit :
-          CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
-        final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
-        if (maxUnits > 0) {
-          // we are doing this because we could have multiple unitTypes with the same
-          // constructionType, so we have to be able to place the max placement by constructionType
-          // of each unitType
-          if (skipUnit.contains(currentUnit)) {
-            continue;
-          }
-          placeableUnits.addAll(
-              CollectionUtils.getNMatches(
-                  units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
-          skipUnit.addAll(
-              CollectionUtils.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
-        }
-      }
+    addConstructionUnits(units, to, placeableUnits);
+    if (hasUnitPlacementRestrictions()) {
+      final int territoryProduction = TerritoryAttachment.getProduction(to);
+      final Predicate<Unit> cantBePlacedDueToTerritoryProduction =
+          u -> {
+            int requiredProduction = u.getUnitAttachment().getCanOnlyBePlacedInTerritoryValuedAtX();
+            return requiredProduction != -1 && requiredProduction > territoryProduction;
+          };
+      placeableUnits.removeIf(cantBePlacedDueToTerritoryProduction);
     }
     // remove any units that require other units to be consumed on creation (veqryn)
     placeableUnits.removeIf(
-        Matches.unitConsumesUnitsOnCreation()
-            .and(not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo))));
+        not(Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo)));
     // now check stacking limits
     return applyStackingLimitsPerUnitType(placeableUnits, to);
   }

@@ -75,8 +75,8 @@ subprojects {
         javaWebsocketVersion = '1.5.3'
         javaxActivationVersion = '1.1.1'
         jaxbApiVersion = '2.3.1'
-        jaxbCoreVersion = '4.0.4'
-        jaxbImplVersion = '4.0.4'
+        jaxbCoreVersion = '4.0.5'
+        jaxbImplVersion = '4.0.5'
         jdbiVersion = '3.45.0'
         jetbrainsAnnotationsVersion = '24.1.0'
         jlayerVersion = '1.0.1.4'
@@ -231,7 +231,7 @@ subprojects {
     // composeBuild is the same as running => docker compose -f .docker/full-stack.yml --ansi never -p triplea build
     dockerCompose {
         projectName = 'triplea'
-        useComposeFiles = ['docker/docker-compose.yml' ]
+        useComposeFiles = ['docker-compose.yml' ]
     }
 
     // compose builds need WAR files for packaging, so we must run the corresponding package (shadowJar) tasks
