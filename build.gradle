@@ -70,7 +70,7 @@ subprojects {
         hamcrestJsonVersion = "0.3"
         hamcrestOptionalVersion = "2.0.0"
         hamcrestVersion = "2.0.0.0"
-        jacksonDataTypeVersion = "2.16.1"
+        jacksonDataTypeVersion = "2.16.2"
         jakartaMailVersion = "2.0.1"
         javaWebsocketVersion = "1.5.3"
         javaxActivationVersion = "1.1.1"
