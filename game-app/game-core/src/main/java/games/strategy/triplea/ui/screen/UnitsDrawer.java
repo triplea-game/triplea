@@ -94,15 +94,15 @@ public class UnitsDrawer extends AbstractDrawable {
       final GameData data,
       final Graphics2D graphics,
       final MapData mapData) {
-
     // If there are too many Units at one point a black line is drawn to make clear which units
     // belong to where
+    final var factory = uiContext.getUnitImageFactory();
     if (overflow) {
       graphics.setColor(Color.BLACK);
       graphics.fillRect(
           placementPoint.x - bounds.x - 2,
-          placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight(),
-          uiContext.getUnitImageFactory().getUnitImageWidth() + 2,
+          placementPoint.y - bounds.y + factory.getUnitImageHeight(),
+          factory.getUnitImageWidth() + 2,
           3);
     }
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
@@ -120,8 +120,7 @@ public class UnitsDrawer extends AbstractDrawable {
             .disabled(disabled)
             .build();
 
-    final Image img = uiContext.getUnitImageFactory().getImage(imageKey);
-
+    final Image img = factory.getImage(imageKey);
     final int maxRange = new Unit(type, owner, data).getMaxMovementAllowed();
 
     final UnitFlagDrawMode drawMode =
@@ -170,39 +169,22 @@ public class UnitsDrawer extends AbstractDrawable {
         }
         if (count > stackSize) {
           final String s = String.valueOf(count);
-          final int x =
-              placementPoint.x
-                  - bounds.x
-                  + 2 * stackSize
-                  + uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10;
-          final int y =
-              placementPoint.y
-                  - 2 * stackSize
-                  - bounds.y
-                  + uiContext.getUnitImageFactory().getUnitImageHeight() / 3;
+
           drawOutlinedText(
               graphics,
               s,
-              x,
-              y,
+              placementPoint.x - bounds.x + 2 * stackSize + factory.getUnitImageWidth() * 6 / 10,
+              placementPoint.y - 2 * stackSize - bounds.y + factory.getUnitImageHeight() / 3,
               MapImage.getPropertyUnitCountColor(),
               MapImage.getPropertyUnitCountOutline());
         }
       } else { // Display a white number at the bottom of the unit
         final String s = String.valueOf(count);
-        final int x =
-            placementPoint.x
-                - bounds.x
-                + uiContext.getUnitImageFactory().getUnitCounterOffsetWidth();
-        final int y =
-            placementPoint.y
-                - bounds.y
-                + uiContext.getUnitImageFactory().getUnitCounterOffsetHeight();
         drawOutlinedText(
             graphics,
             s,
-            x,
-            y,
+            placementPoint.x - bounds.x + factory.getUnitCounterOffsetWidth(),
+            placementPoint.y - bounds.y + factory.getUnitCounterOffsetHeight(),
             MapImage.getPropertyUnitCountColor(),
             MapImage.getPropertyUnitCountOutline());
       }
@@ -232,15 +214,12 @@ public class UnitsDrawer extends AbstractDrawable {
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
     if (!territoryName.isEmpty() && damaged > 1) {
       final String s = String.valueOf(damaged);
-      final int x =
-          placementPoint.x - bounds.x + uiContext.getUnitImageFactory().getUnitImageWidth() * 3 / 4;
-      final int y =
-          placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4;
+      final var factory = uiContext.getUnitImageFactory();
       drawOutlinedText(
           graphics,
           s,
-          x,
-          y,
+          placementPoint.x - bounds.x + factory.getUnitImageWidth() * 3 / 4,
+          placementPoint.y - bounds.y + factory.getUnitImageHeight() / 4,
           MapImage.getPropertyUnitHitDamageColor(),
           MapImage.getPropertyUnitHitDamageOutline());
     }
@@ -249,15 +228,12 @@ public class UnitsDrawer extends AbstractDrawable {
   private void displayFactoryDamage(final Rectangle bounds, final Graphics2D graphics) {
     if (!territoryName.isEmpty() && bombingUnitDamage > 0) {
       final String s = String.valueOf(bombingUnitDamage);
-      final int x =
-          placementPoint.x - bounds.x + uiContext.getUnitImageFactory().getUnitImageWidth() / 4;
-      final int y =
-          placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4;
+      final var factory = uiContext.getUnitImageFactory();
       drawOutlinedText(
           graphics,
           s,
-          x,
-          y,
+          placementPoint.x - bounds.x + factory.getUnitImageWidth() / 4,
+          placementPoint.y - bounds.y + factory.getUnitImageHeight() / 4,
           MapImage.getPropertyUnitFactoryDamageColor(),
           MapImage.getPropertyUnitFactoryDamageOutline());
     }

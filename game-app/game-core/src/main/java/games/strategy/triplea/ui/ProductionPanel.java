@@ -244,13 +244,13 @@ class ProductionPanel extends JPanel {
 
   // This method can be overridden by subclasses
   protected void calculateLimits() {
-    final ResourceCollection resources = getResources();
     final ResourceCollection spent = new ResourceCollection(data);
     int totalUnits = 0;
     for (final Rule current : rules) {
       spent.add(current.getCost(), current.getQuantity());
       totalUnits += current.getQuantity() * current.getProductionRule().getResults().totalValues();
     }
+    final ResourceCollection resources = getResources();
     final ResourceCollection leftToSpend = resources.difference(spent);
     setLeft(leftToSpend, totalUnits);
     for (final Rule current : rules) {

@@ -16,6 +16,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 /** Draws the name, comments, and production value for the associated territory. */
 public class TerritoryNameDrawable extends AbstractDrawable {
@@ -150,7 +151,7 @@ public class TerritoryNameDrawable extends AbstractDrawable {
       final Graphics2D graphics,
       final int x,
       final int y,
-      final Image img,
+      final @Nullable Image img,
       final String prod,
       final boolean drawFromTopLeft) {
     int normalizedY = y;

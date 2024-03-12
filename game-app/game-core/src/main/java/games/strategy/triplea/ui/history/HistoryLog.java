@@ -482,7 +482,7 @@ public class HistoryLog extends JFrame {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       final boolean hasFlag =
           ta != null
-              && t.getOwner() != null
+              && !t.getOwner().isNull()
               && players.contains(t.getOwner())
               && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
       if (hasFlag || !ownedUnits.isEmpty()) {
