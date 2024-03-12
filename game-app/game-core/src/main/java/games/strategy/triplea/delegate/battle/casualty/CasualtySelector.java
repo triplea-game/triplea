@@ -96,7 +96,7 @@ public class CasualtySelector {
     }
 
     if (dice.getHits() == 0) {
-      return new CasualtyDetails(List.of(), List.of(), true);
+      return new CasualtyDetails();
     }
 
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do
@@ -150,8 +150,7 @@ public class CasualtySelector {
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       final boolean unitsWithMarineBonusAndWasAmphibiousKilled =
           casualtyDetails.getKilled().stream()
-              .anyMatch(
-                  unit -> unit.getUnitAttachment().getIsMarine() != 0 && unit.getWasAmphibious());
+              .anyMatch(u -> u.getUnitAttachment().getIsMarine() != 0 && u.getWasAmphibious());
       if (unitsWithMarineBonusAndWasAmphibiousKilled) {
         casualtyDetails.ensureUnitsWithPositiveMarineBonusAreKilledLast(sortedTargetsToPickFrom);
       }

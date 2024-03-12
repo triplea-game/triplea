@@ -332,7 +332,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
         if (territoryAttachment == null) {
           throw new IllegalStateException("No territory attachment for " + current);
         }
-        if (territoryAttachment.getOriginalOwner() == null && current.getOwner() != null) {
+        if (territoryAttachment.getOriginalOwner() == null) {
           changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
         }
         final Collection<Unit> factoryAndInfrastructure =

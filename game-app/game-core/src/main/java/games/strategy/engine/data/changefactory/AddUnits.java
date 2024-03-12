@@ -44,16 +44,7 @@ public class AddUnits extends Change {
 
   /** Returns an unmodifiable map of unit UUIDs to player names. */
   public static Map<UUID, String> buildUnitOwnerMap(final Collection<Unit> units) {
-    return units.stream()
-        .collect(
-            Collectors.toMap(
-                Unit::getId,
-                unit -> {
-                  if (unit.getOwner() == null || unit.getOwner().getName() == null) {
-                    return unit.getData().getPlayerList().getNullPlayer().getName();
-                  }
-                  return unit.getOwner().getName();
-                }));
+    return units.stream().collect(Collectors.toMap(Unit::getId, u -> u.getOwner().getName()));
   }
 
   @Override

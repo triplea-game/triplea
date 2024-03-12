@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundPath;
 
@@ -299,14 +300,15 @@ class AaInMoveUtil implements Serializable {
   }
 
   private static GamePlayer findDefender(
-      final GameData data, final Collection<Unit> defendingUnits, final Territory territory) {
+      final GameData data,
+      final @Nullable Collection<Unit> defendingUnits,
+      final @Nullable Territory territory) {
     if (defendingUnits == null || defendingUnits.isEmpty()) {
-      if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()) {
+      if (territory != null && !territory.getOwner().isNull()) {
         return territory.getOwner();
       }
       return data.getPlayerList().getNullPlayer();
     } else if (territory != null
-        && territory.getOwner() != null
         && !territory.getOwner().isNull()
         && defendingUnits.stream().anyMatch(Matches.unitIsOwnedBy(territory.getOwner()))) {
       return territory.getOwner();
