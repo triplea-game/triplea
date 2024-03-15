@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -37,7 +36,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import org.triplea.config.product.ProductVersionReader;
-import org.triplea.java.timer.Timers;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -240,15 +238,15 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private static GridBagConstraints buildGrid(
       final int x, final int y, final Insets insets, final int width) {
     final int gridHeight = 1;
-    final double weigthX = 0;
-    final double weigthY = 0;
+    final double weightX = 0;
+    final double weightY = 0;
     final int anchor = GridBagConstraints.WEST;
     final int fill = GridBagConstraints.NONE;
     final int ipadx = 0;
     final int ipady = 0;
 
     return new GridBagConstraints(
-        x, y, width, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
+        x, y, width, gridHeight, weightX, weightY, anchor, fill, insets, ipadx, ipady);
   }
 
   private void setOriginalPropertiesMap(final GameData data) {

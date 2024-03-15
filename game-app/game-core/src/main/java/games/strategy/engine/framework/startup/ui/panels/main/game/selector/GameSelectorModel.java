@@ -48,7 +48,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
 
   // Don't load a save game before the startup task to load the initial map has run, else that task
   // may "lose" the race and overwrite the loaded saved game.
-  private CountDownLatch readyForSaveLoad = new CountDownLatch(1);
+  private final CountDownLatch readyForSaveLoad = new CountDownLatch(1);
 
   public GameSelectorModel() {}
 
@@ -176,7 +176,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   /** Clears AI game over cache and loads default game in a new thread. */
   @Override
   public void onGameEnded() {
-    // clear out ai cached properties (this ended up being the best place to put it,
+    // clear out AI cached properties (this ended up being the best place to put it,
     // as we have definitely left a game at this point)
     GameShutdownRegistry.runShutdownActions();
     ThreadRunner.runInNewThread(this::loadDefaultGameSameThread);
