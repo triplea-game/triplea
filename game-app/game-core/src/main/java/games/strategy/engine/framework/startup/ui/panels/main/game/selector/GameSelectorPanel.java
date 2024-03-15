@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -36,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import org.triplea.config.product.ProductVersionReader;
+import org.triplea.java.timer.Timers;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -367,7 +369,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
         .build()
         .run(
             () -> {
-              if (model.load(file)) {
+              if (model.loadSave(file)) {
                 setOriginalPropertiesMap(model.getGameData());
               }
             });
@@ -393,17 +395,10 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     BackgroundTaskRunner.runInBackground(
         "Loading map...",
         () -> {
-          model.load(gameFile);
-          // warning: NPE check is not to protect against concurrency, another thread could still
-          // null
-          // out game data.
-          // The NPE check is to protect against the case where there are errors loading game, in
-          // which case we'll have a null game data.
-          if (model.getGameData() != null) {
+          if (model.loadMap(gameFile)) {
             setOriginalPropertiesMap(model.getGameData());
             // only for new games, not saved games, we set the default options, and set them only
-            // once
-            // (the first time it is loaded)
+            // once (the first time it is loaded)
             gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
           }
         });

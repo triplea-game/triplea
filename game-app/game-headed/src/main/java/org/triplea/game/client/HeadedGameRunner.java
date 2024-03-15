@@ -142,7 +142,11 @@ public final class HeadedGameRunner {
           headedServerSetupModel = new HeadedServerSetupModel(gameSelectorModel);
           MainFrame.buildMainFrame(headedServerSetupModel, gameSelectorModel);
           headedServerSetupModel.showSelectType();
-          ThreadRunner.runInNewThread(HeadedGameRunner::showMainFrame);
+          ThreadRunner.runInNewThread(
+              () -> {
+                showMainFrame();
+                gameSelectorModel.setReadyForSaveLoad();
+              });
         });
 
     UpdateChecks.launch();
@@ -150,7 +154,7 @@ public final class HeadedGameRunner {
 
   /**
    * Sets the 'main frame' to visible. In this context the main frame is the initial welcome (launch
-   * lobby/single player game etc..) screen presented to GUI enabled clients.
+   * lobby/single player game etc.) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
     GameShutdownRegistry.runShutdownActions();
@@ -169,7 +173,7 @@ public final class HeadedGameRunner {
       final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
       if (!saveGameFileName.isEmpty()) {
         final Path saveGameFile = Path.of(saveGameFileName);
-        if (Files.exists(saveGameFile) && !gameSelectorModel.load(saveGameFile)) {
+        if (Files.exists(saveGameFile) && !gameSelectorModel.loadSave(saveGameFile)) {
           // abort launch if we failed to load the specified game
           return;
         }
