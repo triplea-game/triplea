@@ -67,7 +67,7 @@ public class HeadlessLaunchAction implements LaunchAction {
     serverModel.setAllPlayersToNullNodes();
     final Path autoSaveFile = getAutoSaveFileUtils().getHeadlessAutoSaveFile();
     if (Files.exists(autoSaveFile)) {
-      gameSelectorModel.load(autoSaveFile);
+      gameSelectorModel.loadSave(autoSaveFile);
     }
   }
 
