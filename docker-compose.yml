@@ -15,13 +15,28 @@ services:
     volumes:
       - ./.docker-compose/database/01-init.sql:/docker-entrypoint-initdb.d/01-init.sql
     ports:
-      - "5432:5432"
+      - "5432"
     healthcheck:
       test: echo 'select 1' | psql -h localhost -U postgres  | grep -q '1 row'
       interval: 3s
       retries: 10
       timeout: 3s
-
+  flyway:
+#    container_name: my-flyway
+    environment:
+      - FLYWAY_USER=lobby_user
+      - FLYWAY_PASSWORD=lobby
+      - FLYWAY_URL=jdbc:postgresql://database:5432/lobby_db
+#      - FLYWAY_SCHEMAS=lobby_db
+#      - FLYWAY_GROUP=true
+#      - FLYWAY_LICENSE_KEY=${FLYWAY_LICENSE_KEY}
+#      - FLYWAY_EDITION=${FLYWAY_EDITION}
+    image: flyway/flyway:latest
+    command: -X -locations=filesystem:/flyway/sql -connectRetries=60 migrate
+    volumes:
+      - ./spitfire-server/database/src/main/resources/db/migration/lobby_db:/flyway/sql
+    depends_on:
+      - database
   lobby:
     build:
       context: spitfire-server/dropwizard-server/
@@ -34,6 +49,7 @@ services:
       - "8080"
     depends_on:
       - database
+      - flyway
 
   game-support-server:
     build:
@@ -45,6 +61,7 @@ services:
       - "8080"
     depends_on:
       - database
+      - flyway
 
   maps-server:
     build:
@@ -56,13 +73,14 @@ services:
       - "8080"
     depends_on:
       - database
+      - flyway
 
   nginx:
     image: nginx:stable-alpine-perl
     volumes:
       - ./.docker-compose/nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - "80:80"
+      - "80"
     links:
       - game-support-server
       - maps-server

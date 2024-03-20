@@ -13,13 +13,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.maps.MapsModuleDatabaseTestSupport;
-import org.triplea.test.common.RequiresDatabase;
 
 @DataSet(value = "map_index.yml,map_tag_value.yml", useSequenceFiltering = false)
 @ExtendWith(MapsModuleDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
 @AllArgsConstructor
-@RequiresDatabase
 class MapTagsDaoTest {
 
   private final MapTagsDao mapTagsDao;
