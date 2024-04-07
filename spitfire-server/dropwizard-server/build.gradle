@@ -1,6 +1,7 @@
 plugins {
     id "application"
     id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.avast.gradle.docker-compose" version "0.17.6"
 }
 
 archivesBaseName = "$group-$name"
@@ -71,3 +72,41 @@ dependencies {
     testImplementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 }
+
+
+dockerCompose {
+    lobby {
+        projectName = "triplea"
+        useComposeFiles = ["../../docker-compose.yml"]
+        startedServices = ["lobby"]
+        captureContainersOutput = true
+    }
+}
+
+sourceSets {
+    integ {
+        java.srcDir("$projectDir/src/integ/java")
+        resources.srcDir("$projectDir/src/integ/resources")
+
+        annotationProcessorPath += main.annotationProcessorPath
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+    }
+}
+
+configurations {
+    integImplementation.extendsFrom testImplementation
+    integRuntime.extendsFrom testRuntime
+}
+
+task integTest(type: Test) {
+    doFirst {
+        dockerCompose.lobby.exposeAsEnvironment(integTest)
+    }
+    testClassesDirs = sourceSets.integ.output.classesDirs
+    classpath = sourceSets.integ.runtimeClasspath
+    dependsOn("shadowJar")
+    dependsOn("lobbyComposeUp")
+}
+integTest.finalizedBy("lobbyComposeDown")
+check.dependsOn(integTest)

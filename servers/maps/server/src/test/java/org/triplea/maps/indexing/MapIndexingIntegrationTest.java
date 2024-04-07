@@ -8,14 +8,12 @@ import static org.hamcrest.core.StringContains.containsString;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.github.MapRepoListing;
 import org.triplea.maps.MapsServerConfig;
-import org.triplea.test.common.RequiresDatabase;
 
 /**
  * Test that does a live indexing (goes over network to github) of 'triplea-maps/test-map'. We'll
  * build an indexer and then run indexing on the test map. The test map will be in a known state and
  * we'll then verify the returned indexing results are as expected.
  */
-@RequiresDatabase
 public class MapIndexingIntegrationTest {
 
   @Test

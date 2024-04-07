@@ -18,13 +18,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.SystemIdLoader;
 import org.triplea.http.client.LobbyHttpClientConfig;
-import org.triplea.test.common.RequiresDatabase;
 
 @ExtendWith(SpitfireServerTestExtension.class)
 @ExtendWith(SpitfireDatabaseTestSupport.class)
 @ExtendWith(DBUnitExtension.class)
 @DataSet(value = ControllerIntegrationTest.DATA_SETS, useSequenceFiltering = false)
-@RequiresDatabase
 public abstract class ControllerIntegrationTest {
 
   @BeforeAll

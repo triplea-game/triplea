@@ -200,34 +200,15 @@ subprojects {
         }
     }
 
-    //  "testWithDatabase" runs only the tests that need a database
-    tasks.register("testWithDatabase", Test) {
-        description = "Runs integration tests."
-        group = "verification"
-
-        dependsOn(":composeUp")
-        dependsOn(":spitfire-server:database:flywayMigrateLobbyDb")
-        dependsOn(":spitfire-server:database:flywayMigrateErrorReportDb")
-
-        useJUnitPlatform() {
-            includeTags "RequiresDatabase"
-        }
-    }
-
-    //  - "testAll" runs all tests
-    task testAll {
-        dependsOn testWithDatabase
-        dependsOn test
-    }
-
-    //  - "check" should run ALL validations, tests, spotlessChecks, everything..
-    check.dependsOn testAll
+    test.dependsOn composeUp
 
     // composeUp is the same as running => docker compose -f .docker/full-stack.yml --ansi never -p triplea up
     // composeBuild is the same as running => docker compose -f .docker/full-stack.yml --ansi never -p triplea build
     dockerCompose {
         projectName = "triplea"
         useComposeFiles = ["docker-compose.yml" ]
+        startedServices = ["database"]
+        stopContainers = false
     }
 
     // compose builds need WAR files for packaging, so we must run the corresponding package (shadowJar) tasks

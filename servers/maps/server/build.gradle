@@ -1,6 +1,7 @@
 plugins {
     id "application"
     id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.avast.gradle.docker-compose" version "0.17.6"
 }
 
 archivesBaseName = "maps-server"
@@ -31,11 +32,27 @@ task release(group: "release", dependsOn: portableInstaller) {
 }
 
 shadowJar {
-    archiveClassifier.set ""
+    archiveClassifier.set("")
     // mergeServiceFiles is needed by dropwizard
     // Without this configuration parsing breaks and is unable to find connector type "http" for
     // the following YAML snippet:  server: {applicationConnectors: [{type: http, port: 8080}]
     mergeServiceFiles()
+}
+
+sourceSets {
+    integ {
+        java.srcDir("$projectDir/src/integ/java")
+        resources.srcDir("$projectDir/src/integ/resources")
+
+        annotationProcessorPath += main.annotationProcessorPath
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+
+    }
+}
+configurations {
+    integImplementation.extendsFrom testImplementation
+    integRuntime.extendsFrom testRuntime
 }
 
 
@@ -59,4 +76,29 @@ dependencies {
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
     testImplementation project(":lib:test-common")
     testImplementation project(":spitfire-server:database-test-support")
+
+    integImplementation project(":lib:http-client-lib")
+    integImplementation "org.assertj:assertj-core:3.25.3"
+    integImplementation "org.projectlombok:lombok:1.18.30"
 }
+
+dockerCompose {
+    maps {
+        projectName = "triplea"
+        useComposeFiles = ["../../../docker-compose.yml"]
+        startedServices = ["maps-server"]
+        captureContainersOutput = true
+    }
+}
+
+task integTest(type: Test) {
+    doFirst {
+        dockerCompose.maps.exposeAsEnvironment(integTest)
+    }
+    testClassesDirs = sourceSets.integ.output.classesDirs
+    classpath = sourceSets.integ.runtimeClasspath
+    dependsOn("shadowJar")
+    dependsOn("mapsComposeUp")
+}
+integTest.finalizedBy("mapsComposeDown")
+check.dependsOn(integTest)
