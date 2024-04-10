@@ -65,9 +65,6 @@ task downloadAssets {
 
 run {
     dependsOn downloadAssets
-    dependsOn rootProject.composeUp
-    dependsOn(":spitfire-server:database:flywayMigrateLobbyDb")
-    dependsOn(":spitfire-server:database:flywayMigrateErrorReportDb")
 }
 
 runShadow {
