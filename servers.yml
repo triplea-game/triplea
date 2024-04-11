@@ -1,5 +1,9 @@
 # This file is read by game clients 2.2 through 2.5
 latest: 2.5.22294
+message: |
+  Welcome to the TripleA lobby!
+  Please no politics, stay respectful, be welcoming, have fun.
+
 servers:
   - version: "2.5.22294"
     lobby_uri: https://prod.triplea-game.org
