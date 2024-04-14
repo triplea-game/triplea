@@ -253,21 +253,22 @@ public class UnitImageFactory {
                           images.put(imageKey, scaledImage);
                           return scaledImage;
                         }))
-        .orElseGet(
-            () -> {
-              BufferedImage image =
-                  resourceLoader.getImageOrThrow(FILE_NAME_BASE + "missing_unit_image.png");
-              Color playerColor = mapData.getPlayerColor(imageKey.getPlayer().getName());
-              ImageTransformer.colorize(playerColor, image);
+        .orElseGet(() -> createNoImageImage(imageKey));
+  }
 
-              Graphics graphics = image.getGraphics();
-              Font font = graphics.getFont();
-              graphics.setFont(font.deriveFont(8.0f));
-              graphics.setColor(Color.LIGHT_GRAY);
-              graphics.drawString(imageKey.getBaseImageName(), 5, 28);
-              images.put(imageKey, image);
-              return image;
-            });
+  private Image createNoImageImage(ImageKey imageKey) {
+    BufferedImage image =
+        resourceLoader.getImageOrThrow(FILE_NAME_BASE + "missing_unit_image.png");
+    Color playerColor = mapData.getPlayerColor(imageKey.getPlayer().getName());
+    ImageTransformer.colorize(playerColor, image);
+
+    Graphics graphics = image.getGraphics();
+    Font font = graphics.getFont();
+    graphics.setFont(font.deriveFont(8.0f));
+    graphics.setColor(Color.LIGHT_GRAY);
+    graphics.drawString(imageKey.getBaseImageName(), 5, 28);
+    images.put(imageKey, image);
+    return image;
   }
 
   public Optional<URL> getBaseImageUrl(final ImageKey imageKey) {
@@ -375,12 +376,14 @@ public class UnitImageFactory {
     return highlightedImage;
   }
 
-  /** Return an _unscaled_ icon image for a unit.  */
+  /** Return an _unscaled_ icon image for a unit. */
   public ImageIcon getIcon(final ImageKey imageKey) {
     final String fullName = imageKey.getFullName();
     return icons.computeIfAbsent(
         fullName,
-        name -> new ImageIcon(getTransformedImage(imageKey).orElseGet(() -> getImage(imageKey))));
+        name ->
+            new ImageIcon(
+                getTransformedImage(imageKey).orElseGet(() -> createNoImageImage(imageKey))));
   }
 
   public Dimension getImageDimensions(final ImageKey imageKey) {
