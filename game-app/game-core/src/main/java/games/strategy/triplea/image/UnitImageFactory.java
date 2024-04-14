@@ -265,6 +265,7 @@ public class UnitImageFactory {
               graphics.setFont(font.deriveFont(8.0f));
               graphics.setColor(Color.LIGHT_GRAY);
               graphics.drawString(imageKey.getBaseImageName(), 5, 28);
+              images.put(imageKey, image);
               return image;
             });
   }
@@ -375,9 +376,24 @@ public class UnitImageFactory {
   }
 
   /** Return an icon image for a unit. */
+//  public ImageIcon getIcon(final ImageKey imageKey) {
+//    final String fullName = imageKey.getFullName();
+//    return icons.computeIfAbsent(fullName, key -> new ImageIcon(getImage(imageKey)));
+//  }
+
   public ImageIcon getIcon(final ImageKey imageKey) {
     final String fullName = imageKey.getFullName();
-    return icons.computeIfAbsent(fullName, key -> new ImageIcon(getImage(imageKey)));
+    if (icons.containsKey(fullName)) {
+      return icons.get(fullName);
+    }
+    final Optional<Image> image = getTransformedImage(imageKey);
+    if (image.isEmpty()) {
+      return new ImageIcon(getImage(imageKey));
+    }
+
+    final ImageIcon icon = new ImageIcon(image.get());
+    icons.put(fullName, icon);
+    return icon;
   }
 
   public Dimension getImageDimensions(final ImageKey imageKey) {
