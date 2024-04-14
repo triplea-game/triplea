@@ -227,7 +227,7 @@ public class UnitImageFactory {
   }
 
   /**
-   * Return the appropriate unit image. If an image cannot be found, a placeholder 'no-image' image
+   * Return the appropriate scaled unit image. If an image cannot be found, a placeholder 'no-image' image
    * is returned.
    */
   public Image getImage(final ImageKey imageKey) {
@@ -375,7 +375,7 @@ public class UnitImageFactory {
     return highlightedImage;
   }
 
-  /** Return an icon image for a unit. */
+  /** Return an _unscaled_ icon image for a unit.  */
   public ImageIcon getIcon(final ImageKey imageKey) {
     final String fullName = imageKey.getFullName();
     return icons.computeIfAbsent(
