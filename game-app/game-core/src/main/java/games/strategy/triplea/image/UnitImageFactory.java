@@ -383,17 +383,13 @@ public class UnitImageFactory {
 
   public ImageIcon getIcon(final ImageKey imageKey) {
     final String fullName = imageKey.getFullName();
-    if (icons.containsKey(fullName)) {
-      return icons.get(fullName);
-    }
-    final Optional<Image> image = getTransformedImage(imageKey);
-    if (image.isEmpty()) {
-      return new ImageIcon(getImage(imageKey));
-    }
-
-    final ImageIcon icon = new ImageIcon(image.get());
-    icons.put(fullName, icon);
-    return icon;
+    return icons.computeIfAbsent(fullName, name -> {
+      final Optional<Image> image = getTransformedImage(imageKey);
+      if (image.isEmpty()) {
+        return new ImageIcon(getImage(imageKey));
+      }
+      return new ImageIcon(image.get());
+    });
   }
 
   public Dimension getImageDimensions(final ImageKey imageKey) {
