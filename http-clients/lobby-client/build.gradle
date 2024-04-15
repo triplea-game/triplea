@@ -15,6 +15,17 @@ dependencies {
     testImplementation project(":lib:test-common")
 }
 
+
+def getGitCommitCount = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine "git", "rev-list", "--count", "HEAD"
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+
 publishing {
     repositories {
         maven {
@@ -30,7 +41,7 @@ publishing {
         gpr(MavenPublication) {
             groupId = "org.triplea"
             artifactId = "http.client.lobby"
-            version = "0." + System.getenv("COMMIT_NUMBER")
+            version = "0." + getGitCommitCount()
             from(components.java)
         }
     }
