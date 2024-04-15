@@ -26,6 +26,9 @@ def getGitCommitCount = { ->
     return stdout.toString().trim()
 }
 
+shadowJar {
+    archiveFileName = 'lobby-client.jar'
+}
 
 publishing {
     repositories {
