@@ -1,3 +1,7 @@
+plugins {
+    id("maven-publish")
+}
+
 dependencies {
     implementation "io.github.openfeign:feign-core:$feignCoreVersion"
     implementation project(":game-app:domain-data")
@@ -9,4 +13,25 @@ dependencies {
     testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
     testImplementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     testImplementation project(":lib:test-common")
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/triplea-game/triplea"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            groupId = "org.triplea"
+            artifactId = "http.client.lobby"
+            version = "0." + System.getenv("COMMIT_NUMBER")
+            from(components.java)
+        }
+    }
 }

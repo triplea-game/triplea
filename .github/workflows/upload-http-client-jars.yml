@@ -1,0 +1,29 @@
+# Jar files uploaded are used as a maven dependency by server
+name: Create Http JAR files and upload to github packages
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'http-clients/**'
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  build:
+    runs-on: Ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch depth of 0 is needed so we checkout the full revision history
+          # The current revision count will be used as our build-number
+          fetch-depth: '0'
+      - name: set build version variables
+        run: |
+          COMMIT_NUMBER=$(git rev-list --count HEAD)
+          echo "commit_number=$COMMIT_NUMBER" | tee -a $GITHUB_ENV
+      - name: Publish HTTP client JARs (used by servers)
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_NUMBER: ${{ env.COMMIT_NUMBER }}
