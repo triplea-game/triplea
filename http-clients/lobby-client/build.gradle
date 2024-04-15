@@ -27,7 +27,7 @@ def getGitCommitCount = { ->
 }
 
 shadowJar {
-    archiveFileName = 'lobby-client.jar'
+    version = "0." + getGitCommitCount()
 }
 
 publishing {
@@ -42,12 +42,8 @@ publishing {
         }
     }
     publications {
-        gpr(MavenPublication) {
-            groupId = "org.triplea"
-            artifactId = "http.client.lobby"
-            version = "0." + getGitCommitCount()
-            from(components.java)
-            artifact(tasks["shadowJar"])
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
         }
     }
 }
