@@ -27,7 +27,7 @@ def getGitCommitCount = { ->
 }
 
 shadowJar {
-    archiveVersion = "0." + getGitCommitCount()
+    version = "0." + getGitCommitCount()
     archiveClassifier = ""
 }
 
