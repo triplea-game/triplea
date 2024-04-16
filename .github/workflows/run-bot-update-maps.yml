@@ -13,7 +13,7 @@ jobs:
           pip install ansible==2.9.13
           cd infrastructure
           echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-          ./run_update_bots.sh
+          ./update_bots.sh
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 
