@@ -676,8 +676,7 @@ class ProNonCombatMoveAi {
       double maxValue = 0;
       Territory maxTerritory = null;
       for (final Territory neighbor : neighbors) {
-        if (canHold(moveMap, neighbor)
-            && territoryValueMap.get(neighbor) > maxValue) {
+        if (canHold(moveMap, neighbor) && territoryValueMap.get(neighbor) > maxValue) {
           maxTerritory = neighbor;
           maxValue = territoryValueMap.get(neighbor);
         }
