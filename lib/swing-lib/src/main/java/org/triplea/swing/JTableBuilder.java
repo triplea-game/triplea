@@ -3,6 +3,7 @@ package org.triplea.swing;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Preconditions;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -34,7 +35,7 @@ import lombok.NoArgsConstructor;
 public class JTableBuilder<T> {
 
   private Function<T, List<String>> rowMapper;
-  private List<T> rowData;
+  private Collection<T> rowData;
   private List<List<String>> tableData;
   private List<String> columnNames;
 
@@ -128,7 +129,7 @@ public class JTableBuilder<T> {
     return this;
   }
 
-  public JTableBuilder<T> rowData(final List<T> rowData) {
+  public JTableBuilder<T> rowData(final Collection<T> rowData) {
     this.rowData = rowData;
     return this;
   }

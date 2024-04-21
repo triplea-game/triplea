@@ -45,12 +45,10 @@ public class MapDownloadSwingTable {
     table =
         JTableBuilder.<MapDownloadItem>builder()
             .columnNames(columnNames)
-            .rowData(
-                maps.stream()
-                    .sorted(Comparator.comparing(MapDownloadItem::getMapName))
-                    .collect(Collectors.toList()))
+            .rowData(maps)
             .rowMapper(mapDownloadListing -> rowMapper(mapDownloadListing, tagNames))
             .build();
+    table.getRowSorter().toggleSortOrder(0);
     table.addKeyListener(new JTableTypeAheadListener(table, 0));
   }
 
