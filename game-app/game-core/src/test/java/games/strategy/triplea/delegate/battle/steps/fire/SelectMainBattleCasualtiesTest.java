@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
-import static games.strategy.triplea.Constants.EDIT_MODE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
@@ -176,7 +175,6 @@ class SelectMainBattleCasualtiesTest {
     void moreNonTransportsHitPointsThanHits() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -229,7 +227,6 @@ class SelectMainBattleCasualtiesTest {
     void equalNonTransportsHitPointsToHits() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -276,7 +273,6 @@ class SelectMainBattleCasualtiesTest {
     void lessNonTransportsHitPointsThanHits() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -345,7 +341,6 @@ class SelectMainBattleCasualtiesTest {
     void lessNonTransportsHitPointsThanHitsWithAlliedTransports() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -425,7 +420,6 @@ class SelectMainBattleCasualtiesTest {
     void moreHitsThanHitPoints() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
@@ -481,7 +475,6 @@ class SelectMainBattleCasualtiesTest {
     void moreHitsThanHitPointsWithAlly() {
       when(battleState.getGameData().getProperties().get(TRANSPORT_CASUALTIES_RESTRICTED, false))
           .thenReturn(true);
-      when(battleState.getGameData().getProperties().get(EDIT_MODE)).thenReturn(false);
 
       final List<Unit> nonTransportUnits = List.of(givenAnyUnit(), givenAnyUnit());
 
