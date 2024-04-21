@@ -841,7 +841,6 @@ public class ProTerritoryManager {
           if (!isLandMoveOption(isCombatMove, player, u, myUnitTerritory, t, range, canMove)) {
             continue;
           }
-          //  System.err.println(u + " -> " + t);
 
           // Add to route map
           landRoutesMap.computeIfAbsent(t, k -> new HashSet<>()).add(myUnitTerritory);
