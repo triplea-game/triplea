@@ -40,7 +40,6 @@ public class CasualtySelection {
   private final GamePlayer player;
 
   private final JDialog dialog;
-  private final boolean isEditMode;
 
   private final JOptionPane optionPane;
 
@@ -53,12 +52,9 @@ public class CasualtySelection {
       final CasualtyList defaultCasualties,
       final boolean allowMultipleHitsPerUnit,
       final UiContext uiContext,
-      final Component dialogParent,
-      final boolean isEditMode) {
+      final Component dialogParent) {
     this.hitsToTake = hitsToTake;
     this.player = player;
-
-    this.isEditMode = isEditMode;
 
     final boolean movementForAirUnitsOnly =
         playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(selectFrom);
@@ -73,12 +69,7 @@ public class CasualtySelection {
             allowMultipleHitsPerUnit,
             uiContext);
     chooser.setTitle(title);
-
-    if (isEditMode) {
-      chooser.disableMax();
-    } else {
-      chooser.setMax(hitsToTake);
-    }
+    chooser.setMax(hitsToTake);
 
     final JScrollPane chooserScrollPane = new JScrollPane(chooser);
     chooserScrollPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -120,7 +111,7 @@ public class CasualtySelection {
 
     final List<Unit> killed = chooser.getSelected(false);
     final List<Unit> damaged = chooser.getSelectedDamagedMultipleHitPointUnits();
-    if (!isEditMode && (killed.size() + damaged.size() != hitsToTake)) {
+    if (killed.size() + damaged.size() != hitsToTake) {
       JOptionPane.showMessageDialog(
           dialog /*.getParent()*/,
           "Wrong number of casualties selected",

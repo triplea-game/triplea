@@ -25,7 +25,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -454,7 +453,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      final boolean isEditMode = EditDelegate.getEditMode(bridge.getData().getProperties());
       for (final String currentTypeAa : aaTypes) {
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
@@ -565,9 +563,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         stack.push(removeHits);
         stack.push(notifyCasualties);
         stack.push(calculateCasualties);
-        if (!isEditMode) {
-          stack.push(roll);
-        }
+        stack.push(roll);
       }
     }
   }
@@ -696,78 +692,29 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
 
     private void rollDice(final IDelegateBridge bridge) {
-
       final int rollCount = getSbrRolls(attackingUnits, attacker);
       if (rollCount == 0) {
         dice = null;
         return;
       }
       dice = new int[rollCount];
-      final boolean isEditMode = EditDelegate.getEditMode(gameData.getProperties());
-      if (isEditMode) {
-        final String annotation =
-            attacker.getName()
-                + " fixing dice to allocate cost of strategic bombing raid against "
-                + defender.getName()
-                + " in "
-                + battleSite.getName();
-        final Player attacker = bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
-        // does not take into account bombers with dice sides higher than getDiceSides
-        dice = attacker.selectFixedDice(rollCount, 0, annotation, gameData.getDiceSides());
-      } else {
-        final boolean doNotUseBombingBonus =
-            !Properties.getUseBombingMaxDiceSidesAndBonus(gameData.getProperties());
-        final String annotation =
-            attacker.getName()
-                + " rolling to allocate cost of strategic bombing raid against "
-                + defender.getName()
-                + " in "
-                + battleSite.getName();
-        if (!Properties.getLowLuckDamageOnly(gameData.getProperties())) {
-          if (doNotUseBombingBonus) {
-            // no low luck, and no bonus, so just roll based on the map's dice sides
-            dice =
-                bridge.getRandom(
-                    gameData.getDiceSides(), rollCount, attacker, DiceType.BOMBING, annotation);
-          } else {
-            // we must use bombing bonus
-            int i = 0;
-            final int diceSides = gameData.getDiceSides();
-            for (final Unit u : attackingUnits) {
-              final int rolls = getSbrRolls(u, attacker);
-              if (rolls < 1) {
-                continue;
-              }
-              final UnitAttachment ua = u.getUnitAttachment();
-              int maxDice = ua.getBombingMaxDieSides();
-              final int bonus = ua.getBombingBonus();
-              // both could be -1, meaning they were not set. if they were not set, then we use
-              // default dice sides for
-              // the map, and zero for the bonus.
-              if (maxDice < 0) {
-                maxDice = diceSides;
-              }
-              // now we roll, or don't if there is nothing to roll.
-              if (maxDice > 0) {
-                final int[] diceRolls =
-                    bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
-                for (final int die : diceRolls) {
-                  // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
-                  // based
-                  dice[i] = Math.max(-1, die + bonus);
-                  i++;
-                }
-              } else {
-                for (int j = 0; j < rolls; j++) {
-                  // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
-                  // based
-                  dice[i] = Math.max(-1, bonus);
-                  i++;
-                }
-              }
-            }
-          }
+
+      final boolean doNotUseBombingBonus =
+          !Properties.getUseBombingMaxDiceSidesAndBonus(gameData.getProperties());
+      final String annotation =
+          attacker.getName()
+              + " rolling to allocate cost of strategic bombing raid against "
+              + defender.getName()
+              + " in "
+              + battleSite.getName();
+      if (!Properties.getLowLuckDamageOnly(gameData.getProperties())) {
+        if (doNotUseBombingBonus) {
+          // no low luck, and no bonus, so just roll based on the map's dice sides
+          dice =
+              bridge.getRandom(
+                  gameData.getDiceSides(), rollCount, attacker, DiceType.BOMBING, annotation);
         } else {
+          // we must use bombing bonus
           int i = 0;
           final int diceSides = gameData.getDiceSides();
           for (final Unit u : attackingUnits) {
@@ -777,28 +724,18 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             }
             final UnitAttachment ua = u.getUnitAttachment();
             int maxDice = ua.getBombingMaxDieSides();
-            int bonus = ua.getBombingBonus();
+            final int bonus = ua.getBombingBonus();
             // both could be -1, meaning they were not set. if they were not set, then we use
-            // default dice sides for the
-            // map, and zero for the bonus.
-            if (maxDice < 0 || doNotUseBombingBonus) {
+            // default dice sides for
+            // the map, and zero for the bonus.
+            if (maxDice < 0) {
               maxDice = diceSides;
-            }
-            if (doNotUseBombingBonus) {
-              bonus = 0;
-            }
-            // now, regardless of whether they were set or not, we have to apply "low luck" to them,
-            // meaning in this
-            // case that we reduce the luck by 2/3.
-            if (maxDice >= 5) {
-              bonus += (maxDice + 1) / 3;
-              maxDice = (maxDice + 1) / 3;
             }
             // now we roll, or don't if there is nothing to roll.
             if (maxDice > 0) {
-              final int[] dicerolls =
+              final int[] diceRolls =
                   bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
-              for (final int die : dicerolls) {
+              for (final int die : diceRolls) {
                 // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
                 // based
                 dice[i] = Math.max(-1, die + bonus);
@@ -811,6 +748,52 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 dice[i] = Math.max(-1, bonus);
                 i++;
               }
+            }
+          }
+        }
+      } else {
+        int i = 0;
+        final int diceSides = gameData.getDiceSides();
+        for (final Unit u : attackingUnits) {
+          final int rolls = getSbrRolls(u, attacker);
+          if (rolls < 1) {
+            continue;
+          }
+          final UnitAttachment ua = u.getUnitAttachment();
+          int maxDice = ua.getBombingMaxDieSides();
+          int bonus = ua.getBombingBonus();
+          // both could be -1, meaning they were not set. if they were not set, then we use
+          // default dice sides for the
+          // map, and zero for the bonus.
+          if (maxDice < 0 || doNotUseBombingBonus) {
+            maxDice = diceSides;
+          }
+          if (doNotUseBombingBonus) {
+            bonus = 0;
+          }
+          // now, regardless of whether they were set or not, we have to apply "low luck" to them,
+          // meaning in this
+          // case that we reduce the luck by 2/3.
+          if (maxDice >= 5) {
+            bonus += (maxDice + 1) / 3;
+            maxDice = (maxDice + 1) / 3;
+          }
+          // now we roll, or don't if there is nothing to roll.
+          if (maxDice > 0) {
+            final int[] dicerolls =
+                bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
+            for (final int die : dicerolls) {
+              // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
+              // based
+              dice[i] = Math.max(-1, die + bonus);
+              i++;
+            }
+          } else {
+            for (int j = 0; j < rolls; j++) {
+              // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
+              // based
+              dice[i] = Math.max(-1, bonus);
+              i++;
             }
           }
         }

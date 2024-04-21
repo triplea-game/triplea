@@ -49,8 +49,7 @@ public class AaCasualtySelector {
         !defendingAa.isEmpty()
             && defendingAa.stream()
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
-    if (EditDelegate.getEditMode(data.getProperties())
-        || Properties.getChooseAaCasualties(data.getProperties())) {
+    if (Properties.getChooseAaCasualties(data.getProperties())) {
       return CasualtySelector.selectCasualties(
           hitPlayer,
           planes,
