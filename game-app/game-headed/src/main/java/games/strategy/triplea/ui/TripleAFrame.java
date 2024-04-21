@@ -542,7 +542,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     addTab("Territory", territoryDetails, KeyCode.T);
     if (mapPanel.getEditMode()) {
-      tabsPanel.add("Edit", editPanel);
+      showEditMode();
     }
   }
 
