@@ -440,11 +440,7 @@ class AaCasualtySelectorTest {
     @BeforeEach
     void initializeGameData() {
       gameData =
-          givenGameData()
-              .withDiceSides(6)
-              .withChooseAaCasualties(false)
-              .withLowLuck(true)
-              .build();
+          givenGameData().withDiceSides(6).withChooseAaCasualties(false).withLowLuck(true).build();
       bridge = mock(IDelegateBridge.class);
       when(bridge.getData()).thenReturn(gameData);
 
