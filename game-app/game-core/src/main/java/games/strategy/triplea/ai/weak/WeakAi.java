@@ -368,7 +368,7 @@ public class WeakAi extends AbstractAi {
             if (dontMoveFrom.contains(owned)) {
               continue;
             }
-            final List<Unit> units = owned.getUnitCollection().getMatches(attackable);
+            final List<Unit> units = owned.getMatches(attackable);
             unitsAlreadyMoved.addAll(units);
             moves.add(new MoveDescription(units, new Route(owned, t)));
           }

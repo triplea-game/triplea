@@ -545,7 +545,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (getAlreadyProduced(producer).stream().anyMatch(Matches.unitCanProduceUnits())) {
       return null;
     }
-    final List<Unit> fighters = producer.getUnitCollection().getMatches(ownedFighters);
+    final List<Unit> fighters = producer.getMatches(ownedFighters);
     final Collection<Unit> movedFighters =
         bridge.getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
     if (movedFighters == null || movedFighters.isEmpty()) {
@@ -1145,7 +1145,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
             .and(Matches.unitIsBeingTransported().negate())
             .and(producer.isWater() ? Matches.unitIsLand().negate() : Matches.unitIsSea().negate());
-    final Collection<Unit> factoryUnits = producer.getUnitCollection().getMatches(factoryMatch);
+    final Collection<Unit> factoryUnits = producer.getMatches(factoryMatch);
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
     final boolean unitPlacementPerTerritoryRestricted =
         Properties.getUnitPlacementPerTerritoryRestricted(properties);
@@ -1609,8 +1609,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * value may be null.
    */
   private GamePlayer getOriginalFactoryOwner(final Territory territory) {
-    final Collection<Unit> factoryUnits =
-        territory.getUnitCollection().getMatches(Matches.unitCanProduceUnits());
+    final Collection<Unit> factoryUnits = territory.getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.isEmpty()) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
