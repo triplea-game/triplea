@@ -676,8 +676,7 @@ class ProNonCombatMoveAi {
       double maxValue = 0;
       Territory maxTerritory = null;
       for (final Territory neighbor : neighbors) {
-        if (moveMap.get(neighbor) != null
-            && moveMap.get(neighbor).isCanHold()
+        if (canHold(moveMap, neighbor)
             && territoryValueMap.get(neighbor) > maxValue) {
           maxTerritory = neighbor;
           maxValue = territoryValueMap.get(neighbor);
@@ -1578,7 +1577,7 @@ class ProNonCombatMoveAi {
             // Find best unload territory
             Territory unloadToTerritory =
                 possibleUnloadTerritories.stream()
-                    .filter(t -> moveMap.get(t) != null && moveMap.get(t).isCanHold())
+                    .filter(t -> canHold(moveMap, t))
                     .findAny()
                     .orElse(CollectionUtils.getAny(possibleUnloadTerritories));
             proDestination = proData.getProTerritory(moveMap, unloadToTerritory);
@@ -2347,7 +2346,7 @@ class ProNonCombatMoveAi {
     Predicate<Territory> desiredDestination =
         ProMatches.territoryHasInfraFactoryAndIsLand()
             .and(Matches.isTerritoryOwnedBy(player))
-            .and(t -> moveMap.get(t).isCanHold());
+            .and(t -> canHold(moveMap, t));
 
     for (final Iterator<Unit> it = infraUnitMoveMap.keySet().iterator(); it.hasNext(); ) {
       final Unit u = it.next();
@@ -2427,11 +2426,18 @@ class ProNonCombatMoveAi {
     // If nothing chosen and we can't hold the current territory, try to move somewhere safe.
     if (destination.getValue() == null && !moveMap.get(from).isCanHold()) {
       possibleMoves.stream()
-          .filter(t -> moveMap.get(t).isCanHold())
+          .filter(t -> canHold(moveMap, t))
           .findAny()
           .ifPresent(destination::setValue);
     }
     return Optional.ofNullable(destination.getValue());
+  }
+
+  private boolean canHold(Map<Territory, ProTerritory> moveMap, Territory t) {
+    // Note: moveMap.get(t) may be null if none of our units can get there this turn,
+    // but this function is used in BFS that looks at potential paths over many moves.
+    ProTerritory proTerritory = moveMap.get(t);
+    return proTerritory != null && proTerritory.isCanHold();
   }
 
   private Stream<Unit> combinedStream(Collection<Unit> units1, Collection<Unit> units2) {
