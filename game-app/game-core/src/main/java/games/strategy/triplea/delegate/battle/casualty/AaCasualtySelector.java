@@ -10,7 +10,6 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die.DieType;
-import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
