@@ -449,7 +449,6 @@ public final class BattlePanel extends ActionPanel {
       final boolean allowMultipleHitsPerUnit) {
     final Supplier<CasualtyDetails> action =
         () -> {
-          final boolean isEditMode = (dice == null);
           final UnitChooser chooser =
               new UnitChooser(
                   selectFrom,
@@ -460,15 +459,9 @@ public final class BattlePanel extends ActionPanel {
                   allowMultipleHitsPerUnit,
                   getMap().getUiContext());
           chooser.setTitle(message);
-          if (isEditMode) {
-            chooser.setMax(selectFrom.size());
-          } else {
-            chooser.setMax(count);
-          }
+          chooser.setMax(count);
           final DicePanel dicePanel = new DicePanel(getMap().getUiContext(), getData());
-          if (!isEditMode) {
-            dicePanel.setDiceRoll(dice);
-          }
+          dicePanel.setDiceRoll(dice);
           final JPanel panel = new JPanel();
           panel.setLayout(new BorderLayout());
           panel.add(chooser, BorderLayout.CENTER);

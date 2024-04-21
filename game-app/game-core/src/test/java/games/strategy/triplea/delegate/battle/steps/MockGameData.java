@@ -6,7 +6,6 @@ import static games.strategy.triplea.Constants.CAPTURE_UNITS_ON_ENTERING_TERRITO
 import static games.strategy.triplea.Constants.CHOOSE_AA;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE;
-import static games.strategy.triplea.Constants.EDIT_MODE;
 import static games.strategy.triplea.Constants.LHTR_HEAVY_BOMBERS;
 import static games.strategy.triplea.Constants.LOW_LUCK;
 import static games.strategy.triplea.Constants.NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE;
@@ -181,11 +180,6 @@ public class MockGameData {
 
   public MockGameData withCaptureUnitsOnEnteringTerritory(final boolean value) {
     when(gameProperties.get(CAPTURE_UNITS_ON_ENTERING_TERRITORY, false)).thenReturn(value);
-    return this;
-  }
-
-  public MockGameData withEditMode(final boolean value) {
-    when(gameProperties.get(EDIT_MODE)).thenReturn(value);
     return this;
   }
 
