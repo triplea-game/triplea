@@ -31,7 +31,7 @@ class UnitScrollerModel {
             .andIf(
                 movePhase == UnitScroller.MovePhase.COMBAT, Matches.unitCanMoveDuringCombatMove())
             .build();
-    final List<Unit> units = t.getUnitCollection().getMatches(moveableUnitOwnedByMe);
+    final List<Unit> units = t.getMatches(moveableUnitOwnedByMe);
     units.removeAll(skippedUnits);
     return units;
   }

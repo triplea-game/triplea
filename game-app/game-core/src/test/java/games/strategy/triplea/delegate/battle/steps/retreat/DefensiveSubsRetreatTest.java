@@ -55,7 +55,6 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
   void hasNamesWhenNotSubmersibleButHasRetreatTerritories() {
     final Territory retreatTerritory = mock(Territory.class);
     when(retreatTerritory.isWater()).thenReturn(true);
-    when(retreatTerritory.getUnitCollection()).thenReturn(mock(UnitCollection.class));
 
     final BattleState battleState =
         givenBattleStateBuilder()

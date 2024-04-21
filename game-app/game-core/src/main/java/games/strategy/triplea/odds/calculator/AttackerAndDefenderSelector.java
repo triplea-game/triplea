@@ -69,40 +69,35 @@ public class AttackerAndDefenderSelector {
       // Without territory, we cannot prioritize any players (except current player); no units to
       // select.
       return getAttackerAndDefenderWithPriorityList(List.of(currentPlayer));
-    } else {
-      // Select the defender to be an enemy of the current player if possible, preferring enemies
-      // in the given territory. When deciding for an enemy, usually a player with more units is
-      // more important and more likely to be meant, e.g. a territory with 10 units of player A and
-      // 1 unit of player B. Thus, we use lists and ordered streams.
-      final List<GamePlayer> playersWithUnits =
-          territory.getUnitCollection().getPlayersByUnitCount();
-      // Add the territory owner add the end of the priority list.  This way, when attacking an
-      // empty territory, the owner gets preferred even though they have no units in their land. In
-      // case the owner has units in the land, then they are already in the list but adding a second
-      // entry to the list doesn't impact the algorithm.
-      final GamePlayer territoryOwner = territory.getOwner();
-      if (!territoryOwner.isNull()) {
-        playersWithUnits.add(territoryOwner);
-      }
-
-      final GamePlayer attacker = currentPlayer;
-      // Attacker fights alone; the defender can also use all the allied units.
-      final GamePlayer defender =
-          getOpponentWithPriorityList(territory, attacker, playersWithUnits).orElse(null);
-      final List<Unit> attackingUnits =
-          territory.getUnitCollection().getMatches(Matches.unitIsOwnedBy(attacker));
-      final List<Unit> defendingUnits =
-          defender == null
-              ? List.of()
-              : territory.getUnitCollection().getMatches(Matches.alliedUnit(defender));
-
-      return AttackerAndDefender.builder()
-          .attacker(attacker)
-          .defender(defender)
-          .attackingUnits(attackingUnits)
-          .defendingUnits(defendingUnits)
-          .build();
     }
+    // Select the defender to be an enemy of the current player if possible, preferring enemies
+    // in the given territory. When deciding for an enemy, usually a player with more units is
+    // more important and more likely to be meant, e.g. a territory with 10 units of player A and
+    // 1 unit of player B. Thus, we use lists and ordered streams.
+    final List<GamePlayer> playersWithUnits = territory.getUnitCollection().getPlayersByUnitCount();
+    // Add the territory owner add the end of the priority list.  This way, when attacking an
+    // empty territory, the owner gets preferred even though they have no units in their land. In
+    // case the owner has units in the land, then they are already in the list but adding a second
+    // entry to the list doesn't impact the algorithm.
+    final GamePlayer territoryOwner = territory.getOwner();
+    if (!territoryOwner.isNull()) {
+      playersWithUnits.add(territoryOwner);
+    }
+
+    final GamePlayer attacker = currentPlayer;
+    // Attacker fights alone; the defender can also use all the allied units.
+    final GamePlayer defender =
+        getOpponentWithPriorityList(territory, attacker, playersWithUnits).orElse(null);
+    final List<Unit> attackingUnits = territory.getMatches(Matches.unitIsOwnedBy(attacker));
+    final List<Unit> defendingUnits =
+        defender == null ? List.of() : territory.getMatches(Matches.alliedUnit(defender));
+
+    return AttackerAndDefender.builder()
+        .attacker(attacker)
+        .defender(defender)
+        .attackingUnits(attackingUnits)
+        .defendingUnits(defendingUnits)
+        .build();
   }
 
   /**

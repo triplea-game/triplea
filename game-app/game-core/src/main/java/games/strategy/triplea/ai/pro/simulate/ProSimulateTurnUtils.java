@@ -270,7 +270,6 @@ public final class ProSimulateTurnUtils {
         toData
             .getMap()
             .getTerritory(unitTerritory.getName())
-            .getUnitCollection()
             .getMatches(
                 ProMatches.unitIsOwnedAndMatchesTypeAndNotTransporting(player, u.getType()));
     for (final Unit toUnit : toUnits) {
@@ -295,7 +294,6 @@ public final class ProSimulateTurnUtils {
         toData
             .getMap()
             .getTerritory(unitTerritory.getName())
-            .getUnitCollection()
             .getMatches(
                 ProMatches.unitIsOwnedAndMatchesTypeAndIsTransporting(player, transport.getType()));
     for (final Unit toTransport : toTransports) {

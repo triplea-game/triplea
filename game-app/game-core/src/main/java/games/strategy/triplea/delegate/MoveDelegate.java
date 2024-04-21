@@ -441,18 +441,13 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final Set<Unit> damaged;
       if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data.getProperties())) {
         damaged =
-            new HashSet<>(
-                current
-                    .getUnitCollection()
-                    .getMatches(repairOnlyOwn ? damagedUnitsOwned : damagedUnits));
+            new HashSet<>(current.getMatches(repairOnlyOwn ? damagedUnitsOwned : damagedUnits));
       } else {
         damaged =
             new HashSet<>(
-                current
-                    .getUnitCollection()
-                    .getMatches(
-                        damagedUnitsOwned.and(
-                            Matches.unitCanBeRepairedByFacilitiesInItsTerritory(current, player))));
+                current.getMatches(
+                    damagedUnitsOwned.and(
+                        Matches.unitCanBeRepairedByFacilitiesInItsTerritory(current, player))));
       }
       if (!damaged.isEmpty()) {
         damagedMap.put(current, damaged);
