@@ -275,7 +275,7 @@ public class UnitsDrawer extends AbstractDrawable {
                 bombingUnitDamage > 0
                     ? Matches.unitHasTakenSomeBombingUnitDamage()
                     : Matches.unitHasNotTakenAnyBombingUnitDamage());
-    return t.getUnitCollection().getMatches(selectedUnits);
+    return t.getMatches(selectedUnits);
   }
 
   public Territory getTerritory(GameData data) {

@@ -46,9 +46,7 @@ final class ProTechAi {
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
     float myStrength =
-        (myCapitol == null || myCapitol.getUnitCollection() == null)
-            ? 0.0F
-            : strength(myCapitol.getUnits(), false, false, false);
+        (myCapitol == null) ? 0.0F : strength(myCapitol.getUnits(), false, false, false);
     final List<Territory> areaStrength = getNeighboringLandTerritories(data, player, myCapitol);
     for (final Territory areaTerr : areaStrength) {
       myStrength += strength(areaTerr.getUnits(), false, false, false) * 0.75F;
@@ -131,8 +129,7 @@ final class ProTechAi {
       // reality is 99% of time units considered will have full move.
       // and likely player will have at least 1 max move plane.
       for (final Territory enemyFighterTerritory : enemyFighterTerritories) {
-        final List<Unit> enemyFighterUnits =
-            enemyFighterTerritory.getUnitCollection().getMatches(enemyPlane);
+        final List<Unit> enemyFighterUnits = enemyFighterTerritory.getMatches(enemyPlane);
         maxFighterDistance =
             Math.max(
                 maxFighterDistance, MoveValidator.getMaxMovement(enemyFighterUnits).intValue());
@@ -146,8 +143,7 @@ final class ProTechAi {
       final List<Territory> enemyTransportTerritories = findUnitTerr(data, transport);
       int maxTransportDistance = 0;
       for (final Territory enemyTransportTerritory : enemyTransportTerritories) {
-        final List<Unit> enemyTransportUnits =
-            enemyTransportTerritory.getUnitCollection().getMatches(transport);
+        final List<Unit> enemyTransportUnits = enemyTransportTerritory.getMatches(transport);
         maxTransportDistance =
             Math.max(
                 maxTransportDistance, MoveValidator.getMaxMovement(enemyTransportUnits).intValue());
@@ -160,8 +156,7 @@ final class ProTechAi {
           data.getMap()
               .getNeighbors(
                   location, onWater ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
-        final List<Unit> enemies =
-            t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(enemyPlayer));
+        final List<Unit> enemies = t.getMatches(Matches.unitIsOwnedBy(enemyPlayer));
         enemyWaterUnits.addAll(enemies);
         firstStrength += strength(enemies, true, onWater, transportsFirst);
         checked.add(t);
@@ -204,7 +199,7 @@ final class ProTechAi {
             if (enemyPlayer == null) {
               continue;
             }
-            final List<Unit> transports = t4.getUnitCollection().getMatches(enemyTransport);
+            final List<Unit> transports = t4.getMatches(enemyTransport);
             if (transports.isEmpty()) {
               continue;
             }
@@ -238,8 +233,7 @@ final class ProTechAi {
             final Set<Territory> transNeighbors =
                 data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer));
             for (final Territory transNeighbor : transNeighbors) {
-              final List<Unit> transUnits =
-                  transNeighbor.getUnitCollection().getMatches(enemyTransportable);
+              final List<Unit> transUnits = transNeighbor.getMatches(enemyTransportable);
               transUnits.removeAll(alreadyLoaded);
               final List<Unit> availTransUnits = sortTransportUnits(transUnits);
               for (final Unit transUnit : availTransUnits) {
@@ -439,7 +433,7 @@ final class ProTechAi {
           if (ignoreDistance.contains(dist)) {
             continue;
           }
-          units.addAll(neighbor.getUnitCollection().getMatches(unitCondition));
+          units.addAll(neighbor.getMatches(unitCondition));
         }
       }
     }

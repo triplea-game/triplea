@@ -241,10 +241,9 @@ class ProNonCombatMoveAi {
       final ProTerritory proTerritory = moveMap.get(t);
       Preconditions.checkState(proTerritory.getCantMoveUnits().isEmpty());
       final Collection<Unit> cantMoveUnits =
-          t.getUnitCollection()
-              .getMatches(
-                  ProMatches.unitCantBeMovedAndIsAlliedDefender(player, t)
-                      .or(proData.getUnitsToBeConsumed()::contains));
+          t.getMatches(
+              ProMatches.unitCantBeMovedAndIsAlliedDefender(player, t)
+                  .or(proData.getUnitsToBeConsumed()::contains));
       proTerritory.addCantMoveUnits(cantMoveUnits);
     }
 
@@ -2170,7 +2169,7 @@ class ProNonCombatMoveAi {
     if (Matches.unitIsCarrier().test(u)) {
       final Territory unitTerritory = unitTerritoryMap.get(u);
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-          MoveValidator.carrierMustMoveWith(unitTerritory.getUnits(), unitTerritory, player);
+          MoveValidator.carrierMustMoveWith(unitTerritory, player);
       Optional.ofNullable(carrierMustMoveWith.get(u))
           .ifPresent(fighters -> to.getTempUnits().addAll(fighters));
     }

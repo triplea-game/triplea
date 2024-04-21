@@ -116,7 +116,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
           || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
         return "Can't add land units that can't be transported, to water";
       }
-      seaTransports.addAll(territory.getUnitCollection().getMatches(friendlySeaTransports));
+      seaTransports.addAll(territory.getMatches(friendlySeaTransports));
       if (seaTransports.isEmpty()) {
         return "Can't add land units to water without enough transports";
       }
@@ -169,13 +169,12 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
         territory);
     if (!territory.getOwner().isAtWar(player)) {
       // change ownership of friendly factories
-      final Collection<Unit> units =
-          territory.getUnitCollection().getMatches(Matches.unitIsInfrastructure());
+      final Collection<Unit> units = territory.getMatches(Matches.unitIsInfrastructure());
       bridge.addChange(ChangeFactory.changeOwner(units, player, territory));
     } else {
       final Predicate<Unit> enemyNonCom =
           Matches.unitIsInfrastructure().and(Matches.enemyUnit(player));
-      final Collection<Unit> units = territory.getUnitCollection().getMatches(enemyNonCom);
+      final Collection<Unit> units = territory.getMatches(enemyNonCom);
       // mark no movement for enemy units
       bridge.addChange(ChangeFactory.markNoMovementChange(units));
       // change ownership of enemy AA and factories

@@ -204,7 +204,7 @@ public final class ProPurchaseUtils {
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
             .and(Matches.unitIsBeingTransported().negate())
             .and((territory.isWater() ? Matches.unitIsLand() : Matches.unitIsSea()).negate());
-    final Collection<Unit> factoryUnits = territory.getUnitCollection().getMatches(factoryMatch);
+    final Collection<Unit> factoryUnits = territory.getMatches(factoryMatch);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
@@ -241,8 +241,7 @@ public final class ProPurchaseUtils {
   private static GamePlayer getOriginalFactoryOwner(
       final Territory territory, final GamePlayer player) {
 
-    final Collection<Unit> factoryUnits =
-        territory.getUnitCollection().getMatches(Matches.unitCanProduceUnits());
+    final Collection<Unit> factoryUnits = territory.getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.isEmpty()) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }

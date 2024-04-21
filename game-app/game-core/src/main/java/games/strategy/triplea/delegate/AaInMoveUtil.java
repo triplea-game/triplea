@@ -78,16 +78,14 @@ class AaInMoveUtil implements Serializable {
         TechAbilityAttachment.getAirborneTargettedByAa(
             TechTracker.getCurrentTechAdvances(movingPlayer, getData().getTechnologyFrontier()));
     final List<Unit> defendingAa =
-        territory
-            .getUnitCollection()
-            .getMatches(
-                Matches.unitIsAaThatCanFire(
-                    units,
-                    airborneTechTargetsAllowed,
-                    movingPlayer,
-                    Matches.unitIsAaForFlyOverOnly(),
-                    1,
-                    true));
+        territory.getMatches(
+            Matches.unitIsAaThatCanFire(
+                units,
+                airborneTechTargetsAllowed,
+                movingPlayer,
+                Matches.unitIsAaForFlyOverOnly(),
+                1,
+                true));
     // comes ordered alphabetically already
     final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
     // stacks are backwards

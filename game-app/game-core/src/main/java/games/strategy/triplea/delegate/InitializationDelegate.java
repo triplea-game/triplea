@@ -187,7 +187,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
       }
       final Predicate<Unit> owned = Matches.unitIsOwnedBy(player);
       for (final Territory t : data.getMap().getTerritories()) {
-        final Collection<Unit> terrUnits = t.getUnitCollection().getMatches(owned);
+        final Collection<Unit> terrUnits = t.getMatches(owned);
         if (!terrUnits.isEmpty()) {
           change.add(ChangeFactory.removeUnits(t, terrUnits));
         }
@@ -336,7 +336,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
           changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
         }
         final Collection<Unit> factoryAndInfrastructure =
-            current.getUnitCollection().getMatches(Matches.unitIsInfrastructure());
+            current.getMatches(Matches.unitIsInfrastructure());
         changes.add(
             OriginalOwnerTracker.addOriginalOwnerChange(
                 factoryAndInfrastructure, current.getOwner()));
