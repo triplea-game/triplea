@@ -708,15 +708,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               + " in "
               + battleSite.getName();
       if (!Properties.getLowLuckDamageOnly(gameData.getProperties())) {
+        final int diceSides = gameData.getDiceSides();
         if (doNotUseBombingBonus) {
           // no low luck, and no bonus, so just roll based on the map's dice sides
-          dice =
-              bridge.getRandom(
-                  gameData.getDiceSides(), rollCount, attacker, DiceType.BOMBING, annotation);
+          dice = bridge.getRandom(diceSides, rollCount, attacker, DiceType.BOMBING, annotation);
         } else {
           // we must use bombing bonus
           int i = 0;
-          final int diceSides = gameData.getDiceSides();
           for (final Unit u : attackingUnits) {
             final int rolls = getSbrRolls(u, attacker);
             if (rolls < 1) {
@@ -726,8 +724,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             int maxDice = ua.getBombingMaxDieSides();
             final int bonus = ua.getBombingBonus();
             // both could be -1, meaning they were not set. if they were not set, then we use
-            // default dice sides for
-            // the map, and zero for the bonus.
+            // default dice sides for the map, and zero for the bonus.
             if (maxDice < 0) {
               maxDice = diceSides;
             }
@@ -763,8 +760,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use
-          // default dice sides for the
-          // map, and zero for the bonus.
+          // default dice sides for the map, and zero for the bonus.
           if (maxDice < 0 || doNotUseBombingBonus) {
             maxDice = diceSides;
           }
@@ -772,8 +768,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             bonus = 0;
           }
           // now, regardless of whether they were set or not, we have to apply "low luck" to them,
-          // meaning in this
-          // case that we reduce the luck by 2/3.
+          // meaning in this case that we reduce the luck by 2/3.
           if (maxDice >= 5) {
             bonus += (maxDice + 1) / 3;
             maxDice = (maxDice + 1) / 3;

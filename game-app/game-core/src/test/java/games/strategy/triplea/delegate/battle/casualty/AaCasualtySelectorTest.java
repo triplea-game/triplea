@@ -133,7 +133,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void hitsEqualToPlanesKillsAll() {
-
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planeUnitType.createTemp(1, hitPlayer),
@@ -153,7 +152,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void hitsMoreThanPlanesKillsAll() {
-
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planeUnitType.createTemp(1, hitPlayer),
@@ -173,7 +171,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneHitAgainstTwoPlanesOnlyKillsOne() {
-
       final UnitType aaNonInfiniteUnitType = new UnitType("aaNonInfiniteUnitType", gameData);
       final UnitAttachment aaNonInfiniteUnitAttachment =
           new UnitAttachment("aaNonInfiniteUnitAttachment", aaNonInfiniteUnitType, gameData);
@@ -203,7 +200,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void identicalDieRollsShouldStillKillPlanesEqualToHits() {
-
       final UnitType aaNonInfiniteUnitType = new UnitType("aaNonInfiniteUnitType", gameData);
       final UnitAttachment aaNonInfiniteUnitAttachment =
           new UnitAttachment("aaNonInfiniteUnitAttachment", aaNonInfiniteUnitType, gameData);
@@ -236,7 +232,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void hitsEqualToPlanesMultiHpDamagesAndKillsAll() {
-
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planeMultiHpUnitType.createTemp(1, hitPlayer),
@@ -257,7 +252,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void hitsGreaterThanPlanesMultiHpDamagesAndKillsAll() {
-
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planeMultiHpUnitType.createTemp(1, hitPlayer),
@@ -277,7 +271,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneHitAgainstMultiHpPlaneOnlyDamagesIt() {
-
       whenGetRandom(bridge).thenAnswer(withValues(0));
 
       final CasualtyDetails details =
@@ -299,7 +292,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void threeHitsAgainstTwoMultiHpPlanesKillsOneAndDamagesTheOther() {
-
       whenGetRandom(bridge).thenAnswer(withValues(0, 1, 2));
 
       final CasualtyDetails details =
@@ -327,7 +319,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void identicalDieRollsShouldStillKillAndDamagePlanesEqualToHits() {
-
       whenGetRandom(bridge).thenAnswer(withValues(6, 6, 6, 6, 6));
 
       final CasualtyDetails details =
@@ -382,7 +373,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void hitsEqualToPlanesKillsAll() {
-
       final CasualtyDetails details =
           AaCasualtySelector.getAaCasualties(
               planeUnitType.createTemp(1, hitPlayer),
@@ -402,7 +392,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void hitsLessThanPlanesKillsAccordingToTheRolledDice() {
-
       final List<Unit> planes = planeUnitType.createTemp(5, hitPlayer);
 
       final CasualtyDetails details =
@@ -487,7 +476,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneTypeOfPlaneWithAmountEqualToDiceSides() {
-
       final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
       final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
@@ -554,7 +542,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndBothHaveAmountEqualToDiceSides() {
-
       final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(6, hitPlayer));
       final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
@@ -586,7 +573,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndTogetherHaveAmountEqualToDiceSides() {
-
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
@@ -621,7 +607,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneTypeOfMultiHpPlaneWithAmountEqualToDiceSides() {
-
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
       final List<Unit> planes = planeMultiHpUnitType.createTemp(6, hitPlayer);
@@ -649,7 +634,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfMultiHpPlanesAndBothHaveAmountEqualToDiceSides() {
-
       whenGetRandom(bridge).thenAnswer(withValues(1, 1));
 
       final List<Unit> planes = planeMultiHpUnitType.createTemp(6, hitPlayer);
@@ -683,7 +667,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneTypeOfPlaneWithAmountLessThanDiceSidesButItHit() {
-
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
@@ -712,7 +695,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndTogetherHaveAmountLessThanDiceSidesButItHit() {
-
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
@@ -747,7 +729,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneTypeOfPlaneWithRemainderOverDiceSidesButNotExtraHit() {
-
       final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
       final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
@@ -773,7 +754,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndBothHaveRemainderOverDiceSidesButNotExtraHit() {
-
       final List<Unit> planes = planeUnitType.createTemp(8, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(8, hitPlayer));
       final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
@@ -807,7 +787,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndTogetherHaveRemainderOverDiceSidesButNotExtraHit() {
-
       // need to randomly pick 1 planes out of the remainder to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
@@ -842,7 +821,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneTypeOfPlaneWithRemainderOverDiceSidesAndWithExtraHit() {
-
       // need to randomly pick a plane to kill
       whenGetRandom(bridge).thenAnswer(withValues(1));
 
@@ -871,7 +849,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void oneTypeOfPlaneWithRemainderOf1AndWithExtraHit() {
-
       final List<Unit> planes = planeUnitType.createTemp(7, hitPlayer);
       final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
 
@@ -897,7 +874,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndBothHaveRemainderOverDiceSidesAndWithExtraHit() {
-
       // need to pick one plane out of the remainder list
       whenGetRandom(bridge).thenAnswer(withValues(0));
 
@@ -934,7 +910,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndOneHasRemainderOf1AndWithExtraHit() {
-
       final List<Unit> planes = planeUnitType.createTemp(6, hitPlayer);
       planes.addAll(otherPlaneUnitType.createTemp(7, hitPlayer));
       final List<Unit> aaUnits = aaUnitType.createTemp(1, aaPlayer);
@@ -967,7 +942,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndTogetherHaveRemainderOverDiceSidesAndWithExtraHit() {
-
       // need to randomly pick 2 planes to kill
       whenGetRandom(bridge).thenAnswer(withValues(1, 1));
 
@@ -1002,7 +976,6 @@ class AaCasualtySelectorTest {
 
     @Test
     void twoTypesOfPlanesAndTogetherHaveRemainderOf1AndWithExtraHit() {
-
       // need to randomly pick 2 planes to kill
       whenGetRandom(bridge).thenAnswer(withValues(1, 2));
 
