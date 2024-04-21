@@ -442,7 +442,6 @@ class AaCasualtySelectorTest {
       gameData =
           givenGameData()
               .withDiceSides(6)
-              .withEditMode(false)
               .withChooseAaCasualties(false)
               .withLowLuck(true)
               .build();
