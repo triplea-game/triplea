@@ -699,97 +699,55 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       dice = new int[rollCount];
 
-      final boolean doNotUseBombingBonus =
-          !Properties.getUseBombingMaxDiceSidesAndBonus(gameData.getProperties());
       final String annotation =
-          attacker.getName()
-              + " rolling to allocate cost of strategic bombing raid against "
-              + defender.getName()
-              + " in "
-              + battleSite.getName();
-      if (!Properties.getLowLuckDamageOnly(gameData.getProperties())) {
+          String.format(
+              "%s rolling to allocate cost of strategic bombing raid against %s in %s",
+              attacker.getName(), defender.getName(), battleSite.getName());
+      final boolean lowLuck = Properties.getLowLuckDamageOnly(gameData.getProperties());
+      final boolean useBombingBonus =
+          Properties.getUseBombingMaxDiceSidesAndBonus(gameData.getProperties());
+      if (!lowLuck && !useBombingBonus) {
+        // no low luck, and no bonus, so just roll based on the map's dice sides
         final int diceSides = gameData.getDiceSides();
-        if (doNotUseBombingBonus) {
-          // no low luck, and no bonus, so just roll based on the map's dice sides
-          dice = bridge.getRandom(diceSides, rollCount, attacker, DiceType.BOMBING, annotation);
-        } else {
-          // we must use bombing bonus
-          int i = 0;
-          for (final Unit u : attackingUnits) {
-            final int rolls = getSbrRolls(u, attacker);
-            if (rolls < 1) {
-              continue;
-            }
-            final UnitAttachment ua = u.getUnitAttachment();
-            int maxDice = ua.getBombingMaxDieSides();
-            final int bonus = ua.getBombingBonus();
-            // both could be -1, meaning they were not set. if they were not set, then we use
-            // default dice sides for the map, and zero for the bonus.
-            if (maxDice < 0) {
-              maxDice = diceSides;
-            }
-            // now we roll, or don't if there is nothing to roll.
-            if (maxDice > 0) {
-              final int[] diceRolls =
-                  bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
-              for (final int die : diceRolls) {
-                // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
-                // based
-                dice[i] = Math.max(-1, die + bonus);
-                i++;
-              }
-            } else {
-              for (int j = 0; j < rolls; j++) {
-                // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
-                // based
-                dice[i] = Math.max(-1, bonus);
-                i++;
-              }
-            }
-          }
+        dice = bridge.getRandom(diceSides, rollCount, attacker, DiceType.BOMBING, annotation);
+        return;
+      }
+
+      int nextDieIndex = 0;
+      for (final Unit u : attackingUnits) {
+        final int rolls = getSbrRolls(u, attacker);
+        if (rolls < 1) {
+          continue;
         }
-      } else {
-        int i = 0;
-        final int diceSides = gameData.getDiceSides();
-        for (final Unit u : attackingUnits) {
-          final int rolls = getSbrRolls(u, attacker);
-          if (rolls < 1) {
-            continue;
+
+        final UnitAttachment ua = u.getUnitAttachment();
+        int maxDice = ua.getBombingMaxDieSides();
+        // both could be -1, meaning they were not set. if they were not set, then we use
+        // default dice sides for the map, and zero for the bonus.
+        if (maxDice < 0 || !useBombingBonus) {
+          maxDice = gameData.getDiceSides();
+        }
+        int bonus = useBombingBonus ? ua.getBombingBonus() : 0;
+
+        // now, regardless of whether they were set or not, we have to apply "low luck" to them,
+        // meaning in this case that we reduce the luck by 2/3.
+        if (lowLuck && maxDice >= 5) {
+          bonus += (maxDice + 1) / 3;
+          maxDice = (maxDice + 1) / 3;
+        }
+
+        // now we roll, or don't if there is nothing to roll.
+        if (maxDice > 0) {
+          final int[] diceRolls =
+              bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
+          for (final int die : diceRolls) {
+            // min value is -1 as we add 1 when setting damage
+            dice[nextDieIndex++] = Math.max(-1, die + bonus);
           }
-          final UnitAttachment ua = u.getUnitAttachment();
-          int maxDice = ua.getBombingMaxDieSides();
-          int bonus = ua.getBombingBonus();
-          // both could be -1, meaning they were not set. if they were not set, then we use
-          // default dice sides for the map, and zero for the bonus.
-          if (maxDice < 0 || doNotUseBombingBonus) {
-            maxDice = diceSides;
-          }
-          if (doNotUseBombingBonus) {
-            bonus = 0;
-          }
-          // now, regardless of whether they were set or not, we have to apply "low luck" to them,
-          // meaning in this case that we reduce the luck by 2/3.
-          if (maxDice >= 5) {
-            bonus += (maxDice + 1) / 3;
-            maxDice = (maxDice + 1) / 3;
-          }
-          // now we roll, or don't if there is nothing to roll.
-          if (maxDice > 0) {
-            final int[] dicerolls =
-                bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
-            for (final int die : dicerolls) {
-              // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
-              // based
-              dice[i] = Math.max(-1, die + bonus);
-              i++;
-            }
-          } else {
-            for (int j = 0; j < rolls; j++) {
-              // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
-              // based
-              dice[i] = Math.max(-1, bonus);
-              i++;
-            }
+        } else {
+          for (int i = 0; i < rolls; i++) {
+            // min value is -1 as we add 1 when setting damage
+            dice[nextDieIndex++] = Math.max(-1, bonus);
           }
         }
       }
