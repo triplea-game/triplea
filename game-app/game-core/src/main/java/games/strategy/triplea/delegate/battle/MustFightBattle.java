@@ -156,8 +156,7 @@ public class MustFightBattle extends DependentBattle
       final GameData data,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
-    defendingUnits.addAll(
-        this.battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker)));
+    defendingUnits.addAll(this.battleSite.getMatches(Matches.enemyUnit(attacker)));
     maxRounds =
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
@@ -166,7 +165,7 @@ public class MustFightBattle extends DependentBattle
 
   void resetDefendingUnits(final GamePlayer attacker) {
     defendingUnits.clear();
-    defendingUnits.addAll(battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker)));
+    defendingUnits.addAll(battleSite.getMatches(Matches.enemyUnit(attacker)));
   }
 
   /** Used for head-less battles. */

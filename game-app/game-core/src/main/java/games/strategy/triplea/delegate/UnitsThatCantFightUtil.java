@@ -29,9 +29,7 @@ public class UnitsThatCantFightUtil {
               .build();
       final int countAllOwnedUnits = current.getUnitCollection().countMatches(ownedUnitsMatch);
       final Collection<Unit> nonCombatUnits =
-          current
-              .getUnitCollection()
-              .getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).negate()));
+          current.getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).negate()));
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;
       }

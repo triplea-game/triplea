@@ -413,11 +413,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
         newOwners.retainAll(possibleNewOwners);
         for (final GamePlayer newOwner : newOwners) {
           final Collection<Unit> units =
-              currTerritory
-                  .getUnitCollection()
-                  .getMatches(
-                      Matches.unitIsOwnedBy(player)
-                          .and(Matches.unitCanBeGivenByTerritoryTo(newOwner)));
+              currTerritory.getMatches(
+                  Matches.unitIsOwnedBy(player).and(Matches.unitCanBeGivenByTerritoryTo(newOwner)));
           if (!units.isEmpty()) {
             change.add(ChangeFactory.changeOwner(units, newOwner, currTerritory));
             changeList.add(Tuple.of(currTerritory, units));

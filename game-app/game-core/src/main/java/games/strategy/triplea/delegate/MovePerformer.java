@@ -176,7 +176,7 @@ public class MovePerformer implements Serializable {
               boolean ignoreBattle = false;
               // could it be a bombing raid
               final Collection<Unit> enemyUnits =
-                  route.getEnd().getUnitCollection().getMatches(Matches.enemyUnit(gamePlayer));
+                  route.getEnd().getMatches(Matches.enemyUnit(gamePlayer));
               final Collection<Unit> enemyTargetsTotal =
                   CollectionUtils.getMatches(
                       enemyUnits,

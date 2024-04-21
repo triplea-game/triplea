@@ -353,7 +353,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             .and(Matches.unitHasMovementLeft());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> ownedFighters = t.getUnitCollection().getMatches(ownedFightersMatch);
+      final Collection<Unit> ownedFighters = t.getMatches(ownedFightersMatch);
       if (ownedFighters.isEmpty()) {
         continue;
       }
@@ -560,29 +560,28 @@ public class MoveDelegate extends AbstractMoveDelegate {
             .and(Matches.unitCanRepairOthers())
             .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
     final Set<Unit> repairUnitsForThisUnit =
-        new HashSet<>(territoryUnitIsIn.getUnitCollection().getMatches(repairUnit));
+        new HashSet<>(territoryUnitIsIn.getMatches(repairUnit));
     if (Matches.unitIsSea().test(unitToBeRepaired)) {
-      final List<Territory> neighbors =
-          new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
+      final Collection<Territory> neighbors =
+          data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand());
       for (final Territory current : neighbors) {
         final Predicate<Unit> repairUnitLand =
             Matches.alliedUnit(owner)
                 .and(Matches.unitCanRepairOthers())
                 .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, current))
                 .and(Matches.unitIsLand());
-        repairUnitsForThisUnit.addAll(current.getUnitCollection().getMatches(repairUnitLand));
+        repairUnitsForThisUnit.addAll(current.getMatches(repairUnitLand));
       }
     } else if (Matches.unitIsLand().test(unitToBeRepaired)) {
-      final List<Territory> neighbors =
-          new ArrayList<>(
-              data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
+      final Collection<Territory> neighbors =
+          data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater());
       for (final Territory current : neighbors) {
         final Predicate<Unit> repairUnitSea =
             Matches.alliedUnit(owner)
                 .and(Matches.unitCanRepairOthers())
                 .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, current))
                 .and(Matches.unitIsSea());
-        repairUnitsForThisUnit.addAll(current.getUnitCollection().getMatches(repairUnitSea));
+        repairUnitsForThisUnit.addAll(current.getMatches(repairUnitSea));
       }
     }
     int largest = 0;

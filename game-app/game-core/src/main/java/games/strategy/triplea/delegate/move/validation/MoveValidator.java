@@ -595,10 +595,8 @@ public class MoveValidator {
       return result.setErrorReturnResult("Cannot move submarines under destroyers");
     }
     // Can't advance to battle unless only ignored units on route, only air units to sea, or only
-    // units that can enter
-    // territories with enemy units during NCM
-    if (end.getUnitCollection()
-            .anyMatch(Matches.enemyUnit(player).and(Matches.unitIsSubmerged().negate()))
+    // units that can enter  territories with enemy units during NCM
+    if (end.anyUnitsMatch(Matches.enemyUnit(player).and(Matches.unitIsSubmerged().negate()))
         && !onlyIgnoredUnitsOnPath(route, player, false)
         && !(end.isWater() && units.stream().allMatch(Matches.unitIsAir()))
         && !(Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
