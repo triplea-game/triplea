@@ -25,6 +25,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
@@ -453,6 +454,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+      final boolean isEditMode = EditDelegate.getEditMode(bridge.getData().getProperties());
       for (final String currentTypeAa : aaTypes) {
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
@@ -563,7 +565,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         stack.push(removeHits);
         stack.push(notifyCasualties);
         stack.push(calculateCasualties);
-        stack.push(roll);
+        if (!isEditMode) {
+          stack.push(roll);
+        }
       }
     }
   }
@@ -698,6 +702,20 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         return;
       }
       dice = new int[rollCount];
+
+      final boolean isEditMode = EditDelegate.getEditMode(gameData.getProperties());
+      if (isEditMode) {
+        final String annotation =
+            attacker.getName()
+                + " fixing dice to allocate cost of strategic bombing raid against "
+                + defender.getName()
+                + " in "
+                + battleSite.getName();
+        final Player attacker = bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
+        // does not take into account bombers with dice sides higher than getDiceSides
+        dice = attacker.selectFixedDice(rollCount, 0, annotation, gameData.getDiceSides());
+        return;
+      }
 
       final String annotation =
           String.format(

@@ -12,6 +12,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -256,7 +257,10 @@ public class BattleDisplay extends JPanel {
       final Collection<Unit> damaged,
       final Map<Unit, Collection<Unit>> dependents) {
     setStep(step);
-    dicePanel.setDiceRoll(dice);
+    final boolean isEditMode = (dice == null);
+    if (!isEditMode) {
+      dicePanel.setDiceRoll(dice);
+    }
     casualties.setNotification(killed, damaged, dependents);
     killed.addAll(updateKilledUnits(killed, player));
     if (player.equals(defender)) {
@@ -473,11 +477,15 @@ public class BattleDisplay extends JPanel {
 
     SwingUtilities.invokeLater(
         () -> {
-          dicePanel.setDiceRoll(dice);
-          casualties.setVisible(false);
-          final boolean plural = (count > 1);
+          final boolean isEditMode = EditDelegate.getEditMode(gameData.getProperties());
+          if (!isEditMode) {
+            dicePanel.setDiceRoll(dice);
+            casualties.setVisible(false);
+          }
+          final boolean plural = isEditMode || (count > 1);
+          final String countStr = isEditMode ? "" : "" + count;
           final String btnText =
-              hit.getName() + " select " + count + (plural ? " casualties" : " casualty");
+              hit.getName() + " select " + countStr + (plural ? " casualties" : " casualty");
           final var casualtySelection =
               new CasualtySelection(
                   selectFrom,
@@ -488,7 +496,8 @@ public class BattleDisplay extends JPanel {
                   defaultCasualties,
                   allowMultipleHitsPerUnit,
                   uiContext,
-                  BattleDisplay.this);
+                  BattleDisplay.this,
+                  isEditMode);
 
           actionButton.setAction(
               new AbstractAction(btnText) {
