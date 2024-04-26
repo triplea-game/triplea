@@ -2829,6 +2829,15 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_expansion_uhd_boxes/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/uhd_world_war_ii_global/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/global_40_expansion_uhd_boxes/master/preview.png
   description: |
     <br>This is World War II Global 40 Mod using the UHD Mega Map
+- mapName: Tiberian Dawn
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/XD_TIBERIUM/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/XD_TIBERIUM/master/preview.png
+  description: |
+    <br>In 1995 a meteor struck down in Italy. From it a formerly unknown
+    <br>type of crystal grew and quickly spread around the world. The new
+    <br>substance was named Tiberium.
