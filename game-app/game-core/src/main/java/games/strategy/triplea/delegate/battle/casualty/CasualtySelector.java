@@ -11,6 +11,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -75,6 +76,24 @@ public class CasualtySelector {
         Properties.getTransportCasualtiesRestricted(data.getProperties())
             ? extraHits
             : dice.getHits();
+
+    if (EditDelegate.getEditMode(data.getProperties())) {
+      return tripleaPlayer.selectCasualties(
+          targetsToPickFrom,
+          dependents,
+          hitsRemaining,
+          text,
+          dice,
+          player,
+          combatValue.getFriendUnits(),
+          combatValue.getEnemyUnits(),
+          false,
+          List.of(),
+          new CasualtyDetails(),
+          battleId,
+          battleSite,
+          allowMultipleHitsPerUnit);
+    }
 
     if (dice.getHits() == 0) {
       return new CasualtyDetails();
