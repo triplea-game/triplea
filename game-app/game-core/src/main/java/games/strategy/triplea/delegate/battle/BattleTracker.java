@@ -1281,7 +1281,10 @@ public class BattleTracker implements Serializable {
   public void fightBattleIfOnlyOne(final IDelegateBridge bridge) {
     final Collection<IBattle> battles = getPendingBattles(BattleType.NORMAL);
     if (battles.size() == 1) {
-      CollectionUtils.getAny(battles).fight(bridge);
+      final var battle = CollectionUtils.getAny(battles);
+      if (getDependentOn(battle).isEmpty()) {
+        battle.fight(bridge);
+      }
     }
   }
 
