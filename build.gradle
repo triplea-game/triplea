@@ -93,7 +93,7 @@ subprojects {
         wireMockVersion = "3.0.1"
         xchartVersion = "3.8.7"
         xmlUnitCore = "2.9.1"
-        xmlUnitMatchers = "2.9.1"
+        xmlUnitMatchers = "2.10.0"
     }
 
     repositories {
