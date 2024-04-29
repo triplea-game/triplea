@@ -37,6 +37,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import lombok.Getter;
+import lombok.Setter;
 import org.triplea.io.FileUtils;
 import org.triplea.io.IoUtils;
 import org.triplea.java.ObjectUtils;
@@ -107,7 +108,7 @@ public class GameData implements Serializable, GameState {
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
 
-  @Getter
+  @Setter @Getter
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
 
@@ -448,11 +449,6 @@ public class GameData implements Serializable, GameState {
   public void addToAttachmentOrderAndValues(
       final Tuple<IAttachment, List<Tuple<String, String>>> attachmentAndValues) {
     attachmentOrderAndValues.add(attachmentAndValues);
-  }
-
-  public void setAttachmentOrderAndValues(
-      List<Tuple<IAttachment, List<Tuple<String, String>>>> values) {
-    attachmentOrderAndValues = values;
   }
 
   /**

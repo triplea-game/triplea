@@ -238,15 +238,15 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private static GridBagConstraints buildGrid(
       final int x, final int y, final Insets insets, final int width) {
     final int gridHeight = 1;
-    final double weigthX = 0;
-    final double weigthY = 0;
+    final double weightX = 0;
+    final double weightY = 0;
     final int anchor = GridBagConstraints.WEST;
     final int fill = GridBagConstraints.NONE;
     final int ipadx = 0;
     final int ipady = 0;
 
     return new GridBagConstraints(
-        x, y, width, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
+        x, y, width, gridHeight, weightX, weightY, anchor, fill, insets, ipadx, ipady);
   }
 
   private void setOriginalPropertiesMap(final GameData data) {
@@ -367,7 +367,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
         .build()
         .run(
             () -> {
-              if (model.load(file)) {
+              if (model.loadSave(file)) {
                 setOriginalPropertiesMap(model.getGameData());
               }
             });
@@ -393,17 +393,10 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     BackgroundTaskRunner.runInBackground(
         "Loading map...",
         () -> {
-          model.load(gameFile);
-          // warning: NPE check is not to protect against concurrency, another thread could still
-          // null
-          // out game data.
-          // The NPE check is to protect against the case where there are errors loading game, in
-          // which case we'll have a null game data.
-          if (model.getGameData() != null) {
+          if (model.loadMap(gameFile)) {
             setOriginalPropertiesMap(model.getGameData());
             // only for new games, not saved games, we set the default options, and set them only
-            // once
-            // (the first time it is loaded)
+            // once (the first time it is loaded)
             gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
           }
         });

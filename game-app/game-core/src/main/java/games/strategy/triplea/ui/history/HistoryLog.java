@@ -476,13 +476,12 @@ public class HistoryLog extends JFrame {
         .append(MyFormatter.defaultNamedToTextList(players))
         .append(" : \n\n");
     for (final Territory t : territories) {
-      final List<Unit> ownedUnits =
-          t.getUnitCollection().getMatches(Matches.unitIsOwnedByAnyOf(players));
+      final List<Unit> ownedUnits = t.getMatches(Matches.unitIsOwnedByAnyOf(players));
       // see if there's a flag
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       final boolean hasFlag =
           ta != null
-              && t.getOwner() != null
+              && !t.getOwner().isNull()
               && players.contains(t.getOwner())
               && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
       if (hasFlag || !ownedUnits.isEmpty()) {

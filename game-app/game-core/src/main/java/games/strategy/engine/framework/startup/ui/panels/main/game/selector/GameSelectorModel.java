@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Observable;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -45,40 +46,50 @@ public class GameSelectorModel extends Observable implements GameSelector {
   @Setter @Getter private ClientModel clientModelForHostBots = null;
   private Optional<String> saveGameToLoad = Optional.empty();
 
+  // Don't load a save game before the startup task to load the initial map has run, else that task
+  // may "lose" the race and overwrite the loaded saved game.
+  private final CountDownLatch readyForSaveLoad = new CountDownLatch(1);
+
   public GameSelectorModel() {}
 
-  /**
-   * Loads game data by parsing a given file.
-   *
-   * @return True if successfully loaded, otherwise false.
-   */
-  public boolean load(final Path xmlFile) {
-    Preconditions.checkArgument(
-        Files.exists(xmlFile),
-        "Programming error, expected file to have already been checked to exist: "
-            + xmlFile.toAbsolutePath());
-
-    // if the file name is xml, load it as a new game
-    if (xmlFile.getFileName().toString().toLowerCase().endsWith("xml")) {
-      fileName = null;
-      GameData gameData = parseAndValidate(xmlFile);
-      if (gameData != null && gameData.getGameName() == null) {
-        gameData = null;
-      }
-      setGameData(gameData);
-      this.setDefaultGame(xmlFile, gameData);
-      return gameData != null;
-    } else {
-      // try to load it as a saved game whatever the extension
-      final GameData newData = GameDataManager.loadGame(xmlFile).orElse(null);
-      if (newData == null) {
-        return false;
-      }
-      newData.setSaveGameFileName(xmlFile.getFileName().toString());
-      this.fileName = xmlFile.getFileName().toString();
-      setGameData(newData);
-      return true;
+  public boolean loadMap(Path xmlFile) {
+    ensureExists(xmlFile);
+    fileName = null;
+    GameData gameData = parseAndValidate(xmlFile);
+    if (gameData != null && gameData.getGameName() == null) {
+      gameData = null;
     }
+    setGameData(gameData);
+    this.setDefaultGame(xmlFile, gameData);
+    return gameData != null;
+  }
+
+  public boolean loadSave(Path saveFile) {
+    try {
+      readyForSaveLoad.await();
+    } catch (InterruptedException e) {
+      return false;
+    }
+    ensureExists(saveFile);
+    final GameData newData = GameDataManager.loadGame(saveFile).orElse(null);
+    if (newData == null) {
+      return false;
+    }
+    newData.setSaveGameFileName(saveFile.getFileName().toString());
+    this.fileName = saveFile.getFileName().toString();
+    setGameData(newData);
+    return true;
+  }
+
+  public void setReadyForSaveLoad() {
+    readyForSaveLoad.countDown();
+  }
+
+  private void ensureExists(Path file) {
+    Preconditions.checkArgument(
+        Files.exists(file),
+        "Programming error, expected file to have already been checked to exist: "
+            + file.toAbsolutePath());
   }
 
   private void setDefaultGame(@Nullable final Path xmlFile, @Nullable final GameData gameData) {
@@ -165,7 +176,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
   /** Clears AI game over cache and loads default game in a new thread. */
   @Override
   public void onGameEnded() {
-    // clear out ai cached properties (this ended up being the best place to put it,
+    // clear out AI cached properties (this ended up being the best place to put it,
     // as we have definitely left a game at this point)
     GameShutdownRegistry.runShutdownActions();
     ThreadRunner.runInNewThread(this::loadDefaultGameSameThread);
@@ -192,7 +203,17 @@ public class GameSelectorModel extends Observable implements GameSelector {
         .filter(Predicate.not(String::isBlank))
         .filter(GameSelectorModel::gameUriExistsOnFileSystem)
         .map(GameSelectorModel::pathFromGameUri)
-        .ifPresentOrElse(this::load, this::resetDefaultGame);
+        .ifPresentOrElse(
+            (file) -> {
+              // if the file name is xml, load it as a new game
+              if (file.getFileName().toString().toLowerCase().endsWith("xml")) {
+                loadMap(file);
+              } else {
+                // try to load it as a saved game whatever the extension
+                loadSave(file);
+              }
+            },
+            this::resetDefaultGame);
   }
 
   private static Path pathFromGameUri(final String gameUri) {

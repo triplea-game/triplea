@@ -123,16 +123,14 @@ public class BattleCalculatorDialog extends JDialog {
             .noneMatch(Matches.unitIsOwnedBy(currentPanel.getAttacker()))) {
       // Find possible attackers (enemies) of the current defender.
       // Count how many units each one has and find the max.
-      final List<Unit> units =
-          t.getUnitCollection().getMatches(Matches.enemyUnit(currentPanel.getDefender()));
+      final List<Unit> units = t.getMatches(Matches.enemyUnit(currentPanel.getDefender()));
 
       final GamePlayer gamePlayer = new IntegerMap<>(units, Unit::getOwner).maxKey();
       if (gamePlayer != null) {
         currentPanel.setAttacker(gamePlayer);
       }
     }
-    currentPanel.addAttackingUnits(
-        t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(currentPanel.getAttacker())));
+    currentPanel.addAttackingUnits(t.getMatches(Matches.unitIsOwnedBy(currentPanel.getAttacker())));
   }
 
   public static void addDefenders(final Territory t) {
@@ -150,7 +148,7 @@ public class BattleCalculatorDialog extends JDialog {
           .ifPresent(currentDialog.panel::setDefender);
     }
     currentDialog.panel.addDefendingUnits(
-        t.getUnitCollection().getMatches(Matches.alliedUnit(currentDialog.panel.getDefender())));
+        t.getMatches(Matches.alliedUnit(currentDialog.panel.getDefender())));
     currentDialog.pack();
   }
 

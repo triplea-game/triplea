@@ -57,9 +57,9 @@ public class UnitImageFactory {
 
   private final int unitCounterOffsetWidth;
   private final int unitCounterOffsetHeight;
-  // maps Point -> image
+  // maps Point -> (scaled) image
   private final Map<ImageKey, Image> images = new HashMap<>();
-  // maps Point -> Icon
+  // maps Point -> (unscaled) Icon
   private final Map<String, ImageIcon> icons = new HashMap<>();
   // Temporary colorized image files used for URLs for html views (e.g. unit stats table).
   private final Map<ImageKey, URL> colorizedTempFiles = new HashMap<>();
@@ -227,8 +227,8 @@ public class UnitImageFactory {
   }
 
   /**
-   * Return the appropriate unit image. If an image cannot be found, a placeholder 'no-image' image
-   * is returned.
+   * Return the appropriate scaled unit image. If an image cannot be found, a placeholder 'no-image'
+   * image is returned.
    */
   public Image getImage(final ImageKey imageKey) {
     return Optional.ofNullable(images.get(imageKey))
@@ -253,20 +253,21 @@ public class UnitImageFactory {
                           images.put(imageKey, scaledImage);
                           return scaledImage;
                         }))
-        .orElseGet(
-            () -> {
-              BufferedImage image =
-                  resourceLoader.getImageOrThrow(FILE_NAME_BASE + "missing_unit_image.png");
-              Color playerColor = mapData.getPlayerColor(imageKey.getPlayer().getName());
-              ImageTransformer.colorize(playerColor, image);
+        .orElseGet(() -> createNoImageImage(imageKey));
+  }
 
-              Graphics graphics = image.getGraphics();
-              Font font = graphics.getFont();
-              graphics.setFont(font.deriveFont(8.0f));
-              graphics.setColor(Color.LIGHT_GRAY);
-              graphics.drawString(imageKey.getBaseImageName(), 5, 28);
-              return image;
-            });
+  private Image createNoImageImage(ImageKey imageKey) {
+    BufferedImage image = resourceLoader.getImageOrThrow(FILE_NAME_BASE + "missing_unit_image.png");
+    Color playerColor = mapData.getPlayerColor(imageKey.getPlayer().getName());
+    ImageTransformer.colorize(playerColor, image);
+
+    Graphics graphics = image.getGraphics();
+    Font font = graphics.getFont();
+    graphics.setFont(font.deriveFont(8.0f));
+    graphics.setColor(Color.LIGHT_GRAY);
+    graphics.drawString(imageKey.getBaseImageName(), 5, 28);
+    images.put(imageKey, image);
+    return image;
   }
 
   public Optional<URL> getBaseImageUrl(final ImageKey imageKey) {
@@ -374,10 +375,14 @@ public class UnitImageFactory {
     return highlightedImage;
   }
 
-  /** Return an icon image for a unit. */
+  /** Return an _unscaled_ icon image for a unit. */
   public ImageIcon getIcon(final ImageKey imageKey) {
     final String fullName = imageKey.getFullName();
-    return icons.computeIfAbsent(fullName, key -> new ImageIcon(getImage(imageKey)));
+    return icons.computeIfAbsent(
+        fullName,
+        name ->
+            new ImageIcon(
+                getTransformedImage(imageKey).orElseGet(() -> createNoImageImage(imageKey))));
   }
 
   public Dimension getImageDimensions(final ImageKey imageKey) {

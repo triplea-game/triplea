@@ -29,7 +29,7 @@ public class AirThatCantLandUtil {
     final Collection<Territory> cantLand = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.unitIsOwnedBy(player));
-      final Collection<Unit> air = current.getUnitCollection().getMatches(ownedAir);
+      final Collection<Unit> air = current.getMatches(ownedAir);
       if (!air.isEmpty() && !AirMovementValidator.canLand(air, current, player, data)) {
         cantLand.add(current);
       }
@@ -41,13 +41,13 @@ public class AirThatCantLandUtil {
       final GamePlayer player, final boolean spareAirInSeaZonesBesideFactories) {
     final GameState data = bridge.getData();
     final GameMap map = data.getMap();
+    final Predicate<Territory> hasNeighboringFriendlyFactoryMatch =
+        Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(player);
     for (final Territory current : getTerritoriesWhereAirCantLand(player)) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.alliedUnit(player));
-      final Collection<Unit> air = current.getUnitCollection().getMatches(ownedAir);
+      final Collection<Unit> air = current.getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
-          map.getNeighbors(current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(player))
-                  .size()
-              > 0;
+          !map.getNeighbors(current, hasNeighboringFriendlyFactoryMatch).isEmpty();
       final boolean skip =
           spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
       if (!skip) {
@@ -64,8 +64,7 @@ public class AirThatCantLandUtil {
       toRemove.addAll(airUnits);
     } else { // on water we may just no have enough carriers
       // find the carrier capacity
-      final Collection<Unit> carriers =
-          territory.getUnitCollection().getMatches(Matches.alliedUnit(player));
+      final Collection<Unit> carriers = territory.getMatches(Matches.alliedUnit(player));
       int capacity = AirMovementValidator.carrierCapacity(carriers, territory);
       for (final Unit unit : airUnits) {
         final UnitAttachment ua = unit.getUnitAttachment();

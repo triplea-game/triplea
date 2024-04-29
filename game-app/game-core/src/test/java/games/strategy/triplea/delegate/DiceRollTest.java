@@ -1072,7 +1072,6 @@ class DiceRollTest {
         gameData
             .getMap()
             .getTerritory("United Kingdom")
-            .getUnitCollection()
             .getMatches(Matches.unitIsStrategicBomber())
             .get(0);
     // default 1 roll

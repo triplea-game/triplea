@@ -1,12 +1,12 @@
 plugins {
-    id 'application'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'com.install4j.gradle' version '10.0.7'
-    id 'de.undercouch.download' version '5.6.0'
+    id "application"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.install4j.gradle" version "10.0.7"
+    id "de.undercouch.download" version "5.6.0"
 }
 
 archivesBaseName = "$group-$name"
-mainClassName = 'org.triplea.game.client.HeadedGameRunner'
+mainClassName = "org.triplea.game.client.HeadedGameRunner"
 
 ext {
     releasesDir = file("$buildDir/releases")
@@ -34,12 +34,12 @@ dependencies {
 install4j {
     // If you wish to build the installers, you must install install4j and define the "install4jHomeDir" property on the
     // command line (e.g. -Pinstall4jHomeDir=...) or in your personal Gradle properties (e.g. ~/.gradle/gradle.properties).
-    installDir = file(project.findProperty('install4jHomeDir') ?: '.')
+    installDir = file(project.findProperty("install4jHomeDir") ?: ".")
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': mainClassName
+        attributes "Main-Class": mainClassName
     }
 }
 
@@ -65,9 +65,6 @@ task downloadAssets {
 
 run {
     dependsOn downloadAssets
-    dependsOn rootProject.composeUp
-    dependsOn(":spitfire-server:database:flywayMigrateLobbyDb")
-    dependsOn(":spitfire-server:database:flywayMigrateErrorReportDb")
 }
 
 runShadow {
@@ -75,10 +72,10 @@ runShadow {
 }
 
 // Downloads JDK bundles that are used to create installers
-task downloadPlatformInstallerAssets(group: 'release', dependsOn: downloadAssets) {
+task downloadPlatformInstallerAssets(group: "release", dependsOn: downloadAssets) {
     doLast {
         [
-            'install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.4_11.tar.gz',
+            "install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.4_11.tar.gz",
         ].each { path ->
             download.run {
                 src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
@@ -91,31 +88,31 @@ task downloadPlatformInstallerAssets(group: 'release', dependsOn: downloadAssets
 
 task platformInstallers(
     type: com.install4j.gradle.Install4jTask,
-    group: 'release',
+    group: "release",
     dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
-    projectFile = file('build.install4j')
+    projectFile = file("build.install4j")
     release = releaseVersion
 
     doLast {
-        ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
+        ant.chmod(dir: releasesDir, perm: "+x", includes: "*.sh")
     }
 }
 
-task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
-    from file('.triplea-root')
-    from(file('assets')) {
-        into 'assets'
+task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
+    from file(".triplea-root")
+    from(file("assets")) {
+        into "assets"
     }
-    from(file('dice_servers')) {
-        into 'dice_servers'
+    from(file("dice_servers")) {
+        into "dice_servers"
     }
     from(shadowJar.outputs) {
-        into 'bin'
+        into "bin"
     }
 }
 
 // creates installer files using install4j (eg: install.exe)
-task release(group: 'release', dependsOn: [portableInstaller, platformInstallers]) {
+task release(group: "release", dependsOn: [portableInstaller, platformInstallers]) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files + [
             file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
@@ -127,8 +124,8 @@ task release(group: 'release', dependsOn: [portableInstaller, platformInstallers
 }
 
 shadowJar {
-    // 'archiveVersion' sets the version number on packaged jar files
+    // "archiveVersion" sets the version number on packaged jar files
     // eg: "2.6+105234" in "lobby-server-2.6+50370c.jar"
     archiveVersion = releaseVersion
-    archiveClassifier.set ''
+    archiveClassifier.set ""
 }

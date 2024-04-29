@@ -163,7 +163,7 @@ public class MovePanel extends AbstractMovePanel {
           // basic match criteria only
           final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, List.of());
           if (units.isEmpty() && selectedUnits.isEmpty() && !mouseDetails.isShiftDown()) {
-            final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
+            final List<Unit> unitsToMove = t.getMatches(unitsToMoveMatch);
             if (unitsToMove.isEmpty()) {
               return;
             }
@@ -215,7 +215,7 @@ public class MovePanel extends AbstractMovePanel {
                   .and(unitsToMoveMatch)
                   .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits())));
             }
-            selectedUnits.addAll(t.getUnitCollection().getMatches(ownedNotFactoryBuilder.build()));
+            selectedUnits.addAll(t.getMatches(ownedNotFactoryBuilder.build()));
           } else if (mouseDetails.isControlDown()) {
             selectedUnits.addAll(CollectionUtils.getMatches(units, unitsToMoveMatch));
           } else { // add one
@@ -259,9 +259,7 @@ public class MovePanel extends AbstractMovePanel {
                       .and(Matches.unitHasNotMoved())
                       .and(transport -> transport.getTransporting(t).isEmpty());
               final Collection<Unit> candidateAirTransports =
-                  CollectionUtils.getMatches(
-                      t.getUnitCollection().getMatches(unitsToMoveMatch),
-                      candidateAirTransportsMatch);
+                  t.getMatches(unitsToMoveMatch.and(candidateAirTransportsMatch));
               candidateAirTransports.removeAll(airTransportDependents.keySet());
               if (!unitsToLoad.isEmpty() && !candidateAirTransports.isEmpty()) {
                 final Collection<Unit> airTransportsToLoad =
@@ -1290,7 +1288,7 @@ public class MovePanel extends AbstractMovePanel {
       final Route route,
       final Predicate<Collection<Unit>> matchCriteria) {
     final List<Unit> candidateUnits =
-        getFirstSelectedTerritory().getUnitCollection().getMatches(getMovableMatch(route, units));
+        getFirstSelectedTerritory().getMatches(getMovableMatch(route, units));
     final Set<UnitCategory> categories =
         UnitSeparator.categorize(
             candidateUnits,
@@ -1527,7 +1525,7 @@ public class MovePanel extends AbstractMovePanel {
             .build();
     final Collection<Collection<Unit>> highlight = new ArrayList<>();
     for (final Territory t : allTerritories) {
-      final List<Unit> movableUnits = t.getUnitCollection().getMatches(movableUnitOwnedByMe);
+      final List<Unit> movableUnits = t.getMatches(movableUnitOwnedByMe);
       movableUnits.removeAll(unitScroller.getAllSkippedUnits());
       if (!movableUnits.isEmpty()) {
         highlight.add(movableUnits);

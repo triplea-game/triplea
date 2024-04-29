@@ -71,7 +71,7 @@ final class EditValidator {
               || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
-          seaTransports.addAll(territory.getUnitCollection().getMatches(friendlySeaTransports));
+          seaTransports.addAll(territory.getMatches(friendlySeaTransports));
           if (seaTransports.isEmpty()) {
             return "Can't add land units to water without enough transports";
           }
@@ -94,11 +94,10 @@ final class EditValidator {
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(
-                      territory.getUnitCollection().getMatches(friendlyCarriers), territory)
+                      territory.getMatches(friendlyCarriers), territory)
                   + AirMovementValidator.carrierCapacity(units, territory);
           final int carrierCost =
-              AirMovementValidator.carrierCost(
-                      territory.getUnitCollection().getMatches(friendlyAirUnits))
+              AirMovementValidator.carrierCost(territory.getMatches(friendlyAirUnits))
                   + AirMovementValidator.carrierCost(units);
           if (carrierCapacityTotal < carrierCost) {
             return "Can't add more air units to water without sufficient space";

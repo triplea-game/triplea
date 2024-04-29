@@ -139,10 +139,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     currentMove.addChange(airborneChange);
     // make the bases start filling up their capacity
     final Collection<Unit> basesAtStart =
-        route
-            .getStart()
-            .getUnitCollection()
-            .getMatches(MoveValidator.getAirborneBaseMatch(player, data));
+        route.getStart().getMatches(MoveValidator.getAirborneBaseMatch(player, data));
     final Change fillLaunchCapacity =
         getNewAssignmentOfNumberLaunchedChange(units.size(), basesAtStart, player, data);
     currentMove.addChange(fillLaunchCapacity);

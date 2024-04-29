@@ -595,10 +595,8 @@ public class MoveValidator {
       return result.setErrorReturnResult("Cannot move submarines under destroyers");
     }
     // Can't advance to battle unless only ignored units on route, only air units to sea, or only
-    // units that can enter
-    // territories with enemy units during NCM
-    if (end.getUnitCollection()
-            .anyMatch(Matches.enemyUnit(player).and(Matches.unitIsSubmerged().negate()))
+    // units that can enter  territories with enemy units during NCM
+    if (end.anyUnitsMatch(Matches.enemyUnit(player).and(Matches.unitIsSubmerged().negate()))
         && !onlyIgnoredUnitsOnPath(route, player, false)
         && !(end.isWater() && units.stream().allMatch(Matches.unitIsAir()))
         && !(Properties.getSubsCanEndNonCombatMoveWithEnemies(data.getProperties())
@@ -1591,6 +1589,11 @@ public class MoveValidator {
   }
 
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
+      final Territory start, final GamePlayer player) {
+    return carrierMustMoveWith(start.getUnits(), start.getUnits(), player);
+  }
+
+  public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
       final Collection<Unit> units, final Territory start, final GamePlayer player) {
     return carrierMustMoveWith(units, start.getUnits(), player);
   }
@@ -1873,7 +1876,7 @@ public class MoveValidator {
     final Predicate<Unit> airborneBaseMatch = getAirborneMatch(airborneBases, alliesForBases);
     final Territory start = route.getStart();
     final Territory end = route.getEnd();
-    final Collection<Unit> basesAtStart = start.getUnitCollection().getMatches(airborneBaseMatch);
+    final Collection<Unit> basesAtStart = start.getMatches(airborneBaseMatch);
     if (basesAtStart.isEmpty()) {
       return result.setErrorReturnResult("Require Airborne Base At Originating Territory");
     }

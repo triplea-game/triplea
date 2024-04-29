@@ -34,7 +34,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -1703,7 +1702,6 @@ public class BattleStepsTest {
     final Territory battleTerritory = givenSeaBattleSite();
     final Territory retreatTerritory = mock(Territory.class);
     when(retreatTerritory.isWater()).thenReturn(true);
-    when(retreatTerritory.getUnitCollection()).thenReturn(mock(UnitCollection.class));
 
     final List<String> steps =
         givenBattleSteps(

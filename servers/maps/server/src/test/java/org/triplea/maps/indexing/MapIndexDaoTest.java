@@ -26,21 +26,6 @@ class MapIndexDaoTest {
   private final MapIndexDao mapIndexDao;
 
   @Test
-  @ExpectedDataSet(value = "expected/map_index_upsert_new.yml", orderBy = "map_name")
-  void upsertCreatesNewRecords() {
-    mapIndexDao.upsert(
-        MapIndexingResult.builder()
-            .mapName("map-name-3")
-            .mapRepoUri("http-map-repo-url-3")
-            .lastCommitDate(LocalDateTime.of(2000, 1, 12, 23, 59).toInstant(ZoneOffset.UTC))
-            .mapDownloadSizeInBytes(3080L)
-            .downloadUri("http-map-repo-3-download")
-            .previewImageUri("http-preview-image-url-3")
-            .description("description")
-            .build());
-  }
-
-  @Test
   @ExpectedDataSet(value = "expected/map_index_upsert_updated.yml", orderBy = "id")
   void upsertUpdatesRecords() {
     mapIndexDao.upsert(

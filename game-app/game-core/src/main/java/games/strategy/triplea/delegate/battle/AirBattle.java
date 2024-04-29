@@ -85,14 +85,10 @@ public class AirBattle extends AbstractBattle {
     // fill in defenders
     if (isBombingRun) {
       defendingUnits =
-          battleSite
-              .getUnitCollection()
-              .getMatches(defendingBombingRaidInterceptors(battleSite, attacker, gameData));
+          battleSite.getMatches(defendingBombingRaidInterceptors(battleSite, attacker, gameData));
     } else {
       defendingUnits =
-          battleSite
-              .getUnitCollection()
-              .getMatches(defendingGroundSeaBattleInterceptors(attacker, gameData));
+          battleSite.getMatches(defendingGroundSeaBattleInterceptors(attacker, gameData));
     }
   }
 
@@ -353,12 +349,10 @@ public class AirBattle extends AbstractBattle {
       if (!bombers.isEmpty()) {
         Map<Unit, Set<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal =
-            battleSite
-                .getUnitCollection()
-                .getMatches(
-                    Matches.enemyUnit(bridge.getGamePlayer())
-                        .and(Matches.unitCanBeDamaged())
-                        .and(Matches.unitIsBeingTransported().negate()));
+            battleSite.getMatches(
+                Matches.enemyUnit(bridge.getGamePlayer())
+                    .and(Matches.unitCanBeDamaged())
+                    .and(Matches.unitIsBeingTransported().negate()));
         for (final Unit unit : bombers) {
           final Collection<Unit> enemyTargets =
               CollectionUtils.getMatches(
@@ -575,9 +569,7 @@ public class AirBattle extends AbstractBattle {
       return Integer.MAX_VALUE;
     }
     int result = 0;
-    for (final Unit base :
-        t.getUnitCollection()
-            .getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
+    for (final Unit base : t.getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
       final int baseMax = base.getUnitAttachment().getMaxInterceptCount();
       if (baseMax == -1) {
         return Integer.MAX_VALUE;

@@ -939,7 +939,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final GameState data) {
     final Predicate<Territory> predicate =
         t -> {
-          final Collection<Unit> units = t.getUnitCollection().getMatches(unitFilter);
+          final Collection<Unit> units = t.getMatches(unitFilter);
           return !units.isEmpty()
               && checkUnitPresenceByType(t.getData(), units, false).orElse(true);
         };
@@ -958,7 +958,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final GameState data) {
     final Predicate<Territory> predicate =
         t -> {
-          final Collection<Unit> units = t.getUnitCollection().getMatches(unitFilter);
+          final Collection<Unit> units = t.getMatches(unitFilter);
           return units.isEmpty() || checkUnitPresenceByType(t.getData(), units, true).orElse(false);
         };
     return matchTerritories(

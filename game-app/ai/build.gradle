@@ -1,6 +1,6 @@
 dependencies {
     implementation project(":game-app:game-core")
     implementation project(":lib:java-extras")
-    testFixtures project(':game-app:game-core').sourceSets.test.resources
-    testImplementation project(':game-app:game-core').sourceSets.test.output
+    testFixtures project(":game-app:game-core").sourceSets.test.resources
+    testImplementation project(":game-app:game-core").sourceSets.test.output
 }

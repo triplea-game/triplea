@@ -1,3 +1,8 @@
+plugins {
+    id("maven-publish")
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
+
 dependencies {
     implementation "io.github.openfeign:feign-core:$feignCoreVersion"
     implementation project(":game-app:domain-data")
@@ -9,4 +14,37 @@ dependencies {
     testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
     testImplementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     testImplementation project(":lib:test-common")
+}
+
+
+def getGitCommitCount = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine "git", "rev-list", "--count", "HEAD"
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+shadowJar {
+    version = "0." + getGitCommitCount()
+    archiveClassifier = ""
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/triplea-game/triplea"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
 }

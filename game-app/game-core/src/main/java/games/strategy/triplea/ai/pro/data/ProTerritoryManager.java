@@ -725,25 +725,23 @@ public class ProTerritoryManager {
       final boolean isCheckingEnemyAttacks) {
     final GameState data = proData.getData();
     final GameMap gameMap = data.getMap();
-
+    final Predicate<Territory> canMove =
+        isCheckingEnemyAttacks
+            ? ProMatches.territoryCanMoveSeaUnits(player, isCombatMove)
+            : ProMatches.territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
+                player, isCombatMove, clearedTerritories, List.of());
     for (final Territory myUnitTerritory : myUnitTerritories) {
-
       // Find my naval units that have movement left
       final List<Unit> mySeaUnits =
-          myUnitTerritory
-              .getUnitCollection()
-              .getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, isCombatMove));
+          myUnitTerritory.getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, isCombatMove));
 
       // Check each sea unit individually since they can have different ranges
       for (final Unit mySeaUnit : mySeaUnits) {
-
         // If my combat move and carrier has dependent allied fighters then skip it
         if (isCombatMove && !isCheckingEnemyAttacks) {
-          final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-              MoveValidator.carrierMustMoveWith(
-                  myUnitTerritory.getUnits(), myUnitTerritory, player);
-          if (carrierMustMoveWith.containsKey(mySeaUnit)
-              && !carrierMustMoveWith.get(mySeaUnit).isEmpty()) {
+          final Collection<Unit> carrierMustMoveWith =
+              MoveValidator.carrierMustMoveWith(myUnitTerritory, player).get(mySeaUnit);
+          if (carrierMustMoveWith != null && !carrierMustMoveWith.isEmpty()) {
             continue;
           }
         }
@@ -757,25 +755,17 @@ public class ProTerritoryManager {
             gameMap.getNeighborsByMovementCost(
                 myUnitTerritory, range, ProMatches.territoryCanMoveSeaUnits(player, isCombatMove));
         possibleMoveTerritories.add(myUnitTerritory);
-        final Set<Territory> potentialTerritories =
-            new HashSet<>(
-                CollectionUtils.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
-        if (!isCombatMove) {
+        final Collection<Territory> potentialTerritories =
+            CollectionUtils.getMatches(possibleMoveTerritories, moveToTerritoryMatch);
+        if (!isCombatMove && !potentialTerritories.contains(myUnitTerritory)) {
           potentialTerritories.add(myUnitTerritory);
         }
-        for (final Territory potentialTerritory : potentialTerritories) {
 
+        for (final Territory potentialTerritory : potentialTerritories) {
           // Find route over water
           final Route myRoute =
               gameMap.getRouteForUnit(
-                  myUnitTerritory,
-                  potentialTerritory,
-                  isCheckingEnemyAttacks
-                      ? ProMatches.territoryCanMoveSeaUnits(player, isCombatMove)
-                      : ProMatches.territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
-                          player, isCombatMove, clearedTerritories, List.of()),
-                  mySeaUnit,
-                  player);
+                  myUnitTerritory, potentialTerritory, canMove, mySeaUnit, player);
           if (myRoute == null) {
             continue;
           }
@@ -820,9 +810,7 @@ public class ProTerritoryManager {
 
       // Find my land units that have movement left
       final List<Unit> myLandUnits =
-          myUnitTerritory
-              .getUnitCollection()
-              .getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove));
+          myUnitTerritory.getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove));
 
       // Check each land unit individually since they can have different ranges
       for (final Unit u : myLandUnits) {
@@ -837,13 +825,12 @@ public class ProTerritoryManager {
                     ? ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(player, u)
                     : ProMatches.territoryCanMoveSpecificLandUnit(player, isCombatMove, u));
         possibleMoveTerritories.add(myUnitTerritory);
-        final Set<Territory> potentialTerritories =
-            new HashSet<>(
-                CollectionUtils.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
-        if (!isCombatMove) {
+        final Collection<Territory> potentialTerritories =
+            CollectionUtils.getMatches(possibleMoveTerritories, moveToTerritoryMatch);
+        if (!isCombatMove && !potentialTerritories.contains(myUnitTerritory)) {
           potentialTerritories.add(myUnitTerritory);
         }
-        Predicate<Territory> canMove =
+        final Predicate<Territory> canMove =
             isCheckingEnemyAttacks
                 ? ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
                     player, u, startTerritory, isCombatMove, enemyTerritories, clearedTerritories)
@@ -948,29 +935,30 @@ public class ProTerritoryManager {
       }
     }
 
-    for (final Territory myUnitTerritory : myUnitTerritories) {
+    final Predicate<Territory> canMove =
+        isIgnoringRelationships
+            ? ProMatches.territoryCanPotentiallyMoveAirUnits(player)
+            : ProMatches.territoryCanMoveAirUnits(data, player, isCombatMove);
+    // Find route ignoring impassable and territories with AA
+    final Predicate<Territory> canFlyOverMatch =
+        isCheckingEnemyAttacks
+            ? ProMatches.territoryCanMoveAirUnits(data, player, isCombatMove)
+            : ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, isCombatMove);
 
+    final Predicate<Unit> unitMatch = ProMatches.unitCanBeMovedAndIsOwnedAir(player, isCombatMove);
+    for (final Territory myUnitTerritory : myUnitTerritories) {
       // Find my air units that have movement left
-      final List<Unit> myAirUnits =
-          myUnitTerritory
-              .getUnitCollection()
-              .getMatches(ProMatches.unitCanBeMovedAndIsOwnedAir(player, isCombatMove));
+      final List<Unit> myAirUnits = myUnitTerritory.getMatches(unitMatch);
 
       // Check each air unit individually since they can have different ranges
       for (final Unit myAirUnit : myAirUnits) {
-
         // Find range
         final BigDecimal range =
             getUnitRange(myAirUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
 
         // Find potential territories to move to
         final Set<Territory> possibleMoveTerritories =
-            gameMap.getNeighborsByMovementCost(
-                myUnitTerritory,
-                range,
-                isIgnoringRelationships
-                    ? ProMatches.territoryCanPotentiallyMoveAirUnits(player)
-                    : ProMatches.territoryCanMoveAirUnits(data, player, isCombatMove));
+            gameMap.getNeighborsByMovementCost(myUnitTerritory, range, canMove);
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
             new HashSet<>(
@@ -982,12 +970,6 @@ public class ProTerritoryManager {
         }
 
         for (final Territory potentialTerritory : potentialTerritories) {
-
-          // Find route ignoring impassable and territories with AA
-          final Predicate<Territory> canFlyOverMatch =
-              isCheckingEnemyAttacks
-                  ? ProMatches.territoryCanMoveAirUnits(data, player, isCombatMove)
-                  : ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, isCombatMove);
           final Route myRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, potentialTerritory, canFlyOverMatch, myAirUnit, player);
@@ -1061,7 +1043,7 @@ public class ProTerritoryManager {
 
     for (final Territory transportTerritory : myUnitTerritories) {
       // Find my transports and amphibious units that have movement left
-      final List<Unit> transports = transportTerritory.getUnitCollection().getMatches(isTransport);
+      final List<Unit> transports = transportTerritory.getMatches(isTransport);
 
       // Check each transport unit individually since they can have different ranges
       for (final Unit transport : transports) {
@@ -1202,18 +1184,19 @@ public class ProTerritoryManager {
       unloadToTerritories.addAll(amphibData.getTransportMap().keySet());
     }
 
+    final Predicate<Territory> canMove =
+        isCheckingEnemyAttacks
+            ? ProMatches.territoryCanMoveSeaUnits(player, true)
+            : ProMatches.territoryCanMoveSeaUnitsThrough(player, true);
+
     // Loop through territories with my units
     for (final Territory myUnitTerritory : myUnitTerritories) {
-
       // Find my bombard units that have movement left
       final List<Unit> mySeaUnits =
-          myUnitTerritory
-              .getUnitCollection()
-              .getMatches(ProMatches.unitCanBeMovedAndIsOwnedBombard(player));
+          myUnitTerritory.getMatches(ProMatches.unitCanBeMovedAndIsOwnedBombard(player));
 
       // Check each sea unit individually since they can have different ranges
       for (final Unit mySeaUnit : mySeaUnits) {
-
         // Find range
         final BigDecimal range =
             getUnitRange(mySeaUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
@@ -1225,17 +1208,10 @@ public class ProTerritoryManager {
         potentialTerritories.add(myUnitTerritory);
         potentialTerritories.retainAll(unloadFromTerritories);
         for (final Territory bombardFromTerritory : potentialTerritories) {
-
           // Find route over water with no enemy units blocking
           final Route myRoute =
               gameMap.getRouteForUnit(
-                  myUnitTerritory,
-                  bombardFromTerritory,
-                  isCheckingEnemyAttacks
-                      ? ProMatches.territoryCanMoveSeaUnits(player, true)
-                      : ProMatches.territoryCanMoveSeaUnitsThrough(player, true),
-                  mySeaUnit,
-                  player);
+                  myUnitTerritory, bombardFromTerritory, canMove, mySeaUnit, player);
           if (myRoute == null) {
             continue;
           }

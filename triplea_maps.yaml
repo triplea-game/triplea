@@ -2289,7 +2289,7 @@
 - mapName: Global 40 expansion
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_expansion/archive/master.zip
-  version: 15
+  version: 16
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/preview.png
   description: |
     <br>
@@ -2803,14 +2803,14 @@
 - mapName: UHD World War II Global
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/uhd_world_war_ii_global/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/uhd_world_war_ii_global/master/preview.png
   description: |
     <br>This is UHD World War II Global using the Black Elk Mega Map
 - mapName: 1941 Global Command Decision
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/1941_global_command_decision/archive/master.zip
-  version: 165
+  version: 170
   img: https://raw.githubusercontent.com/triplea-maps/1941_global_command_decision/master/preview.png
   description: |
     <br>* Designed for solo play with the AI in mind to give you a good game
@@ -2825,3 +2825,19 @@
     <br>* A historical map set about 1561 Japan, intended for solo play or a Free for All with the balance being played by the Fast AI or Hard AI
     <br>* Immersive Campaign - Serious time & effort to provide suitable sound effects
     <br>* Large size map 11264x6290px=71MP, amongst one of the largest TripleA maps, with Unit size equivalent to 68x68px (54x54px x1.25 unit size) with 4K screens in mind
+- mapName: Global 40 Expansion UHD Boxes
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/global_40_expansion_uhd_boxes/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/global_40_expansion_uhd_boxes/master/preview.png
+  description: |
+    <br>This is World War II Global 40 Mod using the UHD Mega Map
+- mapName: Tiberian Dawn
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/XD_TIBERIUM/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/XD_TIBERIUM/master/preview.png
+  description: |
+    <br>In 1995 a meteor struck down in Italy. From it a formerly unknown
+    <br>type of crystal grew and quickly spread around the world. The new
+    <br>substance was named Tiberium.

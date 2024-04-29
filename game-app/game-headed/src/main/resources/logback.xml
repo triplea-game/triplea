@@ -1,6 +1,6 @@
 <configuration>
     <appender name="swingMessage" class="org.triplea.debug.Slf4jLogMessageUploader"/>
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${user.home}/triplea/triplea.log</file>
         <append>true</append>
         <encoder>
@@ -9,10 +9,10 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
             <fileNamePattern>triplea-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <!-- each file should be at most 10MB, keep 3 days worth of history, but at most 50MB -->
-            <maxFileSize>10MB</maxFileSize>
+            <!-- each file should be at most 1MB, keep 3 days worth of history, but at most 10MB -->
+            <maxFileSize>1MB</maxFileSize>
             <maxHistory>3</maxHistory>
-            <totalSizeCap>50MB</totalSizeCap>
+            <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
