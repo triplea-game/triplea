@@ -69,7 +69,7 @@ public class ServerGame extends AbstractGame {
 
   private final RandomStats randomStats;
   private IRandomSource randomSource = new PlainRandomSource();
-  private IRandomSource delegateRandomSource;
+  private @Nullable IRandomSource delegateRandomSource;
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
   @Nullable @Getter private final InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
@@ -562,8 +562,7 @@ public class ServerGame extends AbstractGame {
     // do any initialization of game data for all players here (not based on a delegate, and should
     // not be)
     // we cannot do this the very first run through, because there are no history nodes yet. We
-    // should do after first
-    // node is created.
+    // should do after first node is created.
     if (needToInitialize) {
       addPlayerTypesToGameData(gamePlayers.values(), playerManager, bridge);
     }
@@ -613,14 +612,21 @@ public class ServerGame extends AbstractGame {
         .stepChanged(stepName, delegateName, gamePlayer, round, displayName, loadedFromSavedGame);
   }
 
+  private String isOrAre(String playerName) {
+    if (playerName.endsWith("s") || playerName.endsWith("ese") || playerName.endsWith("ish")) {
+      return "are";
+    } else {
+      return "is";
+    }
+  }
+
   private void addPlayerTypesToGameData(
       final Collection<Player> localPlayers,
       final PlayerManager allPlayers,
       final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     // potential bugs with adding changes to a game that has not yet started and has no history
-    // nodes yet. So wait for
-    // the first delegate to start before making changes.
+    // nodes yet. So wait for the first delegate to start before making changes.
     if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || firstRun) {
       firstRun = false;
       return;
@@ -635,21 +641,16 @@ public class ServerGame extends AbstractGame {
     final CompositeChange change = new CompositeChange();
     final Set<String> allPlayersString = allPlayers.getPlayers();
     bridge.getHistoryWriter().startEvent("Game Loaded");
+    final var historyWriter = bridge.getHistoryWriter();
     for (final Player player : localPlayers) {
       allPlayersString.remove(player.getName());
-      final boolean isAi = player.isAi();
-      bridge
-          .getHistoryWriter()
-          .addChildToEvent(
-              player.getName()
-                  + ((player.getName().endsWith("s")
-                          || player.getName().endsWith("ese")
-                          || player.getName().endsWith("ish"))
-                      ? " are"
-                      : " is")
-                  + " now being played by: "
-                  + player.getPlayerLabel());
+      historyWriter.addChildToEvent(
+          String.format(
+              "%s %s now being played by: %s",
+              player.getName(), isOrAre(player.getName()), player.getPlayerLabel()));
+
       final GamePlayer p = data.getPlayerList().getPlayerId(player.getName());
+      final boolean isAi = player.isAi();
       final String newWhoAmI = (isAi ? "AI" : "Human") + ":" + player.getPlayerLabel();
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
@@ -659,14 +660,8 @@ public class ServerGame extends AbstractGame {
     while (playerIter.hasNext()) {
       final String player = playerIter.next();
       playerIter.remove();
-      bridge
-          .getHistoryWriter()
-          .addChildToEvent(
-              player
-                  + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish"))
-                      ? " are"
-                      : " is")
-                  + " now being played by: Human:Client");
+      historyWriter.addChildToEvent(
+          String.format("%s %s now being played by: Human:Client", player, isOrAre(player)));
       final GamePlayer p = data.getPlayerList().getPlayerId(player);
       final String newWhoAmI = "Human:Client";
       if (!p.getWhoAmI().equals(newWhoAmI)) {

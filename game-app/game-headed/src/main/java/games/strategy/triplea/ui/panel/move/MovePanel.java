@@ -86,10 +86,10 @@ public class MovePanel extends AbstractMovePanel {
   private final Map<Unit, Collection<Unit>> airTransportDependents = new HashMap<>();
 
   // access only through getter and setter!
-  private Territory firstSelectedTerritory;
-  private Territory selectedEndpointTerritory;
+  @Getter private @Nullable Territory firstSelectedTerritory;
+  @Getter @Setter private @Nullable Territory selectedEndpointTerritory;
   private Territory mouseCurrentTerritory;
-  private List<Territory> forced;
+  private @Nullable List<Territory> forced;
   @Setter private boolean nonCombat;
   private Point mouseSelectedPoint;
   private Point mouseCurrentPoint;
@@ -99,15 +99,15 @@ public class MovePanel extends AbstractMovePanel {
   // the must move with details for the currently selected territory
   // note this is kept in sync because we do not modify selectedTerritory directly
   // instead we only do so through the private setter
-  private MustMoveWithDetails mustMoveWithDetails = null;
+  private @Nullable MustMoveWithDetails mustMoveWithDetails = null;
   // cache this so we can update it only when territory/units change
   private Collection<Unit> unitsThatCanMoveOnRoute;
   private @Nullable Image currentCursorImage;
   private final @Nullable Image warningImage;
   private final @Nullable Image errorImage;
-  private Route routeCached = null;
+  private @Nullable Route routeCached = null;
   private String displayText = "Combat Move";
-  private MoveType moveType = MoveType.DEFAULT;
+  @Setter private MoveType moveType = MoveType.DEFAULT;
   private final UnitScroller unitScroller;
 
   @Getter(onMethod_ = @Override)
@@ -693,10 +693,6 @@ public class MovePanel extends AbstractMovePanel {
     unitScrollerPanel = unitScroller.build();
     unitScrollerPanel.setVisible(false);
     registerKeyBindings(frame);
-  }
-
-  public void setMoveType(final MoveType moveType) {
-    this.moveType = moveType;
   }
 
   private GamePlayer getUnitOwner(final Collection<Unit> units) {
@@ -1382,18 +1378,6 @@ public class MovePanel extends AbstractMovePanel {
           MoveValidator.getMustMoveWith(
               firstSelectedTerritory, airTransportDependents, getCurrentPlayer());
     }
-  }
-
-  private Territory getFirstSelectedTerritory() {
-    return firstSelectedTerritory;
-  }
-
-  final void setSelectedEndpointTerritory(final Territory selectedEndpointTerritory) {
-    this.selectedEndpointTerritory = selectedEndpointTerritory;
-  }
-
-  private Territory getSelectedEndpointTerritory() {
-    return selectedEndpointTerritory;
   }
 
   private List<Unit> userChooseUnits(

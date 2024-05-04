@@ -98,18 +98,18 @@ public class MapPanel extends ImageScrollerLargeView {
   private final TerritoryHighlighter territoryHighlighter = new TerritoryHighlighter();
   private final ImageScrollerSmallView smallView;
   // units the mouse is currently over
-  private Tuple<Territory, List<Unit>> currentUnits;
+  private @Nullable Tuple<Territory, List<Unit>> currentUnits;
   private final SmallMapImageManager smallMapImageManager;
-  private RouteDescription routeDescription;
+  private @Nullable RouteDescription routeDescription;
   private final TileManager tileManager;
-  private BufferedImage mouseShadowImage = null;
+  private @Nullable BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
   private ResourceCollection movementFuelCost;
   @Getter private final UiContext uiContext;
   private final ExecutorService executor =
       Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   @Getter private Collection<Collection<Unit>> highlightedUnits = List.of();
-  private Cursor hiddenCursor = null;
+  private @Nullable Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
   private Set<Territory> countriesToUpdate = new HashSet<>();
   private final Object countriesToUpdateLock = new Object();
@@ -234,7 +234,7 @@ public class MapPanel extends ImageScrollerLargeView {
             if (!unitSelectionListeners.isEmpty()) {
               Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, gameData);
               if (tuple == null) {
-                tuple = Tuple.of(getTerritory(x, y), List.of());
+                tuple = Tuple.of(terr, List.of());
               }
               notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
             }
@@ -457,7 +457,10 @@ public class MapPanel extends ImageScrollerLargeView {
 
   /** Set the route, could be null. */
   public void setRoute(
-      final Route route, final Point start, final Point end, final Image cursorImage) {
+      final @Nullable Route route,
+      final @Nullable Point start,
+      final @Nullable Point end,
+      final @Nullable Image cursorImage) {
     if (route == null) {
       routeDescription = null;
       SwingUtilities.invokeLater(this::repaint);
@@ -584,7 +587,7 @@ public class MapPanel extends ImageScrollerLargeView {
     return new MouseDetails(me, x, y);
   }
 
-  private boolean unitsChanged(final Tuple<Territory, List<Unit>> newUnits) {
+  private boolean unitsChanged(final @Nullable Tuple<Territory, List<Unit>> newUnits) {
     return !ObjectUtils.referenceEquals(newUnits, currentUnits)
         && (newUnits == null
             || currentUnits == null
@@ -737,17 +740,16 @@ public class MapPanel extends ImageScrollerLargeView {
           movementFuelCost,
           uiContext.getResourceImageFactory());
     }
+    final var unitImageFactory = uiContext.getUnitImageFactory();
     for (final Collection<Unit> value : highlightedUnits) {
       for (final UnitCategory category : UnitSeparator.categorize(value)) {
-        final Rectangle r = tileManager.getUnitRect(category.getUnits(), gameData);
+        final @Nullable Rectangle r = tileManager.getUnitRect(category.getUnits(), gameData);
         if (r == null) {
           continue;
         }
 
-        Image image =
-            uiContext
-                .getUnitImageFactory()
-                .getHighlightImage(UnitImageFactory.ImageKey.of(category));
+        final Image image =
+            unitImageFactory.getHighlightImage(UnitImageFactory.ImageKey.of(category));
         final AffineTransform transform =
             AffineTransform.getTranslateInstance(
                 normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
@@ -869,7 +871,7 @@ public class MapPanel extends ImageScrollerLargeView {
     smallMapImageManager.updateOffscreenImage(uiContext.getMapImage().getSmallMapImage());
   }
 
-  public void setMouseShadowUnits(final Collection<Unit> units) {
+  public void setMouseShadowUnits(final @Nullable Collection<Unit> units) {
     if (units == null || units.isEmpty()) {
       movementLeftForCurrentUnits = "";
       mouseShadowImage = null;
@@ -975,12 +977,8 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void hideMouseCursor() {
     if (hiddenCursor == null) {
-      hiddenCursor =
-          getToolkit()
-              .createCustomCursor(
-                  new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR),
-                  new Point(0, 0),
-                  "Hidden");
+      final var image = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+      hiddenCursor = getToolkit().createCustomCursor(image, new Point(), "Hidden");
     }
     setCursor(hiddenCursor);
   }
