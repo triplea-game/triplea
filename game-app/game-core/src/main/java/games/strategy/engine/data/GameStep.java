@@ -93,7 +93,7 @@ public class GameStep extends GameDataComponent {
     properties = stepProperties;
   }
 
-  public GamePlayer getPlayerId() {
+  public @Nullable GamePlayer getPlayerId() {
     return player;
   }
 

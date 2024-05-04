@@ -1,6 +1,7 @@
 package games.strategy.engine.framework;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.triplea.Constants.EDIT_MODE;
 
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
@@ -40,6 +41,7 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -466,6 +468,15 @@ public class ServerGame extends AbstractGame {
           gameData.getSequence().getRound() % 2 == 0
               ? launchAction.getAutoSaveFileUtils().getEvenRoundAutoSaveFile()
               : launchAction.getAutoSaveFileUtils().getOddRoundAutoSaveFile());
+    }
+    // Turn off Edit Mode if we're transitioning to an AI player to prevent infinite round combats.
+    if (EditDelegate.getEditMode(gameData.getProperties())) {
+      GamePlayer newPlayer = gameData.getSequence().getStep().getPlayerId();
+      if (newPlayer != null && newPlayer.isAi() && !newPlayer.equals(currentStep.getPlayerId())) {
+        String text = "Turning off Edit Mode when switching to AI player";
+        gameData.getHistory().getHistoryWriter().startEvent(text);
+        gameData.getProperties().set(EDIT_MODE, false);
+      }
     }
     if (!isMoveStep && shouldAutoSaveAfterEnd(currentDelegate)) {
       autoSaveAfter(currentDelegate);
