@@ -1,5 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
+import static games.strategy.triplea.Constants.EDIT_MODE;
+
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -44,6 +46,7 @@ class BattleCalculator implements IBattleCalculator {
 
   BattleCalculator(byte[] data) {
     gameData = GameDataUtils.createGameDataFromBytes(data).orElseThrow();
+    gameData.getProperties().set(EDIT_MODE, false);
   }
 
   @Override
