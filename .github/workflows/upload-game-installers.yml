@@ -41,7 +41,7 @@ jobs:
           artifacts: build/artifacts/*
           tag: ${{ env.build_version }}
           name: ${{ env.release_name }}
-          prerelease: true
+          prerelease: false
           commit: ${{ github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
