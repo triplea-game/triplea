@@ -72,8 +72,8 @@ public class RemoveUnitsHistoryChange implements HistoryChange {
       oldUnits.add(u);
       // ensure that any units that are being transported are also killed
       oldUnits.addAll(u.getTransporting(location));
-      // any unit that was unloaded during combat phase needs to be removed but it needs to be removed
-      // from the territory it unloaded to
+      // any unit that was unloaded during combat phase needs to be removed but it needs to be
+      // removed from the territory it unloaded to
       for (Unit unloadedUnit : u.getUnloaded()) {
         oldUnits.add(unloadedUnit);
         allUnloadedUnits.add(unloadedUnit);
