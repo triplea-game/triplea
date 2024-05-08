@@ -571,8 +571,11 @@ public class MustFightBattle extends DependentBattle
     if (killedUnits.isEmpty()) {
       return;
     }
+    // Note: Ideally we wouldn't have duplicates already, but this should fix the error for now.
+    // See: https://github.com/triplea-game/triplea/issues/11597
+    final var uniqueKilledUnits = new HashSet<>(killedUnits);
     final RemoveUnitsHistoryChange removeUnitsHistoryChange =
-        HistoryChangeFactory.removeUnitsFromTerritory(battleSite, killedUnits);
+        HistoryChangeFactory.removeUnitsFromTerritory(battleSite, uniqueKilledUnits);
 
     final Collection<Unit> killedUnitsIncludingDependents = removeUnitsHistoryChange.getOldUnits();
     final Collection<Unit> transformedUnits = removeUnitsHistoryChange.getNewUnits();
