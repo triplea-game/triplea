@@ -68,6 +68,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -573,7 +574,7 @@ public class MustFightBattle extends DependentBattle
     }
     // Note: Ideally we wouldn't have duplicates already, but this should fix the error for now.
     // See: https://github.com/triplea-game/triplea/issues/11597
-    final var uniqueKilledUnits = new HashSet<>(killedUnits);
+    final var uniqueKilledUnits = new LinkedHashSet<>(killedUnits);
     final RemoveUnitsHistoryChange removeUnitsHistoryChange =
         HistoryChangeFactory.removeUnitsFromTerritory(battleSite, uniqueKilledUnits);
 
