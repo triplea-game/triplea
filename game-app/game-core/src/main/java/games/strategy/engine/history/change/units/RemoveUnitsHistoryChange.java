@@ -11,6 +11,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -66,34 +67,30 @@ public class RemoveUnitsHistoryChange implements HistoryChange {
 
     killedUnits.forEach(unit -> unit.setHits(originalHits.getInt(unit)));
 
-    oldUnits.addAll(killedUnits);
-    // ensure that any units that are being transported are also killed
-    killedUnits.stream()
-        .map(unit -> unit.getTransporting(location))
-        .flatMap(Collection::stream)
-        .forEach(oldUnits::add);
-    // any unit that was unloaded during combat phase needs to be removed but it needs to be removed
-    // from the territory it unloaded to
-    killedUnits.stream()
-        .map(Unit::getUnloaded)
-        .flatMap(Collection::stream)
-        .forEach(
-            unloadedUnit -> {
-              unloadedUnits
-                  .computeIfAbsent(unloadedUnit.getUnloadedTo(), k -> new ArrayList<>())
-                  .add(unloadedUnit);
-              oldUnits.add(unloadedUnit);
-            });
+    final Collection<Unit> allUnloadedUnits = new HashSet<>();
+    for (Unit u : killedUnits) {
+      oldUnits.add(u);
+      // ensure that any units that are being transported are also killed
+      oldUnits.addAll(u.getTransporting(location));
+      // any unit that was unloaded during combat phase needs to be removed but it needs to be
+      // removed from the territory it unloaded to
+      for (Unit unloadedUnit : u.getUnloaded()) {
+        oldUnits.add(unloadedUnit);
+        allUnloadedUnits.add(unloadedUnit);
+        unloadedUnits
+            .computeIfAbsent(unloadedUnit.getUnloadedTo(), k -> new ArrayList<>())
+            .add(unloadedUnit);
+      }
+    }
 
     newUnits.addAll(transformDamagedUnitsHistoryChange.getNewUnits());
 
-    final Collection<Unit> allUnloadedUnits =
-        unloadedUnits.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     // the killed units shouldn't contain units that were transformed as TransformUnits handles them
     // it should also not include unloaded units as they are handled separately
+    final var transformedUnits = transformDamagedUnitsHistoryChange.getOldUnits();
     this.killedUnits =
         oldUnits.stream()
-            .filter(unit -> !transformDamagedUnitsHistoryChange.getOldUnits().contains(unit))
+            .filter(Predicate.not(transformedUnits::contains))
             .filter(Predicate.not(allUnloadedUnits::contains))
             .collect(Collectors.toList());
   }

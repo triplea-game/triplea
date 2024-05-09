@@ -28,7 +28,7 @@ final class MapDownloadProgressListener {
         () -> {
           progressBar.setIndeterminate(false);
           progressBar.setString(null);
-          progressBar.setValue(percentComplete);
+          progressBar.setValue(Math.max(0, percentComplete));
           progressBar.setToolTipText(toolTipText);
         });
   }
