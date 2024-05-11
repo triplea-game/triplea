@@ -170,11 +170,12 @@ public class PurchasePanel extends ActionPanel {
       int totalProd = 0;
       try (GameData.Unlocker ignored = data.acquireReadLock()) {
         final var predicate = Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(player);
-        for (final Territory t :
-            CollectionUtils.getMatches(data.getMap().getTerritories(), predicate)) {
+        final var territories =
+            CollectionUtils.getMatches(data.getMap().getTerritories(), predicate);
+        for (final Territory t : CollectionUtils.getMatches(territories, predicate)) {
           totalProd +=
               UnitUtils.getProductionPotentialOfTerritory(
-                  t.getUnits(), t, getCurrentPlayer(), properties, true, true);
+                  t.getUnits(), t, player, properties, true, true);
         }
       }
       // sum production for all units except factories
