@@ -54,7 +54,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
       Comparator.comparing(o -> (UnitType) o.getAnyResultKey(), new UnitTypeComparator());
 
   private boolean needToInitialize = true;
-  @Getter private IntegerMap<ProductionRule> pendingProductionRules;
+  @Getter private @Nullable IntegerMap<ProductionRule> pendingProductionRules;
 
   @Override
   public void start() {
@@ -388,7 +388,8 @@ public class PurchaseDelegate extends BaseTripleADelegate
     return returnString.toString();
   }
 
-  public void setPendingProductionRules(IntegerMap<ProductionRule> pendingProductionRules) {
+  public void setPendingProductionRules(
+      @Nullable IntegerMap<ProductionRule> pendingProductionRules) {
     this.pendingProductionRules = pendingProductionRules;
   }
 

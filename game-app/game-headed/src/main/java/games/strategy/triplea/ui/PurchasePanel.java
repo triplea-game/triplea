@@ -7,6 +7,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
@@ -162,18 +163,19 @@ public class PurchasePanel extends ActionPanel {
     }
     // give a warning if the
     // player tries to produce too much
-    if (Properties.getWW2V2(getData().getProperties())
-        || Properties.getPlacementRestrictedByFactory(getData().getProperties())) {
+    final GameData data = getData();
+    final GamePlayer player = getCurrentPlayer();
+    final GameProperties properties = data.getProperties();
+    if (Properties.getWW2V2(properties) || Properties.getPlacementRestrictedByFactory(properties)) {
       int totalProd = 0;
-      try (GameData.Unlocker ignored = getData().acquireReadLock()) {
-        for (final Territory t :
-            CollectionUtils.getMatches(
-                getData().getMap().getTerritories(),
-                Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {
-          final GameData data = getData();
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
+        final var predicate = Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(player);
+        final var territories =
+            CollectionUtils.getMatches(data.getMap().getTerritories(), predicate);
+        for (final Territory t : CollectionUtils.getMatches(territories, predicate)) {
           totalProd +=
               UnitUtils.getProductionPotentialOfTerritory(
-                  t.getUnits(), t, getCurrentPlayer(), data.getProperties(), true, true);
+                  t.getUnits(), t, player, properties, true, true);
         }
       }
       // sum production for all units except factories
@@ -187,7 +189,6 @@ public class PurchasePanel extends ActionPanel {
           }
         }
       }
-      final GamePlayer player = getCurrentPlayer();
       final Collection<Unit> unitsNeedingFactory =
           CollectionUtils.getMatches(player.getUnits(), Matches.unitIsNotConstruction());
       if (!bid
@@ -209,6 +210,11 @@ public class PurchasePanel extends ActionPanel {
           return;
         }
       }
+    }
+    // When closing the panel, clear the pending production.
+    final IDelegate delegate = data.getSequence().getStep().getDelegate();
+    if (delegate instanceof PurchaseDelegate) {
+      ((PurchaseDelegate) delegate).setPendingProductionRules(null);
     }
     release();
   }
