@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
+import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.triplea.ResourceLoader;
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.debug.error.reporting.StackTraceReportModel;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 import org.triplea.sound.ClipPlayer;
+import org.triplea.swing.SwingComponents;
 
 /** A place to find images and map data for the ui. */
 @Slf4j
@@ -115,8 +117,19 @@ public class UiContext {
             () -> getPreferencesForMap(data.getMapName()).remove(MAP_SKIN_PREF));
 
     Path mapPath =
-        InstalledMapsListing.searchAllMapsForMapName(data.getMapName())
-            .orElseThrow(() -> new MapNotFoundException(data.getMapName()));
+        InstalledMapsListing.searchAllMapsForMapName(mapName)
+            .orElseThrow(
+                () -> {
+                  SwingUtilities.invokeLater(
+                      () ->
+                          SwingComponents.promptUser(
+                              "Download Map?",
+                              "Map missing: "
+                                  + mapName
+                                  + "\nWould you like to download the map now?",
+                              () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName)));
+                  return new MapNotFoundException(mapName);
+                });
     mapLocation = mapPath;
     resourceLoadingPaths.add(mapPath);
 
