@@ -47,10 +47,11 @@ public class MainPanelBuilder {
 
   private void launch(MainPanel uiPanel, ILauncher launcher) {
     final WaitWindow gameLoadingWindow = new WaitWindow();
-    gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(uiPanel));
+    final var frame = JOptionPane.getFrameForComponent(uiPanel);
+    gameLoadingWindow.setLocationRelativeTo(frame);
     gameLoadingWindow.setVisible(true);
     gameLoadingWindow.showWait();
-    JOptionPane.getFrameForComponent(uiPanel).setVisible(false);
+    frame.setVisible(false);
     ThreadRunner.runInNewThread(
         () -> {
           try {
