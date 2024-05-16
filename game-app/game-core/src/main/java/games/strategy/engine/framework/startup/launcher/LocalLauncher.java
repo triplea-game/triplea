@@ -94,8 +94,7 @@ public class LocalLauncher implements ILauncher {
     } finally {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
       // having an oddball issue with the zip stream being closed while parsing to load default
-      // game. might be caused
-      // by closing of stream while unloading map resources.
+      // game. might be caused by closing of stream while unloading map resources.
       Interruptibles.sleep(100);
       gameSelector.onGameEnded();
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
