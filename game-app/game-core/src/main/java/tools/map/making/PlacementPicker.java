@@ -153,7 +153,7 @@ public final class PlacementPicker {
     private final Image image;
     private final JLabel locationLabel = new JLabel();
     private Map<String, List<Polygon>> polygons = new HashMap<>();
-    private Map<String, Tuple<List<Point>, Boolean>> placements;
+    private Map<String, Tuple<List<Point>, Boolean>> placements = new HashMap<>();
     private List<Point> currentPlacements;
     private boolean currentOverflowToLeft = false;
     private String currentCountry;
@@ -569,7 +569,7 @@ public final class PlacementPicker {
       if (!rightMouse && !ctrlDown) {
         currentCountry = ToolsUtil.findTerritoryName(point, polygons).orElse("there be dragons");
         // If there isn't an existing array, create one
-        if (placements == null || placements.get(currentCountry) == null) {
+        if (placements.get(currentCountry) == null) {
           currentPlacements = new ArrayList<>();
           currentOverflowToLeft = false;
         } else {
@@ -583,10 +583,6 @@ public final class PlacementPicker {
         }
       } else if (ctrlDown) {
         if (currentPlacements != null) {
-          // If there isn't an existing hashmap, create one
-          if (placements == null) {
-            placements = new HashMap<>();
-          }
           placements.put(currentCountry, Tuple.of(currentPlacements, currentOverflowToLeft));
           currentPlacements = new ArrayList<>();
           log.info("done:" + currentCountry);
