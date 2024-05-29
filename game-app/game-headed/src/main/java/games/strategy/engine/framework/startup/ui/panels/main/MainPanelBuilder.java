@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
+import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
@@ -31,27 +32,9 @@ public class MainPanelBuilder {
             quitAction,
             gameSelectorPanel,
             uiPanel -> {
-              headedServerSetupModel
-                  .getPanel()
-                  .getLauncher()
-                  .ifPresent(
-                      launcher -> {
-                        final WaitWindow gameLoadingWindow = new WaitWindow();
-                        gameLoadingWindow.setLocationRelativeTo(
-                            JOptionPane.getFrameForComponent(uiPanel));
-                        gameLoadingWindow.setVisible(true);
-                        gameLoadingWindow.showWait();
-                        JOptionPane.getFrameForComponent(uiPanel).setVisible(false);
-                        ThreadRunner.runInNewThread(
-                            () -> {
-                              try {
-                                launcher.launch();
-                              } finally {
-                                gameLoadingWindow.doneWait();
-                              }
-                            });
-                      });
-              headedServerSetupModel.getPanel().postStartGame();
+              final var setupPanel = headedServerSetupModel.getPanel();
+              setupPanel.getLauncher().ifPresent(launcher -> launch(uiPanel, launcher));
+              setupPanel.postStartGame();
             },
             Optional.ofNullable(headedServerSetupModel.getPanel())
                 .map(SetupModel::getChatModel)
@@ -60,5 +43,22 @@ public class MainPanelBuilder {
     headedServerSetupModel.setPanelChangeListener(mainPanel::setSetupPanel);
     gameSelectorModel.addObserver((observable, arg) -> mainPanel.updatePlayButtonState());
     return mainPanel;
+  }
+
+  private void launch(MainPanel uiPanel, ILauncher launcher) {
+    final WaitWindow gameLoadingWindow = new WaitWindow();
+    final var frame = JOptionPane.getFrameForComponent(uiPanel);
+    gameLoadingWindow.setLocationRelativeTo(frame);
+    gameLoadingWindow.setVisible(true);
+    gameLoadingWindow.showWait();
+    frame.setVisible(false);
+    ThreadRunner.runInNewThread(
+        () -> {
+          try {
+            launcher.launch();
+          } finally {
+            gameLoadingWindow.doneWait();
+          }
+        });
   }
 }
