@@ -3,7 +3,7 @@ plugins {
     id "com.github.ben-manes.versions" version "0.51.0"
     id "io.franzbecker.gradle-lombok" version "5.0.0" apply false
     id "com.diffplug.spotless" version "6.25.0" apply false
-    id "com.avast.gradle.docker-compose" version "0.17.6"
+    id "com.avast.gradle.docker-compose" version "0.17.7"
 }
 
 apply plugin: "eclipse"
