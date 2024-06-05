@@ -11,10 +11,9 @@ servers:
       Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
 
-      TripleA 2.6 will be released June 05! At that time, we would
-      like all players to upgrade. 2.5 games may be continued with
-      2.6, there is no real downside to upgrading. Meanwhile, 2.6
-      is packed with bug fixes and performance enhancements.
+      2.6 Update: tech team is working on a variety of lobby compatibility
+      issues for 2.6. Please stick to the 2.5 game engine until we have
+      those fixed.
 
   - version: "2.0.20057"
     inactive: true
