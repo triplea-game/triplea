@@ -3,6 +3,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
+version = System.getenv("JAR_VERSION")
+
 dependencies {
     implementation "io.github.openfeign:feign-core:$feignCoreVersion"
     implementation project(":game-app:domain-data")
@@ -26,10 +28,6 @@ def getGitCommitCount = { ->
     return stdout.toString().trim()
 }
 
-shadowJar {
-    version = "0." + getGitCommitCount()
-    archiveClassifier = ""
-}
 
 publishing {
     repositories {
