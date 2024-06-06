@@ -2766,7 +2766,7 @@
 - mapName: The Shogun
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_shogun/archive/master.zip
-  version: 1
+  version: 1.4
   img: https://raw.githubusercontent.com/triplea-maps/the_shogun/master/preview.png
   description: |
    <br>Japanese warfare in the Sengoku Jidai Warring States period.
