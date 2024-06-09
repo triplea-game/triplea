@@ -174,7 +174,7 @@ class AvailableSupports {
     final Unit u = CollectionUtils.getAt(intMap.keySet(), i);
     intMap.add(u, -1);
     details.totalSupport -= 1;
-    if (intMap.getInt(u) <= 0) {
+    if (intMap.getInt(u) == 0) {
       intMap.removeKey(u);
     }
     return u;
