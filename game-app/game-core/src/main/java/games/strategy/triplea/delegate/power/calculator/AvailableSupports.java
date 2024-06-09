@@ -132,9 +132,7 @@ class AvailableSupports {
         }
 
         final int numSupportAvailableToApply = getSupportersAvailable(rule);
-        /** start at 1 so it can be used to get supporters */
         for (int i = 1; i <= numSupportAvailableToApply; i++) {
-          /** the number of supporters can decrease due to removal */
           int count = Math.min(i, getSupportersAvailable(rule));
           final Unit supporter = getNextAvailableSupporter(rule, count);
           amountOfSupportGiven += rule.getBonus();
