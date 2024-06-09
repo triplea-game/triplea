@@ -164,7 +164,7 @@ public class CollectionUtils {
     for (int i = 1; i < count; i++) {
       iterator.next();
     }
-      return iterator.next();
+    return iterator.next();
   }
 
   /** Like Collectors.toList() but guarantees that the returned object is a mutable ArrayList. */
