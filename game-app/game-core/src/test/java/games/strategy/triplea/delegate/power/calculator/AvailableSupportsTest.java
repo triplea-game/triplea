@@ -363,16 +363,16 @@ class AvailableSupportsTest {
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
       assertThat(
           "The first support unit can give 2 supports and the bonus stacks up to two "
-              + "so the first unit gets all of its support. "
+              + "so the first and second units receive support form this unit. "
               + "The second support unit can give 2 supports and the bonus stacks up to two "
-              + "so the second unit gets all of its support.",
+              + "so the first and second unit can receive bonus support from this unit.",
           tracker.getUnitsGivingSupport(),
           is(
               Map.of(
                   supportUnit,
-                  IntegerMap.of(Map.of(unit, 2)),
+                  IntegerMap.of(Map.of(unit, 1, unit2, 1)),
                   supportUnit2,
-                  IntegerMap.of(Map.of(unit2, 2)))));
+                  IntegerMap.of(Map.of(unit, 1, unit2, 1)))));
     }
 
     @Test
