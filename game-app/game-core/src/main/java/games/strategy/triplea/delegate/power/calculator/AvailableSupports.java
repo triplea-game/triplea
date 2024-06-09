@@ -154,7 +154,7 @@ class AvailableSupports {
   private int getSupportersAvailable(final UnitSupportAttachment support) {
     final SupportDetails details = supportUnits.get(support);
     final IntegerMap<Unit> intMap = details.supportUnits;
-    return Math.max(0, Math.min(support.getBonusType().getCount(),  intMap.size()));
+    return Math.max(0, Math.min(support.getBonusType().getCount(), intMap.size()));
   }
 
   int getSupportLeft(final UnitSupportAttachment support) {
