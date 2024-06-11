@@ -1,5 +1,0 @@
-user_role:
-  - id: 1
-    name: ANONYMOUS
-  - id: 2
-    name: HOST

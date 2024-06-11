@@ -1,7 +1,0 @@
-migrations_file: ""
-flyway_db_name: ""
-flyway_migration_dir: ""
-flyway_user: ""
-flyway_password: ""
-flyway_db_url: "jdbc:postgresql://localhost:5432/{{ flyway_db_name }}"
-flyway_migrations_location: "/opt/flyway/database_migrations"

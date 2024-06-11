@@ -1,4 +1,0 @@
-lobby_game:
-  - host_name: "name"
-    game_id: "game-id"
-    game_hosting_api_key_id: 1200

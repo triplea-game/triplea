@@ -1,9 +1,0 @@
-game_hosting_api_key:
-  - id: 70000
-    key: "key0"
-    ip: "1.1.1.1"
-    date_created: 2000-01-01 23:59:20.0
-  - id: 70001
-    key: "key1"
-    ip: "1.1.1.1"
-    date_created: 2000-01-01 23:59:20.0
