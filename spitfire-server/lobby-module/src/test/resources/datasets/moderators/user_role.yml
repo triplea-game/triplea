@@ -1,7 +1,0 @@
-user_role:
-  - id: 1
-    name: PLAYER
-  - id: 2
-    name: MODERATOR
-  - id: 3
-    name: ADMIN

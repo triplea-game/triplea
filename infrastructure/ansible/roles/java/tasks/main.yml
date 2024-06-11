@@ -1,4 +1,0 @@
-- name: install java
-  apt:
-    state: present
-    name: "{{ java_version }}"

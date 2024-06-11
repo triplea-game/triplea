@@ -1,7 +1,0 @@
-banned_username:
-  - date_created: 2010-01-01 23:59:20.0
-    username: bad
-  - date_created: 2010-01-01 23:59:20.0
-    username: awful
-  - date_created: 2010-01-01 23:59:20.0
-    username: not nice

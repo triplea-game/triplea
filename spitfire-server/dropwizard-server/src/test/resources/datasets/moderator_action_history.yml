@@ -1,6 +1,0 @@
-moderator_action_history:
-  - id: 1000
-    lobby_user_id: 5000
-    date_created: 2010-01-01 23:59:20.0
-    action_name: example
-    action_target: troll

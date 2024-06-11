@@ -1,7 +1,0 @@
-error_report_history:
-  - id:  "regex:\\d+" #any number
-    user_ip: the_userIp
-    system_id: the_systemId
-    report_title: the_reportTitle
-    game_version: the_gameVersion
-    created_issue_link: the_createdIssueLink
