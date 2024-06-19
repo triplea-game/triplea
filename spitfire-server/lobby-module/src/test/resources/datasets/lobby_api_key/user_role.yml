@@ -1,9 +1,0 @@
-user_role:
-  - id: 1
-    name: MODERATOR
-  - id: 2
-    name: PLAYER
-  - id: 3
-    name: ANONYMOUS
-  - id: 4
-    name: HOST

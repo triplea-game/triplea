@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +13,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
@@ -45,8 +45,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   private final Function<URI, WebSocketConnection> webSocketConnectionFactory;
 
   private WebSocketConnection webSocketConnection;
-  private final Set<MessageListener<? extends WebSocketMessage>> listeners =
-      Collections.synchronizedSet(new HashSet<>());
+  private final Set<MessageListener<? extends WebSocketMessage>> listeners = new HashSet<>();
 
   @Builder
   private static class MessageListener<T extends WebSocketMessage> {
@@ -98,6 +97,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
 
   @SuppressWarnings("unchecked")
   @Override
+  @Synchronized
   public <T extends WebSocketMessage> void addListener(
       final MessageType<T> messageType, final Consumer<T> messageHandler) {
 
@@ -125,15 +125,14 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   }
 
   @Override
+  @Synchronized
   public void messageReceived(final String message) {
     final MessageEnvelope converted = gson.fromJson(message, MessageEnvelope.class);
-
-    listeners.stream()
-        .filter(listener -> converted.messageTypeIs(listener.messageType))
-        .forEach(
-            listener ->
-                listener.listener.accept(
-                    converted.getPayload(listener.messageType.getPayloadType())));
+    for (var listener : listeners) {
+      if (converted.messageTypeIs(listener.messageType)) {
+        listener.listener.accept(converted.getPayload(listener.messageType.getPayloadType()));
+      }
+    }
   }
 
   @Override

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 ./gradlew spotlessApply
 
 find . -name "*.md" -type f  | while read -r file; do

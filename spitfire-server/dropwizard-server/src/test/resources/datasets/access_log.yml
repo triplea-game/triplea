@@ -1,6 +1,0 @@
-access_log:
-  - access_time: 2010-01-01 23:59:20.0
-    username: example
-    ip: 1.1.1.1
-    system_id: system-id
-    lobby_user_id: null

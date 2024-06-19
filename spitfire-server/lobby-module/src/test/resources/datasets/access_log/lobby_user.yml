@@ -1,6 +1,0 @@
-lobby_user:
-  - id: 6424
-    user_role_id: 9111
-    username: registered_user
-    bcrypt_password: $2a$56789_123456789_123456789_123456789_123456789_123456789_
-    email: email@

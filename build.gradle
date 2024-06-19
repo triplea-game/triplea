@@ -3,12 +3,9 @@ plugins {
     id "com.github.ben-manes.versions" version "0.51.0"
     id "io.franzbecker.gradle-lombok" version "5.0.0" apply false
     id "com.diffplug.spotless" version "6.25.0" apply false
-    id "com.avast.gradle.docker-compose" version "0.17.7"
 }
 
 apply plugin: "eclipse"
-apply plugin: "docker-compose"
-
 
 ext {
     schemasDir = file("config/triplea/schemas")
@@ -199,39 +196,4 @@ subprojects {
             removeUnusedImports()
         }
     }
-
-    //  "testWithDatabase" runs only the tests that need a database
-    tasks.register("testWithDatabase", Test) {
-        description = "Runs integration tests."
-        group = "verification"
-
-        dependsOn(":composeUp")
-        dependsOn(":spitfire-server:database:flywayMigrateLobbyDb")
-        dependsOn(":spitfire-server:database:flywayMigrateErrorReportDb")
-
-        useJUnitPlatform() {
-            includeTags "RequiresDatabase"
-        }
-    }
-
-    //  - "testAll" runs all tests
-    task testAll {
-        dependsOn testWithDatabase
-        dependsOn test
-    }
-
-    //  - "check" should run ALL validations, tests, spotlessChecks, everything..
-    check.dependsOn testAll
-
-    // composeUp is the same as running => docker compose -f .docker/full-stack.yml --ansi never -p triplea up
-    // composeBuild is the same as running => docker compose -f .docker/full-stack.yml --ansi never -p triplea build
-    dockerCompose {
-        projectName = "triplea"
-        useComposeFiles = ["docker-compose.yml" ]
-    }
-
-    // compose builds need WAR files for packaging, so we must run the corresponding package (shadowJar) tasks
-    composeBuild.dependsOn ":servers:game-support:server:shadowJar"
-    composeBuild.dependsOn ":servers:maps:server:shadowJar"
-    composeBuild.dependsOn ":spitfire-server:dropwizard-server:shadowJar"
 }

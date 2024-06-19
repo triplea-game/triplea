@@ -1,7 +1,0 @@
-# These variables are used across multiple roles.
-# Other than these variables, roles should be fully self-contained.
-
-ansible_connection: ssh
-admin_user: "admin"
-admin_home: "/home/{{ admin_user }}"
-ansible_python_interpreter: /usr/bin/python3

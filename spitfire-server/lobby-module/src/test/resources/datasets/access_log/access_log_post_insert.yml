@@ -1,9 +1,0 @@
-access_log:
-  - username: anonymous
-    ip: 127.0.0.50
-    system_id: anonymous-system-id
-    lobby_user_id: null
-  - username: registered_user
-    ip: 127.0.0.20
-    system_id: registered-system-id
-    lobby_user_id: 6424

@@ -1,5 +1,0 @@
-lobby_user:
-  - username: new-user
-    email: user@email.com
-    bcrypt_password: $2a$56789_123456789_123456789_123456789_123456789_123456789_
-    user_role_id: 1
