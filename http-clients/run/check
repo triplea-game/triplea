@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -e
-scriptDir=$(dirname "$0")
-"$scriptDir/../../gradlew" --parallel :http-clients:check
-"$scriptDir/../../.build/code-convention-checks/check-custom-style" http-clients
