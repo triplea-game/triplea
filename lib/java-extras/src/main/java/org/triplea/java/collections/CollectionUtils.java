@@ -11,6 +11,7 @@ import com.google.common.collect.TreeMultiset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -159,6 +160,15 @@ public class CollectionUtils {
 
   public static <T> T getAny(final Iterable<T> elements) {
     return elements.iterator().next();
+  }
+
+  /** Like getAny, but skip elements if possible */
+  public static <T> T getAt(final Iterable<T> elements, final Integer count) {
+    Iterator<T> iterator = elements.iterator();
+    for (int i = 1; i < count; i++) {
+      iterator.next();
+    }
+    return iterator.next();
   }
 
   /** Like Collectors.toList() but guarantees that the returned object is a mutable ArrayList. */

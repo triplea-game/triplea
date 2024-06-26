@@ -131,9 +131,10 @@ class AvailableSupports {
           continue;
         }
 
-        final int numSupportAvailableToApply = getSupportAvailable(rule);
-        for (int i = 0; i < numSupportAvailableToApply; i++) {
-          final Unit supporter = getNextAvailableSupporter(rule);
+        final int numSupportAvailableToApply = getSupportersAvailable(rule);
+        for (int i = 1; i <= numSupportAvailableToApply; i++) {
+          int count = Math.min(i, getSupportersAvailable(rule));
+          final Unit supporter = getNextAvailableSupporter(rule, count);
           amountOfSupportGiven += rule.getBonus();
           unitsGivingSupport
               .computeIfAbsent(supporter, (newSupport) -> new IntegerMap<>())
@@ -149,8 +150,11 @@ class AvailableSupports {
     return amountOfSupportGiven;
   }
 
-  private int getSupportAvailable(final UnitSupportAttachment support) {
-    return Math.max(0, Math.min(support.getBonusType().getCount(), getSupportLeft(support)));
+  /** change to retrun the number of supporters (units) not supports */
+  private int getSupportersAvailable(final UnitSupportAttachment support) {
+    final SupportDetails details = supportUnits.get(support);
+    final IntegerMap<Unit> intMap = details.supportUnits;
+    return Math.max(0, Math.min(support.getBonusType().getCount(), intMap.size()));
   }
 
   int getSupportLeft(final UnitSupportAttachment support) {
@@ -164,13 +168,13 @@ class AvailableSupports {
    * <p>This may return the same unit multiple times in a row depending on how much support that
    * unit can give.
    */
-  private Unit getNextAvailableSupporter(final UnitSupportAttachment support) {
+  private Unit getNextAvailableSupporter(final UnitSupportAttachment support, final int i) {
     final SupportDetails details = supportUnits.get(support);
     final IntegerMap<Unit> intMap = details.supportUnits;
-    final Unit u = CollectionUtils.getAny(intMap.keySet());
+    final Unit u = CollectionUtils.getAt(intMap.keySet(), i);
     intMap.add(u, -1);
     details.totalSupport -= 1;
-    if (intMap.getInt(u) <= 0) {
+    if (intMap.getInt(u) == 0) {
       intMap.removeKey(u);
     }
     return u;
