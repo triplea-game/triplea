@@ -20,7 +20,6 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -174,8 +173,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
       if (!(next instanceof Resource)) {
         final UnitType type = (UnitType) next;
         final int quantity = results.getInt(type);
-        final UnitAttachment ua = type.getUnitAttachment();
-        final int maxBuilt = ua.getMaxBuiltPerPlayer();
+        final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
         if (maxBuilt == 0) {
           return "May not build any of this unit right now: " + type.getName();
         } else if (maxBuilt > 0) {
@@ -184,13 +182,13 @@ public class PurchaseDelegate extends BaseTripleADelegate
 
           final Predicate<Unit> unitTypeOwnedBy =
               Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
-          final Collection<Territory> allTerrs = getData().getMap().getTerritories();
-          for (final Territory t : allTerrs) {
+          for (final Territory t : getData().getMap().getTerritories()) {
             currentlyBuilt += t.getUnitCollection().countMatches(unitTypeOwnedBy);
           }
 
-          final int allowedBuild = maxBuilt - currentlyBuilt;
-          if (allowedBuild - quantity < 0) {
+          // Use Math.max(0, ...) to avoid negative if existing count exceeds limit.
+          final int allowedBuild = Math.max(0, maxBuilt - currentlyBuilt);
+          if (quantity > allowedBuild) {
             return String.format(
                 "May only build %s of %s this turn, may only build %s total",
                 allowedBuild, type.getName(), maxBuilt);
