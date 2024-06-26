@@ -39,7 +39,7 @@ public class PurchasePanel extends ActionPanel {
   private static final String BUY = "Buy...";
   private static final String CHANGE = "Change...";
 
-  private IntegerMap<ProductionRule> purchase;
+  private IntegerMap<ProductionRule> purchase = new IntegerMap<>();
   private boolean bid;
   private final SimpleUnitPanel purchasedPreviousRoundsUnits;
   private final JLabel purchasedPreviousRoundsLabel;
@@ -61,10 +61,10 @@ public class PurchasePanel extends ActionPanel {
           // Use the delegate from the step, since it may not actually be named 'purchase'.
           final IDelegate delegate = data.getSequence().getStep().getDelegate();
           if (delegate instanceof PurchaseDelegate) {
-            purchase = ((PurchaseDelegate) delegate).getPendingProductionRules();
-          }
-          if (purchase == null) {
-            purchase = new IntegerMap<>();
+            final var savedPurchase = ((PurchaseDelegate) delegate).getPendingProductionRules();
+            if (savedPurchase != null) {
+              purchase = savedPurchase;
+            }
           }
 
           purchase =
@@ -112,7 +112,7 @@ public class PurchasePanel extends ActionPanel {
     if (keepCurrentPurchase) {
       keepCurrentPurchase = false;
     } else {
-      purchase = new IntegerMap<>();
+      purchase.clear();
     }
     SwingUtilities.invokeLater(
         () -> {
