@@ -547,11 +547,13 @@ class BattleCalculatorPanel extends JPanel {
 
   private void updateStats() {
     Util.ensureOnEventDispatchThread();
-    final AtomicReference<AggregateResults> results = new AtomicReference<>();
+    final AtomicReference<AggregateResults> resultsRef = new AtomicReference<>();
     final WaitDialog dialog =
         new WaitDialog(this, "Calculating Odds... (this may take a while)", calculator::cancel);
     final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
     final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
+    final GamePlayer attacker = getAttacker();
+    final GamePlayer defender = getDefender();
     ThreadRunner.runInNewThread(
         () -> {
           try {
@@ -585,10 +587,10 @@ class BattleCalculatorPanel extends JPanel {
             final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
             defenders.set(defending);
             attackers.set(attacking);
-            results.set(
+            resultsRef.set(
                 calculator.calculate(
-                    getAttacker(),
-                    getDefender(),
+                    attacker,
+                    defender,
                     location,
                     attacking,
                     defending,
@@ -605,60 +607,53 @@ class BattleCalculatorPanel extends JPanel {
           }
         });
     // the runnable setting the dialog visible must run after this code executes, since this code is
-    // running on the
-    // swing event thread
+    // running on the swing event thread
     dialog.setVisible(true);
     // results.get() could be null if we cancelled to quickly or something weird like that.
-    if (results.get() == null) {
+    final var results = resultsRef.get();
+    if (results == null) {
       setResultsToBlank();
-    } else {
-      // All AggregateResults method return NaN if there are no battle results to aggregate over.
-      // For "unrestricted" average methods, this cannot happen as we ensure that at least 1 round
-      // is simulated. However, the ...IfAbcWon() methods restrict that set of results which might
-      // become empty. In this case we display N/A (not applicable) instead of NaN (not a number).
-      attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
-      defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
-      draw.setText(formatPercentage(results.get().getDrawPercent()));
-      final boolean isLand = isLand();
-      final List<Unit> mainCombatAttackers =
-          CollectionUtils.getMatches(
-              attackers.get(), Matches.unitCanBeInBattle(true, isLand, 1, true));
-      final List<Unit> mainCombatDefenders =
-          CollectionUtils.getMatches(
-              defenders.get(), Matches.unitCanBeInBattle(false, isLand, 1, true));
-      final int attackersTotal = mainCombatAttackers.size();
-      final int defendersTotal = mainCombatDefenders.size();
-      defenderLeft.setText(
-          formatValue(results.get().getAverageDefendingUnitsLeft()) + " / " + defendersTotal);
-      attackerLeft.setText(
-          formatValue(results.get().getAverageAttackingUnitsLeft()) + " / " + attackersTotal);
-      final double avgDefIfDefWon = results.get().getAverageDefendingUnitsLeftWhenDefenderWon();
-      defenderLeftWhenDefenderWon.setText(
-          Double.isNaN(avgDefIfDefWon)
-              ? "N/A"
-              : formatValue(avgDefIfDefWon) + " / " + defendersTotal);
-      final double avgAttIfAttWon = results.get().getAverageAttackingUnitsLeftWhenAttackerWon();
-      attackerLeftWhenAttackerWon.setText(
-          Double.isNaN(avgAttIfAttWon)
-              ? "N/A"
-              : formatValue(avgAttIfAttWon) + " / " + attackersTotal);
-      roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
-      try (GameData.Unlocker ignored = data.acquireReadLock()) {
-        averageChangeInTuv.setText(
-            ""
-                + formatValue(
-                    results
-                        .get()
-                        .getAverageTuvSwing(
-                            getAttacker(),
-                            mainCombatAttackers,
-                            getDefender(),
-                            mainCombatDefenders,
-                            data)));
-      }
-      count.setText(results.get().getRollCount() + "");
-      time.setText(formatValue(results.get().getTime() / 1000.0) + " s");
+      return;
     }
+    // All AggregateResults method return NaN if there are no battle results to aggregate over.
+    // For "unrestricted" average methods, this cannot happen as we ensure that at least 1 round
+    // is simulated. However, the ...IfAbcWon() methods restrict that set of results which might
+    // become empty. In this case we display N/A (not applicable) instead of NaN (not a number).
+    attackerWin.setText(formatPercentage(results.getAttackerWinPercent()));
+    defenderWin.setText(formatPercentage(results.getDefenderWinPercent()));
+    draw.setText(formatPercentage(results.getDrawPercent()));
+    final boolean isLand = isLand();
+    final List<Unit> mainCombatAttackers =
+        CollectionUtils.getMatches(
+            attackers.get(), Matches.unitCanBeInBattle(true, isLand, 1, true));
+    final List<Unit> mainCombatDefenders =
+        CollectionUtils.getMatches(
+            defenders.get(), Matches.unitCanBeInBattle(false, isLand, 1, true));
+    final int attackersTotal = mainCombatAttackers.size();
+    final int defendersTotal = mainCombatDefenders.size();
+    defenderLeft.setText(
+        formatValue(results.getAverageDefendingUnitsLeft()) + " / " + defendersTotal);
+    attackerLeft.setText(
+        formatValue(results.getAverageAttackingUnitsLeft()) + " / " + attackersTotal);
+    final double avgDefIfDefWon = results.getAverageDefendingUnitsLeftWhenDefenderWon();
+    defenderLeftWhenDefenderWon.setText(
+        Double.isNaN(avgDefIfDefWon)
+            ? "N/A"
+            : formatValue(avgDefIfDefWon) + " / " + defendersTotal);
+    final double avgAttIfAttWon = results.getAverageAttackingUnitsLeftWhenAttackerWon();
+    attackerLeftWhenAttackerWon.setText(
+        Double.isNaN(avgAttIfAttWon)
+            ? "N/A"
+            : formatValue(avgAttIfAttWon) + " / " + attackersTotal);
+    roundsAverage.setText(formatValue(results.getAverageBattleRoundsFought()));
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+      double tuvSwing =
+          results.getAverageTuvSwing(
+              attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
+      averageChangeInTuv.setText(formatValue(tuvSwing));
+    }
+    count.setText(results.getRollCount() + "");
+    time.setText(formatValue(results.getTime() / 1000.0) + " s");
   }
 
   private Territory findPotentialBattleSite() {

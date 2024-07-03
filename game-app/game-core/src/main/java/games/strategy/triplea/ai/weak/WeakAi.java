@@ -72,8 +72,8 @@ public class WeakAi extends AbstractAi {
     }
     final Predicate<Territory> endMatch =
         o -> {
-          final boolean impassable =
-              TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassable();
+          final var ta = TerritoryAttachment.get(o);
+          final boolean impassable = ta != null && ta.getIsImpassable();
           return !impassable
               && !o.isWater()
               && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
@@ -435,7 +435,8 @@ public class WeakAi extends AbstractAi {
       if (t.isWater()) {
         continue;
       }
-      if (TerritoryAttachment.get(t) != null && TerritoryAttachment.get(t).isCapital()) {
+      final var ta = TerritoryAttachment.get(t);
+      if (ta != null && ta.isCapital()) {
         // if they are a threat to take our capitol, dont move
         // compare the strength of units we can place
         final float ourStrength = AiUtils.strength(player.getUnits(), false, false);
@@ -651,8 +652,9 @@ public class WeakAi extends AbstractAi {
         final Collection<Territory> attackFrom =
             data.getMap().getNeighbors(enemy, Matches.territoryHasLandUnitsOwnedBy(player));
         for (final Territory owned : attackFrom) {
-          if (TerritoryAttachment.get(owned) != null
-              && TerritoryAttachment.get(owned).isCapital()
+          final var ta = TerritoryAttachment.get(owned);
+          if (ta != null
+              && ta.isCapital()
               && (Utils.getStrengthOfPotentialAttackers(owned, data)
                   > AiUtils.strength(owned.getUnits(), false, false))) {
             dontMoveFrom.add(owned);
@@ -833,65 +835,43 @@ public class WeakAi extends AbstractAi {
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
-                data.getTechTracker(),
-                data.getProperties(),
                 false);
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
         if (fixTerr.equals(capitol)) {
           capProduction =
-              UnitUtils.getHowMuchCanUnitProduce(
-                  possibleFactoryNeedingRepair,
-                  fixTerr,
-                  data.getTechTracker(),
-                  data.getProperties(),
-                  true,
-                  true);
+              UnitUtils.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, true, true);
           capUnit = possibleFactoryNeedingRepair;
           capUnitTerritory = fixTerr;
         }
         currentProduction +=
-            UnitUtils.getHowMuchCanUnitProduce(
-                possibleFactoryNeedingRepair,
-                fixTerr,
-                data.getTechTracker(),
-                data.getProperties(),
-                true,
-                true);
+            UnitUtils.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, true, true);
       }
       repairFactories.remove(capitol);
       unitsThatCanProduceNeedingRepair.remove(capUnit);
+      final var territoryIsOwnedAndHasOwnedUnitMatching =
+          Matches.territoryIsOwnedAndHasOwnedUnitMatching(
+              player, Matches.unitCanProduceUnitsAndCanBeDamaged());
       // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh
-      // well, that is better
-      // than under-repairing
+      // well, that is better than under-repairing
       // goal is to be able to produce all our units, and at least half of that production in the
       // capitol
       //
       // if capitol is super safe, we don't have to do this. and if capitol is under siege, we
-      // should repair enough to
-      // place all our units here
+      // should repair enough to place all our units here
       int maxUnits = (totalPu - 1) / minimumUnitPrice;
       if ((capProduction <= maxUnits / 2 || repairFactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : repairRules) {
           if (!capUnit.getType().equals(rrule.getAnyResultKey())) {
             continue;
           }
-          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(
-                  player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-              .test(capitol)) {
+          if (!territoryIsOwnedAndHasOwnedUnitMatching.test(capitol)) {
             continue;
           }
           diff = capUnit.getUnitDamage();
           final int unitProductionAllowNegative =
-              UnitUtils.getHowMuchCanUnitProduce(
-                      capUnit,
-                      capUnitTerritory,
-                      data.getTechTracker(),
-                      data.getProperties(),
-                      false,
-                      true)
-                  - diff;
+              UnitUtils.getHowMuchCanUnitProduce(capUnit, capUnitTerritory, false, true) - diff;
           if (!repairFactories.isEmpty()) {
             diff = Math.min(diff, (maxUnits / 2 - unitProductionAllowNegative) + 1);
           } else {
@@ -922,9 +902,8 @@ public class WeakAi extends AbstractAi {
             if (fixUnit == null || !fixUnit.getType().equals(rrule.getAnyResultKey())) {
               continue;
             }
-            if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(
-                    player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-                .test(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
+            if (!territoryIsOwnedAndHasOwnedUnitMatching.test(
+                unitsThatCanProduceNeedingRepair.get(fixUnit))) {
               continue;
             }
             // we will repair the first territories in the list as much as we can, until we fulfill
@@ -936,12 +915,7 @@ public class WeakAi extends AbstractAi {
             diff = fixUnit.getUnitDamage();
             final int unitProductionAllowNegative =
                 UnitUtils.getHowMuchCanUnitProduce(
-                        fixUnit,
-                        unitsThatCanProduceNeedingRepair.get(fixUnit),
-                        data.getTechTracker(),
-                        data.getProperties(),
-                        false,
-                        true)
+                        fixUnit, unitsThatCanProduceNeedingRepair.get(fixUnit), false, true)
                     - diff;
             if (i == 0) {
               if (unitProductionAllowNegative < 0) {

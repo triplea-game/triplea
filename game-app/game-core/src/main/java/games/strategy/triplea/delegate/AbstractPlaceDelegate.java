@@ -1194,7 +1194,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // maxConstructions
     int production =
         UnitUtils.getProductionPotentialOfTerritory(
-            unitsAtStartOfStepInTerritory(producer), producer, player, properties, true, true);
+            unitsAtStartOfStepInTerritory(producer), producer, player, true, true);
     // increase the production by the number of constructions allowed
     if (maxConstructions > 0) {
       production += maxConstructions;

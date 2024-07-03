@@ -164,9 +164,9 @@ public class PurchasePanel extends ActionPanel {
     // give a warning if the
     // player tries to produce too much
     final GameData data = getData();
-    final GamePlayer player = getCurrentPlayer();
     final GameProperties properties = data.getProperties();
     if (Properties.getWW2V2(properties) || Properties.getPlacementRestrictedByFactory(properties)) {
+      final GamePlayer player = getCurrentPlayer();
       int totalProd = 0;
       try (GameData.Unlocker ignored = data.acquireReadLock()) {
         final var predicate = Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(player);
@@ -174,8 +174,7 @@ public class PurchasePanel extends ActionPanel {
             CollectionUtils.getMatches(data.getMap().getTerritories(), predicate);
         for (final Territory t : CollectionUtils.getMatches(territories, predicate)) {
           totalProd +=
-              UnitUtils.getProductionPotentialOfTerritory(
-                  t.getUnits(), t, player, properties, true, true);
+              UnitUtils.getProductionPotentialOfTerritory(t.getUnits(), t, player, true, true);
         }
       }
       // sum production for all units except factories

@@ -40,20 +40,11 @@ public class UnitUtils {
       final Collection<Unit> unitsAtStartOfStepInTerritory,
       final Territory producer,
       final GamePlayer player,
-      final GameProperties properties,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
     return getHowMuchCanUnitProduce(
-        getBiggestProducer(
-            unitsAtStartOfStepInTerritory,
-            producer,
-            player,
-            player.getData().getTechTracker(),
-            properties,
-            accountForDamage),
+        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, accountForDamage),
         producer,
-        player.getData().getTechTracker(),
-        properties,
         accountForDamage,
         mathMaxZero);
   }
@@ -69,8 +60,6 @@ public class UnitUtils {
       final Collection<Unit> units,
       final Territory producer,
       final GamePlayer player,
-      final TechTracker techTracker,
-      final GameProperties properties,
       final boolean accountForDamage) {
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
@@ -84,8 +73,7 @@ public class UnitUtils {
     Unit highestUnit = CollectionUtils.getAny(factories);
     int highestCapacity = Integer.MIN_VALUE;
     for (final Unit u : factories) {
-      final int capacity =
-          getHowMuchCanUnitProduce(u, producer, techTracker, properties, accountForDamage, false);
+      final int capacity = getHowMuchCanUnitProduce(u, producer, accountForDamage, false);
       productionPotential.put(u, capacity);
       if (capacity > highestCapacity) {
         highestCapacity = capacity;
@@ -106,8 +94,6 @@ public class UnitUtils {
   public static int getHowMuchCanUnitProduce(
       final @Nullable Unit unit,
       final Territory producer,
-      final TechTracker techTracker,
-      final GameProperties properties,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
     if (unit == null) {
@@ -125,6 +111,7 @@ public class UnitUtils {
       territoryUnitProduction = ta.getUnitProduction();
     }
     int productionCapacity;
+    final GameProperties properties = producer.getData().getProperties();
     if (accountForDamage) {
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(properties)) {
         if (ua.getCanProduceXUnits() < 0) {
@@ -158,6 +145,7 @@ public class UnitUtils {
             (Properties.getWW2V2(properties) || Properties.getWW2V3(properties)) ? 0 : 1;
       }
     }
+    final TechTracker techTracker = producer.getData().getTechTracker();
     // Increase production if we have industrial technology
     if (territoryProduction
         >= techTracker.getMinimumTerritoryValueForProductionBonus(unit.getOwner())) {
