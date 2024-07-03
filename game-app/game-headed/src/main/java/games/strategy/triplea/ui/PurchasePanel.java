@@ -174,8 +174,7 @@ public class PurchasePanel extends ActionPanel {
             CollectionUtils.getMatches(data.getMap().getTerritories(), predicate);
         for (final Territory t : CollectionUtils.getMatches(territories, predicate)) {
           totalProd +=
-              UnitUtils.getProductionPotentialOfTerritory(
-                  t.getUnits(), t, player, properties, true, true);
+              UnitUtils.getProductionPotentialOfTerritory(t.getUnits(), t, player, true, true);
         }
       }
       // sum production for all units except factories
