@@ -218,7 +218,7 @@ class CasualtyDetailsTest {
     casualtyDetails.ensureUnitsAreDamagedFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
 
-    // The first and third air unit have one movement left so they should be damaged.
+    // Unit 1 should be kept as the damaged one, as unit 0 has only 1 hp left.
     assertThat(casualtyDetails.getDamaged()).containsExactly(units.get(1));
     assertThat(units.get(0).getHits()).isEqualTo(1);
     assertThat(units.get(1).getHits()).isEqualTo(0);
@@ -262,5 +262,32 @@ class CasualtyDetailsTest {
     // The second unit was amphibious, so it has the negative marine bonus and should be taken
     // first.
     assertThat(casualtyDetails.getKilled()).containsExactly(units.get(1));
+  }
+
+  @Test
+  void damagedUnitsWithThreeHitPoints() {
+    final UnitType fighter = givenUnitType("fighter");
+    fighter.getUnitAttachment().setHitPoints(3);
+    fighter.getUnitAttachment().setMovement(4);
+    fighter.getUnitAttachment().setIsAir(true);
+
+    final List<Unit> units = fighter.createTemp(3, player1);
+
+    units.get(0).setAlreadyMoved(BigDecimal.valueOf(2));
+    units.get(1).setAlreadyMoved(BigDecimal.ONE);
+    units.get(2).setAlreadyMoved(BigDecimal.valueOf(2));
+
+    // User selected all units to go from 3hp to 2hp and unit 0 to additionally go from 2hp to 1hp.
+    final List<Unit> damaged = List.of(units.get(0), units.get(1), units.get(2), units.get(0));
+    for (Unit u : units) System.err.println(u);
+
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(List.of(), damaged, true);
+    casualtyDetails.ensureUnitsAreDamagedFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
+
+    // We expect three units to still be hit, but instead of unit 0 getting two hits, unit 1 should
+    // as it has most movement left.
+    assertThat(casualtyDetails.getDamaged())
+        .containsExactlyInAnyOrder(units.get(0), units.get(1), units.get(2), units.get(1));
   }
 }

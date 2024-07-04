@@ -113,17 +113,15 @@ public class CasualtyDetails extends CasualtyList {
       final Collection<Unit> targets,
       final Predicate<Unit> matcher,
       final Comparator<Unit> shouldTakeHitsFirst) {
-
     final Map<UnitOwner, List<Unit>> targetsGroupedByOwnerAndType =
         targets.stream().collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
-
-    final List<Unit> targetsHitWithCorrectOrder = new ArrayList<>();
 
     final Map<UnitOwner, List<Unit>> oldTargetsToTakeHits =
         getDamaged().stream()
             .filter(matcher)
             .collect(Collectors.groupingBy(UnitOwner::new, Collectors.toList()));
 
+    final List<Unit> targetsHitWithCorrectOrder = new ArrayList<>();
     for (final Map.Entry<UnitOwner, List<Unit>> oldTargetsOfOneOwnerAndType :
         oldTargetsToTakeHits.entrySet()) {
       final List<Unit> allTargetsOfOwnerAndTypeThatCanTakeHits =
@@ -134,13 +132,12 @@ public class CasualtyDetails extends CasualtyList {
           allTargetsOfOwnerAndTypeThatCanTakeHits,
           shouldTakeHitsFirst,
           targetsHitWithCorrectOrder);
+      // Note: Although removeAll() removes all duplicates entries, it's it's not a problem in this
+      // case given how we're iterating through units above.
+      damaged.removeAll(oldTargetsOfOneOwnerAndType.getValue());
     }
 
-    damaged.addAll(
-        targetsHitWithCorrectOrder.stream()
-            .filter(unit -> !damaged.contains(unit))
-            .collect(Collectors.toList()));
-    damaged.removeIf(matcher.and(not(targetsHitWithCorrectOrder::contains)));
+    damaged.addAll(targetsHitWithCorrectOrder);
   }
 
   /**
@@ -165,13 +162,27 @@ public class CasualtyDetails extends CasualtyList {
     // collect the hits that are currently distributed to oldTargetsOfOneOwnerAndType
     int hitsToRedistributeToUnit;
     final Iterator<Unit> unitIterator = targets.iterator();
-    for (int hitsToRedistribute = targetsWithHitsBeforeRedistribution.size();
-        hitsToRedistribute > 0;
-        hitsToRedistribute -= hitsToRedistributeToUnit) {
-      final Unit unit = unitIterator.next();
+    // Don't change how many units take 1 hit vs. 2 hits by counting how many hits each unit takes
+    // and re-assigning at that level.
+    final Iterator<Long> numberOfHitsPerUnitIterator =
+        targetsWithHitsBeforeRedistribution.stream()
+            .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
+            .values()
+            .stream()
+            .sorted(Comparator.reverseOrder()) // Sort in descending order
+            .collect(Collectors.toList())
+            .iterator();
+    int hitsToRedistribute = 0;
+    while (numberOfHitsPerUnitIterator.hasNext() || hitsToRedistribute > 0) {
+      if (numberOfHitsPerUnitIterator.hasNext()) {
+        hitsToRedistribute += numberOfHitsPerUnitIterator.next();
+      }
 
+      final Unit unit = unitIterator.next();
       hitsToRedistributeToUnit =
           Math.min(unit.hitsUnitCanTakeHitWithoutBeingKilled(), hitsToRedistribute);
+      // Note: Since the above may result in fewer hits assigned, keep track of the remainder.
+      hitsToRedistribute -= hitsToRedistributeToUnit;
 
       for (int i = 0; i < hitsToRedistributeToUnit; ++i) {
         targetsHitWithCorrectOrder.add(unit);
