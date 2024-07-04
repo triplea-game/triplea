@@ -132,8 +132,8 @@ public class CasualtyDetails extends CasualtyList {
           allTargetsOfOwnerAndTypeThatCanTakeHits,
           shouldTakeHitsFirst,
           targetsHitWithCorrectOrder);
-      // Note: Although removeAll() removes all duplicates entries, but in this case it's not a
-      // problem given how we're grouping things above.
+      // Note: Although removeAll() removes all duplicates entries, it's it's not a problem in this
+      // case given how we're iterating through units above.
       damaged.removeAll(oldTargetsOfOneOwnerAndType.getValue());
     }
 

@@ -156,11 +156,11 @@ public class CasualtySelector {
       }
     }
 
-    // Prefer units with less movement left to be killed first. with less movement should be killed.
+    // Prefer units with less movement left to be killed first.
     casualtyDetails.ensureUnitsAreKilledFirst(
         sortedTargetsToPickFrom, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
 
-    // Prefer units with most movement left to be damaged to have a better chance to get to safety.
+    // Prefer units with most movement left for damage (to have a better chance to get to safety).
     casualtyDetails.ensureUnitsAreDamagedFirst(
         sortedTargetsToPickFrom,
         Matches.unitIsAir(),
