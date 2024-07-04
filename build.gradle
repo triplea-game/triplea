@@ -46,6 +46,7 @@ subprojects {
 
     ext {
         apacheHttpComponentsVersion = "4.5.14"
+        assertjCoreVersion = '3.11.1'
         awaitilityVersion = "4.2.1"
         bcryptVersion = "0.10.2"
         caffeineVersion = "3.1.8"
@@ -100,6 +101,7 @@ subprojects {
     dependencies {
         implementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
         implementation "com.google.guava:guava:$guavaVersion"
+        testImplementation "org.assertj:assertj-core:$assertjCoreVersion"
         testImplementation "com.github.npathai:hamcrest-optional:$hamcrestOptionalVersion"
         testImplementation "nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion"
         testImplementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
