@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -123,29 +124,40 @@ public class CasualtySelector {
             ? CasualtyUtil.getTotalHitpointsLeft(sortedTargetsToPickFrom)
             : sortedTargetsToPickFrom.size());
 
-    final CasualtyDetails casualtyDetails =
+    final boolean autoChooseCasualties =
         hitsRemaining >= totalHitpoints
-                || sortedTargetsToPickFrom.size() == 1
-                || allTargetsOneTypeOneHitPoint(
-                    sortedTargetsToPickFrom,
-                    dependents,
-                    Properties.getPartialAmphibiousRetreat(data.getProperties()))
-            ? new CasualtyDetails(defaultCasualties, true)
-            : tripleaPlayer.selectCasualties(
+            || sortedTargetsToPickFrom.size() == 1
+            || allTargetsOneTypeOneHitPoint(
                 sortedTargetsToPickFrom,
                 dependents,
-                hitsRemaining,
-                text,
-                dice,
-                player,
-                combatValue.getFriendUnits(),
-                combatValue.getEnemyUnits(),
-                false,
-                List.of(),
-                defaultCasualties,
-                battleId,
-                battleSite,
-                allowMultipleHitsPerUnit);
+                Properties.getPartialAmphibiousRetreat(data.getProperties()));
+    final CasualtyDetails casualtyDetails;
+    if (autoChooseCasualties) {
+      casualtyDetails = new CasualtyDetails(defaultCasualties, true);
+    } else {
+      Preconditions.checkState(
+          defaultCasualties.size() == hitsRemaining,
+          String.format(
+              "Select Casualties showing different numbers for number of hits to take (%s) vs "
+                  + "total size of default casualty selections (%s) in %s (player = %s)",
+              hitsRemaining, defaultCasualties.size(), battleSite, player.getName()));
+      casualtyDetails =
+          tripleaPlayer.selectCasualties(
+              sortedTargetsToPickFrom,
+              dependents,
+              hitsRemaining,
+              text,
+              dice,
+              player,
+              combatValue.getFriendUnits(),
+              combatValue.getEnemyUnits(),
+              false,
+              List.of(),
+              defaultCasualties,
+              battleId,
+              battleSite,
+              allowMultipleHitsPerUnit);
+    }
 
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       final boolean unitsWithMarineBonusAndWasAmphibiousKilled =
