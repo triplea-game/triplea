@@ -8,9 +8,12 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 /**
  * nekromancer@users.sourceforge.net Utility class for finding the local ip address of a machine
@@ -41,7 +44,31 @@ public final class IpFinder {
    * @return java.net.InetAddress the ip address to use
    */
   public static InetAddress findInetAddress() throws SocketException, UnknownHostException {
+    for (var x : NetworkInterface.networkInterfaces().collect(Collectors.toList())) {
+      if (x.inetAddresses().collect(Collectors.toList()).isEmpty()) {
+        continue;
+      }
+      System.err.println(x.getName());
+      System.err.println(x.getDisplayName());
+      System.err.println(x.isVirtual());
+      System.err.println(x.isPointToPoint());
+      System.err.println(x.isUp());
+      System.err.println(x.getMTU());
+      System.err.println(x.supportsMulticast());
+      System.err.println(x.getParent());
+      System.err.println(x.getHardwareAddress());
+      System.err.println(x.getInterfaceAddresses());
+
+      for (var y : x.inetAddresses().collect(Collectors.toList())) {
+        System.err.println(x + " / " + y);
+        System.err.println(y.isLinkLocalAddress());
+        System.err.println(y.isAnyLocalAddress());
+        System.err.println(y.isMCOrgLocal());
+      }
+    }
+
     return NetworkInterface.networkInterfaces()
+        .filter(not(x -> x.getDisplayName().contains("VirtualBox Host-Only Ethernet Adapter")))
         .map(NetworkInterface::getInetAddresses)
         .map(Collections::list)
         .flatMap(Collection::stream)
