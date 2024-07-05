@@ -263,18 +263,17 @@ public class CasualtySelector {
     final List<Unit> sorted =
         getCasualtyOrderOfLoss(targetsToPickFrom, player, combatValue, battlesite, costs, data);
     // Remove two hit bb's selecting them first for default casualties
-    int numSelectedCasualties = 0;
     if (allowMultipleHitsPerUnit) {
       for (final Unit unit : sorted) {
         // Stop if we have already selected as many hits as there are targets
-        if (numSelectedCasualties >= hits) {
+        final int numSelectedCasualties = defaultCasualtySelection.size();
+        if (defaultCasualtySelection.size() >= hits) {
           return Tuple.of(defaultCasualtySelection, sorted);
         }
         final UnitAttachment ua = unit.getUnitAttachment();
         final int extraHitPoints =
             Math.min((hits - numSelectedCasualties), (ua.getHitPoints() - (1 + unit.getHits())));
         for (int i = 0; i < extraHitPoints; i++) {
-          numSelectedCasualties++;
           defaultCasualtySelection.addToDamaged(unit);
         }
       }
@@ -282,11 +281,10 @@ public class CasualtySelector {
     // Select units
     for (final Unit unit : sorted) {
       // Stop if we have already selected as many hits as there are targets
-      if (numSelectedCasualties >= hits) {
+      if (defaultCasualtySelection.size() >= hits) {
         return Tuple.of(defaultCasualtySelection, sorted);
       }
       defaultCasualtySelection.addToKilled(unit);
-      numSelectedCasualties++;
     }
     return Tuple.of(defaultCasualtySelection, sorted);
   }
