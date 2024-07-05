@@ -267,7 +267,7 @@ public class CasualtySelector {
       for (final Unit unit : sorted) {
         // Stop if we have already selected as many hits as there are targets
         final int numSelectedCasualties = defaultCasualtySelection.size();
-        if (defaultCasualtySelection.size() >= hits) {
+        if (numSelectedCasualties >= hits) {
           return Tuple.of(defaultCasualtySelection, sorted);
         }
         final UnitAttachment ua = unit.getUnitAttachment();
