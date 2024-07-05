@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.util;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -234,6 +235,8 @@ public final class ProSortMoveOptionsUtils {
     if (unit.getUnitAttachment().getIsAir()) {
       minPower *= 10;
     }
-    return (double) minPower / proData.getUnitValue(unit.getType());
+    double result = (double) minPower / proData.getUnitValue(unit.getType());
+    Preconditions.checkState(Double.isFinite(result));
+    return result;
   }
 }
