@@ -1,10 +1,12 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
@@ -123,29 +125,38 @@ public class CasualtySelector {
             ? CasualtyUtil.getTotalHitpointsLeft(sortedTargetsToPickFrom)
             : sortedTargetsToPickFrom.size());
 
-    final CasualtyDetails casualtyDetails =
+    final boolean autoChooseCasualties =
         hitsRemaining >= totalHitpoints
-                || sortedTargetsToPickFrom.size() == 1
-                || allTargetsOneTypeOneHitPoint(
-                    sortedTargetsToPickFrom,
-                    dependents,
-                    Properties.getPartialAmphibiousRetreat(data.getProperties()))
-            ? new CasualtyDetails(defaultCasualties, true)
-            : tripleaPlayer.selectCasualties(
-                sortedTargetsToPickFrom,
-                dependents,
-                hitsRemaining,
-                text,
-                dice,
-                player,
-                combatValue.getFriendUnits(),
-                combatValue.getEnemyUnits(),
-                false,
-                List.of(),
-                defaultCasualties,
-                battleId,
-                battleSite,
-                allowMultipleHitsPerUnit);
+            || sortedTargetsToPickFrom.size() == 1
+            || allTargetsOneTypeOneHitPoint(
+                sortedTargetsToPickFrom, dependents, data.getProperties());
+    final CasualtyDetails casualtyDetails;
+    if (autoChooseCasualties) {
+      casualtyDetails = new CasualtyDetails(defaultCasualties, true);
+    } else {
+      Preconditions.checkState(
+          defaultCasualties.size() == hitsRemaining,
+          String.format(
+              "Select Casualties showing different numbers for number of hits to take (%s) vs "
+                  + "total size of default casualty selections (%s) in %s (player = %s)",
+              hitsRemaining, defaultCasualties.size(), battleSite, player.getName()));
+      casualtyDetails =
+          tripleaPlayer.selectCasualties(
+              sortedTargetsToPickFrom,
+              dependents,
+              hitsRemaining,
+              text,
+              dice,
+              player,
+              combatValue.getFriendUnits(),
+              combatValue.getEnemyUnits(),
+              false,
+              List.of(),
+              defaultCasualties,
+              battleId,
+              battleSite,
+              allowMultipleHitsPerUnit);
+    }
 
     if (!Properties.getPartialAmphibiousRetreat(data.getProperties())) {
       final boolean unitsWithMarineBonusAndWasAmphibiousKilled =
@@ -304,11 +315,13 @@ public class CasualtySelector {
    *
    * @param targets a collection of target units
    * @param dependents map of dependent units for target units
+   * @param properties game properties
    */
   private static boolean allTargetsOneTypeOneHitPoint(
       final Collection<Unit> targets,
       final Map<Unit, Collection<Unit>> dependents,
-      final boolean separateByRetreatPossibility) {
+      final GameProperties properties) {
+    final boolean separateByRetreatPossibility = Properties.getPartialAmphibiousRetreat(properties);
     final Set<UnitCategory> categorized =
         UnitSeparator.categorize(
             targets,
