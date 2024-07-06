@@ -49,12 +49,12 @@ class CasualtyOrderOfLosses {
   /**
    * The purpose of this is to return a list in the PERFECT order of which units should be selected
    * to die first, And that means that certain units MUST BE INTERLEAVED. This list assumes that you
-   * have already taken any extra hit points away from any 2 hitpoint units. Example: You have a 1
+   * have already taken any extra hit points away from any 2 hit point units. Example: You have a 1
    * attack Artillery unit that supports, and a 1 attack infantry unit that can receive support. The
    * best selection of units to die is first to take whichever unit has excess, then cut that down
    * til they are both the same size, then to take 1 artillery followed by 1 infantry, followed by 1
-   * artillery, then 1 inf, etc, until everyone is dead. If you just return all infantry followed by
-   * all artillery, or the other way around, you will be missing out on some important support
+   * artillery, then 1 inf, etc., until everyone is dead. If you just return all infantry followed
+   * by all artillery, or the other way around, you will be missing out on some important support
    * provided. (Veqryn)
    */
   List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
@@ -81,6 +81,24 @@ class CasualtyOrderOfLosses {
       }
       return result;
     }
+
+    final List<Unit> sortedWellEnoughUnitsList = sortUnitsForCasualtiesWithSupportImpl(parameters);
+    // Cache result and all subsets of the result
+    final List<AmphibType> unitTypes = new ArrayList<>();
+    for (final Unit u : sortedWellEnoughUnitsList) {
+      unitTypes.add(AmphibType.of(u));
+    }
+    for (final Iterator<AmphibType> it = unitTypes.iterator(); it.hasNext(); ) {
+      oolCache.put(key, new ArrayList<>(unitTypes));
+      final AmphibType unitTypeToRemove = it.next();
+      targetTypes.remove(unitTypeToRemove);
+      key = computeOolCacheKey(parameters, targetTypes);
+      it.remove();
+    }
+    return sortedWellEnoughUnitsList;
+  }
+
+  private List<Unit> sortUnitsForCasualtiesWithSupportImpl(final Parameters parameters) {
     // Sort enough units to kill off
     final List<Unit> sortedUnitsList = new ArrayList<>(parameters.targetsToPickFrom);
     sortedUnitsList.sort(
@@ -91,7 +109,7 @@ class CasualtyOrderOfLosses {
                 true,
                 false)
             .reversed());
-    // Sort units starting with strongest so that support gets added to them first
+    // Sort units starting with the strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(
             parameters.costs,
@@ -135,11 +153,11 @@ class CasualtyOrderOfLosses {
             if (strengthAndRolls == null) {
               continue;
             }
-            // Remove any rolls provided by this support so they aren't counted twice
+            // Remove any rolls provided by this support, so they aren't counted twice
             final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
             if (unitSupportRollsMapForUnit != null) {
-              strengthAndRolls =
-                  strengthAndRolls.subtractRolls(unitSupportRollsMapForUnit.getInt(supportedUnit));
+              final int rolls = unitSupportRollsMapForUnit.getInt(supportedUnit);
+              strengthAndRolls = strengthAndRolls.subtractRolls(rolls);
             }
             // If one roll then just add the power
             if (strengthAndRolls.getRolls() == 1) {
@@ -150,10 +168,8 @@ class CasualtyOrderOfLosses {
             final int powerWithSupport = strengthAndRolls.getPower();
             // Find supported unit power without support
 
-            final int powerWithoutSupport =
-                strengthAndRolls
-                    .subtractStrength(unitSupportPowerMapForUnit.getInt(supportedUnit))
-                    .getPower();
+            final int strength = unitSupportPowerMapForUnit.getInt(supportedUnit);
+            final int powerWithoutSupport = strengthAndRolls.subtractStrength(strength).getPower();
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -171,10 +187,8 @@ class CasualtyOrderOfLosses {
             // Find supported unit power with support
             final int powerWithSupport = strengthAndRolls.getPower();
             // Find supported unit power without support
-            final int powerWithoutSupport =
-                strengthAndRolls
-                    .subtractRolls(unitSupportRollsMap.get(u).getInt(supportedUnit))
-                    .getPower();
+            final int rolls = unitSupportRollsMapForUnit.getInt(supportedUnit);
+            final int powerWithoutSupport = strengthAndRolls.subtractRolls(rolls).getPower();
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -187,7 +201,7 @@ class CasualtyOrderOfLosses {
           minPower = power;
         }
       }
-      // Add worst unit to sorted list, update any units it supported, and remove from other
+      // Add the worst unit to sorted list, update any units it supported, and remove from other
       // collections
       final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(worstUnit);
       if (unitSupportPowerMapForUnit != null) {
@@ -226,18 +240,6 @@ class CasualtyOrderOfLosses {
       unitSupportRollsMap.remove(worstUnit);
     }
     sortedWellEnoughUnitsList.addAll(sortedUnitsList);
-    // Cache result and all subsets of the result
-    final List<AmphibType> unitTypes = new ArrayList<>();
-    for (final Unit u : sortedWellEnoughUnitsList) {
-      unitTypes.add(AmphibType.of(u));
-    }
-    for (final Iterator<AmphibType> it = unitTypes.iterator(); it.hasNext(); ) {
-      oolCache.put(key, new ArrayList<>(unitTypes));
-      final AmphibType unitTypeToRemove = it.next();
-      targetTypes.remove(unitTypeToRemove);
-      key = computeOolCacheKey(parameters, targetTypes);
-      it.remove();
-    }
     return sortedWellEnoughUnitsList;
   }
 
