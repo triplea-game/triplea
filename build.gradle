@@ -62,7 +62,7 @@ subprojects {
         equalsVerifierVersion = "3.16.1"
         feignCoreVersion = "13.3"
         feignGsonVersion = "13.3"
-        javaWebSocketVersion = "1.5.3"
+        javaWebSocketVersion = "1.5.7"
         gsonVersion = "2.11.0"
         guavaVersion = "33.2.1-jre"
         hamcrestJsonVersion = "0.3"
