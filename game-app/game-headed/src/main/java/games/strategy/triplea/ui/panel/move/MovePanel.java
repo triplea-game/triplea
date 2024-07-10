@@ -113,6 +113,8 @@ public class MovePanel extends AbstractMovePanel {
   @Getter(onMethod_ = @Override)
   private final CollapsiblePanel unitScrollerPanel;
 
+  private boolean isHighlightingUnits;
+
   private final UnitSelectionListener unitSelectionListener =
       new UnitSelectionListener() {
         @Override
@@ -1497,26 +1499,28 @@ public class MovePanel extends AbstractMovePanel {
 
   /** Highlights movable units on the map for the current player. */
   private void highlightMovableUnits() {
-    final List<Territory> allTerritories;
-    try (GameData.Unlocker ignored = getData().acquireReadLock()) {
-      allTerritories = new ArrayList<>(getData().getMap().getTerritories());
+    if (isHighlightingUnits) {
+      isHighlightingUnits = false;
+      getMap().setUnitHighlight(List.of());
+      return;
     }
     final Predicate<Unit> movableUnitOwnedByMe =
         PredicateBuilder.of(Matches.unitIsOwnedBy(getData().getSequence().getStep().getPlayerId()))
             .and(Matches.unitHasMovementLeft())
             // if not non combat, cannot move aa units
             .andIf(!nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
+            .and(not(unitScroller.getAllSkippedUnits()::contains))
             .build();
     final Collection<Collection<Unit>> highlight = new ArrayList<>();
-    for (final Territory t : allTerritories) {
+    for (final Territory t : getData().getMap().getTerritories()) {
       final List<Unit> movableUnits = t.getMatches(movableUnitOwnedByMe);
-      movableUnits.removeAll(unitScroller.getAllSkippedUnits());
       if (!movableUnits.isEmpty()) {
         highlight.add(movableUnits);
       }
     }
     if (!highlight.isEmpty()) {
       getMap().setUnitHighlight(highlight);
+      isHighlightingUnits = true;
     }
   }
 }
