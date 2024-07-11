@@ -31,19 +31,21 @@ public class MapsTabModel {
 
   /** Queries server for the list of known maps. */
   List<MapDownloadItem> fetchMapsList() {
-    try {
-      return mapsClient.fetchMapListing();
-    } catch (FeignException e) {
-      log.warn("Failed to download the list of available maps from TripleA servers.", e);
-      return List.of();
-    }
+    return List.of();
+    //    try {
+    //      return mapsClient.fetchMapListing();
+    //    } catch (FeignException e) {
+    //      log.warn("Failed to download the list of available maps from TripleA servers.", e);
+    //      return List.of();
+    //    }
   }
 
   /** Queries server for the set of available tag names mapped to their allowed values. */
   List<MapTagMetaData> fetchAllowedMapTagValues() {
-    return mapTagAdminClient.fetchAllowedMapTagValues().stream()
-        .sorted(Comparator.comparing(MapTagMetaData::getDisplayOrder))
-        .collect(Collectors.toList());
+    return List.of();
+    //    return mapTagAdminClient.fetchAllowedMapTagValues().stream()
+    //        .sorted(Comparator.comparing(MapTagMetaData::getDisplayOrder))
+    //        .collect(Collectors.toList());
   }
 
   /** Sends a request to server to update a map tag to a new value. */
