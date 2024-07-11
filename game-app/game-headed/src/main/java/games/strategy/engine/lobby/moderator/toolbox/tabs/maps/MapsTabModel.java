@@ -1,9 +1,6 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.maps;
 
-import feign.FeignException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Setter;
