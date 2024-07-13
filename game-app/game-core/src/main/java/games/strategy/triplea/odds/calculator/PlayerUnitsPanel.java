@@ -1,5 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
+import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
@@ -35,7 +37,7 @@ public class PlayerUnitsPanel extends JPanel {
   private final UiContext uiContext;
   private final boolean defender;
   private boolean isLand = true;
-  @Getter private List<UnitCategory> categories = null;
+  @Getter private List<UnitCategory> unitCategories = null;
   private final List<Runnable> listeners = new ArrayList<>();
   private final List<UnitPanel> unitPanels = new ArrayList<>();
 
@@ -62,9 +64,9 @@ public class PlayerUnitsPanel extends JPanel {
   public void init(final GamePlayer gamePlayer, final List<Unit> units, final boolean land) {
     isLand = land;
     unitPanels.clear();
-    categories = new ArrayList<>(categorize(gamePlayer, units));
+    unitCategories = new ArrayList<>(categorize(gamePlayer, units));
 
-    categories.sort(
+    unitCategories.sort(
         (c1, c2) -> {
           if (!c1.isOwnedBy(c2.getOwner())) {
             if (c1.isOwnedBy(gamePlayer)) {
@@ -122,7 +124,8 @@ public class PlayerUnitsPanel extends JPanel {
 
     GamePlayer previousPlayer = null;
     JPanel panel = null;
-    for (final UnitCategory category : categories) {
+    unitCategories.sort(getComparatorUnitCategories(data));
+    for (final UnitCategory category : unitCategories) {
       if (predicate.test(category.getType())) {
         if (!category.isOwnedBy(previousPlayer)) {
           panel = new JPanel();

@@ -1,5 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
+import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -252,12 +254,13 @@ class OrderOfLossesInputPanel extends JPanel {
   }
 
   private JPanel getUnitButtonPanel(
-      final List<UnitCategory> categories, final JTextField textField) {
+      final List<UnitCategory> unitCategories, final JTextField textField) {
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-    if (categories != null) {
+    if (unitCategories != null) {
+      unitCategories.sort(getComparatorUnitCategories(data));
       final Set<UnitType> typesUsed = new HashSet<>();
-      for (final UnitCategory category : categories) {
+      for (final UnitCategory category : unitCategories) {
         // no duplicates or infrastructure allowed. no sea if land, no land if sea.
         if (typesUsed.contains(category.getType())
             || Matches.unitTypeIsInfrastructure().test(category.getType())

@@ -435,8 +435,8 @@ class BattleCalculatorPanel extends JPanel {
               new OrderOfLossesInputPanel(
                   attackerOrderOfLosses,
                   defenderOrderOfLosses,
-                  attackingUnitsPanel.getCategories(),
-                  defendingUnitsPanel.getCategories(),
+                  attackingUnitsPanel.getUnitCategories(),
+                  defendingUnitsPanel.getUnitCategories(),
                   landBattleCheckBox.isSelected(),
                   uiContext,
                   data);

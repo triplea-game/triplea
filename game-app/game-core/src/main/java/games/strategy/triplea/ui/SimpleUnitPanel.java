@@ -1,5 +1,8 @@
 package games.strategy.triplea.ui;
 
+import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
+
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
@@ -14,7 +17,9 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -120,7 +125,13 @@ public class SimpleUnitPanel extends JPanel {
    */
   public void setUnitsFromCategories(final Collection<UnitCategory> categories) {
     removeAll();
-    for (final UnitCategory category : categories) {
+    List<UnitCategory> unitCategories = new ArrayList(categories);
+    if (unitCategories.isEmpty()) {
+      return;
+    }
+    final GameData gameData = unitCategories.get(0).getUnitAttachment().getData();
+    unitCategories.sort(getComparatorUnitCategories(gameData));
+    for (final UnitCategory category : unitCategories) {
       addUnits(
           category.getOwner(),
           category.getUnits().size(),

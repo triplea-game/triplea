@@ -1,7 +1,10 @@
 package games.strategy.triplea.ui.unit.scroller;
 
+import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
+
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.image.MapImage;
@@ -74,14 +77,19 @@ class AvatarPanelFactory {
    * @param panelWidth How much horizontal space we have for drawing.
    * @return A panel containing a drawing of the unique images for each unit type.
    */
-  JPanel buildPanel(final List<Unit> units, final GamePlayer currentPlayer, final int panelWidth) {
+  JPanel buildPanel(
+      final List<Unit> units,
+      final GamePlayer currentPlayer,
+      final Territory territory,
+      final int panelWidth) {
     final int renderingWidth = Math.min(panelWidth, MAX_RENDERING_WIDTH);
 
     final Icon unitIcon =
         units.isEmpty()
             ? new ImageIcon(createEmptyUnitStackImage(renderingWidth))
             : new ImageIcon(
-                createUnitStackImage(unitImageFactory, currentPlayer, units, renderingWidth));
+                createUnitStackImage(
+                    unitImageFactory, currentPlayer, territory, units, renderingWidth));
 
     return new JPanelBuilder() //
         .borderLayout()
@@ -99,13 +107,13 @@ class AvatarPanelFactory {
   private static Image createUnitStackImage(
       final UnitImageFactory unitImageFactory,
       final GamePlayer player,
+      final Territory territory,
       final List<Unit> units,
       final int renderingWidth) {
 
     Preconditions.checkArgument(!units.isEmpty());
 
     final var unitsToDraw = UnitScrollerModel.getUniqueUnitCategories(player, units);
-
     final var dimension =
         unitImageFactory.getImageDimensions(
             ImageKey.builder().type(unitsToDraw.get(0).getType()).player(player).build());
@@ -134,7 +142,7 @@ class AvatarPanelFactory {
             "Draw location count (%s) should have matched units draw size (%s)",
             drawLocations.size(), unitsToDraw.size()));
 
-    unitsToDraw.sort(unitRenderingOrder(player));
+    unitsToDraw.sort(getComparatorUnitCategories(territory, player));
     for (int i = 0; i < drawLocations.size(); i++) {
       final var unitToDraw = unitsToDraw.get(i);
       final var imageToDraw = unitImageFactory.getImage(ImageKey.of(unitToDraw));
