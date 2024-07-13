@@ -108,7 +108,7 @@ public final class ProPurchaseUtils {
     final List<Unit> placeUnits = new ArrayList<>();
     if (bestDefenseOption != null) {
       ProLogger.debug("Best defense option: " + bestDefenseOption.getUnitType().getName());
-      int remainingUnitProduction = getUnitProduction(t, data, player);
+      int remainingUnitProduction = getUnitProduction(t, player);
       int pusSpent = 0;
       while (bestDefenseOption.getCost() <= (pusRemaining - pusSpent)
           && remainingUnitProduction >= bestDefenseOption.getQuantity()) {
@@ -190,7 +190,7 @@ public final class ProPurchaseUtils {
     // Create purchase territory holder for each factory territory
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
     for (final Territory t : ownedAndNotConqueredFactoryTerritories) {
-      final int unitProduction = getUnitProduction(t, data, player);
+      final int unitProduction = getUnitProduction(t, player);
       final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player, unitProduction);
       purchaseTerritories.put(t, ppt);
       ProLogger.debug(ppt.toString());
@@ -198,8 +198,7 @@ public final class ProPurchaseUtils {
     return purchaseTerritories;
   }
 
-  private static int getUnitProduction(
-      final Territory territory, final GameState data, final GamePlayer player) {
+  private static int getUnitProduction(final Territory territory, final GamePlayer player) {
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
             .and(Matches.unitIsBeingTransported().negate())
@@ -220,7 +219,7 @@ public final class ProPurchaseUtils {
       return Integer.MAX_VALUE;
     }
     return UnitUtils.getProductionPotentialOfTerritory(
-        territory.getUnits(), territory, player, data.getProperties(), true, true);
+        territory.getUnits(), territory, player, true, true);
   }
 
   /**

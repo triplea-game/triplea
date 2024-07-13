@@ -10,6 +10,9 @@ servers:
     message: |
       Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
+
+      2.6 Update: The 2.6 release is back into a testing phase!
+      Follow 2.6 status on forums: https://tinyurl.com/triplea26
   - version: "2.0.20057"
     inactive: true
   - version: "0.0"

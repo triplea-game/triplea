@@ -28,7 +28,7 @@ public class JTableTypeAheadListener extends KeyAdapter {
     if (time > keyPressTime + INPUT_RESET_TIME_MS) {
       inputString = "";
     }
-    keyPressTime = keyPressTime;
+    keyPressTime = time;
     inputString += Character.toLowerCase(ch);
 
     final var tableModel = table.getModel();
@@ -44,8 +44,9 @@ public class JTableTypeAheadListener extends KeyAdapter {
     }
   }
 
-  private void selectRow(int rowIndex) {
-    table.setRowSelectionInterval(rowIndex, rowIndex);
-    table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true));
+  private void selectRow(int modelRowIndex) {
+    int viewRowIndex = table.getRowSorter().convertRowIndexToView(modelRowIndex);
+    table.setRowSelectionInterval(viewRowIndex, viewRowIndex);
+    table.scrollRectToVisible(table.getCellRect(viewRowIndex, 0, true));
   }
 }

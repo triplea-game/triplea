@@ -1,7 +1,0 @@
-banned_user:
-  - id: 1
-    public_id: public-id
-    username: username
-    system_id: system-id
-    ip: 127.0.0.3
-    ban_expiry: 2100-01-01 23:59:59

@@ -390,8 +390,10 @@ public abstract class AbstractProAi extends AbstractAi {
 
     if (defaultCasualties.size() != count) {
       throw new IllegalStateException(
-          "Select Casualties showing different numbers for number of hits to take vs total "
-              + "size of default casualty selections");
+          String.format(
+              "Select Casualties showing different numbers for number of hits to take (%s) vs "
+                  + "total size of default casualty selections (%s) in %s (hit = %s)",
+              count, defaultCasualties.size(), battleSite, hit.getName()));
     }
     if (defaultCasualties.getKilled().isEmpty()) {
       return new CasualtyDetails(defaultCasualties, false);

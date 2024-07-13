@@ -39,7 +39,7 @@ public class PurchasePanel extends ActionPanel {
   private static final String BUY = "Buy...";
   private static final String CHANGE = "Change...";
 
-  private IntegerMap<ProductionRule> purchase;
+  private IntegerMap<ProductionRule> purchase = new IntegerMap<>();
   private boolean bid;
   private final SimpleUnitPanel purchasedPreviousRoundsUnits;
   private final JLabel purchasedPreviousRoundsLabel;
@@ -61,10 +61,10 @@ public class PurchasePanel extends ActionPanel {
           // Use the delegate from the step, since it may not actually be named 'purchase'.
           final IDelegate delegate = data.getSequence().getStep().getDelegate();
           if (delegate instanceof PurchaseDelegate) {
-            purchase = ((PurchaseDelegate) delegate).getPendingProductionRules();
-          }
-          if (purchase == null) {
-            purchase = new IntegerMap<>();
+            final var savedPurchase = ((PurchaseDelegate) delegate).getPendingProductionRules();
+            if (savedPurchase != null) {
+              purchase = savedPurchase;
+            }
           }
 
           purchase =
@@ -112,7 +112,7 @@ public class PurchasePanel extends ActionPanel {
     if (keepCurrentPurchase) {
       keepCurrentPurchase = false;
     } else {
-      purchase = new IntegerMap<>();
+      purchase.clear();
     }
     SwingUtilities.invokeLater(
         () -> {
@@ -164,9 +164,9 @@ public class PurchasePanel extends ActionPanel {
     // give a warning if the
     // player tries to produce too much
     final GameData data = getData();
-    final GamePlayer player = getCurrentPlayer();
     final GameProperties properties = data.getProperties();
     if (Properties.getWW2V2(properties) || Properties.getPlacementRestrictedByFactory(properties)) {
+      final GamePlayer player = getCurrentPlayer();
       int totalProd = 0;
       try (GameData.Unlocker ignored = data.acquireReadLock()) {
         final var predicate = Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(player);
@@ -174,8 +174,7 @@ public class PurchasePanel extends ActionPanel {
             CollectionUtils.getMatches(data.getMap().getTerritories(), predicate);
         for (final Territory t : CollectionUtils.getMatches(territories, predicate)) {
           totalProd +=
-              UnitUtils.getProductionPotentialOfTerritory(
-                  t.getUnits(), t, player, properties, true, true);
+              UnitUtils.getProductionPotentialOfTerritory(t.getUnits(), t, player, true, true);
         }
       }
       // sum production for all units except factories

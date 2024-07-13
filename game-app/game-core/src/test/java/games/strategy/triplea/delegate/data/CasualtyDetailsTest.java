@@ -2,9 +2,7 @@ package games.strategy.triplea.delegate.data;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -22,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CasualtyDetailsTest {
-
   private final GameData gameData = givenGameData().build();
   private final GamePlayer player1 = new GamePlayer("player1", gameData);
   private final GamePlayer player2 = new GamePlayer("player2", gameData);
@@ -38,8 +35,7 @@ class CasualtyDetailsTest {
   void ignoreNonAirUnitsAlreadyKilled() {
     final UnitType infantry = givenUnitType("infantry");
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player1));
+    final List<Unit> units = infantry.createTemp(2, player1);
 
     final List<Unit> killed = new ArrayList<>();
     killed.add(units.get(0));
@@ -47,18 +43,15 @@ class CasualtyDetailsTest {
     final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
     casualtyDetails.ensureUnitsAreKilledFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
-    assertThat(
-        "The infantry should still be killed",
-        casualtyDetails.getKilled(),
-        is(containsInAnyOrder(units.get(0))));
+    // The infantry should still be killed.
+    assertThat(casualtyDetails.getKilled()).containsExactly(units.get(0));
   }
 
   @Test
   void ignoreNonAirUnitsAlreadyDamaged() {
     final UnitType infantry = givenUnitType("infantry");
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player1));
+    final List<Unit> units = infantry.createTemp(2, player1);
 
     final List<Unit> damaged = new ArrayList<>();
     damaged.add(units.get(0));
@@ -66,10 +59,8 @@ class CasualtyDetailsTest {
     final CasualtyDetails casualtyDetails = new CasualtyDetails(List.of(), damaged, true);
     casualtyDetails.ensureUnitsAreDamagedFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
-    assertThat(
-        "The infantry should still be damaged",
-        casualtyDetails.getDamaged(),
-        is(containsInAnyOrder(units.get(0))));
+    // The infantry should still be damaged.
+    assertThat(casualtyDetails.getDamaged()).containsExactly(units.get(0));
   }
 
   @Test
@@ -78,8 +69,7 @@ class CasualtyDetailsTest {
     fighter.getUnitAttachment().setMovement(4);
     fighter.getUnitAttachment().setIsAir(true);
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player1));
+    final List<Unit> units = fighter.createTemp(2, player1);
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -90,10 +80,8 @@ class CasualtyDetailsTest {
     final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
     casualtyDetails.ensureUnitsAreKilledFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
-    assertThat(
-        "The second air unit has no movement left so it should be killed",
-        casualtyDetails.getKilled(),
-        is(containsInAnyOrder(units.get(1))));
+    // The second air unit has no movement left so it should be killed.
+    assertThat(casualtyDetails.getKilled()).containsExactly(units.get(1));
   }
 
   @Test
@@ -103,8 +91,7 @@ class CasualtyDetailsTest {
     fighter.getUnitAttachment().setMovement(4);
     fighter.getUnitAttachment().setIsAir(true);
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player1));
+    final List<Unit> units = fighter.createTemp(2, player1);
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -116,10 +103,8 @@ class CasualtyDetailsTest {
     casualtyDetails.ensureUnitsAreDamagedFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
 
-    assertThat(
-        "The first air unit has one movement left so it should be damaged",
-        casualtyDetails.getDamaged(),
-        is(containsInAnyOrder(units.get(0))));
+    // The first air unit has one movement left so it should be damaged.
+    assertThat(casualtyDetails.getDamaged()).containsExactly(units.get(0));
   }
 
   @Test
@@ -149,10 +134,8 @@ class CasualtyDetailsTest {
     casualtyDetails.ensureUnitsAreKilledFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft));
 
-    assertThat(
-        "The second and fourth air unit have no movement left so it should be killed",
-        casualtyDetails.getKilled(),
-        is(containsInAnyOrder(units.get(1), units.get(3))));
+    // The second and fourth air unit have no movement left so it should be killed.
+    assertThat(casualtyDetails.getKilled()).containsExactlyInAnyOrder(units.get(1), units.get(3));
   }
 
   @Test
@@ -184,10 +167,8 @@ class CasualtyDetailsTest {
     casualtyDetails.ensureUnitsAreDamagedFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
 
-    assertThat(
-        "The first and third air unit have one movement left so they should be damaged",
-        casualtyDetails.getDamaged(),
-        is(containsInAnyOrder(units.get(0), units.get(2))));
+    // The first and third air unit have one movement left so they should be damaged.
+    assertThat(casualtyDetails.getDamaged()).containsExactlyInAnyOrder(units.get(0), units.get(2));
   }
 
   @Test
@@ -213,10 +194,8 @@ class CasualtyDetailsTest {
     casualtyDetails.ensureUnitsAreDamagedFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
 
-    assertThat(
-        "Damage is not distributed to a unit of another owner",
-        casualtyDetails.getDamaged(),
-        is(containsInAnyOrder(units.get(1), units.get(0))));
+    // Damage is not distributed to a unit of another owner.
+    assertThat(casualtyDetails.getDamaged()).containsExactlyInAnyOrder(units.get(1), units.get(0));
   }
 
   @Test
@@ -226,8 +205,7 @@ class CasualtyDetailsTest {
     fighter.getUnitAttachment().setMovement(4);
     fighter.getUnitAttachment().setIsAir(true);
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(fighter.createTemp(2, player1));
+    final List<Unit> units = fighter.createTemp(2, player1);
 
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
@@ -240,12 +218,10 @@ class CasualtyDetailsTest {
     casualtyDetails.ensureUnitsAreDamagedFirst(
         units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
 
-    assertThat(
-        "The first and third air unit have one movement left so they should be damaged",
-        casualtyDetails.getDamaged().size() == 1
-            && casualtyDetails.getDamaged().contains(units.get(1))
-            && units.get(0).getHits() == 1
-            && units.get(1).getHits() == 0);
+    // Unit 1 should be kept as the damaged one, as unit 0 has only 1 hp left.
+    assertThat(casualtyDetails.getDamaged()).containsExactly(units.get(1));
+    assertThat(units.get(0).getHits()).isEqualTo(1);
+    assertThat(units.get(1).getHits()).isEqualTo(0);
   }
 
   @Test
@@ -253,8 +229,7 @@ class CasualtyDetailsTest {
     final UnitType infantry = givenUnitType("infantry");
     infantry.getUnitAttachment().setIsMarine(1);
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player1));
+    final List<Unit> units = infantry.createTemp(2, player1);
 
     units.get(0).setWasAmphibious(true);
     units.get(1).setWasAmphibious(false);
@@ -264,11 +239,9 @@ class CasualtyDetailsTest {
 
     final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
     casualtyDetails.ensureUnitsWithPositiveMarineBonusAreKilledLast(units);
-    assertThat(
-        "The second unit was not amphibious, so it doesn't have the positive marine bonus "
-            + "and should be taken first.",
-        casualtyDetails.getKilled(),
-        is(containsInAnyOrder(units.get(1))));
+    // The second unit was not amphibious, so it doesn't have the positive marine bonus and should
+    // be taken first.
+    assertThat(casualtyDetails.getKilled()).containsExactly(units.get(1));
   }
 
   @Test
@@ -276,8 +249,7 @@ class CasualtyDetailsTest {
     final UnitType infantry = givenUnitType("infantry");
     infantry.getUnitAttachment().setIsMarine(-1);
 
-    final List<Unit> units = new ArrayList<>();
-    units.addAll(infantry.createTemp(2, player1));
+    final List<Unit> units = infantry.createTemp(2, player1);
 
     units.get(0).setWasAmphibious(false);
     units.get(1).setWasAmphibious(true);
@@ -287,10 +259,35 @@ class CasualtyDetailsTest {
 
     final CasualtyDetails casualtyDetails = new CasualtyDetails(killed, List.of(), true);
     casualtyDetails.ensureUnitsWithPositiveMarineBonusAreKilledLast(units);
-    assertThat(
-        "The second unit was amphibious, so it has the negative marine bonus "
-            + "and should be taken first.",
-        casualtyDetails.getKilled(),
-        is(containsInAnyOrder(units.get(1))));
+    // The second unit was amphibious, so it has the negative marine bonus and should be taken
+    // first.
+    assertThat(casualtyDetails.getKilled()).containsExactly(units.get(1));
+  }
+
+  @Test
+  void damagedUnitsWithThreeHitPoints() {
+    final UnitType fighter = givenUnitType("fighter");
+    fighter.getUnitAttachment().setHitPoints(3);
+    fighter.getUnitAttachment().setMovement(4);
+    fighter.getUnitAttachment().setIsAir(true);
+
+    final List<Unit> units = fighter.createTemp(3, player1);
+
+    units.get(0).setAlreadyMoved(BigDecimal.valueOf(2));
+    units.get(1).setAlreadyMoved(BigDecimal.ONE);
+    units.get(2).setAlreadyMoved(BigDecimal.valueOf(2));
+
+    // User selected all units to go from 3hp to 2hp and unit 0 to additionally go from 2hp to 1hp.
+    final List<Unit> damaged = List.of(units.get(0), units.get(1), units.get(2), units.get(0));
+    for (Unit u : units) System.err.println(u);
+
+    final CasualtyDetails casualtyDetails = new CasualtyDetails(List.of(), damaged, true);
+    casualtyDetails.ensureUnitsAreDamagedFirst(
+        units, Matches.unitIsAir(), Comparator.comparing(Unit::getMovementLeft).reversed());
+
+    // We expect three units to still be hit, but instead of unit 0 getting two hits, unit 1 should
+    // as it has most movement left.
+    assertThat(casualtyDetails.getDamaged())
+        .containsExactlyInAnyOrder(units.get(0), units.get(1), units.get(2), units.get(1));
   }
 }
