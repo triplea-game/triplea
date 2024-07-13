@@ -122,9 +122,7 @@ subprojects {
     }
 
     tasks.withType(Test).configureEach {
-        useJUnitPlatform() {
-            excludeTags "RequiresDatabase"
-        }
+        useJUnitPlatform() {}
         testLogging {
             exceptionFormat = "full"
             events = ["standardOut", "standardError", "skipped", "failed"]
