@@ -1,6 +1,13 @@
 ## [Download TripleA](http://triplea-game.org/download/)
 
-TripleA is free to play, volunteer run, 100% open source.
+TripleA (2002) is a fan created open source strategy and board game engine where you can play Axis and
+Allies style rules on community created maps.TripleA has a well-developed AI and an active lobby for live
+multiplayer games.
+
+In TripleA, players can recreate World War 2 with the Axis pushing through to Moscow and the Allies
+desperately fighting back, Napoleon's march across Europe, Rome defeating the Carthaginian Empire,
+or even Sauron conquering Middle Earth! 
+
 
   - ***[Forums: Discussion, Questions & Help](https://forums.triplea-game.org/category/10/help-questions)***
   - ***[How to Contribute to TripleA](/docs/contribute.md)***
@@ -9,20 +16,10 @@ TripleA is free to play, volunteer run, 100% open source.
 
 ![Game Board Screenshot](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
 
-
-## About TripleA
-
-TripleA is a fan created (2002), open source strategy and board game engine where you can play Axis and
-Allies style rules on community created maps. TripleA has a well-developed AI and an active lobby for live
-multiplayer games. Over 100 user-created maps are available via in-game download.
-
-In TripleA you can recreate World War 2 with the Axis pushing through to Moscow and the Allies desperately
-fighting back. Or recreate Napoleon's march across Europe, or Rome defeating the Carthaginian Empire,
-or Sauron conquering Middle Earth! If you have ever played a game where you push little plastic
-pieces around, roll dice and conquer the lands of your enemy, you will be able to jump right into TripleA!
-
 ![europe](https://user-images.githubusercontent.com/12397753/132109225-71e6c02d-425e-4b8d-9537-7ac66baebbfd.jpeg)
+
 ![middle-earth](https://user-images.githubusercontent.com/12397753/132109223-14a0aa2e-a950-4a5e-9937-3c4b52211cd9.jpeg)
+
 
 ## License<span>&nbsp;</span>[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
 
