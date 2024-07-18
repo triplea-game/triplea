@@ -1,8 +1,9 @@
 ## [Download TripleA](http://triplea-game.org/download/)
-TripleA is a free to play, volunteer run, 100% open source gaming community.
+
+TripleA is free to play, volunteer run, 100% open source.
 
   - ***[Forums: Discussion, Questions & Help](https://forums.triplea-game.org/category/10/help-questions)***
-  - ***[How to Contribute](/docs/contribute.md)***
+  - ***[How to Contribute to TripleA](/docs/contribute.md)***
   - ***[Bug Tracker](https://github.com/triplea-game/triplea/issues/new)***
   - ***[Developer Setup Guide](/docs/development/README.md)***
 
