@@ -6,7 +6,7 @@ multiplayer games.
 
 In TripleA, players can recreate World War 2 with the Axis pushing through to Moscow and the Allies
 desperately fighting back, Napoleon's march across Europe, Rome defeating the Carthaginian Empire,
-or even Sauron conquering Middle Earth! 
+or even Sauron conquering Middle Earth!
 
 
   - ***[Forums: Discussion, Questions & Help](https://forums.triplea-game.org/category/10/help-questions)***
@@ -39,4 +39,3 @@ YourKit supports open source projects with innovative and intelligent tools for 
 YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourKit Java Profiler</a>, <a href="https://www.yourkit.com/.net/profiler/">YourKit .NET Profiler</a>, and <a href="https://www.yourkit.com/youmonitor/">YourKit YouMonitor</a>.
 
 YourKit grants the TripleA development project an open source license for YourKit Java Profiler.
-
