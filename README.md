@@ -13,6 +13,7 @@ or even Sauron conquering Middle Earth!
   - ***[How to Contribute to TripleA](/docs/contribute.md)***
   - ***[Bug Tracker](https://github.com/triplea-game/triplea/issues/new)***
   - ***[Developer Setup Guide](/docs/development/README.md)***
+  - ***[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)***
 
 ![Game Board Screenshot](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
 
@@ -20,21 +21,6 @@ or even Sauron conquering Middle Earth!
 
 ![middle-earth](https://user-images.githubusercontent.com/12397753/132109223-14a0aa2e-a950-4a5e-9937-3c4b52211cd9.jpeg)
 
-
-## License<span>&nbsp;</span>[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
-
-This project is licensed under the terms of the
-[GNU General Public License v3.0 with additional permissions](/LICENSE).
-
-Copyright (C) 2001-2021 TripleA contributors.
-
-This program is free software; you can redistribute it and/or modify it under the terms
-of the GNU General Public License as published by the Free Software Foundation; either
-version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License below for more details.
 
 #### Additional permission under GNU GPL version 3 section 7
 
