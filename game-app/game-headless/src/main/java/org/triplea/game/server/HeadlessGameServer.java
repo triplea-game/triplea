@@ -144,6 +144,7 @@ public class HeadlessGameServer {
   public void waitForUsers() {
     log.info("Waiting for users to connect.");
     setServerGame(null);
+    gameSelectorModel.loadDefaultGameSameThread();
 
     while (headlessServerSetup.waitUntilStart() && !startHeadlessGame()) {
       log.warn("Error in launcher, going back to waiting.");
