@@ -122,8 +122,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final List<UnitCategory> unitCategories =
         new ArrayList<>(UnitSeparator.categorize(move.getUnits()));
     final Dimension buttonSize = new Dimension(80, 22);
-    unitCategories.sort(
-        getComparatorUnitCategories(movePanel.getData()));
+    unitCategories.sort(getComparatorUnitCategories(movePanel.getData()));
     for (final UnitCategory category : unitCategories) {
       final ImageIcon icon =
           movePanel.getMap().getUiContext().getUnitImageFactory().getIcon(ImageKey.of(category));
