@@ -76,7 +76,7 @@ REM
 REM This works well (set it to true) if the bot is installed as a service
 REM that is automatically restarted.
 REM
-SET EXIT_ON_GAME_END LOBBY_URI=false
+SET EXIT_ON_GAME_END=false
 
 
 REM ###########################################################################
