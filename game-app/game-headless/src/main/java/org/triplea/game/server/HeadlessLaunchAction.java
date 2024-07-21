@@ -1,9 +1,5 @@
 package org.triplea.game.server;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.filter.ThresholdFilter;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
@@ -34,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.debug.ChatAppender;
 import org.triplea.java.ThreadRunner;

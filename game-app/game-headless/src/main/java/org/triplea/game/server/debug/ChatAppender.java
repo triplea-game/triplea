@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public final class ChatAppender extends AppenderBase<ILoggingEvent> {
   private final Chat chat;
 
-  public ChatAppender(final Chat chat) {
+  private ChatAppender(final Chat chat) {
     setName("chatMessage");
     this.chat = Preconditions.checkNotNull(chat);
   }
