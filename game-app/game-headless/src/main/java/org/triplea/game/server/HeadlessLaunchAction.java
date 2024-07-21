@@ -132,27 +132,11 @@ public class HeadlessLaunchAction implements LaunchAction {
     return new HeadlessAutoSaveFileUtils();
   }
 
-  private void registerChatAppender(final Chat chat) {
-    Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-    ChatAppender chatAppender = new ChatAppender(chat);
-    // prevent multiple chat appenders causing memory leak
-    // ideally this should happen in a shutdown operation somewhere though
-    logger.detachAppender(chatAppender.getName());
-
-    ThresholdFilter filter = new ThresholdFilter();
-    filter.setLevel(Level.WARN.toString());
-    filter.start();
-    chatAppender.addFilter(filter);
-    chatAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
-    chatAppender.start();
-    logger.addAppender(chatAppender);
-  }
-
   @Override
   public ChatModel createChatModel(
       String chatName, Messengers messengers, ClientNetworkBridge clientNetworkBridge) {
     Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers, clientNetworkBridge));
-    registerChatAppender(chat);
+    ChatAppender.attach(chat);
     return new HeadlessChat(chat);
   }
 
