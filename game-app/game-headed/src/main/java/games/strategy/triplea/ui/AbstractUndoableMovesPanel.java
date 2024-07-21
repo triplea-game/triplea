@@ -120,7 +120,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     final Box unitsBox = new Box(BoxLayout.X_AXIS);
     unitsBox.add(new JLabel((move.getIndex() + 1) + ") "));
     final List<UnitCategory> unitCategories =
-        new ArrayList(UnitSeparator.categorize(move.getUnits()));
+        new ArrayList<>(UnitSeparator.categorize(move.getUnits()));
     final Dimension buttonSize = new Dimension(80, 22);
     unitCategories.sort(
         getComparatorUnitCategories(movePanel.getData()));
