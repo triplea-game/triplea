@@ -12,13 +12,11 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.triplea.util.UnitCategory;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -165,24 +163,6 @@ class AvatarPanelFactory {
       }
     }
     return combinedImage;
-  }
-
-  private static Comparator<UnitCategory> unitRenderingOrder(final GamePlayer currentPlayer) {
-    final Comparator<UnitCategory> isAir =
-        Comparator.comparing(unitCategory -> unitCategory.getUnitAttachment().getIsAir());
-    final Comparator<UnitCategory> isSea =
-        Comparator.comparing(unitCategory -> unitCategory.getUnitAttachment().getIsSea());
-    final Comparator<UnitCategory> unitAttackPower =
-        Comparator.comparingInt(
-            unitCategory -> unitCategory.getUnitAttachment().getAttack(currentPlayer));
-    final Comparator<UnitCategory> unitName =
-        Comparator.comparing(unitCategory -> unitCategory.getType().getName());
-
-    return isAir //
-        .thenComparing(isSea)
-        .thenComparing(unitAttackPower)
-        .thenComparing(unitName)
-        .reversed();
   }
 
   private static int countUnit(final UnitType unitType, final Collection<Unit> units) {
