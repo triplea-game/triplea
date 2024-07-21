@@ -9,6 +9,7 @@ import ch.qos.logback.core.AppenderBase;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.chat.Chat;
 import java.util.List;
+import java.util.stream.Stream;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -42,7 +43,7 @@ public final class ChatAppender extends AppenderBase<ILoggingEvent> {
   @Override
   protected void append(final ILoggingEvent record) {
     // format log message and send it to the chat window
-    List.of(record.getFormattedMessage().trim().split("\\n")).stream()
+    Stream.of(record.getFormattedMessage().trim().split("\\n"))
         .map(message -> "[" + record.getLevel() + "] " + message)
         .forEach(chat::sendMessage);
   }
