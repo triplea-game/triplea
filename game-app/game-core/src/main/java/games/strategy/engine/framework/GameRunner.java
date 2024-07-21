@@ -10,4 +10,8 @@ public final class GameRunner {
   public static boolean headless() {
     return Boolean.parseBoolean(System.getProperty(TRIPLEA_HEADLESS, "false"));
   }
+
+  public static boolean exitOnEndGame() {
+    return Boolean.parseBoolean(System.getProperty("triplea.exit.on.game.end", "false"));
+  }
 }

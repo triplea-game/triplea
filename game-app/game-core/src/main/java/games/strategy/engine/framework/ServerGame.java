@@ -404,6 +404,14 @@ public class ServerGame extends AbstractGame {
       delegateExecutionManager.resumeDelegateExecution();
     }
     gameData.getGameLoader().shutDown();
+    // if this is a bot, shut down the bot. We will rely on systemctl to restart the bot
+    // instance. This restart will help us pick up any new maps and/or new bot versions.
+    if (GameRunner.headless() && GameRunner.exitOnEndGame()) {
+      if (inGameLobbyWatcher != null) {
+        inGameLobbyWatcher.shutDown();
+      }
+      ExitStatus.SUCCESS.exit();
+    }
   }
 
   private void autoSaveBefore(final IDelegate delegate) {

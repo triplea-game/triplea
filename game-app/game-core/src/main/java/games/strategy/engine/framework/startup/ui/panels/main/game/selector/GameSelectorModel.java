@@ -6,7 +6,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.GameParsingValidation;
 import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameShutdownRegistry;
+import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.triplea.settings.ClientSetting;
@@ -66,7 +68,9 @@ public class GameSelectorModel extends Observable implements GameSelector {
 
   public boolean loadSave(Path saveFile) {
     try {
-      readyForSaveLoad.await();
+      if (!GameRunner.headless()) {
+        readyForSaveLoad.await();
+      }
     } catch (InterruptedException e) {
       return false;
     }
@@ -193,8 +197,13 @@ public class GameSelectorModel extends Observable implements GameSelector {
    */
   public void loadDefaultGameSameThread() {
     final Optional<String> gameUri;
-    if (saveGameToLoad.isPresent()) {
-      gameUri = saveGameToLoad;
+    if (Files.exists(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile())) {
+      gameUri =
+          Optional.of(
+              new HeadlessAutoSaveFileUtils()
+                  .getHeadlessAutoSaveFile()
+                  .toAbsolutePath()
+                  .toString());
       saveGameToLoad = Optional.empty();
     } else {
       gameUri = ClientSetting.defaultGameUri.getValue();

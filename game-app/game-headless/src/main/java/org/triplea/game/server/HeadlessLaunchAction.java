@@ -9,6 +9,7 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.MessengersChatTransmitter;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
@@ -61,6 +62,10 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public void handleGameInterruption(
       final GameSelectorModel gameSelectorModel, final ServerModel serverModel) {
+    if (!GameRunner.exitOnEndGame()) {
+      // no-op, System.exit will be called later
+      return;
+    }
     log.info("Game ended, going back to waiting.");
     // if we do not do this, we can get into an infinite loop of launching a game,
     // then crashing out, then launching, etc.
