@@ -8,7 +8,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.chat.Chat;
-import java.util.List;
 import java.util.stream.Stream;
 import org.slf4j.LoggerFactory;
 
