@@ -18,6 +18,11 @@ public final class ChatAppender extends AppenderBase<ILoggingEvent> {
     this.chat = Preconditions.checkNotNull(chat);
   }
 
+  static void attach(Chat chat) {
+
+
+  }
+
   @Override
   protected void append(final ILoggingEvent record) {
     // format log message and send it to the chat window
