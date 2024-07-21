@@ -42,12 +42,8 @@ public final class ChatAppender extends AppenderBase<ILoggingEvent> {
   @Override
   protected void append(final ILoggingEvent record) {
     // format log message and send it to the chat window
-    formatChatMessage(record).stream()
+    List.of(record.getFormattedMessage().trim().split("\\n")).stream()
         .map(message -> "[" + record.getLevel() + "] " + message)
         .forEach(chat::sendMessage);
-  }
-
-  private List<String> formatChatMessage(final ILoggingEvent record) {
-    return List.of(record.getFormattedMessage().trim().split("\\n"));
   }
 }
