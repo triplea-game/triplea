@@ -141,6 +141,7 @@ public class HeadlessLaunchAction implements LaunchAction {
 
     ThresholdFilter filter = new ThresholdFilter();
     filter.setLevel(Level.WARN.toString());
+    filter.start();
     chatAppender.addFilter(filter);
     chatAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
     chatAppender.start();
