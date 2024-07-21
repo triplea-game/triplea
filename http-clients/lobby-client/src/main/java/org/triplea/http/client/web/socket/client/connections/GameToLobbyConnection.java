@@ -12,7 +12,6 @@ import org.triplea.domain.data.UserName;
 import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
-import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
@@ -90,10 +89,6 @@ public class GameToLobbyConnection {
 
   public void close() {
     webSocket.close();
-  }
-
-  public void sendChatMessageToLobby(final ChatUploadParams chatUploadParams) {
-    lobbyWatcherClient.uploadChatMessage(chatUploadParams);
   }
 
   public void playerJoined(final String gameId, final UserName playerName) {

@@ -264,17 +264,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       chatModel =
           launchAction.createChatModel(CHAT_NAME, messengers, ClientNetworkBridge.NO_OP_SENDER);
 
-      if (gameToLobbyConnection != null && lobbyWatcherThread != null) {
-        chatModel
-            .getChat()
-            .addChatListener(
-                ServerChatUpload.builder()
-                    .gameToLobbyConnection(gameToLobbyConnection)
-                    .hostName(messengers.getLocalNode().getPlayerName())
-                    .gameIdSupplier(() -> lobbyWatcherThread.getGameId().orElse(null))
-                    .build());
-      }
-
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
       return gameHostingResponse;

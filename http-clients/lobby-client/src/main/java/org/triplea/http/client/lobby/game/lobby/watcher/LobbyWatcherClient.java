@@ -20,7 +20,6 @@ public interface LobbyWatcherClient {
   String REMOVE_GAME_PATH = "/lobby/games/remove-game";
   String PLAYER_JOINED_PATH = "/lobby/games/player-joined";
   String PLAYER_LEFT_PATH = "/lobby/games/player-left";
-  String UPLOAD_CHAT_PATH = "/lobby/chat/upload";
 
   static LobbyWatcherClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(
@@ -42,13 +41,6 @@ public interface LobbyWatcherClient {
 
   @RequestLine("POST " + LobbyWatcherClient.REMOVE_GAME_PATH)
   void removeGame(String gameId);
-
-  @RequestLine("POST " + LobbyWatcherClient.UPLOAD_CHAT_PATH)
-  String uploadChatMessage(ChatMessageUpload chatMessageUpload);
-
-  default void uploadChatMessage(final ChatUploadParams uploadChatMessageParams) {
-    uploadChatMessage(uploadChatMessageParams.toChatMessageUpload());
-  }
 
   @RequestLine("POST " + LobbyWatcherClient.PLAYER_JOINED_PATH)
   String playerJoined(PlayerJoinedNotification playerJoinedNotification);
