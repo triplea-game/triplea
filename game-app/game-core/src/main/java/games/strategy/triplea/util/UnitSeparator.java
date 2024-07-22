@@ -61,8 +61,35 @@ public class UnitSeparator {
   }
 
   /**
-   * Finds unit categories from units of the <code>Territory</code>, removes not displayed ones
-   * according to <code>MapData</code> and then sorts them
+   * Finds unit categories from <code>units</code> of the <code>Territory</code>, removes not
+   * displayed ones according to <code>MapData</code> and then sorts them using also the <code>
+   * GamePlayer</code>
+   */
+  public static List<UnitCategory> getSortedUnitCategories(
+      final Collection<Unit> units,
+      final Territory t,
+      final MapData mapData,
+      final GamePlayer gamePlayer) {
+    final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(units));
+    categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
+    categories.sort(getComparatorUnitCategories(t, gamePlayer));
+    return categories;
+  }
+
+  /**
+   * Finds unit categories from <code>units</code> of the <code>Territory</code> and then sorts them
+   * using also the <code>GamePlayer</code>
+   */
+  public static List<UnitCategory> getSortedUnitCategories(
+      final Collection<Unit> units, final Territory t, final GamePlayer gamePlayer) {
+    final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(units));
+    categories.sort(getComparatorUnitCategories(t, gamePlayer));
+    return categories;
+  }
+
+  /**
+   * Finds unit categories from <code>units</code>, removes not displayed ones according to <code>
+   * MapData</code> and then sorts them
    */
   public static List<UnitCategory> getSortedUnitCategories(
       final Collection<Unit> units, final GameData gameData, final MapData mapData) {
@@ -72,24 +99,33 @@ public class UnitSeparator {
     return categories;
   }
 
+  /** Sorts a list of unit categories */
+  public static void sortUnitCategories(
+      final List<UnitCategory> unitCategories, final GameData gameData) {
+    unitCategories.sort(getComparatorUnitCategories(gameData));
+  }
+
+  /**
+   * Returns <code>Comparator</code> for unit categories with current <code>GameData</code> Try to
+   * use a method returning <code>List<UnitCategory></code> instead
+   */
+  public static Comparator<UnitCategory> getComparatorUnitCategories(final GameData gameData) {
+    return getComparatorUnitCategories(
+        Optional.empty(), gameData, gameData.getHistory().getCurrentPlayer());
+  }
+
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
-  public static Comparator<UnitCategory> getComparatorUnitCategories(
+  private static Comparator<UnitCategory> getComparatorUnitCategories(
       final Territory t, final GamePlayer currentPlayer) {
     final GameData gameData = t.getData();
     return getComparatorUnitCategories(Optional.of(t), gameData, currentPlayer);
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
-  public static Comparator<UnitCategory> getComparatorUnitCategories(final Territory t) {
+  private static Comparator<UnitCategory> getComparatorUnitCategories(final Territory t) {
     final GameData gameData = t.getData();
     return getComparatorUnitCategories(
         Optional.of(t), gameData, gameData.getHistory().getCurrentPlayer());
-  }
-
-  /** Returns <code>Comparator</code> for unit categories with current <code>GameData</code> */
-  public static Comparator<UnitCategory> getComparatorUnitCategories(final GameData gameData) {
-    return getComparatorUnitCategories(
-        Optional.empty(), gameData, gameData.getHistory().getCurrentPlayer());
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */

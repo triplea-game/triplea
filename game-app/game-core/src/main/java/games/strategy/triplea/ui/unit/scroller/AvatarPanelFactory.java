@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui.unit.scroller;
 
-import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
-
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -12,6 +10,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.util.UnitSeparator;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -111,7 +110,7 @@ class AvatarPanelFactory {
 
     Preconditions.checkArgument(!units.isEmpty());
 
-    final var unitsToDraw = UnitScrollerModel.getUniqueUnitCategories(player, units);
+    final var unitsToDraw = UnitSeparator.getSortedUnitCategories(units, territory, player);
     final var dimension =
         unitImageFactory.getImageDimensions(
             ImageKey.builder().type(unitsToDraw.get(0).getType()).player(player).build());
@@ -140,7 +139,6 @@ class AvatarPanelFactory {
             "Draw location count (%s) should have matched units draw size (%s)",
             drawLocations.size(), unitsToDraw.size()));
 
-    unitsToDraw.sort(getComparatorUnitCategories(territory, player));
     for (int i = 0; i < drawLocations.size(); i++) {
       final var unitToDraw = unitsToDraw.get(i);
       final var imageToDraw = unitImageFactory.getImage(ImageKey.of(unitToDraw));

@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui;
 
-import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TerritoryEffect;
@@ -130,8 +128,8 @@ final class BattleModel extends DefaultTableModel {
       }
       unitPowerAndRollsMap = PowerStrengthAndRolls.build(units, combatValue);
     }
-    final List<UnitCategory> unitCategories = new ArrayList(UnitSeparator.categorize(units));
-    unitCategories.sort(getComparatorUnitCategories(gameData));
+    final List<UnitCategory> unitCategories =
+        UnitSeparator.getSortedUnitCategories(units, gameData, uiContext.getMapData());
     for (final UnitCategory category : unitCategories) {
       final int[] shift = new int[gameData.getDiceSides() + 1];
       for (final Unit current : category.getUnits()) {

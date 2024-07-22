@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui;
 
-import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
-
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
@@ -309,7 +307,8 @@ public final class UnitChooser extends JPanel {
     }
     final GameData gameData = entries.get(0).getCategory().getUnitAttachment().getData();
     entries.sort(
-        Comparator.comparing(ChooserEntry::getCategory, getComparatorUnitCategories(gameData)));
+        Comparator.comparing(
+            ChooserEntry::getCategory, UnitSeparator.getComparatorUnitCategories(gameData)));
     for (val entry : Collections.unmodifiableList(entries)) {
       entry.createComponents(this, rowIndex);
       rowIndex++;

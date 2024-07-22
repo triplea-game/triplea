@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import static games.strategy.triplea.image.UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
-import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -235,11 +234,7 @@ public class BattleDisplay extends JPanel {
     }
 
     List<UnitCategory> unitCategories =
-        new ArrayList(
-            UnitSeparator.categorize(
-                killedUnits,
-                UnitSeparator.SeparatorCategories.builder().dependents(dependentsMap).build()));
-    unitCategories.sort(getComparatorUnitCategories(gameData));
+        UnitSeparator.getSortedUnitCategories(killedUnits, gameData, uiContext.getMapData());
     for (final UnitCategory category : unitCategories) {
       final JPanel panel = new JPanel();
       JLabel unit = uiContext.newUnitImageLabel(category.getType(), category.getOwner());
@@ -788,7 +783,7 @@ public class BattleDisplay extends JPanel {
         return;
       }
       final GameData gameData = unitCategories.get(0).getUnitAttachment().getData();
-      unitCategories.sort(getComparatorUnitCategories(gameData));
+      UnitSeparator.sortUnitCategories(unitCategories, gameData);
       for (final UnitCategory category : unitCategories) {
         final JPanel panel = new JPanel();
         final ImageIcon unitImage =

@@ -1,7 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -14,6 +12,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeparator;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -258,7 +257,7 @@ class OrderOfLossesInputPanel extends JPanel {
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     if (unitCategories != null) {
-      unitCategories.sort(getComparatorUnitCategories(data));
+      UnitSeparator.sortUnitCategories(unitCategories, data);
       final Set<UnitType> typesUsed = new HashSet<>();
       for (final UnitCategory category : unitCategories) {
         // no duplicates or infrastructure allowed. no sea if land, no land if sea.

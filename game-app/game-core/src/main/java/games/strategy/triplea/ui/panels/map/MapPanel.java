@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.panels.map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static games.strategy.triplea.util.UnitSeparator.getComparatorUnitCategories;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
@@ -899,7 +898,8 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     }
 
-    final List<UnitCategory> categories = new ArrayList(UnitSeparator.categorize(units));
+    final List<UnitCategory> categories =
+        UnitSeparator.getSortedUnitCategories(units, gameData, uiContext.getMapData());
     final int iconWidth = uiContext.getUnitImageFactory().getUnitImageWidth();
     final int iconHeight = uiContext.getUnitImageFactory().getUnitImageHeight();
     final int horizontalSpace = 5;
@@ -915,7 +915,6 @@ public class MapPanel extends ImageScrollerLargeView {
     final Rectangle bounds = new Rectangle(0, 0, 0, 0);
     try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
       int i = 0;
-      categories.sort(getComparatorUnitCategories(gameData));
       for (final UnitCategory category : categories) {
         final Point place = new Point(i * (iconWidth + horizontalSpace), 0);
         final UnitsDrawer drawer =
