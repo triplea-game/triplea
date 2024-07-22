@@ -300,10 +300,6 @@ public class ClientModel implements IMessengerErrorListener {
     return (IServerStartupRemote) messengers.getRemote(ServerModel.SERVER_REMOTE_NAME);
   }
 
-  private Collection<String> getAvailableServerGames() {
-    return getServerStartup().getAvailableGames();
-  }
-
   /** Resets stats and nulls out references, keeps chat alive. */
   public void cancel() {
     gameSelectorModel.setGameData(gameDataOnStartup);
@@ -465,8 +461,7 @@ public class ClientModel implements IMessengerErrorListener {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
     ThreadRunner.runInNewThread(
         () -> {
-          final var action =
-              new SetMapClientAction(parent, getServerStartup(), getAvailableServerGames());
+          final var action = new SetMapClientAction(parent, getServerStartup());
           SwingUtilities.invokeLater(action::run);
         });
   }
