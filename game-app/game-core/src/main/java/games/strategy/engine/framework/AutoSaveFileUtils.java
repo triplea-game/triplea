@@ -6,15 +6,43 @@ import static org.triplea.java.StringUtils.capitalize;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.settings.ClientSetting;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Provides methods for getting the names of auto-save files periodically generated during a game.
  */
+@Slf4j
 public class AutoSaveFileUtils {
+  /** Returns a list path objects representing each auto save file. */
+  public static List<Path> getAutoSavePaths() {
+    var autoSaveFolder = ClientSetting.saveGamesFolderPath.getValueOrThrow().resolve("autoSave");
+    try (Stream<Path> paths = Files.list(autoSaveFolder)) {
+      return paths.filter(f -> !Files.isDirectory(f)).collect(Collectors.toList());
+    } catch (IOException e) {
+      log.warn("Unable to list auto-save game files", e);
+      return List.of();
+    }
+  }
+
+  /** Returns the name of all auto save files. */
+  public static List<String> getAutoSaveFiles() {
+    return getAutoSavePaths().stream()
+        .map(Path::toFile)
+        .map(File::getName)
+        .sorted()
+        .collect(Collectors.toList());
+  }
+
   @VisibleForTesting
   Path getAutoSaveFile(final String baseFileName) {
     return ClientSetting.saveGamesFolderPath

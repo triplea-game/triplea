@@ -1,6 +1,7 @@
 package org.triplea.game.server;
 
 import com.google.common.base.Preconditions;
+import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
@@ -78,7 +79,10 @@ public class HeadlessServerStartupRemote implements IServerStartupRemote {
   public Set<String> getAvailableGames() {
     // Copy available games collection into a serializable collection
     // so it can be sent over network.
-    return new HashSet<>(headlessGameServer.getAvailableGames());
+    var games = new HashSet<String>();
+    games.addAll(AutoSaveFileUtils.getAutoSaveFiles());
+    games.addAll(headlessGameServer.getAvailableGames());
+    return games;
   }
 
   @Override
