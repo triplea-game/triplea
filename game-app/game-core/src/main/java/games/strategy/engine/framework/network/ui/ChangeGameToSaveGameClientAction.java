@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.swing.AbstractAction;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.ThreadRunner;
 
 /** An action for loading a save game across all network nodes from a client node. */
 @Slf4j
@@ -44,6 +45,7 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
       log.error("Failed to read file: " + saveGame, e);
       return;
     }
-    serverStartupRemote.changeToGameSave(bytes, saveGame.getFileName().toString());
+    ThreadRunner.runInNewThread(
+        () -> serverStartupRemote.changeToGameSave(bytes, saveGame.getFileName().toString()));
   }
 }
