@@ -106,8 +106,17 @@ public class UnitSeparator {
   }
 
   /**
+   * Sorts a list of <code>UnitCategory</code> with <code>Territory</code> and <code>GamePlayer
+   * </code>
+   */
+  public static void sortUnitCategories(
+      final List<UnitCategory> unitCategories, final Territory t, final GamePlayer currentPlayer) {
+    unitCategories.sort(getComparatorUnitCategories(t, currentPlayer));
+  }
+
+  /**
    * Returns <code>Comparator</code> for unit categories with current <code>GameData</code> Try to
-   * use a method returning <code>List<UnitCategory></code> instead
+   * use a method returning List of <code>UnitCategory></code> instead
    */
   public static Comparator<UnitCategory> getComparatorUnitCategories(final GameData gameData) {
     return getComparatorUnitCategories(

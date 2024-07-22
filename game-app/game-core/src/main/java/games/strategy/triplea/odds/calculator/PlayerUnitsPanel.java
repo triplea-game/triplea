@@ -65,8 +65,6 @@ public class PlayerUnitsPanel extends JPanel {
       final Territory territory) {
     this.isLandBattle = isLandBattle;
     unitPanels.clear();
-    unitCategories =
-        UnitSeparator.getSortedUnitCategories(units, territory, uiContext.getMapData(), gamePlayer);
 
     removeAll();
     final Predicate<UnitType> predicate;
@@ -84,6 +82,8 @@ public class PlayerUnitsPanel extends JPanel {
       costs = new TuvCostsCalculator().getCostsForTuv(gamePlayer);
     }
 
+    unitCategories = getAllUnitCategories(gamePlayer, units);
+    UnitSeparator.sortUnitCategories(unitCategories, territory, gamePlayer);
     GamePlayer previousPlayer = null;
     JPanel panel = null;
     for (final UnitCategory category : unitCategories) {
@@ -95,10 +95,12 @@ public class PlayerUnitsPanel extends JPanel {
           add(panel);
           previousPlayer = category.getOwner();
         }
-        final var unitPanel = new UnitPanel(uiContext, category, costs);
-        unitPanel.addChangeListener(this::notifyListeners);
-        panel.add(unitPanel);
-        unitPanels.add(unitPanel);
+        if (panel != null) {
+          final var unitPanel = new UnitPanel(uiContext, category, costs);
+          unitPanel.addChangeListener(this::notifyListeners);
+          panel.add(unitPanel);
+          unitPanels.add(unitPanel);
+        }
       }
     }
 
@@ -114,10 +116,11 @@ public class PlayerUnitsPanel extends JPanel {
    * production frontier and then any unit types the player owns on the map. Then populate the list
    * of units into the categories.
    */
-  private Set<UnitCategory> categorize(final GamePlayer gamePlayer, final List<Unit> units) {
+  private List<UnitCategory> getAllUnitCategories(
+      final GamePlayer gamePlayer, final List<Unit> units) {
 
     // Get player unit types from production frontier and unit types on the map
-    final Set<UnitCategory> categories = new LinkedHashSet<>();
+    final List<UnitCategory> categories = new ArrayList<>();
     for (final UnitType t : getUnitTypes(gamePlayer)) {
       final UnitCategory category = new UnitCategory(t, gamePlayer);
       categories.add(category);
@@ -136,15 +139,15 @@ public class PlayerUnitsPanel extends JPanel {
     }
 
     // Populate units into each category then add any remaining categories (damaged units, etc)
-    final Set<UnitCategory> unitCategories = UnitSeparator.categorize(units);
+    final Set<UnitCategory> unitCategoriesWithUnits = UnitSeparator.categorize(units);
     for (final UnitCategory category : categories) {
-      for (final UnitCategory unitCategory : unitCategories) {
-        if (category.equals(unitCategory)) {
-          category.getUnits().addAll(unitCategory.getUnits());
+      for (final UnitCategory unitCategoryWithUnits : unitCategoriesWithUnits) {
+        if (category.equals(unitCategoryWithUnits)) {
+          category.getUnits().addAll(unitCategoryWithUnits.getUnits());
         }
       }
     }
-    categories.addAll(unitCategories);
+    categories.addAll(unitCategoriesWithUnits);
 
     return categories;
   }
