@@ -743,8 +743,8 @@ public class MapPanel extends ImageScrollerLargeView {
     }
     final var unitImageFactory = uiContext.getUnitImageFactory();
     for (final Collection<Unit> value : highlightedUnits) {
-      List<UnitCategory> unitCategories = new ArrayList(UnitSeparator.categorize(value));
-      unitCategories.sort(getComparatorUnitCategories(gameData));
+      List<UnitCategory> unitCategories =
+          UnitSeparator.getSortedUnitCategories(value, gameData, mapData);
       for (final UnitCategory category : unitCategories) {
         final @Nullable Rectangle r = tileManager.getUnitRect(category.getUnits(), gameData);
         if (r == null) {

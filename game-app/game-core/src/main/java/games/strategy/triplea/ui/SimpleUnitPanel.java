@@ -125,10 +125,10 @@ public class SimpleUnitPanel extends JPanel {
    */
   public void setUnitsFromCategories(final Collection<UnitCategory> categories) {
     removeAll();
-    List<UnitCategory> unitCategories = new ArrayList(categories);
-    if (unitCategories.isEmpty()) {
+    if (categories.isEmpty()) {
       return;
     }
+    List<UnitCategory> unitCategories = new ArrayList(categories);
     final GameData gameData = unitCategories.get(0).getUnitAttachment().getData();
     unitCategories.sort(getComparatorUnitCategories(gameData));
     for (final UnitCategory category : unitCategories) {

@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.Nullable;
@@ -59,31 +60,47 @@ public class UnitSeparator {
     return categories;
   }
 
+  /**
+   * Finds unit categories from units of the <code>Territory</code>, removes not displayed ones
+   * according to <code>MapData</code> and then sorts them
+   */
+  public static List<UnitCategory> getSortedUnitCategories(
+      final Collection<Unit> units, final GameData gameData, final MapData mapData) {
+    final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(units));
+    categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
+    categories.sort(getComparatorUnitCategories(gameData));
+    return categories;
+  }
+
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
   public static Comparator<UnitCategory> getComparatorUnitCategories(
       final Territory t, final GamePlayer currentPlayer) {
     final GameData gameData = t.getData();
-    return getComparatorUnitCategories(t, gameData, currentPlayer);
+    return getComparatorUnitCategories(Optional.of(t), gameData, currentPlayer);
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
   public static Comparator<UnitCategory> getComparatorUnitCategories(final Territory t) {
     final GameData gameData = t.getData();
-    return getComparatorUnitCategories(t, gameData, gameData.getHistory().getCurrentPlayer());
+    return getComparatorUnitCategories(
+        Optional.of(t), gameData, gameData.getHistory().getCurrentPlayer());
   }
 
   /** Returns <code>Comparator</code> for unit categories with current <code>GameData</code> */
   public static Comparator<UnitCategory> getComparatorUnitCategories(final GameData gameData) {
-    return getComparatorUnitCategories(null, gameData, gameData.getHistory().getCurrentPlayer());
+    return getComparatorUnitCategories(
+        Optional.empty(), gameData, gameData.getHistory().getCurrentPlayer());
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
-      final Territory t, final GameData gameData, final GamePlayer currentPlayer) {
+      final Optional<Territory> optionalTerritory,
+      final GameData gameData,
+      final GamePlayer currentPlayer) {
     final List<UnitType> xmlUnitTypes =
         new ArrayList<>(gameData.getUnitTypeList().getAllUnitTypes());
     final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
-    return getComparatorUnitCategories(t, currentPlayer, players, xmlUnitTypes);
+    return getComparatorUnitCategories(optionalTerritory, currentPlayer, players, xmlUnitTypes);
   }
 
   /**
@@ -93,23 +110,33 @@ public class UnitSeparator {
    * land territory 3. Within each of those groups sort the units by XML order in UnitList
    */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
-      final Territory t,
+      final Optional<Territory> optionalTerritory,
       final GamePlayer currentPlayer,
       final List<GamePlayer> players,
       final List<UnitType> xmlUnitTypes) {
     return Comparator.comparing(
-            UnitCategory::getOwner,
-            Comparator.comparing((final GamePlayer p) -> !(t != null && p.equals(t.getOwner())))
-                .thenComparing(p -> (t != null && Matches.isAtWar(p).test(t.getOwner())))
+            UnitCategory::getOwner, // 1. Unit owner
+            Comparator.comparing(
+                    (final GamePlayer p) ->
+                        !(optionalTerritory.isPresent()
+                            && p.equals(optionalTerritory.get().getOwner())))
+                .thenComparing(
+                    p ->
+                        (optionalTerritory.isPresent()
+                            && Matches.isAtWar(p).test(optionalTerritory.get().getOwner())))
                 .thenComparing(players::indexOf))
-        .thenComparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType()))
+        .thenComparing(
+            uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType())) // 2. Unit type
         .thenComparing(
             UnitCategory::getType,
             Comparator.comparing(
                     (final UnitType ut) -> !Matches.unitTypeCanNotMoveDuringCombatMove().test(ut))
                 .thenComparing(ut -> !Matches.unitTypeIsSea().test(ut))
                 .thenComparing(
-                    ut -> !(t != null && t.isWater() && Matches.unitTypeIsAir().test(ut)))
+                    ut ->
+                        !(optionalTerritory.isPresent()
+                            && optionalTerritory.get().isWater()
+                            && Matches.unitTypeIsAir().test(ut)))
                 .thenComparing(ut -> !Matches.unitTypeIsLand().test(ut)))
         .thenComparingInt(ut -> ut.getUnitAttachment().getMaxBuiltPerPlayer())
         .thenComparing(
@@ -119,7 +146,8 @@ public class UnitSeparator {
                         (currentPlayer == null
                             ? uc.getOwner()
                             : currentPlayer))) // should be currentPlayer
-        .thenComparing(UnitCategory::getType, Comparator.comparing(xmlUnitTypes::indexOf));
+        .thenComparing(
+            UnitCategory::getType, Comparator.comparing(xmlUnitTypes::indexOf)); // 3. Final sorting
   }
 
   public static Set<UnitCategory> categorize(final Collection<Unit> units) {
