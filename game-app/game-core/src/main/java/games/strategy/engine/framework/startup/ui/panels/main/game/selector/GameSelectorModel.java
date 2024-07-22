@@ -46,7 +46,6 @@ public class GameSelectorModel extends Observable implements GameSelector {
   // just for host bots, so we can get the actions for loading/saving games on the bots from this
   // model
   @Setter @Getter private ClientModel clientModelForHostBots = null;
-  private Optional<String> saveGameToLoad = Optional.empty();
 
   // Don't load a save game before the startup task to load the initial map has run, else that task
   // may "lose" the race and overwrite the loaded saved game.
@@ -186,25 +185,20 @@ public class GameSelectorModel extends Observable implements GameSelector {
     ThreadRunner.runInNewThread(this::loadDefaultGameSameThread);
   }
 
-  /** Sets the path of a save file that should be loaded. */
-  public void setSaveGameFileToLoad(final Path filePath) {
-    saveGameToLoad = Optional.of(filePath.toAbsolutePath().toString());
-  }
-
   /**
    * Runs the load default game logic in same thread. Default game is the one that we loaded on
    * startup.
    */
   public void loadDefaultGameSameThread() {
     final Optional<String> gameUri;
-    if (Files.exists(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile())) {
+    if (GameRunner.headless()
+        && Files.exists(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile())) {
       gameUri =
           Optional.of(
               new HeadlessAutoSaveFileUtils()
                   .getHeadlessAutoSaveFile()
                   .toAbsolutePath()
                   .toString());
-      saveGameToLoad = Optional.empty();
     } else {
       gameUri = ClientSetting.defaultGameUri.getValue();
     }
@@ -219,6 +213,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
                 loadMap(file);
               } else {
                 // try to load it as a saved game whatever the extension
+                readyForSaveLoad.countDown();
                 loadSave(file);
               }
             },
