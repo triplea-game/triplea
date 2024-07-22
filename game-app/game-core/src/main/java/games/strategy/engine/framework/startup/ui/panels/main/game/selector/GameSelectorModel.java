@@ -191,7 +191,8 @@ public class GameSelectorModel extends Observable implements GameSelector {
    */
   public void loadDefaultGameSameThread() {
     final Optional<String> gameUri;
-    if (GameRunner.headless() && Files.exists(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile())) {
+    if (GameRunner.headless()
+        && Files.exists(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile())) {
       gameUri =
           Optional.of(
               new HeadlessAutoSaveFileUtils()
