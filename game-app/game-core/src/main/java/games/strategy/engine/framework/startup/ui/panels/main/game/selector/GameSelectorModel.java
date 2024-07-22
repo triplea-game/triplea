@@ -197,7 +197,9 @@ public class GameSelectorModel extends Observable implements GameSelector {
    */
   public void loadDefaultGameSameThread() {
     final Optional<String> gameUri;
-    if (Files.exists(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile())) {
+    if(saveGameToLoad.isPresent()) {
+      gameUri = saveGameToLoad;
+    } else if (GameRunner.headless() && Files.exists(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile())) {
       gameUri =
           Optional.of(
               new HeadlessAutoSaveFileUtils()
@@ -219,6 +221,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
                 loadMap(file);
               } else {
                 // try to load it as a saved game whatever the extension
+                readyForSaveLoad.countDown();
                 loadSave(file);
               }
             },
