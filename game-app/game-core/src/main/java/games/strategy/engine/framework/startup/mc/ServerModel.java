@@ -15,6 +15,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
@@ -277,6 +278,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     } catch (final IOException e) {
       log.error("Unable to create server socket.", e);
       cancel();
+      if (GameRunner.headless()) {
+        log.error("Failed to connect to lobby, shutting down.");
+        ExitStatus.FAILURE.exit();
+      }
     }
     return null;
   }
