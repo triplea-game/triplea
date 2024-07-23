@@ -417,12 +417,17 @@ class BattleCalculatorPanel extends JPanel {
                   Matches.unitIsOwnedBy(getDefender())
                       .and(
                           Matches.unitCanBeInBattle(
-                              true, isLand(), 1, hasMaxRounds(isLand(), data), true, List.of())));
+                              true,
+                              isLandBattle(),
+                              1,
+                              hasMaxRounds(isLandBattle(), data),
+                              true,
+                              List.of())));
           final GamePlayer newDefender = getAttacker();
           final List<Unit> newDefenders =
               CollectionUtils.getMatches(
                   attackingUnitsPanel.getUnits(),
-                  Matches.unitCanBeInBattle(true, isLand(), 1, true));
+                  Matches.unitCanBeInBattle(true, isLandBattle(), 1, true));
           setAttacker(newAttacker);
           setDefender(newDefender);
           setAttackingUnits(newAttackers);
@@ -435,8 +440,8 @@ class BattleCalculatorPanel extends JPanel {
               new OrderOfLossesInputPanel(
                   attackerOrderOfLosses,
                   defenderOrderOfLosses,
-                  attackingUnitsPanel.getCategories(),
-                  defendingUnitsPanel.getCategories(),
+                  attackingUnitsPanel.getUnitCategories(),
+                  defendingUnitsPanel.getUnitCategories(),
                   landBattleCheckBox.isSelected(),
                   uiContext,
                   data);
@@ -559,12 +564,12 @@ class BattleCalculatorPanel extends JPanel {
           try {
             final Territory location = findPotentialBattleSite();
             if (location == null) {
-              throw new IllegalStateException("No territory found that is land:" + isLand());
+              throw new IllegalStateException("No territory found that is land:" + isLandBattle());
             }
             final List<Unit> defending = defendingUnitsPanel.getUnits();
             final List<Unit> attacking = attackingUnitsPanel.getUnits();
             List<Unit> bombarding = new ArrayList<>();
-            if (isLand()) {
+            if (isLandBattle()) {
               bombarding =
                   CollectionUtils.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
               attacking.removeAll(bombarding);
@@ -622,7 +627,7 @@ class BattleCalculatorPanel extends JPanel {
     attackerWin.setText(formatPercentage(results.getAttackerWinPercent()));
     defenderWin.setText(formatPercentage(results.getDefenderWinPercent()));
     draw.setText(formatPercentage(results.getDrawPercent()));
-    final boolean isLand = isLand();
+    final boolean isLand = isLandBattle();
     final List<Unit> mainCombatAttackers =
         CollectionUtils.getMatches(
             attackers.get(), Matches.unitCanBeInBattle(true, isLand, 1, true));
@@ -658,9 +663,9 @@ class BattleCalculatorPanel extends JPanel {
 
   private Territory findPotentialBattleSite() {
     Territory location = null;
-    if (this.location == null || this.location.isWater() == isLand()) {
+    if (this.location == null || this.location.isWater() == isLandBattle()) {
       for (final Territory t : data.getMap()) {
-        if (t.isWater() == !isLand()) {
+        if (t.isWater() == !isLandBattle()) {
           location = t;
           break;
         }
@@ -693,8 +698,9 @@ class BattleCalculatorPanel extends JPanel {
         CollectionUtils.getMatches(
             units,
             Matches.unitCanBeInBattle(
-                true, isLand(), 1, hasMaxRounds(isLand(), data), false, List.of())),
-        isLand());
+                true, isLandBattle(), 1, hasMaxRounds(isLandBattle(), data), false, List.of())),
+        isLandBattle(),
+        location);
   }
 
   void addDefendingUnits(final List<Unit> unitsToAdd) {
@@ -708,8 +714,10 @@ class BattleCalculatorPanel extends JPanel {
     final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(List::of);
     defendingUnitsPanel.init(
         getDefender(),
-        CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand(), 1, false)),
-        isLand());
+        CollectionUtils.getMatches(
+            units, Matches.unitCanBeInBattle(false, isLandBattle(), 1, false)),
+        isLandBattle(),
+        location);
   }
 
   public boolean hasAttackingUnitsAdded() {
@@ -720,7 +728,7 @@ class BattleCalculatorPanel extends JPanel {
     return !defendingUnitsPanel.isEmpty();
   }
 
-  private boolean isLand() {
+  private boolean isLandBattle() {
     return landBattleCheckBox.isSelected();
   }
 
@@ -742,7 +750,7 @@ class BattleCalculatorPanel extends JPanel {
   private void setWidgetActivation() {
     keepOneAttackingLandUnitCheckBox.setEnabled(landBattleCheckBox.isSelected());
     amphibiousCheckBox.setEnabled(landBattleCheckBox.isSelected());
-    final boolean isLand = isLand();
+    final boolean isLand = isLandBattle();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final List<Unit> attackers =
           CollectionUtils.getMatches(
