@@ -1,0 +1,14 @@
+# File is a WIP, might not work yet.
+
+version: '3'
+services:
+  bot:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      - LOBBY_URI=http://localhost:3000
+    ports:
+      - "4000"
+    volumes:
+      - ~/triplea/downloadedMaps:/downloadedMaps
+    network_mode: "host"

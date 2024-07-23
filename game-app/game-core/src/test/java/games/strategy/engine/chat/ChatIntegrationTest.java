@@ -130,7 +130,7 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
 
   private ChatController newChatController() {
     return new ChatController(
-        CHAT_NAME, new Messengers(messenger, remoteMessenger, channelMessenger), node -> false);
+        CHAT_NAME, new Messengers(messenger, remoteMessenger, channelMessenger));
   }
 
   private static Chat newChat(final Messengers messengers) {

@@ -2,21 +2,47 @@
 
 A headless game server for TripleA, also known as a _bot_.
 
+The headless game server solves the problem of port forwarding to host games.
+
+Future plan for bot servers is to replace with "network relay". Rather than
+having an "automated host", the network relay would be transparent and would
+only serve to simply relay network messages.
+
 ## Run
 
+### Start a Lobby
+
+Setup, make triplea directory and clone the needed code bases:
+```
+mkdir ~/work/triplea/
+cd ~/work/triplea/
+git clone ....triplea/lobby-server
+git clone ....triplea/triplea-game
+```
+
+Start lobby on localhost, lobby will be running on localhost, port 3000:
+```
+cd work/triplea/lobby-server
+# starts up the lobby
+docker compose-up
+```
+
+### Running bot via Gradle
+
 Example command to run a new headless game server from Gradle:
+```
+$ MAPS_FOLDER=/home/$USER/triplea/downloadedMaps ./gradlew :game-app:game-headless:run
+```
+See 'build.gradle' file to change things like lobby URI & bot port number.
+
+### Running bot via Docker
 
 ```
-$ ./gradlew :game-headless:run --args=' \
-    -Ptriplea.game= \
-    -Ptriplea.lobby.game.comments=automated_host \
-    -Ptriplea.lobby.game.hostedBy=Bot1_TestServer \
-    -Ptriplea.lobby.game.supportEmail=developer@gmail.com \
-    -Ptriplea.lobby.host=127.0.0.1 \
-    -Ptriplea.lobby.port=3304 \
-    -Ptriplea.map.folder=/home/me/triplea/downloadedMaps \
-    -Ptriplea.name=Bot1_TestServer \
-    -Ptriplea.port=3300 \
-    -Ptriplea.server=true \
-    '
+cd work/triplea/triplea/game-app/game-headless/
+./clean-run-docker.sh
 ```
+
+### Connect to local lobby from game app:
+
+Start Triplea-Game, in 'settings' > 'testing', update Lobby URI to be: `http://localhost:3000`,
+'save' & then connect to lobby via 'play online'.

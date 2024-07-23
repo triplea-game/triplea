@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Strings;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
@@ -25,9 +26,21 @@ public class ChatController implements IChatController {
   private static final String CHAT_REMOTE = "_ChatRemote_";
   private static final String CHAT_CHANNEL = "_ChatControl_";
   private final Messengers messengers;
-  private final Predicate<INode> isModerator;
+
   private final String chatName;
   private final Map<INode, Tag> chatters = new HashMap<>();
+
+  private final Predicate<INode> isModerator =
+      node -> {
+        if (chatters.isEmpty() && !GameRunner.headless()) {
+          return true;
+        } else if (GameRunner.headless() && chatters.size() == 1) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
   private final Map<INode, PlayerChatId> chatterIds = new HashMap<>();
   private final Map<UserName, String> chatterStatus = new HashMap<>();
 
@@ -49,11 +62,9 @@ public class ChatController implements IChatController {
         }
       };
 
-  public ChatController(
-      final String name, final Messengers messengers, final Predicate<INode> isModerator) {
+  public ChatController(final String name, final Messengers messengers) {
     chatName = name;
     this.messengers = messengers;
-    this.isModerator = isModerator;
     chatChannel = getChatChannelName(name);
     messengers.registerRemote(this, getChatControllerRemoteName(name));
     messengers.addConnectionChangeListener(connectionChangeListener);

@@ -2,15 +2,13 @@ package org.triplea.game.server;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.AutoSaveFileUtils;
-import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.net.INode;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.IoUtils;
 
@@ -61,40 +59,23 @@ public class HeadlessServerStartupRemote implements IServerStartupRemote {
     return true;
   }
 
-  /**
-   * This should not be called from within game, only from the game setup screen, while everyone is
-   * waiting for game to start.
-   */
-  @Override
-  public byte[] getSaveGame() {
-    return serverModelView.getSaveGame();
-  }
-
   @Override
   public byte[] getGameOptions() {
     return serverModelView.getGameOptions();
   }
 
   @Override
-  public Set<String> getAvailableGames() {
+  public List<String> getAvailableGames() {
     // Copy available games collection into a serializable collection
     // so it can be sent over network.
-    var games = new HashSet<String>();
-    games.addAll(AutoSaveFileUtils.getAutoSaveFiles());
-    games.addAll(headlessGameServer.getAvailableGames());
-    return games;
+    List<String> availableGames = new ArrayList<>(headlessGameServer.getAvailableGames());
+    availableGames.addAll(AutoSaveFileUtils.getAutoSaveFiles());
+    return availableGames;
   }
 
   @Override
   public void changeServerGameTo(final String gameName) {
     headlessGameServer.setGameMapTo(gameName);
-  }
-
-  @Override
-  public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
-    if (Files.exists(autoSaveType.getFile())) {
-      headlessGameServer.loadGameSave(autoSaveType.getFile());
-    }
   }
 
   @Override

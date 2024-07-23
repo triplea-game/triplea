@@ -2,18 +2,18 @@ package org.triplea.game.server;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
-import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.triplea.settings.ClientSetting;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
@@ -50,7 +50,15 @@ public final class HeadlessGameRunner {
                     + ProductVersionReader.getCurrentVersion().getMinor())
             .build());
 
-    ArgParser.handleCommandLineArgs(args);
+    Path mapsFolder = Path.of(System.getenv("MAPS_FOLDER"));
+    if (!Files.isDirectory(mapsFolder)) {
+      throw new RuntimeException(
+          "Check env variable: MAPS_FOLDER, value found: "
+              + System.getenv("MAPS_FOLDER")
+              + ", is not a directory");
+    }
+    ClientSetting.mapFolderOverride.setValue(Path.of(System.getenv("MAPS_FOLDER")));
+
     handleHeadlessGameServerArgs();
     ZippedMapsExtractor.builder()
         .downloadedMapsFolder(ClientSetting.mapFolderOverride.getValueOrThrow())
@@ -68,6 +76,7 @@ public final class HeadlessGameRunner {
       HeadlessGameServer.runHeadlessGameServer();
     } catch (final Exception e) {
       log.error("Failed to run game server", e);
+      ExitStatus.FAILURE.exit();
     }
   }
 
@@ -129,9 +138,6 @@ public final class HeadlessGameRunner {
             + "   "
             + LOBBY_URI
             + "=<LOBBY_URI>\n"
-            + "   "
-            + MAP_FOLDER
-            + "=<MAP_FOLDER>"
             + "\n");
   }
 }
