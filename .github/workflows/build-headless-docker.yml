@@ -3,7 +3,6 @@
 
 name: Master Branch Build - Build Bot Docker Container
 on:
-  pull_request:
   push:
     branches:
       - master
