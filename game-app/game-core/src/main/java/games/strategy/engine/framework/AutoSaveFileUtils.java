@@ -26,6 +26,18 @@ public class AutoSaveFileUtils {
   /** Returns a list path objects representing each auto save file. */
   public static List<Path> getAutoSavePaths() {
     var autoSaveFolder = ClientSetting.saveGamesFolderPath.getValueOrThrow().resolve("autoSave");
+
+    if (!Files.exists(autoSaveFolder)) {
+      try {
+        Files.createDirectories(autoSaveFolder);
+      } catch (IOException e) {
+        throw new RuntimeException(
+            "Autosave folder did not exist, was not able to create it. Required folder: "
+                + autoSaveFolder.toAbsolutePath(),
+            e);
+      }
+    }
+
     try (Stream<Path> paths = Files.list(autoSaveFolder)) {
       return paths.filter(f -> !Files.isDirectory(f)).collect(Collectors.toList());
     } catch (IOException e) {
