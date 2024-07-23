@@ -13,39 +13,13 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
 
   @Nested
   final class GetAutoSaveFileNameTest {
-    private static final String BASE_FILE_NAME = "baseFileName";
-    private static final String HOST_NAME = "hostName";
-    private static final String PLAYER_NAME = "playerName";
-
-    private void givenHostName(final String hostName) {
-      System.setProperty(CliProperties.TRIPLEA_NAME, hostName);
-    }
-
-    private void givenPlayerName(final String playerName) {
-      System.setProperty(CliProperties.TRIPLEA_NAME, playerName);
-    }
-
     @Test
-    void shouldPrefixFileNameWithPlayerNameWhenHeadless() {
-      givenPlayerName(PLAYER_NAME);
+    void shouldPrefixFileName() {
+      System.setProperty(CliProperties.TRIPLEA_NAME, "hostName");
 
       assertThat(
-          autoSaveFileUtils.getAutoSaveFileName(BASE_FILE_NAME),
-          is(PLAYER_NAME + "_" + BASE_FILE_NAME));
-    }
-
-    @Test
-    void shouldPrefixFileNameWithHostNameWhenHeadlessAndPlayerNameNotDefined() {
-      givenHostName(HOST_NAME);
-
-      assertThat(
-          autoSaveFileUtils.getAutoSaveFileName(BASE_FILE_NAME),
-          is(HOST_NAME + "_" + BASE_FILE_NAME));
-    }
-
-    @Test
-    void shouldNotPrefixFileNameWhenHeadlessAndPlayerNameNotDefinedAndHostNameNotDefined() {
-      assertThat(autoSaveFileUtils.getAutoSaveFileName(BASE_FILE_NAME), is(BASE_FILE_NAME));
+          autoSaveFileUtils.getAutoSaveFileName("baseFileName"),
+          is("autosave_hostName_baseFileName"));
     }
   }
 
@@ -58,7 +32,7 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
               .getLostConnectionAutoSaveFile(LocalDateTime.of(2008, 5, 9, 22, 8))
               .getFileName()
               .toString(),
-          is("connection_lost_on_May_09_at_22_08.tsvg"));
+          is("autosave_connection_lost_on_May_09_at_22_08.tsvg"));
     }
   }
 }
