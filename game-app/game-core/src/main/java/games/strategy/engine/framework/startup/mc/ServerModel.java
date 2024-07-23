@@ -13,7 +13,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
@@ -59,7 +58,6 @@ import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
-import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -259,7 +257,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         gameHostingResponse = null;
       }
 
-      chatController = new ChatController(CHAT_NAME, messengers, node -> false);
+      chatController = new ChatController(CHAT_NAME, messengers);
 
       // TODO: Project#4 Change no-op network sender to a real network bridge
       chatModel =
@@ -570,19 +568,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         return true;
       }
       return false;
-    }
-
-    /**
-     * This should not be called from within game, only from the game setup screen, while everyone
-     * is waiting for game to start.
-     */
-    @Override
-    public byte[] getSaveGame() {
-      try {
-        return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
-      } catch (final IOException e) {
-        throw new IllegalStateException(e);
-      }
     }
 
     @Override

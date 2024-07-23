@@ -14,12 +14,9 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
-import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.network.ui.ChangeGameOptionsClientAction;
 import games.strategy.engine.framework.network.ui.ChangeGameToSaveGameClientAction;
-import games.strategy.engine.framework.network.ui.ChangeToAutosaveClientAction;
-import games.strategy.engine.framework.network.ui.GetGameSaveClientAction;
 import games.strategy.engine.framework.network.ui.SetMapClientAction;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
@@ -54,7 +51,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.Builder;
@@ -477,17 +473,8 @@ public class ClientModel implements IMessengerErrorListener {
         });
   }
 
-  public Action getHostBotChangeGameToSaveGameClientAction(final Frame owner) {
-    return new ChangeGameToSaveGameClientAction(getServerStartup(), owner);
-  }
-
-  public Action getHostBotChangeToAutosaveClientAction(
-      final Component parent, final HeadlessAutoSaveType autosaveType) {
-    return new ChangeToAutosaveClientAction(parent, getServerStartup(), autosaveType);
-  }
-
-  public Action getHostBotGetGameSaveClientAction(final Component parent) {
-    return new GetGameSaveClientAction(parent, getServerStartup(), gameDataOnStartup);
+  public void executeChangeGameToSaveGameClientAction(final Frame owner) {
+    ChangeGameToSaveGameClientAction.execute(getServerStartup(), owner);
   }
 
   /** Simple data object for which host we are connecting to and with which name. */
