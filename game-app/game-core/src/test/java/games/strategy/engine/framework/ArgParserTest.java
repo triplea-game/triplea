@@ -9,15 +9,9 @@ import static org.hamcrest.core.Is.is;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.nio.file.Path;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 class ArgParserTest extends AbstractClientSettingTestCase {
-
-  @AfterEach
-  void tearDown() {
-    System.clearProperty(TRIPLEA_GAME);
-  }
 
   @Test
   void argsTurnIntoSystemProps() {

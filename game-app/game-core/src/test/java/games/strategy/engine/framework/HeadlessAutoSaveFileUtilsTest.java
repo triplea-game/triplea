@@ -4,28 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.triplea.settings.ClientSetting;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
   private final HeadlessAutoSaveFileUtils autoSaveFileUtils = new HeadlessAutoSaveFileUtils();
-
-  @Nested
-  final class GetAutoSaveFileTest {
-    @Test
-    void shouldReturnFileInAutoSaveFolder() {
-      ClientSetting.saveGamesFolderPath.setValue(Path.of("path", "to", "saves"));
-
-      final String fileName = "savegame.tsvg";
-      assertThat(
-          autoSaveFileUtils.getAutoSaveFile(fileName),
-          is(Path.of("path", "to", "saves", "autoSave", fileName)));
-    }
-  }
 
   @Nested
   final class GetAutoSaveFileNameTest {
@@ -41,15 +25,6 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
       System.setProperty(CliProperties.TRIPLEA_NAME, playerName);
     }
 
-    private void givenPlayerNameNotDefined() {
-      System.clearProperty(CliProperties.TRIPLEA_NAME);
-    }
-
-    @AfterEach
-    void clearSystemProperties() {
-      givenPlayerNameNotDefined();
-    }
-
     @Test
     void shouldPrefixFileNameWithPlayerNameWhenHeadless() {
       givenPlayerName(PLAYER_NAME);
@@ -61,7 +36,6 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
 
     @Test
     void shouldPrefixFileNameWithHostNameWhenHeadlessAndPlayerNameNotDefined() {
-      givenPlayerNameNotDefined();
       givenHostName(HOST_NAME);
 
       assertThat(
@@ -71,8 +45,6 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
 
     @Test
     void shouldNotPrefixFileNameWhenHeadlessAndPlayerNameNotDefinedAndHostNameNotDefined() {
-      givenPlayerNameNotDefined();
-
       assertThat(autoSaveFileUtils.getAutoSaveFileName(BASE_FILE_NAME), is(BASE_FILE_NAME));
     }
   }

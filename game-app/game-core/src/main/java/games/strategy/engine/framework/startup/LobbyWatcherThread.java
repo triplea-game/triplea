@@ -1,7 +1,5 @@
 package games.strategy.engine.framework.startup;
 
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
-
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
@@ -36,7 +34,6 @@ public class LobbyWatcherThread {
             watcher -> {
               watcher.setGameSelectorModel(gameSelectorModel);
               lobbyWatcher.setInGameLobbyWatcher(watcher);
-              System.clearProperty(TRIPLEA_NAME);
             });
   }
 }

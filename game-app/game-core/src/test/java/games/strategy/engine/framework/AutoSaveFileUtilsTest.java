@@ -7,7 +7,6 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -30,15 +29,6 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
   @Nested
   final class GetAutoSaveFileNameTest {
     private static final String BASE_FILE_NAME = "baseFileName";
-
-    private void givenPlayerNameNotDefined() {
-      System.clearProperty(CliProperties.TRIPLEA_NAME);
-    }
-
-    @AfterEach
-    void clearSystemProperties() {
-      givenPlayerNameNotDefined();
-    }
 
     @Test
     void shouldNotPrefixFileNameWhenHeaded() {
