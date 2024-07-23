@@ -5,16 +5,15 @@ import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
 
 import games.strategy.engine.data.GameStep;
 import java.nio.file.Path;
+import java.util.Optional;
 
 /** Headless variant of {@link AutoSaveFileUtils} with slightly shortened save-game names. */
 public class HeadlessAutoSaveFileUtils extends AutoSaveFileUtils {
   @Override
   String getAutoSaveFileName(final String baseFileName) {
-    final String prefix = System.getProperty(TRIPLEA_NAME, "");
-    if (!prefix.isEmpty()) {
-      return prefix + "_" + baseFileName;
-    }
-    return super.getAutoSaveFileName(baseFileName);
+    return "autosave_"
+        + Optional.ofNullable(System.getProperty(TRIPLEA_NAME)).map(v -> v + "_").orElse("")
+        + baseFileName;
   }
 
   @Override
