@@ -1,6 +1,8 @@
 FROM openjdk:11-jre-slim-buster
 
-EXPOSE 4000
+ENV BOT_PORT_NUMBER=4000
+EXPOSE $BOT_PORT_NUMBER
+
 ENV BOT_NAME=BotDocker01
 ENV LOBBY_URI=http://localhost:3000
 ENV BOT_MAX_MEMORY="256M"
@@ -16,7 +18,7 @@ CMD java \
    -Xmx$BOT_MAX_MEMORY \
    -Xss$BOT_XSS \
    -Dtriplea.name=$BOT_NAME \
-   -Dtriplea.port=4000 \
+   -Dtriplea.port=$BOT_PORT_NUMBER \
    -Dtriplea.lobby.uri=$LOBBY_URI \
    -Dtriplea.exit.on.game.end=$EXIT_ON_GAME_END \
    -jar triplea-game-headless.jar
