@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.unit.scroller;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.image.MapImage;
@@ -10,12 +9,13 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.triplea.util.UnitSeparator;
+import games.strategy.triplea.util.UnitCategory;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -74,19 +74,14 @@ class AvatarPanelFactory {
    * @param panelWidth How much horizontal space we have for drawing.
    * @return A panel containing a drawing of the unique images for each unit type.
    */
-  JPanel buildPanel(
-      final List<Unit> units,
-      final GamePlayer currentPlayer,
-      final Territory territory,
-      final int panelWidth) {
+  JPanel buildPanel(final List<Unit> units, final GamePlayer currentPlayer, final int panelWidth) {
     final int renderingWidth = Math.min(panelWidth, MAX_RENDERING_WIDTH);
 
     final Icon unitIcon =
         units.isEmpty()
             ? new ImageIcon(createEmptyUnitStackImage(renderingWidth))
             : new ImageIcon(
-                createUnitStackImage(
-                    unitImageFactory, currentPlayer, territory, units, renderingWidth));
+                createUnitStackImage(unitImageFactory, currentPlayer, units, renderingWidth));
 
     return new JPanelBuilder() //
         .borderLayout()
@@ -104,13 +99,13 @@ class AvatarPanelFactory {
   private static Image createUnitStackImage(
       final UnitImageFactory unitImageFactory,
       final GamePlayer player,
-      final Territory territory,
       final List<Unit> units,
       final int renderingWidth) {
 
     Preconditions.checkArgument(!units.isEmpty());
 
-    final var unitsToDraw = UnitSeparator.getSortedUnitCategories(units, territory, player);
+    final var unitsToDraw = UnitScrollerModel.getUniqueUnitCategories(player, units);
+
     final var dimension =
         unitImageFactory.getImageDimensions(
             ImageKey.builder().type(unitsToDraw.get(0).getType()).player(player).build());
@@ -139,6 +134,7 @@ class AvatarPanelFactory {
             "Draw location count (%s) should have matched units draw size (%s)",
             drawLocations.size(), unitsToDraw.size()));
 
+    unitsToDraw.sort(unitRenderingOrder(player));
     for (int i = 0; i < drawLocations.size(); i++) {
       final var unitToDraw = unitsToDraw.get(i);
       final var imageToDraw = unitImageFactory.getImage(ImageKey.of(unitToDraw));
@@ -161,6 +157,24 @@ class AvatarPanelFactory {
       }
     }
     return combinedImage;
+  }
+
+  private static Comparator<UnitCategory> unitRenderingOrder(final GamePlayer currentPlayer) {
+    final Comparator<UnitCategory> isAir =
+        Comparator.comparing(unitCategory -> unitCategory.getUnitAttachment().getIsAir());
+    final Comparator<UnitCategory> isSea =
+        Comparator.comparing(unitCategory -> unitCategory.getUnitAttachment().getIsSea());
+    final Comparator<UnitCategory> unitAttackPower =
+        Comparator.comparingInt(
+            unitCategory -> unitCategory.getUnitAttachment().getAttack(currentPlayer));
+    final Comparator<UnitCategory> unitName =
+        Comparator.comparing(unitCategory -> unitCategory.getType().getName());
+
+    return isAir //
+        .thenComparing(isSea)
+        .thenComparing(unitAttackPower)
+        .thenComparing(unitName)
+        .reversed();
   }
 
   private static int countUnit(final UnitType unitType, final Collection<Unit> units) {
