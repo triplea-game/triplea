@@ -25,12 +25,14 @@ import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.IMessageListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.BindException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -214,6 +216,23 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       this.serverMessenger =
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       serverMessenger.addConnectionChangeListener(this);
+
+      // register listeners to handle moderator actions
+      serverMessenger.addMessageListener((msg, from) -> {
+
+
+        // check that from is a moderator
+
+        if (msg instanceof ModeratorMessage) {
+          ModeratorMessage moderatorMessage = (ModeratorMessage) msg;
+
+          if(moderatorMessage.isBan()) {
+            serverMessenger.banPlayer(moderatorMessage.getPlayerName());
+          } else if(moderatorMessage.isDisconnect()) {
+            serverMessenger.removeConnection(moderatorMessage.getPlayerName());
+          }
+        }
+      });
 
       messengers = new Messengers(serverMessenger);
       messengers.registerRemote(

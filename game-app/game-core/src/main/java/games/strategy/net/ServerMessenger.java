@@ -144,10 +144,11 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     if (!expectedReceive.equals(msg.getFrom())) {
       throw new IllegalStateException("Expected: " + expectedReceive + " not: " + msg.getFrom());
     }
-    if (msg.getTo() == null) {
+
+    if (msg.isBroadcast()) {
       forwardBroadcast(msg);
       notifyListeners(msg);
-    } else if (msg.getTo().equals(node)) {
+    } else if (msg.isAddressedTo(node)) {
       notifyListeners(msg);
     } else {
       forward(msg);
@@ -301,6 +302,27 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   @Override
   public boolean isServer() {
     return true;
+  }
+
+  /** Bans & disconnects a player. */
+  public void banPlayer(String playerName) {
+    getNodes().stream()
+        .filter(n -> n.getName().equals(playerName))
+        .findAny()
+        .ifPresent(
+            nodeToBan -> {
+              miniBannedIpAddresses.add(nodeToBan.getIpAddress());
+              miniBannedMacAddresses.add(getPlayerMac(node.getPlayerName()));
+              removeConnection(nodeToBan);
+            });
+  }
+
+  /** Disconnects a player by player name. */
+  public void removeConnection(String playerName) {
+    getNodes().stream()
+        .filter(n -> n.getName().equals(playerName))
+        .findAny()
+        .ifPresent(this::removeConnection);
   }
 
   @Override

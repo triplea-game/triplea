@@ -106,6 +106,10 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     messenger.send(msg, to);
   }
 
+  public void sendToServer(final Serializable msg) {
+    messenger.send(msg, messenger.getServerNode());
+  }
+
   @Override
   public void addMessageListener(final IMessageListener listener) {
     messenger.addMessageListener(listener);

@@ -155,7 +155,11 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
           final Action slap =
               SwingAction.of(
                   "Slap " + clickedOn.getUserName(), e -> chat.sendSlap(clickedOn.getUserName()));
-          return List.of(slap, ignore);
+
+
+          final Action disconnect =
+              SwingAction.of("Disconnect " + clickedOn.getUserName(), e -> chat.sendDisconnect(clickedOn.getUserName()));
+          return List.of(slap, ignore, disconnect);
         });
   }
 

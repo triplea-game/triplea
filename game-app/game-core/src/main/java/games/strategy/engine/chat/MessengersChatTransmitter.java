@@ -6,6 +6,7 @@ import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
@@ -15,6 +16,7 @@ import org.triplea.java.concurrency.AsyncRunner;
 @Slf4j
 public class MessengersChatTransmitter implements ChatTransmitter {
   private final UserName userName;
+  @Getter
   private final Messengers messengers;
 
   private IChatChannel chatChannelSubscriber;

@@ -2,6 +2,7 @@ package games.strategy.engine.chat;
 
 import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.Sets;
+import games.strategy.engine.framework.startup.mc.ModeratorMessage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -177,5 +178,15 @@ public class Chat implements ChatClient {
 
   Collection<UserName> getOnlinePlayers() {
     return chatters.stream().map(ChatParticipant::getUserName).collect(Collectors.toSet());
+  }
+
+  public void sendDisconnect(UserName userName) {
+    if (chatTransmitter instanceof MessengersChatTransmitter) {
+      var messengers = ((MessengersChatTransmitter) chatTransmitter).getMessengers();
+      messengers.sendToServer(ModeratorMessage.newDisconnect(userName.toString()));
+    } else {
+      throw new UnsupportedOperationException(
+          "sendDisconnect on Chat.java is to support legacy 'messengers' communication only");
+    }
   }
 }
