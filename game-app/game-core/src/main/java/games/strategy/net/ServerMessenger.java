@@ -2,6 +2,9 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Preconditions;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.mc.messages.ModeratorPromoted;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
@@ -17,6 +20,7 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,9 +57,11 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
+  // list that keeps track of the order in which nodes have joined. Nodes are removed as they leave
+  private final List<INode> nodeJoinOrder = new LinkedList<>();
+
   private final Map<UserName, String> cachedMacAddresses = new ConcurrentHashMap<>();
   private final Set<String> miniBannedIpAddresses = new ConcurrentSkipListSet<>();
-  private final Set<String> miniBannedMacAddresses = new ConcurrentSkipListSet<>();
 
   @Setter @Nullable private GameToLobbyConnection gameToLobbyConnection;
 
@@ -70,6 +76,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     nioSocket = new NioSocket(objectStreamFactory, this);
     acceptorSelector = Selector.open();
     node = new Node(name, IpFinder.findInetAddress(), boundPort);
+    nodeJoinOrder.add(node);
     ThreadRunner.runInNewThread(new ConnectionHandler());
   }
 
@@ -144,10 +151,11 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     if (!expectedReceive.equals(msg.getFrom())) {
       throw new IllegalStateException("Expected: " + expectedReceive + " not: " + msg.getFrom());
     }
-    if (msg.getTo() == null) {
+
+    if (msg.isBroadcast()) {
       forwardBroadcast(msg);
       notifyListeners(msg);
-    } else if (msg.getTo().equals(node)) {
+    } else if (msg.isAddressedTo(node)) {
       notifyListeners(msg);
     } else {
       forward(msg);
@@ -161,14 +169,24 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
 
     return miniBannedIpAddresses.contains(ip)
-        || miniBannedMacAddresses.contains(mac)
         || (gameToLobbyConnection != null && gameToLobbyConnection.isPlayerBanned(ip));
   }
 
   @Override
   public void banPlayer(final String ip, final String mac) {
     miniBannedIpAddresses.add(ip);
-    miniBannedMacAddresses.add(mac);
+  }
+
+  /** Bans & disconnects a player. */
+  public void banPlayer(String playerName) {
+    getNodes().stream()
+        .filter(n -> n.getName().equals(playerName))
+        .findAny()
+        .ifPresent(
+            nodeToBan -> {
+              miniBannedIpAddresses.add(nodeToBan.getIpAddress());
+              removeConnection(nodeToBan);
+            });
   }
 
   private void forward(final MessageHeader msg) {
@@ -303,6 +321,33 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     return true;
   }
 
+  public boolean isModerator(INode node) {
+    return getModerators().stream()
+        .anyMatch(
+            moderator -> moderator.equals(node) && moderator.getName().equals(node.getName()));
+  }
+
+  /**
+   * Moderator is the first person to join, which is the host player. In 'headless' case, it is the
+   * host player plus the next 'oldest' player.
+   */
+  private List<INode> getModerators() {
+    Preconditions.checkState(!nodeJoinOrder.isEmpty());
+    if (nodeJoinOrder.size() == 1) {
+      return List.of(nodeJoinOrder.get(0));
+    } else {
+      return List.of(nodeJoinOrder.get(0), nodeJoinOrder.get(1));
+    }
+  }
+
+  /** Disconnects a player by player name. */
+  public void removeConnection(String playerName) {
+    getNodes().stream()
+        .filter(n -> n.getName().equals(playerName))
+        .findAny()
+        .ifPresent(this::removeConnection);
+  }
+
   @Override
   public void removeConnection(final INode nodeToRemove) {
     if (nodeToRemove.equals(this.node)) {
@@ -311,13 +356,24 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     notifyPlayerRemoval(nodeToRemove);
     final SocketChannel channel = nodeToChannel.remove(nodeToRemove);
     if (channel == null) {
-      log.warn("Could not find node to remove: " + nodeToRemove);
+      log.warn("Could not find node to remove: {}", nodeToRemove);
       return;
     }
     channelToNode.remove(channel);
     nioSocket.close(channel);
+
+    boolean removingModerator = getModerators().contains(nodeToRemove);
+    nodeJoinOrder.remove(nodeToRemove);
+    if (removingModerator) {
+      INode newModerator = getModerators().get(getModerators().size() - 1);
+
+      nodeToChannel
+          .keySet()
+          .forEach(node -> send(new ModeratorPromoted(newModerator.getName()), node));
+    }
+
     notifyConnectionsChanged(false, nodeToRemove);
-    log.info("Connection removed:" + nodeToRemove);
+    log.info("Connection removed: {}", nodeToRemove);
   }
 
   @Override
@@ -347,7 +403,14 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       nodeToChannel.put(remote, channel);
     }
     channelToNode.put(channel, remote);
+    // only keep track of join order if the game is headless. If game is not headless,
+    // then it will end when the host leaves (and so we won't need to worry about
+    // promoting a next moderator).
+    if (GameRunner.headless()) {
+      nodeJoinOrder.add(remote);
+    }
     notifyConnectionsChanged(true, remote);
-    log.info("Connection added to:" + remote);
+
+    log.info("Connection added to: {}", remote);
   }
 }

@@ -20,6 +20,7 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
+import games.strategy.engine.framework.startup.mc.messages.ModeratorMessage;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
@@ -215,6 +216,24 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       serverMessenger.addConnectionChangeListener(this);
 
+      // add moderator action handlers (eg: ban/disconnect)
+      serverMessenger.addMessageListener(
+          (msg, from) -> {
+            // check that message is from a moderator
+            if (msg instanceof ModeratorMessage) {
+              if (!serverMessenger.isModerator(from)) {
+                return;
+              }
+
+              ModeratorMessage moderatorMessage = (ModeratorMessage) msg;
+              if (moderatorMessage.isBan()) {
+                serverMessenger.banPlayer(moderatorMessage.getPlayerName());
+              } else if (moderatorMessage.isDisconnect()) {
+                serverMessenger.removeConnection(moderatorMessage.getPlayerName());
+              }
+            }
+          });
+
       messengers = new Messengers(serverMessenger);
       messengers.registerRemote(
           launchAction.getStartupRemote(new DefaultServerModelView()), SERVER_REMOTE_NAME);
@@ -257,7 +276,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         gameHostingResponse = null;
       }
 
-      chatController = new ChatController(CHAT_NAME, messengers);
+      chatController = new ChatController(CHAT_NAME, messengers, serverMessenger);
 
       // TODO: Project#4 Change no-op network sender to a real network bridge
       chatModel =

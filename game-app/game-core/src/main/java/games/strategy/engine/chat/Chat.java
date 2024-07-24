@@ -2,6 +2,8 @@ package games.strategy.engine.chat;
 
 import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.Sets;
+import games.strategy.net.IMessageListener;
+import games.strategy.net.Messengers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +56,14 @@ public class Chat implements ChatClient {
     sentMessagesHistory = new SentMessagesHistory();
     chatters.addAll(chatTransmitter.connect());
     updateConnections();
+  }
+
+  public void addMessengersListener(IMessageListener messageListener) {
+    if (chatTransmitter instanceof MessengersChatTransmitter) {
+      ((MessengersChatTransmitter) chatTransmitter)
+          .getMessengers()
+          .addMessageListener(messageListener);
+    }
   }
 
   private void updateConnections() {
@@ -177,5 +187,13 @@ public class Chat implements ChatClient {
 
   Collection<UserName> getOnlinePlayers() {
     return chatters.stream().map(ChatParticipant::getUserName).collect(Collectors.toSet());
+  }
+
+  public Messengers getMessengers() {
+    if (!(chatTransmitter instanceof MessengersChatTransmitter)) {
+      throw new UnsupportedOperationException(
+          "getMessengers is to support legacy 'messengers' communication only");
+    }
+    return ((MessengersChatTransmitter) chatTransmitter).getMessengers();
   }
 }
