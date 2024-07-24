@@ -407,8 +407,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       nodeToChannel.put(remote, channel);
     }
     channelToNode.put(channel, remote);
-    // only keep track of join order if the game is headless.
-    // If game is not headless, then it will end when the host leaves.
+    // only keep track of join order if the game is headless. If game is not headless,
+    // then it will end when the host leaves (and so we won't need to worry about
+    // promoting a next moderator).
     if (GameRunner.headless()) {
       nodeJoinOrder.add(remote);
     }
