@@ -12,6 +12,9 @@ ENV MAPS_FOLDER=/downloadedMaps
 ENV EXIT_ON_GAME_END=FALSE
 
 RUN mkdir $MAPS_FOLDER
+RUN useradd -u 999 bot
+RUN chown bot:root $MAPS_FOLDER
+USER bot
 
 ADD build/libs/triplea-game-headless.jar /
 CMD java \
