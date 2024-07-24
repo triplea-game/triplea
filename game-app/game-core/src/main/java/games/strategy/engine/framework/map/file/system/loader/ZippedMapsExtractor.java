@@ -6,6 +6,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -204,7 +205,7 @@ public class ZippedMapsExtractor {
     }
     try {
       final Path newLocation = badZipFolder.resolve(mapZip.getFileName());
-      Files.move(mapZip, newLocation);
+      Files.move(mapZip, newLocation, StandardCopyOption.REPLACE_EXISTING);
       return Optional.of(newLocation);
     } catch (final IOException e) {
       log.error(
