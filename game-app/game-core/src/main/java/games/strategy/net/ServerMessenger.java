@@ -2,6 +2,7 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
@@ -17,6 +18,7 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +55,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
+  // list that keeps track of the order in which nodes have joined. Nodes are removed as they leave
+  private final List<INode> nodeJoinOrder = new LinkedList<>();
+
   private final Map<UserName, String> cachedMacAddresses = new ConcurrentHashMap<>();
   private final Set<String> miniBannedIpAddresses = new ConcurrentSkipListSet<>();
   private final Set<String> miniBannedMacAddresses = new ConcurrentSkipListSet<>();
@@ -317,6 +322,24 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
             });
   }
 
+  public boolean isModerator(INode node) {
+    return getModerators().contains(node);
+  }
+  /**
+   * Moderator is the first person to join, which is the host player.
+   * For headless, moderators are the first person to join (the bot), and secondly
+   * the next 'oldest' player.
+   */
+  private List<INode> getModerators() {
+    if (nodeJoinOrder.size() >= 2 && GameRunner.headless()) {
+      return List.of(nodeJoinOrder.get(0), nodeJoinOrder.get(1));
+    } else if (nodeJoinOrder.size() >= 1) {
+      return List.of(nodeJoinOrder.get(0));
+    } else {
+      return List.of();
+    }
+  }
+
   /** Disconnects a player by player name. */
   public void removeConnection(String playerName) {
     getNodes().stream()
@@ -338,6 +361,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     channelToNode.remove(channel);
     nioSocket.close(channel);
+    nodeJoinOrder.remove(nodeToRemove);
     notifyConnectionsChanged(false, nodeToRemove);
     log.info("Connection removed:" + nodeToRemove);
   }
@@ -369,6 +393,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       nodeToChannel.put(remote, channel);
     }
     channelToNode.put(channel, remote);
+    nodeJoinOrder.add(remote);
     notifyConnectionsChanged(true, remote);
     log.info("Connection added to:" + remote);
   }

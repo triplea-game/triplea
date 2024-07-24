@@ -217,15 +217,15 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       serverMessenger.addConnectionChangeListener(this);
 
-      // register listeners to handle moderator actions
+      // add moderator action handlers (eg: ban/disconnect)
       serverMessenger.addMessageListener((msg, from) -> {
-
-
         // check that from is a moderator
-
         if (msg instanceof ModeratorMessage) {
-          ModeratorMessage moderatorMessage = (ModeratorMessage) msg;
+          if(!serverMessenger.isModerator(from)) {
+            return;
+          }
 
+          ModeratorMessage moderatorMessage = (ModeratorMessage) msg;
           if(moderatorMessage.isBan()) {
             serverMessenger.banPlayer(moderatorMessage.getPlayerName());
           } else if(moderatorMessage.isDisconnect()) {
