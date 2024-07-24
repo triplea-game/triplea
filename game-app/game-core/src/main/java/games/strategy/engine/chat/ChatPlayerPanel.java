@@ -1,11 +1,15 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.framework.startup.mc.messages.ModeratorPromoted;
+import games.strategy.net.IMessageListener;
+import games.strategy.net.INode;
 import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -53,6 +57,22 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     layoutComponents();
     setupListeners();
     setChat(chat);
+    chat.addMessengersListener(new IMessageListener() {
+      @Override
+      public void messageReceived(Serializable msg, INode from) {
+        if(msg instanceof ModeratorPromoted) {
+          String newModerator = ((ModeratorPromoted) msg).getPlayerName();
+          for(int i = 0; i < listModel.getSize(); i ++) {
+            if(listModel.get(i).getUserName().toString().equals(newModerator)) {
+              listModel.get(i).setModerator(true);
+              players.repaint();
+              break;
+            }
+          }
+          repaint();
+        }
+      }
+    });
   }
 
   /** Sets the chat whose players will be displayed in this panel. */
@@ -157,9 +177,15 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
                   "Slap " + clickedOn.getUserName(), e -> chat.sendSlap(clickedOn.getUserName()));
 
 
+          // TODO: add check for if we are moderator
           final Action disconnect =
               SwingAction.of("Disconnect " + clickedOn.getUserName(), e -> chat.sendDisconnect(clickedOn.getUserName()));
-          return List.of(slap, ignore, disconnect);
+          // TODO: add check for if we are moderator
+
+          final Action ban =
+              SwingAction.of("Ban " + clickedOn.getUserName(), e -> chat.sendBan(clickedOn.getUserName()));
+
+          return List.of(slap, ignore, disconnect, ban);
         });
   }
 

@@ -1,8 +1,7 @@
-package games.strategy.engine.framework.startup.mc;
+package games.strategy.engine.framework.startup.mc.messages;
 
 import java.io.Serializable;
 import javax.annotation.Nonnull;
-import lombok.Builder;
 import lombok.Value;
 
 /** Represents a message sent to the server, from a moderator */
@@ -21,11 +20,11 @@ public class ModeratorMessage implements Serializable {
     return new ModeratorMessage("ban", playerName);
   }
 
-  boolean isBan() {
+  public boolean isBan() {
     return "ban".equalsIgnoreCase(action);
   }
 
-  boolean isDisconnect() {
+  public boolean isDisconnect() {
     return "disconnect".equalsIgnoreCase(action);
   }
 }

@@ -2,7 +2,9 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.mc.messages.ModeratorPromoted;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
@@ -75,6 +77,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     nioSocket = new NioSocket(objectStreamFactory, this);
     acceptorSelector = Selector.open();
     node = new Node(name, IpFinder.findInetAddress(), boundPort);
+    nodeJoinOrder.add(node);
     ThreadRunner.runInNewThread(new ConnectionHandler());
   }
 
@@ -323,20 +326,21 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   public boolean isModerator(INode node) {
-    return getModerators().contains(node);
+    return getModerators().stream()
+        .anyMatch(
+            moderator -> moderator.equals(node) && moderator.getName().equals(node.getName()));
   }
+
   /**
-   * Moderator is the first person to join, which is the host player.
-   * For headless, moderators are the first person to join (the bot), and secondly
-   * the next 'oldest' player.
+   * Moderator is the first person to join, which is the host player. In 'headless' case, it is the
+   * host player plus the next 'oldest' player.
    */
   private List<INode> getModerators() {
-    if (nodeJoinOrder.size() >= 2 && GameRunner.headless()) {
-      return List.of(nodeJoinOrder.get(0), nodeJoinOrder.get(1));
-    } else if (nodeJoinOrder.size() >= 1) {
+    Preconditions.checkState(!nodeJoinOrder.isEmpty());
+    if (nodeJoinOrder.size() == 1) {
       return List.of(nodeJoinOrder.get(0));
     } else {
-      return List.of();
+      return List.of(nodeJoinOrder.get(0), nodeJoinOrder.get(1));
     }
   }
 
@@ -361,7 +365,17 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     channelToNode.remove(channel);
     nioSocket.close(channel);
+
+    boolean removingModerator = getModerators().contains(nodeToRemove);
     nodeJoinOrder.remove(nodeToRemove);
+    if (removingModerator) {
+      INode newModerator = getModerators().get(getModerators().size() - 1);
+
+      nodeToChannel
+          .keySet()
+          .forEach(node -> send(new ModeratorPromoted(newModerator.getName()), node));
+    }
+
     notifyConnectionsChanged(false, nodeToRemove);
     log.info("Connection removed:" + nodeToRemove);
   }
@@ -393,8 +407,17 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       nodeToChannel.put(remote, channel);
     }
     channelToNode.put(channel, remote);
-    nodeJoinOrder.add(remote);
+    // only keep track of join order if the game is headless.
+    // If game is not headless, then it will end when the host leaves.
+    if (GameRunner.headless()) {
+      nodeJoinOrder.add(remote);
+    }
     notifyConnectionsChanged(true, remote);
+
+    if (getModerators().contains(remote)) {
+      nodeToChannel.keySet().forEach(node -> send(new ModeratorPromoted(remote.getName()), node));
+    }
+
     log.info("Connection added to:" + remote);
   }
 }

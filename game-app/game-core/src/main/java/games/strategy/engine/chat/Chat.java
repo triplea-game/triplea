@@ -2,7 +2,8 @@ package games.strategy.engine.chat;
 
 import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.Sets;
-import games.strategy.engine.framework.startup.mc.ModeratorMessage;
+import games.strategy.engine.framework.startup.mc.messages.ModeratorMessage;
+import games.strategy.net.IMessageListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 
@@ -22,6 +24,7 @@ import org.triplea.domain.data.UserName;
  *
  * <p>A chat can be bound to multiple chat panels.
  */
+@Slf4j
 @SuppressWarnings("UnstableApiUsage")
 public class Chat implements ChatClient {
 
@@ -55,6 +58,13 @@ public class Chat implements ChatClient {
     sentMessagesHistory = new SentMessagesHistory();
     chatters.addAll(chatTransmitter.connect());
     updateConnections();
+  }
+
+  public void addMessengersListener(IMessageListener messageListener) {
+    if(chatTransmitter instanceof MessengersChatTransmitter) {
+      log.info("addming messengers listener");
+      ((MessengersChatTransmitter) chatTransmitter).getMessengers().addMessageListener(messageListener);
+    }
   }
 
   private void updateConnections() {
@@ -189,4 +199,15 @@ public class Chat implements ChatClient {
           "sendDisconnect on Chat.java is to support legacy 'messengers' communication only");
     }
   }
+
+  public void sendBan(UserName userName) {
+    if (chatTransmitter instanceof MessengersChatTransmitter) {
+      var messengers = ((MessengersChatTransmitter) chatTransmitter).getMessengers();
+      messengers.sendToServer(ModeratorMessage.newBan(userName.toString()));
+    } else {
+      throw new UnsupportedOperationException(
+          "sendDisconnect on Chat.java is to support legacy 'messengers' communication only");
+    }
+  }
+
 }

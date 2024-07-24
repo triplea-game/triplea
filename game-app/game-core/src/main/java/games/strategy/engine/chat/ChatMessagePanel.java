@@ -1,5 +1,8 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.framework.startup.mc.messages.ModeratorPromoted;
+import games.strategy.net.IMessageListener;
+import games.strategy.net.INode;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -7,6 +10,7 @@ import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.Serializable;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.InputMap;
@@ -80,10 +84,21 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
 
   public ChatMessagePanel(
       final Chat chat, final ChatSoundProfile chatSoundProfile, final ClipPlayer clipPlayer) {
+
     this.chatSoundProfile = chatSoundProfile;
     this.clipPlayer = clipPlayer;
     init();
     setChat(chat);
+
+    log.info("INIT CHAT MESSAGE PANEL");
+    chat.addMessengersListener(new IMessageListener() {
+      @Override
+      public void messageReceived(Serializable msg, INode from) {
+        if(msg instanceof ModeratorPromoted) {
+          addGenericMessage("MODERATOR PROMOTED: " + ((ModeratorPromoted) msg).getPlayerName());
+        }
+      }
+    });
   }
 
   private void init() {

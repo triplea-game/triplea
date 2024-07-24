@@ -20,19 +20,18 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
+import games.strategy.engine.framework.startup.mc.messages.ModeratorMessage;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessageListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.BindException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -218,21 +217,22 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       serverMessenger.addConnectionChangeListener(this);
 
       // add moderator action handlers (eg: ban/disconnect)
-      serverMessenger.addMessageListener((msg, from) -> {
-        // check that from is a moderator
-        if (msg instanceof ModeratorMessage) {
-          if(!serverMessenger.isModerator(from)) {
-            return;
-          }
+      serverMessenger.addMessageListener(
+          (msg, from) -> {
+            // check that from is a moderator
+            if (msg instanceof ModeratorMessage) {
+              if (!serverMessenger.isModerator(from)) {
+                return;
+              }
 
-          ModeratorMessage moderatorMessage = (ModeratorMessage) msg;
-          if(moderatorMessage.isBan()) {
-            serverMessenger.banPlayer(moderatorMessage.getPlayerName());
-          } else if(moderatorMessage.isDisconnect()) {
-            serverMessenger.removeConnection(moderatorMessage.getPlayerName());
-          }
-        }
-      });
+              ModeratorMessage moderatorMessage = (ModeratorMessage) msg;
+              if (moderatorMessage.isBan()) {
+                serverMessenger.banPlayer(moderatorMessage.getPlayerName());
+              } else if (moderatorMessage.isDisconnect()) {
+                serverMessenger.removeConnection(moderatorMessage.getPlayerName());
+              }
+            }
+          });
 
       messengers = new Messengers(serverMessenger);
       messengers.registerRemote(
@@ -276,7 +276,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         gameHostingResponse = null;
       }
 
-      chatController = new ChatController(CHAT_NAME, messengers);
+      chatController = new ChatController(CHAT_NAME, messengers, serverMessenger);
 
       // TODO: Project#4 Change no-op network sender to a real network bridge
       chatModel =
@@ -417,6 +417,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   public void connectionAdded(final INode to) {
     notifyLobby(
         (lobbyConnection, gameId) -> lobbyConnection.playerJoined(gameId, to.getPlayerName()));
+    if (serverMessenger.isModerator(to)) {
+      chatModel.getChat().sendMessage("Moderator has joined: " + to.getPlayerName());
+    }
   }
 
   /**
