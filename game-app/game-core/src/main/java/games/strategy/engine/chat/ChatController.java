@@ -59,20 +59,6 @@ public class ChatController implements IChatController {
     chatName = name;
     this.messengers = messengers;
     this.serverMessenger = serverMessenger;
-    messengers.addMessageListener(
-        new IMessageListener() {
-          @Override
-          public void messageReceived(Serializable msg, INode from) {
-            if (msg instanceof ModeratorPromoted) {
-              String newModerator = ((ModeratorPromoted) msg).getPlayerName();
-
-              chatters.keySet().stream()
-                  .filter(node -> node.getName().equals(newModerator))
-                  .findAny()
-                  .ifPresent(mod -> chatters.put(mod, Tag.MODERATOR));
-            }
-          }
-        });
     chatChannel = getChatChannelName(name);
     messengers.registerRemote(this, getChatControllerRemoteName(name));
     messengers.addConnectionChangeListener(connectionChangeListener);
