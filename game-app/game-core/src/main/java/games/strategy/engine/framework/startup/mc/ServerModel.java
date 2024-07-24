@@ -417,9 +417,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   public void connectionAdded(final INode to) {
     notifyLobby(
         (lobbyConnection, gameId) -> lobbyConnection.playerJoined(gameId, to.getPlayerName()));
-    if (serverMessenger.isModerator(to)) {
-      chatModel.getChat().sendMessage("Moderator has joined: " + to.getPlayerName());
-    }
   }
 
   /**
