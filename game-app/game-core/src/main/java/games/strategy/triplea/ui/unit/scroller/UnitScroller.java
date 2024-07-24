@@ -220,7 +220,7 @@ public class UnitScroller {
           selectUnitImagePanel.removeAll();
           if (player != null) {
             selectUnitImagePanel.add(
-                avatarPanelFactory.buildPanel(moveableUnits, player, t, renderingWidth));
+                avatarPanelFactory.buildPanel(moveableUnits, player, renderingWidth));
           }
           SwingComponents.redraw(selectUnitImagePanel);
         });
