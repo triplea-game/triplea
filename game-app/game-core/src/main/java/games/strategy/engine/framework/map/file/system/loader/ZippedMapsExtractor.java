@@ -60,27 +60,33 @@ public class ZippedMapsExtractor {
                         // Before 2.6 maps did not include a 'map.yaml' file and were zipped.
                         .ifPresent(MapDescriptionYaml::generateForMap);
                   } catch (final ZipReadException zipReadException) {
+                    log.warn(
+                        "Error reading zip: {}{}",
+                        mapZip.toAbsolutePath(),
+                        Files.exists(mapZip) ? ", moving to 'bad-zips' folder" : "",
+                        zipReadException);
+
                     // Problem reading the zip, move it to a folder so that the user does
                     // not repeatedly see an error trying to read this zip.
-                    moveBadZip(mapZip)
-                        .ifPresent(
-                            newLocation ->
-                                log.warn(
-                                    "Error extracting map zip: "
-                                        + mapZip.toAbsolutePath()
-                                        + ", zip has been moved to: "
-                                        + newLocation.toAbsolutePath(),
-                                    zipReadException));
+                    if (Files.exists(mapZip)) {
+                      moveBadZip(mapZip)
+                          .ifPresent(
+                              newLocation ->
+                                  log.warn(
+                                      "Error extracting map zip: {}, zip has been moved to: {}",
+                                      mapZip.toAbsolutePath(),
+                                      newLocation.toAbsolutePath(),
+                                      zipReadException));
+                    }
                   } catch (final FileSystemException e) {
                     // Thrown if we are are out of disk space or have file system access issues.
                     // Do not move the zip file to a bad-zip folder as that operation could also
                     // fail.
-                    log.warn("Error extracting map zip: " + mapZip + ", " + e.getMessage(), e);
+                    log.warn("Error extracting map zip: {}, {}", mapZip, e.getMessage(), e);
                   } catch (final ZipExtractor.ZipSecurityException e) {
                     log.error(
-                        "Malicious zip file detected: "
-                            + mapZip.toAbsolutePath()
-                            + ", please report this to TripleA and delete the zip file",
+                        "Malicious zip file detected: {}, please report this to TripleA and delete the zip file",
+                        mapZip.toAbsolutePath(),
                         e);
                   }
                 }));
@@ -130,7 +136,7 @@ public class ZippedMapsExtractor {
 
     // extract into a temp folder first
     // put the temp folder in the maps folder, so they're on the same partition (to move later)
-    final Path tempFolder = Files.createTempDirectory(mapsFolder, "triplea-unzip");
+    final Path tempFolder = Files.createTempDirectory("triplea-unzip");
     ZipExtractor.unzipFile(mapZip, tempFolder);
     tempFolder.toFile().deleteOnExit();
 
@@ -145,8 +151,12 @@ public class ZippedMapsExtractor {
     // replace extraction target folder contents with the temp folder containing the extracted zip
     final boolean folderReplaced =
         FileUtils.replaceFolder(tempFolderWithExtractedMap, extractionTarget);
+
+    // Either we have moved and renamed the temp folder, or we have moved and renamed the contents
+    // of the temp folder. Either way, we can go ahead and remove the now possibly empty tempFolder
+    FileUtils.deleteDirectory(tempFolder);
+
     if (!folderReplaced) {
-      FileUtils.deleteDirectory(tempFolder);
       return Optional.empty();
     }
 
