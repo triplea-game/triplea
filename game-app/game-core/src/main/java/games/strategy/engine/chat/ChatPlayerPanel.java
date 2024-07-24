@@ -67,11 +67,9 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
               for (int i = 0; i < listModel.getSize(); i++) {
                 if (listModel.get(i).getUserName().toString().equals(newModerator)) {
                   listModel.get(i).setModerator(true);
-                  players.repaint();
                   break;
                 }
               }
-              repaint();
             }
           }
         });
