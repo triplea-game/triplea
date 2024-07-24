@@ -414,10 +414,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     notifyConnectionsChanged(true, remote);
 
-    if (getModerators().contains(remote)) {
-      nodeToChannel.keySet().forEach(node -> send(new ModeratorPromoted(remote.getName()), node));
-    }
-
     log.info("Connection added to:" + remote);
   }
 }
