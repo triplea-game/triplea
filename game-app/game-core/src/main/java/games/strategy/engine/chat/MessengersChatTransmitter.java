@@ -16,8 +16,7 @@ import org.triplea.java.concurrency.AsyncRunner;
 @Slf4j
 public class MessengersChatTransmitter implements ChatTransmitter {
   private final UserName userName;
-  @Getter
-  private final Messengers messengers;
+  @Getter private final Messengers messengers;
 
   private IChatChannel chatChannelSubscriber;
 

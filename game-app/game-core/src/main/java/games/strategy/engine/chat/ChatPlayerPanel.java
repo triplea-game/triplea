@@ -57,22 +57,23 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     layoutComponents();
     setupListeners();
     setChat(chat);
-    chat.addMessengersListener(new IMessageListener() {
-      @Override
-      public void messageReceived(Serializable msg, INode from) {
-        if(msg instanceof ModeratorPromoted) {
-          String newModerator = ((ModeratorPromoted) msg).getPlayerName();
-          for(int i = 0; i < listModel.getSize(); i ++) {
-            if(listModel.get(i).getUserName().toString().equals(newModerator)) {
-              listModel.get(i).setModerator(true);
-              players.repaint();
-              break;
+    chat.addMessengersListener(
+        new IMessageListener() {
+          @Override
+          public void messageReceived(Serializable msg, INode from) {
+            if (msg instanceof ModeratorPromoted) {
+              String newModerator = ((ModeratorPromoted) msg).getPlayerName();
+              for (int i = 0; i < listModel.getSize(); i++) {
+                if (listModel.get(i).getUserName().toString().equals(newModerator)) {
+                  listModel.get(i).setModerator(true);
+                  players.repaint();
+                  break;
+                }
+              }
+              repaint();
             }
           }
-          repaint();
-        }
-      }
-    });
+        });
   }
 
   /** Sets the chat whose players will be displayed in this panel. */
@@ -176,14 +177,16 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
               SwingAction.of(
                   "Slap " + clickedOn.getUserName(), e -> chat.sendSlap(clickedOn.getUserName()));
 
-
           // TODO: add check for if we are moderator
           final Action disconnect =
-              SwingAction.of("Disconnect " + clickedOn.getUserName(), e -> chat.sendDisconnect(clickedOn.getUserName()));
+              SwingAction.of(
+                  "Disconnect " + clickedOn.getUserName(),
+                  e -> chat.sendDisconnect(clickedOn.getUserName()));
           // TODO: add check for if we are moderator
 
           final Action ban =
-              SwingAction.of("Ban " + clickedOn.getUserName(), e -> chat.sendBan(clickedOn.getUserName()));
+              SwingAction.of(
+                  "Ban " + clickedOn.getUserName(), e -> chat.sendBan(clickedOn.getUserName()));
 
           return List.of(slap, ignore, disconnect, ban);
         });

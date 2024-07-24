@@ -61,9 +61,11 @@ public class Chat implements ChatClient {
   }
 
   public void addMessengersListener(IMessageListener messageListener) {
-    if(chatTransmitter instanceof MessengersChatTransmitter) {
+    if (chatTransmitter instanceof MessengersChatTransmitter) {
       log.info("addming messengers listener");
-      ((MessengersChatTransmitter) chatTransmitter).getMessengers().addMessageListener(messageListener);
+      ((MessengersChatTransmitter) chatTransmitter)
+          .getMessengers()
+          .addMessageListener(messageListener);
     }
   }
 
@@ -209,5 +211,4 @@ public class Chat implements ChatClient {
           "sendDisconnect on Chat.java is to support legacy 'messengers' communication only");
     }
   }
-
 }

@@ -180,6 +180,19 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     miniBannedMacAddresses.add(mac);
   }
 
+  /** Bans & disconnects a player. */
+  public void banPlayer(String playerName) {
+    getNodes().stream()
+        .filter(n -> n.getName().equals(playerName))
+        .findAny()
+        .ifPresent(
+            nodeToBan -> {
+              miniBannedIpAddresses.add(nodeToBan.getIpAddress());
+              miniBannedMacAddresses.add(getPlayerMac(node.getPlayerName()));
+              removeConnection(nodeToBan);
+            });
+  }
+
   private void forward(final MessageHeader msg) {
     if (shutdown) {
       return;
@@ -310,19 +323,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   @Override
   public boolean isServer() {
     return true;
-  }
-
-  /** Bans & disconnects a player. */
-  public void banPlayer(String playerName) {
-    getNodes().stream()
-        .filter(n -> n.getName().equals(playerName))
-        .findAny()
-        .ifPresent(
-            nodeToBan -> {
-              miniBannedIpAddresses.add(nodeToBan.getIpAddress());
-              miniBannedMacAddresses.add(getPlayerMac(node.getPlayerName()));
-              removeConnection(nodeToBan);
-            });
   }
 
   public boolean isModerator(INode node) {

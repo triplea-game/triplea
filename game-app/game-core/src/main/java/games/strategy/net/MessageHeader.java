@@ -19,9 +19,7 @@ public class MessageHeader implements Serializable {
   @Nullable private final INode from;
   private final Serializable message;
 
-  /**
-   * Indicates if the message is intended for everyone (true).
-   */
+  /** Indicates if the message is intended for everyone (true). */
   public boolean isBroadcast() {
     return to == null;
   }

@@ -91,14 +91,15 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     setChat(chat);
 
     log.info("INIT CHAT MESSAGE PANEL");
-    chat.addMessengersListener(new IMessageListener() {
-      @Override
-      public void messageReceived(Serializable msg, INode from) {
-        if(msg instanceof ModeratorPromoted) {
-          addGenericMessage("MODERATOR PROMOTED: " + ((ModeratorPromoted) msg).getPlayerName());
-        }
-      }
-    });
+    chat.addMessengersListener(
+        new IMessageListener() {
+          @Override
+          public void messageReceived(Serializable msg, INode from) {
+            if (msg instanceof ModeratorPromoted) {
+              addGenericMessage("MODERATOR PROMOTED: " + ((ModeratorPromoted) msg).getPlayerName());
+            }
+          }
+        });
   }
 
   private void init() {

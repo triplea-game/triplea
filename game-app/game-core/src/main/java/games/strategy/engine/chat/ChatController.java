@@ -54,7 +54,8 @@ public class ChatController implements IChatController {
         }
       };
 
-  public ChatController(final String name, final Messengers messengers, ServerMessenger serverMessenger) {
+  public ChatController(
+      final String name, final Messengers messengers, ServerMessenger serverMessenger) {
     chatName = name;
     this.messengers = messengers;
     this.serverMessenger = serverMessenger;
@@ -69,7 +70,6 @@ public class ChatController implements IChatController {
                   .filter(node -> node.getName().equals(newModerator))
                   .findAny()
                   .ifPresent(mod -> chatters.put(mod, Tag.MODERATOR));
-
             }
           }
         });
