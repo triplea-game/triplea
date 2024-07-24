@@ -65,7 +65,7 @@ public class RemoteActionCodeTest {
       try {
         return remoteInterface.getMethod(methodName, argumentTypes);
       } catch (final NoSuchMethodException e) {
-        throw new ArgumentsAggregationException("Invalid method specified", e);
+        throw new ArgumentsAggregationException("Invalid method specified: " + methodName, e);
       }
     }
   }

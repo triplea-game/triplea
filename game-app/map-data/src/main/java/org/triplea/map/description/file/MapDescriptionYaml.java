@@ -145,7 +145,10 @@ public class MapDescriptionYaml {
     }
 
     if (!validationErrors.isEmpty()) {
-      log.warn("Error found in: {}, errors: {}", sourceFile.toAbsolutePath(), validationErrors);
+      log.info(
+          "Warning: invalid map found installed: {}, errors: {}",
+          sourceFile.toAbsolutePath(),
+          validationErrors);
     }
 
     return validationErrors.isEmpty();

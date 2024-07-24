@@ -1,9 +1,8 @@
 package games.strategy.engine.framework.startup.mc;
 
-import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.net.INode;
-import java.util.Set;
+import java.util.List;
 
 public class HeadedServerStartupRemote implements IServerStartupRemote {
 
@@ -45,25 +44,17 @@ public class HeadedServerStartupRemote implements IServerStartupRemote {
   }
 
   @Override
-  public byte[] getSaveGame() {
-    return serverModelView.getSaveGame();
-  }
-
-  @Override
   public byte[] getGameOptions() {
     return serverModelView.getGameOptions();
   }
 
   @Override
-  public Set<String> getAvailableGames() {
-    return Set.of();
+  public List<String> getAvailableGames() {
+    return List.of();
   }
 
   @Override
   public void changeServerGameTo(final String gameName) {}
-
-  @Override
-  public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {}
 
   @Override
   public void changeToGameSave(final byte[] bytes, final String fileName) {}

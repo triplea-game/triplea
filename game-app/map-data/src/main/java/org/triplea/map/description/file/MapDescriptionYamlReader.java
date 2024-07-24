@@ -63,8 +63,8 @@ class MapDescriptionYamlReader {
               .build();
 
       if (!mapDescriptionYaml.isValid(ymlFile)) {
-        log.warn(
-            "Invalid map description YML (map.yml) file detected: {}\n"
+        log.info(
+            "Warning: Invalid map description YML (map.yml) file detected: {}\n"
                 + "Check the file carefully and correct any mistakes.\n"
                 + "If this is a map you downloaded, please contact TripleA.\n"
                 + "Data parsed:\n"
@@ -75,8 +75,8 @@ class MapDescriptionYamlReader {
       }
       return Optional.of(mapDescriptionYaml);
     } catch (final ClassCastException | InvalidYamlFormatException e) {
-      log.warn(
-          "Invalid map description YML (map.yml) file detected: {}.\n"
+      log.info(
+          "Warning: Invalid map description YML (map.yml) file detected: {}.\n"
               + "If this is a map you downloaded, please contact TripleA.\n"
               + "{}",
           ymlFile.toAbsolutePath(),

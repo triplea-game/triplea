@@ -3,7 +3,6 @@ package games.strategy.engine.framework.network.ui;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import java.awt.Component;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
@@ -20,12 +19,11 @@ public class SetMapClientAction {
   private final IServerStartupRemote serverStartupRemote;
 
   public SetMapClientAction(
-      final Component parent,
-      final IServerStartupRemote serverStartupRemote,
-      final Collection<String> games) {
+      final Component parent, final IServerStartupRemote serverStartupRemote) {
     this.parent = JOptionPane.getFrameForComponent(parent);
     this.serverStartupRemote = serverStartupRemote;
-    this.availableGames = games.stream().sorted().collect(Collectors.toList());
+    this.availableGames =
+        serverStartupRemote.getAvailableGames().stream().sorted().collect(Collectors.toList());
   }
 
   public void run() {

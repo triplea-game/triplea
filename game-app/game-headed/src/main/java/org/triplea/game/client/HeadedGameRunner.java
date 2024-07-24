@@ -9,7 +9,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.auto.update.UpdateChecks;
-import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -68,15 +67,20 @@ public final class HeadedGameRunner {
   }
 
   public static void initializeDesktopIntegrations(final String[] args) {
-    ArgParser.handleCommandLineArgs(args);
+    if ((args.length == 1) && args[0].startsWith("triplea:")) {
+      final String value =
+          URLDecoder.decode(args[0].substring("triplea:".length()), StandardCharsets.UTF_8);
+      System.setProperty(TRIPLEA_MAP_DOWNLOAD, value);
+    } else if ((args.length == 1) && !args[0].contains("=")) {
+      System.setProperty(TRIPLEA_GAME, args[0]);
+    }
 
     if (SystemProperties.isMac()) {
       MacOsIntegration.setOpenUriHandler(
           uri -> {
             final String mapName =
                 URLDecoder.decode(
-                    uri.toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()),
-                    StandardCharsets.UTF_8);
+                    uri.toString().substring("triplea:".length()), StandardCharsets.UTF_8);
             SwingUtilities.invokeLater(
                 () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
           });

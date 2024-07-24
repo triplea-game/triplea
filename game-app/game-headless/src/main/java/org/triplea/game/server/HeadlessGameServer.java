@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
@@ -57,16 +58,33 @@ public class HeadlessGameServer {
   }
 
   public synchronized void setGameMapTo(final String gameName) {
-    log.info("Requested to change map to: " + gameName);
+    log.info("Requested to change map to: {}", gameName);
+
     // don't change mid-game and only if we have the game
-    if (game == null && availableGames.hasGame(gameName)) {
+    if (game != null) {
+      log.info("Did NOT change game map to: {}, a game is currently running.", gameName);
+      return;
+    }
+
+    if (availableGames.hasGame(gameName)) {
+      // change map
       gameSelectorModel.loadMap(availableGames.findGameXmlPathByGameName(gameName).orElseThrow());
-      log.info("Changed to game map: " + gameName);
+      log.info("Changed to game map: {}", gameName);
+    } else if (AutoSaveFileUtils.getAutoSaveFiles().contains(gameName)) {
+      // change to autosave
+      log.info("Loading {} as a savegame", gameName);
+      AutoSaveFileUtils.getAutoSavePaths().stream()
+          .filter(p -> p.toFile().getName().equals(gameName))
+          .findAny()
+          .ifPresentOrElse(
+              gameSelectorModel::loadSave,
+              () ->
+                  log.warn(
+                      "Unexpected, could not find save file: {}, from choices: {}",
+                      gameName,
+                      AutoSaveFileUtils.getAutoSavePaths()));
     } else {
-      log.info(
-          String.format(
-              "Did NOT change game map to: %s, game == null ? %s, have game? %s",
-              gameName, game == null, availableGames.hasGame(gameName)));
+      log.warn("Unable to find save game as either a new map or a savegame: {}", gameName);
     }
   }
 
@@ -144,6 +162,7 @@ public class HeadlessGameServer {
   public void waitForUsers() {
     log.info("Waiting for users to connect.");
     setServerGame(null);
+    gameSelectorModel.loadDefaultGameSameThread();
 
     while (headlessServerSetup.waitUntilStart() && !startHeadlessGame()) {
       log.warn("Error in launcher, going back to waiting.");

@@ -132,7 +132,6 @@ public class AaCasualtySelector {
       final AaPowerStrengthAndRolls unitPowerAndRollsMap,
       final DiceRoll dice,
       final IDelegateBridge bridge) {
-
     final LowLuckTargetGroups targetGroups =
         new LowLuckTargetGroups(availableTargets, dice, unitPowerAndRollsMap);
 
@@ -143,19 +142,14 @@ public class AaCasualtySelector {
     }
 
     if (dice.getHits() >= targetGroups.getGuaranteedHitGroups().size()) {
-      // there are enough hits to hit all of the guaranteed hits
+      // there are enough hits to hit all the guaranteed hits
       final List<Unit> hitUnits = targetGroups.getGuaranteedHits();
 
       // if there are more hits than groups, the extra hits come out of the remainderUnits
       final int remainderHits = dice.getHits() - hitUnits.size();
       if (remainderHits > 0) {
-        if (remainderHits == targetGroups.getRemainderUnits().size()) {
-          hitUnits.addAll(targetGroups.getRemainderUnits());
-        } else {
-          // randomly pull out units from the remainder group
-          hitUnits.addAll(
-              findRandomTargets(targetGroups.getRemainderUnits(), bridge, remainderHits));
-        }
+        // randomly pull out units from the remainder group
+        hitUnits.addAll(findRandomTargets(targetGroups.getRemainderUnits(), bridge, remainderHits));
       }
       return hitUnits;
     } else {
@@ -170,6 +164,11 @@ public class AaCasualtySelector {
   /** Select a random set of targets out of availableTargets */
   private static Collection<Unit> findRandomTargets(
       final List<Unit> availableTargets, final IDelegateBridge bridge, final int hits) {
+    // No need for random if all targets will be hit. The logic below would infinite loop otherwise
+    // if hits are greater.
+    if (hits >= availableTargets.size()) {
+      return availableTargets;
+    }
     final int[] hitRandom =
         bridge.getRandom(
             availableTargets.size(),
@@ -195,19 +194,15 @@ public class AaCasualtySelector {
       final AaPowerStrengthAndRolls unitPowerAndRollsMap,
       final DiceRoll dice,
       final IDelegateBridge bridge) {
-
     if (unitPowerAndRollsMap.calculateTotalRolls() == availableTargets.size()
         && dice.getHits() < availableTargets.size()) {
-      // there is a roll for every target but not enough hits to kill all of the targets
+      // there is a roll for every target but not enough hits to kill all the targets
       // so no need to get a random set of units since all units will either have a hit
       // or miss roll
       return findRolledTargets(availableTargets, dice);
-    } else if (dice.getHits() < availableTargets.size()) {
-      // there isn't a roll for every target so need to randomly pick the target for each hit
-      return findRandomTargets(availableTargets, bridge, dice.getHits());
     } else {
-      // all targets were hit so add them all
-      return availableTargets;
+      // randomly choose targets (or all targets if there's enough hits)
+      return findRandomTargets(availableTargets, bridge, dice.getHits());
     }
   }
 

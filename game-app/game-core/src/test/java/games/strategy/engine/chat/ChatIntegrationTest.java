@@ -9,8 +9,8 @@ import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
-import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
+import games.strategy.net.ServerMessenger;
 import games.strategy.net.TestServerMessenger;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
@@ -32,7 +32,7 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
   private static final int MESSAGE_COUNT = 50;
   private static final int NODE_COUNT = 3;
 
-  private IServerMessenger messenger;
+  private ServerMessenger messenger;
   private IMessenger client1Messenger;
   private IMessenger client2Messenger;
   private RemoteMessenger remoteMessenger;
@@ -130,7 +130,7 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
 
   private ChatController newChatController() {
     return new ChatController(
-        CHAT_NAME, new Messengers(messenger, remoteMessenger, channelMessenger), node -> false);
+        CHAT_NAME, new Messengers(messenger, remoteMessenger, channelMessenger), messenger);
   }
 
   private static Chat newChat(final Messengers messengers) {

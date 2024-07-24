@@ -1,14 +1,11 @@
 package org.triplea.game.server;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.filter.ThresholdFilter;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.MessengersChatTransmitter;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
@@ -33,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.debug.ChatAppender;
 import org.triplea.java.ThreadRunner;
@@ -61,6 +57,10 @@ public class HeadlessLaunchAction implements LaunchAction {
   @Override
   public void handleGameInterruption(
       final GameSelectorModel gameSelectorModel, final ServerModel serverModel) {
+    if (!GameRunner.exitOnEndGame()) {
+      // no-op, System.exit will be called later
+      return;
+    }
     log.info("Game ended, going back to waiting.");
     // if we do not do this, we can get into an infinite loop of launching a game,
     // then crashing out, then launching, etc.
@@ -127,26 +127,11 @@ public class HeadlessLaunchAction implements LaunchAction {
     return new HeadlessAutoSaveFileUtils();
   }
 
-  private void registerChatAppender(final Chat chat) {
-    Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-    ChatAppender chatAppender = new ChatAppender(chat);
-    // prevent multiple chat appenders causing memory leak
-    // ideally this should happen in a shutdown operation somewhere though
-    logger.detachAppender(chatAppender.getName());
-
-    ThresholdFilter filter = new ThresholdFilter();
-    filter.setLevel(Level.WARN.toString());
-    chatAppender.addFilter(filter);
-    chatAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
-    chatAppender.start();
-    logger.addAppender(chatAppender);
-  }
-
   @Override
   public ChatModel createChatModel(
       String chatName, Messengers messengers, ClientNetworkBridge clientNetworkBridge) {
     Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers, clientNetworkBridge));
-    registerChatAppender(chat);
+    ChatAppender.attach(chat);
     return new HeadlessChat(chat);
   }
 

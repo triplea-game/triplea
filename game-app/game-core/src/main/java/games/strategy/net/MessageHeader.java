@@ -18,4 +18,13 @@ public class MessageHeader implements Serializable {
   // from can be null if the sending node doesnt know its own address
   @Nullable private final INode from;
   private final Serializable message;
+
+  /** Indicates if the message is intended for everyone (true). */
+  public boolean isBroadcast() {
+    return to == null;
+  }
+
+  public boolean isAddressedTo(INode target) {
+    return target.equals(to);
+  }
 }

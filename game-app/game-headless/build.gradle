@@ -23,6 +23,14 @@ jar {
     }
 }
 
+run {
+    systemProperty "triplea.lobby.game.comments", "automated_host"
+    systemProperty "triplea.lobby.uri", "http://127.0.0.1:3000"
+    systemProperty "triplea.name", "Bot_Local01"
+    systemProperty "triplea.port", "3300"
+    systemProperty "triplea.server", "true"
+}
+
 task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
     from file(".triplea-root")
     from file("scripts/run_bot")

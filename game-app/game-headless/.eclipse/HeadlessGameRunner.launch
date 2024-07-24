@@ -8,7 +8,6 @@
         <listEntry value="1"/>
     </listAttribute>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.triplea.game.server.HeadlessGameRunner"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-Ptriplea.port=3300&#13;&#10;-Ptriplea.lobby.host=127.0.0.1&#13;&#10;-Ptriplea.lobby.port=3304&#13;&#10;-Ptriplea.lobby.https.port=8080&#13;&#10;-Ptriplea.name=Bot1_TestServer"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="game-headless"/>
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea&#13;&#10;-Dtriplea.port=3300&#13;&#10;-Dtriplea.lobby.host=127.0.0.1&#13;&#10;-Dtriplea.lobby.port=3304&#13;&#10;-Dtriplea.lobby.https.port=8080&#13;&#10;-Dtriplea.name=Bot1_TestServer"/>
 </launchConfiguration>

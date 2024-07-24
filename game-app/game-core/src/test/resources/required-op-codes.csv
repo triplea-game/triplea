@@ -38,7 +38,6 @@
 2,games.strategy.engine.framework.startup.mc.IServerStartupRemote,changeToGameSave,[B,java.lang.String
 7,games.strategy.engine.framework.startup.mc.IServerStartupRemote,getGameOptions
 0,games.strategy.engine.framework.startup.mc.IServerStartupRemote,changeServerGameTo,java.lang.String
-10,games.strategy.engine.framework.startup.mc.IServerStartupRemote,getSaveGame
 9,games.strategy.engine.framework.startup.mc.IServerStartupRemote,getPlayerListing
 5,games.strategy.engine.framework.startup.mc.IServerStartupRemote,enablePlayer,java.lang.String
 13,games.strategy.engine.framework.startup.mc.IServerStartupRemote,takePlayer,games.strategy.net.INode,java.lang.String
@@ -47,7 +46,6 @@
 4,games.strategy.engine.framework.startup.mc.IServerStartupRemote,disablePlayer,java.lang.String
 11,games.strategy.engine.framework.startup.mc.IServerStartupRemote,isGameStarted,games.strategy.net.INode
 1,games.strategy.engine.framework.startup.mc.IServerStartupRemote,changeToGameOptions,[B
-3,games.strategy.engine.framework.startup.mc.IServerStartupRemote,changeToLatestAutosave,games.strategy.engine.framework.HeadlessAutoSaveType
 8,games.strategy.engine.framework.startup.mc.IServerStartupRemote,getIsServerHeadless
 6,games.strategy.engine.player.Player,getName
 26,games.strategy.engine.player.Player,start,java.lang.String

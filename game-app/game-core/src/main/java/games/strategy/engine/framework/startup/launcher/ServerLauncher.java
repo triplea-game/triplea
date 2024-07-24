@@ -315,7 +315,7 @@ public class ServerLauncher implements ILauncher {
     final Path f = launchAction.getAutoSaveFile();
     try {
       serverGame.saveGame(f);
-      gameSelectorModel.setSaveGameFileToLoad(f);
+      ClientSetting.defaultGameUri.setValueAndFlush(f.toUri().toString());
     } catch (final Exception e) {
       log.error("Failed to save game: " + f.toAbsolutePath(), e);
     }

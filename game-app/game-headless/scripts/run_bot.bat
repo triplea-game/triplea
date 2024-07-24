@@ -69,6 +69,16 @@ REM Under normal circumstances, you will not have to change this variable.
 REM
 SET LOBBY_URI=https://prod.triplea-game.org
 
+
+REM
+REM Whether to shut down the bot when a game is over.
+REM
+REM This works well (set it to true) if the bot is installed as a service
+REM that is automatically restarted.
+REM
+SET EXIT_ON_GAME_END=false
+
+
 REM ###########################################################################
 REM VARIABLES THAT YOU MAY CUSTOMIZE END HERE
 REM
@@ -84,4 +94,5 @@ java^
  -Ptriplea.map.folder="%MAPS_FOLDER%"^
  -Ptriplea.name=%BOT_NAME%^
  -Ptriplea.port=%BOT_PORT%^
- -Ptriplea.server.password=%BOT_PASSWORD%
+ -Ptriplea.server.password=%BOT_PASSWORD%^
+ -Ptriplea.exit.on.game.end=%EXIT_ON_GAME_END%

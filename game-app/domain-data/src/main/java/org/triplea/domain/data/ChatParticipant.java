@@ -26,7 +26,7 @@ public class ChatParticipant implements Serializable {
   @Nonnull private final String playerChatId;
 
   /** True if the player has moderator privileges. */
-  private final boolean isModerator;
+  @Setter private boolean isModerator;
 
   /** Status is custom text set by players, eg: "AFK" or "Looking for a game". */
   @Setter @Nullable private String status;
