@@ -14,6 +14,10 @@ ENV EXIT_ON_GAME_END=FALSE
 RUN mkdir $MAPS_FOLDER
 RUN useradd -u 999 bot
 RUN chown bot:root $MAPS_FOLDER
+
+RUN mkdir -p /home/bot/triplea/savedGames/autoSave
+RUN chown -R bot:root /home/bot/
+
 USER bot
 
 ADD build/libs/triplea-game-headless.jar /
