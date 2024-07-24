@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.framework.startup.mc.messages.ModeratorMessage;
 import games.strategy.engine.framework.startup.mc.messages.ModeratorPromoted;
 import games.strategy.net.IMessageListener;
 import games.strategy.net.INode;
@@ -181,12 +182,19 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
           final Action disconnect =
               SwingAction.of(
                   "Disconnect " + clickedOn.getUserName(),
-                  e -> chat.sendDisconnect(clickedOn.getUserName()));
+                  e ->
+                      chat.getMessengers()
+                          .sendToServer(
+                              ModeratorMessage.newDisconnect(clickedOn.getUserName().getValue())));
           // TODO: add check for if we are moderator
 
           final Action ban =
               SwingAction.of(
-                  "Ban " + clickedOn.getUserName(), e -> chat.sendBan(clickedOn.getUserName()));
+                  "Ban " + clickedOn.getUserName(),
+                  e ->
+                      chat.getMessengers()
+                          .sendToServer(
+                              ModeratorMessage.newBan(clickedOn.getUserName().getValue())));
 
           return List.of(slap, ignore, disconnect, ban);
         });
