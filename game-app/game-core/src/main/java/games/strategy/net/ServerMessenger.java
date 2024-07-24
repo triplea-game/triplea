@@ -62,7 +62,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private final Map<UserName, String> cachedMacAddresses = new ConcurrentHashMap<>();
   private final Set<String> miniBannedIpAddresses = new ConcurrentSkipListSet<>();
-  private final Set<String> miniBannedMacAddresses = new ConcurrentSkipListSet<>();
 
   @Setter @Nullable private GameToLobbyConnection gameToLobbyConnection;
 
@@ -170,14 +169,12 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
 
     return miniBannedIpAddresses.contains(ip)
-        || miniBannedMacAddresses.contains(mac)
         || (gameToLobbyConnection != null && gameToLobbyConnection.isPlayerBanned(ip));
   }
 
   @Override
   public void banPlayer(final String ip, final String mac) {
     miniBannedIpAddresses.add(ip);
-    miniBannedMacAddresses.add(mac);
   }
 
   /** Bans & disconnects a player. */
@@ -188,7 +185,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
         .ifPresent(
             nodeToBan -> {
               miniBannedIpAddresses.add(nodeToBan.getIpAddress());
-              miniBannedMacAddresses.add(getPlayerMac(node.getPlayerName()));
               removeConnection(nodeToBan);
             });
   }
@@ -360,7 +356,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     notifyPlayerRemoval(nodeToRemove);
     final SocketChannel channel = nodeToChannel.remove(nodeToRemove);
     if (channel == null) {
-      log.warn("Could not find node to remove: " + nodeToRemove);
+      log.warn("Could not find node to remove: {}", nodeToRemove);
       return;
     }
     channelToNode.remove(channel);
@@ -377,7 +373,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
 
     notifyConnectionsChanged(false, nodeToRemove);
-    log.info("Connection removed:" + nodeToRemove);
+    log.info("Connection removed: {}", nodeToRemove);
   }
 
   @Override
@@ -415,6 +411,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     notifyConnectionsChanged(true, remote);
 
-    log.info("Connection added to:" + remote);
+    log.info("Connection added to: {}", remote);
   }
 }
