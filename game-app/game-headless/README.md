@@ -46,3 +46,25 @@ cd work/triplea/triplea/game-app/game-headless/
 
 Start Triplea-Game, in 'settings' > 'testing', update Lobby URI to be: `http://localhost:3000`,
 'save' & then connect to lobby via 'play online'.
+
+
+### Running bots (on prod)
+
+
+### Linux:
+
+Below script opens firewall port 4000, downloads latest bot image & starts it.
+
+```bash
+BOT_NAME=....change_me.....
+
+sudo ufw allow 4000
+docker pull ghcr.io/triplea-game/bot:latest
+MAPS_FOLDER=/home/$USER/triplea/downloadedMaps
+docker run \
+    --env BOT_NAME=$BOT_NAME \
+    --env LOBBY_URI=https://prod.triplea-game.org \
+    -v $MAPS_FOLDER:/downloadedMaps \
+    -p 4000:4000 \
+    ghcr.io/triplea-game/bot:latest
+```
