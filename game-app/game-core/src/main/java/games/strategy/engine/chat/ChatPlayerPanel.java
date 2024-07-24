@@ -31,6 +31,7 @@ import javax.swing.UIManager;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.StringUtils;
+import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */
@@ -158,6 +159,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
             mouseOnPlayersList(e);
           }
         });
+    final JPanel panelReference = this;
     actionFactories.add(
         clickedOn -> {
           // you can't slap or ignore yourself
@@ -180,21 +182,49 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
           final Action disconnect =
               SwingAction.of(
                   "Disconnect " + clickedOn.getUserName(),
-                  e ->
+                  e -> {
+                    if (EventThreadJOptionPane.showConfirmDialog(
+                        panelReference,
+                        "Disconnect " + clickedOn.getUserName() + "?",
+                        "Confirm Disconnect",
+                        EventThreadJOptionPane.ConfirmDialogType.YES_NO)) {
                       chat.getMessengers()
                           .sendToServer(
-                              ModeratorMessage.newDisconnect(clickedOn.getUserName().getValue())));
+                              ModeratorMessage.newDisconnect(clickedOn.getUserName().getValue()));
+                    }
+                  });
           // TODO: add check for if we are moderator
 
           final Action ban =
               SwingAction.of(
                   "Ban " + clickedOn.getUserName(),
-                  e ->
+                  e -> {
+                    if (EventThreadJOptionPane.showConfirmDialog(
+                        panelReference,
+                        "Ban " + clickedOn.getUserName() + "?",
+                        "Confirm Ban",
+                        EventThreadJOptionPane.ConfirmDialogType.YES_NO)) {
                       chat.getMessengers()
                           .sendToServer(
-                              ModeratorMessage.newBan(clickedOn.getUserName().getValue())));
+                              ModeratorMessage.newBan(clickedOn.getUserName().getValue()));
+                    }
+                  });
 
-          return List.of(slap, ignore, disconnect, ban);
+          List<Action> availableActions = new ArrayList<>(List.of(slap, ignore));
+
+          boolean currentPlayerIsModerator = false;
+          for (int i = 0, n = listModel.getSize(); i < n; i++) {
+            var participant = listModel.get(i);
+            if (chat.getLocalUserName().equals(participant.getUserName())) {
+              currentPlayerIsModerator = participant.isModerator();
+              break;
+            }
+          }
+
+          if (currentPlayerIsModerator && !clickedOn.isModerator()) {
+            availableActions.addAll(List.of(disconnect, ban));
+          }
+          return availableActions;
         });
   }
 
