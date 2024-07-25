@@ -19,7 +19,6 @@ import org.triplea.io.FileUtils;
 import org.triplea.io.ZipExtractor;
 import org.triplea.io.ZipExtractor.FileSystemException;
 import org.triplea.io.ZipExtractor.ZipReadException;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 /**
@@ -125,40 +124,36 @@ public class ZippedMapsExtractor {
         mapZip.getFileName().toString().endsWith(".zip"), mapZip.toAbsolutePath());
 
     try {
-      return unzipMapThrowing(mapZip);
+      // extraction target is important, it is the folder path we seek to create with
+      // extracted map contents.
+      final Path mapsFolder = ClientFileSystemHelper.getUserMapsFolder();
+      final Path extractionTarget =
+          mapsFolder.resolve(computeExtractionFolderName(mapZip.getFileName().toString()));
+      log.info(
+          "Extracting map zip: {} -> {}", mapZip.toAbsolutePath(), extractionTarget.toAbsolutePath());
+      FileUtils.deleteDirectory(extractionTarget);
+      ZipExtractor.unzipFile(mapZip, extractionTarget);
+
+      // delete old properties file if they exists
+      final Path propertiesFile =
+          mapZip.resolveSibling(mapZip.getFileName().toString() + ".properties");
+      if (Files.exists(propertiesFile)) {
+        FileUtils.delete(propertiesFile);
+      }
+
+      final boolean successfullyExtracted = Files.exists(extractionTarget);
+      if (successfullyExtracted) {
+        Files.delete(mapZip);
+        return Optional.of(extractionTarget);
+      } else {
+        return Optional.empty();
+      }
     } catch (final IOException e) {
       log.warn("Error extracting file: {}, {}", mapZip.toAbsolutePath() + ", " + e.getMessage(), e);
       return Optional.empty();
     }
   }
 
-  // unzip map, replace existing
-  private static Optional<Path> unzipMapThrowing(final Path mapZip) throws IOException {
-    // extraction target is important, it is the folder path we seek to create with
-    // extracted map contents.
-    final Path mapsFolder = ClientFileSystemHelper.getUserMapsFolder();
-    final Path extractionTarget =
-        mapsFolder.resolve(computeExtractionFolderName(mapZip.getFileName().toString()));
-    log.info(
-        "Extracting map zip: {} -> {}", mapZip.toAbsolutePath(), extractionTarget.toAbsolutePath());
-    FileUtils.deleteDirectory(extractionTarget);
-    ZipExtractor.unzipFile(mapZip, extractionTarget);
-
-    // delete old properties file if they exists
-    final Path propertiesFile =
-        mapZip.resolveSibling(mapZip.getFileName().toString() + ".properties");
-    if (Files.exists(propertiesFile)) {
-      FileUtils.delete(propertiesFile);
-    }
-
-    final boolean successfullyExtracted = Files.exists(extractionTarget);
-    if (successfullyExtracted) {
-      Files.delete(mapZip);
-      return Optional.of(extractionTarget);
-    } else {
-      return Optional.empty();
-    }
-  }
 
   /**
    * Removes the '.zip' or '-master.zip' suffix from map names if present. <br>
