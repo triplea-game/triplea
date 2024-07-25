@@ -56,12 +56,12 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private final JButton loadNewGame =
       new JButtonBuilder()
           .title("Select Game")
-          .toolTip("Start a new game or load an autosave from the host server.")
+          .toolTip("Start a new game (autosaves on bot servers will appear here)")
           .build();
 
   private final JButton loadSavedGame =
       new JButtonBuilder()
-          .title("Upload Saved Game")
+          .title("Saved Game")
           .toolTip("Open a game saved on your computer.")
           .build();
 
