@@ -29,5 +29,10 @@ jobs:
         if: ${{ env.IS_MASTER_BUILD }}
         run: |
           ./gradlew :game-app:game-headless:shadowJar
-          docker build game-app/game-headless --tag ghcr.io/triplea-game/bot:latest
+          BUILD_VERSION=$(game-app/run/.build/get-build-version)
+
+          docker build game-app/game-headless \
+            --tag ghcr.io/triplea-game/bot:latest \
+            --label gitSha="$(git rev-parse --short HEAD)" \
+            --label buildVersion="$BUILD_VERSION" \
           docker push ghcr.io/triplea-game/bot:latest
