@@ -3,6 +3,7 @@ package games.strategy.engine.framework.map.file.system.loader;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.GameRunner;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -131,36 +132,41 @@ public class ZippedMapsExtractor {
     final Path extractionTarget =
         mapsFolder.resolve(computeExtractionFolderName(mapZip.getFileName().toString()));
 
-    log.info(
-        "Extracting map zip: {} -> {}", mapZip.toAbsolutePath(), extractionTarget.toAbsolutePath());
-
-    // extract into a temp folder first
-    // put the temp folder in the maps folder, so they're on the same partition (to move later)
-    final Path tempFolder = Files.createTempDirectory("triplea-unzip");
-    ZipExtractor.unzipFile(mapZip, tempFolder);
-    tempFolder.toFile().deleteOnExit();
-
-    // Typically, the next step is to move and rename the temp folder to the maps folder.
-    // But, if we just extracted exactly one folder, then we need to move and rename *that* folder.
-    final Collection<Path> files = FileUtils.listFiles(tempFolder);
-    final Path tempFolderWithExtractedMap =
-        files.size() == 1 && Files.isDirectory(CollectionUtils.getAny(files))
-            ? CollectionUtils.getAny(files)
-            : tempFolder;
-
-    // replace extraction target folder contents with the temp folder containing the extracted zip
-    final boolean folderReplaced =
-        FileUtils.replaceFolder(tempFolderWithExtractedMap, extractionTarget);
-
-    // Either we have moved and renamed the temp folder, or we have moved and renamed the contents
-    // of the temp folder. Either way, we can go ahead and remove the now possibly empty tempFolder
-    FileUtils.deleteDirectory(tempFolder);
-
-    if (!folderReplaced) {
+    if (!GameRunner.headless() && Files.exists(extractionTarget)) {
+      log.info(
+          "Skipping extraction of: {}, extraction target already exists: {}",
+          mapZip.toAbsolutePath(),
+          extractionTarget.toAbsolutePath());
       return Optional.empty();
     }
 
-    // delete properties file if it exists
+    // if this is a bot, then we are updating the map - delete the old folder and extract a new.
+    if (GameRunner.headless() && Files.exists(extractionTarget)) {
+      log.info("Deleting old map folder: " + extractionTarget.toAbsolutePath());
+      FileUtils.deleteDirectory(extractionTarget);
+    }
+
+    log.info(
+        "Extracting map zip: {} -> {}", mapZip.toAbsolutePath(), extractionTarget.toAbsolutePath());
+
+    // extract to a temp folder.
+    //    If the temp folder then contains a single folder:
+    //       -> move that single folder to extraction target and remove the temp folder
+    //    If the temp folder contains many files:
+    //       -> rename the temp folder to extraction target
+    final Path tempFolder = Files.createTempDirectory(mapsFolder, "map-unzip");
+    ZipExtractor.unzipFile(mapZip, tempFolder);
+    final Collection<Path> files = FileUtils.listFiles(tempFolder);
+    if (files.size() == 1 && Files.isDirectory(CollectionUtils.getAny(files))) {
+      // temp folder contains a folder that contains all the map files
+      Files.move(CollectionUtils.getAny(files), extractionTarget);
+      Files.delete(tempFolder);
+    } else {
+      // temp folder contains all the map files. Rename the temp folder
+      Files.move(tempFolder, extractionTarget);
+    }
+
+    // delete old properties file if they exists
     final Path propertiesFile =
         mapZip.resolveSibling(mapZip.getFileName().toString() + ".properties");
     if (Files.exists(propertiesFile)) {
