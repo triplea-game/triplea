@@ -110,8 +110,17 @@ public class ZippedMapsExtractor {
    * @return Returns extracted location (if successful, otherwise empty)
    */
   public static Optional<Path> unzipMap(final Path mapZip) {
+    if (!Files.exists(mapZip)) {
+      String msg =
+          "Unexpected, cannot extract map zip, no file exists at: " + mapZip.toAbsolutePath();
+      if (GameRunner.headless()) {
+        log.warn(msg);
+      } else {
+        log.info(msg);
+      }
+      return Optional.empty();
+    }
     Preconditions.checkArgument(!Files.isDirectory(mapZip), mapZip.toAbsolutePath());
-    Preconditions.checkArgument(Files.exists(mapZip), mapZip.toAbsolutePath());
     Preconditions.checkArgument(
         mapZip.getFileName().toString().endsWith(".zip"), mapZip.toAbsolutePath());
 
