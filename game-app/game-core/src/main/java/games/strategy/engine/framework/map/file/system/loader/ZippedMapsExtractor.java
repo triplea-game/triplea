@@ -132,48 +132,17 @@ public class ZippedMapsExtractor {
     }
   }
 
-  // unzip map
-  // if previous folder exists then back it up
+  // unzip map, replace existing
   private static Optional<Path> unzipMapThrowing(final Path mapZip) throws IOException {
     // extraction target is important, it is the folder path we seek to create with
     // extracted map contents.
     final Path mapsFolder = ClientFileSystemHelper.getUserMapsFolder();
     final Path extractionTarget =
         mapsFolder.resolve(computeExtractionFolderName(mapZip.getFileName().toString()));
-
-    if (!GameRunner.headless() && Files.exists(extractionTarget)) {
-      log.info(
-          "Skipping extraction of: {}, extraction target already exists: {}",
-          mapZip.toAbsolutePath(),
-          extractionTarget.toAbsolutePath());
-      return Optional.empty();
-    }
-
-    // if this is a bot, then we are updating the map - delete the old folder and extract a new.
-    if (GameRunner.headless() && Files.exists(extractionTarget)) {
-      log.info("Deleting old map folder: " + extractionTarget.toAbsolutePath());
-      FileUtils.deleteDirectory(extractionTarget);
-    }
-
     log.info(
         "Extracting map zip: {} -> {}", mapZip.toAbsolutePath(), extractionTarget.toAbsolutePath());
-
-    // extract to a temp folder.
-    //    If the temp folder then contains a single folder:
-    //       -> move that single folder to extraction target and remove the temp folder
-    //    If the temp folder contains many files:
-    //       -> rename the temp folder to extraction target
-    final Path tempFolder = Files.createTempDirectory(mapsFolder, "map-unzip");
-    ZipExtractor.unzipFile(mapZip, tempFolder);
-    final Collection<Path> files = FileUtils.listFiles(tempFolder);
-    if (files.size() == 1 && Files.isDirectory(CollectionUtils.getAny(files))) {
-      // temp folder contains a folder that contains all the map files
-      Files.move(CollectionUtils.getAny(files), extractionTarget);
-      Files.delete(tempFolder);
-    } else {
-      // temp folder contains all the map files. Rename the temp folder
-      Files.move(tempFolder, extractionTarget);
-    }
+    FileUtils.deleteDirectory(extractionTarget);
+    ZipExtractor.unzipFile(mapZip, extractionTarget);
 
     // delete old properties file if they exists
     final Path propertiesFile =
