@@ -61,15 +61,15 @@ public class ZippedMapsExtractor {
                         // Before 2.6 maps did not include a 'map.yaml' file and were zipped.
                         .ifPresent(MapDescriptionYaml::generateForMap);
                   } catch (final ZipReadException zipReadException) {
-                    log.warn(
-                        "Error reading zip: {}{}",
-                        mapZip.toAbsolutePath(),
-                        Files.exists(mapZip) ? ", moving to 'bad-zips' folder" : "",
-                        zipReadException);
-
-                    // Problem reading the zip, move it to a folder so that the user does
-                    // not repeatedly see an error trying to read this zip.
-                    if (Files.exists(mapZip)) {
+                    if (GameRunner.headless()) {
+                      log.warn(
+                          "Error reading zip file: {}, deleting the file.",
+                          mapZip,
+                          zipReadException);
+                      FileUtils.delete(mapZip);
+                    } else {
+                      // Problem reading the zip, move it to a folder so that the user does
+                      // not repeatedly see an error trying to read this zip.
                       moveBadZip(mapZip)
                           .ifPresent(
                               newLocation ->
