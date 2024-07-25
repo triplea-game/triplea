@@ -130,7 +130,9 @@ public class ZippedMapsExtractor {
       final Path extractionTarget =
           mapsFolder.resolve(computeExtractionFolderName(mapZip.getFileName().toString()));
       log.info(
-          "Extracting map zip: {} -> {}", mapZip.toAbsolutePath(), extractionTarget.toAbsolutePath());
+          "Extracting map zip: {} -> {}",
+          mapZip.toAbsolutePath(),
+          extractionTarget.toAbsolutePath());
       FileUtils.deleteDirectory(extractionTarget);
       ZipExtractor.unzipFile(mapZip, extractionTarget);
 
@@ -149,11 +151,10 @@ public class ZippedMapsExtractor {
         return Optional.empty();
       }
     } catch (final IOException e) {
-      log.warn("Error extracting file: {}, {}", mapZip.toAbsolutePath() + ", " + e.getMessage(), e);
+      log.warn("Error extracting file: {}, {}", mapZip.toAbsolutePath(), e.getMessage(), e);
       return Optional.empty();
     }
   }
-
 
   /**
    * Removes the '.zip' or '-master.zip' suffix from map names if present. <br>
