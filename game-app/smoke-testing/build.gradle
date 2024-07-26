@@ -8,7 +8,6 @@ dependencies {
     testImplementation project(":game-app:game-headless")
     testImplementation project(":lib:java-extras")
     testImplementation project(":lib:test-common")
-    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
 
 test {

@@ -1,7 +1,5 @@
 dependencies {
-    implementation "org.java-websocket:Java-WebSocket:$javaWebSocketVersion"
     implementation project(":lib:websocket-client")
     implementation project(":lib:websocket-server")
-    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation project(":lib:test-common")
 }

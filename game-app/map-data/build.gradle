@@ -1,7 +1,4 @@
 dependencies {
-    implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
     implementation project(":lib:java-extras")
     implementation project(":lib:xml-reader")
-    testImplementation "org.xmlunit:xmlunit-core:$xmlUnitCore"
-    testImplementation "org.xmlunit:xmlunit-matchers:$xmlUnitMatchers"
 }
