@@ -6,18 +6,12 @@ plugins {
 version = System.getenv("JAR_VERSION")
 
 dependencies {
-    implementation "io.github.openfeign:feign-core:$feignCoreVersion"
     implementation project(":game-app:domain-data")
     implementation project(":lib:feign-common")
     implementation project(":lib:java-extras")
     implementation project(":lib:websocket-client")
-    testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"
-    testImplementation "com.google.code.gson:gson:$gsonVersion"
-    testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
-    testImplementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     testImplementation project(":lib:test-common")
 }
-
 
 def getGitCommitCount = { ->
     def stdout = new ByteArrayOutputStream()

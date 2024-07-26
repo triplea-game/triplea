@@ -2,6 +2,5 @@ description = "TripleA library for utilities and components that depend only on 
 
 dependencies {
     implementation project(":lib:java-extras")
-    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation project(":lib:test-common")
 }

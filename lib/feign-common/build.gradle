@@ -1,11 +1,5 @@
 dependencies {
-    implementation "com.google.code.gson:gson:$gsonVersion"
-    implementation "io.github.openfeign:feign-core:$feignCoreVersion"
-    implementation "io.github.openfeign:feign-gson:$feignGsonVersion"
     implementation project(":game-app:domain-data")
     implementation project(":lib:java-extras")
-    testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"
-    testImplementation "com.github.tomakehurst:wiremock:$wireMockVersion"
-    testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
     testImplementation project(":lib:test-common")
 }

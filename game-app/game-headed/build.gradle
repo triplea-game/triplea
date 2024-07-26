@@ -14,8 +14,6 @@ ext {
 }
 
 dependencies {
-    implementation "io.github.openfeign:feign-gson:$openFeignVersion"
-    implementation "org.pushing-pixels:radiance-substance:$substanceVersion"
     implementation project(":game-app:ai")
     implementation project(":game-app:domain-data")
     implementation project(":game-app:game-core")
@@ -27,7 +25,6 @@ dependencies {
     implementation project(":lib:java-extras")
     implementation project(":lib:swing-lib")
     implementation project(":lib:websocket-client")
-    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testImplementation project(":lib:test-common")
 }
 
