@@ -5,12 +5,11 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.events.ZoomMapListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -141,10 +140,8 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     // Get all the needed data while holding a lock, then invoke UI updates on the EDT.
     try (GameData.Unlocker ignored = territory.getData().acquireReadLock()) {
       final String territoryName = territory.getName();
-      final Collection<UnitCategory> units =
-          uiContext.isShowUnitsInStatusBar()
-              ? UnitSeparator.categorize(territory.getUnits())
-              : List.of();
+      final Collection<Unit> units =
+          uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
       final TerritoryAttachment ta = TerritoryAttachment.get(territory);
       final IntegerMap<Resource> resources = new IntegerMap<>();
       final List<String> territoryEffectNames;
@@ -170,7 +167,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   private void updateTerritoryInfo(
       String territoryName,
       List<String> territoryEffectNames,
-      Collection<UnitCategory> units,
+      Collection<Unit> units,
       IntegerMap<Resource> resources) {
     // Box layout with horizontal glue on both sides achieves the following desirable properties:
     //   1. If the content is narrower than the available space, it will be centered.
@@ -237,11 +234,11 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     return BorderFactory.createEmptyBorder(topPad, 0, bottomPad, 0);
   }
 
-  private SimpleUnitPanel createUnitBar(Collection<UnitCategory> units) {
+  private SimpleUnitPanel createUnitBar(Collection<Unit> units) {
     final var unitBar = new SimpleUnitPanel(uiContext, SimpleUnitPanel.Style.SMALL_ICONS_ROW);
     unitBar.setScaleFactor(0.5);
     unitBar.setShowCountsForSingleUnits(false);
-    unitBar.setUnitsFromCategories(units);
+    unitBar.setUnits(units);
     // Constrain the preferred size to the available size so that unit images that may not fully fit
     // don't cause layout issues.
     final int unitsWidth = unitBar.getPreferredSize().width;

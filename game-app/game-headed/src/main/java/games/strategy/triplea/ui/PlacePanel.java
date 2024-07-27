@@ -18,8 +18,6 @@ import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeparator;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -113,7 +111,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   private void updateStep() {
-    final Collection<UnitCategory> unitsToPlace;
+    final Collection<Unit> unitsToPlace;
     final boolean showUnitsToPlace;
     final GameData data = getData();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
@@ -134,7 +132,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       // If we're past the production step (even if player didn't produce anything) or
       // there are units that are available to place, show the panel (set unitsToPlace).
       showUnitsToPlace = (postProductionStep || !playerUnits.isEmpty());
-      unitsToPlace = showUnitsToPlace ? UnitSeparator.categorize(playerUnits) : null;
+      unitsToPlace = showUnitsToPlace ? playerUnits : List.of();
       if (GameStep.isPurchaseOrBidStep(step.getName())) {
         postProductionStep = true;
       }
@@ -150,7 +148,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     SwingUtilities.invokeLater(
         () -> {
           if (showUnitsToPlace) {
-            unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
+            unitsToPlacePanel.setUnits(unitsToPlace);
             SwingComponents.redraw(unitsToPlacePanel);
           } else {
             unitsToPlacePanel.removeAll();
@@ -160,19 +158,19 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
 
   @Override
   public void gameDataChanged(final Change change) {
-    final Collection<UnitCategory> unitsToPlace;
+    final Collection<Unit> unitsToPlace;
     final GameData data = getData();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final GamePlayer player = data.getSequence().getStep().getPlayerId();
       if (player == null) {
         return;
       }
-      unitsToPlace = UnitSeparator.categorize(player.getUnits());
+      unitsToPlace = player.getUnits();
     }
 
     SwingUtilities.invokeLater(
         () -> {
-          unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
+          unitsToPlacePanel.setUnits(unitsToPlace);
           unitsToPlacePanel.revalidate();
           unitsToPlacePanel.repaint();
         });
@@ -308,8 +306,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   private void updateUnits() {
-    final Collection<UnitCategory> unitCategories =
-        UnitSeparator.categorize(getCurrentPlayer().getUnits());
-    unitsToPlacePanel.setUnitsFromCategories(unitCategories);
+    unitsToPlacePanel.setUnits(getCurrentPlayer().getUnits());
   }
 }

@@ -7,7 +7,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.util.UnitSeparator;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.SwingUtilities;
@@ -48,7 +47,7 @@ class PlacementUnitsCollapsiblePanel {
     SwingUtilities.invokeLater(
         () -> {
           if (shouldRenderPanelForThisGameStep && !playerUnits.isEmpty()) {
-            unitsToPlacePanel.setUnitsFromCategories(UnitSeparator.categorize(playerUnits));
+            unitsToPlacePanel.setUnits(playerUnits);
             panel.setVisible(true);
           } else {
             panel.setVisible(false);
