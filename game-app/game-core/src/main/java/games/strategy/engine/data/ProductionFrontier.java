@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,21 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
       cachedRules = Collections.unmodifiableList(rules);
     }
     return cachedRules;
+  }
+
+  /**
+   * @return Collection of <code>UnitType</code> that can be produced by this frontier
+   */
+  public Collection<UnitType> getProducibleUnitTypes() {
+    Collection<UnitType> producibleUnitTypes = new ArrayList<>();
+    for (final ProductionRule rule : this) {
+      for (final NamedAttachable type : rule.getResults().keySet()) {
+        if (type instanceof UnitType) {
+          producibleUnitTypes.add((UnitType) type);
+        }
+      }
+    }
+    return producibleUnitTypes;
   }
 
   @Override

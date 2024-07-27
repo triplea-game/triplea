@@ -2,9 +2,7 @@ package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionFrontier;
-import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -140,34 +138,31 @@ public class PlayerUnitsPanel extends JPanel {
 
     // Populate units into each category then add any remaining categories (damaged units, etc)
     final Set<UnitCategory> unitCategoriesWithUnits = UnitSeparator.categorize(units);
-    for (final UnitCategory category : categories) {
-      for (final UnitCategory unitCategoryWithUnits : unitCategoriesWithUnits) {
-        if (category.equals(unitCategoryWithUnits)) {
-          category.getUnits().addAll(unitCategoryWithUnits.getUnits());
-        }
+    for (final UnitCategory unitCategoryWithUnits : unitCategoriesWithUnits) {
+      int categoryIndex = categories.indexOf(unitCategoryWithUnits);
+      if (categoryIndex > 0) {
+        categories.get(categoryIndex).getUnits().addAll(unitCategoryWithUnits.getUnits());
+      } else {
+        categories.add(unitCategoryWithUnits);
       }
     }
-    categories.addAll(unitCategoriesWithUnits);
 
     return categories;
   }
 
   /**
    * Return all the unit types available for the given player. A unit type is available if the unit
-   * can be purchased or if a player has one on the map.
+   * can be produced/purchased or if a player has one on the map.
    */
   private Collection<UnitType> getUnitTypes(final GamePlayer player) {
     Collection<UnitType> unitTypes = new LinkedHashSet<>();
+
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {
-      for (final ProductionRule rule : frontier) {
-        for (final NamedAttachable type : rule.getResults().keySet()) {
-          if (type instanceof UnitType) {
-            unitTypes.add((UnitType) type);
-          }
-        }
-      }
+      unitTypes.addAll(frontier.getProducibleUnitTypes());
     }
+
+    // get any unit on the map and check
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {
         if (u.isOwnedBy(player)) {
