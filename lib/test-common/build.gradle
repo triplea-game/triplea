@@ -2,9 +2,6 @@ description = "Test utility library, generic test utilities useful for TripleA p
 
 dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"
-    implementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     implementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
-    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
-    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
 }
