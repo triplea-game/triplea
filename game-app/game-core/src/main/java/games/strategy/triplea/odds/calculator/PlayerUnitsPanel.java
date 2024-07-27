@@ -2,13 +2,10 @@ package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionFrontier;
-import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvCostsCalculator;
@@ -34,8 +31,8 @@ public class PlayerUnitsPanel extends JPanel {
   private final GameData data;
   private final UiContext uiContext;
   private final boolean defender;
-  private boolean isLand = true;
-  @Getter private List<UnitCategory> categories = null;
+  private boolean isLandBattle = true;
+  @Getter private List<UnitCategory> unitCategories = null;
   private final List<Runnable> listeners = new ArrayList<>();
   private final List<UnitPanel> unitPanels = new ArrayList<>();
 
@@ -59,54 +56,17 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   /** Sets up components to an initial state. */
-  public void init(final GamePlayer gamePlayer, final List<Unit> units, final boolean land) {
-    isLand = land;
+  public void init(
+      final GamePlayer gamePlayer,
+      final List<Unit> units,
+      final boolean isLandBattle,
+      final Territory territory) {
+    this.isLandBattle = isLandBattle;
     unitPanels.clear();
-    categories = new ArrayList<>(categorize(gamePlayer, units));
-
-    categories.sort(
-        (c1, c2) -> {
-          if (!c1.isOwnedBy(c2.getOwner())) {
-            if (c1.isOwnedBy(gamePlayer)) {
-              return -1;
-            } else if (c2.isOwnedBy(gamePlayer)) {
-              return 1;
-            } else {
-              return c1.getOwner().getName().compareTo(c2.getOwner().getName());
-            }
-          }
-          final UnitType ut1 = c1.getType();
-          final UnitType ut2 = c2.getType();
-          final UnitAttachment u1 = ut1.getUnitAttachment();
-          final UnitAttachment u2 = ut2.getUnitAttachment();
-          // For land battles, sort by land, air, can't combat move (AA), bombarding
-          if (land) {
-            if (u1.getIsSea() != u2.getIsSea()) {
-              return u1.getIsSea() ? 1 : -1;
-            }
-            final boolean u1CanNotCombatMove =
-                Matches.unitTypeCanNotMoveDuringCombatMove().test(ut1)
-                    || !Matches.unitTypeCanMove(gamePlayer).test(ut1);
-            final boolean u2CanNotCombatMove =
-                Matches.unitTypeCanNotMoveDuringCombatMove().test(ut2)
-                    || !Matches.unitTypeCanMove(gamePlayer).test(ut2);
-            if (u1CanNotCombatMove != u2CanNotCombatMove) {
-              return u1CanNotCombatMove ? 1 : -1;
-            }
-            if (u1.getIsAir() != u2.getIsAir()) {
-              return u1.getIsAir() ? 1 : -1;
-            }
-          } else {
-            if (u1.getIsSea() != u2.getIsSea()) {
-              return u1.getIsSea() ? -1 : 1;
-            }
-          }
-          return u1.getName().compareTo(u2.getName());
-        });
 
     removeAll();
     final Predicate<UnitType> predicate;
-    if (land) {
+    if (isLandBattle) {
       if (defender) {
         predicate = Matches.unitTypeIsNotSea();
       } else {
@@ -120,9 +80,11 @@ public class PlayerUnitsPanel extends JPanel {
       costs = new TuvCostsCalculator().getCostsForTuv(gamePlayer);
     }
 
+    unitCategories = getAllUnitCategories(gamePlayer, units);
+    UnitSeparator.sortUnitCategories(unitCategories, territory, gamePlayer);
     GamePlayer previousPlayer = null;
     JPanel panel = null;
-    for (final UnitCategory category : categories) {
+    for (final UnitCategory category : unitCategories) {
       if (predicate.test(category.getType())) {
         if (!category.isOwnedBy(previousPlayer)) {
           panel = new JPanel();
@@ -131,10 +93,12 @@ public class PlayerUnitsPanel extends JPanel {
           add(panel);
           previousPlayer = category.getOwner();
         }
-        final var unitPanel = new UnitPanel(uiContext, category, costs);
-        unitPanel.addChangeListener(this::notifyListeners);
-        panel.add(unitPanel);
-        unitPanels.add(unitPanel);
+        if (panel != null) {
+          final var unitPanel = new UnitPanel(uiContext, category, costs);
+          unitPanel.addChangeListener(this::notifyListeners);
+          panel.add(unitPanel);
+          unitPanels.add(unitPanel);
+        }
       }
     }
 
@@ -150,10 +114,11 @@ public class PlayerUnitsPanel extends JPanel {
    * production frontier and then any unit types the player owns on the map. Then populate the list
    * of units into the categories.
    */
-  private Set<UnitCategory> categorize(final GamePlayer gamePlayer, final List<Unit> units) {
+  private List<UnitCategory> getAllUnitCategories(
+      final GamePlayer gamePlayer, final List<Unit> units) {
 
     // Get player unit types from production frontier and unit types on the map
-    final Set<UnitCategory> categories = new LinkedHashSet<>();
+    final List<UnitCategory> categories = new ArrayList<>();
     for (final UnitType t : getUnitTypes(gamePlayer)) {
       final UnitCategory category = new UnitCategory(t, gamePlayer);
       categories.add(category);
@@ -172,35 +137,32 @@ public class PlayerUnitsPanel extends JPanel {
     }
 
     // Populate units into each category then add any remaining categories (damaged units, etc)
-    final Set<UnitCategory> unitCategories = UnitSeparator.categorize(units);
-    for (final UnitCategory category : categories) {
-      for (final UnitCategory unitCategory : unitCategories) {
-        if (category.equals(unitCategory)) {
-          category.getUnits().addAll(unitCategory.getUnits());
-        }
+    final Set<UnitCategory> unitCategoriesWithUnits = UnitSeparator.categorize(units);
+    for (final UnitCategory unitCategoryWithUnits : unitCategoriesWithUnits) {
+      int categoryIndex = categories.indexOf(unitCategoryWithUnits);
+      if (categoryIndex > 0) {
+        categories.get(categoryIndex).getUnits().addAll(unitCategoryWithUnits.getUnits());
+      } else {
+        categories.add(unitCategoryWithUnits);
       }
     }
-    categories.addAll(unitCategories);
 
     return categories;
   }
 
   /**
    * Return all the unit types available for the given player. A unit type is available if the unit
-   * can be purchased or if a player has one on the map.
+   * can be produced/purchased or if a player has one on the map.
    */
   private Collection<UnitType> getUnitTypes(final GamePlayer player) {
     Collection<UnitType> unitTypes = new LinkedHashSet<>();
+
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {
-      for (final ProductionRule rule : frontier) {
-        for (final NamedAttachable type : rule.getResults().keySet()) {
-          if (type instanceof UnitType) {
-            unitTypes.add((UnitType) type);
-          }
-        }
-      }
+      unitTypes.addAll(frontier.getProducibleUnitTypes());
     }
+
+    // get any unit on the map and check
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {
         if (u.isOwnedBy(player)) {
@@ -216,10 +178,10 @@ public class PlayerUnitsPanel extends JPanel {
             unitTypes,
             Matches.unitTypeCanBeInBattle(
                 !defender,
-                isLand,
+                isLandBattle,
                 player,
                 1,
-                BattleCalculatorPanel.hasMaxRounds(isLand, data),
+                BattleCalculatorPanel.hasMaxRounds(isLandBattle, data),
                 false,
                 List.of()));
 
