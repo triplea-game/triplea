@@ -591,7 +591,7 @@ public class MovePanel extends AbstractMovePanel {
               new SimpleUnitPanel(
                   getMap().getUiContext(),
                   SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-          unitPanel.setUnitsFromCategories(UnitSeparator.categorize(possibleScramblers));
+          unitPanel.setUnits(possibleScramblers);
           final String message = "Warning: Units may scramble from nearby territories to defend:";
           final JPanel panel =
               new JPanelBuilder()

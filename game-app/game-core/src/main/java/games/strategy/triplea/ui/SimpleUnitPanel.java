@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import com.google.common.collect.Lists;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -17,7 +16,6 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.Image;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -118,18 +116,18 @@ public class SimpleUnitPanel extends JPanel {
   }
 
   /**
-   * Adds units to the panel based on the specified unit categories.
+   * Adds {@code units} to the panel in accordance to their {@code UnitCategory}.
    *
-   * @param categories a collection of UnitCategories.
+   * @param units units to be placed
    */
-  public void setUnitsFromCategories(final Collection<UnitCategory> categories) {
+  public void setUnits(final Collection<Unit> units) {
     removeAll();
-    if (categories.isEmpty()) {
+    if (units.isEmpty()) {
       return;
     }
-    final GameData gameData = categories.iterator().next().getUnitAttachment().getData();
-    final ArrayList<UnitCategory> unitCategories = Lists.newArrayList(categories);
-    UnitSeparator.sortUnitCategories(unitCategories, gameData);
+    final GameData gameData = units.iterator().next().getUnitAttachment().getData();
+    final Collection<UnitCategory> unitCategories =
+        UnitSeparator.getSortedUnitCategories(units, gameData, uiContext.getMapData());
     for (final UnitCategory category : unitCategories) {
       addUnits(
           category.getOwner(),

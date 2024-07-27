@@ -11,8 +11,6 @@ import games.strategy.triplea.delegate.data.PlacementDescription;
 import games.strategy.triplea.ui.DicePanel;
 import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.ui.panels.map.MapPanel;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeparator;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -117,9 +115,8 @@ public class HistoryDetailsPanel extends JPanel {
   }
 
   private void renderUnits(final GridBagConstraints mainConstraints, final Collection<Unit> units) {
-    final Collection<UnitCategory> unitsCategories = UnitSeparator.categorize(units);
     final SimpleUnitPanel unitsPanel = new SimpleUnitPanel(mapPanel.getUiContext());
-    unitsPanel.setUnitsFromCategories(unitsCategories);
+    unitsPanel.setUnits(units);
     content.add(unitsPanel, mainConstraints);
   }
 }
