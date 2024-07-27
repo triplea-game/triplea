@@ -57,7 +57,7 @@ public class PlayerUnitsPanel extends JPanel {
 
   /** Sets up components to an initial state. */
   public void init(
-      final GamePlayer gamePlayer,
+      final GamePlayer panelPlayer,
       final List<Unit> units,
       final boolean isLandBattle,
       final Territory territory) {
@@ -70,18 +70,18 @@ public class PlayerUnitsPanel extends JPanel {
       if (defender) {
         predicate = Matches.unitTypeIsNotSea();
       } else {
-        predicate = Matches.unitTypeIsNotSea().or(Matches.unitTypeCanBombard(gamePlayer));
+        predicate = Matches.unitTypeIsNotSea().or(Matches.unitTypeCanBombard(panelPlayer));
       }
     } else {
       predicate = Matches.unitTypeIsSeaOrAir();
     }
     final IntegerMap<UnitType> costs;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      costs = new TuvCostsCalculator().getCostsForTuv(gamePlayer);
+      costs = new TuvCostsCalculator().getCostsForTuv(panelPlayer);
     }
 
-    unitCategories = getAllUnitCategories(gamePlayer, units);
-    UnitSeparator.sortUnitCategories(unitCategories, territory, gamePlayer);
+    unitCategories = getAllUnitCategories(panelPlayer, units);
+    UnitSeparator.sortUnitCategories(unitCategories, territory, panelPlayer);
     GamePlayer previousPlayer = null;
     JPanel panel = null;
     for (final UnitCategory category : unitCategories) {
@@ -110,86 +110,82 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   /**
-   * Get all unit type categories that can be in combat first in the order of the player's
-   * production frontier and then any unit types the player owns on the map. Then populate the list
-   * of units into the categories.
+   * Gets all unit type categories that can be in combat and pre-populates the categories with
+   * {@code units}.
+   *
+   * @param panelPlayer player for this panel
+   * @param units list of units to be populated
    */
   private List<UnitCategory> getAllUnitCategories(
-      final GamePlayer gamePlayer, final List<Unit> units) {
+      final GamePlayer panelPlayer, final List<Unit> units) {
 
-    // Get player unit types from production frontier and unit types on the map
-    final List<UnitCategory> categories = new ArrayList<>();
-    for (final UnitType t : getUnitTypes(gamePlayer)) {
-      final UnitCategory category = new UnitCategory(t, gamePlayer);
-      categories.add(category);
-    }
+    final List<UnitCategory> allUnitCategories = new ArrayList<>();
 
-    // Get unit owner unit types from production frontier and unit types on the map
-    for (final GamePlayer player :
+    // get list of relevant players for which the unit types need to be collected
+    final Set<GamePlayer> players =
         units.stream()
             .map(Unit::getOwner)
-            .filter(p -> !p.equals(gamePlayer))
-            .collect(Collectors.toSet())) {
-      for (final UnitType t : getUnitTypes(player)) {
-        final UnitCategory category = new UnitCategory(t, player);
-        categories.add(category);
+            .filter(p -> !p.equals(panelPlayer))
+            .collect(Collectors.toSet());
+    players.add(panelPlayer);
+
+    // Get unit types per player and add the respective unit category
+    for (final GamePlayer player : players) {
+      for (final UnitType unitType : getUnitTypes(player)) {
+        final UnitCategory unitCategory = new UnitCategory(unitType, player);
+        allUnitCategories.add(unitCategory);
       }
     }
 
-    // Populate units into each category then add any remaining categories (damaged units, etc)
+    // Populate provided units into each category, add any remaining unit categories
     final Set<UnitCategory> unitCategoriesWithUnits = UnitSeparator.categorize(units);
     for (final UnitCategory unitCategoryWithUnits : unitCategoriesWithUnits) {
-      int categoryIndex = categories.indexOf(unitCategoryWithUnits);
+      int categoryIndex = allUnitCategories.indexOf(unitCategoryWithUnits);
       if (categoryIndex > 0) {
-        categories.get(categoryIndex).getUnits().addAll(unitCategoryWithUnits.getUnits());
+        allUnitCategories.get(categoryIndex).getUnits().addAll(unitCategoryWithUnits.getUnits());
       } else {
-        categories.add(unitCategoryWithUnits);
+        allUnitCategories.add(unitCategoryWithUnits);
       }
     }
 
-    return categories;
+    return allUnitCategories;
   }
 
   /**
-   * Return all the unit types available for the given player. A unit type is available if the unit
-   * can be produced/purchased or if a player has one on the map.
+   * Return all the unit types available for {@code gamePlayer}. A {@code UnitType} is available if
+   * the unit can be produced/purchased or a respective unit is present on the map.
+   *
+   * @param gamePlayer Player for which the unit types should be collected
    */
-  private Collection<UnitType> getUnitTypes(final GamePlayer player) {
-    Collection<UnitType> unitTypes = new LinkedHashSet<>();
+  private Collection<UnitType> getUnitTypes(final GamePlayer gamePlayer) {
+    final Collection<UnitType> unitTypes = new LinkedHashSet<>();
 
-    final ProductionFrontier frontier = player.getProductionFrontier();
+    final ProductionFrontier frontier = gamePlayer.getProductionFrontier();
     if (frontier != null) {
       unitTypes.addAll(frontier.getProducibleUnitTypes());
     }
 
-    // get any unit on the map and check
-    for (final Territory t : data.getMap()) {
-      for (final Unit u : t.getUnitCollection()) {
-        if (u.isOwnedBy(player)) {
-          unitTypes.add(u.getType());
-        }
-      }
-    }
+    // Get any  player's unit on the map and collect the unit type
+    data.getUnits().getUnits().stream()
+        .filter(u -> gamePlayer.equals(u.getOwner()))
+        .forEach(u -> unitTypes.add(u.getType()));
 
     // Filter out anything like factories, or units that have no combat ability AND cannot be taken
     // casualty
-    unitTypes =
-        CollectionUtils.getMatches(
-            unitTypes,
-            Matches.unitTypeCanBeInBattle(
-                !defender,
-                isLandBattle,
-                player,
-                1,
-                BattleCalculatorPanel.hasMaxRounds(isLandBattle, data),
-                false,
-                List.of()));
-
-    return unitTypes;
+    return CollectionUtils.getMatches(
+        unitTypes,
+        Matches.unitTypeCanBeInBattle(
+            !defender,
+            isLandBattle,
+            gamePlayer,
+            1,
+            BattleCalculatorPanel.hasMaxRounds(isLandBattle, data),
+            false,
+            List.of()));
   }
 
   /**
-   * Returns true if all of the unit panel numbers are zero, false if there are any units 'added' to
+   * Returns true if all the unit panel numbers are zero, false if there are any units 'added' to
    * the panel.
    */
   boolean isEmpty() {
