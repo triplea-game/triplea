@@ -56,7 +56,9 @@ public class UnitSeparator {
       final Territory t, final MapData mapData) {
     final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(t.getUnits()));
     categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
-    categories.sort(getComparatorUnitCategories(t));
+    final GameData gameData = t.getData();
+    categories.sort(getComparatorUnitCategories(
+        Optional.of(t), gameData, gameData.getHistory().getCurrentPlayer()));
     return categories;
   }
 
@@ -90,15 +92,6 @@ public class UnitSeparator {
   }
 
   /**
-   * Sorts a list of <code>UnitCategory</code> with <code>Territory</code> and <code>GamePlayer
-   * </code>
-   */
-  public static void sortUnitCategories(
-      final List<UnitCategory> unitCategories, final Territory t, final GamePlayer currentPlayer) {
-    unitCategories.sort(getComparatorUnitCategories(t, currentPlayer));
-  }
-
-  /**
    * Returns <code>Comparator</code> for unit categories with current <code>GameData</code> Try to
    * use a method returning List of <code>UnitCategory></code> instead
    */
@@ -108,17 +101,10 @@ public class UnitSeparator {
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
-  private static Comparator<UnitCategory> getComparatorUnitCategories(
+  public static Comparator<UnitCategory> getComparatorUnitCategories(
       final Territory t, final GamePlayer currentPlayer) {
     final GameData gameData = t.getData();
     return getComparatorUnitCategories(Optional.of(t), gameData, currentPlayer);
-  }
-
-  /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
-  private static Comparator<UnitCategory> getComparatorUnitCategories(final Territory t) {
-    final GameData gameData = t.getData();
-    return getComparatorUnitCategories(
-        Optional.of(t), gameData, gameData.getHistory().getCurrentPlayer());
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */

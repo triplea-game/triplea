@@ -81,7 +81,7 @@ public class PlayerUnitsPanel extends JPanel {
     }
 
     unitCategories = getAllUnitCategories(panelPlayer, units);
-    UnitSeparator.sortUnitCategories(unitCategories, territory, panelPlayer);
+    unitCategories.sort(UnitSeparator.getComparatorUnitCategories(territory, panelPlayer));
     GamePlayer previousPlayer = null;
     JPanel panel = null;
     for (final UnitCategory category : unitCategories) {
