@@ -61,22 +61,6 @@ public class UnitSeparator {
   }
 
   /**
-   * Finds unit categories from <code>units</code> of the <code>Territory</code>, removes not
-   * displayed ones according to <code>MapData</code> and then sorts them using also the <code>
-   * GamePlayer</code>
-   */
-  public static List<UnitCategory> getSortedUnitCategories(
-      final Collection<Unit> units,
-      final Territory t,
-      final MapData mapData,
-      final GamePlayer gamePlayer) {
-    final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(units));
-    categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
-    categories.sort(getComparatorUnitCategories(t, gamePlayer));
-    return categories;
-  }
-
-  /**
    * Finds unit categories from <code>units</code> of the <code>Territory</code> and then sorts them
    * using also the <code>GamePlayer</code>
    */
