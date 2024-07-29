@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.Nullable;
@@ -57,8 +56,8 @@ public class UnitSeparator {
     final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(t.getUnits()));
     categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
     final GameData gameData = t.getData();
-    categories.sort(getComparatorUnitCategories(
-        Optional.of(t), gameData, gameData.getHistory().getCurrentPlayer()));
+    categories.sort(
+        getComparatorUnitCategories(t, gameData, gameData.getHistory().getCurrentPlayer()));
     return categories;
   }
 
@@ -96,20 +95,19 @@ public class UnitSeparator {
    * use a method returning List of <code>UnitCategory></code> instead
    */
   public static Comparator<UnitCategory> getComparatorUnitCategories(final GameData gameData) {
-    return getComparatorUnitCategories(
-        Optional.empty(), gameData, gameData.getHistory().getCurrentPlayer());
+    return getComparatorUnitCategories(null, gameData, gameData.getHistory().getCurrentPlayer());
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
   public static Comparator<UnitCategory> getComparatorUnitCategories(
       final Territory t, final GamePlayer currentPlayer) {
     final GameData gameData = t.getData();
-    return getComparatorUnitCategories(Optional.of(t), gameData, currentPlayer);
+    return getComparatorUnitCategories(t, gameData, currentPlayer);
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
-      final Optional<Territory> optionalTerritory,
+      @Nullable final Territory optionalTerritory,
       final GameData gameData,
       final GamePlayer currentPlayer) {
     final List<UnitType> xmlUnitTypes =
@@ -125,7 +123,7 @@ public class UnitSeparator {
    * land territory 3. Within each of those groups sort the units by XML order in UnitList
    */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
-      final Optional<Territory> optionalTerritory,
+      @Nullable final Territory optionalTerritory,
       final GamePlayer currentPlayer,
       final List<GamePlayer> players,
       final List<UnitType> xmlUnitTypes) {
@@ -133,12 +131,11 @@ public class UnitSeparator {
             UnitCategory::getOwner, // 1. Unit owner
             Comparator.comparing(
                     (final GamePlayer p) ->
-                        !(optionalTerritory.isPresent()
-                            && p.equals(optionalTerritory.get().getOwner())))
+                        optionalTerritory != null && p.equals(optionalTerritory.getOwner()))
                 .thenComparing(
                     p ->
-                        (optionalTerritory.isPresent()
-                            && Matches.isAtWar(p).test(optionalTerritory.get().getOwner())))
+                        optionalTerritory != null
+                            && Matches.isAtWar(p).test(optionalTerritory.getOwner()))
                 .thenComparing(players::indexOf))
         .thenComparing(
             uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType())) // 2. Unit type
@@ -149,8 +146,8 @@ public class UnitSeparator {
                 .thenComparing(ut -> !Matches.unitTypeIsSea().test(ut))
                 .thenComparing(
                     ut ->
-                        !(optionalTerritory.isPresent()
-                            && optionalTerritory.get().isWater()
+                        !(optionalTerritory != null
+                            && optionalTerritory.isWater()
                             && Matches.unitTypeIsAir().test(ut)))
                 .thenComparing(ut -> !Matches.unitTypeIsLand().test(ut)))
         .thenComparingInt(ut -> ut.getUnitAttachment().getMaxBuiltPerPlayer())
