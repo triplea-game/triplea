@@ -1,4 +1,4 @@
-package org.triplea.http.client.lib;
+package org.triplea.http.client;
 
 import java.util.HashMap;
 import java.util.Map;

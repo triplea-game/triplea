@@ -12,7 +12,7 @@ import games.strategy.triplea.ui.MacOsIntegration;
 import javax.swing.JMenuBar;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.SystemIdLoader;
-import org.triplea.http.client.lib.ClientIdentifiers;
+import org.triplea.http.client.ClientIdentifiers;
 import org.triplea.http.client.maps.admin.MapTagAdminClient;
 import org.triplea.http.client.maps.listing.MapsClient;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;

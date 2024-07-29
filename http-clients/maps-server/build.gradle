@@ -1,5 +1,4 @@
 dependencies {
     implementation project(":lib:feign-common")
-    implementation project(":lib:http-client-lib")
     implementation project(":lib:java-extras")
 }

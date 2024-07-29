@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.SystemIdLoader;
-import org.triplea.http.client.lib.ClientIdentifiers;
+import org.triplea.http.client.ClientIdentifiers;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.listing.MapsClient;
 
