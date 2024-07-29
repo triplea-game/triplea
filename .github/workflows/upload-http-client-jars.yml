@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - workflows/upload-http-client-jars.yml
+      - '.github/workflows/upload-http-client-jars.yml'
       - 'game-app/domain-data/**'
       - 'http-clients/**'
 env:
