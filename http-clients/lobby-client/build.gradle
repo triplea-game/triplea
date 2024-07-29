@@ -1,6 +1,5 @@
 plugins {
     id("maven-publish")
-    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 version = System.getenv("JAR_VERSION")
@@ -12,16 +11,6 @@ dependencies {
     implementation project(":lib:websocket-client")
     testImplementation project(":lib:test-common")
 }
-
-def getGitCommitCount = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine "git", "rev-list", "--count", "HEAD"
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
-}
-
 
 publishing {
     repositories {
