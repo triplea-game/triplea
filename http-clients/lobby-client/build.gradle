@@ -1,4 +1,5 @@
 plugins {
+    id 'java-library'
     id("maven-publish")
 }
 
@@ -13,6 +14,13 @@ dependencies {
 }
 
 publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact(tasks.named(sourceSets.main.jarTaskName)) {
+                extension 'jar'
+            }
+        }
+    }
     repositories {
         maven {
             name = "GitHubPackages"
