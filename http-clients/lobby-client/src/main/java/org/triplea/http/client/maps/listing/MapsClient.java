@@ -4,8 +4,8 @@ import feign.FeignException;
 import feign.RequestLine;
 import java.net.URI;
 import java.util.List;
+import org.triplea.http.client.ClientIdentifiers;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.lib.ClientIdentifiers;
 
 /**
  * Http client to communicate with the maps server and get a listing of maps available for download.
