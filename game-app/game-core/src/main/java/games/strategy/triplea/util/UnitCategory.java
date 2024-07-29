@@ -15,7 +15,8 @@ import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
- * A category of units.
+ * A category of units. AKA a stack of units. Each unit in the stack is considered equivalent. The dimensions
+ * for equivalency are in {@see UnitSeparator.SeparatorCategories}
  *
  * <p>Primarily used to group units by type and owner, but units may also be categorized by the
  * following attributes:
