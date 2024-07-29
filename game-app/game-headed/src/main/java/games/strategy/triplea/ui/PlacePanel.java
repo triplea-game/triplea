@@ -22,8 +22,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -145,15 +147,23 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       }
     }
 
-    SwingUtilities.invokeLater(
-        () -> {
-          if (showUnitsToPlace) {
-            unitsToPlacePanel.setUnits(unitsToPlace);
+    if (showUnitsToPlace) {
+      // Small hack: copy the unit list before passing it to a new thread.
+      // This is to prevent ConcurrentModification. If the 'unitsToPlace' list is modified
+      // later in this thread, before "SwingUtilities.invokeLater" can execute and complete,
+      // then we will get a ConcurrentModification exception.
+      // Ideally we would not modify the 'unitsToPlace' collection again except when
+      // the swing thread signals that the user has taken action.. Short of that, we create a copy
+      // here.
+      final Collection<Unit> unitsToPlaceCopy = new ArrayList<>(unitsToPlace);
+      SwingUtilities.invokeLater(
+          () -> {
+            unitsToPlacePanel.setUnits(unitsToPlaceCopy);
             SwingComponents.redraw(unitsToPlacePanel);
-          } else {
-            unitsToPlacePanel.removeAll();
-          }
-        });
+          });
+    } else {
+      SwingUtilities.invokeLater(unitsToPlacePanel::removeAll);
+    }
   }
 
   @Override
