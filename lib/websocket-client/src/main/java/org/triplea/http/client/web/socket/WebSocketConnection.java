@@ -88,8 +88,8 @@ class WebSocketConnection {
     this.serverUri = serverUri;
     pingSender =
         Timers.fixedRateTimer("websocket-ping-sender")
-            .period(45, TimeUnit.SECONDS)
-            .delay(45, TimeUnit.SECONDS)
+            .period(10, TimeUnit.SECONDS)
+            .delay(10, TimeUnit.SECONDS)
             .task(this::sendPingTask);
     this.headers = headers;
   }
