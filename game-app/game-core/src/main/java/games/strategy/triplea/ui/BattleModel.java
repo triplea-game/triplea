@@ -128,7 +128,8 @@ final class BattleModel extends DefaultTableModel {
       }
       unitPowerAndRollsMap = PowerStrengthAndRolls.build(units, combatValue);
     }
-    final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
+    final List<UnitCategory> unitCategories =
+        UnitSeparator.getSortedUnitCategories(units, gameData, uiContext.getMapData());
     for (final UnitCategory category : unitCategories) {
       final int[] shift = new int[gameData.getDiceSides() + 1];
       for (final Unit current : category.getUnits()) {

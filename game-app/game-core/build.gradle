@@ -1,33 +1,14 @@
 dependencies {
-    implementation ("com.googlecode.soundlibs:jlayer:$jlayerVersion") {
-       exclude group: 'junit', module: 'junit'
-    }
-    implementation "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
-    implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
-    implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
-    implementation "commons-codec:commons-codec:$commonsCodecVersion"
-    implementation "commons-io:commons-io:$commonsIoVersion"
-    implementation "io.github.openfeign:feign-gson:$openFeignVersion"
-    implementation "org.apache.commons:commons-math3:$commonsMathVersion"
-    implementation "org.apache.commons:commons-text:$commonsTextVersion"
-    implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
-    implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
-    implementation "org.knowm.xchart:xchart:$xchartVersion"
     implementation project(":game-app:domain-data")
     implementation project(":game-app:map-data")
     implementation project(":game-app:game-relay-server")
     implementation project(":http-clients:lobby-client")
-    implementation project(":http-clients:maps-server")
-    implementation project(":lib:http-client-lib")
     implementation project(":lib:java-extras")
     implementation project(":lib:swing-lib")
     implementation project(":lib:websocket-client")
     implementation project(":lib:xml-reader")
-    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
-    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testImplementation project(":lib:swing-lib-test-support")
     testImplementation project(":lib:test-common")
     // Configures mockito to use the legacy "subclass mock maker"
     // see https://github.com/mockito/mockito/releases/tag/v5.0.0 for more information
-    testImplementation "org.mockito:mockito-subclass:$mockitoVersion"
 }

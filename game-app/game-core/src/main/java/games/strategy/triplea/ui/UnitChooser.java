@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ResourceLoader;
@@ -23,6 +24,8 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,8 +39,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.triplea.java.Postconditions;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
@@ -297,7 +302,14 @@ public final class UnitChooser extends JPanel {
             0));
     autoSelectButton.addActionListener(e -> autoSelect());
     int rowIndex = 1;
-    for (final ChooserEntry entry : entries) {
+    if (entries.isEmpty()) {
+      return;
+    }
+    final GameData gameData = entries.get(0).getCategory().getUnitAttachment().getData();
+    entries.sort(
+        Comparator.comparing(
+            ChooserEntry::getCategory, UnitSeparator.getComparatorUnitCategories(gameData)));
+    for (val entry : Collections.unmodifiableList(entries)) {
       entry.createComponents(this, rowIndex);
       rowIndex++;
     }
@@ -430,7 +442,7 @@ public final class UnitChooser extends JPanel {
    */
   @VisibleForTesting
   public final class ChooserEntry {
-    @VisibleForTesting public final UnitCategory category;
+    @Getter @VisibleForTesting public final UnitCategory category;
     private final List<Integer> defaultHits;
     private final List<ScrollableTextField> hitTexts;
     private final List<JLabel> hitLabel = new ArrayList<>();
@@ -506,10 +518,6 @@ public final class UnitChooser extends JPanel {
 
     void set(final int value) {
       hitTexts.get(0).setValue(value);
-    }
-
-    UnitCategory getCategory() {
-      return category;
     }
 
     void selectAll() {

@@ -47,6 +47,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -230,10 +232,10 @@ public class BattleDisplay extends JPanel {
     for (final Collection<Unit> dependentCollection : dependentsMap.values()) {
       dependentUnitsReturned.addAll(dependentCollection);
     }
-    for (final UnitCategory category :
-        UnitSeparator.categorize(
-            killedUnits,
-            UnitSeparator.SeparatorCategories.builder().dependents(dependentsMap).build())) {
+
+    List<UnitCategory> unitCategories =
+        UnitSeparator.getSortedUnitCategories(killedUnits, gameData, uiContext.getMapData());
+    for (final UnitCategory category : unitCategories) {
       final JPanel panel = new JPanel();
       JLabel unit = uiContext.newUnitImageLabel(category.getType(), category.getOwner());
       panel.add(unit);
@@ -775,7 +777,14 @@ public class BattleDisplay extends JPanel {
 
     private void categorizeUnits(
         final Iterable<UnitCategory> categoryIter, final boolean damaged, final boolean disabled) {
-      for (final UnitCategory category : categoryIter) {
+      final List<UnitCategory> unitCategories =
+          StreamSupport.stream(categoryIter.spliterator(), false).collect(Collectors.toList());
+      if (unitCategories.isEmpty()) {
+        return;
+      }
+      final GameData gameData = unitCategories.get(0).getUnitAttachment().getData();
+      UnitSeparator.sortUnitCategories(unitCategories, gameData);
+      for (final UnitCategory category : unitCategories) {
         final JPanel panel = new JPanel();
         final ImageIcon unitImage =
             uiContext

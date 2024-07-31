@@ -2,7 +2,6 @@ package org.triplea.http.client.lobby.moderator;
 
 import feign.RequestLine;
 import java.net.URI;
-import java.util.List;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.HttpClient;
@@ -13,7 +12,6 @@ public interface ModeratorLobbyClient {
   String DISCONNECT_PLAYER_PATH = "/lobby/moderator/disconnect-player";
   String BAN_PLAYER_PATH = "/lobby/moderator/ban-player";
   String MUTE_USER = "/lobby/moderator/mute-player";
-  String FETCH_GAME_CHAT_HISTORY = "/lobby/moderator/fetch-game-chat-history";
 
   static ModeratorLobbyClient newClient(final URI lobbyUri, final ApiKey apiKey) {
     return HttpClient.newClient(
@@ -25,9 +23,6 @@ public interface ModeratorLobbyClient {
 
   @RequestLine("POST " + ModeratorLobbyClient.DISCONNECT_PLAYER_PATH)
   void disconnectPlayer(String value);
-
-  @RequestLine("POST " + ModeratorLobbyClient.FETCH_GAME_CHAT_HISTORY)
-  List<ChatHistoryMessage> fetchChatHistoryForGame(String gameId);
 
   @RequestLine("POST " + ModeratorLobbyClient.MUTE_USER)
   void muteUser(MuteUserRequest muteUserRequest);

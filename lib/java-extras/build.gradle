@@ -1,9 +1,35 @@
+import org.gradle.api.publish.maven.MavenPublication
+
+plugins {
+    id 'java-library'
+    id("maven-publish")
+}
+
+version = System.getenv("JAR_VERSION")
+
+
 description = "TripleA library for low-level helper APIs, ie: syntactic sugar"
 
 dependencies {
-    implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
-    implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
-    implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
-    implementation "commons-io:commons-io:$commonsIoVersion"
     testImplementation project(":lib:test-common")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact(tasks.named(sourceSets.main.jarTaskName)) {
+                extension 'jar'
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/triplea-game/triplea"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }

@@ -1,35 +1,26 @@
 plugins {
+    id 'java-library'
     id("maven-publish")
-    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 version = System.getenv("JAR_VERSION")
 
 dependencies {
-    implementation "io.github.openfeign:feign-core:$feignCoreVersion"
     implementation project(":game-app:domain-data")
     implementation project(":lib:feign-common")
     implementation project(":lib:java-extras")
     implementation project(":lib:websocket-client")
-    testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"
-    testImplementation "com.google.code.gson:gson:$gsonVersion"
-    testImplementation "ru.lanwen.wiremock:wiremock-junit5:$wireMockJunit5Version"
-    testImplementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     testImplementation project(":lib:test-common")
 }
 
-
-def getGitCommitCount = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine "git", "rev-list", "--count", "HEAD"
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
-}
-
-
 publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact(tasks.named(sourceSets.main.jarTaskName)) {
+                extension 'jar'
+            }
+        }
+    }
     repositories {
         maven {
             name = "GitHubPackages"
@@ -38,11 +29,6 @@ publishing {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
             }
-        }
-    }
-    publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
         }
     }
 }

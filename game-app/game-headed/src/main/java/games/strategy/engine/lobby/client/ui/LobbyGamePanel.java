@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.client.ui;
 import games.strategy.engine.framework.GameProcess;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.login.LoginResult;
-import games.strategy.engine.lobby.client.ui.action.FetchChatHistory;
 import games.strategy.engine.lobby.client.ui.action.ShowPlayersAction;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
@@ -194,7 +193,6 @@ class LobbyGamePanel extends JPanel {
     if (loginResult.isModerator()) {
       menu.addSeparator();
       List.of(
-              SwingAction.of("Show Chat History", e -> showChatHistory()),
               SwingAction.of("Boot Game", e -> bootGame()),
               SwingAction.of("Shutdown", e -> shutdown()))
           .forEach(menu::add);
@@ -232,21 +230,6 @@ class LobbyGamePanel extends JPanel {
         options.getComments(),
         options.getPassword(),
         ClientSetting.lobbyUri.getValueOrThrow());
-  }
-
-  private void showChatHistory() {
-    final int selectedIndex = gameTable.getSelectedRow();
-    if (selectedIndex == -1) {
-      return;
-    }
-
-    FetchChatHistory.builder()
-        .parentWindow(parent)
-        .gameId(gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex)))
-        .gameHostName(gameTableModel.get(selectedIndex).getHostedBy().getName())
-        .playerToLobbyConnection(playerToLobbyConnection)
-        .build()
-        .fetchAndShowChatHistory();
   }
 
   private void bootGame() {

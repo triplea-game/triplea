@@ -1,7 +1,4 @@
 dependencies {
-    implementation "io.github.openfeign:feign-core:$feignCoreVersion"
-    implementation "io.github.openfeign:feign-gson:$feignGsonVersion"
     implementation project(":lib:feign-common")
-    implementation project(":lib:http-client-lib")
     implementation project(":lib:java-extras")
 }

@@ -40,10 +40,10 @@ public class RemoveUnitsHistoryChange implements HistoryChange {
   String messageTemplate;
 
   /** Units that were killed */
-  Collection<Unit> oldUnits = new ArrayList<>();
+  Collection<Unit> oldUnits = new HashSet<>();
 
   /** The units that were created after a transformation */
-  Collection<Unit> newUnits = new ArrayList<>();
+  Collection<Unit> newUnits = new HashSet<>();
 
   /**
    * @param messageTemplate ${units} and ${territory} will be replaced in this template

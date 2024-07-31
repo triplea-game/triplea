@@ -742,7 +742,9 @@ public class MapPanel extends ImageScrollerLargeView {
     }
     final var unitImageFactory = uiContext.getUnitImageFactory();
     for (final Collection<Unit> value : highlightedUnits) {
-      for (final UnitCategory category : UnitSeparator.categorize(value)) {
+      List<UnitCategory> unitCategories =
+          UnitSeparator.getSortedUnitCategories(value, gameData, mapData);
+      for (final UnitCategory category : unitCategories) {
         final @Nullable Rectangle r = tileManager.getUnitRect(category.getUnits(), gameData);
         if (r == null) {
           continue;
@@ -896,7 +898,8 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     }
 
-    final Set<UnitCategory> categories = UnitSeparator.categorize(units);
+    final List<UnitCategory> categories =
+        UnitSeparator.getSortedUnitCategories(units, gameData, uiContext.getMapData());
     final int iconWidth = uiContext.getUnitImageFactory().getUnitImageWidth();
     final int iconHeight = uiContext.getUnitImageFactory().getUnitImageHeight();
     final int horizontalSpace = 5;

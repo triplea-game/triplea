@@ -3,9 +3,9 @@ package org.triplea.http.client.maps.admin;
 import feign.RequestLine;
 import java.net.URI;
 import java.util.List;
+import org.triplea.http.client.ClientIdentifiers;
 import org.triplea.http.client.GenericServerResponse;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.lib.ClientIdentifiers;
 
 /** Http client for 'map tag' administrative functionality. EG: updating a maps tag value. */
 public interface MapTagAdminClient {
