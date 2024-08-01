@@ -445,8 +445,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           territory.getUnitCollection().getMatches(Matches.enemyUnit(player));
       final IBattle bombingBattle = battleTracker.getPendingBombingBattle(territory);
       if (bombingBattle != null) {
+        // bombingBattle.getAttakingUnits cannot be modified, so use dependants
+        dependants.clear();
+        dependants.addAll(bombingBattle.getAttackingUnits());
+        // check to see if only air units are removed
+        if (Properties.getUseNonAirUnitsInNormalBattle(data.getProperties())) {
+          dependants.removeIf(Matches.unitIsNotAir());
+        }
         // we need to remove any units which are participating in bombing raids
-        attackingUnits.removeAll(bombingBattle.getAttackingUnits());
+        attackingUnits.removeAll(dependants);
       }
       if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
         continue;

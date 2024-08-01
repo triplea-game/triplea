@@ -482,6 +482,9 @@ public final class Properties implements Constants {
     return properties.get(ALLIANCES_CAN_CHAIN_TOGETHER, false);
   }
 
+  public static boolean getUseNonAirUnitsInNormalBattle(final GameProperties properties) {
+    return properties.get(NON_AIR_SBR_UNITS_IN_NORMAL_BATTLE,false);
+  }
   public static boolean getRaidsMayBePreceededByAirBattles(final GameProperties properties) {
     return properties.get(RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES, false);
   }
