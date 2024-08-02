@@ -171,7 +171,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Getter private final MapPanel mapPanel;
   private final ImageScrollerSmallView smallView;
 
-  private final ActionButtons actionButtons;
+  private final ActionButtonsPanel actionButtonsPanel;
   private final JPanel gameMainPanel = new JPanel();
   private final JPanel rightHandSidePanel = new JPanel();
   private final JTabbedPane tabsPanel = new JTabbedPane();
@@ -179,7 +179,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final EconomyPanel economyPanel;
   private final Runnable clientLeftGame;
   private @Nullable ObjectivePanel objectivePanel;
-  @Getter private final TerritoryDetailPanel territoryDetails;
+  @Getter private final TerritoryDetailPanel territoryDetailPanel;
   private final JPanel historyComponent = new JPanel();
   @Getter private HistoryPanel historyPanel;
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
@@ -368,7 +368,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
 
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
-    actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
+    actionButtonsPanel = new ActionButtonsPanel(data, mapPanel, movePanel, this);
 
     final CollapsiblePanel placementsPanel =
         new PlacementUnitsCollapsiblePanel(data, uiContext).getPanel();
@@ -382,7 +382,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
 
-    actionButtons.setBorder(null);
+    actionButtonsPanel.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
     economyPanel = new EconomyPanel(data, uiContext);
     objectivePanel = new ObjectivePanel(data, uiContext);
@@ -390,7 +390,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
     }
-    territoryDetails = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
+    territoryDetailPanel = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
     editPanel = new EditPanel(data, mapPanel, this);
     addTabs(null);
     // Register a change listener
@@ -407,10 +407,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             try (GameData.Unlocker ignored = data.acquireReadLock()) {
               player1 = data.getSequence().getStep().getPlayerId();
             }
-            actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
+            actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
             editPanel.display(player1);
           } else {
-            actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
+            actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
             editPanel.setActive(false);
           }
         });
@@ -532,7 +532,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     if (historyDetailPanel != null) {
       tabsPanel.add("History", historyDetailPanel);
     } else {
-      addTab("Actions", actionButtons, KeyCode.C);
+      addTab("Actions", actionButtonsPanel, KeyCode.C);
     }
     addTab("Players", statsPanel, KeyCode.P);
     addTab("Resources", economyPanel, KeyCode.R);
@@ -540,7 +540,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       String objectivePanelName = new ObjectiveProperties(uiContext.getResourceLoader()).getName();
       addTab(objectivePanelName, objectivePanel, KeyCode.O);
     }
-    addTab("Territory", territoryDetails, KeyCode.T);
+    addTab("Territory", territoryDetailPanel, KeyCode.T);
     if (mapPanel.getEditMode()) {
       showEditMode();
     }
@@ -635,8 +635,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public IntegerMap<ProductionRule> getProduction(
       final GamePlayer player, final boolean bid, final boolean keepCurrentPurchase) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToProduce(player, keepCurrentPurchase);
-    return actionButtons.waitForPurchase(bid);
+    actionButtonsPanel.changeToProduce(player, keepCurrentPurchase);
+    return actionButtonsPanel.waitForPurchase(bid);
   }
 
   public Map<Unit, IntegerMap<RepairRule>> getRepair(
@@ -644,8 +644,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final boolean bid,
       final Collection<GamePlayer> allowedPlayersToRepair) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToRepair(player);
-    return actionButtons.waitForRepair(bid, allowedPlayersToRepair);
+    actionButtonsPanel.changeToRepair(player);
+    return actionButtonsPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 
   public MoveDescription getMove(
@@ -654,12 +654,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final boolean nonCombat,
       final String stepName) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToMove(player, nonCombat, stepName);
+    actionButtonsPanel.changeToMove(player, nonCombat, stepName);
     // workaround for panel not receiving focus at beginning of n/c move phase
     if (!getBattlePanel().isBattleShowing()) {
       requestWindowFocus();
     }
-    return actionButtons.waitForMove(bridge);
+    return actionButtonsPanel.waitForMove(bridge);
   }
 
   private void requestWindowFocus() {
@@ -675,31 +675,31 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public PlaceData waitForPlace(
       final GamePlayer player, final boolean bid, final PlayerBridge bridge) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToPlace(player);
-    return actionButtons.waitForPlace(bid, bridge);
+    actionButtonsPanel.changeToPlace(player);
+    return actionButtonsPanel.waitForPlace(bid, bridge);
   }
 
   public void waitForMoveForumPoster(final GamePlayer player, final PlayerBridge bridge) {
-    if (actionButtons == null) {
+    if (actionButtonsPanel == null) {
       return;
     }
-    actionButtons.changeToMoveForumPosterPanel(player);
-    actionButtons.waitForMoveForumPosterPanel(this, bridge);
+    actionButtonsPanel.changeToMoveForumPosterPanel(player);
+    actionButtonsPanel.waitForMoveForumPosterPanel(this, bridge);
   }
 
   public void waitForEndTurn(final GamePlayer player, final PlayerBridge bridge) {
-    if (actionButtons == null) {
+    if (actionButtonsPanel == null) {
       return;
     }
-    actionButtons.changeToEndTurn(player);
-    actionButtons.waitForEndTurn(this, bridge);
+    actionButtonsPanel.changeToEndTurn(player);
+    actionButtonsPanel.waitForEndTurn(this, bridge);
   }
 
   public FightBattleDetails getBattle(
       final GamePlayer player, final Map<BattleType, Collection<Territory>> battles) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToBattle(player, battles);
-    return actionButtons.waitForBattleSelection();
+    actionButtonsPanel.changeToBattle(player, battles);
+    return actionButtonsPanel.waitForBattleSelection();
   }
 
   /** We do NOT want to block the next player from beginning their turn. */
@@ -1142,19 +1142,20 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   }
                   if (tabsPanel.indexOfTab("Actions") == -1) {
                     // add actions tab
-                    tabsPanel.insertTab("Actions", null, actionButtons, null, 0);
+                    tabsPanel.insertTab("Actions", null, actionButtonsPanel, null, 0);
                   }
                   tabsPanel.setSelectedIndex(0);
                 }));
-    actionButtons.changeToPickTerritoryAndUnits(player);
+    actionButtonsPanel.changeToPickTerritoryAndUnits(player);
     final Tuple<Territory, Set<Unit>> territoryAndUnits =
-        actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
+        actionButtonsPanel.waitForPickTerritoryAndUnits(
+            territoryChoices, unitChoices, unitsPerPick);
     final int index = tabsPanel.indexOfTab("Actions");
     if (index != -1 && inHistory.get()) {
       // remove actions tab
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> tabsPanel.remove(index)));
     }
-    actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
+    actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
     return territoryAndUnits;
   }
 
@@ -1545,9 +1546,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public PoliticalActionAttachment getPoliticalActionChoice(
       final GamePlayer player, final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToPolitics(player);
+    actionButtonsPanel.changeToPolitics(player);
     requestWindowFocus();
-    return actionButtons.waitForPoliticalAction(firstRun, politicsDelegate);
+    return actionButtonsPanel.waitForPoliticalAction(firstRun, politicsDelegate);
   }
 
   public UserActionAttachment getUserActionChoice(
@@ -1555,17 +1556,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final boolean firstRun,
       final IUserActionDelegate userActionDelegate) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToUserActions(player);
+    actionButtonsPanel.changeToUserActions(player);
     requestWindowFocus();
-    return actionButtons.waitForUserActionAction(firstRun, userActionDelegate);
+    return actionButtonsPanel.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
   public TechRoll getTechRolls(final GamePlayer gamePlayer) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToTech(gamePlayer);
+    actionButtonsPanel.changeToTech(gamePlayer);
     // workaround for panel not receiving focus at beginning of tech phase
     requestWindowFocus();
-    return actionButtons.waitForTech();
+    return actionButtonsPanel.waitForTech();
   }
 
   /**
@@ -1707,7 +1708,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       @Override
       public void keyPressed(final KeyEvent e) {
         isCtrlPressed = e.isControlDown();
-        // scroll map according to wasd/arrowkeys
+        // scroll map according to wasd/arrow keys
         final int diffPixel = computeScrollSpeed();
         final int x = mapPanel.getXOffset();
         final int y = mapPanel.getYOffset();
@@ -1786,7 +1787,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     if (objectivePanel != null && !objectivePanel.isEmpty()) {
       objectivePanel.setGameData(clonedGameData);
     }
-    territoryDetails.setGameData(clonedGameData);
+    territoryDetailPanel.setGameData(clonedGameData);
     mapPanel.setGameData(clonedGameData);
     SwingUtilities.invokeLater(
         () -> {
@@ -1794,7 +1795,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               new HistoryDetailsPanel(clonedGameData, mapPanel);
           tabsPanel.removeAll();
           addTabs(historyDetailPanel);
-          actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
+          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
           historyComponent.removeAll();
           historyComponent.setLayout(new BorderLayout());
           // create history tree context menu
@@ -1861,8 +1862,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                           + "beginning of a player's turn, or the beginning of a round."
                           + "\nSaving at any other point, could potentially create errors."
                           + "\nFor example, saving while your current game is in the middle of a "
-                          + "move or battle phase will always create errors in the savegame."
-                          + "\nAnd you will also get errors in the savegame if you try to create a "
+                          + "move or battle phase will always create errors in the save game."
+                          + "\nAnd you will also get errors in the save game if you try to create a "
                           + "save at a point in history such as a move or battle phase.",
                       "Save Game from History",
                       JOptionPane.INFORMATION_MESSAGE);
@@ -1871,12 +1872,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       GameFileSelector.getSaveGameLocation(TripleAFrame.this, data);
                   if (f.isPresent()) {
                     try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
-                      final GameData datacopy =
+                      final GameData gameDataCopy =
                           GameDataUtils.cloneGameData(
                                   data, GameDataManager.Options.withEverything())
                               .orElse(null);
-                      if (datacopy != null) {
-                        datacopy
+                      if (gameDataCopy != null) {
+                        gameDataCopy
                             .getHistory()
                             .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
                         // TODO: the saved current delegate is still the current delegate,
@@ -1885,15 +1886,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                         // the history popup node
                         // TODO: this could be solved easily if rounds/steps were changes,
                         // but that could greatly increase the file size :(
-                        // TODO: this also does not undo the runcount of each delegate step
+                        // TODO: this also does not undo the run count of each delegate step
                         final Enumeration<?> enumeration =
-                            ((DefaultMutableTreeNode) datacopy.getHistory().getRoot())
+                            ((DefaultMutableTreeNode) gameDataCopy.getHistory().getRoot())
                                 .preorderEnumeration();
                         enumeration.nextElement();
                         int round = 0;
-                        String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
-                        GamePlayer currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
-                        int roundOffset = datacopy.getSequence().getRoundOffset();
+                        String stepDisplayName =
+                            gameDataCopy.getSequence().getStep(0).getDisplayName();
+                        GamePlayer currentPlayer =
+                            gameDataCopy.getSequence().getStep(0).getPlayerId();
+                        int roundOffset = gameDataCopy.getSequence().getRoundOffset();
                         while (enumeration.hasMoreElements()) {
                           final HistoryNode node = (HistoryNode) enumeration.nextElement();
                           if (node instanceof Round) {
@@ -1905,10 +1908,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                             stepDisplayName = node.getTitle();
                           }
                         }
-                        datacopy
+                        gameDataCopy
                             .getSequence()
                             .setRoundAndStep(round, stepDisplayName, currentPlayer);
-                        GameDataManager.saveGame(fileOutputStream, datacopy);
+                        GameDataManager.saveGame(fileOutputStream, gameDataCopy);
                         JOptionPane.showMessageDialog(
                             TripleAFrame.this,
                             "Game Saved",
@@ -1956,14 +1959,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             if (objectivePanel != null && !objectivePanel.isEmpty()) {
               objectivePanel.setGameData(data);
             }
-            territoryDetails.setGameData(data);
+            territoryDetailPanel.setGameData(data);
             mapPanel.setGameData(data);
             data.addDataChangeListener(dataChangeListener);
             tabsPanel.removeAll();
           }
           setWidgetActivation();
           addTabs(null);
-          actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
+          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
           gameMainPanel.removeAll();
           gameMainPanel.setLayout(new BorderLayout());
           gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
@@ -2050,7 +2053,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   public BattlePanel getBattlePanel() {
-    return actionButtons.getBattlePanel();
+    return actionButtonsPanel.getBattlePanel();
   }
 
   /** Displays the map located in the directory/archive {@code mapdir}. */

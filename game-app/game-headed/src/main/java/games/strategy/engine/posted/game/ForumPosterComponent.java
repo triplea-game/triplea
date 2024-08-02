@@ -6,7 +6,7 @@ import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
-import games.strategy.triplea.ui.ActionButtons;
+import games.strategy.triplea.ui.ActionButtonsPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import java.util.Collection;
@@ -120,7 +120,7 @@ public final class ForumPosterComponent extends JPanel {
         new JButtonBuilder()
             .title("Done")
             .actionListener(doneAction)
-            .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+            .toolTip(ActionButtonsPanel.DONE_BUTTON_TOOLTIP)
             .build());
     validate();
     return this;

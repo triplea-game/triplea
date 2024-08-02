@@ -40,7 +40,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 import org.triplea.util.Tuple;
 
 /** Root panel for all action buttons in a triplea game. */
-public class ActionButtons extends JPanel {
+public class ActionButtonsPanel extends JPanel {
   public static final String DONE_BUTTON_TOOLTIP =
       "Press ctrl+enter or click this button to end the current turn phase";
   private static final long serialVersionUID = 2175685892863042399L;
@@ -64,7 +64,7 @@ public class ActionButtons extends JPanel {
 
   private @Nullable ActionPanel actionPanel;
 
-  public ActionButtons(
+  public ActionButtonsPanel(
       final GameData data,
       final MapPanel map,
       final MovePanel movePanel,
@@ -190,7 +190,7 @@ public class ActionButtons extends JPanel {
     // newCurrent might be null if we are shutting down
     if (newCurrent != null) {
       newCurrent.display(gamePlayer);
-      SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, newCurrent.toString()));
+      SwingUtilities.invokeLater(() -> layout.show(ActionButtonsPanel.this, newCurrent.toString()));
     }
   }
 
