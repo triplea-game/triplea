@@ -1094,7 +1094,7 @@ public class BattleTracker implements Serializable {
         .collect(Collectors.toSet());
   }
 
-  public BattleListing getPendingBattleSites() {
+  public BattleListing getBattleListingFromPendingBattles() {
     final Map<BattleType, Collection<Territory>> battles = new EnumMap<>(BattleType.class);
     pendingBattles.stream()
         .filter(b -> !b.isEmpty())

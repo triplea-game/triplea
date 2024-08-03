@@ -601,7 +601,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     // as in the case of a naval battle preceding an amphibious attack, keep trying to fight every
     // battle
     while (true) {
-      final BattleListing listing = battleDelegate.getBattles();
+      final BattleListing listing = battleDelegate.getBattleListing();
       if (listing.isEmpty()) {
         return;
       }

@@ -15,7 +15,7 @@ import org.triplea.java.RemoveOnNextMajorRelease;
 public interface IBattleDelegate extends IRemote, IDelegate {
   /** Returns the battles currently waiting to be fought. */
   @RemoteActionCode(3)
-  BattleListing getBattles();
+  BattleListing getBattleListing();
 
   /**
    * Fight the battle in the given country.

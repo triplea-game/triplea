@@ -13,7 +13,7 @@ import games.strategy.engine.posted.game.MoveForumPosterPanel;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
-import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
@@ -152,8 +152,7 @@ public class ActionButtonsPanel extends JPanel {
     changeTo(gamePlayer, placePanel);
   }
 
-  public void changeToBattle(
-      final GamePlayer gamePlayer, final Map<BattleType, Collection<Territory>> battles) {
+  public void changeToBattle(final GamePlayer gamePlayer, final BattleListing battles) {
     if (battlePanel != null) {
       battlePanel.setBattlesAndBombing(battles);
     }

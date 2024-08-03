@@ -51,9 +51,9 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
+import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.data.TechRoll;
@@ -695,8 +695,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     actionButtonsPanel.waitForEndTurn(this, bridge);
   }
 
-  public FightBattleDetails getBattle(
-      final GamePlayer player, final Map<BattleType, Collection<Territory>> battles) {
+  public FightBattleDetails getBattle(final GamePlayer player, final BattleListing battles) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToBattle(player, battles);
     return actionButtonsPanel.waitForBattleSelection();

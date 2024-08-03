@@ -525,15 +525,15 @@ public class TripleAPlayer extends AbstractBasePlayer {
       if (getPlayerBridge().isGameOver()) {
         return;
       }
-      final BattleListing battles = battleDel.getBattles();
-      if (battles.isEmpty()) {
+      final BattleListing battleListing = battleDel.getBattleListing();
+      if (battleListing.isEmpty()) {
         return;
       }
       if (!soundPlayedAlreadyBattle) {
         playSound(SoundPath.CLIP_PHASE_BATTLE);
         soundPlayedAlreadyBattle = true;
       }
-      final FightBattleDetails details = ui.getBattle(gamePlayer, battles.getBattles());
+      final FightBattleDetails details = ui.getBattle(gamePlayer, battleListing);
       if (getPlayerBridge().isGameOver()) {
         return;
       }

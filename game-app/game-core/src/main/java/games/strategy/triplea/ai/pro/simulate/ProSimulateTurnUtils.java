@@ -50,7 +50,7 @@ public final class ProSimulateTurnUtils {
 
     final BattleDelegate battleDelegate = data.getBattleDelegate();
     final Map<BattleType, Collection<Territory>> battleTerritories =
-        battleDelegate.getBattles().getBattles();
+        battleDelegate.getBattleListing().getBattles();
     for (final Entry<BattleType, Collection<Territory>> entry : battleTerritories.entrySet()) {
       for (final Territory t : entry.getValue()) {
         final IBattle battle =

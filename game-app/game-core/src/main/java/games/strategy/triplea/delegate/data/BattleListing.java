@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import lombok.Getter;
 
 /**
@@ -49,5 +50,14 @@ public class BattleListing implements Serializable {
 
   public boolean isEmpty() {
     return battles.isEmpty();
+  }
+
+  public void forEachBattle(BiConsumer<? super BattleType, ? super Territory> action) {
+    for (final Entry<BattleType, Collection<Territory>> battleTypeCollection : battles.entrySet()) {
+      final BattleType battleType = battleTypeCollection.getKey();
+      for (final Territory territory : battleTypeCollection.getValue()) {
+        action.accept(battleType, territory);
+      }
+    }
   }
 }

@@ -8,6 +8,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
@@ -21,7 +22,6 @@ import java.awt.event.WindowEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -54,7 +54,7 @@ public final class BattlePanel extends ActionPanel {
   // the display is shown on the screen
   private volatile UUID currentBattleDisplayed;
   private final JDialog battleWindow;
-  private Map<BattleType, Collection<Territory>> battles;
+  private BattleListing battleListing;
 
   BattlePanel(final GameData data, final MapPanel map, final JFrame parent) {
     super(data, map);
@@ -77,8 +77,8 @@ public final class BattlePanel extends ActionPanel {
     getMap().getUiContext().addShutdownWindow(battleWindow);
   }
 
-  void setBattlesAndBombing(final Map<BattleType, Collection<Territory>> battles) {
-    this.battles = battles;
+  void setBattlesAndBombing(final BattleListing battleListing) {
+    this.battleListing = battleListing;
   }
 
   @Override
@@ -90,11 +90,8 @@ public final class BattlePanel extends ActionPanel {
           actionLabel.setText(gamePlayer.getName() + " battle");
           setLayout(new BorderLayout());
           final JPanel panel = new JPanelBuilder().gridLayout(0, 1).add(actionLabel).build();
-          for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
-            for (final Territory t : entry.getValue()) {
-              addBattleActions(panel, t, entry.getKey().isBombingRun(), entry.getKey());
-            }
-          }
+          battleListing.forEachBattle(
+              (battleType, territory) -> addBattleActions(panel, territory, battleType));
           add(panel, BorderLayout.NORTH);
           refresh.run();
         });
@@ -106,10 +103,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   private void addBattleActions(
-      final JPanel panel,
-      final Territory territory,
-      final boolean bomb,
-      final BattleType battleType) {
+      final JPanel panel, final Territory territory, final BattleType battleType) {
 
     panel.add(
         new JPanelBuilder()
@@ -118,7 +112,7 @@ public final class BattlePanel extends ActionPanel {
                 new JButton(
                     SwingAction.of(
                         battleType.toDisplayText() + " in " + territory.getName() + "...",
-                        () -> fightBattleAction(territory, bomb, battleType))))
+                        () -> fightBattleAction(territory, battleType))))
             .addEast(
                 new JButtonBuilder()
                     .title("Center")
@@ -133,13 +127,12 @@ public final class BattlePanel extends ActionPanel {
             .build());
   }
 
-  private void fightBattleAction(
-      final Territory territory, final boolean bomb, final BattleType battleType) {
+  private void fightBattleAction(final Territory territory, final BattleType battleType) {
     getMap().clearHighlightedTerritory();
     fightBattleMessage =
         FightBattleDetails.builder()
             .where(territory)
-            .bombingRaid(bomb)
+            .bombingRaid(battleType.isBombingRun())
             .battleType(battleType)
             .build();
     release();

@@ -151,7 +151,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
 
   private static void fight(final BattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry :
-        battle.getBattles().getBattles().entrySet()) {
+        battle.getBattleListing().getBattles().entrySet()) {
       if (!entry.getKey().isBombingRun() && entry.getValue().contains(territory)) {
         battle.fightBattle(territory, false, entry.getKey());
         return;
@@ -478,7 +478,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     final BattleDelegate battleDelegate = battleDelegate(gameData);
     battleDelegate.setDelegateBridgeAndPlayer(bridge);
     battleDelegate.start();
-    assertTrue(battleDelegate.getBattles().isEmpty());
+    assertTrue(battleDelegate.getBattleListing().isEmpty());
   }
 
   @Test
@@ -1055,7 +1055,10 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     // undo it
     move.undoMove(0);
     // verify both blitz battles were cleared
-    assertTrue(AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites().isEmpty());
+    assertTrue(
+        AbstractMoveDelegate.getBattleTracker(gameData)
+            .getBattleListingFromPendingBattles()
+            .isEmpty());
   }
 
   @Test

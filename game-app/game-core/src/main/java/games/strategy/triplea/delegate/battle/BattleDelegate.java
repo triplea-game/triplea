@@ -193,7 +193,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    final BattleListing battles = getBattles();
+    final BattleListing battles = getBattleListing();
     if (battles.isEmpty()) {
       final IBattle battle = getCurrentBattle();
       return battle != null;
@@ -252,8 +252,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   @Override
-  public BattleListing getBattles() {
-    return battleTracker.getPendingBattleSites();
+  public BattleListing getBattleListing() {
+    return battleTracker.getBattleListingFromPendingBattles();
   }
 
   /** Add bombardment units to battles. */
@@ -688,7 +688,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
-    final BattleListing pendingBattleSites = battleTracker.getPendingBattleSites();
+    final BattleListing pendingBattleSites = battleTracker.getBattleListingFromPendingBattles();
     final Set<Territory> territoriesWithBattles =
         pendingBattleSites.getNormalBattlesIncludingAirBattles();
     if (Properties.getCanScrambleIntoAirBattles(data.getProperties())) {
