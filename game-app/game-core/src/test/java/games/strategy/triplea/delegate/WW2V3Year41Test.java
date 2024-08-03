@@ -392,7 +392,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     // the transport was not removed automatically
     assertEquals(3, sz13.getUnitCollection().size());
     final BattleDelegate bd = battleDelegate(gameData);
-    assertFalse(bd.getBattleTracker().getPendingBattleSites(false).isEmpty());
+    assertFalse(bd.getBattleTracker().getPendingBattleSitesWithoutBombing().isEmpty());
   }
 
   @Test
@@ -535,7 +535,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     // we should not be able to retreat to east poland!
     // that territory is still owned by the enemy
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(ukraine);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(ukraine);
     assertFalse(battle.getAttackerRetreatTerritories().contains(eastPoland));
   }
 
@@ -561,7 +562,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     // we should not be able to retreat to east poland!
     // that territory was just conquered
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(ukraine);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(ukraine);
     assertTrue(battle.getAttackerRetreatTerritories().contains(eastPoland));
   }
 
@@ -1029,7 +1031,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     // move again
     move(sz14.getUnitCollection().getMatches(Matches.unitIsNotSeaTransport()), r);
     final MustFightBattle mfb =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz12);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(sz12);
     // only 3 attacking units
     // the battleship and the two cruisers
     assertEquals(3, mfb.getAttackingUnits().size());
@@ -1074,7 +1077,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle)
-            AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         BattleStepsTest.mergeSteps(
@@ -1116,7 +1119,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle)
-            AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         BattleStepsTest.mergeSteps(
@@ -1163,7 +1166,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle)
-            AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         BattleStepsTest.mergeSteps(
@@ -1211,7 +1214,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle)
-            AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(attacked);
     final List<String> steps = battle.determineStepStrings();
     assertEquals(
         BattleStepsTest.mergeSteps(
@@ -1278,7 +1281,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     battleDelegate(gameData).addBombardmentSources();
     final MustFightBattle mfb =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(eg);
     // only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD
     // bombard, but only 2 ships may bombard total)
     assertEquals(2, mfb.getBombardingUnits().size());
@@ -1349,7 +1353,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     battleDelegate(gameData).addBombardmentSources();
     final MustFightBattle mfb =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(eg);
     assertNotNull(mfb);
     // Show that bombard casualties can return fire
     // destroyer bombard hit/miss on rolls of 4 & 3
@@ -1402,7 +1407,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     battleDelegate(gameData).addBombardmentSources();
     final MustFightBattle mfb =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(eg);
     // only 2 battleships are allowed to bombard
     assertEquals(2, mfb.getBombardingUnits().size());
   }
