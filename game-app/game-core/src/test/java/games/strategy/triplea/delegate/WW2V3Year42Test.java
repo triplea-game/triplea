@@ -76,7 +76,7 @@ class WW2V3Year42Test {
         new Route(baltic, karrelia));
     final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);
     // we should have a pending land battle, and a pending bombing raid
-    assertNotNull(battleTracker.getPendingBattle(karrelia));
+    assertNotNull(battleTracker.getPendingNonBombingBattle(karrelia));
     assertNotNull(battleTracker.getPendingBombingBattle(karrelia));
     // the territory should not be conquered
     assertEquals(karrelia.getOwner(), russians(gameData));
@@ -100,7 +100,7 @@ class WW2V3Year42Test {
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
-    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
+    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(sz5);
     assertEquals(5, battle.getAttackingUnits().size());
   }
 
@@ -125,7 +125,7 @@ class WW2V3Year42Test {
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle except the italian carrier
-    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
+    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(sz5);
     assertEquals(6, battle.getAttackingUnits().size());
   }
 
@@ -149,7 +149,7 @@ class WW2V3Year42Test {
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
-    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
+    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(sz5);
     assertEquals(4, battle.getAttackingUnits().size());
   }
 }

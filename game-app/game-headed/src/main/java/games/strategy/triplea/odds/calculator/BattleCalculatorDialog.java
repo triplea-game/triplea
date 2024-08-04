@@ -82,7 +82,7 @@ public class BattleCalculatorDialog extends JDialog {
           }
         });
 
-    taFrame.getTerritoryDetails().addBattleCalculatorKeyBindings(dialog);
+    taFrame.getTerritoryDetailPanel().addBattleCalculatorKeyBindings(dialog);
     // close when hitting the escape key
     SwingKeyBinding.addKeyBinding(
         dialog,

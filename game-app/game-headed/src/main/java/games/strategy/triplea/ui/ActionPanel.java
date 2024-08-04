@@ -126,7 +126,7 @@ public abstract class ActionPanel extends JPanel {
     return new JButtonBuilder()
         .title("Done")
         .actionListener(this::performDone)
-        .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+        .toolTip(ActionButtonsPanel.DONE_BUTTON_TOOLTIP)
         .build();
   }
 

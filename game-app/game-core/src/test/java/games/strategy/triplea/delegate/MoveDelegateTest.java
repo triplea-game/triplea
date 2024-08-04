@@ -800,9 +800,12 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     final IBattle inBrazil =
-        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(brazil);
+        gameData.getBattleDelegate().getBattleTracker().getPendingNonBombingBattle(brazil);
     final IBattle inBrazilSea =
-        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(southBrazilSeaZone);
+        gameData
+            .getBattleDelegate()
+            .getBattleTracker()
+            .getPendingNonBombingBattle(southBrazilSeaZone);
     assertNotNull(inBrazilSea);
     assertNotNull(inBrazil);
     assertEquals(
@@ -837,9 +840,9 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
-        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(finlandNorway);
+        gameData.getBattleDelegate().getBattleTracker().getPendingNonBombingBattle(finlandNorway);
     final IBattle inBalticSeaZone =
-        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingNonBombingBattle(balticSeaZone);
     assertNotNull(balticSeaZone);
     assertNotNull(finlandNorway);
     assertEquals(
@@ -913,9 +916,9 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
-        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(finlandNorway);
+        gameData.getBattleDelegate().getBattleTracker().getPendingNonBombingBattle(finlandNorway);
     final IBattle inBalticSeaZone =
-        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingNonBombingBattle(balticSeaZone);
     assertNotNull(balticSeaZone);
     assertNotNull(finlandNorway);
     assertEquals(
@@ -988,7 +991,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
         karelia.getUnitCollection().getMatches(Matches.isUnitAllied(british)));
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =
-        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingNonBombingBattle(balticSeaZone);
     assertNotNull(balticSeaZone);
     // Add some defending units in case there aren't any
     final List<Unit> defendList = transport.create(1, germans);
@@ -1049,7 +1052,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
         karelia.getUnitCollection().getMatches(Matches.isUnitAllied(british)));
     // Set up the battles and the dependent battles
     final IBattle inBalticSeaZone =
-        gameData.getBattleDelegate().getBattleTracker().getPendingBattle(balticSeaZone);
+        gameData.getBattleDelegate().getBattleTracker().getPendingNonBombingBattle(balticSeaZone);
     assertNotNull(balticSeaZone);
     // Add some defending units in case there aren't any
     final List<Unit> defendList = transport.create(1, germans);

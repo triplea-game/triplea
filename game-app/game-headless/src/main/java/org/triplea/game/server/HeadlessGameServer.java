@@ -72,7 +72,7 @@ public class HeadlessGameServer {
       log.info("Changed to game map: {}", gameName);
     } else if (AutoSaveFileUtils.getAutoSaveFiles().contains(gameName)) {
       // change to autosave
-      log.info("Loading {} as a savegame", gameName);
+      log.info("Loading {} as a save game", gameName);
       AutoSaveFileUtils.getAutoSavePaths().stream()
           .filter(p -> p.toFile().getName().equals(gameName))
           .findAny()
@@ -84,7 +84,7 @@ public class HeadlessGameServer {
                       gameName,
                       AutoSaveFileUtils.getAutoSavePaths()));
     } else {
-      log.warn("Unable to find save game as either a new map or a savegame: {}", gameName);
+      log.warn("Unable to find save game as either a new map or a save game: {}", gameName);
     }
   }
 

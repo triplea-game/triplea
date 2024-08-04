@@ -38,6 +38,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -433,22 +434,23 @@ public class BattleTracker implements Serializable {
             .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(gamePlayer));
     final Predicate<Territory> conquerable =
         Matches.territoryIsEmptyOfCombatUnits(gamePlayer).and(passableLandAndNotRestricted);
-    final Collection<Territory> conquered = new ArrayList<>();
+    final Collection<Territory> conqueredTerritories = new ArrayList<>();
     if (canConquerMiddleSteps) {
-      conquered.addAll(route.getMatches(conquerable));
+      conqueredTerritories.addAll(route.getMatches(conquerable));
       // in case we begin in enemy territory, and blitz out of it, check the first territory
       if (!route.getStart().equals(route.getEnd()) && conquerable.test(route.getStart())) {
-        conquered.add(route.getStart());
+        conqueredTerritories.add(route.getStart());
       }
     }
     // we handle the end of the route later
-    conquered.remove(route.getEnd());
-    final Collection<Territory> blitzed =
-        CollectionUtils.getMatches(conquered, Matches.territoryIsBlitzable(gamePlayer));
-    this.blitzed.addAll(CollectionUtils.getMatches(blitzed, Matches.isTerritoryEnemy(gamePlayer)));
+    conqueredTerritories.remove(route.getEnd());
+    final Collection<Territory> blitzedTerritories =
+        CollectionUtils.getMatches(conqueredTerritories, Matches.territoryIsBlitzable(gamePlayer));
+    this.blitzed.addAll(
+        CollectionUtils.getMatches(blitzedTerritories, Matches.isTerritoryEnemy(gamePlayer)));
     this.conquered.addAll(
-        CollectionUtils.getMatches(conquered, Matches.isTerritoryEnemy(gamePlayer)));
-    for (final Territory current : conquered) {
+        CollectionUtils.getMatches(conqueredTerritories, Matches.isTerritoryEnemy(gamePlayer)));
+    for (final Territory current : conqueredTerritories) {
       IBattle nonFight = getPendingBattle(current, BattleType.NORMAL);
       // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this
       if (nonFight == null) {
@@ -885,8 +887,10 @@ public class BattleTracker implements Serializable {
         final Map<String, Tuple<String, IntegerMap<UnitType>>> map =
             u.getUnitAttachment().getWhenCapturedChangesInto();
         final GamePlayer currentOwner = u.getOwner();
-        for (final String value : map.keySet()) {
-          final String[] s = Iterables.toArray(Splitter.on(':').split(value), String.class);
+        for (Map.Entry<String, Tuple<String, IntegerMap<UnitType>>> mapEntry :
+            Collections.unmodifiableSet(map.entrySet())) {
+          final String[] s =
+              Iterables.toArray(Splitter.on(':').split(mapEntry.getKey()), String.class);
           if (!(s[0].equals("any")
               || data.getPlayerList().getPlayerId(s[0]).equals(currentOwner))) {
             continue;
@@ -897,7 +901,7 @@ public class BattleTracker implements Serializable {
           }
           final CompositeChange changes = new CompositeChange();
           final Collection<Unit> toAdd = new ArrayList<>();
-          final Tuple<String, IntegerMap<UnitType>> toCreate = map.get(value);
+          final Tuple<String, IntegerMap<UnitType>> toCreate = mapEntry.getValue();
           final boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
           for (final UnitType ut : toCreate.getSecond().keySet()) {
             toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));
@@ -1036,17 +1040,15 @@ public class BattleTracker implements Serializable {
   }
 
   public Collection<IBattle> getPendingBattles(final Territory t) {
-    return pendingBattles.stream()
-        .filter(b -> b.getTerritory().equals(t))
-        .collect(Collectors.toSet());
+    return CollectionUtils.getMatches(pendingBattles, b -> b.getTerritory().equals(t));
   }
 
   public boolean hasPendingNonBombingBattle(final Territory t) {
-    return getPendingBattle(t) != null;
+    return getPendingNonBombingBattle(t) != null;
   }
 
   @Nullable
-  public IBattle getPendingBattle(final Territory t) {
+  public IBattle getPendingNonBombingBattle(final Territory t) {
     return BattleType.nonBombingBattleTypes().stream()
         .map(type -> getPendingBattle(t, type))
         .filter(Objects::nonNull)
@@ -1056,50 +1058,43 @@ public class BattleTracker implements Serializable {
 
   @Nullable
   public IBattle getPendingBattle(final Territory t, final BattleType type) {
-    for (final IBattle battle : pendingBattles) {
-      if (battle.getTerritory().equals(t) && type == battle.getBattleType()) {
-        return battle;
-      }
-    }
-    return null;
+    return pendingBattles.stream()
+        .filter(b -> b.getBattleType().equals(type) && b.getTerritory().equals(t))
+        .findFirst()
+        .orElse(null);
   }
 
   public IBattle getPendingBattle(final UUID uuid) {
     if (uuid == null) {
       return null;
     }
-
     return pendingBattles.stream().filter(b -> b.getBattleId().equals(uuid)).findAny().orElse(null);
+  }
+
+  /** Returns a collection of territories where no bombing battles are pending. */
+  public Collection<Territory> getPendingBattleSitesWithoutBombing() {
+    return getPendingBattleSites(false);
+  }
+
+  /** Returns a collection of territories where bombing battles are pending. */
+  public Collection<Territory> getPendingBattleSitesWithBombing() {
+    return getPendingBattleSites(true);
   }
 
   /**
    * Returns a collection of territories where battles are pending.
    *
-   * @param bombing whether only battles where there is bombing.
+   * @param bombing whether only battles where there is bombing or where there is no bombing.
    */
-  public Collection<Territory> getPendingBattleSites(final boolean bombing) {
-    final Collection<Territory> battles = new ArrayList<>();
-    for (final IBattle battle : pendingBattles) {
-      if (!battle.isEmpty() && battle.getBattleType().isBombingRun() == bombing) {
-        battles.add(battle.getTerritory());
-      }
-    }
-    return battles;
+  private Collection<Territory> getPendingBattleSites(final boolean bombing) {
+    return pendingBattles.stream()
+        .filter(b -> !b.isEmpty() && b.getBattleType().isBombingRun() == bombing)
+        .map(IBattle::getTerritory)
+        .collect(Collectors.toSet());
   }
 
-  public BattleListing getPendingBattleSites() {
-    final Map<BattleType, Collection<Territory>> battles = new HashMap<>();
-    for (final IBattle battle : pendingBattles) {
-      if (!battle.isEmpty()) {
-        Collection<Territory> territories = battles.get(battle.getBattleType());
-        if (territories == null) {
-          territories = new HashSet<>();
-        }
-        territories.add(battle.getTerritory());
-        battles.put(battle.getBattleType(), territories);
-      }
-    }
-    return new BattleListing(battles);
+  public BattleListing getBattleListingFromPendingBattles() {
+    return new BattleListing(pendingBattles);
   }
 
   /**
@@ -1131,9 +1126,9 @@ public class BattleTracker implements Serializable {
   }
 
   private void removeDependency(final IBattle blocked, final IBattle blocking) {
-    final Collection<IBattle> dependencies = this.dependencies.get(blocked);
-    dependencies.remove(blocking);
-    if (dependencies.isEmpty()) {
+    final Collection<IBattle> dependenciesOfBlocked = this.dependencies.get(blocked);
+    dependenciesOfBlocked.remove(blocking);
+    if (dependenciesOfBlocked.isEmpty()) {
       this.dependencies.remove(blocked);
     }
   }
@@ -1204,7 +1199,7 @@ public class BattleTracker implements Serializable {
    */
   void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge) {
     fightAirRaidsAndStrategicBombing(
-        delegateBridge, () -> getPendingBattleSites(true), this::getPendingBattle);
+        delegateBridge, this::getPendingBattleSitesWithBombing, this::getPendingBattle);
   }
 
   @VisibleForTesting
@@ -1226,7 +1221,7 @@ public class BattleTracker implements Serializable {
       }
     }
 
-    // now that we've done all the air battles, do all the SBR's as a second wave.
+    // now that we've done all the air battles, do all the SBRs as a second wave.
     for (final Territory t : pendingBattleSiteSupplier.get()) {
       final IBattle bombingRaid = pendingBattleFunction.apply(t, BattleType.BOMBING_RAID);
       if (bombingRaid != null) {

@@ -193,7 +193,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    final BattleListing battles = getBattles();
+    final BattleListing battles = getBattleListing();
     if (battles.isEmpty()) {
       final IBattle battle = getCurrentBattle();
       return battle != null;
@@ -252,8 +252,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   @Override
-  public BattleListing getBattles() {
-    return battleTracker.getPendingBattleSites();
+  public BattleListing getBattleListing() {
+    return battleTracker.getBattleListingFromPendingBattles();
   }
 
   /** Add bombardment units to battles. */
@@ -688,7 +688,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (!Properties.getScrambleRulesInEffect(data.getProperties())) {
       return;
     }
-    final BattleListing pendingBattleSites = battleTracker.getPendingBattleSites();
+    final BattleListing pendingBattleSites = battleTracker.getBattleListingFromPendingBattles();
     final Set<Territory> territoriesWithBattles =
         pendingBattleSites.getNormalBattlesIncludingAirBattles();
     if (Properties.getCanScrambleIntoAirBattles(data.getProperties())) {
@@ -1210,7 +1210,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .and(Matches.unitCanEvade().negate());
     final boolean onlyWhereThereAreBattlesOrAmphibious =
         Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data.getProperties());
-    final Collection<Territory> pendingBattles = battleTracker.getPendingBattleSites(false);
+    final Collection<Territory> pendingBattles =
+        battleTracker.getPendingBattleSitesWithoutBombing();
     // create a list of all kamikaze zones, listed by enemy
     final Map<GamePlayer, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
@@ -1478,7 +1479,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         (Properties.getNeutralFlyoverAllowed(data.getProperties())
             && !Properties.getNeutralsImpassable(data.getProperties()));
     final Set<Territory> canNotLand = new HashSet<>();
-    canNotLand.addAll(battleTracker.getPendingBattleSites(false));
+    canNotLand.addAll(battleTracker.getPendingBattleSitesWithoutBombing());
     canNotLand.addAll(
         CollectionUtils.getMatches(
             data.getMap().getTerritories(), Matches.territoryHasEnemyUnits(alliedPlayer)));
@@ -1519,7 +1520,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   possibleTerrs,
                   Matches.territoryHasUnitsThatMatch(Matches.unitIsAlliedCarrier(alliedPlayer))
                       .and(Matches.territoryIsWater())));
-      availableWater.removeAll(battleTracker.getPendingBattleSites(false));
+      availableWater.removeAll(battleTracker.getPendingBattleSitesWithoutBombing());
       // simple calculation, either we can take all the air, or we can't, nothing in the middle
       final int carrierCost = AirMovementValidator.carrierCost(strandedAir);
       final Iterator<Territory> waterIter = availableWater.iterator();
