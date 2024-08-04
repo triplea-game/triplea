@@ -162,7 +162,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return count;
   }
 
-  public List<GamePlayer> getPlayersByUnitCount() {
+  public List<GamePlayer> getPlayersSortedByUnitCount() {
     final IntegerMap<GamePlayer> map = getPlayerUnitCounts();
     final List<GamePlayer> players = new ArrayList<>(map.keySet());
     players.sort(Comparator.comparingInt(map::getInt).reversed());

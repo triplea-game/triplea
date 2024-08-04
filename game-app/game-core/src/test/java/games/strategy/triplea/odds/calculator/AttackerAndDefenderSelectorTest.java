@@ -239,7 +239,7 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+      assertThat(attAndDef.getAttacker(), isPresentAndIs(germans)); // case: all units allied
       assertThat(attAndDef.getDefender(), isPresentAndIs(british));
       assertThat(attAndDef.getAttackingUnits(), is(empty()));
       assertThat(
@@ -439,7 +439,7 @@ public class AttackerAndDefenderSelectorTest {
           attackerAndDefenderSelector.getAttackerAndDefender();
 
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(defender, isPresentAndIs(italians));
+      assertThat(defender, isPresentAndIs(italians)); // only italy units present
       assertThat(attAndDef.getDefendingUnits(), equalTo(sz97.getUnits()));
     }
 
@@ -474,11 +474,13 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(defender, isPresentAndIs(british));
       assertThat(uk.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(french)), is(true));
       assertThat(uk.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(british)), is(true));
+      assertThat(attAndDef.getDefender(), isPresentAndIs(british)); // only allied units
       assertThat(attAndDef.getDefendingUnits(), equalTo(uk.getUnits()));
+      assertThat(
+          attAndDef.getAttacker(), isPresentAndIs(germans)); // next in turn after current init step
+      assertThat(attAndDef.getAttackingUnits(), is(empty()));
     }
   }
 }
