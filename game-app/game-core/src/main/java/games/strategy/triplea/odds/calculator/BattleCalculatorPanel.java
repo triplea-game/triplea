@@ -97,8 +97,8 @@ class BattleCalculatorPanel extends JPanel {
   private final JLabel defenderUnitsTotalNumber = new JLabel();
   private final JLabel attackerUnitsTotalTuv = new JLabel();
   private final JLabel defenderUnitsTotalTuv = new JLabel();
-  private final JLabel attackerUnitsTotalHitpoints = new JLabel();
-  private final JLabel defenderUnitsTotalHitpoints = new JLabel();
+  private final JLabel attackerUnitsTotalHitPoints = new JLabel();
+  private final JLabel defenderUnitsTotalHitPoints = new JLabel();
   private final JLabel attackerUnitsTotalPower = new JLabel();
   private final JLabel defenderUnitsTotalPower = new JLabel();
   private String attackerOrderOfLosses = null;
@@ -223,12 +223,12 @@ class BattleCalculatorPanel extends JPanel {
     attackAndDefend.add(
         defenderUnitsTotalTuv, builder0.gridX(3).insets(0, gap / 2, 0, gap * 2).build());
     attackAndDefend.add(
-        attackerUnitsTotalHitpoints,
+        attackerUnitsTotalHitPoints,
         builder0.gridY(row0).gridX(0).insets(0, gap, gap / 2, 0).build());
     attackAndDefend.add(
         attackerUnitsTotalPower, builder0.gridX(1).insets(0, gap / 2, gap / 2, gap * 2).build());
     attackAndDefend.add(
-        defenderUnitsTotalHitpoints, builder0.gridX(2).insets(0, gap, gap / 2, 0).build());
+        defenderUnitsTotalHitPoints, builder0.gridX(2).insets(0, gap, gap / 2, 0).build());
     attackAndDefend.add(
         defenderUnitsTotalPower, builder0.gridX(3).insets(0, gap / 2, gap / 2, gap * 2).build());
     final JPanel attackAndDefendAlignLeft = new JPanel();
@@ -411,7 +411,7 @@ class BattleCalculatorPanel extends JPanel {
           attackerOrderOfLosses = null;
           defenderOrderOfLosses = null;
           final GamePlayer newAttacker = getDefender();
-          final List<Unit> newAttackers =
+          final List<Unit> newAttackerUnits =
               CollectionUtils.getMatches(
                   defendingUnitsPanel.getUnits(),
                   Matches.unitIsOwnedBy(getDefender())
@@ -424,14 +424,12 @@ class BattleCalculatorPanel extends JPanel {
                               true,
                               List.of())));
           final GamePlayer newDefender = getAttacker();
-          final List<Unit> newDefenders =
+          final List<Unit> newDefenderUnits =
               CollectionUtils.getMatches(
                   attackingUnitsPanel.getUnits(),
                   Matches.unitCanBeInBattle(true, isLandBattle(), 1, true));
-          setAttacker(newAttacker);
-          setDefender(newDefender);
-          setAttackingUnits(newAttackers);
-          setDefendingUnits(newDefenders);
+          setAttackerWithUnits(newAttacker, newAttackerUnits);
+          setDefenderWithUnits(newDefender, newDefenderUnits);
           setWidgetActivation();
         });
     orderOfLossesButton.addActionListener(
@@ -516,7 +514,7 @@ class BattleCalculatorPanel extends JPanel {
     return (GamePlayer) attackerCombo.getSelectedItem();
   }
 
-  void setAttacker(final GamePlayer gamePlayer) {
+  private void setAttacker(final GamePlayer gamePlayer) {
     attackerCombo.setSelectedItem(gamePlayer);
   }
 
@@ -524,7 +522,7 @@ class BattleCalculatorPanel extends JPanel {
     return (GamePlayer) defenderCombo.getSelectedItem();
   }
 
-  void setDefender(final GamePlayer gamePlayer) {
+  private void setDefender(final GamePlayer gamePlayer) {
     defenderCombo.setSelectedItem(gamePlayer);
   }
 
@@ -684,6 +682,11 @@ class BattleCalculatorPanel extends JPanel {
     return new DecimalFormat("#0.##").format(value);
   }
 
+  public void setAttackerWithUnits(final GamePlayer attacker, final List<Unit> initialUnits) {
+    setAttacker(attacker);
+    setAttackingUnits(initialUnits);
+  }
+
   void addAttackingUnits(final List<Unit> unitsToAdd) {
     final List<Unit> units = attackingUnitsPanel.getUnits();
     units.addAll(unitsToAdd);
@@ -703,6 +706,11 @@ class BattleCalculatorPanel extends JPanel {
         location);
   }
 
+  public void setDefenderWithUnits(final GamePlayer defender, final List<Unit> initialUnits) {
+    setDefender(defender);
+    setDefendingUnits(initialUnits);
+  }
+
   void addDefendingUnits(final List<Unit> unitsToAdd) {
     final List<Unit> units = defendingUnitsPanel.getUnits();
     units.addAll(unitsToAdd);
@@ -720,11 +728,11 @@ class BattleCalculatorPanel extends JPanel {
         location);
   }
 
-  public boolean hasAttackingUnitsAdded() {
+  public boolean hasAttackingUnits() {
     return !attackingUnitsPanel.isEmpty();
   }
 
-  public boolean hasDefendingUnitsAdded() {
+  public boolean hasDefendingUnits() {
     return !defendingUnitsPanel.isEmpty();
   }
 
@@ -770,8 +778,8 @@ class BattleCalculatorPanel extends JPanel {
                   defenders, getDefender(), tuvCalculator.getCostsForTuv(getDefender()), data));
       final int attackHitPoints = CasualtyUtil.getTotalHitpointsLeft(attackers);
       final int defenseHitPoints = CasualtyUtil.getTotalHitpointsLeft(defenders);
-      attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
-      defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
+      attackerUnitsTotalHitPoints.setText("HP: " + attackHitPoints);
+      defenderUnitsTotalHitPoints.setText("HP: " + defenseHitPoints);
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       if (isAmphibiousBattle()) {
         attackers.stream()
