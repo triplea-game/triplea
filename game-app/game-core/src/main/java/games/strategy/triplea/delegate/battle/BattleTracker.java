@@ -39,7 +39,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1095,19 +1094,7 @@ public class BattleTracker implements Serializable {
   }
 
   public BattleListing getBattleListingFromPendingBattles() {
-    final Map<BattleType, Collection<Territory>> battles = new EnumMap<>(BattleType.class);
-    pendingBattles.stream()
-        .filter(b -> !b.isEmpty())
-        .forEach(
-            b -> {
-              Collection<Territory> territories = battles.get(b.getBattleType());
-              if (territories == null) {
-                territories = new HashSet<>();
-              }
-              territories.add(b.getTerritory());
-              battles.put(b.getBattleType(), territories);
-            });
-    return new BattleListing(battles);
+    return new BattleListing(pendingBattles);
   }
 
   /**

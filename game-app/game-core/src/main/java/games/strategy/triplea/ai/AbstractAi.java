@@ -605,7 +605,8 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       if (listing.isEmpty()) {
         return;
       }
-      for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet()) {
+      for (final Entry<BattleType, Collection<Territory>> entry :
+          listing.getBattlesMap().entrySet()) {
         for (final Territory current : entry.getValue()) {
           final String error =
               battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());

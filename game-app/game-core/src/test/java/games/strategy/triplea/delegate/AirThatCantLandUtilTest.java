@@ -32,7 +32,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
 
   private static void fight(final IBattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry :
-        battle.getBattleListing().getBattles().entrySet()) {
+        battle.getBattleListing().getBattlesMap().entrySet()) {
       if (!entry.getKey().isBombingRun() && entry.getValue().contains(territory)) {
         battle.fightBattle(territory, false, entry.getKey());
         return;

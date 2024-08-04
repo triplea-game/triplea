@@ -151,7 +151,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
 
   private static void fight(final BattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry :
-        battle.getBattleListing().getBattles().entrySet()) {
+        battle.getBattleListing().getBattlesMap().entrySet()) {
       if (!entry.getKey().isBombingRun() && entry.getValue().contains(territory)) {
         battle.fightBattle(territory, false, entry.getKey());
         return;
