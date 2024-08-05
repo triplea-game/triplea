@@ -28,7 +28,7 @@ public final class UpdateChecks {
   }
 
   private static boolean shouldRun() {
-    // if we are joining a game online, or hosting, or loading straight into a savegame, do not
+    // if we are joining a game online, or hosting, or loading straight into a save game, do not
     // check
     return !System.getProperty(TRIPLEA_SERVER, "false").equalsIgnoreCase("true")
         && !System.getProperty(TRIPLEA_CLIENT, "false").equalsIgnoreCase("true")

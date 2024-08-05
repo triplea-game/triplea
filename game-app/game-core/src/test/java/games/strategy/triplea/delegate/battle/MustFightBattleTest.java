@@ -79,7 +79,7 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
 
     final IDelegateBridge bridge = performCombatMove(usa, sz33.getUnits(), new Route(sz33, sz40));
     final IBattle battle =
-        AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(sz40);
+        AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingNonBombingBattle(sz40);
     assertNotNull(battle);
 
     // Set first roll to hit (mine AA) and check that both units are killed
@@ -104,7 +104,7 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     battleDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(twwGameData).getBattleTracker(), bridge);
     final IBattle battle =
-        AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(celebes);
+        AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingNonBombingBattle(celebes);
     assertNotNull(battle);
 
     // Ensure battle ends, both units remain, and has 0 rolls
@@ -145,7 +145,8 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     final IDelegateBridge bridge =
         performCombatMove(japan(gameData), attackers, new Route(indoChina, burma));
 
-    final IBattle battle = AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(burma);
+    final IBattle battle =
+        AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(burma);
     assertNotNull(battle);
 
     // Attacking infantry roll two dice (both hit, killing the defenders).
@@ -195,7 +196,7 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
         performCombatMove(chinese(gameData), attackers, new Route(china, indoChina));
 
     final IBattle battle =
-        AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(indoChina);
+        AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(indoChina);
     assertNotNull(battle);
 
     whenGetRandom(bridge)
@@ -279,7 +280,8 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     final IDelegateBridge bridge =
         performCombatMove(GameDataTestUtil.germany(gameData), attackers, new Route(sz25, sz23));
 
-    final IBattle battle = AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz23);
+    final IBattle battle =
+        AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(sz23);
     assertNotNull(battle);
     // Attacking battleship rolls a die with a hit, killing the destroyer.
     // Defenders should roll a die with a hit, damaging the battleship.

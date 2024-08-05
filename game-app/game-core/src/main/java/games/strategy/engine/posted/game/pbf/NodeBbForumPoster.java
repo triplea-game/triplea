@@ -162,7 +162,7 @@ public class NodeBbForumPoster {
         return parseSaveGameUrlFromJsonResponse(json);
       }
       throw new IllegalStateException(
-          "Failed to upload savegame, server returned Error Code "
+          "Failed to upload save game, server returned Error Code "
               + status
               + "\nMessage:\n"
               + EntityUtils.toString(response.getEntity()));

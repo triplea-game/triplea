@@ -127,7 +127,7 @@
 15,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate,setDelegateBridgeAndPlayer,games.strategy.engine.delegate.IDelegateBridge
 0,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate,delegateCurrentlyRequiresUserInput
 2,games.strategy.triplea.delegate.remote.IBattleDelegate,fightBattle,games.strategy.engine.data.Territory,boolean,games.strategy.triplea.delegate.battle.IBattle$BattleType
-3,games.strategy.triplea.delegate.remote.IBattleDelegate,getBattles
+3,games.strategy.triplea.delegate.remote.IBattleDelegate,getBattleListing
 5,games.strategy.triplea.delegate.remote.IBattleDelegate,getCurrentBattle
 7,games.strategy.triplea.delegate.remote.IBattleDelegate,getName
 1,games.strategy.triplea.delegate.remote.IBattleDelegate,end

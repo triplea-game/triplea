@@ -134,7 +134,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     }
     if (ui == null) {
       // We will get here if we are loading a save game of a map that we do not have. Caller code
-      // should be doing the error handling, so just return..
+      // should be doing the error handling, so just return.
       return;
     }
     // TODO: parsing which UI thing we should run based on the string name of a possibly extended
@@ -144,7 +144,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     // This is how we find out our game step: getGameData().getSequence().getStep()
     // The game step contains information, like the exact delegate and the delegate's class,
     // that we can further use if needed. This is how we get our communication bridge for affecting
-    // the gamedata:
+    // the game data:
     // (ISomeDelegate) getPlayerBridge().getRemote()
     // We should never touch the game data directly. All changes to game data are done through the
     // remote, which then changes the game using the DelegateBridge -> change factory
@@ -525,15 +525,15 @@ public class TripleAPlayer extends AbstractBasePlayer {
       if (getPlayerBridge().isGameOver()) {
         return;
       }
-      final BattleListing battles = battleDel.getBattles();
-      if (battles.isEmpty()) {
+      final BattleListing battleListing = battleDel.getBattleListing();
+      if (battleListing.isEmpty()) {
         return;
       }
       if (!soundPlayedAlreadyBattle) {
         playSound(SoundPath.CLIP_PHASE_BATTLE);
         soundPlayedAlreadyBattle = true;
       }
-      final FightBattleDetails details = ui.getBattle(gamePlayer, battles.getBattles());
+      final FightBattleDetails details = ui.getBattle(gamePlayer, battleListing);
       if (getPlayerBridge().isGameOver()) {
         return;
       }
@@ -612,7 +612,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (!soundPlayedAlreadyEndTurn
         && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
             this.getGamePlayer(), getGameData().getMap())) {
-      // do not play if we are reloading a savegame from pbem (gets annoying)
+      // do not play if we are reloading a save game from pbem (gets annoying)
       if (!endTurnDelegate.getHasPostedTurnSummary()) {
         playSound(SoundPath.CLIP_PHASE_END_TURN);
       }
@@ -635,7 +635,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties,
       final UUID battleId,
-      final Territory battlesite,
+      final Territory battleTerritory,
       final boolean allowMultipleHitsPerUnit) {
     return ui.getBattlePanel()
         .getCasualties(

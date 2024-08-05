@@ -13,7 +13,7 @@ import games.strategy.engine.posted.game.MoveForumPosterPanel;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
-import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
@@ -40,7 +40,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 import org.triplea.util.Tuple;
 
 /** Root panel for all action buttons in a triplea game. */
-public class ActionButtons extends JPanel {
+public class ActionButtonsPanel extends JPanel {
   public static final String DONE_BUTTON_TOOLTIP =
       "Press ctrl+enter or click this button to end the current turn phase";
   private static final long serialVersionUID = 2175685892863042399L;
@@ -64,7 +64,7 @@ public class ActionButtons extends JPanel {
 
   private @Nullable ActionPanel actionPanel;
 
-  public ActionButtons(
+  public ActionButtonsPanel(
       final GameData data,
       final MapPanel map,
       final MovePanel movePanel,
@@ -152,8 +152,7 @@ public class ActionButtons extends JPanel {
     changeTo(gamePlayer, placePanel);
   }
 
-  public void changeToBattle(
-      final GamePlayer gamePlayer, final Map<BattleType, Collection<Territory>> battles) {
+  public void changeToBattle(final GamePlayer gamePlayer, final BattleListing battles) {
     if (battlePanel != null) {
       battlePanel.setBattlesAndBombing(battles);
     }
@@ -190,7 +189,7 @@ public class ActionButtons extends JPanel {
     // newCurrent might be null if we are shutting down
     if (newCurrent != null) {
       newCurrent.display(gamePlayer);
-      SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, newCurrent.toString()));
+      SwingUtilities.invokeLater(() -> layout.show(ActionButtonsPanel.this, newCurrent.toString()));
     }
   }
 

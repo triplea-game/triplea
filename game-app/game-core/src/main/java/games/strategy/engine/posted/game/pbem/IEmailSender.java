@@ -23,7 +23,7 @@ public interface IEmailSender {
    *
    * @param subject the subject of the email
    * @param htmlMessage the html email body
-   * @param saveGame the savegame or null
+   * @param saveGame the save game or null
    * @throws IOException if an error occurs
    */
   void sendEmail(String subject, String htmlMessage, Path saveGame, String saveGameName)

@@ -16,11 +16,12 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
@@ -82,7 +83,7 @@ public class BattleCalculatorDialog extends JDialog {
           }
         });
 
-    taFrame.getTerritoryDetails().addBattleCalculatorKeyBindings(dialog);
+    taFrame.getTerritoryDetailPanel().addBattleCalculatorKeyBindings(dialog);
     // close when hitting the escape key
     SwingKeyBinding.addKeyBinding(
         dialog,
@@ -103,59 +104,80 @@ public class BattleCalculatorDialog extends JDialog {
     // existing battle calculator dialog.  Oddly enough, calling toFront() directly here (before or
     // after setVisible(true)) has no effect either, but delaying the call to the end of the queue
     // of the Event Dispatch Thread solves the issue (though you can see the new dialog in the
-    // background for an blink of an eye).
+    // background for a blink of an eye).
     // Tested with Cinnamon Desktop 4.8.5.
     SwingUtilities.invokeLater(dialog::toFront);
     taFrame.getUiContext().addShutdownWindow(dialog);
   }
 
-  public static void addAttackers(final Territory t) {
+  private static void adjustBattleCalculatorPanel(
+      final Territory t, Consumer<BattleCalculatorPanel> battleCalculatorPanelConsumer) {
     if (instances.isEmpty() || t == null) {
       return;
     }
-    final BattleCalculatorPanel currentPanel = instances.get(instances.size() - 1).panel;
 
-    // if there are no units set on the battle calculator panel, and if there are no units
-    // matching the current attacker, then we'll set the attacker to be the enemy player
-    // with the most units in the selected territory.
-    if (!currentPanel.hasAttackingUnitsAdded()
-        && t.getUnitCollection().stream()
-            .noneMatch(Matches.unitIsOwnedBy(currentPanel.getAttacker()))) {
-      // Find possible attackers (enemies) of the current defender.
-      // Count how many units each one has and find the max.
-      final List<Unit> units = t.getMatches(Matches.enemyUnit(currentPanel.getDefender()));
+    final BattleCalculatorDialog currentDialog = instances.get(instances.size() - 1);
+    battleCalculatorPanelConsumer.accept(currentDialog.panel);
+    currentDialog.pack();
+  }
 
-      final GamePlayer gamePlayer = new IntegerMap<>(units, Unit::getOwner).maxKey();
-      if (gamePlayer != null) {
-        currentPanel.setAttacker(gamePlayer);
-      }
-    }
-    currentPanel.addAttackingUnits(t.getMatches(Matches.unitIsOwnedBy(currentPanel.getAttacker())));
+  public static void addAttackers(final Territory t) {
+    adjustBattleCalculatorPanel(
+        t,
+        panel -> {
+          // if there are no units set on the battle calculator panel yet,
+          // then we'll determine the attacker to be the defender's enemy player
+          // with the most units in the selected territory.
+          if (panel.hasAttackingUnits()) {
+            panel.addAttackingUnits(t.getMatches(Matches.unitIsOwnedBy(panel.getAttacker())));
+          } else {
+            // Find possible attacker (enemy) units for the current defender.
+            final List<Unit> units =
+                t.getUnitCollection().stream()
+                    .filter(Matches.enemyUnit(panel.getDefender()))
+                    .collect(Collectors.toList());
+
+            if (!units.isEmpty()) {
+              // Count how many units each one has and find the max to update the panel
+              final IntegerMap<GamePlayer> unitCountMap = new IntegerMap<>(units, Unit::getOwner);
+              final GamePlayer newAttacker = unitCountMap.maxKey();
+              final List<Unit> attackingUnits =
+                  units.stream()
+                      .filter(Matches.unitIsOwnedBy(newAttacker))
+                      .collect(Collectors.toList());
+              panel.setAttackerWithUnits(newAttacker, attackingUnits);
+            }
+          }
+        });
   }
 
   public static void addDefenders(final Territory t) {
-    if (instances.isEmpty() || t == null) {
-      return;
-    }
-    final BattleCalculatorDialog currentDialog = instances.get(instances.size() - 1);
-
-    // if there are no units added to the dialog, then we'll automatically
-    // select the defending side to match any unit in the current territory
-    if (!currentDialog.panel.hasAttackingUnitsAdded()
-        && !currentDialog.panel.hasDefendingUnitsAdded()) {
-      Optional.ofNullable(CollectionUtils.getAny(t.getUnitCollection()))
-          .map(Unit::getOwner)
-          .ifPresent(currentDialog.panel::setDefender);
-    }
-    currentDialog.panel.addDefendingUnits(
-        t.getMatches(Matches.alliedUnit(currentDialog.panel.getDefender())));
-    currentDialog.pack();
+    adjustBattleCalculatorPanel(
+        t,
+        panel -> {
+          // if there are no units added to the dialog, then we'll automatically
+          // select the defending side to match any unit in the current territory
+          if (!panel.hasAttackingUnits() && !panel.hasDefendingUnits()) {
+            final Optional<GamePlayer> defender =
+                t.getUnitCollection().stream().map(Unit::getOwner).findAny();
+            if (defender.isPresent()) {
+              panel.setDefenderWithUnits(
+                  defender.get(), t.getMatches(Matches.alliedUnit(defender.get())));
+            }
+          } else {
+            panel.addDefendingUnits(t.getMatches(Matches.alliedUnit(panel.getDefender())));
+          }
+        });
   }
 
   @Override
   public void dispose() {
-    instances.remove(this);
-    lastPosition = new Point(getLocation());
+    disposeInstance(this);
     super.dispose();
+  }
+
+  private static synchronized void disposeInstance(BattleCalculatorDialog currentDialog) {
+    instances.remove(currentDialog);
+    lastPosition = new Point(currentDialog.getLocation());
   }
 }
