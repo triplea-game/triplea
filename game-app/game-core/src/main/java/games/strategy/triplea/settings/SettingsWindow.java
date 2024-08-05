@@ -33,8 +33,9 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /**
  * UI window with controls to update game settings and preferences. Settings are grouped by type,
- * the window consists of a TabbedPane and in it we load one tab per non-hidden {@code SettingType}.
- * All data needed to render the settings UI is pulled from the {@code ClientSetting} enum.
+ * the window consists of a TabbedPane and in it, we load one tab per non-hidden {@code
+ * SettingType}. All data needed to render the settings UI is pulled from the {@code ClientSetting}
+ * enum.
  *
  * @see ClientSetting
  */
@@ -202,7 +203,11 @@ public enum SettingsWindow {
         .addHorizontalStrut(5)
         .add(new JButtonBuilder().title("Close").actionListener(this::close).build())
         .addHorizontalStrut(5)
-        .add(new JButtonBuilder().title("Reset").actionListener(this::resetSettings).build())
+        .add(
+            new JButtonBuilder()
+                .title("Reset to Saved")
+                .actionListener(this::resetSettings)
+                .build())
         .addHorizontalStrut(5)
         .add(
             new JButtonBuilder()
