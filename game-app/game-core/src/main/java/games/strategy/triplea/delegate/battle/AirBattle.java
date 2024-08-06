@@ -335,7 +335,13 @@ public class AirBattle extends AbstractBattle {
   private void makeBattle(final IDelegateBridge bridge) {
     // record who was in this battle first, so that they do not take part in any ground battles
     if (isBombingRun) {
-      recordUnitsWereInAirBattle(attackingUnits, bridge);
+      final Set<Unit> attackingAir = new HashSet<>();
+      attackingAir.addAll(attackingUnits);
+      // do we need to separate air units
+      if (Properties.getUseNonAirUnitsInNormalBattle(gameData.getProperties())) {
+        attackingAir.removeIf(Matches.unitIsNotAir());
+      }
+      recordUnitsWereInAirBattle(attackingAir, bridge);
       recordUnitsWereInAirBattle(defendingUnits, bridge);
     }
     // As of right now, Air Battles are created before both normal battles and strategic bombing

@@ -157,6 +157,7 @@ public interface Constants {
   String UNITS_CAN_BE_CHANGED_ON_CAPTURE = "Units Can Be Changed On Capture";
   String RELATIONSHIPS_LAST_EXTRA_ROUNDS = "Relationships Last Extra Rounds";
   String ALLIANCES_CAN_CHAIN_TOGETHER = "Alliances Can Chain Together";
+  String NON_AIR_SBR_UNITS_IN_NORMAL_BATTLE = "Use Non-Air SBR Units In Normal Battle";
   String RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES = "Raids May Be Preceeded By Air Battles";
   String BATTLES_MAY_BE_PRECEEDED_BY_AIR_BATTLES = "Battles May Be Preceeded By Air Battles";
   String USE_KAMIKAZE_SUICIDE_ATTACKS = "Use Kamikaze Suicide Attacks";
