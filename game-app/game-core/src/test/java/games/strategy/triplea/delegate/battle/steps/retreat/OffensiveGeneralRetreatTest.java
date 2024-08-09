@@ -74,7 +74,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
         final UnitAttachment unitAttachment =
             (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
         // ensure it didn't even try to check if there are planes
-        verify(unitAttachment, never()).getIsAir();
+        verify(unitAttachment, never()).isAir();
       }
 
       @Test
@@ -92,7 +92,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
         assertThat(offensiveGeneralRetreat.getAllStepDetails(), hasSize(1));
         final UnitAttachment unitAttachment =
             (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-        verify(unitAttachment).getIsAir();
+        verify(unitAttachment).isAir();
       }
 
       @Test

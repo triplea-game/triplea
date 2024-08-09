@@ -239,7 +239,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       // global1940 rules - each target type fires an AA shot against the planes bombing it
       steps.addAll(
           targets.entrySet().stream()
-              .filter(entry -> entry.getKey().getUnitAttachment().getIsAaForBombingThisUnitOnly())
+              .filter(entry -> entry.getKey().getUnitAttachment().isAaForBombingThisUnitOnly())
               .map(Entry::getValue)
               .map(FireAa::new)
               .collect(Collectors.toList()));

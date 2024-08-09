@@ -182,7 +182,7 @@ public class WeakAi extends AbstractAi {
         while (iter.hasNext() && free > 0) {
           final Unit current = iter.next();
           final UnitAttachment ua = current.getUnitAttachment();
-          if (ua.getIsAir()) {
+          if (ua.isAir()) {
             continue;
           }
           if (ua.getTransportCost() <= free) {

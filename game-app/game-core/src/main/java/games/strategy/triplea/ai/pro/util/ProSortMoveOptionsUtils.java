@@ -149,7 +149,7 @@ public final class ProSortMoveOptionsUtils {
           final UnitType unitType2 = u2.getType();
 
           // If unit types are equal and are air, then sort by average distance.
-          if (unitType1.equals(unitType2) && unitType1.getUnitAttachment().getIsAir()) {
+          if (unitType1.equals(unitType2) && unitType1.getUnitAttachment().isAir()) {
             final Predicate<Territory> predicate =
                 ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, true);
             final Territory territory1 = unitTerritoryMap.get(u1);
@@ -231,7 +231,7 @@ public final class ProSortMoveOptionsUtils {
         minPower = powerDifference;
       }
     }
-    if (unit.getUnitAttachment().getIsAir()) {
+    if (unit.getUnitAttachment().isAir()) {
       minPower *= 10;
     }
     final double unitValue = proData.getUnitValue(unit.getType());

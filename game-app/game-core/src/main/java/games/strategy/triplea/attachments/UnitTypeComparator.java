@@ -26,12 +26,12 @@ public class UnitTypeComparator implements Comparator<UnitType>, Serializable {
   @Override
   public int compare(final UnitType u1, final UnitType u2) {
     return Comparator.comparing(
-            UnitType::getUnitAttachment, Comparator.comparing(UnitAttachment::getIsInfrastructure))
+            UnitType::getUnitAttachment, Comparator.comparing(UnitAttachment::isInfrastructure))
         .thenComparing(Matches.unitTypeIsAaForAnything()::test)
         .thenComparing(
             UnitType::getUnitAttachment,
-            Comparator.comparing(UnitAttachment::getIsAir)
-                .thenComparing(UnitAttachment::getIsSea)
+            Comparator.comparing(UnitAttachment::isAir)
+                .thenComparing(UnitAttachment::isSea)
                 .thenComparingInt(UnitAttachment::getAttack))
         .thenComparing(NamedAttachable::getName)
         .compare(u1, u2);

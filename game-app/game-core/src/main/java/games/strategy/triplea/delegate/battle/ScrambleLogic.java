@@ -80,7 +80,7 @@ public class ScrambleLogic {
     int maxScrambleDistance = 0;
     for (final UnitType unitType : data.getUnitTypeList()) {
       final UnitAttachment ua = unitType.getUnitAttachment();
-      if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
+      if (ua.canScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }
     }

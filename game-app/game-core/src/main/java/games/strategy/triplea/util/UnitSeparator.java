@@ -255,6 +255,6 @@ public class UnitSeparator {
   }
 
   private static boolean isAirWithHitPointsRemaining(final Unit unit) {
-    return unit.getUnitAttachment().getIsAir() && unit.getUnitAttachment().getHitPoints() > 1;
+    return unit.getUnitAttachment().isAir() && unit.getUnitAttachment().getHitPoints() > 1;
   }
 }

@@ -33,22 +33,22 @@ class UnitTypeComparatorTest {
     when(nullType.getName()).thenReturn("<NULL TYPE>");
 
     final var infrastructureAttachment = mock(UnitAttachment.class);
-    when(infrastructureAttachment.getIsInfrastructure()).thenReturn(true);
+    when(infrastructureAttachment.isInfrastructure()).thenReturn(true);
     when(infrastructure.getAttachment(any())).thenReturn(infrastructureAttachment);
     when(infrastructure.getName()).thenReturn("<Infrastructure TYPE>");
 
     final var antiAircraftAttachment = mock(UnitAttachment.class);
-    when(antiAircraftAttachment.getIsAaForBombingThisUnitOnly()).thenReturn(true);
+    when(antiAircraftAttachment.isAaForBombingThisUnitOnly()).thenReturn(true);
     when(antiAircraft.getAttachment(any())).thenReturn(antiAircraftAttachment);
     when(antiAircraft.getName()).thenReturn("<AA TYPE>");
 
     final var airAttachment = mock(UnitAttachment.class);
-    when(airAttachment.getIsAir()).thenReturn(true);
+    when(airAttachment.isAir()).thenReturn(true);
     when(air.getAttachment(any())).thenReturn(airAttachment);
     when(air.getName()).thenReturn("<Air TYPE>");
 
     final var seaAttachment = mock(UnitAttachment.class);
-    when(seaAttachment.getIsSea()).thenReturn(true);
+    when(seaAttachment.isSea()).thenReturn(true);
     when(sea.getAttachment(any())).thenReturn(seaAttachment);
     when(sea.getName()).thenReturn("<Sea Type>");
 

@@ -311,8 +311,8 @@ final class ProTechAi {
     }
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = u.getUnitAttachment();
-      if (unitAttachment.getIsInfrastructure()) {
-        if (unitAttachment.getIsSea() == sea) {
+      if (unitAttachment.isInfrastructure()) {
+        if (unitAttachment.isSea() == sea) {
           final int unitAttack = unitAttachment.getAttack(u.getOwner());
           // BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;
           // played with this value a good bit
@@ -330,7 +330,7 @@ final class ProTechAi {
             // only allow transport to have 0.35 on defense; none on attack
             strength -= 0.50F;
           }
-        } else if (unitAttachment.getIsAir() == sea) {
+        } else if (unitAttachment.isAir() == sea) {
           strength += 1.00F;
           if (attacking) {
             strength +=
