@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.SwingComponents;
 
 /** Panel showing full list of units for a player in a given battle simulation. */
 public class PlayerUnitsPanel extends JPanel {
@@ -102,11 +103,7 @@ public class PlayerUnitsPanel extends JPanel {
       }
     }
 
-    // TODO: probably do not need to do this much revalidation.
-    invalidate();
-    validate();
-    revalidate();
-    getParent().invalidate();
+    SwingComponents.redraw(this);
   }
 
   /**
