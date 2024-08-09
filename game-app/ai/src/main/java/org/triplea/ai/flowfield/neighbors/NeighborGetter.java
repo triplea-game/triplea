@@ -23,9 +23,9 @@ public class NeighborGetter implements Function<Territory, Collection<Territory>
   public Collection<Territory> apply(final Territory territory) {
     final UnitAttachment unitAttachment = unitType.getUnitAttachment();
     final PredicateBuilder<Territory> territoryPredicate = PredicateBuilder.trueBuilder();
-    if (unitAttachment.getIsSea()) {
+    if (unitAttachment.isSea()) {
       territoryPredicate.and(Territory::isWater);
-    } else if (!unitAttachment.getIsAir()) {
+    } else if (!unitAttachment.isAir()) {
       territoryPredicate.and(Predicate.not(Territory::isWater));
     }
     return gameMap.getNeighbors(territory, territoryPredicate.build());

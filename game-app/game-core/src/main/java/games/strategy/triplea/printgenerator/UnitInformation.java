@@ -68,7 +68,7 @@ class UnitInformation {
                   + ","
                   + (!currentAttachment.getArtillerySupportable() ? "-" : "true")
                   + ","
-                  + (!currentAttachment.getCanProduceUnits() ? "-" : "true")
+                  + (!currentAttachment.canProduceUnits() ? "-" : "true")
                   + ","
                   + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine())
                   + ","
@@ -78,15 +78,15 @@ class UnitInformation {
                   + ","
                   + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true")
                   + ","
-                  + (!currentAttachment.getIsAir() ? "-" : "true")
+                  + (!currentAttachment.isAir() ? "-" : "true")
                   + ","
-                  + (!currentAttachment.getIsStrategicBomber() ? "-" : "true")
+                  + (!currentAttachment.isStrategicBomber() ? "-" : "true")
                   + ","
                   + (currentAttachment.getCarrierCost() == -1
                       ? "-"
                       : currentAttachment.getCarrierCost())
                   + ","
-                  + (!currentAttachment.getIsSea() ? "-" : "true")
+                  + (!currentAttachment.isSea() ? "-" : "true")
                   + ","
                   + currentAttachment.getHitPoints()
                   + ","
@@ -102,7 +102,7 @@ class UnitInformation {
                       ? "-"
                       : "true")
                   + ","
-                  + (!currentAttachment.getIsDestroyer() ? "-" : "true"));
+                  + (!currentAttachment.isDestroyer() ? "-" : "true"));
           unitInformation.write("\r\n");
         }
         unitInformation.write("\r\n");

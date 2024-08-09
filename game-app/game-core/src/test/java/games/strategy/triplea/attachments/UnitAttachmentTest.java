@@ -192,7 +192,7 @@ class UnitAttachmentTest {
       when(sub.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(mock(UnitAttachment.class));
       final UnitType air = mock(UnitType.class);
       final UnitAttachment airAttachment = mock(UnitAttachment.class);
-      when(airAttachment.getIsAir()).thenReturn(true);
+      when(airAttachment.isAir()).thenReturn(true);
       when(air.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(airAttachment);
       when(unitTypeList.getAllUnitTypes()).thenReturn(Set.of(sub, air));
 

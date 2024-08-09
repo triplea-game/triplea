@@ -67,7 +67,7 @@ class DummyPlayerTest {
           final var unitAttachment = mock(UnitAttachment.class);
           when(unitType.getAttachment(any())).thenReturn(unitAttachment);
           when(unit.getUnitAttachment()).thenReturn(unitAttachment);
-          when(unitAttachment.getIsAir()).thenReturn(!unit.equals(unitPool.get(0)));
+          when(unitAttachment.isAir()).thenReturn(!unit.equals(unitPool.get(0)));
           final var gameData = givenGameData().build();
           when(unit.getData()).thenReturn(gameData);
           final var playerId = mock(GamePlayer.class);

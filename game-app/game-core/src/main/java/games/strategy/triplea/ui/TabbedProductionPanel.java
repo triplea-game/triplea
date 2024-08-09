@@ -186,11 +186,11 @@ class TabbedProductionPanel extends ProductionPanel {
         }
         // canProduceUnits isn't checked on purpose, since this category is for units that can be
         // placed anywhere (placed without needing a factory).
-        if (attach.getIsConstruction()) {
+        if (attach.isConstruction()) {
           constructRules.add(rule);
-        } else if (attach.getIsSea()) {
+        } else if (attach.isSea()) {
           seaRules.add(rule);
-        } else if (attach.getIsAir()) {
+        } else if (attach.isAir()) {
           airRules.add(rule);
         } else {
           landRules.add(rule);

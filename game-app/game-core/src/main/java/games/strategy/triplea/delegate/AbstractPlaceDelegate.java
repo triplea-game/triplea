@@ -990,7 +990,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   private static int howManyOfConstructionUnit(UnitType ut, IntegerMap<String> constructionsMap) {
     final UnitAttachment ua = ut.getUnitAttachment();
-    if (!ua.getIsConstruction()
+    if (!ua.isConstruction()
         || ua.getConstructionsPerTerrPerTypePerTurn() < 1
         || ua.getMaxConstructionsPerTypePerTerr() < 1) {
       return 0;

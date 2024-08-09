@@ -338,7 +338,7 @@ public class MovePerformer implements Serializable {
     for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(gamePlayer))) {
       BigDecimal moved = route.getMovementCost(unit);
       final UnitAttachment ua = unit.getUnitAttachment();
-      if (ua.getIsAir()) {
+      if (ua.isAir()) {
         if (TerritoryAttachment.hasAirBase(routeStart)
             && relationshipTracker.isAllied(routeStart.getOwner(), unit.getOwner())) {
           moved = moved.subtract(BigDecimal.ONE);
