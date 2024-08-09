@@ -66,6 +66,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.IntTextField;
@@ -98,17 +99,17 @@ class EditPanel extends ActionPanel {
         }
       };
   private final TripleAFrame frame;
-  private final Action performMoveAction;
-  private final Action addUnitsAction;
-  private final Action delUnitsAction;
-  private final Action changeResourcesAction;
-  private final Action addTechAction;
-  private final Action removeTechAction;
-  private final Action changeUnitHitDamageAction;
-  private final Action changeUnitBombingDamageAction;
-  private final Action changeTerritoryOwnerAction;
-  private final Action changePoliticalRelationships;
-  private Action currentAction = null;
+  private final transient Action performMoveAction;
+  private final transient Action addUnitsAction;
+  private final transient Action delUnitsAction;
+  private final transient Action changeResourcesAction;
+  private final transient Action addTechAction;
+  private final transient Action removeTechAction;
+  private final transient Action changeUnitHitDamageAction;
+  private final transient Action changeUnitBombingDamageAction;
+  private final transient Action changeTerritoryOwnerAction;
+  private final transient Action changePoliticalRelationships;
+  private transient Action currentAction = null;
   private boolean active = false;
   private Point mouseSelectedPoint;
   private Point mouseCurrentPoint;
@@ -117,7 +118,7 @@ class EditPanel extends ActionPanel {
   private Territory selectedTerritory = null;
   private Territory currentTerritory = null;
 
-  private final UnitSelectionListener unitSelectionListener =
+  private final transient UnitSelectionListener unitSelectionListener =
       new UnitSelectionListener() {
         @Override
         public void unitsSelected(
@@ -166,7 +167,7 @@ class EditPanel extends ActionPanel {
           } else { // user has clicked on a specific unit
             // deselect all if control is down
             if (md.isControlDown() || !Objects.equals(t, selectedTerritory)) {
-              selectedUnits.removeAll(units);
+              units.forEach(selectedUnits::remove);
             } else { // deselect one
               // remove those with the least movement first
               for (final Unit unit : units) {
@@ -243,7 +244,7 @@ class EditPanel extends ActionPanel {
           getMap().setMouseShadowUnits(selectedUnits);
         }
       };
-  private final MapSelectionListener mapSelectionListener =
+  private final transient MapSelectionListener mapSelectionListener =
       new DefaultMapSelectionListener() {
         @Override
         public void territorySelected(final Territory territory, final MouseDetails md) {
@@ -840,7 +841,7 @@ class EditPanel extends ActionPanel {
                         + "relationships between players.</b>"
                         + "<br />Please note that none of this is validated by the engine or map, "
                         + "so the results are not guaranteed to be perfectly what you expect."
-                        + "<br />In addition, any maps that use triggers could be royalled messed "
+                        + "<br />In addition, any maps that use triggers could be royally messed "
                         + "up by changing editing political relationships:"
                         + "<br /><em>Example: Take a map where America gets some benefit "
                         + "(like upgraded factories) after it goes to war for the first time, "
@@ -858,17 +859,7 @@ class EditPanel extends ActionPanel {
             final PoliticalStateOverview pui =
                 new PoliticalStateOverview(getData(), EditPanel.this.frame.getUiContext(), true);
             panel.add(pui, BorderLayout.CENTER);
-            final JScrollPane scroll = new JScrollPane(panel);
-            scroll.setBorder(BorderFactory.createEmptyBorder());
-            final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-            // not only do we have a start bar, but we also have the message dialog to account for
-            final int availHeight = screenResolution.height - 120;
-            // just the scroll bars plus the window sides
-            final int availWidth = screenResolution.width - 40;
-            scroll.setPreferredSize(
-                new Dimension(
-                    Math.min(scroll.getPreferredSize().width, availWidth),
-                    Math.min(scroll.getPreferredSize().height, availHeight)));
+            final JScrollPane scroll = getScrollPane(panel);
             final int option =
                 JOptionPane.showConfirmDialog(
                     EditPanel.this.frame,
@@ -895,6 +886,22 @@ class EditPanel extends ActionPanel {
               }
             }
             cancelEditAction.actionPerformed(null);
+          }
+
+          @NotNull
+          private JScrollPane getScrollPane(final JPanel panel) {
+            final JScrollPane scroll = new JScrollPane(panel);
+            scroll.setBorder(BorderFactory.createEmptyBorder());
+            final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+            // not only do we have a start bar, but we also have the message dialog to account for
+            final int availHeight = screenResolution.height - 120;
+            // just the scroll bars plus the window sides
+            final int availWidth = screenResolution.width - 40;
+            scroll.setPreferredSize(
+                new Dimension(
+                    Math.min(scroll.getPreferredSize().width, availWidth),
+                    Math.min(scroll.getPreferredSize().height, availHeight)));
+            return scroll;
           }
         };
     actionLabel.setText("Edit Mode Actions");
@@ -970,21 +977,15 @@ class EditPanel extends ActionPanel {
   }
 
   private static Comparator<Unit> getRemovableUnitsOrder() {
-    return (u1, u2) -> {
-      if (u1.getUnitAttachment().getTransportCapacity() != -1) {
-        // Sort by decreasing transport capacity
-        return Comparator.<Unit, Collection<Unit>>comparing(
+    return (u1, u2) ->
+        // Sort by decreasing transport costs of contained units (if any)
+        // Then sort by increasing movement left
+        Comparator.<Unit, Collection<Unit>>comparing(
                 Unit::getTransporting,
                 Comparator.comparingInt(TransportUtils::getTransportCost).reversed())
             .thenComparing(Unit::getMovementLeft)
             .thenComparingInt(Object::hashCode)
             .compare(u1, u2);
-      }
-      // Sort by increasing movement left
-      return Comparator.comparing(Unit::getMovementLeft)
-          .thenComparingInt(Object::hashCode)
-          .compare(u1, u2);
-    };
   }
 
   private void setWidgetActivation() {

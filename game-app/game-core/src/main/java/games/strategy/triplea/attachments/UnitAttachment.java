@@ -260,10 +260,10 @@ public class UnitAttachment extends DefaultAttachment {
   @Getter
   private boolean canBeDamaged = false;
 
-  // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the
+  // this is bombing damage, not hit points. default of 2 means that factories will take 2x the
   // territory value they are in, of damage.
   @Getter private int maxDamage = 2;
-  // -1 if can't be disabled
+  // -1 for can't be disabled
   @Getter private int maxOperationalDamage = -1;
 
   @Accessors(fluent = true)
@@ -301,7 +301,7 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean canScramble = false;
 
   @Getter private boolean isAirBase = false;
-  // -1 if can't scramble
+  // -1 for can't scramble
   @Getter private int maxScrambleDistance = -1;
   // -1 for infinite
   @Getter private int maxScrambleCount = -1;
@@ -618,8 +618,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setDestroyedWhenCapturedBy(final String initialValue) throws GameParseException {
     // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to
-    // "BY" since this
-    // this is called by destroyedWhenCapturedBy
+    // "BY" since this is called by destroyedWhenCapturedBy
     String value = initialValue;
     String byOrFrom = "BY";
     if (value.startsWith("BY:") && getData().getPlayerList().getPlayerId("BY") == null) {
@@ -876,7 +875,7 @@ public class UnitAttachment extends DefaultAttachment {
     setIsInfrastructure(s);
     setCanProduceUnits(s);
     setIsConstruction(s);
-    if (s) {
+    if (Boolean.TRUE.equals(s)) {
       setConstructionType(Constants.CONSTRUCTION_TYPE_FACTORY);
       setMaxConstructionsPerTypePerTerr("1");
       setConstructionsPerTerrPerTypePerTurn("1");
@@ -958,7 +957,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setRepairsUnits(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
-    if (s.length <= 0) {
+    if (s.length == 0) {
       throw new GameParseException("repairsUnits cannot be empty" + thisErrorMsg());
     }
     int i = 0;
@@ -1323,6 +1322,10 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setTransportCapacity(final int s) {
     transportCapacity = s;
+  }
+
+  public boolean isTransportCapacity() {
+    return (transportCapacity >= 0);
   }
 
   private void setIsTwoHit(final String s) {
@@ -1859,7 +1862,7 @@ public class UnitAttachment extends DefaultAttachment {
       String context, IntegerMap<UnitType> utMap, String value, int minValue)
       throws GameParseException {
     final String[] s = splitOnColon(value);
-    if (s.length <= 0 || s.length > 2) {
+    if (s.length == 0 || s.length > 2) {
       throw new GameParseException(
           context + " cannot be empty or have more than two fields" + thisErrorMsg());
     }
@@ -2489,7 +2492,7 @@ public class UnitAttachment extends DefaultAttachment {
           "cannot have isCombatTransport on unit without transportCapacity, " + thisErrorMsg());
     }
     if (isSea
-        && transportCapacity != -1
+        && isTransportCapacity()
         && Properties.getTransportCasualtiesRestricted(data.getProperties())
         && (attack > 0 || defense > 0)
         && !isCombatTransport) {
@@ -2608,7 +2611,7 @@ public class UnitAttachment extends DefaultAttachment {
       if (territory != null) {
         territories.add(territory);
       } else {
-        // Check if its a territory effect and get all territories
+        // Check if it's a territory effect and get all territories
         if (getData().getTerritoryEffectList().containsKey(name)) {
           for (final Territory t : getData().getMap().getTerritories()) {
             for (final TerritoryEffect te : TerritoryEffectHelper.getEffects(t)) {
@@ -2891,7 +2894,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   /**
-   * Displays all unit options in a short description form that's user friendly rather than as XML.
+   * Displays all unit options in a short description form that's user-friendly rather than as XML.
    * Shows all except for: constructionType, constructionsPerTerrPerTypePerTurn,
    * maxConstructionsPerTypePerTerr, canBeGivenByTerritoryTo, destroyedWhenCapturedBy,
    * canBeCapturedOnEnteringBy.
