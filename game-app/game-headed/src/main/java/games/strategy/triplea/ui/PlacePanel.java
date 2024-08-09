@@ -25,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -34,21 +35,71 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingComponents;
 
 class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private static final long serialVersionUID = -4411301492537704785L;
   private final JLabel leftToPlaceLabel = createIndentedLabel();
-  private PlaceData placeData;
+  private transient PlaceData placeData;
 
   private final SimpleUnitPanel unitsToPlacePanel;
 
   private GamePlayer lastPlayer;
   private boolean postProductionStep;
 
-  private final MapSelectionListener placeMapSelectionListener =
+  private final transient MapSelectionListener placeMapSelectionListener =
       new DefaultMapSelectionListener() {
+
+        private PlaceableUnits getUnitsToPlace(final Territory territory) {
+          try (GameData.Unlocker ignored = getData().acquireReadLock()) {
+            // not our territory
+            if (!territory.isWater() && !territory.isOwnedBy(getCurrentPlayer())) {
+              if (GameStepPropertiesHelper.isBid(getData())) {
+                final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
+                if ((pa == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
+                    && !territory.anyUnitsMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
+                  return new PlaceableUnits();
+                }
+              } else {
+                return new PlaceableUnits();
+              }
+            }
+            // get the units that can be placed on this territory.
+            Collection<Unit> units = getCurrentPlayer().getUnits();
+            if (territory.isWater()) {
+              GameProperties properties = getData().getProperties();
+              if (!(Properties.getProduceFightersOnCarriers(properties)
+                  || Properties.getProduceNewFightersOnOldCarriers(properties)
+                  || Properties.getLhtrCarrierProductionRules(properties)
+                  || GameStepPropertiesHelper.isBid(getData()))) {
+                units = CollectionUtils.getMatches(units, Matches.unitIsSea());
+              } else {
+                final Predicate<Unit> unitIsSeaOrCanLandOnCarrier =
+                    Matches.unitIsSea().or(Matches.unitCanLandOnCarrier());
+                units = CollectionUtils.getMatches(units, unitIsSeaOrCanLandOnCarrier);
+              }
+            } else {
+              units = CollectionUtils.getMatches(units, Matches.unitIsNotSea());
+            }
+            if (units.isEmpty()) {
+              return new PlaceableUnits();
+            }
+            final IAbstractPlaceDelegate placeDel =
+                (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
+            final PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
+            if (production.isError()) {
+              JOptionPane.showMessageDialog(
+                  getTopLevelAncestor(),
+                  production.getErrorMessage() + "\n\n",
+                  "Cannot produce units",
+                  JOptionPane.INFORMATION_MESSAGE);
+            }
+            return production;
+          }
+        }
+
         @Override
         public void territorySelected(final Territory territory, final MouseDetails e) {
           if (!isActive() || (e.getButton() != MouseEvent.BUTTON1)) {
@@ -66,21 +117,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
           if (maxUnits >= 0) {
             chooser.setMaxAndShowMaxButton(maxUnits);
           }
-          final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-          final int availHeight = screenResolution.height - 120;
-          final int availWidth = screenResolution.width - 40;
-          final JScrollPane scroll = new JScrollPane(chooser);
-          scroll.setBorder(BorderFactory.createEmptyBorder());
-          scroll.setPreferredSize(
-              new Dimension(
-                  (scroll.getPreferredSize().width > availWidth
-                      ? availWidth
-                      : (scroll.getPreferredSize().width
-                          + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
-                  (scroll.getPreferredSize().height > availHeight
-                      ? availHeight
-                      : (scroll.getPreferredSize().height
-                          + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
+          final JScrollPane scroll = getScrollPaneFromChooser(chooser);
           final int option =
               JOptionPane.showOptionDialog(
                   getTopLevelAncestor(),
@@ -92,14 +129,42 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
                   null,
                   null);
           if (option == JOptionPane.OK_OPTION) {
-            final Collection<Unit> choosen = chooser.getSelected();
-            placeData = new PlaceData(choosen, territory);
+            final Collection<Unit> selectedUnits = chooser.getSelected();
+            placeData = new PlaceData(selectedUnits, territory);
             updateUnits();
-            if (choosen.containsAll(units)) {
+            if (selectedUnits.containsAll(units)) {
               leftToPlaceLabel.setText("");
             }
             release();
           }
+        }
+
+        @NotNull
+        private JScrollPane getScrollPaneFromChooser(final UnitChooser chooser) {
+          final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+          final int availHeight = screenResolution.height - 120;
+          final int availWidth = screenResolution.width - 40;
+          final JScrollPane scroll = new JScrollPane(chooser);
+          scroll.setBorder(BorderFactory.createEmptyBorder());
+          scroll.setPreferredSize(
+              new Dimension(
+                  (scroll.getPreferredSize().width > availWidth
+                      ? availWidth
+                      : getPreferredWith(scroll, availHeight)),
+                  (scroll.getPreferredSize().height > availHeight
+                      ? availHeight
+                      : getPreferredHeight(scroll, availWidth))));
+          return scroll;
+        }
+
+        private int getPreferredHeight(final JScrollPane scroll, final int availWidth) {
+          return scroll.getPreferredSize().height
+              + (scroll.getPreferredSize().width > availWidth ? 26 : 0);
+        }
+
+        private int getPreferredWith(final JScrollPane scroll, final int availHeight) {
+          return scroll.getPreferredSize().width
+              + (scroll.getPreferredSize().height > availHeight ? 20 : 0);
         }
       };
 
@@ -147,42 +212,39 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     }
 
     if (showUnitsToPlace) {
-      // Small hack: copy the unit list before passing it to a new thread.
-      // This is to prevent ConcurrentModification. If the 'unitsToPlace' list is modified
-      // later in this thread, before "SwingUtilities.invokeLater" can execute and complete,
-      // then we will get a ConcurrentModification exception.
-      // Ideally we would not modify the 'unitsToPlace' collection again except when
-      // the swing thread signals that the user has taken action.. Short of that, we create a copy
-      // here.
-      final Collection<Unit> unitsToPlaceCopy = new ArrayList<>(unitsToPlace);
-      SwingUtilities.invokeLater(
-          () -> {
-            unitsToPlacePanel.setUnits(unitsToPlaceCopy);
-            SwingComponents.redraw(unitsToPlacePanel);
-          });
+      updateUnitsInUnitsToPlacePanel(unitsToPlace);
     } else {
       SwingUtilities.invokeLater(unitsToPlacePanel::removeAll);
     }
   }
 
+  private void updateUnitsInUnitsToPlacePanel(final Collection<Unit> newUnitsToPlace) {
+    // Small hack: copy the unit list before passing it to a new thread.
+    // This is to prevent ConcurrentModification. If the 'unitsToPlace' list is modified
+    // later in this thread, before "SwingUtilities.invokeLater" can execute and complete,
+    // then we will get a ConcurrentModification exception.
+    // Ideally we would not modify the 'unitsToPlace' collection again except when
+    // the swing thread signals that the user has taken action.
+    // Short of that, we create a copy here.
+    final Collection<Unit> unitsToPlaceCopy =
+        Collections.unmodifiableCollection(new ArrayList<>(newUnitsToPlace));
+    SwingUtilities.invokeLater(
+        () -> {
+          unitsToPlacePanel.setUnits(unitsToPlaceCopy);
+          SwingComponents.redraw(unitsToPlacePanel);
+        });
+  }
+
   @Override
   public void gameDataChanged(final Change change) {
-    final Collection<Unit> unitsToPlace;
     final GameData data = getData();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final GamePlayer player = data.getSequence().getStep().getPlayerId();
-      if (player == null) {
-        return;
+      if (player != null) {
+        final Collection<Unit> unitsToPlace = player.getUnits();
+        updateUnitsInUnitsToPlacePanel(unitsToPlace);
       }
-      unitsToPlace = player.getUnits();
     }
-
-    SwingUtilities.invokeLater(
-        () -> {
-          unitsToPlacePanel.setUnits(unitsToPlace);
-          unitsToPlacePanel.revalidate();
-          unitsToPlacePanel.repaint();
-        });
   }
 
   @Override
@@ -208,54 +270,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     waitForRelease();
     cleanUp();
     return placeData;
-  }
-
-  private PlaceableUnits getUnitsToPlace(final Territory territory) {
-    try (GameData.Unlocker ignored = getData().acquireReadLock()) {
-      // not our territory
-      if (!territory.isWater() && !territory.isOwnedBy(getCurrentPlayer())) {
-        if (GameStepPropertiesHelper.isBid(getData())) {
-          final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
-          if ((pa == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
-              && !territory.anyUnitsMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
-            return new PlaceableUnits();
-          }
-        } else {
-          return new PlaceableUnits();
-        }
-      }
-      // get the units that can be placed on this territory.
-      Collection<Unit> units = getCurrentPlayer().getUnits();
-      if (territory.isWater()) {
-        GameProperties properties = getData().getProperties();
-        if (!(Properties.getProduceFightersOnCarriers(properties)
-            || Properties.getProduceNewFightersOnOldCarriers(properties)
-            || Properties.getLhtrCarrierProductionRules(properties)
-            || GameStepPropertiesHelper.isBid(getData()))) {
-          units = CollectionUtils.getMatches(units, Matches.unitIsSea());
-        } else {
-          final Predicate<Unit> unitIsSeaOrCanLandOnCarrier =
-              Matches.unitIsSea().or(Matches.unitCanLandOnCarrier());
-          units = CollectionUtils.getMatches(units, unitIsSeaOrCanLandOnCarrier);
-        }
-      } else {
-        units = CollectionUtils.getMatches(units, Matches.unitIsNotSea());
-      }
-      if (units.isEmpty()) {
-        return new PlaceableUnits();
-      }
-      final IAbstractPlaceDelegate placeDel =
-          (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      final PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
-      if (production.isError()) {
-        JOptionPane.showMessageDialog(
-            getTopLevelAncestor(),
-            production.getErrorMessage() + "\n\n",
-            "Cannot produce units",
-            JOptionPane.INFORMATION_MESSAGE);
-      }
-      return production;
-    }
   }
 
   @Override
@@ -315,6 +329,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   private void updateUnits() {
-    unitsToPlacePanel.setUnits(getCurrentPlayer().getUnits());
+    updateUnitsInUnitsToPlacePanel(getCurrentPlayer().getUnits());
   }
 }
