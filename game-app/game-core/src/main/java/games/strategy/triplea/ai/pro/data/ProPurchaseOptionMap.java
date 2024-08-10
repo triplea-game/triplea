@@ -66,8 +66,7 @@ public class ProPurchaseOptionMap {
       final UnitType unitType = (UnitType) resourceOrUnit;
 
       // Add rule to appropriate purchase option list
-      if (unitType.getUnitAttachment().getIsSuicideOnHit()
-          || canUnitTypeSuicide(unitType, player)) {
+      if (unitType.getUnitAttachment().isSuicideOnHit() || canUnitTypeSuicide(unitType, player)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
         ProLogger.debug("Special: " + ppo);

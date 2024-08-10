@@ -140,20 +140,20 @@ public class UnitImageFactory {
       if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
         final UnitAttachment ua = type.getUnitAttachment();
         if (type.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
-          if (TechTracker.hasRocket(gamePlayer) && ua.getIsRocket()) {
+          if (TechTracker.hasRocket(gamePlayer) && ua.isRocket()) {
             name = new StringBuilder("rockets");
           }
           if (TechTracker.hasAaRadar(gamePlayer) && Matches.unitTypeIsAaForAnything().test(type)) {
             name.append("_r");
           }
-        } else if (ua.getIsRocket() && Matches.unitTypeIsAaForAnything().test(type)) {
+        } else if (ua.isRocket() && Matches.unitTypeIsAaForAnything().test(type)) {
           if (TechTracker.hasRocket(gamePlayer)) {
             name.append("_rockets");
           }
           if (TechTracker.hasAaRadar(gamePlayer)) {
             name.append("_r");
           }
-        } else if (ua.getIsRocket()) {
+        } else if (ua.isRocket()) {
           if (TechTracker.hasRocket(gamePlayer)) {
             name.append("_rockets");
           }
@@ -162,7 +162,7 @@ public class UnitImageFactory {
             name.append("_r");
           }
         }
-        if (ua.getIsAir() && !ua.getIsStrategicBomber()) {
+        if (ua.isAir() && !ua.isStrategicBomber()) {
           if (TechTracker.hasLongRangeAir(gamePlayer)) {
             name.append("_lr");
           }
@@ -171,7 +171,7 @@ public class UnitImageFactory {
             name.append("_jp");
           }
         }
-        if (ua.getIsAir() && ua.getIsStrategicBomber()) {
+        if (ua.isAir() && ua.isStrategicBomber()) {
           if (TechTracker.hasLongRangeAir(gamePlayer)) {
             name.append("_lr");
           }
@@ -185,7 +185,7 @@ public class UnitImageFactory {
             && TechTracker.hasSuperSubs(gamePlayer)) {
           name.append("_ss");
         }
-        if ((type.getName().equals(Constants.UNIT_TYPE_FACTORY) || ua.getCanProduceUnits())
+        if ((type.getName().equals(Constants.UNIT_TYPE_FACTORY) || ua.canProduceUnits())
             && (TechTracker.hasIndustrialTechnology(gamePlayer)
                 || TechTracker.hasIncreasedFactoryProduction(gamePlayer))) {
           name.append("_it");

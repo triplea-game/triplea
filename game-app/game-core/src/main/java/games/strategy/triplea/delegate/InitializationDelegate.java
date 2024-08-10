@@ -293,7 +293,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
           continue;
         }
         final UnitType unit = data.getUnitTypeList().getUnitType(named.getName());
-        final boolean isSea = unit.getUnitAttachment().getIsSea();
+        final boolean isSea = unit.getUnitAttachment().isSea();
         if (!isSea) {
           final ProductionRule prodRule =
               data.getProductionRuleList().getProductionRule(rule.getName());

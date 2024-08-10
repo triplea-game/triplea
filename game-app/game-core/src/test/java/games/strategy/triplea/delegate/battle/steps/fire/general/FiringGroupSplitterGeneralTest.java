@@ -292,7 +292,7 @@ class FiringGroupSplitterGeneralTest {
     final Unit targetUnit = givenAnyUnit();
     final Unit infrastructureUnit = givenAnyUnit();
     final UnitAttachment infrastructureUnitAttachment = infrastructureUnit.getUnitAttachment();
-    when(infrastructureUnitAttachment.getIsInfrastructure()).thenReturn(true);
+    when(infrastructureUnitAttachment.isInfrastructure()).thenReturn(true);
     final Unit fireUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =
@@ -324,7 +324,7 @@ class FiringGroupSplitterGeneralTest {
   void noFiringGroupIfAllTargetsAreExcluded() {
     final Unit targetUnit = givenAnyUnit();
     final UnitAttachment infrastructureUnitAttachment = targetUnit.getUnitAttachment();
-    when(infrastructureUnitAttachment.getIsInfrastructure()).thenReturn(true);
+    when(infrastructureUnitAttachment.isInfrastructure()).thenReturn(true);
     final Unit fireUnit = givenAnyUnit();
 
     final List<FiringGroup> firingGroups =

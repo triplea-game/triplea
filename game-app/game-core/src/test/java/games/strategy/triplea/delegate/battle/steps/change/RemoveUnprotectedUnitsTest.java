@@ -490,7 +490,7 @@ class RemoveUnprotectedUnitsTest {
       final Unit unitToNotDie = givenAnyUnit();
       final UnitAttachment unitAttachment =
           (UnitAttachment) unitToNotDie.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-      when(unitAttachment.getIsInfrastructure()).thenReturn(true);
+      when(unitAttachment.isInfrastructure()).thenReturn(true);
 
       final BattleState battleState =
           givenBattleStateBuilder()

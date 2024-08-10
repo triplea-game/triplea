@@ -98,7 +98,7 @@ public class BattleStepsTest {
 
   public static UnitAndAttachment newSeaUnitAndAttachment() {
     final var result = newUnitAndAttachment();
-    lenient().when(result.unitAttachment.getIsSea()).thenReturn(true);
+    lenient().when(result.unitAttachment.isSea()).thenReturn(true);
     return result;
   }
 
@@ -177,8 +177,8 @@ public class BattleStepsTest {
 
   public static Unit givenUnitDestroyer() {
     final UnitAndAttachment unitAndAttachment = newSeaUnitAndAttachment();
-    lenient().when(unitAndAttachment.unitAttachment.getIsDestroyer()).thenReturn(true);
-    lenient().when(unitAndAttachment.unitAttachment.getIsSea()).thenReturn(true);
+    lenient().when(unitAndAttachment.unitAttachment.isDestroyer()).thenReturn(true);
+    lenient().when(unitAndAttachment.unitAttachment.isSea()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
@@ -190,14 +190,14 @@ public class BattleStepsTest {
 
   public static Unit givenUnitAirTransport() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getIsAirTransport()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.isAirTransport()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitIsCombatAa() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.unitAttachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unitAndAttachment.unitAttachment.getIsAaForCombatOnly()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.isAaForCombatOnly()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
@@ -216,7 +216,7 @@ public class BattleStepsTest {
     when(unitAndAttachment.unit.getData()).thenReturn(gameData);
     when(unitAndAttachment.unitAttachment.getTypeAa()).thenReturn(aaType);
     when(unitAndAttachment.unitAttachment.getTargetsAa(any())).thenReturn(aaTarget);
-    when(unitAndAttachment.unitAttachment.getIsAaForCombatOnly()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.isAaForCombatOnly()).thenReturn(true);
     when(unitAndAttachment.unitAttachment.getMaxRoundsAa()).thenReturn(-1);
     when(unitAndAttachment.unitAttachment.getMaxAaAttacks()).thenReturn(1);
     if (side == BattleState.Side.OFFENSE) {
@@ -229,7 +229,7 @@ public class BattleStepsTest {
 
   public static Unit givenUnitIsAir() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getIsAir()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.isAir()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 
@@ -245,7 +245,7 @@ public class BattleStepsTest {
 
   public static Unit givenUnitIsInfrastructure() {
     final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.unitAttachment.getIsInfrastructure()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.isInfrastructure()).thenReturn(true);
     return unitAndAttachment.unit;
   }
 

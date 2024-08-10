@@ -112,8 +112,8 @@ public final class UnitComparator {
       if (!t1.equals(t2)) {
         // Land transportable units should have higher priority than non-land transportable ones,
         // when all else is equal.
-        final int isLandTransportable1 = t1.getUnitAttachment().getIsLandTransportable() ? 1 : 0;
-        final int isLandTransportable2 = t2.getUnitAttachment().getIsLandTransportable() ? 1 : 0;
+        final int isLandTransportable1 = t1.getUnitAttachment().isLandTransportable() ? 1 : 0;
+        final int isLandTransportable2 = t2.getUnitAttachment().isLandTransportable() ? 1 : 0;
         if (isLandTransportable1 != isLandTransportable2) {
           return isLandTransportable2 - isLandTransportable1;
         }
