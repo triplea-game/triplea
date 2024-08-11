@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -109,7 +110,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   @VisibleForTesting
   void setConditionType(final String value) throws GameParseException {
-    final String uppercaseValue = value.toUpperCase();
+    final String uppercaseValue = value.toUpperCase(Locale.ENGLISH);
     if (CONDITION_REGEX.matcher(uppercaseValue).matches()) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
@@ -370,7 +371,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(@NonNls String propertyName) {
     switch (propertyName) {
       case "conditions":
         return MutableProperty.of(
@@ -381,7 +382,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       case "invert":
         return MutableProperty.ofMapper(
             DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false);
-      case "chance":
+      case CHANCE:
         return MutableProperty.ofString(this::setChance, this::getChance, this::resetChance);
       case "chanceIncrementOnFailure":
         return MutableProperty.ofMapper(

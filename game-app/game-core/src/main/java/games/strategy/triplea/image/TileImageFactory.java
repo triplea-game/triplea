@@ -12,6 +12,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.annotation.Nullable;
@@ -52,7 +53,7 @@ public final class TileImageFactory {
   }
 
   private static String getShowMapBlendMode() {
-    return showMapBlendMode.toUpperCase();
+    return showMapBlendMode.toUpperCase(Locale.ENGLISH);
   }
 
   private static float getShowMapBlendAlpha() {

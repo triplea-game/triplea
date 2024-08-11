@@ -9,8 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class SwingComponentWrapperTest {
 
-  @NonNls
-  private static final String CHILD_NAME = "child_name";
+  @NonNls private static final String CHILD_NAME = "child_name";
 
   @Test
   void findChildByName() {

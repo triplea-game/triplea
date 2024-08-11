@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
@@ -37,8 +38,7 @@ import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */
 public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
-  @NonNls
-  private static final String TAG_MODERATOR = "[Mod]";
+  @NonNls private static final String TAG_MODERATOR = "[Mod]";
   private static final long serialVersionUID = -3153022965393962945L;
   private static final Icon ignoreIcon;
 
@@ -272,7 +272,8 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
           updatedPlayers.stream()
               .sorted(
                   Comparator.comparing(
-                      chatParticipant -> chatParticipant.getUserName().getValue().toUpperCase()))
+                      chatParticipant ->
+                          chatParticipant.getUserName().getValue().toUpperCase(Locale.ENGLISH)))
               .forEach(listModel::addElement);
         });
   }

@@ -18,8 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class JCheckBoxBuilderTest {
 
-  @NonNls
-  private static final String TITLE = "title-text";
+  @NonNls private static final String TITLE = "title-text";
   @Mock private SettingPersistence settingPersistence;
   @Mock private Consumer<Boolean> actionListener;
 

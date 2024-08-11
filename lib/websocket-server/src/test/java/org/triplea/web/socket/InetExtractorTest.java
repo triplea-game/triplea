@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class InetExtractorTest {
 
-  @NonNls
-  private static final String IP_ADDRESS = "127.0.0.1";
+  @NonNls private static final String IP_ADDRESS = "127.0.0.1";
 
   @Test
   void verify() throws Exception {

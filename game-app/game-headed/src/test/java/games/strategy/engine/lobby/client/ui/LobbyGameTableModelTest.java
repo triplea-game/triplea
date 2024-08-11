@@ -10,7 +10,6 @@ import games.strategy.net.Node;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
-
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -30,8 +29,7 @@ import org.triplea.swing.SwingAction;
 @Execution(ExecutionMode.SAME_THREAD)
 final class LobbyGameTableModelTest {
 
-  @NonNls
-  private static final String id0 = "id0";
+  @NonNls private static final String id0 = "id0";
   @NonNls private static final String id1 = "id1";
   private static final GameDescription gameDescription0;
   private static final GameDescription gameDescription1;
