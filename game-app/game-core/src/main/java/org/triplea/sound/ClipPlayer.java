@@ -290,7 +290,7 @@ public class ClipPlayer {
       availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + path));
     }
     if (availableSounds.isEmpty()) {
-      final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
+      @NonNls final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
       availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
     }
     return availableSounds;

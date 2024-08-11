@@ -774,8 +774,8 @@ public class MapData {
         effectImages.computeIfAbsent(
             effectName,
             key -> {
-              String largeImageName = "territoryEffects/" + effectName + "_large.png";
-              String standardImageName = "territoryEffects/" + effectName + ".png";
+              @NonNls String largeImageName = "territoryEffects/" + effectName + "_large.png";
+              @NonNls String standardImageName = "territoryEffects/" + effectName + ".png";
 
               return loader
                   .loadImage(largeImageName)

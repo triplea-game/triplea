@@ -327,7 +327,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       if (newToHit == oldToHit) {
         return;
       }
-      final String newChance = newToHit + ":" + diceSides;
+      @NonNls final String newChance = newToHit + ":" + diceSides;
       delegateBridge
           .getHistoryWriter()
           .startEvent(
@@ -346,7 +346,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       if (newToHit == oldToHit) {
         return;
       }
-      final String newChance = newToHit + ":" + diceSides;
+      @NonNls final String newChance = newToHit + ":" + diceSides;
       if (historyChild) {
         delegateBridge
             .getHistoryWriter()

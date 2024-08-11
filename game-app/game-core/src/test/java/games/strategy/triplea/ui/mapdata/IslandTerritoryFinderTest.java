@@ -9,6 +9,7 @@ import java.awt.Polygon;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import tools.util.ToolsUtil;
 final class IslandTerritoryFinderTest {
 
   private static final String SEA_TERR = ToolsUtil.TERRITORY_SEA_ZONE_INFIX;
-  private static final String SEA_TERR_1 = ToolsUtil.TERRITORY_SEA_ZONE_INFIX + " 1";
+  @NonNls private static final String SEA_TERR_1 = ToolsUtil.TERRITORY_SEA_ZONE_INFIX + " 1";
   private static final String LAND_TERR = "Land";
   private static final String LAND_TERR_1 = "Land 1";
 

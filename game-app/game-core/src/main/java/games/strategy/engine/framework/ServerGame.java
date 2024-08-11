@@ -56,6 +56,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.util.ExitStatus;
@@ -670,7 +671,7 @@ public class ServerGame extends AbstractGame {
 
       final GamePlayer p = data.getPlayerList().getPlayerId(player.getName());
       final boolean isAi = player.isAi();
-      final String newWhoAmI = (isAi ? "AI" : "Human") + ":" + player.getPlayerLabel();
+      @NonNls final String newWhoAmI = (isAi ? "AI" : "Human") + ":" + player.getPlayerLabel();
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
       }

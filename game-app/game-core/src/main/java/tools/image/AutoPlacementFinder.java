@@ -125,9 +125,9 @@ public final class AutoPlacementFinder {
           int height = unitHeight;
           boolean found = false;
           try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
-            final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-            final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
-            final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
+            @NonNls final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
+            @NonNls final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
+            @NonNls final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
             while (scanner.hasNextLine()) {
               final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {

@@ -28,7 +28,7 @@ public abstract class AbstractImageFactory {
 
   private Image getBaseImage(final String baseImageName) {
     // URL uses '/' not '\'
-    final String fileName = getFileNameBase() + baseImageName + ".png";
+    @NonNls final String fileName = getFileNameBase() + baseImageName + ".png";
     final URL url = resourceLoader.getResource(fileName);
     if (url == null) {
       throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);

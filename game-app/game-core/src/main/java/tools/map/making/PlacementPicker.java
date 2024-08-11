@@ -43,6 +43,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
@@ -176,9 +177,9 @@ public final class PlacementPicker {
             int width = unitWidth;
             int height = unitHeight;
             boolean found = false;
-            final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
-            final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
-            final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
+            @NonNls final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
+            @NonNls final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
+            @NonNls final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
             try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
               while (scanner.hasNextLine()) {
                 final String line = scanner.nextLine();

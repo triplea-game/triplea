@@ -197,7 +197,7 @@ public class InGameLobbyWatcher {
 
   @VisibleForTesting
   static String getLobbySystemProperty(final String key) {
-    final String backupKey = key + ".backup";
+    @NonNls final String backupKey = key + ".backup";
     final @Nullable String value = System.getProperty(key);
     if (value != null) {
       System.setProperty(backupKey, value);

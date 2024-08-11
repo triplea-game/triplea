@@ -50,7 +50,7 @@ final class DownloadFile {
             return;
           }
 
-          final String fileNameToWrite = normalizeMapName(download.getMapName()) + ".zip";
+          @NonNls final String fileNameToWrite = normalizeMapName(download.getMapName()) + ".zip";
 
           final Path targetTempFileToDownloadTo =
               FileUtils.newTempFolder().resolve(fileNameToWrite);

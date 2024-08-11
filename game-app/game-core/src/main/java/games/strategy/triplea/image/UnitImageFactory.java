@@ -286,8 +286,9 @@ public class UnitImageFactory {
     final String baseImageName = imageKey.getBaseImageName();
     final GamePlayer gamePlayer = imageKey.getPlayer();
     // URL uses '/' not '\'
+    @NonNls
     final String fileName = FILE_NAME_BASE + gamePlayer.getName() + "/" + baseImageName + ".png";
-    final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
+    @NonNls final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
     final URL url = resourceLoader.getResource(fileName, fileName2);
     return Optional.ofNullable(url);
   }

@@ -300,6 +300,7 @@ class ProductionRepairPanel extends JPanel {
                 + ".  Please make sure your maps are up to date!");
       }
       repairResults = rule.getResults().getInt(type);
+      @NonNls
       final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
 
       final ImageIcon icon = uiContext.getUnitImageFactory().getIcon(ImageKey.of(repairUnit));

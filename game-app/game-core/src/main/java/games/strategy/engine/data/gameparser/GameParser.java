@@ -900,6 +900,7 @@ public final class GameParser {
         continue;
       }
       final String count = option.getCount();
+      @NonNls
       final String countAndValue = Strings.isNullOrEmpty(count) ? value : (count + ":" + value);
       if (containsEmptyForeachVariable(countAndValue, foreach)) {
         continue; // Skip adding option if contains empty foreach variable
