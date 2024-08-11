@@ -6,8 +6,10 @@ import static org.hamcrest.core.Is.is;
 import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 
+@NonNls
 class JMenuBuilderTest {
 
   private static final String TITLE = "title";

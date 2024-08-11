@@ -25,6 +25,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Auto-generates unit abilities from deprecated unit options
@@ -34,7 +35,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class UnitAbilityFactory {
 
-  private static final String WILL_NOT_FIRE_AA_ABILITY_PREFIX = "willNotFireAa";
+  @NonNls private static final String WILL_NOT_FIRE_AA_ABILITY_PREFIX = "willNotFireAa";
 
   @RequiredArgsConstructor
   @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)

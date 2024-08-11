@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 
 import java.awt.event.KeyEvent;
 import java.util.function.Consumer;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 class JMenuItemCheckBoxBuilderTest {
-  private static final String TITLE = "title";
+  @NonNls private static final String TITLE = "title";
 
   @Test
   void verifyTitle() {

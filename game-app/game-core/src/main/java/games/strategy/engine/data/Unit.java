@@ -19,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -31,14 +32,14 @@ import org.triplea.java.collections.CollectionUtils;
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
-  public static final String TRANSPORTED_BY = "transportedBy";
-  public static final String UNLOADED = "unloaded";
-  public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
-  public static final String UNLOADED_TO = "unloadedTo";
-  public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
-  public static final String ALREADY_MOVED = "alreadyMoved";
-  public static final String BONUS_MOVEMENT = "bonusMovement";
-  public static final String SUBMERGED = "submerged";
+  @NonNls public static final String TRANSPORTED_BY = "transportedBy";
+  @NonNls public static final String UNLOADED = "unloaded";
+  @NonNls public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
+  @NonNls public static final String UNLOADED_TO = "unloadedTo";
+  @NonNls public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
+  @NonNls public static final String ALREADY_MOVED = "alreadyMoved";
+  @NonNls public static final String BONUS_MOVEMENT = "bonusMovement";
+  @NonNls public static final String SUBMERGED = "submerged";
   public static final String WAS_IN_COMBAT = "wasInCombat";
   public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
   public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";

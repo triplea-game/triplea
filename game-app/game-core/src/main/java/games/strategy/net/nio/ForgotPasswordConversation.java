@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * A subsequence of server conversation to handle requests for password reset. Returns a magic
@@ -14,7 +15,7 @@ import lombok.Builder;
 @Builder
 public class ForgotPasswordConversation {
 
-  public static final String TEMP_PASSWORD_GENERATED_RESPONSE = "password_reset";
+  @NonNls public static final String TEMP_PASSWORD_GENERATED_RESPONSE = "password_reset";
   @VisibleForTesting static final int MAX_TEMP_PASSWORD_REQUESTS_PER_DAY = 3;
 
   @Nonnull private final Predicate<String> forgotPasswordModule;

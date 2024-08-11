@@ -22,7 +22,7 @@ import org.triplea.map.data.elements.VariableList;
 
 class GameDataVariablesTest {
 
-  private static final String FOLDER = "src/test/resources/variable_parsing/";
+  @NonNls private static final String FOLDER = "src/test/resources/variable_parsing/";
   @NonNls private static final String EMPTY_LIST = FOLDER + "empty_list.xml";
   @NonNls private static final String SINGLE_ELEMENT_LIST = FOLDER + "single_element_list.xml";
   @NonNls private static final String MANY_ELEMENT_LIST = FOLDER + "many_element_list.xml";

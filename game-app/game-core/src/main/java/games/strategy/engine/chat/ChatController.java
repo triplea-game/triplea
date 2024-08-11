@@ -15,6 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
@@ -22,8 +23,8 @@ import org.triplea.domain.data.UserName;
 /** Default implementation of {@link IChatController}. */
 @Slf4j
 public class ChatController implements IChatController {
-  private static final String CHAT_REMOTE = "_ChatRemote_";
-  private static final String CHAT_CHANNEL = "_ChatControl_";
+  @NonNls private static final String CHAT_REMOTE = "_ChatRemote_";
+  @NonNls private static final String CHAT_CHANNEL = "_ChatControl_";
   private final Messengers messengers;
   private final ServerMessenger serverMessenger;
 

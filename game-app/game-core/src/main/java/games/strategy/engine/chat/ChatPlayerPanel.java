@@ -28,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.StringUtils;
@@ -36,6 +37,7 @@ import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */
 public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
+  @NonNls
   private static final String TAG_MODERATOR = "[Mod]";
   private static final long serialVersionUID = -3153022965393962945L;
   private static final Icon ignoreIcon;

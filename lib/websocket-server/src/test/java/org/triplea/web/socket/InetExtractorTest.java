@@ -5,10 +5,12 @@ import static org.hamcrest.Matchers.is;
 
 import java.net.InetAddress;
 import java.util.Map;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 
 class InetExtractorTest {
 
+  @NonNls
   private static final String IP_ADDRESS = "127.0.0.1";
 
   @Test

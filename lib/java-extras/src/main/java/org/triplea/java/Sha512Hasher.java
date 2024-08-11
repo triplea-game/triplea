@@ -8,6 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * A class which implements the TripleA-Lobby-Login authentication system using RSA encryption for
@@ -15,8 +16,8 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Sha512Hasher {
-  private static final String PSEUDO_SALT = "TripleA";
-  private static final String SHA_512 = "SHA-512";
+  @NonNls private static final String PSEUDO_SALT = "TripleA";
+  @NonNls private static final String SHA_512 = "SHA-512";
 
   /**
    * Creates a SHA-512 hash of a given String with a salt. <br>
