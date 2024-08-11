@@ -2,10 +2,11 @@ package games.strategy.triplea.image;
 
 import games.strategy.engine.data.GamePlayer;
 import java.awt.Image;
+import org.jetbrains.annotations.NonNls;
 
 /** A factory for creating various player (nation, power, etc.) flag images. */
 public class FlagIconImageFactory extends ImageFactory {
-  private static final String PREFIX = "flags/";
+  @NonNls private static final String PREFIX = "flags/";
 
   public Image getFlag(final GamePlayer gamePlayer) {
     @NonNls final String key = PREFIX + gamePlayer.getName() + ".gif";

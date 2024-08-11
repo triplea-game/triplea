@@ -2,18 +2,19 @@ package games.strategy.triplea.ui;
 
 import games.strategy.triplea.ResourceLoader;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 
 /** Returns a bunch of messages from politicstext.properties */
 public class PoliticsText {
 
   @NonNls private static final String PROPERTY_FILE = "politicstext.properties";
-  private static final String BUTTON = "BUTTON";
-  private static final String DESCRIPTION = "DESCRIPTION";
-  private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
-  private static final String OTHER_NOTIFICATION_SUCCESS = "OTHER_NOTIFICATION_SUCCESS";
-  private static final String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
-  private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
-  private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
+  @NonNls private static final String BUTTON = "BUTTON";
+  @NonNls private static final String DESCRIPTION = "DESCRIPTION";
+  @NonNls private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
+  @NonNls private static final String OTHER_NOTIFICATION_SUCCESS = "OTHER_NOTIFICATION_SUCCESS";
+  @NonNls private static final String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
+  @NonNls private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
+  @NonNls private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
   private final Properties properties;
 
   public PoliticsText(final ResourceLoader resourceLoader) {

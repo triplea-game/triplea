@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold

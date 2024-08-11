@@ -6,11 +6,12 @@ import games.strategy.triplea.ui.ProductionPanel.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.util.Tuple;
 
 class ProductionTabsProperties {
   // Filename
-  private static final String PROPERTY_FILE = "production_tabs";
+  @NonNls private static final String PROPERTY_FILE = "production_tabs";
   // Properties
   @NonNls private static final String USE_DEFAULT_TABS = "production_tabs.use_default_tabs";
   // The number of tabs that should be drawn

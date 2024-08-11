@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
+import org.jetbrains.annotations.NonNls;
 
 /** A collection of useful methods for working with file names. */
 public final class FileNameUtils {

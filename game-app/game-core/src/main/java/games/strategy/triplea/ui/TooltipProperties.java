@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.util.LocalizeHtml;
 
 /** Generates unit tooltips based on the content of the map's {@code tooltips.properties} file. */

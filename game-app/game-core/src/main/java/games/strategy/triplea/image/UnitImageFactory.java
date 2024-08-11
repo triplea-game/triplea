@@ -37,6 +37,7 @@ import lombok.Getter;
 import lombok.Synchronized;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 
 /** A factory with a thread-safe image cache for creating unit images. */
 @Slf4j

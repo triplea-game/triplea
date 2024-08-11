@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
+import org.jetbrains.annotations.NonNls;
 
 /** Contains common methods for image factories. */
 public abstract class AbstractImageFactory {

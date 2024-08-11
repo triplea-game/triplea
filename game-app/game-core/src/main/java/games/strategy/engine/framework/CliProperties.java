@@ -1,5 +1,7 @@
 package games.strategy.engine.framework;
 
+import org.jetbrains.annotations.NonNls;
+
 /** A collection of all CLI related constants. */
 public class CliProperties {
   @NonNls public static final String TRIPLEA_GAME = "triplea.game";
