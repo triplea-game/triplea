@@ -22,7 +22,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
 @AllArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
 @Slf4j
 public class WebSocketMessagingBus {
-  public static final String MESSAGING_BUS_KEY = "messaging.bus";
+  @NonNls public static final String MESSAGING_BUS_KEY = "messaging.bus";
 
   @Nonnull private final MessageBroadcaster messageBroadcaster;
   @Nonnull private final MessageSender messageSender;

@@ -2,17 +2,17 @@ package games.strategy.engine.framework;
 
 /** A collection of all CLI related constants. */
 public class CliProperties {
-  public static final String TRIPLEA_GAME = "triplea.game";
-  public static final String TRIPLEA_SERVER = "triplea.server";
-  public static final String TRIPLEA_CLIENT = "triplea.client";
-  public static final String TRIPLEA_HOST = "triplea.host";
-  public static final String TRIPLEA_PORT = "triplea.port";
-  public static final String TRIPLEA_NAME = "triplea.name";
-  public static final String SERVER_PASSWORD = "triplea.server.password";
-  public static final String LOBBY_URI = "triplea.lobby.uri";
-  public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
-  public static final String MAP_FOLDER = "triplea.map.folder";
-  public static final String TRIPLEA_MAP_DOWNLOAD = "triplea.map.download";
+  @NonNls public static final String TRIPLEA_GAME = "triplea.game";
+  @NonNls public static final String TRIPLEA_SERVER = "triplea.server";
+  @NonNls public static final String TRIPLEA_CLIENT = "triplea.client";
+  @NonNls public static final String TRIPLEA_HOST = "triplea.host";
+  @NonNls public static final String TRIPLEA_PORT = "triplea.port";
+  @NonNls public static final String TRIPLEA_NAME = "triplea.name";
+  @NonNls public static final String SERVER_PASSWORD = "triplea.server.password";
+  @NonNls public static final String LOBBY_URI = "triplea.lobby.uri";
+  @NonNls public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
+  @NonNls public static final String MAP_FOLDER = "triplea.map.folder";
+  @NonNls public static final String TRIPLEA_MAP_DOWNLOAD = "triplea.map.download";
 
   private CliProperties() {}
 }

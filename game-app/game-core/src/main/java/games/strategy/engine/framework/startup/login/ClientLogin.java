@@ -21,7 +21,7 @@ import org.triplea.util.Version;
  */
 @AllArgsConstructor
 public class ClientLogin implements IConnectionLogin {
-  static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
+  @NonNls static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
 
   private final Component parentComponent;
   private final Version engineVersion;

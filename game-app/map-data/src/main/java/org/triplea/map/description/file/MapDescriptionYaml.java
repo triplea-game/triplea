@@ -41,7 +41,7 @@ import org.triplea.io.FileUtils;
 @EqualsAndHashCode
 public class MapDescriptionYaml {
 
-  public static final String MAP_YAML_FILE_NAME = "map.yml";
+  @NonNls public static final String MAP_YAML_FILE_NAME = "map.yml";
 
   private static final int MAX_GAME_NAME_LENGTH = 70;
   private static final int MAX_MAP_NAME_LENGTH = 70;

@@ -6,8 +6,8 @@ import java.util.Properties;
 /** sounds.properties file helper class */
 class SoundProperties {
   static final String GENERIC_FOLDER = "generic";
-  private static final String PROPERTY_FILE = "sounds.properties";
-  private static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
+  @NonNls private static final String PROPERTY_FILE = "sounds.properties";
+  @NonNls private static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
   private static final String DEFAULT_ERA_FOLDER = "ww2";
   private final Properties properties;
 

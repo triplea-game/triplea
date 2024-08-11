@@ -73,7 +73,7 @@ public class GameData implements Serializable, GameState {
   private static final long serialVersionUID = -2612710634080125728L;
 
   /** When we load a game from a save file, this property will be the name of that file. */
-  private static final String SAVE_GAME_FILE_NAME_PROPERTY = "save.game.file.name";
+  @NonNls private static final String SAVE_GAME_FILE_NAME_PROPERTY = "save.game.file.name";
 
   private transient ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private transient volatile boolean forceInSwingEventThread = false;

@@ -42,9 +42,9 @@ import tools.util.ToolsUtil;
  */
 @Slf4j
 public final class ConnectionFinder {
-  private static final String LINE_THICKNESS = "triplea.map.lineThickness";
-  private static final String SCALE_PIXELS = "triplea.map.scalePixels";
-  private static final String MIN_OVERLAP = "triplea.map.minOverlap";
+  @NonNls private static final String LINE_THICKNESS = "triplea.map.lineThickness";
+  @NonNls private static final String SCALE_PIXELS = "triplea.map.scalePixels";
+  @NonNls private static final String MIN_OVERLAP = "triplea.map.minOverlap";
 
   private Path mapFolderLocation = null;
   private boolean dimensionsSet = false;

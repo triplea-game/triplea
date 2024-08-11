@@ -72,6 +72,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE",
           IServerStartupRemote.class);
 
+  @NonNls
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);

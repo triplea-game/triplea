@@ -8,8 +8,8 @@ import java.util.Set;
 /** Loads objective text from objectives.properties. */
 public class ObjectiveProperties {
   static final String GROUP_PROPERTY = "TABLEGROUP";
-  private static final String PROPERTY_FILE = "objectives.properties";
-  private static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
+  @NonNls private static final String PROPERTY_FILE = "objectives.properties";
+  @NonNls private static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
   private final Properties properties;
 
   public ObjectiveProperties(final ResourceLoader resourceLoader) {

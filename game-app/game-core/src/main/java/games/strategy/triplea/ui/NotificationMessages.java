@@ -6,7 +6,7 @@ import java.util.Properties;
 /** Loads notification messages from notifications.properties. */
 public class NotificationMessages {
 
-  private static final String PROPERTY_FILE = "notifications.properties";
+  @NonNls private static final String PROPERTY_FILE = "notifications.properties";
   private static final String SOUND_CLIP_SUFFIX = "_sounds";
   private final Properties properties;
 

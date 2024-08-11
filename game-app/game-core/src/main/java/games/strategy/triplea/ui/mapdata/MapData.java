@@ -40,67 +40,88 @@ import org.triplea.util.Tuple;
 /** contains data about the territories useful for drawing. */
 @Slf4j
 public class MapData {
-  public static final String PROPERTY_UNITS_SCALE = "units.scale";
-  public static final String PROPERTY_UNITS_WIDTH = "units.width";
-  public static final String PROPERTY_UNITS_HEIGHT = "units.height";
+  @NonNls public static final String PROPERTY_UNITS_SCALE = "units.scale";
+  @NonNls public static final String PROPERTY_UNITS_WIDTH = "units.width";
+  @NonNls public static final String PROPERTY_UNITS_HEIGHT = "units.height";
+
+  @NonNls
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
+
+  @NonNls
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
-  public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
-  public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
-  public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
-  public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
-  public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
+
+  @NonNls public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
+  @NonNls public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
+  @NonNls public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
+  @NonNls public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
+  @NonNls public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
+
+  @NonNls
   public static final String PROPERTY_SCREENSHOT_TITLE_FONT_SIZE = "screenshot.title.font.size";
-  public static final String PROPERTY_MAP_WIDTH = "map.width";
-  public static final String PROPERTY_MAP_HEIGHT = "map.height";
-  public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
-  public static final String PROPERTY_MAP_SCROLLWRAPY = "map.scrollWrapY";
-  public static final String PROPERTY_MAP_HASRELIEF = "map.hasRelief";
-  public static final String PROPERTY_MAP_CURSOR_HOTSPOT_X = "map.cursor.hotspot.x";
-  public static final String PROPERTY_MAP_CURSOR_HOTSPOT_Y = "map.cursor.hotspot.y";
-  public static final String PROPERTY_MAP_SHOWCAPITOLMARKERS = "map.showCapitolMarkers";
+
+  @NonNls public static final String PROPERTY_MAP_WIDTH = "map.width";
+  @NonNls public static final String PROPERTY_MAP_HEIGHT = "map.height";
+  @NonNls public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
+  @NonNls public static final String PROPERTY_MAP_SCROLLWRAPY = "map.scrollWrapY";
+  @NonNls public static final String PROPERTY_MAP_HASRELIEF = "map.hasRelief";
+  @NonNls public static final String PROPERTY_MAP_CURSOR_HOTSPOT_X = "map.cursor.hotspot.x";
+  @NonNls public static final String PROPERTY_MAP_CURSOR_HOTSPOT_Y = "map.cursor.hotspot.y";
+  @NonNls public static final String PROPERTY_MAP_SHOWCAPITOLMARKERS = "map.showCapitolMarkers";
   public static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS =
       "map.useTerritoryEffectMarkers";
-  public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
-  public static final String PROPERTY_MAP_SHOWRESOURCES = "map.showResources";
-  public static final String PROPERTY_MAP_SHOWCOMMENTS = "map.showComments";
-  public static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
-  public static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
-  public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
-  public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
-  public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
-  public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
-  public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
+  @NonNls public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
+  @NonNls public static final String PROPERTY_MAP_SHOWRESOURCES = "map.showResources";
+  @NonNls public static final String PROPERTY_MAP_SHOWCOMMENTS = "map.showComments";
+  @NonNls public static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
+  @NonNls public static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
 
-  public static final String POLYGON_FILE = "polygons.txt";
+  @NonNls
+  public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
+
+  public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
+  @NonNls public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
+  @NonNls public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
+  @NonNls public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
+
+  @NonNls public static final String POLYGON_FILE = "polygons.txt";
 
   private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
   private static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
       "smallMap.territory.saturation";
-  private static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
+  @NonNls private static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
   private static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR =
       "smallMap.viewer.borderColor";
+
+  @NonNls
   private static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
+
+  @NonNls
   private static final String PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA = "smallMap.viewer.fillAlpha";
+
+  @NonNls
   private static final String PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX = "units.transform.color.";
+
   private static final String PROPERTY_UNITS_TRANSFORM_BRIGHTNESS_PREFIX =
       "units.transform.brightness.";
-  private static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
-  private static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
 
-  private static final String CENTERS_FILE = "centers.txt";
-  private static final String PLACEMENT_FILE = "place.txt";
-  private static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
-  private static final String MAP_PROPERTIES = "map.properties";
-  private static final String CAPITAL_MARKERS = "capitols.txt";
-  private static final String CONVOY_MARKERS = "convoy.txt";
-  private static final String COMMENT_MARKERS = "comments.txt";
-  private static final String VC_MARKERS = "vc.txt";
-  private static final String BLOCKADE_MARKERS = "blockade.txt";
-  private static final String PU_PLACE_FILE = "pu_place.txt";
-  private static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
-  private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
-  private static final String DECORATIONS_FILE = "decorations.txt";
+  @NonNls
+  private static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
+
+  @NonNls private static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
+
+  @NonNls private static final String CENTERS_FILE = "centers.txt";
+  @NonNls private static final String PLACEMENT_FILE = "place.txt";
+  @NonNls private static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
+  @NonNls private static final String MAP_PROPERTIES = "map.properties";
+  @NonNls private static final String CAPITAL_MARKERS = "capitols.txt";
+  @NonNls private static final String CONVOY_MARKERS = "convoy.txt";
+  @NonNls private static final String COMMENT_MARKERS = "comments.txt";
+  @NonNls private static final String VC_MARKERS = "vc.txt";
+  @NonNls private static final String BLOCKADE_MARKERS = "blockade.txt";
+  @NonNls private static final String PU_PLACE_FILE = "pu_place.txt";
+  @NonNls private static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
+  @NonNls private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
+  @NonNls private static final String DECORATIONS_FILE = "decorations.txt";
 
   private final PlayerColors playerColors;
   private Set<String> ignoreTransformingUnits;

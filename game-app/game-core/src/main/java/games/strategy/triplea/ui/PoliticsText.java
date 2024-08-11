@@ -6,7 +6,7 @@ import java.util.Properties;
 /** Returns a bunch of messages from politicstext.properties */
 public class PoliticsText {
 
-  private static final String PROPERTY_FILE = "politicstext.properties";
+  @NonNls private static final String PROPERTY_FILE = "politicstext.properties";
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";

@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class InetExtractor {
 
-  @VisibleForTesting
+  @VisibleForTesting @NonNls
   public static final String IP_ADDRESS_KEY = "javax.websocket.endpoint.remoteAddress";
 
   /**
