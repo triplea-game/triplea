@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
@@ -78,7 +79,7 @@ public class WebSocketMessagingBus {
    * Adds a listener that will be invoked when any message is received
    *
    * @param messageListener The message listener to be added, will be invoked with any message
-   *     recieved.
+   *     received.
    */
   public void addMessageListener(final Consumer<MessageEnvelope> messageListener) {
     anyMessageListeners.add(messageListener);
@@ -115,11 +116,12 @@ public class WebSocketMessagingBus {
   }
 
   private static Predicate<MessageListener<?>> matchListenersWithMessageTypeId(
-      final String messageTypeId) {
+      @NonNls final String messageTypeId) {
     return messageListener -> messageListener.messageType.getMessageTypeId().equals(messageTypeId);
   }
 
-  private Stream<MessageListener<?>> getListenersForMessageTypeId(final String messageTypeId) {
+  private Stream<MessageListener<?>> getListenersForMessageTypeId(
+      @NonNls final String messageTypeId) {
     return messageListeners.stream()
         .filter(
             messageListener ->
@@ -141,7 +143,7 @@ public class WebSocketMessagingBus {
   }
 
   void onError(final WebSocketSession session, final Throwable throwable) {
-    final String errorId = UUID.randomUUID().toString();
+    @NonNls final String errorId = UUID.randomUUID().toString();
     log.error(
         "Error-id processing websocket message, returning an error message to user. "
             + "Error id: {}",

@@ -1,5 +1,7 @@
 package tools.util;
 
+import org.jetbrains.annotations.NonNls;
+
 /** A collection of argument names common to all support tools. */
 public final class ToolArguments {
   @NonNls public static final String MAP_FOLDER = "triplea.map.folder";

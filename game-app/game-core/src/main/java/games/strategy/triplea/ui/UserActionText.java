@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.triplea.ResourceLoader;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 
 /** Same as PoliticsText but for user actions. */
 public class UserActionText {

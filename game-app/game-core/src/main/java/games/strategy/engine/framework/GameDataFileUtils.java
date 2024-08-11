@@ -6,6 +6,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.Collection;
 import java.util.List;
 import org.apache.commons.io.IOCase;
+import org.jetbrains.annotations.NonNls;
 
 /** A collection of utilities for working with game data files. */
 public final class GameDataFileUtils {
@@ -31,7 +32,7 @@ public final class GameDataFileUtils {
   }
 
   private static Collection<String> getCandidateExtensions() {
-    final String legacyExtension = ".svg";
+    @NonNls final String legacyExtension = ".svg";
 
     // Macs download a game data file as "tsvg.gz", so that extension must be used when evaluating
     // candidate game data files.

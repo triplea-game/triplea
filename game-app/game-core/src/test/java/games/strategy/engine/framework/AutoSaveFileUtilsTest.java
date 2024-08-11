@@ -7,9 +7,11 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@NonNls
 final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
   private final AutoSaveFileUtils autoSaveFileUtils = new AutoSaveFileUtils();
 

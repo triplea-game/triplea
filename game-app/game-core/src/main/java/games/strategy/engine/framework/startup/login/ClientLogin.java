@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Version;

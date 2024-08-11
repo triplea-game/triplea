@@ -2,6 +2,7 @@ package org.triplea.sound;
 
 import games.strategy.triplea.ResourceLoader;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 
 /** sounds.properties file helper class */
 class SoundProperties {

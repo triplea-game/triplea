@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.AlphanumComparator;
 import org.triplea.util.PointFileReaderWriter;
 import tools.image.FileOpen;
@@ -49,13 +50,13 @@ public final class ConnectionFinder {
   private Path mapFolderLocation = null;
   private boolean dimensionsSet = false;
   private StringBuilder territoryDefinitions = null;
-  // how many pixels should each area become bigger in both x and y axis to see which area it
+  // how many pixels should each area become bigger in both x- and y-axis to see which area it
   // overlaps?
-  // default 8, or if LINE_THICKNESS if given 4x linethickness
+  // default 8, or if LINE_THICKNESS if given 4x line thickness
   private int scalePixels = 8;
-  // how many pixels should the boundingbox of the overlapping area have for it to be considered a
+  // how many pixels should the bounding box of the overlapping area have for it to be considered a
   // valid connection?
-  // default 32, or if LINE_THICKNESS is given 16 x linethickness
+  // default 32, or if LINE_THICKNESS is given 16 x line thickness
   private double minOverlap = 32.0;
 
   /**
@@ -404,9 +405,9 @@ public final class ConnectionFinder {
   }
 
   /**
-   * from: eu.hansolo.steelseries.tools.Scaler.java Returns a scaled version of the given shape,
-   * calculated by the given scale factor. The scaling will be calculated around the centroid of the
-   * shape.
+   * from: {@code eu.hansolo.steelseries.tools.Scaler.java} Returns a scaled version of the given
+   * shape, calculated by the given scale factor. The scaling will be calculated around the centroid
+   * of the shape.
    *
    * @param sx how much to scale on the x-axis
    * @param sy how much to scale on the y-axis
