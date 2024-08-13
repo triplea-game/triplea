@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.triplea.java.PredicateBuilder;
@@ -45,35 +46,58 @@ final class ProTechAi {
     final Territory myCapitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
-    float myStrength =
-        (myCapitol == null) ? 0.0F : strength(myCapitol.getUnits(), false, false, false);
-    final List<Territory> areaStrength = getNeighboringLandTerritories(data, player, myCapitol);
-    for (final Territory areaTerr : areaStrength) {
-      myStrength += strength(areaTerr.getUnits(), false, false, false) * 0.75F;
-    }
+    float myStrength = getMyStrength(data, player, myCapitol);
     final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
     final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
     final int techTokensQuantity = player.getResources().getQuantity(techTokens);
+    final ThreadLocalRandom localRandom = ThreadLocalRandom.current();
     int tokensToBuy = 0;
-    if (!capDanger && techTokensQuantity < 3 && pusRemaining > Math.random() * 160) {
+    if (!capDanger && techTokensQuantity < 3 && pusRemaining > localRandom.nextInt(160)) {
       tokensToBuy = 1;
     }
     if (techTokensQuantity > 0 || tokensToBuy > 0) {
       final List<TechnologyFrontier> cats = TechAdvance.getPlayerTechCategories(player);
       // retaining 65% chance of choosing land advances using basic ww2v3 model.
       if (data.getTechnologyFrontier().isEmpty()) {
-        if (Math.random() > 0.35) {
+        if (localRandom.nextFloat() > 0.35) {
           techDelegate.rollTech(techTokensQuantity + tokensToBuy, cats.get(1), tokensToBuy, null);
         } else {
           techDelegate.rollTech(techTokensQuantity + tokensToBuy, cats.get(0), tokensToBuy, null);
         }
       } else {
-        final int rand = (int) (Math.random() * cats.size());
-        techDelegate.rollTech(techTokensQuantity + tokensToBuy, cats.get(rand), tokensToBuy, null);
+        techDelegate.rollTech(
+            techTokensQuantity + tokensToBuy,
+            cats.get(localRandom.nextInt(cats.size())),
+            tokensToBuy,
+            null);
       }
     }
+  }
+
+  /**
+   * Get strength value for territory {@code myCapitol} calculated from units in the territory and
+   * neighboring land territories (latter adjusted with a factor)
+   *
+   * @param data {@code GameData}
+   * @param player current {@code GamePlayer}
+   * @param myCapitol current {@code Territory}
+   * @return strength value for territory {@code myCapitol}
+   */
+  private static float getMyStrength(
+      final GameData data, final GamePlayer player, final Territory myCapitol) {
+    if (myCapitol == null) {
+      return 0.0F;
+    }
+    final float capitolStrength = strength(myCapitol.getUnits(), false, false, false);
+    final List<Territory> neighboringLandTerritories =
+        getNeighboringLandTerritories(data, player, myCapitol);
+    final List<Unit> unitsOfNeighboringLandTerritories = new ArrayList<>();
+    neighboringLandTerritories.forEach(t -> unitsOfNeighboringLandTerritories.addAll(t.getUnits()));
+    final float neighborStrength =
+        strength(unitsOfNeighboringLandTerritories, false, false, false) * 0.75F;
+    return capitolStrength + neighborStrength;
   }
 
   /**
@@ -282,7 +306,7 @@ final class ProTechAi {
     }
     for (final GamePlayer enemyPlayerCandidate : enemyPlayers) {
       if (!Objects.equals(enemyPlayer, enemyPlayerCandidate)) {
-        // give 40% of other players...this is will affect a lot of decisions by AI
+        // give 40% of other players...this will affect a lot of decisions by AI
         maxStrength += enemyPlayerAttackMap.get(enemyPlayerCandidate) * 0.40F;
       }
     }
@@ -311,8 +335,8 @@ final class ProTechAi {
     }
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = u.getUnitAttachment();
-      if (unitAttachment.getIsInfrastructure()) {
-        if (unitAttachment.getIsSea() == sea) {
+      if (unitAttachment.isInfrastructure()) {
+        if (unitAttachment.isSea() == sea) {
           final int unitAttack = unitAttachment.getAttack(u.getOwner());
           // BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;
           // played with this value a good bit
@@ -330,7 +354,7 @@ final class ProTechAi {
             // only allow transport to have 0.35 on defense; none on attack
             strength -= 0.50F;
           }
-        } else if (unitAttachment.getIsAir() == sea) {
+        } else if (unitAttachment.isAir() == sea) {
           strength += 1.00F;
           if (attacking) {
             strength +=
@@ -540,8 +564,8 @@ final class ProTechAi {
       final Collection<Unit> units,
       final GamePlayer player,
       final int maxDistance) {
-    // note this does not care if subs are submerged or not
-    // should it? does submerging affect movement of enemies?
+    // note this does not care if subs are submerged or not, should it?
+    // does submerging affect movement of enemies?
     if (start == null || destination == null || !start.isWater() || !destination.isWater()) {
       return null;
     }
@@ -604,7 +628,7 @@ final class ProTechAi {
    * Finds list of territories at exactly distance from the start.
    *
    * @param endCondition condition that all end points must satisfy
-   * @param routeCondition condition that all traversed internal territories must satisfied
+   * @param routeCondition condition that all traversed internal territories must satisfy
    */
   private static List<Territory> findFrontier(
       final Territory start,

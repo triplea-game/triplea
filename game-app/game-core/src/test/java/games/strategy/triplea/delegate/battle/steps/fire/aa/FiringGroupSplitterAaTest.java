@@ -222,7 +222,7 @@ class FiringGroupSplitterAaTest {
     when(fireUnit2.getOwner()).thenReturn(attacker);
     final UnitAttachment unitAttachment =
         (UnitAttachment) fireUnit2.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-    when(unitAttachment.getIsSuicideOnHit()).thenReturn(true);
+    when(unitAttachment.isSuicideOnHit()).thenReturn(true);
 
     final List<FiringGroup> firingGroups =
         FiringGroupSplitterAa.of(OFFENSE)

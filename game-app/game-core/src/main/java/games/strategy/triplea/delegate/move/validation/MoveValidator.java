@@ -1070,7 +1070,7 @@ public class MoveValidator {
     final Collection<Unit> retUnits = new ArrayList<>();
     for (final Unit unit : units) {
       final UnitAttachment ua = unit.getUnitAttachment();
-      if (!ua.getIsSea() && !ua.getIsAir() && ua.getTransportCost() == -1) {
+      if (!ua.isSea() && !ua.isAir() && ua.getTransportCost() == -1) {
         retUnits.add(unit);
       }
     }

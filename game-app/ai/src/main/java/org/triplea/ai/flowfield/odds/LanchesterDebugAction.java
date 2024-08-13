@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -105,15 +105,16 @@ public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
             unitAttachment ->
                 unitAttachment.getDefense(defender) > 0
                     && Matches.unitTypeIsLand().test((UnitType) unitAttachment.getAttachedTo()));
+    final ThreadLocalRandom localRandom = ThreadLocalRandom.current();
     for (int i = 0; i < 4; i++) {
-      getRandomUnitType(offenseUnitTypes)
+      getRandomUnitType(localRandom, offenseUnitTypes)
           .ifPresent(
               unitType ->
-                  attackingUnits.addAll(unitType.create(new Random().nextInt(10), offender)));
-      getRandomUnitType(defenseUnitTypes)
+                  attackingUnits.addAll(unitType.create(localRandom.nextInt(10), offender)));
+      getRandomUnitType(localRandom, defenseUnitTypes)
           .ifPresent(
               unitType ->
-                  defendingUnits.addAll(unitType.create(new Random().nextInt(10), defender)));
+                  defendingUnits.addAll(unitType.create(localRandom.nextInt(10), defender)));
     }
 
     System.out.println("Attack Units: " + MyFormatter.unitsToText(attackingUnits));
@@ -192,7 +193,8 @@ public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
         .collect(Collectors.toSet());
   }
 
-  private Optional<UnitType> getRandomUnitType(final Collection<UnitType> unitTypes) {
-    return unitTypes.stream().skip((int) (unitTypes.size() * Math.random())).findFirst();
+  private Optional<UnitType> getRandomUnitType(
+      final ThreadLocalRandom localRandom, final Collection<UnitType> unitTypes) {
+    return unitTypes.stream().skip((localRandom.nextInt(unitTypes.size()))).findFirst();
   }
 }

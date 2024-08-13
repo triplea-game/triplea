@@ -75,13 +75,13 @@ public class ProPurchaseOption {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     cost = productionRule.getCosts().getInt(pus);
     costs = productionRule.getCosts();
-    isConstruction = unitAttachment.getIsConstruction();
+    isConstruction = unitAttachment.isConstruction();
     constructionType = unitAttachment.getConstructionType();
     constructionTypePerTurn = unitAttachment.getConstructionsPerTerrPerTypePerTurn();
     maxConstructionType = unitAttachment.getMaxConstructionsPerTypePerTerr();
     movement = unitAttachment.getMovement(player);
     quantity = productionRule.getResults().totalValues();
-    final boolean isInfra = unitAttachment.getIsInfrastructure();
+    final boolean isInfra = unitAttachment.isInfrastructure();
     hitPoints = unitAttachment.getHitPoints() * quantity;
     if (isInfra) {
       hitPoints = 0;
@@ -91,9 +91,9 @@ public class ProPurchaseOption {
     defense = (double) unitAttachment.getDefense(player) * quantity;
     transportCost = unitAttachment.getTransportCost() * quantity;
     carrierCost = unitAttachment.getCarrierCost() * quantity;
-    isAir = unitAttachment.getIsAir();
+    isAir = unitAttachment.isAir();
     isSub = unitAttachment.getCanEvade();
-    isDestroyer = unitAttachment.getIsDestroyer();
+    isDestroyer = unitAttachment.isDestroyer();
     isTransport = unitAttachment.getTransportCapacity() > 0;
     isLandTransport = unitAttachment.isLandTransport();
     isCarrier = unitAttachment.getCarrierCapacity() > 0;

@@ -105,11 +105,9 @@ final class GameParserTest {
         archerUnitAttachment.getHitPoints(),
         is(2));
     assertThat(
-        "Verify is paratroop is converted", archerUnitAttachment.getIsAirTransportable(), is(true));
+        "Verify is paratroop is converted", archerUnitAttachment.isAirTransportable(), is(true));
     assertThat(
-        "Verify isMechanized is converted",
-        archerUnitAttachment.getIsLandTransportable(),
-        is(true));
+        "Verify isMechanized is converted", archerUnitAttachment.isLandTransportable(), is(true));
 
     final var axemanUnitAttachment =
         ((UnitAttachment)
@@ -119,7 +117,7 @@ final class GameParserTest {
                 .getAttachment(Constants.UNIT_ATTACHMENT_NAME));
 
     assertThat(
-        "Verify isInfantry is converted", axemanUnitAttachment.getIsLandTransportable(), is(true));
+        "Verify isInfantry is converted", axemanUnitAttachment.isLandTransportable(), is(true));
 
     assertThat(
         ((RulesAttachment)

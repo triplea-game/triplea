@@ -884,7 +884,7 @@ public class AirBattle extends AbstractBattle {
     if (canScrambleToAirBattle) {
       for (final UnitType unitType : data.getUnitTypeList()) {
         final UnitAttachment ua = unitType.getUnitAttachment();
-        if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
+        if (ua.canScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
           maxScrambleDistance = ua.getMaxScrambleDistance();
         }
       }

@@ -184,7 +184,7 @@ public class TransportTracker {
     // Check if there are transports available, also check for destroyer capacity (Tokyo Express)
     if (ua.getTransportCapacity() == -1
         || (Properties.getPacificTheater(unit.getData().getProperties())
-            && ua.getIsDestroyer()
+            && ua.isDestroyer()
             && !unit.getOwner().getName().equals(Constants.PLAYER_NAME_JAPANESE))) {
       return 0;
     }

@@ -763,7 +763,7 @@ class ProNonCombatMoveAi {
 
       // Set enough units in territories to have at least a chance of winning
       for (final Unit unit : sortedUnitMoveOptions.keySet()) {
-        final boolean isAirUnit = unit.getUnitAttachment().getIsAir();
+        final boolean isAirUnit = unit.getUnitAttachment().isAir();
         if (isAirUnit || Matches.unitIsCarrier().test(unit) || addedUnits.contains(unit)) {
           continue; // skip air and carrier units
         }

@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Value;
+import lombok.experimental.Accessors;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -70,24 +71,45 @@ public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;
 
   // movement related
+  @Accessors(fluent = true)
+  @Getter
   private boolean isAir = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isSea = false;
+
   private int movement = 0;
   private boolean canBlitz = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isKamikaze = false;
+
   // a colon delimited list of transports where this unit may invade from, it supports "none"
   // and if empty it allows you to invade from all
   private @Nullable String[] canInvadeOnlyFrom = null;
   private @Nullable IntegerMap<Resource> fuelCost = null;
   private @Nullable IntegerMap<Resource> fuelFlatCost = null;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean canNotMoveDuringCombatMove = false;
+
   private @Nullable Tuple<Integer, String> movementLimit = null;
 
   // combat related
   private int attack = 0;
   private int defense = 0;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isInfrastructure = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean canBombard = false;
+
   private int bombard = -1;
   private boolean artillery = false;
   private boolean artillerySupportable = false;
@@ -95,7 +117,11 @@ public class UnitAttachment extends DefaultAttachment {
   @Getter private int isMarine = 0;
   private boolean isSuicideOnAttack = false;
   private boolean isSuicideOnDefense = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isSuicideOnHit = false;
+
   private @Nullable Tuple<Integer, String> attackingLimit = null;
   private int attackRolls = 1;
   private int defenseRolls = 1;
@@ -103,16 +129,28 @@ public class UnitAttachment extends DefaultAttachment {
   private @Nullable Boolean canRetreatOnStalemate;
 
   // sub/destroyer related
+  @Accessors(fluent = true)
+  @Getter
   private boolean canEvade = false;
+
   private boolean isFirstStrike = false;
   private @Nullable Set<UnitType> canNotTarget = null;
   private @Nullable Set<UnitType> canNotBeTargetedBy = null;
   private boolean canMoveThroughEnemies = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean canBeMovedThroughByEnemies = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isDestroyer = false;
 
   // transportation related
+  @Accessors(fluent = true)
+  @Getter
   private boolean isCombatTransport = false;
+
   // -1 if cant transport
   @Getter private int transportCapacity = -1;
   // -1 if cant be transported
@@ -121,18 +159,42 @@ public class UnitAttachment extends DefaultAttachment {
   @Getter private int carrierCapacity = -1;
   // -1 if cant land on a carrier
   @Getter private int carrierCost = -1;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isAirTransport = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isAirTransportable = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isLandTransport = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isLandTransportable = false;
 
   // aa related
   // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa
   // related setters. Must keep.
+  @Accessors(fluent = true)
+  @Getter
   private boolean isAaForCombatOnly = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isAaForBombingThisUnitOnly = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isAaForFlyOverOnly = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean isRocket = false;
+
   private int attackAa = 1;
   private int offensiveAttackAa = 0;
   private int attackAaMaxDieSides = -1;
@@ -153,13 +215,27 @@ public class UnitAttachment extends DefaultAttachment {
   private @Nullable Set<UnitType> willNotFireIfPresent = null;
 
   // strategic bombing related
+  @Accessors(fluent = true)
+  @Getter
   private boolean isStrategicBomber = false;
+
   @Getter private int bombingMaxDieSides = -1;
   @Getter private int bombingBonus = 0;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean canIntercept = false;
+
   private boolean requiresAirBaseToIntercept = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean canEscort = false;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean canAirBattle = false;
+
   private int airDefense = 0;
   private int airAttack = 0;
   // null means they can target any unit that can be damaged
@@ -167,7 +243,10 @@ public class UnitAttachment extends DefaultAttachment {
 
   // production related
   // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
+  @Accessors(fluent = true)
+  @Getter
   private boolean canProduceUnits = false;
+
   // -1 means either it can't produce any, or it produces at the value of the territory it is
   // located in
   @Getter private int canProduceXUnits = -1;
@@ -176,16 +255,23 @@ public class UnitAttachment extends DefaultAttachment {
 
   // damage related
   @Getter private int hitPoints = 1;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean canBeDamaged = false;
-  // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the
+
+  // this is bombing damage, not hit points. default of 2 means that factories will take 2x the
   // territory value they are in, of damage.
   @Getter private int maxDamage = 2;
-  // -1 if can't be disabled
+  // -1 for can't be disabled
   @Getter private int maxOperationalDamage = -1;
+
+  @Accessors(fluent = true)
+  @Getter
   private boolean canDieFromReachingMaxDamage = false;
 
   // placement related
-  private boolean isConstruction = false;
+  @Getter private boolean isConstruction = false;
   // can be any String except for "none" if isConstruction is true
   @Getter private String constructionType = "none";
   // -1 if not set, is meaningless
@@ -210,9 +296,12 @@ public class UnitAttachment extends DefaultAttachment {
   private @Nullable Tuple<Integer, String> placementLimit = null;
 
   // scrambling related
+  @Accessors(fluent = true)
+  @Getter
   private boolean canScramble = false;
-  private boolean isAirBase = false;
-  // -1 if can't scramble
+
+  @Getter private boolean isAirBase = false;
+  // -1 for can't scramble
   @Getter private int maxScrambleDistance = -1;
   // -1 for infinite
   @Getter private int maxScrambleCount = -1;
@@ -277,10 +366,6 @@ public class UnitAttachment extends DefaultAttachment {
     canIntercept = value;
   }
 
-  public boolean getCanIntercept() {
-    return canIntercept;
-  }
-
   private void resetCanIntercept() {
     canIntercept = false;
   }
@@ -309,10 +394,6 @@ public class UnitAttachment extends DefaultAttachment {
     canEscort = value;
   }
 
-  public boolean getCanEscort() {
-    return canEscort;
-  }
-
   private void resetCanEscort() {
     canEscort = false;
   }
@@ -323,10 +404,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setCanAirBattle(final Boolean value) {
     canAirBattle = value;
-  }
-
-  public boolean getCanAirBattle() {
-    return canAirBattle;
   }
 
   private void resetCanAirBattle() {
@@ -385,10 +462,6 @@ public class UnitAttachment extends DefaultAttachment {
     isAirTransport = s;
   }
 
-  public boolean getIsAirTransport() {
-    return isAirTransport;
-  }
-
   private void resetIsAirTransport() {
     isAirTransport = false;
   }
@@ -399,10 +472,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setIsAirTransportable(final Boolean s) {
     isAirTransportable = s;
-  }
-
-  public boolean getIsAirTransportable() {
-    return isAirTransportable;
   }
 
   private void resetIsAirTransportable() {
@@ -549,8 +618,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setDestroyedWhenCapturedBy(final String initialValue) throws GameParseException {
     // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to
-    // "BY" since this
-    // this is called by destroyedWhenCapturedBy
+    // "BY" since this is called by destroyedWhenCapturedBy
     String value = initialValue;
     String byOrFrom = "BY";
     if (value.startsWith("BY:") && getData().getPlayerList().getPlayerId("BY") == null) {
@@ -721,10 +789,6 @@ public class UnitAttachment extends DefaultAttachment {
     isCombatTransport = s;
   }
 
-  public boolean getIsCombatTransport() {
-    return isCombatTransport;
-  }
-
   private void resetIsCombatTransport() {
     isCombatTransport = false;
   }
@@ -735,10 +799,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setIsStrategicBomber(final Boolean s) {
     isStrategicBomber = s;
-  }
-
-  public boolean getIsStrategicBomber() {
-    return isStrategicBomber;
   }
 
   private void resetIsStrategicBomber() {
@@ -752,10 +812,6 @@ public class UnitAttachment extends DefaultAttachment {
   @VisibleForTesting
   public void setIsDestroyer(final Boolean s) {
     isDestroyer = s;
-  }
-
-  public boolean getIsDestroyer() {
-    return isDestroyer;
   }
 
   private void resetIsDestroyer() {
@@ -792,10 +848,6 @@ public class UnitAttachment extends DefaultAttachment {
     isAir = s;
   }
 
-  public boolean getIsAir() {
-    return isAir;
-  }
-
   private void resetIsAir() {
     isAir = false;
   }
@@ -808,10 +860,6 @@ public class UnitAttachment extends DefaultAttachment {
   public UnitAttachment setIsSea(final Boolean s) {
     isSea = s;
     return this;
-  }
-
-  public boolean getIsSea() {
-    return isSea;
   }
 
   private void resetIsSea() {
@@ -827,7 +875,7 @@ public class UnitAttachment extends DefaultAttachment {
     setIsInfrastructure(s);
     setCanProduceUnits(s);
     setIsConstruction(s);
-    if (s) {
+    if (Boolean.TRUE.equals(s)) {
       setConstructionType(Constants.CONSTRUCTION_TYPE_FACTORY);
       setMaxConstructionsPerTypePerTerr("1");
       setConstructionsPerTerrPerTypePerTurn("1");
@@ -845,10 +893,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setCanProduceUnits(final Boolean s) {
     canProduceUnits = s;
-  }
-
-  public boolean getCanProduceUnits() {
-    return canProduceUnits;
   }
 
   private void resetCanProduceUnits() {
@@ -913,7 +957,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setRepairsUnits(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
-    if (s.length <= 0) {
+    if (s.length == 0) {
       throw new GameParseException("repairsUnits cannot be empty" + thisErrorMsg());
     }
     int i = 0;
@@ -1196,10 +1240,6 @@ public class UnitAttachment extends DefaultAttachment {
     isConstruction = s;
   }
 
-  public boolean getIsConstruction() {
-    return isConstruction;
-  }
-
   private void resetIsConstruction() {
     isConstruction = false;
   }
@@ -1264,10 +1304,6 @@ public class UnitAttachment extends DefaultAttachment {
     isLandTransportable = s;
   }
 
-  public boolean getIsLandTransportable() {
-    return isLandTransportable;
-  }
-
   private void resetIsLandTransportable() {
     isLandTransportable = false;
   }
@@ -1280,20 +1316,16 @@ public class UnitAttachment extends DefaultAttachment {
     isLandTransport = s;
   }
 
-  public boolean isLandTransport() {
-    return isLandTransport;
-  }
-
-  public boolean getIsLandTransport() {
-    return isLandTransport;
-  }
-
   private void resetIsLandTransport() {
     isLandTransport = false;
   }
 
   private void setTransportCapacity(final int s) {
     transportCapacity = s;
+  }
+
+  public boolean isTransportCapacity() {
+    return (transportCapacity >= 0);
   }
 
   private void setIsTwoHit(final String s) {
@@ -1574,10 +1606,6 @@ public class UnitAttachment extends DefaultAttachment {
     canScramble = s;
   }
 
-  public boolean getCanScramble() {
-    return canScramble;
-  }
-
   private void resetCanScramble() {
     canScramble = false;
   }
@@ -1650,10 +1678,6 @@ public class UnitAttachment extends DefaultAttachment {
     isAirBase = s;
   }
 
-  public boolean getIsAirBase() {
-    return isAirBase;
-  }
-
   private void resetIsAirBase() {
     isAirBase = false;
   }
@@ -1668,10 +1692,6 @@ public class UnitAttachment extends DefaultAttachment {
     return this;
   }
 
-  public boolean getIsInfrastructure() {
-    return isInfrastructure;
-  }
-
   private void resetIsInfrastructure() {
     isInfrastructure = false;
   }
@@ -1684,10 +1704,6 @@ public class UnitAttachment extends DefaultAttachment {
     canBeDamaged = s;
   }
 
-  public boolean getCanBeDamaged() {
-    return canBeDamaged;
-  }
-
   private void resetCanBeDamaged() {
     canBeDamaged = false;
   }
@@ -1698,10 +1714,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setCanDieFromReachingMaxDamage(final Boolean s) {
     canDieFromReachingMaxDamage = s;
-  }
-
-  public boolean getCanDieFromReachingMaxDamage() {
-    return canDieFromReachingMaxDamage;
   }
 
   private void resetCanDieFromReachingMaxDamage() {
@@ -1751,10 +1763,6 @@ public class UnitAttachment extends DefaultAttachment {
     return this;
   }
 
-  public boolean getIsSuicideOnHit() {
-    return isSuicideOnHit;
-  }
-
   private void resetIsSuicideOnHit() {
     isSuicideOnHit = false;
   }
@@ -1765,10 +1773,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setIsKamikaze(final Boolean s) {
     isKamikaze = s;
-  }
-
-  public boolean getIsKamikaze() {
-    return isKamikaze;
   }
 
   private void resetIsKamikaze() {
@@ -1858,7 +1862,7 @@ public class UnitAttachment extends DefaultAttachment {
       String context, IntegerMap<UnitType> utMap, String value, int minValue)
       throws GameParseException {
     final String[] s = splitOnColon(value);
-    if (s.length <= 0 || s.length > 2) {
+    if (s.length == 0 || s.length > 2) {
       throw new GameParseException(
           context + " cannot be empty or have more than two fields" + thisErrorMsg());
     }
@@ -2194,10 +2198,6 @@ public class UnitAttachment extends DefaultAttachment {
     return this;
   }
 
-  public boolean getIsAaForCombatOnly() {
-    return isAaForCombatOnly;
-  }
-
   private void resetIsAaForCombatOnly() {
     isAaForCombatOnly = false;
   }
@@ -2208,10 +2208,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setIsAaForBombingThisUnitOnly(final Boolean s) {
     isAaForBombingThisUnitOnly = s;
-  }
-
-  public boolean getIsAaForBombingThisUnitOnly() {
-    return isAaForBombingThisUnitOnly;
   }
 
   private void resetIsAaForBombingThisUnitOnly() {
@@ -2226,10 +2222,6 @@ public class UnitAttachment extends DefaultAttachment {
     isAaForFlyOverOnly = s;
   }
 
-  public boolean getIsAaForFlyOverOnly() {
-    return isAaForFlyOverOnly;
-  }
-
   private void resetIsAaForFlyOverOnly() {
     isAaForFlyOverOnly = false;
   }
@@ -2240,10 +2232,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setIsRocket(final Boolean s) {
     isRocket = s;
-  }
-
-  public boolean getIsRocket() {
-    return isRocket;
   }
 
   private void resetIsRocket() {
@@ -2288,7 +2276,7 @@ public class UnitAttachment extends DefaultAttachment {
       return Collections.unmodifiableSet(targetsAa);
     }
     return unitTypeList.stream()
-        .filter(ut -> ut.getUnitAttachment().getIsAir())
+        .filter(ut -> ut.getUnitAttachment().isAir())
         .collect(Collectors.toSet());
   }
 
@@ -2336,10 +2324,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setCanNotMoveDuringCombatMove(final Boolean s) {
     canNotMoveDuringCombatMove = s;
-  }
-
-  public boolean getCanNotMoveDuringCombatMove() {
-    return canNotMoveDuringCombatMove;
   }
 
   private void resetCanNotMoveDuringCombatMove() {
@@ -2508,7 +2492,7 @@ public class UnitAttachment extends DefaultAttachment {
           "cannot have isCombatTransport on unit without transportCapacity, " + thisErrorMsg());
     }
     if (isSea
-        && transportCapacity != -1
+        && isTransportCapacity()
         && Properties.getTransportCasualtiesRestricted(data.getProperties())
         && (attack > 0 || defense > 0)
         && !isCombatTransport) {
@@ -2627,7 +2611,7 @@ public class UnitAttachment extends DefaultAttachment {
       if (territory != null) {
         territories.add(territory);
       } else {
-        // Check if its a territory effect and get all territories
+        // Check if it's a territory effect and get all territories
         if (getData().getTerritoryEffectList().containsKey(name)) {
           for (final Territory t : getData().getMap().getTerritories()) {
             for (final TerritoryEffect te : TerritoryEffectHelper.getEffects(t)) {
@@ -2910,7 +2894,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   /**
-   * Displays all unit options in a short description form that's user friendly rather than as XML.
+   * Displays all unit options in a short description form that's user-friendly rather than as XML.
    * Shows all except for: constructionType, constructionsPerTerrPerTypePerTurn,
    * maxConstructionsPerTypePerTerr, canBeGivenByTerritoryTo, destroyedWhenCapturedBy,
    * canBeCapturedOnEnteringBy.
@@ -2919,9 +2903,9 @@ public class UnitAttachment extends DefaultAttachment {
     final Formatter formatter = new Formatter();
     final UnitType unitType = (UnitType) this.getAttachedTo();
 
-    if (getIsAir()) {
+    if (isAir()) {
       formatter.append("Type", "Air");
-    } else if (getIsSea()) {
+    } else if (isSea()) {
       formatter.append("Type", "Sea");
     } else {
       formatter.append("Type", "Land");
@@ -2936,9 +2920,9 @@ public class UnitAttachment extends DefaultAttachment {
       formatter.append("HP", String.valueOf(getHitPoints()));
     }
 
-    if (getCanProduceUnits() && getCanProduceXUnits() < 0) {
+    if (canProduceUnits() && getCanProduceXUnits() < 0) {
       formatter.append("Can Produce Units up to Territory Value", "");
-    } else if (getCanProduceUnits() && getCanProduceXUnits() > 0) {
+    } else if (canProduceUnits() && getCanProduceXUnits() > 0) {
       formatter.append("Can Produce Units", String.valueOf(getCanProduceXUnits()));
     }
     addIntegerMapDescription("Creates Units each Turn", getCreatesUnitsList(), formatter);
@@ -2955,7 +2939,7 @@ public class UnitAttachment extends DefaultAttachment {
     addAaDescription("Targeted Defense", getAttackAa(player), getAttackAaMaxDieSides(), formatter);
 
     // TODO: Rework rocket description
-    if (getIsRocket() && playerHasRockets(player)) {
+    if (isRocket() && playerHasRockets(player)) {
       final StringBuilder sb = new StringBuilder();
       sb.append("Can Rocket Attack, ");
       final int bombingBonus = getBombingBonus();
@@ -2974,15 +2958,15 @@ public class UnitAttachment extends DefaultAttachment {
       formatter.append(sb.toString(), "");
     }
 
-    if (getIsInfrastructure()) {
+    if (isInfrastructure()) {
       formatter.append("Can be Captured", "");
     }
-    if (getIsConstruction()) {
+    if (isConstruction()) {
       formatter.append("Can be Placed Without Factory", "");
     }
 
     // TODO: Rework damaged description
-    if (getCanBeDamaged()
+    if (canBeDamaged()
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
             getData().getProperties())) {
       final StringBuilder sb = new StringBuilder();
@@ -2990,25 +2974,25 @@ public class UnitAttachment extends DefaultAttachment {
       if (getMaxOperationalDamage() > -1) {
         sb.append(getMaxOperationalDamage()).append(" Max Operational Damage, ");
       }
-      if (getCanProduceUnits() && getCanProduceXUnits() < 0) {
+      if (canProduceUnits() && getCanProduceXUnits() < 0) {
         sb.append("Total Damage up to ")
             .append(getMaxDamage() > -1 ? getMaxDamage() : 2)
             .append("x Territory Value, ");
       } else if (getMaxDamage() > -1) {
         sb.append(getMaxDamage()).append(" Max Total Damage, ");
       }
-      if (getCanDieFromReachingMaxDamage()) {
+      if (canDieFromReachingMaxDamage()) {
         sb.append("Dies if Max Damage Reached, ");
       }
       formatter.append(sb.toString(), "");
-    } else if (getCanBeDamaged()) {
+    } else if (canBeDamaged()) {
       formatter.append("Can be Damaged by Raids", "");
     }
 
-    if (getIsAirBase() && Properties.getScrambleRulesInEffect(getData().getProperties())) {
+    if (isAirBase() && Properties.getScrambleRulesInEffect(getData().getProperties())) {
       formatter.append("Allows Scrambling", "");
     }
-    if (getCanScramble() && Properties.getScrambleRulesInEffect(getData().getProperties())) {
+    if (canScramble() && Properties.getScrambleRulesInEffect(getData().getProperties())) {
       formatter.append(
           "Scramble Range",
           String.valueOf(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1));
@@ -3075,7 +3059,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     }
 
-    if (getIsStrategicBomber()) {
+    if (isStrategicBomber()) {
       final StringBuilder sb = new StringBuilder();
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
@@ -3093,12 +3077,11 @@ public class UnitAttachment extends DefaultAttachment {
       formatter.append("Can Perform Raids", sb.toString());
     }
 
-    if (getAirAttack(player) > 0
-        && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
+    if (getAirAttack(player) > 0 && (isStrategicBomber() || canEscort() || canAirBattle())) {
       formatter.append(
           "Air Attack", (attackRolls > 1 ? (attackRolls + "x") : "") + getAirAttack(player));
     }
-    if (getAirDefense(player) > 0 && (getCanIntercept() || getCanAirBattle())) {
+    if (getAirDefense(player) > 0 && (canIntercept() || canAirBattle())) {
       formatter.append(
           "Air Defense", (defenseRolls > 1 ? (defenseRolls + "x") : "") + getAirDefense(player));
     }
@@ -3117,7 +3100,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     addLabeledUnitTypes("Can't Target", getCanNotTarget(), formatter);
     addLabeledUnitTypes("Can't Be Targeted By", getCanNotBeTargetedBy(), formatter);
-    if (getIsDestroyer()) {
+    if (isDestroyer()) {
       formatter.append("Is Anti-Stealth", "");
     }
 
@@ -3135,38 +3118,37 @@ public class UnitAttachment extends DefaultAttachment {
     if (getIsSuicideOnDefense()) {
       formatter.append("Suicide on Defense Unit", "");
     }
-    if (getIsSuicideOnHit()) {
+    if (isSuicideOnHit()) {
       formatter.append("Suicide on Hit Unit", "");
     }
-    if (getIsAir()
-        && (getIsKamikaze() || Properties.getKamikazeAirplanes(getData().getProperties()))) {
+    if (isAir() && (isKamikaze() || Properties.getKamikazeAirplanes(getData().getProperties()))) {
       formatter.append("Is Kamikaze", "Can use all Movement to Attack Target");
     }
 
-    if (getIsLandTransportable() && playerHasMechInf(player)) {
+    if (isLandTransportable() && playerHasMechInf(player)) {
       formatter.append("Can be Land Transported", "");
     }
-    if (getIsLandTransport() && playerHasMechInf(player)) {
+    if (isLandTransport() && playerHasMechInf(player)) {
       formatter.append("Is a Land Transport", "");
     }
-    if (getIsAirTransportable() && playerHasParatroopers(player)) {
+    if (isAirTransportable() && playerHasParatroopers(player)) {
       formatter.append("Can be Air Transported", "");
     }
-    if (getIsAirTransport() && playerHasParatroopers(player)) {
+    if (isAirTransport() && playerHasParatroopers(player)) {
       formatter.append("Is an Air Transport", "");
     }
-    if (getIsCombatTransport() && getTransportCapacity() > 0) {
+    if (isCombatTransport() && getTransportCapacity() > 0) {
       formatter.append("Is a Combat Transport", "");
-    } else if (getTransportCapacity() > 0 && getIsSea()) {
+    } else if (getTransportCapacity() > 0 && isSea()) {
       formatter.append("Is a Sea Transport", "");
     }
     if (getTransportCost() > -1) {
       formatter.append("Transporting Cost", String.valueOf(getTransportCost()));
     }
     if (getTransportCapacity() > 0
-        && (getIsSea()
-            || (getIsAir() && playerHasParatroopers(player))
-            || (playerHasMechInf(player) && !getIsSea() && !getIsAir()))) {
+        && (isSea()
+            || (isAir() && playerHasParatroopers(player))
+            || (playerHasMechInf(player) && !isSea() && !isAir()))) {
       formatter.append("Transporting Capacity", String.valueOf(getTransportCapacity()));
     }
 
@@ -3263,7 +3245,7 @@ public class UnitAttachment extends DefaultAttachment {
           String.valueOf(getCanOnlyBePlacedInTerritoryValuedAtX()));
     }
 
-    if (getCanNotMoveDuringCombatMove()) {
+    if (canNotMoveDuringCombatMove()) {
       formatter.append("Cannot Combat Move", "");
     }
 
@@ -3325,8 +3307,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void addAaDescription(
       final String startOfKey, final int aa, final int aaMaxDieSides, final Formatter formatter) {
-    if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly())
-        && (aa > 0)) {
+    if ((isAaForCombatOnly() || isAaForBombingThisUnitOnly() || isAaForFlyOverOnly()) && (aa > 0)) {
       final String string =
           aa
               + "/"
@@ -3349,7 +3330,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     // under certain rules (classic rules) there can only be 1 aa gun in a territory.
     final GameProperties properties = getData().getProperties();
-    if ((getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
+    if ((isAaForBombingThisUnitOnly() || isAaForCombatOnly())
         && !(Properties.getWW2V2(properties)
             || Properties.getWW2V3(properties)
             || Properties.getMultipleAaPerTerritory(properties))) {
@@ -3373,19 +3354,19 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private String getAaKey() {
-    if (getIsAaForCombatOnly()
-        && getIsAaForFlyOverOnly()
+    if (isAaForCombatOnly()
+        && isAaForFlyOverOnly()
         && !Properties.getAaTerritoryRestricted(getData().getProperties())) {
       return " for Combat & Move Through";
-    } else if (getIsAaForBombingThisUnitOnly()
-        && getIsAaForFlyOverOnly()
+    } else if (isAaForBombingThisUnitOnly()
+        && isAaForFlyOverOnly()
         && !Properties.getAaTerritoryRestricted(getData().getProperties())) {
       return " for Raids & Move Through";
-    } else if (getIsAaForCombatOnly()) {
+    } else if (isAaForCombatOnly()) {
       return " for Combat";
-    } else if (getIsAaForBombingThisUnitOnly()) {
+    } else if (isAaForBombingThisUnitOnly()) {
       return " for Raids";
-    } else if (getIsAaForFlyOverOnly()) {
+    } else if (isAaForFlyOverOnly()) {
       return " for Move Through";
     }
     return "";
@@ -3401,9 +3382,9 @@ public class UnitAttachment extends DefaultAttachment {
   public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
     switch (propertyName) {
       case "isAir":
-        return MutableProperty.of(this::setIsAir, this::setIsAir, this::getIsAir, this::resetIsAir);
+        return MutableProperty.of(this::setIsAir, this::setIsAir, this::isAir, this::resetIsAir);
       case IS_SEA:
-        return MutableProperty.of(this::setIsSea, this::setIsSea, this::getIsSea, this::resetIsSea);
+        return MutableProperty.of(this::setIsSea, this::setIsSea, this::isSea, this::resetIsSea);
       case "movement":
         return MutableProperty.of(
             this::setMovement, this::setMovement, this::getMovement, this::resetMovement);
@@ -3412,7 +3393,7 @@ public class UnitAttachment extends DefaultAttachment {
             this::setCanBlitz, this::setCanBlitz, this::getCanBlitz, this::resetCanBlitz);
       case "isKamikaze":
         return MutableProperty.of(
-            this::setIsKamikaze, this::setIsKamikaze, this::getIsKamikaze, this::resetIsKamikaze);
+            this::setIsKamikaze, this::setIsKamikaze, this::isKamikaze, this::resetIsKamikaze);
       case "canInvadeOnlyFrom":
         return MutableProperty.of(
             this::setCanInvadeOnlyFrom,
@@ -3432,7 +3413,7 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setCanNotMoveDuringCombatMove,
             this::setCanNotMoveDuringCombatMove,
-            this::getCanNotMoveDuringCombatMove,
+            this::canNotMoveDuringCombatMove,
             this::resetCanNotMoveDuringCombatMove);
       case "movementLimit":
         return MutableProperty.of(
@@ -3450,7 +3431,7 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setIsInfrastructure,
             this::setIsInfrastructure,
-            this::getIsInfrastructure,
+            this::isInfrastructure,
             this::resetIsInfrastructure);
       case "canBombard":
         return MutableProperty.of(
@@ -3495,10 +3476,7 @@ public class UnitAttachment extends DefaultAttachment {
             () -> false);
       case "isDestroyer":
         return MutableProperty.of(
-            this::setIsDestroyer,
-            this::setIsDestroyer,
-            this::getIsDestroyer,
-            this::resetIsDestroyer);
+            this::setIsDestroyer, this::setIsDestroyer, this::isDestroyer, this::resetIsDestroyer);
       case "artillery":
         return MutableProperty.of(
             this::setArtillery, this::setArtillery, this::getArtillery, this::resetArtillery);
@@ -3536,7 +3514,7 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setIsSuicideOnHit,
             this::setIsSuicideOnHit,
-            this::getIsSuicideOnHit,
+            this::isSuicideOnHit,
             this::resetIsSuicideOnHit);
       case "attackingLimit":
         return MutableProperty.of(
@@ -3566,7 +3544,7 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setIsCombatTransport,
             this::setIsCombatTransport,
-            this::getIsCombatTransport,
+            this::isCombatTransport,
             this::resetIsCombatTransport);
       case "transportCapacity":
         return MutableProperty.ofMapper(
@@ -3593,47 +3571,47 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setIsAirTransport,
             this::setIsAirTransport,
-            this::getIsAirTransport,
+            this::isAirTransport,
             this::resetIsAirTransport);
       case "isAirTransportable":
         return MutableProperty.of(
             this::setIsAirTransportable,
             this::setIsAirTransportable,
-            this::getIsAirTransportable,
+            this::isAirTransportable,
             this::resetIsAirTransportable);
       case "isLandTransport":
         return MutableProperty.of(
             this::setIsLandTransport,
             this::setIsLandTransport,
-            this::getIsLandTransport,
+            this::isLandTransport,
             this::resetIsLandTransport);
       case "isLandTransportable":
         return MutableProperty.of(
             this::setIsLandTransportable,
             this::setIsLandTransportable,
-            this::getIsLandTransportable,
+            this::isLandTransportable,
             this::resetIsLandTransportable);
       case "isAAforCombatOnly":
         return MutableProperty.of(
             this::setIsAaForCombatOnly,
             this::setIsAaForCombatOnly,
-            this::getIsAaForCombatOnly,
+            this::isAaForCombatOnly,
             this::resetIsAaForCombatOnly);
       case "isAAforBombingThisUnitOnly":
         return MutableProperty.of(
             this::setIsAaForBombingThisUnitOnly,
             this::setIsAaForBombingThisUnitOnly,
-            this::getIsAaForBombingThisUnitOnly,
+            this::isAaForBombingThisUnitOnly,
             this::resetIsAaForBombingThisUnitOnly);
       case "isAAforFlyOverOnly":
         return MutableProperty.of(
             this::setIsAaForFlyOverOnly,
             this::setIsAaForFlyOverOnly,
-            this::getIsAaForFlyOverOnly,
+            this::isAaForFlyOverOnly,
             this::resetIsAaForFlyOverOnly);
       case "isRocket":
         return MutableProperty.of(
-            this::setIsRocket, this::setIsRocket, this::getIsRocket, this::resetIsRocket);
+            this::setIsRocket, this::setIsRocket, this::isRocket, this::resetIsRocket);
       case ATTACK_AA:
         return MutableProperty.of(
             this::setAttackAa, this::setAttackAa, this::getAttackAa, this::resetAttackAa);
@@ -3694,7 +3672,7 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setIsStrategicBomber,
             this::setIsStrategicBomber,
-            this::getIsStrategicBomber,
+            this::isStrategicBomber,
             this::resetIsStrategicBomber);
       case "bombingMaxDieSides":
         return MutableProperty.of(
@@ -3712,7 +3690,7 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setCanIntercept,
             this::setCanIntercept,
-            this::getCanIntercept,
+            this::canIntercept,
             this::resetCanIntercept);
       case "requiresAirbaseToIntercept":
         return MutableProperty.of(
@@ -3722,12 +3700,12 @@ public class UnitAttachment extends DefaultAttachment {
             this::resetRequiresAirBaseToIntercept);
       case "canEscort":
         return MutableProperty.of(
-            this::setCanEscort, this::setCanEscort, this::getCanEscort, this::resetCanEscort);
+            this::setCanEscort, this::setCanEscort, this::canEscort, this::resetCanEscort);
       case "canAirBattle":
         return MutableProperty.of(
             this::setCanAirBattle,
             this::setCanAirBattle,
-            this::getCanAirBattle,
+            this::canAirBattle,
             this::resetCanAirBattle);
       case "airDefense":
         return MutableProperty.of(
@@ -3745,7 +3723,7 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setCanProduceUnits,
             this::setCanProduceUnits,
-            this::getCanProduceUnits,
+            this::canProduceUnits,
             this::resetCanProduceUnits);
       case "canProduceXUnits":
         return MutableProperty.of(
@@ -3772,7 +3750,7 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setCanBeDamaged,
             this::setCanBeDamaged,
-            this::getCanBeDamaged,
+            this::canBeDamaged,
             this::resetCanBeDamaged);
       case "maxDamage":
         return MutableProperty.of(
@@ -3787,13 +3765,13 @@ public class UnitAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setCanDieFromReachingMaxDamage,
             this::setCanDieFromReachingMaxDamage,
-            this::getCanDieFromReachingMaxDamage,
+            this::canDieFromReachingMaxDamage,
             this::resetCanDieFromReachingMaxDamage);
       case "isConstruction":
         return MutableProperty.of(
             this::setIsConstruction,
             this::setIsConstruction,
-            this::getIsConstruction,
+            this::isConstruction,
             this::resetIsConstruction);
       case "constructionType":
         return MutableProperty.ofString(
@@ -3854,13 +3832,10 @@ public class UnitAttachment extends DefaultAttachment {
             this::resetPlacementLimit);
       case "canScramble":
         return MutableProperty.of(
-            this::setCanScramble,
-            this::setCanScramble,
-            this::getCanScramble,
-            this::resetCanScramble);
+            this::setCanScramble, this::setCanScramble, this::canScramble, this::resetCanScramble);
       case "isAirBase":
         return MutableProperty.of(
-            this::setIsAirBase, this::setIsAirBase, this::getIsAirBase, this::resetIsAirBase);
+            this::setIsAirBase, this::setIsAirBase, this::isAirBase, this::resetIsAirBase);
       case "maxScrambleDistance":
         return MutableProperty.of(
             this::setMaxScrambleDistance,
