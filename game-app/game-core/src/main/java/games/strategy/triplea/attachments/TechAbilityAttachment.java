@@ -26,6 +26,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -36,8 +37,8 @@ import org.triplea.java.collections.IntegerMap;
  */
 public class TechAbilityAttachment extends DefaultAttachment {
   // unitAbilitiesGained Static Strings
-  public static final String ABILITY_CAN_BLITZ = "canBlitz";
-  public static final String ABILITY_CAN_BOMBARD = "canBombard";
+  @NonNls public static final String ABILITY_CAN_BLITZ = "canBlitz";
+  @NonNls public static final String ABILITY_CAN_BOMBARD = "canBombard";
 
   private static final long serialVersionUID = 1866305599625384294L;
 
@@ -80,7 +81,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (type instanceof GenericTechAdvance) {
       // generic techs can name a hardcoded tech, therefore if it exists we should use the hard
       // coded tech's attachment.
-      // (if the map maker doesn't want to use the hardcoded tech's attachment, they should not name
+      // (if the mapmaker doesn't want to use the hardcoded tech's attachment, they should not name
       // a hardcoded tech)
       final TechAdvance hardCodedAdvance = ((GenericTechAdvance) type).getAdvance();
       if (hardCodedAdvance != null) {

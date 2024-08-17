@@ -8,6 +8,7 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import org.triplea.io.CloseableDownloader;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 final class ContentReaderTest extends AbstractClientSettingTestCase {
-  private static final String URI = "some://uri";
+  @NonNls private static final String URI = "some://uri";
 
   @ExtendWith(MockitoExtension.class)
   @Nested

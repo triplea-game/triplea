@@ -13,12 +13,13 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
-  private static final String MAP_NAME = "new_test_order";
+  @NonNls private static final String MAP_NAME = "new_test_order";
 
   private static final MapDownloadItem TEST_MAP =
       MapDownloadItem.builder()

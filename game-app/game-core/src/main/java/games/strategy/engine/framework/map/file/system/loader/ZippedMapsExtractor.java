@@ -9,12 +9,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.io.FileUtils;
 import org.triplea.io.ZipExtractor;
 import org.triplea.io.ZipExtractor.FileSystemException;
@@ -28,7 +30,7 @@ import org.triplea.map.description.file.MapDescriptionYaml;
 @Builder
 @Slf4j
 public class ZippedMapsExtractor {
-  private static final String ZIP_EXTENSION = ".zip";
+  @NonNls private static final String ZIP_EXTENSION = ".zip";
 
   /**
    * Callback to be invoked if we find any zip files. The task passed to the progress indicator will
@@ -79,7 +81,7 @@ public class ZippedMapsExtractor {
                                       zipReadException));
                     }
                   } catch (final FileSystemException e) {
-                    // Thrown if we are are out of disk space or have file system access issues.
+                    // Thrown if we are out of disk space or have file system access issues.
                     // Do not move the zip file to a bad-zip folder as that operation could also
                     // fail.
                     log.warn("Error extracting map zip: {}, {}", mapZip, e.getMessage(), e);
@@ -95,17 +97,18 @@ public class ZippedMapsExtractor {
   private Collection<Path> findAllZippedMapFiles() {
     return FileUtils.listFiles(downloadedMapsFolder).stream()
         .filter(Predicate.not(Files::isDirectory))
-        .filter(file -> file.getFileName().toString().toLowerCase().endsWith(ZIP_EXTENSION))
+        .filter(
+            file -> file.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(ZIP_EXTENSION))
         .collect(Collectors.toList());
   }
 
   /**
    * Unzips are target map file into the downloaded maps folder, deletes the zip file after
    * extraction. Extracted files are first extracted to a temporary location before being moved into
-   * the downloaded maps folder. This temporary location is to help avoid intermediate results if
+   * the downloaded map's folder. This temporary location is to help avoid intermediate results if
    * for example we run out of disk space while extracting.
    *
-   * @param mapZip The map zip file to be extracted to the downloaded maps folder.
+   * @param mapZip The map zip file to be extracted to the downloaded map's folder.
    * @return Returns extracted location (if successful, otherwise empty)
    */
   public static Optional<Path> unzipMap(final Path mapZip) {
@@ -169,7 +172,7 @@ public class ZippedMapsExtractor {
     if (newName.endsWith("-master")) {
       newName = newName.substring(0, newName.length() - "-master".length());
     }
-    return newName.toLowerCase();
+    return newName.toLowerCase(Locale.ROOT);
   }
 
   /**

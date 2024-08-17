@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -222,7 +223,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static String normalizeName(final String mapName) {
-    return mapName.replace(' ', '_').toLowerCase();
+    return mapName.replace(' ', '_').toLowerCase(Locale.ROOT);
   }
 
   private JTabbedPane newAvailableInstalledTabbedPanel(
@@ -248,7 +249,7 @@ public class DownloadMapsWindow extends JFrame {
       final JPanel installed =
           newMapSelectionPanel(
               mapList.getInstalled().keySet().stream()
-                  .sorted(Comparator.comparing(m -> m.getMapName().toUpperCase()))
+                  .sorted(Comparator.comparing(m -> m.getMapName().toUpperCase(Locale.ENGLISH)))
                   .collect(Collectors.toList()),
               MapAction.REMOVE,
               false);

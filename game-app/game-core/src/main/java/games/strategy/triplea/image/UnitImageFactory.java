@@ -37,6 +37,7 @@ import lombok.Getter;
 import lombok.Synchronized;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 
 /** A factory with a thread-safe image cache for creating unit images. */
 @Slf4j
@@ -286,8 +287,9 @@ public class UnitImageFactory {
     final String baseImageName = imageKey.getBaseImageName();
     final GamePlayer gamePlayer = imageKey.getPlayer();
     // URL uses '/' not '\'
+    @NonNls
     final String fileName = FILE_NAME_BASE + gamePlayer.getName() + "/" + baseImageName + ".png";
-    final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
+    @NonNls final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
     final URL url = resourceLoader.getResource(fileName, fileName2);
     return Optional.ofNullable(url);
   }

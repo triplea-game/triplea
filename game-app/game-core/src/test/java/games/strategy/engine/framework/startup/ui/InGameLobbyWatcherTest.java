@@ -19,6 +19,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import java.net.InetAddress;
 import java.util.Optional;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
@@ -133,10 +134,10 @@ final class InGameLobbyWatcherTest {
 
   @Nested
   final class GetLobbySystemPropertyTest {
-    private static final String KEY = "__GetLobbySystemPropertyTest__key";
-    private static final String BACKUP_KEY = KEY + ".backup";
-    private static final String VALUE = "primaryValue";
-    private static final String BACKUP_VALUE = "backupValue";
+    @NonNls private static final String KEY = "__GetLobbySystemPropertyTest__key";
+    @NonNls private static final String BACKUP_KEY = KEY + ".backup";
+    @NonNls private static final String VALUE = "primaryValue";
+    @NonNls private static final String BACKUP_VALUE = "backupValue";
 
     @AfterEach
     void clearSystemProperties() {

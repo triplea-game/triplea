@@ -40,6 +40,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Value;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -50,23 +51,28 @@ import org.triplea.util.Tuple;
  * collection fields default to null to minimize memory use and serialization size.
  */
 public class UnitAttachment extends DefaultAttachment {
-  public static final String UNITS_MAY_NOT_LAND_ON_CARRIER = "unitsMayNotLandOnCarrier";
+  @NonNls public static final String UNITS_MAY_NOT_LAND_ON_CARRIER = "unitsMayNotLandOnCarrier";
+
+  @NonNls
   public static final String UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER = "unitsMayNotLeaveAlliedCarrier";
 
-  public static final String IS_SEA = "isSea";
-  public static final String DEFENSE_STRENGTH = "defense";
-  public static final String ATTACK_STRENGTH = "attack";
-  public static final String ATTACK_ROLL = "attackRolls";
-  public static final String DEFENSE_ROLL = "defenseRolls";
-  public static final String ATTACK_AA = "attackAA";
-  public static final String OFFENSIVE_ATTACK_AA = "offensiveAttackAA";
-  public static final String MAX_AA_ATTACKS = "maxAAattacks";
-  public static final String ATTACK_AA_MAX_DIE_SIDES = "attackAAmaxDieSides";
+  @NonNls public static final String IS_SEA = "isSea";
+  @NonNls public static final String DEFENSE_STRENGTH = "defense";
+  @NonNls public static final String ATTACK_STRENGTH = "attack";
+  @NonNls public static final String ATTACK_ROLL = "attackRolls";
+  @NonNls public static final String DEFENSE_ROLL = "defenseRolls";
+  @NonNls public static final String ATTACK_AA = "attackAA";
+  @NonNls public static final String OFFENSIVE_ATTACK_AA = "offensiveAttackAA";
+  @NonNls public static final String MAX_AA_ATTACKS = "maxAAattacks";
+  @NonNls public static final String ATTACK_AA_MAX_DIE_SIDES = "attackAAmaxDieSides";
+
+  @NonNls
   public static final String OFFENSIVE_ATTACK_AA_MAX_DIE_SIDES = "offensiveAttackAAmaxDieSides";
-  public static final String MAY_OVERSTACK_AA = "mayOverStackAA";
-  public static final String IS_MARINE = "isMarine";
-  public static final String BOMBARD = "bombard";
-  public static final String CHOOSE_BEST_ROLL = "chooseBestRoll";
+
+  @NonNls public static final String MAY_OVER_STACK_AA = "mayOverStackAA";
+  @NonNls public static final String IS_MARINE = "isMarine";
+  @NonNls public static final String BOMBARD = "bombard";
+  @NonNls public static final String CHOOSE_BEST_ROLL = "chooseBestRoll";
 
   private static final long serialVersionUID = -2946748686268541820L;
 
@@ -3650,7 +3656,7 @@ public class UnitAttachment extends DefaultAttachment {
       case "targetsAA":
         return MutableProperty.of(
             this::setTargetsAa, this::setTargetsAa, this::getTargetsAa, this::resetTargetsAa);
-      case MAY_OVERSTACK_AA:
+      case MAY_OVER_STACK_AA:
         return MutableProperty.of(
             this::setMayOverStackAa,
             this::setMayOverStackAa,

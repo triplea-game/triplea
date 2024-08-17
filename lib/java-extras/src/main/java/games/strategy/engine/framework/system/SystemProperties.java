@@ -2,6 +2,7 @@ package games.strategy.engine.framework.system;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -48,11 +49,11 @@ public final class SystemProperties {
   }
 
   public static boolean isMac() {
-    return getOperatingSystem().toLowerCase().contains("mac");
+    return getOperatingSystem().toLowerCase(Locale.ROOT).contains("mac");
   }
 
   public static boolean isWindows() {
-    return getOperatingSystem().toLowerCase().contains("windows");
+    return getOperatingSystem().toLowerCase(Locale.ROOT).contains("windows");
   }
 
   public static void setJavaNetUseSystemProxies(final String value) {

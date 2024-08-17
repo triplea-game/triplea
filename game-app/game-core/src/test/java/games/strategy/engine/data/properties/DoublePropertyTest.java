@@ -4,14 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class DoublePropertyTest {
   @Nested
   final class ConstructorTest {
-    private static final String NAME = "name";
-    private static final String DESCRIPTION = "description";
+    @NonNls private static final String NAME = "name";
+    @NonNls private static final String DESCRIPTION = "description";
     private static final double MAX_VALUE = 100.0;
     private static final double MIN_VALUE = 0.0;
     private static final double DEFAULT_VALUE = 42.0;

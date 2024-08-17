@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
@@ -72,6 +73,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE",
           IServerStartupRemote.class);
 
+  @NonNls
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);

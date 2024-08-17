@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Stores all of the {@link BattlePhase}s that will be used during a battle
@@ -17,10 +18,10 @@ import lombok.Getter;
 @Getter
 public class BattlePhaseList {
 
-  public static final String DEFAULT_AA_PHASE = "AA";
-  public static final String DEFAULT_BOMBARD_PHASE = "Bombard";
-  public static final String DEFAULT_FIRST_STRIKE_PHASE = "First Strike";
-  public static final String DEFAULT_GENERAL_PHASE = "General";
+  @NonNls public static final String DEFAULT_AA_PHASE = "AA";
+  @NonNls public static final String DEFAULT_BOMBARD_PHASE = "Bombard";
+  @NonNls public static final String DEFAULT_FIRST_STRIKE_PHASE = "First Strike";
+  @NonNls public static final String DEFAULT_GENERAL_PHASE = "General";
 
   private final Collection<BattlePhase> phases = new ArrayList<>();
 

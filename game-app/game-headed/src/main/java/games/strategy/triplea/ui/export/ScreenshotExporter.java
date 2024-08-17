@@ -17,6 +17,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import javax.imageio.ImageIO;
@@ -60,7 +61,7 @@ public final class ScreenshotExporter {
         .parent(frame)
         .title("Export Screenshot")
         .fileExtension("png")
-        .filenameFilter((dir, name) -> name.toLowerCase().endsWith(".png"))
+        .filenameFilter((dir, name) -> name.toLowerCase(Locale.ROOT).endsWith(".png"))
         .build()
         .chooseFile();
   }
@@ -69,7 +70,7 @@ public final class ScreenshotExporter {
     final CompletableFuture<?> future =
         SwingComponents.runWithProgressBar(
                 frame,
-                "Saving picture of the gameboard...",
+                "Saving picture of the game board...",
                 () -> {
                   save(gameData, node, file);
                   return null;
@@ -82,13 +83,13 @@ public final class ScreenshotExporter {
                             JOptionPane.showMessageDialog(
                                 frame,
                                 "Saved to: " + file.toAbsolutePath(),
-                                "Gameboard Picture Saved",
+                                "Game Board Picture Saved",
                                 JOptionPane.INFORMATION_MESSAGE);
                           } else {
                             JOptionPane.showMessageDialog(
                                 frame,
                                 e.getMessage(),
-                                "Error Saving Gameboard Picture",
+                                "Error Saving Game Board Picture",
                                 JOptionPane.ERROR_MESSAGE);
                           }
                         }));

@@ -9,6 +9,7 @@ import feign.FeignException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +19,9 @@ import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 
 @ExtendWith(MockitoExtension.class)
 class LobbyWatcherKeepAliveTaskTest {
-  private static final String ID_0 = "id0";
-  private static final String ID_1 = "id1";
-  private static final String ID_2 = "id2";
+  @NonNls private static final String ID_0 = "id0";
+  @NonNls private static final String ID_1 = "id1";
+  @NonNls private static final String ID_2 = "id2";
 
   @Mock private Consumer<String> gameIdSetter;
   @Mock private Predicate<String> keepAliveSender;
@@ -54,7 +55,7 @@ class LobbyWatcherKeepAliveTaskTest {
 
   /**
    * Keep alive false means repost, so we should request id_1, if it keeps alive then we have
-   * re-established connecton and should update game id.
+   * re-established connection and should update game id.
    */
   @Test
   void negativeKeepAliveReEstablishesConnection() {
@@ -91,7 +92,7 @@ class LobbyWatcherKeepAliveTaskTest {
    * either, and we have to re-post again to get a second new ID.<br>
    * Run #1: id_0 does not keep alive, we get id_1, it fails keep alive<br>
    * -> do not report anything<br>
-   * Run #2: id_1 fails keep alive, repost for id_2, id_2 passes keep alive.<br>
+   * Run #2: id_1 fails keep alive, re-post for id_2, id_2 passes keep alive.<br>
    * -> update game id to id_2 and report re-established
    */
   @Test
@@ -143,7 +144,7 @@ class LobbyWatcherKeepAliveTaskTest {
    * Lose connection, then get a new ID, it is alive, should report re-established. <br>
    * Run #1: Id_0 fails<br>
    * -> connection lost reported<br>
-   * Run #2: Id 0 does not keep alive, repost for Id 1, id 1 keeps alive<br>
+   * Run #2: Id_0 does not keep alive, repost for Id_1, id 1 keeps alive<br>
    * -> re-establish reported
    */
   @Test
@@ -183,9 +184,9 @@ class LobbyWatcherKeepAliveTaskTest {
 
   /**
    * Connection lost, then we get a 'false' keep-alive and re-post and get a new ID. The new ID does
-   * not 'keep-alive', we should not report re-established connecton.<br>
+   * not 'keep-alive', we should not report re-established connection.<br>
    * Run #1: id0 fails <br>
-   * Run #2: id0 does not keep alive, we repost and get id1, id1 does not keep-alive<br>
+   * Run #2: id0 does not keep alive, we re-post and get id1, id1 does not keep-alive<br>
    * -> should not report re-established
    */
   @Test

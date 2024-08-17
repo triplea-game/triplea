@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -209,7 +210,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
         .ifPresentOrElse(
             (file) -> {
               // if the file name is xml, load it as a new game
-              if (file.getFileName().toString().toLowerCase().endsWith("xml")) {
+              if (file.getFileName().toString().toLowerCase(Locale.ROOT).endsWith("xml")) {
                 loadMap(file);
               } else {
                 // try to load it as a saved game whatever the extension

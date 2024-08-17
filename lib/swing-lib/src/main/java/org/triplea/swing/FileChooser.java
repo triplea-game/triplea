@@ -6,14 +6,16 @@ import java.awt.Frame;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import lombok.Builder;
+import org.jetbrains.annotations.NonNls;
 
 @Builder
 public class FileChooser {
-  private static final String PERIOD = ".";
+  @NonNls private static final String PERIOD = ".";
 
   @Nullable private Frame parent;
   @Nullable private String title;
@@ -81,8 +83,8 @@ public class FileChooser {
     final String extensionWithLeadingPeriod = extensionWithLeadingPeriod(extension);
     if (file.getFileName()
         .toString()
-        .toLowerCase()
-        .endsWith(extensionWithLeadingPeriod.toLowerCase())) {
+        .toLowerCase(Locale.ROOT)
+        .endsWith(extensionWithLeadingPeriod.toLowerCase(Locale.ROOT))) {
       return file;
     }
 

@@ -22,12 +22,13 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.util.FileNameUtils;
 
 /** Loads unit icons from unit_icons.properties. */
 @Slf4j
 public final class UnitIconProperties {
-  private static final String PROPERTY_FILE = "unit_icons.properties";
+  @NonNls private static final String PROPERTY_FILE = "unit_icons.properties";
 
   private final Properties properties;
   private Map<ICondition, Boolean> conditionsStatus = new HashMap<>();

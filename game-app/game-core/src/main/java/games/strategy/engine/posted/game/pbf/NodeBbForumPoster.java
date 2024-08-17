@@ -25,6 +25,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.yaml.YamlReader;
 
@@ -35,8 +36,10 @@ import org.triplea.yaml.YamlReader;
  */
 public class NodeBbForumPoster {
 
+  @NonNls
   public static final String AXIS_AND_ALLIES_ORG_DISPLAY_NAME = "www.axisandallies.org/forums/";
-  public static final String TRIPLEA_FORUM_DISPLAY_NAME = "forums.triplea-game.org";
+
+  @NonNls public static final String TRIPLEA_FORUM_DISPLAY_NAME = "forums.triplea-game.org";
 
   private final int topicId;
   private final String token;

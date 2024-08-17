@@ -18,14 +18,15 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** A game player (nation, power, etc.). */
 public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
 
-  private static final String DEFAULT_TYPE_AI = "AI";
-  private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
+  @NonNls private static final String DEFAULT_TYPE_AI = "AI";
+  @NonNls private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
 
   @RemoveOnNextMajorRelease @Deprecated
   private static final GamePlayer NULL_PLAYERID =
@@ -127,12 +128,12 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   }
 
   /**
-   * First string is "Human" or "AI" or "null" (case insensitive), while second string is the name
+   * First string is "Human" or "AI" or "null" (case-insensitive), while second string is the name
    * of the player, separated with a colon. For example, it could be "AI:Hard (AI)".
    *
    * @throws IllegalArgumentException If {@code encodedType} does not contain two strings separated
-   *     by a colon; or if the first string is not one of "AI", "Human", or "null" (case
-   *     insensitive).
+   *     by a colon; or if the first string is not one of "AI", "Human", or "null"
+   *     (case-insensitive).
    */
   public void setWhoAmI(final String encodedType) {
     final List<String> tokens = tokenizeEncodedType(encodedType);

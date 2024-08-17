@@ -51,7 +51,7 @@ public abstract class I18nResourceBundle {
   }
 
   /*
-   * @param number Number to be language-dependent converted to string
+   * @param long number to be language-dependently converted to string
    * @return Language-dependent string for number
    */
   /*public static String convToText(final long number) {
@@ -59,14 +59,14 @@ public abstract class I18nResourceBundle {
   }*/
 
   /*
-   * @param date Date to be language-dependent converted to string
+   * @param date to be language-dependently converted to string
    * @return Language-dependent string for date
    */
   /*public static String convToText(final Date date) {
     return convToText(date, DateFormat.SHORT);
   }*/
   /*
-   * @param date Date to be language-dependent converted to string
+   * @param date to be language-dependently converted to string
    * @param style Date formatting style to be used
    * @return Language-dependent string for date
    */

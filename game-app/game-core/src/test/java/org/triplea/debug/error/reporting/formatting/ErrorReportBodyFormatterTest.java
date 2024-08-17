@@ -8,6 +8,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,7 +19,7 @@ import org.triplea.util.Version;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportBodyFormatterTest {
-  private static final String SAMPLE_USER_DESCRIPTION = "Pol, a bene vortex";
+  @NonNls private static final String SAMPLE_USER_DESCRIPTION = "Pol, a bene vortex";
   private static final String LOG_MESSAGE =
       "LogMessage, Golly gosh, yer not drinking me without a desolation!";
   private static final Exception EXCEPTION_WITH_MESSAGE =

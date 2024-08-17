@@ -32,13 +32,14 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.config.product.ProductVersionReader;
 
 /** A pbem dice roller that reads its configuration from a properties file. */
 @Builder
 public final class MartiDiceRoller implements IRemoteDiceServer {
   private static final int MESSAGE_MAX_LENGTH = 200;
-  private static final String DICE_ROLLER_PATH = "/MARTI.php";
+  @NonNls private static final String DICE_ROLLER_PATH = "/MARTI.php";
 
   private final Pattern errorPattern = Pattern.compile("fatal error:(.*)!");
 
@@ -72,8 +73,8 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
   public String postRequest(
       final int max, final int numDice, final String subjectMessage, final String gameId)
       throws IOException {
-    final String normalizedGameId = gameId.isBlank() ? "TripleA" : gameId;
-    String message = normalizedGameId + ":" + subjectMessage;
+    @NonNls final String normalizedGameId = gameId.isBlank() ? "TripleA" : gameId;
+    @NonNls String message = normalizedGameId + ":" + subjectMessage;
     if (message.length() > MESSAGE_MAX_LENGTH) {
       message = message.substring(0, MESSAGE_MAX_LENGTH - 1);
     }

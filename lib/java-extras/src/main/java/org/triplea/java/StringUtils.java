@@ -9,6 +9,7 @@ import com.google.common.primitives.Ints;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import lombok.experimental.UtilityClass;
 
 /** A collection of useful methods for working with instances of {@link String}. */
@@ -23,7 +24,9 @@ public final class StringUtils {
   public static String capitalize(final String value) {
     checkNotNull(value);
 
-    return value.isEmpty() ? value : (value.substring(0, 1).toUpperCase() + value.substring(1));
+    return value.isEmpty()
+        ? value
+        : (value.substring(0, 1).toUpperCase(Locale.ENGLISH) + value.substring(1));
   }
 
   /**

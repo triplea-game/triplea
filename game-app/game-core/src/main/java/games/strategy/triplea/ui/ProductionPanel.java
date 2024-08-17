@@ -38,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
@@ -404,7 +405,7 @@ class ProductionPanel extends JPanel {
       final ScrollableTextField textField = new ScrollableTextField(0, Integer.MAX_VALUE);
       textField.setValue(quantity);
 
-      final String toolTipText = "<html>" + tooltip + "</html>";
+      @NonNls final String toolTipText = "<html>" + tooltip + "</html>";
       info.setToolTipText(toolTipText);
       label.setToolTipText(toolTipText);
 

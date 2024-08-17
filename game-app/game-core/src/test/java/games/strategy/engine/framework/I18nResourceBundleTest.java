@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 
 class I18nResourceBundleTest {
-  private static final String resourcePath = "propertyTest";
+  @NonNls private static final String resourcePath = "propertyTest";
   private static final int maxTextMatchLengthWithEn = 10;
 
   @NonNls
@@ -96,7 +96,7 @@ class I18nResourceBundleTest {
                   assert !enString.equals(langString)
                       : errorTextNotTranslated(bundle, locale.toString(), key);
                 }
-                assert 0 != langString.length()
+                assert !langString.isEmpty()
                     : errorTextNotTranslated(bundle, locale.toString(), key);
               } catch (final MissingResourceException e) {
                 assertNotNull(e);

@@ -11,6 +11,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
 import java.net.InetSocketAddress;
 import java.util.Set;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +27,7 @@ class PlayerDisconnectActionTest {
   private static final INode NODE_1 =
       new Node("node-1", InetSocketAddress.createUnresolved("99.99.99.100", 5000));
 
-  private static final String NODE_2_NAME = "node-2";
+  @NonNls private static final String NODE_2_NAME = "node-2";
   private static final INode NODE_2 =
       new Node(NODE_2_NAME + " (2)", InetSocketAddress.createUnresolved("2.2.2.2", 8000));
 

@@ -56,6 +56,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.util.ExitStatus;
@@ -63,8 +64,10 @@ import org.triplea.util.ExitStatus;
 /** Implementation of {@link IGame} for a network server node. */
 @Slf4j
 public class ServerGame extends AbstractGame {
+  @NonNls
   public static final String GAME_HAS_BEEN_SAVED_PROPERTY =
       "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
+
   static final RemoteName SERVER_REMOTE =
       new RemoteName(
           "games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
@@ -670,7 +673,7 @@ public class ServerGame extends AbstractGame {
 
       final GamePlayer p = data.getPlayerList().getPlayerId(player.getName());
       final boolean isAi = player.isAi();
-      final String newWhoAmI = (isAi ? "AI" : "Human") + ":" + player.getPlayerLabel();
+      @NonNls final String newWhoAmI = (isAi ? "AI" : "Human") + ":" + player.getPlayerLabel();
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
       }

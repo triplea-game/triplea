@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,7 +22,7 @@ import org.triplea.test.common.swing.SwingComponentWrapper;
 @ExtendWith(DisabledInHeadlessGraphicsEnvironment.class)
 @ExtendWith(MockitoExtension.class)
 class JFrameBuilderTest {
-  private static final String TITLE = "A falsis, finis secundus quadra.";
+  @NonNls private static final String TITLE = "A falsis, finis secundus quadra.";
   private static final int WIDTH = 100;
   private static final int HEIGHT = 1000;
 

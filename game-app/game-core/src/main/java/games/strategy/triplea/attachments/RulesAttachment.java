@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
@@ -283,7 +284,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (relationship == null) {
       relationship = new ArrayList<>();
     }
-    String str = (s.length == 3) ? (value + ":-1") : value;
+    @NonNls String str = (s.length == 3) ? (value + ":-1") : value;
     relationship.add(str.intern());
   }
 
