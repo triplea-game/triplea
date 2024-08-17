@@ -379,10 +379,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   /**
-   * @deprecated This is a very slow method because it checks all territories on the map. Try not to
-   *     use this method if possible.
+   * Try not to use this method if possible.
+   *
    * @return Unmodifiable collection of units that this unit is transporting in the same territory
    *     it is located in
+   * @deprecated This is a very slow method because it checks all territories on the map.
    */
   @Deprecated
   public List<Unit> getTransporting() {

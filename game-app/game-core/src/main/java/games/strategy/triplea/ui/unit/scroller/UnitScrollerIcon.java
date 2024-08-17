@@ -19,8 +19,7 @@ class UnitScrollerIcon implements Supplier<Icon> {
   static final UnitScrollerIcon SKIP = new UnitScrollerIcon("skip.png");
   static final UnitScrollerIcon WAKE_ALL = new UnitScrollerIcon("wake_all.png");
 
-  @NonNls
-  private static final String UNIT_SCROLLER_IMAGES_FOLDER = "unit_scroller";
+  @NonNls private static final String UNIT_SCROLLER_IMAGES_FOLDER = "unit_scroller";
 
   private final String imageFile;
 

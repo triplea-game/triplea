@@ -23,8 +23,7 @@ import org.triplea.java.collections.IntegerMap;
  * serialization size.
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
-  @NonNls
-  public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
+  @NonNls public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
   private static final long serialVersionUID = 3569461523853104614L;
 
   /**

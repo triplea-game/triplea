@@ -221,6 +221,8 @@ final class AutoCompletion<E> extends PlainDocument {
   }
 
   private static String normalize(final String str) {
-    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{M}", "").toUpperCase(Locale.ROOT);
+    return Normalizer.normalize(str, Normalizer.Form.NFD)
+        .replaceAll("\\p{M}", "")
+        .toUpperCase(Locale.ROOT);
   }
 }

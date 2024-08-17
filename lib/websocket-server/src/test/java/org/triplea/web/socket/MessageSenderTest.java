@@ -23,8 +23,7 @@ class MessageSenderTest {
   private static final MessageEnvelope MESSAGE_ENVELOPE =
       new StringMessage("message!").toEnvelope();
 
-  @NonNls
-  private static final String SERVER_MESSAGE_JSON = new Gson().toJson(MESSAGE_ENVELOPE);
+  @NonNls private static final String SERVER_MESSAGE_JSON = new Gson().toJson(MESSAGE_ENVELOPE);
 
   @Mock private WebSocketSession session;
 

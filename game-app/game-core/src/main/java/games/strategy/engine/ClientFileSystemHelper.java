@@ -20,8 +20,7 @@ import org.triplea.util.Services;
 /** Provides methods to work with common file locations in a client installation. */
 @Slf4j
 public final class ClientFileSystemHelper {
-  @NonNls
-  public static final String USER_ROOT_FOLDER_NAME = "triplea";
+  @NonNls public static final String USER_ROOT_FOLDER_NAME = "triplea";
 
   @VisibleForTesting static final String MAPS_FOLDER_NAME = "downloadedMaps";
   private static Path codeSourceLocation;
