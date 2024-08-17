@@ -8,6 +8,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.Normalizer;
+import java.util.Locale;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -220,6 +221,6 @@ final class AutoCompletion<E> extends PlainDocument {
   }
 
   private static String normalize(final String str) {
-    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{M}", "").toUpperCase();
+    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{M}", "").toUpperCase(Locale.ROOT);
   }
 }

@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -47,10 +48,12 @@ class PropertyValueTypeInferenceTest {
   @ValueSource(booleans = {true, false})
   void inferNumberValues(final boolean value) {
     assertThat(
-        PropertyValueTypeInference.castToInferredType(String.valueOf(value).toLowerCase()),
+        PropertyValueTypeInference.castToInferredType(
+            String.valueOf(value).toLowerCase(Locale.ROOT)),
         is(value));
     assertThat(
-        PropertyValueTypeInference.castToInferredType(String.valueOf(value).toUpperCase()),
+        PropertyValueTypeInference.castToInferredType(
+            String.valueOf(value).toUpperCase(Locale.ROOT)),
         is(value));
   }
 

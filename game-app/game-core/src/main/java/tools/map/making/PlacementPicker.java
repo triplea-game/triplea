@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -267,7 +268,7 @@ public final class PlacementPicker {
         try {
           final String result = getUnitsScale();
           try {
-            unitZoomPercent = Double.parseDouble(result.toLowerCase());
+            unitZoomPercent = Double.parseDouble(result.toLowerCase(Locale.ROOT));
           } catch (final NumberFormatException ex) {
             // ignore malformed input
           }
@@ -335,7 +336,7 @@ public final class PlacementPicker {
       image = FileHelper.newImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
       /*
-       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
+       * Add a mouse listener to show X : Y coordinates in the lower left corner of the screen.
        */
       imagePanel.addMouseMotionListener(
           new MouseMotionAdapter() {

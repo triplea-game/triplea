@@ -2,8 +2,10 @@ package org.triplea.swing;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Locale;
 import javax.swing.JTable;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NonNls;
 
 /** A KeyListener that implements row selection in a JTable by prefix-matching typed text. */
 @RequiredArgsConstructor
@@ -14,7 +16,7 @@ public class JTableTypeAheadListener extends KeyAdapter {
   // Column that contains text data that should be matched.
   private final int columnIndex;
 
-  private String inputString = "";
+  @NonNls String inputString = "";
   private long keyPressTime;
 
   @Override
@@ -36,8 +38,8 @@ public class JTableTypeAheadListener extends KeyAdapter {
     final int selectedRow = table.getSelectedRow();
     for (int i = 0; i < rowCount; i++) {
       int row = (selectedRow + i) % rowCount;
-      String str = "" + tableModel.getValueAt(row, columnIndex);
-      if (str.toLowerCase().startsWith(inputString)) {
+      @NonNls String str = "" + tableModel.getValueAt(row, columnIndex);
+      if (str.toLowerCase(Locale.ROOT).startsWith(inputString)) {
         selectRow(row);
         break;
       }

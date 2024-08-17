@@ -86,10 +86,15 @@ public class MapData {
 
   @NonNls public static final String POLYGON_FILE = "polygons.txt";
 
-  private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
+  @NonNls private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
+
+  @NonNls
   private static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
       "smallMap.territory.saturation";
+
   @NonNls private static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
+
+  @NonNls
   private static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR =
       "smallMap.viewer.borderColor";
 

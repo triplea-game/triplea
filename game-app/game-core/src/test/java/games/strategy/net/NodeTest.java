@@ -4,14 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.net.InetSocketAddress;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.IpAddressParser;
 
 class NodeTest {
 
-  private static final String NAME = "name";
-  private static final String IP = "99.99.99.99";
+  @NonNls private static final String NAME = "name";
+  @NonNls private static final String IP = "99.99.99.99";
   private static final int PORT = 3000;
 
   @Test

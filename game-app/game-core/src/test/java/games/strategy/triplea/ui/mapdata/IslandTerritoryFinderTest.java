@@ -17,10 +17,10 @@ import tools.util.ToolsUtil;
 
 final class IslandTerritoryFinderTest {
 
-  private static final String SEA_TERR = ToolsUtil.TERRITORY_SEA_ZONE_INFIX;
+  @NonNls private static final String SEA_TERR = ToolsUtil.TERRITORY_SEA_ZONE_INFIX;
   @NonNls private static final String SEA_TERR_1 = ToolsUtil.TERRITORY_SEA_ZONE_INFIX + " 1";
-  private static final String LAND_TERR = "Land";
-  private static final String LAND_TERR_1 = "Land 1";
+  @NonNls private static final String LAND_TERR = "Land";
+  @NonNls private static final String LAND_TERR_1 = "Land 1";
 
   private final Polygon inner = new Polygon();
   private final Polygon adjacentInner = new Polygon();

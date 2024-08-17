@@ -223,7 +223,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static String normalizeName(final String mapName) {
-    return mapName.replace(' ', '_').toLowerCase();
+    return mapName.replace(' ', '_').toLowerCase(Locale.ROOT);
   }
 
   private JTabbedPane newAvailableInstalledTabbedPanel(

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import games.strategy.net.TempPasswordHistory;
 import java.net.InetAddress;
 import java.util.function.Predicate;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ForgotPasswordConversationTest {
-  private static final String USERNAME = "username";
+  @NonNls private static final String USERNAME = "username";
 
   @Mock private Predicate<String> forgotPasswordModule;
   @Mock private TempPasswordHistory tempPasswordHistory;

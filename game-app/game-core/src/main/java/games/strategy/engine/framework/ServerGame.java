@@ -64,8 +64,10 @@ import org.triplea.util.ExitStatus;
 /** Implementation of {@link IGame} for a network server node. */
 @Slf4j
 public class ServerGame extends AbstractGame {
+  @NonNls
   public static final String GAME_HAS_BEEN_SAVED_PROPERTY =
       "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
+
   static final RemoteName SERVER_REMOTE =
       new RemoteName(
           "games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);

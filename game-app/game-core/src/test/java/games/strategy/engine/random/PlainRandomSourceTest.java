@@ -10,9 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
+
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 
 final class PlainRandomSourceTest {
+  @NonNls
   private static final String ANNOTATION = "annotation";
   private static final int MAX = 6;
 

@@ -39,7 +39,7 @@ import org.triplea.config.product.ProductVersionReader;
 @Builder
 public final class MartiDiceRoller implements IRemoteDiceServer {
   private static final int MESSAGE_MAX_LENGTH = 200;
-  private static final String DICE_ROLLER_PATH = "/MARTI.php";
+  @NonNls private static final String DICE_ROLLER_PATH = "/MARTI.php";
 
   private final Pattern errorPattern = Pattern.compile("fatal error:(.*)!");
 

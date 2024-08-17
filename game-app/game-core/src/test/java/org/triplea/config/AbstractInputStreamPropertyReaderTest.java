@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.function.ThrowingSupplier;
@@ -18,7 +19,7 @@ import org.triplea.java.function.ThrowingSupplier;
 final class AbstractInputStreamPropertyReaderTest {
   @Nested
   final class ReadPropertyInternalTest {
-    private static final String PROPERTY_SOURCE_NAME = "propertySourceName";
+    @NonNls private static final String PROPERTY_SOURCE_NAME = "propertySourceName";
 
     private AbstractInputStreamPropertyReader newAbstractInputStreamPropertyReader(
         final ThrowingSupplier<InputStream, FileNotFoundException> inputStreamSupplier) {

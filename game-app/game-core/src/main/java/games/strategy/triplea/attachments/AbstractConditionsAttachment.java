@@ -33,13 +33,13 @@ import org.jetbrains.annotations.NonNls;
  * collection fields default to null to minimize memory use and serialization size.
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
-  public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
-  public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
-  protected static final String AND = "AND";
-  protected static final String OR = "OR";
+  public static final @NonNls String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
+  public static final @NonNls String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
+  @NonNls protected static final String AND = "AND";
+  @NonNls protected static final String OR = "OR";
   private static final Pattern CONDITION_REGEX = Pattern.compile("AND|OR|\\d+(?:-\\d+)?");
-  protected static final String DEFAULT_CHANCE = "1:1";
-  protected static final String CHANCE = "chance";
+  @NonNls protected static final String DEFAULT_CHANCE = "1:1";
+  protected static final @NonNls String PROPERTY_CHANCE = "chance";
   private static final long serialVersionUID = -9008441256118867078L;
   private static final Splitter HYPHEN_SPLITTER = Splitter.on('-');
 
@@ -337,7 +337,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                   + MyFormatter.attachmentNameToText(getName())
                   + " to "
                   + newChance);
-      delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
+      delegateBridge.addChange(
+          ChangeFactory.attachmentPropertyChange(this, newChance, PROPERTY_CHANCE));
     } else {
       if (chanceIncrementOnFailure == 0) {
         return;
@@ -366,7 +367,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                     + " to "
                     + newChance);
       }
-      delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
+      delegateBridge.addChange(
+          ChangeFactory.attachmentPropertyChange(this, newChance, PROPERTY_CHANCE));
     }
   }
 
@@ -382,7 +384,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       case "invert":
         return MutableProperty.ofMapper(
             DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false);
-      case CHANCE:
+      case PROPERTY_CHANCE:
         return MutableProperty.ofString(this::setChance, this::getChance, this::resetChance);
       case "chanceIncrementOnFailure":
         return MutableProperty.ofMapper(

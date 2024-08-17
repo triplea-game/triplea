@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.Postconditions;
 
 @UtilityClass
@@ -18,7 +19,8 @@ class TestDataFileLister {
    * @param folderName Name of the folder in 'test/resources'
    * @return List of all files located in specified folder.
    */
-  Collection<Path> listFilesInTestResourcesDirectory(final String folderName) throws IOException {
+  Collection<Path> listFilesInTestResourcesDirectory(final @NonNls String folderName)
+      throws IOException {
     return Files.list(findFilesInFolder(folderName))
         .sorted(Comparator.comparing(Path::getFileName, Comparator.comparing(Path::toString)))
         .collect(Collectors.toList());

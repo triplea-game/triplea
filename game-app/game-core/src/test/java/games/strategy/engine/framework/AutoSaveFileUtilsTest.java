@@ -30,7 +30,7 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
 
   @Nested
   final class GetAutoSaveFileNameTest {
-    private static final String BASE_FILE_NAME = "baseFileName";
+    @NonNls private static final String BASE_FILE_NAME = "baseFileName";
 
     @Test
     void shouldNotPrefixFileNameWhenHeaded() {

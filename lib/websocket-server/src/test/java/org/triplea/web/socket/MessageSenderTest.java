@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,6 +23,7 @@ class MessageSenderTest {
   private static final MessageEnvelope MESSAGE_ENVELOPE =
       new StringMessage("message!").toEnvelope();
 
+  @NonNls
   private static final String SERVER_MESSAGE_JSON = new Gson().toJson(MESSAGE_ENVELOPE);
 
   @Mock private WebSocketSession session;

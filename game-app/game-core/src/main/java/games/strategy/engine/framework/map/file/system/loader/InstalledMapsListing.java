@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -115,7 +116,7 @@ public class InstalledMapsListing {
   }
 
   private static String normalizeName(final String mapName) {
-    return mapName.toLowerCase().replaceAll("[_ -]", "");
+    return mapName.toLowerCase(Locale.ROOT).replaceAll("[_ -]", "");
   }
 
   /**

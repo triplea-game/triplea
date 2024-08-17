@@ -134,10 +134,10 @@ final class InGameLobbyWatcherTest {
 
   @Nested
   final class GetLobbySystemPropertyTest {
-    private static final String KEY = "__GetLobbySystemPropertyTest__key";
+    @NonNls private static final String KEY = "__GetLobbySystemPropertyTest__key";
     @NonNls private static final String BACKUP_KEY = KEY + ".backup";
-    private static final String VALUE = "primaryValue";
-    private static final String BACKUP_VALUE = "backupValue";
+    @NonNls private static final String VALUE = "primaryValue";
+    @NonNls private static final String BACKUP_VALUE = "backupValue";
 
     @AfterEach
     void clearSystemProperties() {

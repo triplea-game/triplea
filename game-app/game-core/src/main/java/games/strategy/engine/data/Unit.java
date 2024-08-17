@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -40,16 +41,16 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   @NonNls public static final String ALREADY_MOVED = "alreadyMoved";
   @NonNls public static final String BONUS_MOVEMENT = "bonusMovement";
   @NonNls public static final String SUBMERGED = "submerged";
-  public static final String WAS_IN_COMBAT = "wasInCombat";
-  public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
-  public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
-  public static final String ORIGINATED_FROM = "originatedFrom";
-  public static final String WAS_SCRAMBLED = "wasScrambled";
-  public static final String MAX_SCRAMBLE_COUNT = "maxScrambleCount";
-  public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
-  public static final String LAUNCHED = "launched";
-  public static final String AIRBORNE = "airborne";
-  public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
+  @NonNls public static final String WAS_IN_COMBAT = "wasInCombat";
+  @NonNls public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
+  @NonNls public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
+  @NonNls public static final String ORIGINATED_FROM = "originatedFrom";
+  @NonNls public static final String WAS_SCRAMBLED = "wasScrambled";
+  @NonNls public static final String MAX_SCRAMBLE_COUNT = "maxScrambleCount";
+  @NonNls public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
+  @NonNls public static final String LAUNCHED = "launched";
+  @NonNls public static final String AIRBORNE = "airborne";
+  @NonNls public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
 
   private static final long serialVersionUID = -79061939642779999L;
 
@@ -223,7 +224,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(@NonNls String propertyName) {
     switch (propertyName) {
       case "owner":
         return MutableProperty.ofSimple(this::setOwner, this::getOwner);
@@ -233,49 +234,49 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         return MutableProperty.ofSimple(this::setHits, this::getHits);
       case "type":
         return MutableProperty.ofReadOnlySimple(this::getType);
-      case "transportedBy":
+      case TRANSPORTED_BY:
         return MutableProperty.ofSimple(this::setTransportedBy, this::getTransportedBy);
-      case "unloaded":
+      case UNLOADED:
         return MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded);
-      case "wasLoadedThisTurn":
+      case LOADED_THIS_TURN:
         return MutableProperty.ofSimple(this::setWasLoadedThisTurn, this::getWasLoadedThisTurn);
-      case "unloadedTo":
+      case UNLOADED_TO:
         return MutableProperty.ofSimple(this::setUnloadedTo, this::getUnloadedTo);
-      case "wasUnloadedInCombatPhase":
+      case UNLOADED_IN_COMBAT_PHASE:
         return MutableProperty.ofSimple(
             this::setWasUnloadedInCombatPhase, this::getWasUnloadedInCombatPhase);
-      case "alreadyMoved":
+      case ALREADY_MOVED:
         return MutableProperty.ofSimple(this::setAlreadyMoved, this::getAlreadyMoved);
-      case "bonusMovement":
+      case BONUS_MOVEMENT:
         return MutableProperty.ofSimple(this::setBonusMovement, this::getBonusMovement);
       case "unitDamage":
         return MutableProperty.ofSimple(this::setUnitDamage, this::getUnitDamage);
-      case "submerged":
+      case SUBMERGED:
         return MutableProperty.ofSimple(this::setSubmerged, this::getSubmerged);
-      case "originalOwner":
+      case Constants.ORIGINAL_OWNER:
         return MutableProperty.ofSimple(this::setOriginalOwner, this::getOriginalOwner);
-      case "wasInCombat":
+      case WAS_IN_COMBAT:
         return MutableProperty.ofSimple(this::setWasInCombat, this::getWasInCombat);
-      case "wasLoadedAfterCombat":
+      case LOADED_AFTER_COMBAT:
         return MutableProperty.ofSimple(
             this::setWasLoadedAfterCombat, this::getWasLoadedAfterCombat);
-      case "wasAmphibious":
+      case UNLOADED_AMPHIBIOUS:
         return MutableProperty.ofSimple(this::setWasAmphibious, this::getWasAmphibious);
-      case "originatedFrom":
+      case ORIGINATED_FROM:
         return MutableProperty.ofSimple(this::setOriginatedFrom, this::getOriginatedFrom);
-      case "wasScrambled":
+      case WAS_SCRAMBLED:
         return MutableProperty.ofSimple(this::setWasScrambled, this::getWasScrambled);
-      case "maxScrambleCount":
+      case MAX_SCRAMBLE_COUNT:
         return MutableProperty.ofSimple(this::setMaxScrambleCount, this::getMaxScrambleCount);
-      case "wasInAirBattle":
+      case WAS_IN_AIR_BATTLE:
         return MutableProperty.ofSimple(this::setWasInAirBattle, this::getWasInAirBattle);
       case "disabled":
         return MutableProperty.ofSimple(this::setDisabled, this::getDisabled);
-      case "launched":
+      case LAUNCHED:
         return MutableProperty.ofSimple(this::setLaunched, this::getLaunched);
-      case "airborne":
+      case AIRBORNE:
         return MutableProperty.ofSimple(this::setAirborne, this::getAirborne);
-      case "chargedFlatFuelCost":
+      case CHARGED_FLAT_FUEL_COST:
         return MutableProperty.ofSimple(this::setChargedFlatFuelCost, this::getChargedFlatFuelCost);
       default:
         return null;
@@ -378,9 +379,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   /**
-   * This is a very slow method because it checks all territories on the map. Try not to use this
-   * method if possible.
-   *
+   * @deprecated This is a very slow method because it checks all territories on the map. Try not to
+   *     use this method if possible.
    * @return Unmodifiable collection of units that this unit is transporting in the same territory
    *     it is located in
    */
@@ -489,11 +489,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   /**
-   * Avoid calling this method, it checks every territory on the map. To undeprecate we should
+   * Avoid calling this method, it checks every territory on the map. To avoid deprecation we should
    * optimize this to halt on the first territory we have found with a transporting unit, or
    * otherwise optimize this to not check every territory.
    *
-   * @deprecated Avoid callling this method, it calls {@link #getTransporting()} which is slow and
+   * @deprecated Avoid calling this method, it calls {@link #getTransporting()} which is slow and
    *     needs optimization.
    */
   @Deprecated

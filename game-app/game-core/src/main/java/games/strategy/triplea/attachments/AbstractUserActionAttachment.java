@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -22,6 +23,7 @@ import org.triplea.java.collections.IntegerMap;
  * serialization size.
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
+  @NonNls
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
   private static final long serialVersionUID = 3569461523853104614L;
 

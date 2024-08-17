@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +30,7 @@ class ParseGameXmlsTest {
   @SuppressWarnings("unused")
   static Collection<Path> parseGameFiles() throws IOException {
     return TestDataFileLister.listFilesInTestResourcesDirectory("map-xmls").stream()
-        .sorted(Comparator.comparing(file -> file.getFileName().toString().toUpperCase()))
+        .sorted(Comparator.comparing(file -> file.getFileName().toString().toUpperCase(Locale.ROOT)))
         .collect(Collectors.toList());
   }
 }

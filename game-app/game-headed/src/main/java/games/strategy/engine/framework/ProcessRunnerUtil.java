@@ -8,9 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 
 /** To hold various static utility methods for running a java program. */
 @Slf4j
@@ -18,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 class ProcessRunnerUtil {
 
   public static List<String> createBasicJavaArgs() {
-    List<String> commands = new ArrayList<>();
+    @NonNls List<String> commands = new ArrayList<>();
 
     String javaCommand = Path.of(SystemProperties.getJavaHome(), "bin", "java").toString();
     commands.add(javaCommand);
@@ -27,13 +29,13 @@ class ProcessRunnerUtil {
 
     Optional<String> maxMemory =
         ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-            .filter(s -> s.toLowerCase().startsWith("-xmx"))
+            .filter(s -> s.toLowerCase(Locale.ROOT).startsWith("-xmx"))
             .map(s -> s.substring(4))
             .findFirst();
     maxMemory.ifPresent(max -> commands.add("-Xmx" + max));
     Optional<String> maxStackSize =
         ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-            .filter(s -> s.toLowerCase().startsWith("-xss"))
+            .filter(s -> s.toLowerCase(Locale.ROOT).startsWith("-xss"))
             .findFirst();
     maxStackSize.ifPresent(commands::add);
     if (SystemProperties.isMac()) {
