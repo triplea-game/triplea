@@ -29,7 +29,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   @NonNls private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
 
   @RemoveOnNextMajorRelease @Deprecated
-  private static final GamePlayer NULL_PLAYERID =
+  private static final GamePlayer NULL_GAME_PLAYER =
       // Kept for save game compatibility, or we'll get a class not found error loading neutrals.
       new GamePlayer(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
         private static final long serialVersionUID = -6596127754502509049L;
@@ -50,7 +50,12 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   @Getter private ProductionFrontier productionFrontier;
   @Getter private RepairFrontier repairFrontier;
   private final TechnologyFrontierList technologyFrontiers;
-  @Getter private String whoAmI = "null:no_one";
+
+  @Getter
+  private String whoAmI =
+      // @TODO why : separation, no_one also used in ServerSetupPanel; create constant
+      "null:" + "no_one";
+
   private TechAttachment techAttachment;
 
   public GamePlayer(final String name, final GameData data) {
@@ -171,8 +176,8 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   }
 
   /**
-   * If I have no units with movement, And I own zero factories or have have no owned land, then I
-   * am basically dead, and therefore should not participate in things like politics.
+   * If I have no units with movement and I own zero factories or have no owned land, then I am
+   * basically dead, and therefore should not participate in things like politics.
    */
   public boolean amNotDeadYet() {
     for (final Territory t : getData().getMap().getTerritories()) {

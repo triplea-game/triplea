@@ -11,7 +11,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NonNls;
 
 /**
- * This is the main i18n (internationalization) class to retrieve langauge dependent outputs. The
+ * This is the main i18n (internationalization) class to retrieve language dependent outputs. The
  * subclasses of this class should implement a singleton pattern and define the path to the resource
  * property file(s).
  */

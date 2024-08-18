@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.framework.HtmlUtils;
+import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import java.awt.BorderLayout;
@@ -40,13 +42,23 @@ public class MainPanel extends JPanel {
 
   private final JButton playButton =
       new JButtonBuilder()
-          .title("Play")
+          .title(I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Lbl"))
           .toolTip(
-              "<html>Start your game! <br>"
-                  + "If not enabled, then you must select a way to play your game first: <br>"
-                  + "Play Online, or Local Game, or PBEM, or Host Networked.</html>")
+              HtmlUtils.getHtml()
+                  .addText(
+                      I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Tltp.line1"))
+                  .lineBreak()
+                  .addText(
+                      I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Tltp.line2"))
+                  .lineBreak()
+                  .addText(
+                      I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Tltp.line3"))
+                  .toString())
           .build();
-  private final JButton cancelButton = new JButtonBuilder().title("Cancel").build();
+  private final JButton cancelButton =
+      new JButtonBuilder()
+          .title(I18nEngineFramework.get().getText("startup.MainPanel.btn.Cancel.Lbl"))
+          .build();
 
   private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel mainPanel;
@@ -104,8 +116,8 @@ public class MainPanel extends JPanel {
 
     final JButton quitButton =
         new JButtonBuilder()
-            .title("Quit")
-            .toolTip("Close TripleA.")
+            .title(I18nEngineFramework.get().getText("startup.MainPanel.btn.Quit.Lbl"))
+            .toolTip(I18nEngineFramework.get().getText("startup.MainPanel.btn.Quit.Tltp"))
             .actionListener(quitAction)
             .build();
     final JPanel buttonsPanel =
@@ -171,7 +183,8 @@ public class MainPanel extends JPanel {
 
   private static void createUserActionMenu(final JPanel cancelPanel, final List<Action> actions) {
     // if we need this for something other than network, add a way to set it
-    final JButton button = new JButton("Network...");
+    final JButton button =
+        new JButton(I18nEngineFramework.get().getText("startup.MainPanel.btn.Network.Lbl"));
     button.addActionListener(
         e -> {
           final JPopupMenu menu = new JPopupMenu();

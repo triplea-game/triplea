@@ -13,4 +13,8 @@ public class HtmlUtils {
   public static String getHtml(final String text) {
     return "<html>" + text + "</html>";
   }
+
+  public static HtmlBuilder getHtml() {
+    return new HtmlBuilder();
+  }
 }
