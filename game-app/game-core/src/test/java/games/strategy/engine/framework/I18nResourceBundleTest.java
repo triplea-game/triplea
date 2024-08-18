@@ -90,7 +90,7 @@ class I18nResourceBundleTest {
               try {
                 final String langString = bundle.getString(key);
                 @NonNls final String enString = bundleEn.getString(key);
-                if (enString.length() >= maxTextMatchLengthWithEn) {
+                if (enString.length() <= maxTextMatchLengthWithEn) {
                   continue; // too short to assume translation is missing from matching strings
                 } else {
                   assert !enString.equals(langString)

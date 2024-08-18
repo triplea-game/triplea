@@ -1,5 +1,7 @@
 package games.strategy.engine.data.gameparser;
 
+import static games.strategy.engine.framework.startup.ui.PlayerTypes.PLAYER_TYPE_HUMAN_LABEL;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -419,7 +421,8 @@ public final class GameParser {
                             current.getName(),
                             Optional.ofNullable(current.getOptional()).orElse(false),
                             Optional.ofNullable(current.getCanBeDisabled()).orElse(false),
-                            Optional.ofNullable(current.getDefaultType()).orElse("Human"),
+                            Optional.ofNullable(current.getDefaultType())
+                                .orElse(PLAYER_TYPE_HUMAN_LABEL),
                             Optional.ofNullable(current.getIsHidden()).orElse(false),
                             data)));
   }

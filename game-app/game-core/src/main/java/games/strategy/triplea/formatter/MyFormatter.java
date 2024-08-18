@@ -408,7 +408,7 @@ public class MyFormatter {
   }
 
   /**
-   * Adds HTML line breaks and indentation to a string so it wraps for things like long tooltips.
+   * Adds HTML line breaks and indentation to a string, so it wraps for things like long tooltips.
    *
    * <pre>
    * string part 1
