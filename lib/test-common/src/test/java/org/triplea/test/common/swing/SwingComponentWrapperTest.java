@@ -3,12 +3,13 @@ package org.triplea.test.common.swing;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class SwingComponentWrapperTest {
 
-  private static final String CHILD_NAME = "child_name";
+  @NonNls private static final String CHILD_NAME = "child_name";
 
   @Test
   void findChildByName() {

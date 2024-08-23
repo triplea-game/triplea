@@ -5,6 +5,7 @@ import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtracto
 import java.io.IOException;
 import java.nio.file.Path;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.java.ThreadRunner;
@@ -50,7 +51,7 @@ final class DownloadFile {
             return;
           }
 
-          final String fileNameToWrite = normalizeMapName(download.getMapName()) + ".zip";
+          @NonNls final String fileNameToWrite = normalizeMapName(download.getMapName()) + ".zip";
 
           final Path targetTempFileToDownloadTo =
               FileUtils.newTempFolder().resolve(fileNameToWrite);

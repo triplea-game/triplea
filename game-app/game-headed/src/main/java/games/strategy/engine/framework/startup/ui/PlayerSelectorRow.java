@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
 import games.strategy.triplea.Constants;
@@ -36,7 +37,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   private boolean enabled = true;
   private final JLabel name;
   private JButton alliances;
-  private final Collection<String> disableable;
+  private final Collection<String> playersThatMayBeDisabled;
   private final SetupPanel parent;
   private final PlayerTypes playerTypesProvider;
 
@@ -44,13 +45,13 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
       final List<PlayerSelectorRow> playerRows,
       final GamePlayer player,
       final Map<String, String> reloadSelections,
-      final Collection<String> disableable,
+      final Collection<String> playersThatMayBeDisabled,
       final Map<String, Boolean> playersEnablementListing,
       final Collection<String> playerAlliances,
       final SetupPanel parent,
       final GameProperties gameProperties,
       final PlayerTypes playerTypes) {
-    this.disableable = disableable;
+    this.playersThatMayBeDisabled = playersThatMayBeDisabled;
     this.parent = parent;
     playerName = player.getName();
     this.player = player;
@@ -76,11 +77,11 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
         };
     enabledCheckBox.addActionListener(disablePlayerActionListener);
     enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
-    enabledCheckBox.setEnabled(disableable.contains(playerName));
+    enabledCheckBox.setEnabled(playersThatMayBeDisabled.contains(playerName));
 
     this.playerTypes = new JComboBox<>(this.playerTypesProvider.getAvailablePlayerLabels());
     String previousSelection = reloadSelections.get(playerName);
-    if (previousSelection.equalsIgnoreCase("Client")) {
+    if (previousSelection.equalsIgnoreCase(PlayerTypes.PLAYER_TYPE_DEFAULT_LABEL)) {
       previousSelection = HeadedPlayerTypes.HUMAN_PLAYER.getLabel();
     }
     if (List.of(this.playerTypesProvider.getAvailablePlayerLabels()).contains(previousSelection)) {
@@ -93,7 +94,9 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     if (!playerAlliances.contains(playerName)) {
       final String alliancesLabelText = playerAlliances.toString();
       alliances = new JButton(alliancesLabelText);
-      alliances.setToolTipText("Click to play " + alliancesLabelText);
+      alliances.setToolTipText(
+          I18nEngineFramework.get()
+              .getText("startup.PlayerSelectorRow.btn.Alliances.Tltp", alliancesLabelText));
       alliances.addActionListener(
           e ->
               playerRows.stream()
@@ -118,7 +121,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
 
   void layout(final int row, final Container container) {
     int gridx = 0;
-    if (!disableable.isEmpty()) {
+    if (!playersThatMayBeDisabled.isEmpty()) {
       container.add(
           enabledCheckBox,
           new GridBagConstraints(
@@ -280,7 +283,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     if (alliances != null) {
       alliances.setEnabled(enabled);
     }
-    enabledCheckBox.setEnabled(disableable.contains(playerName));
+    enabledCheckBox.setEnabled(playersThatMayBeDisabled.contains(playerName));
     incomePercentage.setEnabled(enabled);
     puIncomeBonus.setEnabled(enabled);
     parent.fireListener();

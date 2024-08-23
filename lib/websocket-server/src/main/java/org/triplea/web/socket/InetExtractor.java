@@ -6,11 +6,12 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NonNls;
 
 @UtilityClass
 public class InetExtractor {
 
-  @VisibleForTesting
+  @VisibleForTesting @NonNls
   public static final String IP_ADDRESS_KEY = "javax.websocket.endpoint.remoteAddress";
 
   /**

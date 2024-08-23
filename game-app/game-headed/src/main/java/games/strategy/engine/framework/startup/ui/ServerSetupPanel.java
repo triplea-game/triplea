@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.framework.I18nEngineFramework;
+import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
 import games.strategy.engine.framework.network.ui.SetPasswordAction;
@@ -53,7 +55,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   private JTextField nameField;
   private List<PlayerRow> playerRows = new ArrayList<>();
   private final GameSelectorModel gameSelectorModel;
-  private JPanel info;
+  private JPanel infoPanel;
   private JPanel networkPanel;
 
   public ServerSetupPanel(final ServerModel model, final GameSelectorModel gameSelectorModel) {
@@ -84,15 +86,16 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     nameField.setEditable(false);
     nameField.setBackground(backGround);
     nameField.setColumns(20);
-    info = new JPanel();
+    infoPanel = new JPanel();
     networkPanel = new JPanel();
   }
 
   private void layoutComponents() {
+    final I18nResourceBundle bundle = I18nEngineFramework.get();
     setLayout(new BorderLayout());
-    info.setLayout(new GridBagLayout());
-    info.add(
-        new JLabel("Name:"),
+    infoPanel.setLayout(new GridBagLayout());
+    infoPanel.add(
+        new JLabel(bundle.getText("startup.ServerSetupPanel.infoPanel.Name.Lbl")),
         new GridBagConstraints(
             0,
             0,
@@ -105,8 +108,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             new Insets(5, 10, 0, 5),
             0,
             0));
-    info.add(
-        new JLabel("Address:"),
+    infoPanel.add(
+        new JLabel(bundle.getText("startup.ServerSetupPanel.infoPanel.Address.Lbl")),
         new GridBagConstraints(
             0,
             1,
@@ -119,8 +122,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             new Insets(5, 10, 0, 5),
             0,
             0));
-    info.add(
-        new JLabel("Port:"),
+    infoPanel.add(
+        new JLabel(bundle.getText("startup.ServerSetupPanel.infoPanel.Port.Lbl")),
         new GridBagConstraints(
             0,
             2,
@@ -133,7 +136,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             new Insets(5, 10, 0, 5),
             0,
             0));
-    info.add(
+    infoPanel.add(
         nameField,
         new GridBagConstraints(
             1,
@@ -147,7 +150,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             new Insets(5, 0, 0, 5),
             0,
             0));
-    info.add(
+    infoPanel.add(
         addressField,
         new GridBagConstraints(
             1,
@@ -161,7 +164,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             new Insets(5, 0, 0, 5),
             0,
             0));
-    info.add(
+    infoPanel.add(
         portField,
         new GridBagConstraints(
             1,
@@ -175,7 +178,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
             new Insets(5, 0, 0, 5),
             0,
             0));
-    add(info, BorderLayout.NORTH);
+    add(infoPanel, BorderLayout.NORTH);
   }
 
   private void layoutPlayers() {
@@ -185,11 +188,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Insets spacing = new Insets(3, 16, 0, 0);
     final Insets lastSpacing = new Insets(3, 16, 0, 16);
     int gridx = 0;
-    final boolean disableable =
+    final boolean playersAllowedToBeDisabled =
         !model.getPlayersAllowedToBeDisabled().isEmpty()
             || model.getPlayersEnabledListing().containsValue(Boolean.FALSE);
     final GridBagConstraints enabledPlayerConstraints = new GridBagConstraints();
-    if (disableable) {
+    if (playersAllowedToBeDisabled) {
       enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
       enabledPlayerConstraints.gridx = gridx++;
       enabledPlayerConstraints.insets = new Insets(3, 20, 0, -10);
@@ -214,39 +217,40 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     allianceConstraints.anchor = GridBagConstraints.WEST;
     allianceConstraints.gridx = gridx;
     allianceConstraints.insets = lastSpacing;
-    if (disableable) {
-      final JLabel enableLabel = new JLabel("Use");
+    I18nResourceBundle bundle = I18nEngineFramework.get();
+    if (playersAllowedToBeDisabled) {
+      final JLabel enableLabel = new JLabel(bundle.getText("startup.SetupPanel.enable.Lbl"));
       enableLabel.setForeground(Color.black);
       layout.setConstraints(enableLabel, enabledPlayerConstraints);
       players.add(enableLabel);
     }
-    final JLabel nameLabel = new JLabel("Name");
+    final JLabel nameLabel = new JLabel(bundle.getText("startup.SetupPanel.name.Lbl"));
     nameLabel.setForeground(Color.black);
     layout.setConstraints(nameLabel, nameConstraints);
     players.add(nameLabel);
-    final JLabel playedByLabel = new JLabel("Played by");
+    final JLabel playedByLabel = new JLabel(bundle.getText("startup.SetupPanel.player.Lbl"));
     playedByLabel.setForeground(Color.black);
     layout.setConstraints(playedByLabel, playerConstraints);
     players.add(playedByLabel);
-    final JLabel localLabel = new JLabel("Local");
+    final JLabel localLabel = new JLabel(bundle.getText("startup.SetupPanel.local.Lbl"));
     localLabel.setForeground(Color.black);
     layout.setConstraints(localLabel, localConstraints);
     players.add(localLabel);
-    final JLabel typeLabel = new JLabel("Type");
+    final JLabel typeLabel = new JLabel(bundle.getText("startup.SetupPanel.type.Lbl"));
     typeLabel.setForeground(Color.black);
     layout.setConstraints(typeLabel, typeConstraints);
     players.add(typeLabel);
-    final JLabel allianceLabel = new JLabel("Alliance");
+    final JLabel allianceLabel = new JLabel(bundle.getText("startup.SetupPanel.alliance.Lbl"));
     allianceLabel.setForeground(Color.black);
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
     if (playerRows.isEmpty()) {
-      final JLabel noPlayers = new JLabel("Load a game file first");
+      final JLabel noPlayers = new JLabel(bundle.getText("startup.SetupPanel.noPlayers.Lbl"));
       layout.setConstraints(noPlayers, nameConstraints);
       players.add(noPlayers);
     }
     for (final PlayerRow row : playerRows) {
-      if (disableable) {
+      if (playersAllowedToBeDisabled) {
         layout.setConstraints(row.getEnabledPlayer(), enabledPlayerConstraints);
         players.add(row.getEnabledPlayer());
       }
@@ -263,7 +267,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       row.getAlliance().addActionListener(e -> allianceRowButtonFired(row));
     }
     removeAll();
-    add(info, BorderLayout.NORTH);
+    add(infoPanel, BorderLayout.NORTH);
     final JScrollPane scroll =
         new JScrollPane(
             players,
@@ -360,7 +364,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       Map<String, String> reloadSelections,
       List<PlayerTypes.Type> visiblePlayerTypes) {
     final String previousSelection = reloadSelections.get(playerName);
-    if (previousSelection != null && previousSelection.equalsIgnoreCase("Client")) {
+    if (previousSelection != null
+        && previousSelection.equalsIgnoreCase(PlayerTypes.PLAYER_TYPE_DEFAULT_LABEL)) {
       return HeadedPlayerTypes.HUMAN_PLAYER;
     } else if (previousSelection != null && !previousSelection.equals("no_one")) {
       // Note: "no_one" comes from `whoAmI` in GamePlayer.java.
@@ -430,7 +435,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         alliance.setVisible(false);
       } else {
         alliance = new JButton(playerAlliances.toString());
-        alliance.setToolTipText("Click to play " + playerAlliances);
+        alliance.setToolTipText(
+            I18nEngineFramework.get()
+                .getText("startup.SetupPanel.PlayerRow.alliance.Play.Tltp", playerAlliances));
       }
       type.addActionListener(
           e ->
@@ -440,13 +447,17 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
     public void takePlayerAction() {
       model.takePlayer(nameLabel.getText());
-      alliance.setToolTipText("Click to release " + alliance.getText());
+      alliance.setToolTipText(
+          I18nEngineFramework.get()
+              .getText("startup.SetupPanel.PlayerRow.alliance.Release.Tltp", alliance.getText()));
       setWidgetActivation();
     }
 
     public void releasePlayerAction() {
       model.releasePlayer(nameLabel.getText());
-      alliance.setToolTipText("Click to play " + alliance.getText());
+      alliance.setToolTipText(
+          I18nEngineFramework.get()
+              .getText("startup.SetupPanel.PlayerRow.alliance.Play.Tltp", alliance.getText()));
       setWidgetActivation();
     }
 

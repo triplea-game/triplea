@@ -5,10 +5,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 
 class TestDataFileReaderTest {
-  private static final String SAMPLE_FILE_PATH = "example/example_file.txt";
+  @NonNls private static final String SAMPLE_FILE_PATH = "example/example_file.txt";
   private static final String EXPECTED_CONTENT =
       "A file with some example text"
           + System.lineSeparator()

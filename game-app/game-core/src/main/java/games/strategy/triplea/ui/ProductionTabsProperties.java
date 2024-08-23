@@ -6,31 +6,32 @@ import games.strategy.triplea.ui.ProductionPanel.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.util.Tuple;
 
 class ProductionTabsProperties {
   // Filename
-  private static final String PROPERTY_FILE = "production_tabs";
+  @NonNls private static final String PROPERTY_FILE = "production_tabs";
   // Properties
-  private static final String USE_DEFAULT_TABS = "production_tabs.use_default_tabs";
+  @NonNls private static final String USE_DEFAULT_TABS = "production_tabs.use_default_tabs";
   // The number of tabs that should be drawn
-  private static final String NUMBER_OF_TABS = "production_tabs.number_of_tabs";
+  @NonNls private static final String NUMBER_OF_TABS = "production_tabs.number_of_tabs";
   // don't use production_tabs.tab_name=Air but use:
   // production_tabs.tab_name.1=Air
   // production_tabs.tab_name.2=Land
-  private static final String TAB_NAME = "production_tabs.tab_name";
+  @NonNls private static final String TAB_NAME = "production_tabs.tab_name";
   // don't use production_tabs.tab_units=Infantry:Panzer:Transport but use:
   // production_tabs.tab_units.1=Infantry:Panzer:Transport
   // production_tabs.tab_units.2=Artillery:Fighter:Bomber
-  private static final String TAB_UNITS = "production_tabs.tab_units";
+  @NonNls private static final String TAB_UNITS = "production_tabs.tab_units";
   // The number of rows of units to be used in the panel if rows or columns are "0" the system will
   // calculate based on
   // max units
-  private static final String NUMBER_OF_ROWS = "production_tabs.rows";
+  @NonNls private static final String NUMBER_OF_ROWS = "production_tabs.rows";
   // The number of columns of units to be used in the panel if rows or columns are "0" the system
   // will calculate based
   // on max units
-  private static final String NUMBER_OF_COLUMNS = "production_tabs.columns";
+  @NonNls private static final String NUMBER_OF_COLUMNS = "production_tabs.columns";
   private final Properties properties;
   private final List<Rule> rules;
   private List<Tuple<String, List<Rule>>> ruleLists;

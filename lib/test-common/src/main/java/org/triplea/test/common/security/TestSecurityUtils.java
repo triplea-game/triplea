@@ -12,10 +12,11 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import org.jetbrains.annotations.NonNls;
 
 /** A collection of useful methods for writing tests that involve security functions. */
 public final class TestSecurityUtils {
-  private static final String RSA_ALGORITHM = "RSA";
+  @NonNls private static final String RSA_ALGORITHM = "RSA";
 
   private TestSecurityUtils() {}
 

@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static games.strategy.engine.framework.startup.ui.PlayerTypes.PLAYER_TYPE_HUMAN_LABEL;
+
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAPlayer;
@@ -13,10 +15,10 @@ import org.triplea.ai.flowfield.FlowFieldAi;
 
 public class HeadedPlayerTypes {
 
-  private static final String FLOW_FIELD_LABEL = "FlowField (AI)";
+  private static final String PLAYER_TYPE_FLOW_FIELD_LABEL = "FlowField (AI)";
 
   public static final PlayerTypes.Type HUMAN_PLAYER =
-      new PlayerTypes.Type("Human") {
+      new PlayerTypes.Type(PLAYER_TYPE_HUMAN_LABEL) {
         @Override
         public Player newPlayerWithName(final String name) {
           return new TripleAPlayer(name, getLabel(), false);
@@ -25,7 +27,7 @@ public class HeadedPlayerTypes {
 
   /** A hidden player type to represent network connected players. */
   public static final PlayerTypes.Type CLIENT_PLAYER =
-      new PlayerTypes.Type("Client", false) {
+      new PlayerTypes.Type(PlayerTypes.PLAYER_TYPE_DEFAULT_LABEL, false) {
         @Override
         public Player newPlayerWithName(final String name) {
           return new TripleAPlayer(name, getLabel(), true);
@@ -41,14 +43,14 @@ public class HeadedPlayerTypes {
       };
 
   private static boolean filterBetaPlayerType(final PlayerTypes.Type playerType) {
-    if (playerType.getLabel().equals(FLOW_FIELD_LABEL)) {
+    if (playerType.getLabel().equals(PLAYER_TYPE_FLOW_FIELD_LABEL)) {
       return ClientSetting.showBetaFeatures.getValue().orElse(false);
     }
     return true;
   }
 
   private static PlayerTypes.Type getFlowFieldType() {
-    return new PlayerTypes.Type(FLOW_FIELD_LABEL) {
+    return new PlayerTypes.Type(PLAYER_TYPE_FLOW_FIELD_LABEL) {
       @Override
       public Player newPlayerWithName(String name) {
         return new FlowFieldAi(name, getLabel());

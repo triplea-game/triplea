@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Version;
@@ -21,7 +22,7 @@ import org.triplea.util.Version;
  */
 @AllArgsConstructor
 public class ClientLogin implements IConnectionLogin {
-  static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
+  @NonNls static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
 
   private final Component parentComponent;
   private final Version engineVersion;

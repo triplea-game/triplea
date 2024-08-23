@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
@@ -53,7 +54,8 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
   private final ForumPosterEditorViewModel forumPosterEditorViewModel;
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
   private final JPanel localPlayerPanel = new JPanel();
-  private final JButton localPlayerSelection = new JButton("Select Local Players and AI's");
+  private final JButton localPlayerSelection =
+      new JButton(I18nEngineFramework.get().getText("startup.SetupPanel.btn.PlayerSelection.Lbl"));
 
   /**
    * Creates a new instance.
@@ -101,7 +103,8 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             JOptionPane.showMessageDialog(
                 PbfSetupPanel.this,
                 scrollPane,
-                "Select Local Players and AI's",
+                I18nEngineFramework.get()
+                    .getText("startup.SetupPanel.PlayerSelection.Dialog.Title"),
                 JOptionPane.PLAIN_MESSAGE));
   }
 
@@ -135,7 +138,9 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             .fill(GridBagConstraintsFill.HORIZONTAL)
             .insets(10, 0, 20, 0)
             .build());
-    tabbedPane.addTab("Play By Forum", forumPosterEditor);
+    tabbedPane.addTab(
+        I18nEngineFramework.get().getText("startup.PbfSetupPanel.tab.ForumPosterEditor.Lbl"),
+        forumPosterEditor);
 
     // add selection of local players
     add(
@@ -184,7 +189,7 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
     gameSelectorModel.deleteObserver(this);
   }
 
-  /** Called when the observers detect change, to see if the game is in a startable state. */
+  /** Called when the observers detect change, to see if the game is in a start-able state. */
   @Override
   public boolean canGameStart() {
     final boolean diceServerValid = diceServerEditor.areFieldsValid();

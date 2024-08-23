@@ -2,11 +2,12 @@ package games.strategy.triplea.ui;
 
 import games.strategy.triplea.ResourceLoader;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 
 /** Same as PoliticsText but for user actions. */
 public class UserActionText {
   // Filename
-  private static final String PROPERTY_FILE = "actionstext.properties";
+  @NonNls private static final String PROPERTY_FILE = "actionstext.properties";
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";

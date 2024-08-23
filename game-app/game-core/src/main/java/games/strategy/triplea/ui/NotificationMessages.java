@@ -2,12 +2,13 @@ package games.strategy.triplea.ui;
 
 import games.strategy.triplea.ResourceLoader;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 
 /** Loads notification messages from notifications.properties. */
 public class NotificationMessages {
 
-  private static final String PROPERTY_FILE = "notifications.properties";
-  private static final String SOUND_CLIP_SUFFIX = "_sounds";
+  @NonNls private static final String PROPERTY_FILE = "notifications.properties";
+  @NonNls private static final String SOUND_CLIP_SUFFIX = "_sounds";
   private final Properties properties;
 
   public NotificationMessages(final ResourceLoader resourceLoader) {

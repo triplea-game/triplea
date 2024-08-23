@@ -3,11 +3,12 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import java.util.Properties;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.util.LocalizeHtml;
 
 /** Generates unit tooltips based on the content of the map's {@code tooltips.properties} file. */
 public final class TooltipProperties {
-  private static final String PROPERTY_FILE = "tooltips.properties";
+  @NonNls private static final String PROPERTY_FILE = "tooltips.properties";
   private static final String TOOLTIP = "tooltip";
   private static final String UNIT = "unit";
   private final UiContext uiContext;

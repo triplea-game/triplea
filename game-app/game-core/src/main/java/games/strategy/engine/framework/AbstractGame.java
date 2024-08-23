@@ -19,16 +19,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.sound.ISound;
 
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
  */
 public abstract class AbstractGame implements IGame {
+  @NonNls
   private static final String DISPLAY_CHANNEL =
       "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
+
+  @NonNls
   private static final String SOUND_CHANNEL =
       "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
+
   protected final GameData gameData;
   protected final Messengers messengers;
   protected volatile boolean isGameOver = false;

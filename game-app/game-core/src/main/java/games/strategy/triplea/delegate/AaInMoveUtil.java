@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -97,14 +98,14 @@ class AaInMoveUtil implements Serializable {
           CollectionUtils.getAny(currentPossibleAa)
               .getUnitAttachment()
               .getTargetsAa(getData().getUnitTypeList());
-      final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
+      final Set<UnitType> airborneTypesTargetedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
           CollectionUtils.getMatches(
               units,
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
                   .or(
                       Matches.unitIsAirborne()
-                          .and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+                          .and(Matches.unitIsOfTypes(airborneTypesTargetedToo))));
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing until you got the roll you wanted
       currentMove.setCantUndo("Move cannot be undone after " + currentTypeAa + " has fired.");
@@ -157,7 +158,7 @@ class AaInMoveUtil implements Serializable {
                         .getSoundChannelBroadcaster()
                         .playSoundForAll(
                             SoundPath.CLIP_BATTLE_X_PREFIX
-                                + currentTypeAa.toLowerCase()
+                                + currentTypeAa.toLowerCase(Locale.ROOT)
                                 + SoundPath.CLIP_BATTLE_X_MISS,
                             defender);
                   }
@@ -179,7 +180,7 @@ class AaInMoveUtil implements Serializable {
                         .getSoundChannelBroadcaster()
                         .playSoundForAll(
                             SoundPath.CLIP_BATTLE_X_PREFIX
-                                + currentTypeAa.toLowerCase()
+                                + currentTypeAa.toLowerCase(Locale.ROOT)
                                 + SoundPath.CLIP_BATTLE_X_HIT,
                             defender);
                   }

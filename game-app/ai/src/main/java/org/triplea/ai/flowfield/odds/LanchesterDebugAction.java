@@ -24,14 +24,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.ai.flowfield.FlowFieldAi;
 import org.triplea.ai.flowfield.influence.TerritoryDebugAction;
 
+@Slf4j
 @RequiredArgsConstructor
 public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
 
@@ -82,13 +84,13 @@ public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
             .filter(Predicate.not(Territory::isWater))
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Land territory is required."));
-    System.out.println("Using territory " + territory.getName());
+    log.info("Using territory {}", territory.getName());
     final GamePlayer offender = ai.getGamePlayer();
     final GamePlayer defender =
         relationshipTracker.getEnemies(ai.getGamePlayer()).stream()
             .findFirst()
             .orElseThrow(() -> new RuntimeException("An enemy is required"));
-    System.out.println("Defender is " + defender.getName());
+    log.info("Defender is {}", defender.getName());
 
     final List<Unit> attackingUnits = new ArrayList<>();
     final List<Unit> defendingUnits = new ArrayList<>();
@@ -105,19 +107,20 @@ public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
             unitAttachment ->
                 unitAttachment.getDefense(defender) > 0
                     && Matches.unitTypeIsLand().test((UnitType) unitAttachment.getAttachedTo()));
+    final ThreadLocalRandom localRandom = ThreadLocalRandom.current();
     for (int i = 0; i < 4; i++) {
-      getRandomUnitType(offenseUnitTypes)
+      getRandomUnitType(localRandom, offenseUnitTypes)
           .ifPresent(
               unitType ->
-                  attackingUnits.addAll(unitType.create(new Random().nextInt(10), offender)));
-      getRandomUnitType(defenseUnitTypes)
+                  attackingUnits.addAll(unitType.create(localRandom.nextInt(10), offender)));
+      getRandomUnitType(localRandom, defenseUnitTypes)
           .ifPresent(
               unitType ->
-                  defendingUnits.addAll(unitType.create(new Random().nextInt(10), defender)));
+                  defendingUnits.addAll(unitType.create(localRandom.nextInt(10), defender)));
     }
 
-    System.out.println("Attack Units: " + MyFormatter.unitsToText(attackingUnits));
-    System.out.println("Defending Units: " + MyFormatter.unitsToText(defendingUnits));
+    log.info("Attack Units: {}", MyFormatter.unitsToText(attackingUnits));
+    log.info("Defending Units: {}", MyFormatter.unitsToText(defendingUnits));
 
     final ConcurrentBattleCalculator hardAiCalculator = new ConcurrentBattleCalculator();
     hardAiCalculator.setGameData(ai.getGameData());
@@ -161,22 +164,20 @@ public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
                     .build()),
             1.45);
 
-    System.out.println("Hard AI Results");
-    System.out.println("Win percentage: " + hardAiResults.getAttackerWinPercent());
-    System.out.println(
-        "Avg attacking units remaining: "
-            + hardAiResults.getAverageAttackingUnitsRemaining().size()
-            + " - "
-            + hardAiResults.getAverageAttackingUnitsRemaining());
-    System.out.println(
-        "Avg defending units remaining: "
-            + hardAiResults.getAverageDefendingUnitsRemaining().size()
-            + " - "
-            + hardAiResults.getAverageDefendingUnitsRemaining());
+    log.info("Hard AI Results");
+    log.info("Win percentage: {}", hardAiResults.getAttackerWinPercent());
+    log.info(
+        "Avg attacking units remaining: {} - {}",
+        hardAiResults.getAverageAttackingUnitsRemaining().size(),
+        hardAiResults.getAverageAttackingUnitsRemaining());
+    log.info(
+        "Avg defending units remaining: {} - {}",
+        hardAiResults.getAverageDefendingUnitsRemaining().size(),
+        hardAiResults.getAverageDefendingUnitsRemaining());
 
-    System.out.println("Lanchester Results");
-    System.out.println("Winner: " + lanchesterCalculator.getWon());
-    System.out.println("Units Remaining: " + lanchesterCalculator.getRemainingUnits());
+    log.info("Lanchester Results");
+    log.info("Winner: {}", lanchesterCalculator.getWon());
+    log.info("Units Remaining: {}", lanchesterCalculator.getRemainingUnits());
   }
 
   private Collection<UnitType> getUnitTypes(
@@ -192,7 +193,8 @@ public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
         .collect(Collectors.toSet());
   }
 
-  private Optional<UnitType> getRandomUnitType(final Collection<UnitType> unitTypes) {
-    return unitTypes.stream().skip((int) (unitTypes.size() * Math.random())).findFirst();
+  private Optional<UnitType> getRandomUnitType(
+      final ThreadLocalRandom localRandom, final Collection<UnitType> unitTypes) {
+    return unitTypes.stream().skip((localRandom.nextInt(unitTypes.size()))).findFirst();
   }
 }

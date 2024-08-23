@@ -19,11 +19,12 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class HmacSha512AuthenticatorTest {
-  private static final String PASSWORD = "←PASSWORD↑WITH→UNICODE↓CHARS";
+  @NonNls private static final String PASSWORD = "←PASSWORD↑WITH→UNICODE↓CHARS";
 
   private static String newBase64String() {
     final byte[] bytes = new byte[8];

@@ -28,6 +28,7 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.UrlStreams;
 
@@ -108,9 +109,9 @@ import org.triplea.java.UrlStreams;
  */
 @Slf4j
 public class ClipPlayer {
-  private static final String ASSETS_SOUNDS_FOLDER = "sounds";
-  private static final String SOUND_PREFERENCE_PREFIX = "sound_";
-  private static final String MP3_SUFFIX = ".mp3";
+  @NonNls private static final String ASSETS_SOUNDS_FOLDER = "sounds";
+  @NonNls private static final String SOUND_PREFERENCE_PREFIX = "sound_";
+  @NonNls private static final String MP3_SUFFIX = ".mp3";
 
   private static final Set<String> mutedClips = ConcurrentHashMap.newKeySet();
 
@@ -290,7 +291,7 @@ public class ClipPlayer {
       availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + path));
     }
     if (availableSounds.isEmpty()) {
-      final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
+      @NonNls final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
       availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
     }
     return availableSounds;

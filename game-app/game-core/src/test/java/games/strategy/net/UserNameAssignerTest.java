@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.Set;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,10 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class UserNameAssignerTest {
 
-  private static final String NAME_1 = "name_one";
-  private static final String NAME_2 = "name_two";
+  @NonNls private static final String NAME_1 = "name_one";
+  @NonNls private static final String NAME_2 = "name_two";
 
-  private static final String MAC = "mac 1";
+  @NonNls private static final String MAC = "mac 1";
 
   /**
    * Null for IP address or node list means we have something wrong on the server side and should

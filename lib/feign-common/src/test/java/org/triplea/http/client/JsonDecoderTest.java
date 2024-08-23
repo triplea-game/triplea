@@ -9,11 +9,12 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneOffset;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 
 class JsonDecoderTest {
   // Thu Jun 06 2019 04:20:06Z
-  private static final String JSON_STRING = "{\"instant\":1559794806.329342000}";
+  @NonNls private static final String JSON_STRING = "{\"instant\":1559794806.329342000}";
 
   @AllArgsConstructor
   private static class InstantExample {

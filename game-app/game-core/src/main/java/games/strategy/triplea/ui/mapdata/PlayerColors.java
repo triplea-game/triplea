@@ -10,13 +10,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.ColorUtils;
 
 @RequiredArgsConstructor
 public final class PlayerColors {
-  public static final String PROPERTY_COLOR_PREFIX = "color.";
-  public static final String PLAYER_NAME_IMPASSABLE = "Impassable";
-  public static final String PLAYER_NAME_IMPASSABLE_LEGACY_SPELLING = "Impassible";
+  @NonNls public static final String PROPERTY_COLOR_PREFIX = "color.";
+  @NonNls public static final String PLAYER_NAME_IMPASSABLE = "Impassable";
+  @NonNls public static final String PLAYER_NAME_IMPASSABLE_LEGACY_SPELLING = "Impassible";
   public static final Color DEFAULT_IMPASSABLE_COLOR = ColorUtils.fromHexString("DEB887");
 
   @VisibleForTesting

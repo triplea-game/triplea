@@ -1,5 +1,7 @@
 package games.strategy.engine.framework;
 
+import org.jetbrains.annotations.NonNls;
+
 public class I18nEngineFramework extends I18nResourceBundle {
   private static I18nResourceBundle instance;
 
@@ -11,7 +13,7 @@ public class I18nEngineFramework extends I18nResourceBundle {
   }
 
   @Override
-  public String getResourcePath() {
+  public @NonNls String getResourcePath() {
     return "i18n.games.strategy.engine.framework.ui";
   }
 }

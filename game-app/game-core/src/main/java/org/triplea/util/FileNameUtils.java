@@ -4,10 +4,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
+import org.jetbrains.annotations.NonNls;
 
 /** A collection of useful methods for working with file names. */
 public final class FileNameUtils {
-  @VisibleForTesting static final String ILLEGAL_CHARACTERS = "/\b\n\r\t\0\f`?*\\<>|\"':.,^[]=+;";
+  @VisibleForTesting @NonNls
+  static final String ILLEGAL_CHARACTERS = "/\b\n\r\t\0\f`?*\\<>|\"':.,^[]=+;";
 
   private static final CharMatcher ILLEGAL_CHAR_MATCHER = CharMatcher.anyOf(ILLEGAL_CHARACTERS);
 

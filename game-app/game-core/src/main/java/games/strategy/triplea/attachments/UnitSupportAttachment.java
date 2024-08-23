@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * An attachment for instances of {@link UnitType} that defines properties for unit types that
@@ -32,10 +33,10 @@ import lombok.Value;
  * <p>The set of UnitSupportAttachments do not change during a game.
  */
 public class UnitSupportAttachment extends DefaultAttachment {
-  public static final String BONUS = "bonus";
-  public static final String BONUS_TYPE = "bonusType";
-  public static final String DICE = "dice";
-  public static final String UNIT_TYPE = "unitType";
+  @NonNls public static final String BONUS = "bonus";
+  @NonNls public static final String BONUS_TYPE = "bonusType";
+  @NonNls public static final String DICE = "dice";
+  @NonNls public static final String UNIT_TYPE = "unitType";
 
   private static final long serialVersionUID = -3015679930172496082L;
 

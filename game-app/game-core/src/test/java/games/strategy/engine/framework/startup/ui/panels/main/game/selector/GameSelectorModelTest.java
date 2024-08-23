@@ -14,6 +14,7 @@ import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.Observer;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class GameSelectorModelTest extends AbstractClientSettingTestCase {
-  private static final String fakeGameRound = "3";
-  private static final String fakeGameName = "_fakeGameName_";
+  @NonNls private static final String fakeGameRound = "3";
+  @NonNls private static final String fakeGameName = "_fakeGameName_";
 
   private GameSelectorModel testObj;
 

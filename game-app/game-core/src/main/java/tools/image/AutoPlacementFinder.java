@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -27,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolArguments;
 
@@ -84,7 +86,7 @@ public final class AutoPlacementFinder {
                 + "final place."
                 + "<br>Example: the map folder should have a name, with the 2 text files already "
                 + "in that folder, and "
-                + "<br>the folder should be located in your users\\yourname\\triplea\\maps\\ "
+                + "<br>the folder should be located in your users\\username\\triplea\\maps\\ "
                 + "directory."
                 + "<br><br>The program will ask for the folder name (just the name, not the "
                 + "full path)."
@@ -125,9 +127,9 @@ public final class AutoPlacementFinder {
           int height = unitHeight;
           boolean found = false;
           try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
-            final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-            final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
-            final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
+            @NonNls final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
+            @NonNls final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
+            @NonNls final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
             while (scanner.hasNextLine()) {
               final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {
@@ -214,7 +216,7 @@ public final class AutoPlacementFinder {
       try {
         final String result = getUnitsScale();
         try {
-          unitZoomPercent = Double.parseDouble(result.toLowerCase());
+          unitZoomPercent = Double.parseDouble(result.toLowerCase(Locale.ROOT));
         } catch (final NumberFormatException ex) {
           // ignore malformed input
         }
@@ -287,7 +289,7 @@ public final class AutoPlacementFinder {
   }
 
   /**
-   * we need the exact map name as indicated in the XML game file ie. "revised" "classic"
+   * we need the exact map name as indicated in the XML game file i.e. "revised" "classic"
    * "pact_of_steel" of course, without the quotes.
    */
   private static String getMapDirectory() {
@@ -325,7 +327,7 @@ public final class AutoPlacementFinder {
 
   private List<Point> getPlacementsStartingAtMiddle(
       final Collection<Polygon> countryPolygons, final Rectangle bounding, final Point center) {
-    final List<Rectangle2D> placementRects = new ArrayList<>();
+    final List<Rectangle2D> placementRectangles = new ArrayList<>();
     final List<Point> placementPoints = new ArrayList<>();
     final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, placeHeight, placeWidth);
     int x = center.x - (placeHeight / 2);
@@ -338,7 +340,7 @@ public final class AutoPlacementFinder {
         } else {
           x--;
         }
-        isPlacement(countryPolygons, Set.of(), placementRects, placementPoints, place, x, y);
+        isPlacement(countryPolygons, Set.of(), placementRectangles, placementPoints, place, x, y);
       }
       for (int j = 0; j < Math.abs(step); j++) {
         if (step > 0) {
@@ -346,7 +348,7 @@ public final class AutoPlacementFinder {
         } else {
           y--;
         }
-        isPlacement(countryPolygons, Set.of(), placementRects, placementPoints, place, x, y);
+        isPlacement(countryPolygons, Set.of(), placementRectangles, placementPoints, place, x, y);
       }
       step = -step;
       if (step > 0) {
@@ -361,9 +363,9 @@ public final class AutoPlacementFinder {
       }
     }
     if (placementPoints.isEmpty()) {
-      final int defaultx = center.x - (placeHeight / 2);
-      final int defaulty = center.y - (placeWidth / 2);
-      placementPoints.add(new Point(defaultx, defaulty));
+      final int defaultX = center.x - (placeHeight / 2);
+      final int defaultY = center.y - (placeWidth / 2);
+      placementPoints.add(new Point(defaultX, defaultY));
     }
     return placementPoints;
   }
@@ -373,7 +375,7 @@ public final class AutoPlacementFinder {
       final Rectangle bounding,
       final Point center,
       final Collection<Polygon> containedCountryPolygons) {
-    final List<Rectangle2D> placementRects = new ArrayList<>();
+    final List<Rectangle2D> placementRectangles = new ArrayList<>();
     final List<Point> placementPoints = new ArrayList<>();
     final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, placeHeight, placeWidth);
     for (int x = bounding.x + 1; x < bounding.width + bounding.x; x++) {
@@ -381,7 +383,7 @@ public final class AutoPlacementFinder {
         isPlacement(
             countryPolygons,
             containedCountryPolygons,
-            placementRects,
+            placementRectangles,
             placementPoints,
             place,
             x,
@@ -392,9 +394,9 @@ public final class AutoPlacementFinder {
       }
     }
     if (placementPoints.isEmpty()) {
-      final int defaultx = center.x - (placeHeight / 2);
-      final int defaulty = center.y - (placeWidth / 2);
-      placementPoints.add(new Point(defaultx, defaulty));
+      final int defaultX = center.x - (placeHeight / 2);
+      final int defaultY = center.y - (placeWidth / 2);
+      placementPoints.add(new Point(defaultX, defaultY));
     }
     return placementPoints;
   }
@@ -402,7 +404,7 @@ public final class AutoPlacementFinder {
   private void isPlacement(
       final Collection<Polygon> countryPolygons,
       final Collection<Polygon> containedCountryPolygons,
-      final List<Rectangle2D> placementRects,
+      final List<Rectangle2D> placementRectangles,
       final List<Point> placementPoints,
       final Rectangle2D place,
       final int x,
@@ -410,13 +412,13 @@ public final class AutoPlacementFinder {
     place.setFrame(x, y, placeWidth, placeHeight);
     // make sure it is not in or intersects the contained country
     if (containedIn(place, countryPolygons)
-        && !intersectsOneOf(place, placementRects)
+        && !intersectsOneOf(place, placementRectangles)
         && (!containedIn(place, containedCountryPolygons)
             && !intersectsOneOf(place, containedCountryPolygons))) {
       placementPoints.add(new Point((int) place.getX(), (int) place.getY()));
       final Rectangle2D newRect = new Rectangle2D.Double();
       newRect.setFrame(place);
-      placementRects.add(newRect);
+      placementRectangles.add(newRect);
     } // if
   }
 

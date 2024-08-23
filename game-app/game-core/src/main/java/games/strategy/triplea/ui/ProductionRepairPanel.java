@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
@@ -300,6 +301,7 @@ class ProductionRepairPanel extends JPanel {
                 + ".  Please make sure your maps are up to date!");
       }
       repairResults = rule.getResults().getInt(type);
+      @NonNls
       final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
 
       final ImageIcon icon = uiContext.getUnitImageFactory().getIcon(ImageKey.of(repairUnit));

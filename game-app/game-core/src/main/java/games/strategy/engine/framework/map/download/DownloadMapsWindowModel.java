@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.java.Interruptibles;
@@ -58,7 +59,7 @@ class DownloadMapsWindowModel {
   }
 
   String toHtmlString(final MapDownloadItem mapDownloadItem) {
-    String text = "<h1>" + mapDownloadItem.getMapName() + "</h1>\n";
+    @NonNls String text = "<h1>" + mapDownloadItem.getMapName() + "</h1>\n";
     if (!mapDownloadItem.getPreviewImageUrl().isEmpty()) {
       text += "<img src='" + mapDownloadItem.getPreviewImageUrl() + "' />\n";
     }

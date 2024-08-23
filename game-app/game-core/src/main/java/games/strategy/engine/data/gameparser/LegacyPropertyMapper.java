@@ -2,6 +2,7 @@ package games.strategy.engine.data.gameparser;
 
 import games.strategy.triplea.Constants;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * This converts property names and values that were used in older map XMLs and updates those values
@@ -27,7 +28,9 @@ class LegacyPropertyMapper {
     return optionName;
   }
 
-  public String mapLegacyOptionValue(final String optionName, final String optionValue) {
+  @NonNls
+  public String mapLegacyOptionValue(
+      @NonNls final String optionName, @NonNls final String optionValue) {
     if (optionName.equalsIgnoreCase("victoryCity")) {
       if (optionValue.equalsIgnoreCase("true")) {
         return "1";
@@ -43,7 +46,7 @@ class LegacyPropertyMapper {
     return optionValue;
   }
 
-  public String mapPropertyName(final String propertyName) {
+  public String mapPropertyName(@NonNls final String propertyName) {
     if (propertyName.equalsIgnoreCase("Battleships repair at end of round")
         || propertyName.equalsIgnoreCase("Units repair at end of round")) {
       return Constants.TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN;

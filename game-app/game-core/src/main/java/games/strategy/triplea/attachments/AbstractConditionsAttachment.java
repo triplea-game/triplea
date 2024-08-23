@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold
@@ -31,13 +33,13 @@ import lombok.Getter;
  * collection fields default to null to minimize memory use and serialization size.
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
-  public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
-  public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
-  protected static final String AND = "AND";
-  protected static final String OR = "OR";
+  public static final @NonNls String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
+  public static final @NonNls String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
+  @NonNls protected static final String AND = "AND";
+  @NonNls protected static final String OR = "OR";
   private static final Pattern CONDITION_REGEX = Pattern.compile("AND|OR|\\d+(?:-\\d+)?");
-  protected static final String DEFAULT_CHANCE = "1:1";
-  protected static final String CHANCE = "chance";
+  @NonNls protected static final String DEFAULT_CHANCE = "1:1";
+  protected static final @NonNls String PROPERTY_CHANCE = "chance";
   private static final long serialVersionUID = -9008441256118867078L;
   private static final Splitter HYPHEN_SPLITTER = Splitter.on('-');
 
@@ -108,7 +110,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   @VisibleForTesting
   void setConditionType(final String value) throws GameParseException {
-    final String uppercaseValue = value.toUpperCase();
+    final String uppercaseValue = value.toUpperCase(Locale.ENGLISH);
     if (CONDITION_REGEX.matcher(uppercaseValue).matches()) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
@@ -327,7 +329,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       if (newToHit == oldToHit) {
         return;
       }
-      final String newChance = newToHit + ":" + diceSides;
+      @NonNls final String newChance = newToHit + ":" + diceSides;
       delegateBridge
           .getHistoryWriter()
           .startEvent(
@@ -335,7 +337,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                   + MyFormatter.attachmentNameToText(getName())
                   + " to "
                   + newChance);
-      delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
+      delegateBridge.addChange(
+          ChangeFactory.attachmentPropertyChange(this, newChance, PROPERTY_CHANCE));
     } else {
       if (chanceIncrementOnFailure == 0) {
         return;
@@ -346,7 +349,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       if (newToHit == oldToHit) {
         return;
       }
-      final String newChance = newToHit + ":" + diceSides;
+      @NonNls final String newChance = newToHit + ":" + diceSides;
       if (historyChild) {
         delegateBridge
             .getHistoryWriter()
@@ -364,12 +367,13 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                     + " to "
                     + newChance);
       }
-      delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
+      delegateBridge.addChange(
+          ChangeFactory.attachmentPropertyChange(this, newChance, PROPERTY_CHANCE));
     }
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
+  public @Nullable MutableProperty<?> getPropertyOrNull(@NonNls String propertyName) {
     switch (propertyName) {
       case "conditions":
         return MutableProperty.of(
@@ -380,7 +384,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       case "invert":
         return MutableProperty.ofMapper(
             DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false);
-      case "chance":
+      case PROPERTY_CHANCE:
         return MutableProperty.ofString(this::setChance, this::getChance, this::resetChance);
       case "chanceIncrementOnFailure":
         return MutableProperty.ofMapper(

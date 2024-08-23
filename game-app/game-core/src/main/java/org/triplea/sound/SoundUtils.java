@@ -7,6 +7,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.MustFightBattle.RetreatType;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 /** Contains methods to play various sound clips. */
 public final class SoundUtils {
@@ -65,14 +66,16 @@ public final class SoundUtils {
         bridge
             .getSoundChannelBroadcaster()
             .playSoundForAll(
-                SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+                SoundPath.CLIP_BATTLE_X_PREFIX
+                    + aaType.toLowerCase(Locale.ROOT)
+                    + SoundPath.CLIP_BATTLE_X_HIT,
                 firingPlayer);
       } else {
         bridge
             .getSoundChannelBroadcaster()
             .playSoundForAll(
                 SoundPath.CLIP_BATTLE_X_PREFIX
-                    + aaType.toLowerCase()
+                    + aaType.toLowerCase(Locale.ROOT)
                     + SoundPath.CLIP_BATTLE_X_MISS,
                 firingPlayer);
       }

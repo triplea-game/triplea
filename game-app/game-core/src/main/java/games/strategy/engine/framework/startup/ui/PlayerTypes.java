@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
@@ -17,26 +18,30 @@ public class PlayerTypes {
 
   public static final String DOES_NOTHING_PLAYER_LABEL = "Does Nothing (AI)";
   public static final Type WEAK_AI =
-      new Type("Easy (AI)") {
+      new Type(I18nEngineFramework.get().getText("startup.PlayerTypes.PLAYER_TYPE_AI_EASY_LABEL")) {
         @Override
         public Player newPlayerWithName(final String name) {
           return new WeakAi(name, getLabel());
         }
       };
   public static final Type FAST_AI =
-      new Type("Fast (AI)") {
+      new Type(I18nEngineFramework.get().getText("startup.PlayerTypes.PLAYER_TYPE_AI_FAST_LABEL")) {
         @Override
         public Player newPlayerWithName(final String name) {
           return new FastAi(name, getLabel());
         }
       };
   public static final Type PRO_AI =
-      new Type("Hard (AI)") {
+      new Type(I18nEngineFramework.get().getText("startup.PlayerTypes.PLAYER_TYPE_AI_HARD_LABEL")) {
         @Override
         public Player newPlayerWithName(final String name) {
           return new ProAi(name, getLabel());
         }
       };
+  public static final String PLAYER_TYPE_DEFAULT_LABEL =
+      I18nEngineFramework.get().getText("startup.PlayerTypes.PLAYER_TYPE_DEFAULT_LABEL");
+  public static final String PLAYER_TYPE_HUMAN_LABEL =
+      I18nEngineFramework.get().getText("startup.PlayerTypes.PLAYER_TYPE_HUMAN_LABEL");
 
   Collection<Type> playerTypes;
 
