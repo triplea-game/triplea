@@ -22,7 +22,6 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +41,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import org.jetbrains.annotations.NotNull;
 
 class StatPanel extends JPanel implements GameDataChangeListener {
   private static final long serialVersionUID = 4340684166664492498L;
@@ -66,7 +66,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
   protected void initLayout() {
     final boolean hasTech =
         !TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), null).isEmpty();
-    // do no include a grid box for tech if there is no tech
+    // do not include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
     add(new JScrollPane(createPlayersTable()));
     // if no technologies, do not show the tech table
@@ -80,9 +80,9 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     statsTable.getTableHeader().setReorderingAllowed(false);
     // By default, right-align columns and their headers.
     ((DefaultTableCellRenderer) statsTable.getTableHeader().getDefaultRenderer())
-        .setHorizontalAlignment(JLabel.RIGHT);
+        .setHorizontalAlignment(SwingConstants.RIGHT);
     ((DefaultTableCellRenderer) statsTable.getDefaultRenderer(String.class))
-        .setHorizontalAlignment(JLabel.RIGHT);
+        .setHorizontalAlignment(SwingConstants.RIGHT);
     final TableColumn leftColumn = statsTable.getColumnModel().getColumn(0);
     leftColumn.setPreferredWidth(175);
     // The left column should be left-aligned. Override the renderers for it to defaults.
@@ -107,7 +107,20 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       value.setToolTipText(player);
       column.setHeaderValue(value);
     }
+    // show tooltip for technology names
+    final TableCellRenderer techNameComponentRenderer = new TechNameComponentRenderer();
+    final TableColumn techNameColumn = techTable.getColumnModel().getColumn(0);
+    techNameColumn.setHeaderRenderer(techNameComponentRenderer);
+    techNameColumn.setCellRenderer(techNameComponentRenderer);
     return techTable;
+  }
+
+  static final class TechNameComponentRenderer extends DefaultTableCellRenderer {
+    @Override
+    public void setValue(Object aValue) {
+      setToolTipText(aValue.toString());
+      super.setValue(aValue);
+    }
   }
 
   public void setGameData(final GameData data) {
@@ -179,32 +192,30 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     }
 
     void setStatColumns() {
-      stats = new IStat[] {new PuStat(), new ProductionStat(), new UnitsStat(), new TuvStat()};
+      final List<IStat> statsList =
+          Arrays.asList(new PuStat(), new ProductionStat(), new UnitsStat(), new TuvStat());
       if (gameData.getMap().getTerritories().stream().anyMatch(Matches.territoryIsVictoryCity())) {
-        final List<IStat> stats = new ArrayList<>(List.of(StatPanel.this.stats));
-        stats.add(new VictoryCityStat());
-        StatPanel.this.stats = stats.toArray(new IStat[0]);
+        statsList.add(new VictoryCityStat());
       }
       // only add the vps in pacific
       if (Properties.getPacificTheater(gameData.getProperties())) {
-        final List<IStat> stats = new ArrayList<>(List.of(StatPanel.this.stats));
-        stats.add(new VpStat());
-        StatPanel.this.stats = stats.toArray(new IStat[0]);
+        statsList.add(new VpStat());
       }
+      StatPanel.this.stats = statsList.toArray(new IStat[0]);
     }
 
     private synchronized void loadData() {
       // copy so that the object doesn't change underneath us
-      final GameData gameData = StatPanel.this.gameData;
-      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-        final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
-        final List<String> alliances = getAlliancesToShow(gameData.getAllianceTracker());
+      final GameData gameDataSync = StatPanel.this.gameData;
+      try (GameData.Unlocker ignored = gameDataSync.acquireReadLock()) {
+        final List<GamePlayer> players = gameDataSync.getPlayerList().getSortedPlayers();
+        final List<String> alliances = getAlliancesToShow(gameDataSync.getAllianceTracker());
         collectedData = new String[players.size() + alliances.size()][stats.length + 1];
         int row = 0;
         for (final GamePlayer player : players) {
           collectedData[row][0] = player.getName();
           for (int i = 0; i < stats.length; i++) {
-            double value = stats[i].getValue(player, gameData, uiContext.getMapData());
+            double value = stats[i].getValue(player, gameDataSync, uiContext.getMapData());
             collectedData[row][i + 1] = IStat.DECIMAL_FORMAT.format(value);
           }
           row++;
@@ -212,7 +223,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
         for (final String alliance : alliances) {
           collectedData[row][0] = "<html><b>" + alliance;
           for (int i = 0; i < stats.length; i++) {
-            double value = stats[i].getValue(alliance, gameData, uiContext.getMapData());
+            double value = stats[i].getValue(alliance, gameDataSync, uiContext.getMapData());
             collectedData[row][i + 1] = IStat.DECIMAL_FORMAT.format(value);
           }
           row++;
@@ -228,7 +239,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     }
 
     /*
-     * Re-calcs the underlying data in a lazy manner.
+     * Re-calculations the underlying data in a lazy manner.
      * Limitation: This is not a thread-safe implementation.
      */
     @Override
@@ -287,33 +298,40 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       for (int i = 0; i < colList.length; i++) {
         colMap.put(colList[i], i + 1);
       }
+      data = getDataAndInitRowMap();
+      clearAdvances();
+    }
+
+    private synchronized String[] @NotNull [] getDataAndInitRowMap() {
+      final String[][] dataTable;
       boolean useTech = false;
       // copy so that the object doesn't change underneath us
-      final GameData gameData = StatPanel.this.gameData;
-      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-        final int numTechs = TechAdvance.getTechAdvances(gameData.getTechnologyFrontier()).size();
-        if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
+      final GameData gameDataSync = StatPanel.this.gameData;
+      try (GameData.Unlocker ignored = gameDataSync.acquireReadLock()) {
+        final int numTechs =
+            TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier()).size();
+        if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
           useTech = true;
-          data = new String[numTechs + 1][colList.length + 2];
+          dataTable = new String[numTechs + 1][colList.length + 2];
         } else {
-          data = new String[numTechs][colList.length + 1];
+          dataTable = new String[numTechs][colList.length + 1];
         }
       }
       /* Load the technology -> row mapping */
       int row = 0;
       if (useTech) {
         rowMap.put("Tokens", row);
-        data[row][0] = "Tokens";
+        dataTable[row][0] = "Tokens";
         row++;
       }
       final List<TechAdvance> techAdvances =
-          TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), null);
+          TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier(), null);
       for (final TechAdvance tech : techAdvances) {
         rowMap.put(tech.getName(), row);
-        data[row][0] = tech.getName();
+        dataTable[row][0] = tech.getName();
         row++;
       }
-      clearAdvances();
+      return dataTable;
     }
 
     private void clearAdvances() {
@@ -334,26 +352,26 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       Arrays.sort(colList);
     }
 
-    void update() {
+    synchronized void update() {
       clearAdvances();
       // copy so that the object doesn't change underneath us
-      final GameData gameData = StatPanel.this.gameData;
-      try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-        for (final GamePlayer pid : gameData.getPlayerList().getPlayers()) {
+      final GameData gameDataSync = StatPanel.this.gameData;
+      try (GameData.Unlocker ignored = gameDataSync.acquireReadLock()) {
+        for (final GamePlayer pid : gameDataSync.getPlayerList().getPlayers()) {
           if (colMap.get(pid.getName()) == null) {
             throw new IllegalStateException(
                 "Unexpected player in GameData.getPlayerList()" + pid.getName());
           }
           final int col = colMap.get(pid.getName());
           int row = 0;
-          if (gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
+          if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
             final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
           final List<TechAdvance> advancesAll =
-              TechAdvance.getTechAdvances(gameData.getTechnologyFrontier());
+              TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier());
           final List<TechAdvance> has =
-              TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), pid);
+              TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier(), pid);
           for (final TechAdvance advance : advancesAll) {
             if (!has.contains(advance)) {
               row = rowMap.get(advance.getName());
@@ -361,7 +379,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
             }
           }
           for (final TechAdvance advance :
-              TechTracker.getCurrentTechAdvances(pid, gameData.getTechnologyFrontier())) {
+              TechTracker.getCurrentTechAdvances(pid, gameDataSync.getTechnologyFrontier())) {
             row = rowMap.get(advance.getName());
             data[row][col] = "X";
           }
@@ -378,7 +396,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     }
 
     /*
-     * Recalcs the underlying data in a lazy manner.
+     * Recalculations the underlying data in a lazy manner.
      * Limitation: This is not a thread-safe implementation.
      */
     @Override
