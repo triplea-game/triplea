@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
@@ -195,9 +196,10 @@ public class InGameLobbyWatcher {
     }
   }
 
+  @NonNls
   @VisibleForTesting
   static String getLobbySystemProperty(final String key) {
-    final String backupKey = key + ".backup";
+    @NonNls final String backupKey = key + ".backup";
     final @Nullable String value = System.getProperty(key);
     if (value != null) {
       System.setProperty(backupKey, value);

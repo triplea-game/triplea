@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.framework.I18nEngineFramework;
+import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
@@ -31,6 +33,8 @@ import org.triplea.swing.SwingAction;
 /** Network client game staging panel, can be used to select sides and chat. */
 public class ClientSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 6942605803526295372L;
+  private static final String PLAY_TEXT =
+      I18nEngineFramework.get().getText("startup.SetupPanel.PlayerRow.Play");
   private final Insets buttonInsets = new Insets(0, 0, 0, 0);
   private final ClientModel clientModel;
   private final List<PlayerRow> playerRows = new ArrayList<>();
@@ -57,10 +61,11 @@ public class ClientSetupPanel extends SetupPanel {
     final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
         clientModel.getPlayerNamesAndAlliancesInTurnOrder();
     final Map<String, Boolean> enabledPlayers = clientModel.getPlayersEnabledListing();
-    final Collection<String> disableable = clientModel.getPlayersAllowedToBeDisabled();
+    final Collection<String> playersAllowedToBeDisabled =
+        clientModel.getPlayersAllowedToBeDisabled();
     if (!clientModel.getIsServerHeadlessCached()) {
       // clients only get to change bot settings
-      disableable.clear();
+      playersAllowedToBeDisabled.clear();
     }
     playerRows.clear();
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
@@ -73,7 +78,7 @@ public class ClientSetupPanel extends SetupPanel {
           () ->
               playerRow.update(
                   Optional.ofNullable(players.get(name)).map(UserName::of).orElse(null),
-                  disableable.contains(name)));
+                  playersAllowedToBeDisabled.contains(name)));
     }
     SwingUtilities.invokeLater(this::layoutComponents);
   }
@@ -92,8 +97,9 @@ public class ClientSetupPanel extends SetupPanel {
     final Insets lastSpacing = new Insets(3, 16, 0, 16);
     int gridx = 0;
     final GridBagConstraints enabledPlayerConstraints = new GridBagConstraints();
-    final boolean disableable = clientModel.getPlayersAllowedToBeDisabled().isEmpty();
-    if (!disableable) {
+    final boolean anyPlayerAllowedToBeDisabled =
+        clientModel.getPlayersAllowedToBeDisabled().isEmpty();
+    if (!anyPlayerAllowedToBeDisabled) {
       enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
       enabledPlayerConstraints.gridx = gridx++;
       enabledPlayerConstraints.insets = new Insets(3, 20, 0, -10);
@@ -115,28 +121,29 @@ public class ClientSetupPanel extends SetupPanel {
     allianceConstraints.anchor = GridBagConstraints.WEST;
     allianceConstraints.gridx = gridx;
     allianceConstraints.insets = lastSpacing;
-    if (!disableable) {
-      final JLabel enableLabel = new JLabel("Use");
+    I18nResourceBundle bundle = I18nEngineFramework.get();
+    if (!anyPlayerAllowedToBeDisabled) {
+      final JLabel enableLabel = new JLabel(bundle.getText("startup.SetupPanel.enable.Lbl"));
       enableLabel.setForeground(Color.black);
       layout.setConstraints(enableLabel, enabledPlayerConstraints);
       players.add(enableLabel);
     }
-    final JLabel nameLabel = new JLabel("Name");
+    final JLabel nameLabel = new JLabel(bundle.getText("startup.SetupPanel.name.Lbl"));
     nameLabel.setForeground(Color.black);
     layout.setConstraints(nameLabel, nameConstraints);
     players.add(nameLabel);
-    final JLabel playerLabel = new JLabel("Played By");
+    final JLabel playerLabel = new JLabel(bundle.getText("startup.SetupPanel.player.Lbl"));
     playerLabel.setForeground(Color.black);
     layout.setConstraints(playerLabel, playerConstraints);
     players.add(playerLabel);
     final JLabel playedByLabel = new JLabel("                    ");
     layout.setConstraints(playedByLabel, playConstraints);
     players.add(playedByLabel);
-    final JLabel allianceLabel = new JLabel("Alliance");
+    final JLabel allianceLabel = new JLabel(bundle.getText("startup.SetupPanel.alliance.Lbl"));
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
     for (final PlayerRow row : playerRows) {
-      if (!disableable) {
+      if (!anyPlayerAllowedToBeDisabled) {
         layout.setConstraints(row.getEnabledPlayer(), enabledPlayerConstraints);
         players.add(row.getEnabledPlayer());
       }
@@ -206,7 +213,6 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   class PlayerRow {
-    private static final String PLAY_TEXT = "Play";
     private final JCheckBox enabledCheckBox = new JCheckBox();
     private final JLabel playerNameLabel = new JLabel();
     private final JLabel playerLabel = new JLabel();
@@ -215,8 +221,10 @@ public class ClientSetupPanel extends SetupPanel {
     @Getter private JComponent allianceComponent = new JLabel();
     private final Action takeAction =
         SwingAction.of(PLAY_TEXT, e -> clientModel.takePlayer(playerNameLabel.getText()));
-    private final Action dontTakeAction =
-        SwingAction.of("Don't Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
+    private final Action takeNoAction =
+        SwingAction.of(
+            I18nEngineFramework.get().getText("startup.SetupPanel.PlayerRow.TakeNoAction.Lbl"),
+            e -> clientModel.releasePlayer(playerNameLabel.getText()));
 
     private final ActionListener disablePlayerActionListener =
         e -> {
@@ -250,19 +258,26 @@ public class ClientSetupPanel extends SetupPanel {
       return enabledCheckBox;
     }
 
+    private boolean playerComponentIsEnabled() {
+      if (!playerComponent.isVisible()) {
+        return false;
+      }
+      if (playerComponent instanceof JButton) {
+        return ((JButton) playerComponent).getText().equals(PLAY_TEXT);
+      } else {
+        return false;
+      }
+    }
+
     public void executeTakePlayerActionIfEnabled() {
-      if (playerComponent.isVisible()
-          && playerComponent instanceof JButton
-          && ((JButton) playerComponent).getText().equals(PLAY_TEXT)) {
+      if (playerComponentIsEnabled()) {
         takeAction.actionPerformed(null);
       }
     }
 
     public void executeReleasePlayerActionIfEnabled() {
-      if (playerComponent.isVisible()
-          && playerComponent instanceof JButton
-          && !((JButton) playerComponent).getText().equals(PLAY_TEXT)) {
-        dontTakeAction.actionPerformed(null);
+      if (playerComponentIsEnabled()) {
+        takeNoAction.actionPerformed(null);
       }
     }
 
@@ -272,36 +287,40 @@ public class ClientSetupPanel extends SetupPanel {
           .equals(clientModel.getClientMessenger().getLocalNode().getName());
     }
 
-    public void update(final UserName userName, final boolean disableable) {
+    public void update(final UserName userName, final boolean allowedToBeDisabled) {
+      I18nResourceBundle bundle = I18nEngineFramework.get();
       if (userName == null) {
         playerLabel.setText("-");
         final JButton button = new JButton(takeAction);
         button.setMargin(buttonInsets);
         playerComponent = button;
-        alliance.setToolTipText("Click to play " + alliance.getText());
+        alliance.setToolTipText(
+            bundle.getText("startup.SetupPanel.PlayerRow.alliance.Play.Tltp", alliance.getText()));
         allianceComponent = alliance;
       } else {
         playerLabel.setText(userName.getValue());
         if (userName.equals(clientModel.getClientMessenger().getLocalNode().getPlayerName())) {
-          final JButton button = new JButton(dontTakeAction);
+          final JButton button = new JButton(takeNoAction);
           button.setMargin(buttonInsets);
           playerComponent = button;
-          alliance.setToolTipText("Click to release " + alliance.getText());
+          alliance.setToolTipText(
+              bundle.getText(
+                  "startup.SetupPanel.PlayerRow.alliance.Release.Tltp", alliance.getText()));
           allianceComponent = alliance;
         } else {
           playerComponent = new JLabel("");
           allianceComponent = new JLabel("");
         }
       }
-      setWidgetActivation(disableable);
+      setWidgetActivation(allowedToBeDisabled);
     }
 
-    private void setWidgetActivation(final boolean disableable) {
+    private void setWidgetActivation(final boolean allowedToBeDisabled) {
       playerNameLabel.setEnabled(enabledCheckBox.isSelected());
       playerLabel.setEnabled(enabledCheckBox.isSelected());
       playerComponent.setEnabled(enabledCheckBox.isSelected());
       alliance.setEnabled(enabledCheckBox.isSelected());
-      enabledCheckBox.setEnabled(disableable);
+      enabledCheckBox.setEnabled(allowedToBeDisabled);
     }
   }
 }

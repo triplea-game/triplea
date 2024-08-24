@@ -10,12 +10,13 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 
 /** Loads a SystemId from persistence. */
 @UtilityClass
 @Slf4j
 public class SystemIdLoader {
-  private static final String SYSTEM_KEY = "system-id-key";
+  @NonNls private static final String SYSTEM_KEY = "system-id-key";
 
   @Setter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private static PreferencesPersistence preferencesPersistence =

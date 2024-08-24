@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 class ExpiringAfterWriteTtlCacheTest {
 
-  private static final String KEY = "key-value";
+  @NonNls private static final String KEY = "key-value";
   private static final int VALUE = 100;
   private ExpiringAfterWriteTtlCache<String, Integer> realCache;
 

@@ -17,6 +17,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * A vault is a secure way for the client and server to share information without trusting each
@@ -34,7 +35,7 @@ import javax.crypto.spec.DESKeySpec;
 public class Vault {
   private static final RemoteName VAULT_CHANNEL =
       new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_CHANNEL", IRemoteVault.class);
-  private static final String ALGORITHM = "DES";
+  @NonNls private static final String ALGORITHM = "DES";
   // 0xCAFEBABE
   // we encrypt both this value and data when we encrypt data.
   // when decrypting we ensure that KNOWN_VAL is correct and thus guarantee that we are being given
@@ -241,7 +242,7 @@ public class Vault {
     }
   }
 
-  /** Do we know about the given vault id. */
+  /** {@code @TODO} Do we know about the given vault id? */
   public boolean knowsAbout(final VaultId id) {
     return verifiedValues.containsKey(id) || unverifiedValues.containsKey(id);
   }

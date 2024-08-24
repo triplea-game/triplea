@@ -19,18 +19,19 @@ import java.util.Optional;
 import java.util.Properties;
 import javax.annotation.Nullable;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class UnitIconPropertiesTest {
-  private static final String CONDITION_1_NAME = "condition1Name";
-  private static final String CONDITION_2_NAME = "condition2Name";
-  private static final String GAME_NAME = "gameName";
-  private static final String ICON_1_PATH = "path/to/icon_1.png";
-  private static final String ICON_2_PATH = "path/to/icon_2.png";
-  private static final String ICON_3_PATH = "path/to/icon_3.png";
-  private static final String PLAYER_NAME = "playerName";
-  private static final String UNIT_TYPE_NAME = "unitTypeName";
+  @NonNls private static final String CONDITION_1_NAME = "condition1Name";
+  @NonNls private static final String CONDITION_2_NAME = "condition2Name";
+  @NonNls private static final String GAME_NAME = "gameName";
+  @NonNls private static final String ICON_1_PATH = "path/to/icon_1.png";
+  @NonNls private static final String ICON_2_PATH = "path/to/icon_2.png";
+  @NonNls private static final String ICON_3_PATH = "path/to/icon_3.png";
+  @NonNls private static final String PLAYER_NAME = "playerName";
+  @NonNls private static final String UNIT_TYPE_NAME = "unitTypeName";
 
   private static String formatIconId(final @Nullable String conditionName) {
     return formatIconId(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, conditionName);

@@ -36,6 +36,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.ThreadRunner;
 import org.triplea.swing.SwingAction;
 
@@ -161,7 +162,7 @@ class CommentPanel extends JPanel {
             try {
               // insert into ui document
               final Document doc = text.getDocument();
-              final String prefix = " " + player + "(" + round + ") : ";
+              @NonNls final String prefix = " " + player + "(" + round + ") : ";
               text.insertIcon(icon);
               doc.insertString(doc.getLength(), prefix, bold);
               doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
@@ -201,7 +202,7 @@ class CommentPanel extends JPanel {
               final String title = node.getTitle();
               final Matcher m = p.matcher(title);
               if (m.matches()) {
-                final String prefix = " " + player + "(" + round + ") : ";
+                @NonNls final String prefix = " " + player + "(" + round + ") : ";
                 final Icon lastIcon = icon;
                 SwingUtilities.invokeLater(
                     () -> {

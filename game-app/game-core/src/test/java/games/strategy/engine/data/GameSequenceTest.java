@@ -7,14 +7,15 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.delegate.TestDelegate;
 import java.util.Properties;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class GameSequenceTest {
   @Nested
   final class SetRoundAndStepTest {
-    private static final String GAME_STEP_NAME = "gameStep";
-    private static final String OTHER_GAME_STEP_NAME = "otherGameStep";
+    @NonNls private static final String GAME_STEP_NAME = "gameStep";
+    @NonNls private static final String OTHER_GAME_STEP_NAME = "otherGameStep";
 
     private final GameData gameData = new GameData();
     private final GamePlayer player = new GamePlayer("player", gameData);

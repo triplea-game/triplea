@@ -1,5 +1,6 @@
 package org.triplea.generic.xml.scanner;
 
+import java.util.Locale;
 import java.util.Optional;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -18,7 +19,7 @@ class AttributeScanner {
     while (streamReader.hasNext()) {
       final int event = streamReader.next();
       if (event == XMLStreamReader.START_ELEMENT) {
-        final String tag = streamReader.getLocalName().toUpperCase();
+        final String tag = streamReader.getLocalName().toUpperCase(Locale.ENGLISH);
         if (tag.equalsIgnoreCase(parameters.getTag())) {
 
           final String attributeValue =

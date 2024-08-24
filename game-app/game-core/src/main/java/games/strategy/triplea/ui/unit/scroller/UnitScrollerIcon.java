@@ -8,6 +8,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NonNls;
 
 /** Class to handle icon paths and getting references to Icon images. */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -18,7 +19,7 @@ class UnitScrollerIcon implements Supplier<Icon> {
   static final UnitScrollerIcon SKIP = new UnitScrollerIcon("skip.png");
   static final UnitScrollerIcon WAKE_ALL = new UnitScrollerIcon("wake_all.png");
 
-  private static final String UNIT_SCROLLER_IMAGES_FOLDER = "unit_scroller";
+  @NonNls private static final String UNIT_SCROLLER_IMAGES_FOLDER = "unit_scroller";
 
   private final String imageFile;
 

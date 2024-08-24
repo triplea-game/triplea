@@ -21,14 +21,15 @@ import java.util.zip.GZIPOutputStream;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.config.product.ProductVersionReader;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
 @Slf4j
 public final class GameDataManager {
-  private static final String DELEGATE_START = "<DelegateStart>";
-  private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
-  private static final String DELEGATE_LIST_END = "<EndDelegateList>";
+  @NonNls private static final String DELEGATE_START = "<DelegateStart>";
+  @NonNls private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
+  @NonNls private static final String DELEGATE_LIST_END = "<EndDelegateList>";
 
   private GameDataManager() {}
 

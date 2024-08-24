@@ -7,9 +7,11 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@NonNls
 final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
   private final AutoSaveFileUtils autoSaveFileUtils = new AutoSaveFileUtils();
 
@@ -19,7 +21,7 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
     void shouldReturnFileInAutoSaveFolder() {
       ClientSetting.saveGamesFolderPath.setValue(Path.of("path", "to", "saves"));
 
-      final String fileName = "savegame.tsvg";
+      @NonNls final String fileName = "savegame.tsvg";
       assertThat(
           autoSaveFileUtils.getAutoSaveFile(fileName),
           is(Path.of("path", "to", "saves", "autoSave", fileName)));
@@ -28,7 +30,7 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
 
   @Nested
   final class GetAutoSaveFileNameTest {
-    private static final String BASE_FILE_NAME = "baseFileName";
+    @NonNls private static final String BASE_FILE_NAME = "baseFileName";
 
     @Test
     void shouldNotPrefixFileNameWhenHeaded() {

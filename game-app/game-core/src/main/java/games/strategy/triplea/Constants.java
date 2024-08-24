@@ -1,8 +1,10 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GamePlayer;
+import org.jetbrains.annotations.NonNls;
 
 /** Constants used throughout the game. */
+@NonNls
 public interface Constants {
   // Player names
   String PLAYER_NAME_AMERICANS = "Americans";

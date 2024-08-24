@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import javax.swing.JComponent;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Basically creates a map of other properties.
@@ -24,7 +26,8 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
   private Map<String, V> map;
   private final List<IEditableProperty<?>> properties = new ArrayList<>();
 
-  public MapProperty(final String name, final String description, final Map<String, V> map) {
+  public MapProperty(
+      @NonNls final String name, @Nls final String description, final Map<String, V> map) {
     super(name, description);
 
     checkNotNull(map);
@@ -36,7 +39,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
   private static void resetProperties(
       final Map<String, ?> map,
       final List<IEditableProperty<?>> properties,
-      final String description) {
+      @Nls final String description) {
     properties.clear();
     map.forEach(
         (key, value) -> {

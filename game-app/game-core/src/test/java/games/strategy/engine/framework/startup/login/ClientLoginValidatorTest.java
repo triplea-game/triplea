@@ -5,14 +5,15 @@ import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorMessages;
 import java.util.Map;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 final class ClientLoginValidatorTest {
-  private static final String PASSWORD = "password";
-  private static final String OTHER_PASSWORD = "otherPassword";
+  @NonNls private static final String PASSWORD = "password";
+  @NonNls private static final String OTHER_PASSWORD = "otherPassword";
 
   @ExtendWith(MockitoExtension.class)
   @Nested

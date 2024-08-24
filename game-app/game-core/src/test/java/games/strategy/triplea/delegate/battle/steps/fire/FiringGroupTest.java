@@ -14,6 +14,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import java.util.Comparator;
 import java.util.List;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class FiringGroupTest {
 
-  private static final String GROUP_NAME = "test";
+  @NonNls private static final String GROUP_NAME = "test";
 
   final GameData gameData = givenGameData().build();
   @Mock GamePlayer player;

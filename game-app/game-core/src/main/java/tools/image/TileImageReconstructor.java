@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.util.PointFileReaderWriter;
 
 /** For taking a folder of basetiles and putting them back together into an image. */
@@ -170,7 +171,7 @@ public final class TileImageReconstructor {
     final Graphics graphics = mapImage.getGraphics();
     for (int x = 0; x * TILE_SIZE < sizeX; x++) {
       for (int y = 0; y * TILE_SIZE < sizeY; y++) {
-        final String tileName = x + "_" + y + ".png";
+        @NonNls final String tileName = x + "_" + y + ".png";
         final Path tileFile = baseTileLocation.resolve(tileName);
         if (!Files.exists(tileFile)) {
           continue;

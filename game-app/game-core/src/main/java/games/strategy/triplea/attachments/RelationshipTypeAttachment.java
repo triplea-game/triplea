@@ -8,26 +8,28 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
+import java.util.Locale;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /** An attachment for instances of {@link RelationshipType}. */
 public class RelationshipTypeAttachment extends DefaultAttachment {
-  public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
-  public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
-  public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
-  public static final String UPKEEP_FLAT = "flat";
-  public static final String UPKEEP_PERCENTAGE = "percentage";
-  public static final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
-  public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
-  public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
+  @NonNls public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
+  @NonNls public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
+  @NonNls public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
+  @NonNls public static final String UPKEEP_FLAT = "flat";
+  @NonNls public static final String UPKEEP_PERCENTAGE = "percentage";
+  @NonNls public static final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
+  @NonNls public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
+  @NonNls public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
   private static final long serialVersionUID = -4367286684249791984L;
 
   /**
    * -- GETTER -- Returns the ArcheType of this relationshipType, this really shouldn't be called,
    * typically you should call isNeutral, isAllied or isWar().
    */
-  @Getter private String archeType = ARCHETYPE_WAR;
+  @Getter private @NonNls String archeType = ARCHETYPE_WAR;
 
   private String canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
   private String canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
@@ -37,7 +39,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   private String canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
   private String canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
   private String givesBackOriginalTerritories = PROPERTY_DEFAULT;
-  private String canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
+  private @NonNls String canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
   private String canMoveThroughCanals = PROPERTY_DEFAULT;
   private String rocketsCanFlyOver = PROPERTY_DEFAULT;
 
@@ -67,14 +69,14 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * some option in this attachment; for example the RelationshipType ColdWar could be based on the
    * WAR_ARCHETYPE but overrides options like "canInvade" "canAttackHomeTerritory" to not allow
    * all-out invasion to mimic a not-all-out-war. Or you could base it on NEUTRAL_ARCHETYPE but
-   * override the options like "canAttackAtSea" and "canFireAA" to mimic a uneasy peace.
+   * override the options like "canAttackAtSea" and "canFireAA" to mimic an uneasy peace.
    *
    * @param archeType the template used to base this relationType on, can be war, allied or neutral,
    *     default archeType = WAR_ARCHETYPE
    * @throws GameParseException if archeType isn't set to war, allied or neutral
    */
   public void setArcheType(final String archeType) throws GameParseException {
-    final String lowerArcheType = archeType.toLowerCase();
+    final String lowerArcheType = archeType.toLowerCase(Locale.ROOT);
     switch (lowerArcheType) {
       case ARCHETYPE_WAR:
       case ARCHETYPE_ALLIED:
@@ -99,7 +101,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of
+   * <strong> EXAMPLE</strong> method on how you could do fine-grained authorizations instead of
    * looking at isNeutral, isAllied or isWar(); Just for future reference, doesn't do anything right
    * now.
    *
@@ -114,7 +116,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of
+   * <strong> EXAMPLE</strong> method on how you could do fine-grained authorizations instead of
    * looking at isNeutral, isAllied or isWar(); Just for future reference, doesn't do anything right
    * now.
    *
@@ -387,7 +389,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     canMoveThroughCanals = PROPERTY_DEFAULT;
   }
 
-  private void setRocketsCanFlyOver(final String value) throws GameParseException {
+  private void setRocketsCanFlyOver(final @NonNls String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT)
         || value.equals(PROPERTY_FALSE)
         || value.equals(PROPERTY_TRUE))) {

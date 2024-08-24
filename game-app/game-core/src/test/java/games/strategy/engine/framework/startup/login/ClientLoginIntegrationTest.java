@@ -11,6 +11,7 @@ import games.strategy.net.IConnectionLogin;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.TestServerMessenger;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -19,8 +20,8 @@ import org.triplea.domain.data.SystemId;
 import org.triplea.util.Version;
 
 final class ClientLoginIntegrationTest {
-  private static final String PASSWORD = "password";
-  private static final String OTHER_PASSWORD = "otherPassword";
+  @NonNls private static final String PASSWORD = "password";
+  @NonNls private static final String OTHER_PASSWORD = "otherPassword";
 
   private IServerMessenger serverMessenger;
   private int serverPort;

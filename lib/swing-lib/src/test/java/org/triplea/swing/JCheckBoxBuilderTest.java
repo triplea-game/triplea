@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.function.Consumer;
 import javax.swing.JCheckBox;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class JCheckBoxBuilderTest {
 
-  private static final String TITLE = "title-text";
+  @NonNls private static final String TITLE = "title-text";
   @Mock private SettingPersistence settingPersistence;
   @Mock private Consumer<Boolean> actionListener;
 

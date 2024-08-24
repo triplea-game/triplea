@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.map.data.elements.Game;
@@ -21,11 +22,11 @@ import org.triplea.map.data.elements.VariableList;
 
 class GameDataVariablesTest {
 
-  private static final String FOLDER = "src/test/resources/variable_parsing/";
-  private static final String EMPTY_LIST = FOLDER + "empty_list.xml";
-  private static final String SINGLE_ELEMENT_LIST = FOLDER + "single_element_list.xml";
-  private static final String MANY_ELEMENT_LIST = FOLDER + "many_element_list.xml";
-  private static final String NESTED_VARIABLE = FOLDER + "nested_variable.xml";
+  @NonNls private static final String FOLDER = "src/test/resources/variable_parsing/";
+  @NonNls private static final String EMPTY_LIST = FOLDER + "empty_list.xml";
+  @NonNls private static final String SINGLE_ELEMENT_LIST = FOLDER + "single_element_list.xml";
+  @NonNls private static final String MANY_ELEMENT_LIST = FOLDER + "many_element_list.xml";
+  @NonNls private static final String NESTED_VARIABLE = FOLDER + "nested_variable.xml";
 
   @Test
   void emptyList() throws Exception {
