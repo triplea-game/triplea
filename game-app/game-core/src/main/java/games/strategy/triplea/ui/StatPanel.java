@@ -22,6 +22,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -192,8 +193,11 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     }
 
     void setStatColumns() {
-      final List<IStat> statsList =
-          Arrays.asList(new PuStat(), new ProductionStat(), new UnitsStat(), new TuvStat());
+      final List<IStat> statsList = new ArrayList<>();
+      statsList.add(new PuStat());
+      statsList.add(new ProductionStat());
+      statsList.add(new UnitsStat());
+      statsList.add(new TuvStat());
       if (gameData.getMap().getTerritories().stream().anyMatch(Matches.territoryIsVictoryCity())) {
         statsList.add(new VictoryCityStat());
       }
