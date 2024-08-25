@@ -211,49 +211,49 @@ public interface Constants {
   String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
   String SUPPORT_RULE_NAME_OLD_TEMP_FIRST =
       SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME + "TempFirst";
-  String EDIT_MODE = "EditMode";
+  @NonNls String EDIT_MODE = "EditMode";
   // by default this is 0, but for lhtr, it is 1
-  String ORIGINAL_OWNER = "originalOwner";
+  @NonNls String ORIGINAL_OWNER = "originalOwner";
   // unit types
-  String UNIT_TYPE_INFANTRY = "infantry";
-  String UNIT_TYPE_INF = "inf";
-  String UNIT_TYPE_MOTORIZED = "motorized";
-  String UNIT_TYPE_ARMOUR = "armour";
-  String UNIT_TYPE_TRANSPORT = "transport";
-  String UNIT_TYPE_SUBMARINE = "submarine";
-  String UNIT_TYPE_BATTLESHIP = "battleship";
-  String UNIT_TYPE_MARINE = "marine";
-  String UNIT_TYPE_CARRIER = "carrier";
-  String UNIT_TYPE_FIGHTER = "fighter";
-  String UNIT_TYPE_BOMBER = "bomber";
-  String UNIT_TYPE_FACTORY = "factory";
-  String UNIT_TYPE_AAGUN = "aaGun";
-  String UNIT_TYPE_ARTILLERY = "artillery";
-  String UNIT_TYPE_DESTROYER = "destroyer";
-  String SMALL_MAP_FILENAME = "smallMap";
-  String[] SMALL_MAP_EXTENSIONS = {"jpeg", "jpg", "png"};
-  String MAP_NAME = "mapName";
+  @NonNls String UNIT_TYPE_INFANTRY = "infantry";
+  @NonNls String UNIT_TYPE_INF = "inf";
+  @NonNls String UNIT_TYPE_MOTORIZED = "motorized";
+  @NonNls String UNIT_TYPE_ARMOUR = "armour";
+  @NonNls String UNIT_TYPE_TRANSPORT = "transport";
+  @NonNls String UNIT_TYPE_SUBMARINE = "submarine";
+  @NonNls String UNIT_TYPE_BATTLESHIP = "battleship";
+  @NonNls String UNIT_TYPE_MARINE = "marine";
+  @NonNls String UNIT_TYPE_CARRIER = "carrier";
+  @NonNls String UNIT_TYPE_FIGHTER = "fighter";
+  @NonNls String UNIT_TYPE_BOMBER = "bomber";
+  @NonNls String UNIT_TYPE_FACTORY = "factory";
+  @NonNls String UNIT_TYPE_AAGUN = "aaGun";
+  @NonNls String UNIT_TYPE_ARTILLERY = "artillery";
+  @NonNls String UNIT_TYPE_DESTROYER = "destroyer";
+  @NonNls String SMALL_MAP_FILENAME = "smallMap";
+  @NonNls String[] SMALL_MAP_EXTENSIONS = {"jpeg", "jpg", "png"};
+  @NonNls String MAP_NAME = "mapName";
 
   // relationships stuff
-  String RELATIONSHIP_TYPE_SELF = "self_relation";
-  String RELATIONSHIP_TYPE_NULL = "null_relation";
-  String RELATIONSHIP_TYPE_DEFAULT_ALLIED = "default_allied_relation";
-  String RELATIONSHIP_TYPE_DEFAULT_WAR = "default_war_relation";
-  String RELATIONSHIP_CONDITION_ANY_NEUTRAL = "anyNeutral";
-  String RELATIONSHIP_CONDITION_ANY = "any";
-  String RELATIONSHIP_CONDITION_ANY_ALLIED = "anyAllied";
-  String RELATIONSHIP_CONDITION_ANY_WAR = "anyWar";
-  String RELATIONSHIP_ARCHETYPE_NEUTRAL = "neutral";
-  String RELATIONSHIP_ARCHETYPE_WAR = "war";
-  String RELATIONSHIP_ARCHETYPE_ALLIED = "allied";
-  String RELATIONSHIP_PROPERTY_DEFAULT = "default";
-  String RELATIONSHIP_PROPERTY_TRUE = "true";
-  String RELATIONSHIP_PROPERTY_FALSE = "false";
-  String PROPERTY_TRUE = "true";
-  String PROPERTY_FALSE = "false";
+  @NonNls String RELATIONSHIP_TYPE_SELF = "self_relation";
+  @NonNls String RELATIONSHIP_TYPE_NULL = "null_relation";
+  @NonNls String RELATIONSHIP_TYPE_DEFAULT_ALLIED = "default_allied_relation";
+  @NonNls String RELATIONSHIP_TYPE_DEFAULT_WAR = "default_war_relation";
+  @NonNls String RELATIONSHIP_CONDITION_ANY_NEUTRAL = "anyNeutral";
+  @NonNls String RELATIONSHIP_CONDITION_ANY = "any";
+  @NonNls String RELATIONSHIP_CONDITION_ANY_ALLIED = "anyAllied";
+  @NonNls String RELATIONSHIP_CONDITION_ANY_WAR = "anyWar";
+  @NonNls String RELATIONSHIP_ARCHETYPE_NEUTRAL = "neutral";
+  @NonNls String RELATIONSHIP_ARCHETYPE_WAR = "war";
+  @NonNls String RELATIONSHIP_ARCHETYPE_ALLIED = "allied";
+  @NonNls String RELATIONSHIP_PROPERTY_DEFAULT = "default";
+  @NonNls String RELATIONSHIP_PROPERTY_TRUE = "true";
+  @NonNls String RELATIONSHIP_PROPERTY_FALSE = "false";
+  @NonNls String PROPERTY_TRUE = "true";
+  @NonNls String PROPERTY_FALSE = "false";
 
-  String CONSTRUCTION_TYPE_FACTORY = "factory";
-  String CONSTRUCTION_TYPE_STRUCTURE = "structure";
+  @NonNls String CONSTRUCTION_TYPE_FACTORY = "factory";
+  @NonNls String CONSTRUCTION_TYPE_STRUCTURE = "structure";
 
   static String getIncomePercentageFor(final GamePlayer gamePlayer) {
     return gamePlayer.getName() + " Income Percentage";

@@ -5,10 +5,19 @@ import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD_PREFIX;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_LOBBY;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_LOCAL;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_PBEM;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_PBF;
+import static games.strategy.triplea.Constants.PROPERTY_FALSE;
+import static games.strategy.triplea.Constants.PROPERTY_TRUE;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.auto.update.UpdateChecks;
+import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -67,12 +76,19 @@ public final class HeadedGameRunner {
   }
 
   public static void initializeDesktopIntegrations(final String[] args) {
-    if ((args.length == 1) && args[0].startsWith("triplea:")) {
-      final String value =
-          URLDecoder.decode(args[0].substring("triplea:".length()), StandardCharsets.UTF_8);
-      System.setProperty(TRIPLEA_MAP_DOWNLOAD, value);
-    } else if ((args.length == 1) && !args[0].contains("=")) {
-      System.setProperty(TRIPLEA_GAME, args[0]);
+    if (args.length == 1) { // simple case with one argument only
+      if (args[0].startsWith(TRIPLEA_MAP_DOWNLOAD_PREFIX)) {
+        final String value =
+            URLDecoder.decode(
+                args[0].substring(TRIPLEA_MAP_DOWNLOAD_PREFIX.length()), StandardCharsets.UTF_8);
+        System.setProperty(TRIPLEA_MAP_DOWNLOAD, value);
+      } else if (!args[0].contains("=")) {
+        System.setProperty(TRIPLEA_GAME, args[0]);
+      } else {
+        setPropertiesFromArgs(args);
+      }
+    } else {
+      setPropertiesFromArgs(args);
     }
 
     if (SystemProperties.isMac()) {
@@ -80,7 +96,8 @@ public final class HeadedGameRunner {
           uri -> {
             final String mapName =
                 URLDecoder.decode(
-                    uri.toString().substring("triplea:".length()), StandardCharsets.UTF_8);
+                    uri.toString().substring(TRIPLEA_MAP_DOWNLOAD_PREFIX.length()),
+                    StandardCharsets.UTF_8);
             SwingUtilities.invokeLater(
                 () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
           });
@@ -89,6 +106,26 @@ public final class HeadedGameRunner {
 
     if (HttpProxy.isUsingSystemProxy()) {
       HttpProxy.updateSystemProxy();
+    }
+  }
+
+  private static void setPropertiesFromArgs(String[] args) {
+    for (String arg : args) {
+      String[] nameValuePair = arg.split("=");
+      if (nameValuePair.length != 2) {
+        log.warn("Property '{}' not matching pattern '<name>=<value>'.", arg);
+        continue;
+      }
+      switch (nameValuePair[0]) {
+        case TRIPLEA_GAME:
+        case TRIPLEA_SERVER:
+        case TRIPLEA_CLIENT:
+        case TRIPLEA_START:
+          System.setProperty(nameValuePair[0], nameValuePair[1]);
+          break;
+        default:
+          log.warn("Property '{}' not unknown.", nameValuePair[0]);
+      }
     }
   }
 
@@ -162,30 +199,66 @@ public final class HeadedGameRunner {
    */
   public static void showMainFrame() {
     GameShutdownRegistry.runShutdownActions();
-
-    if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
+    final String startProperty = System.getProperty(TRIPLEA_START, "").toLowerCase(Locale.ROOT);
+    if (startProperty.equals(TRIPLEA_START_LOBBY)) {
+      SwingUtilities.invokeLater(() -> headedServerSetupModel.login());
+    } else if (System.getProperty(TRIPLEA_SERVER, PROPERTY_FALSE).equals(PROPERTY_TRUE)) {
       MainFrame.show();
       gameSelectorModel.loadDefaultGameSameThread();
       final ServerModel serverModel = headedServerSetupModel.showServer();
       MainFrame.addQuitAction(serverModel::cancel);
       System.clearProperty(TRIPLEA_SERVER);
-    } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
+    } else if (System.getProperty(TRIPLEA_CLIENT, PROPERTY_FALSE).equals(PROPERTY_TRUE)) {
       MainFrame.show();
       headedServerSetupModel.showClient();
       System.clearProperty(TRIPLEA_CLIENT);
     } else {
       final String saveGameFileName = System.getProperty(TRIPLEA_GAME, "");
       if (!saveGameFileName.isEmpty()) {
-        final Path saveGameFile = Path.of(saveGameFileName);
-        if (Files.exists(saveGameFile) && !gameSelectorModel.loadSave(saveGameFile)) {
-          // abort launch if we failed to load the specified game
-          return;
-        }
+        startGameDirectly(saveGameFileName, startProperty);
       }
       MainFrame.show();
       gameSelectorModel.loadDefaultGameSameThread();
       openMapDownloadWindowIfDownloadScheduled();
     }
+  }
+
+  private static void startGameDirectly(String saveGameFileName, String startProperty) {
+    final boolean isSaveFile = saveGameFileName.endsWith(GameDataFileUtils.getExtension());
+    if (!isSaveFile && !saveGameFileName.endsWith(".xml")) {
+      log.warn("File '{}' neither save nor game map file", saveGameFileName);
+      return;
+    }
+    Path gameFilePath = Path.of(saveGameFileName);
+    if (!Files.exists(gameFilePath)) {
+      gameFilePath =
+          Path.of(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString(), saveGameFileName);
+      if (!Files.exists(gameFilePath)) {
+        log.warn("Save game file '{}' not found", saveGameFileName);
+        return;
+      }
+    }
+    final Path fileToLoadPath = gameFilePath;
+    SwingUtilities.invokeLater(
+        () -> {
+          final boolean isFileLoaded;
+          if (isSaveFile) isFileLoaded = gameSelectorModel.loadSave(fileToLoadPath);
+          else isFileLoaded = gameSelectorModel.loadMap(fileToLoadPath);
+          if (isFileLoaded) {
+            switch (startProperty) {
+              case TRIPLEA_START_PBF:
+                headedServerSetupModel.showPbf();
+                break;
+              case TRIPLEA_START_PBEM:
+                headedServerSetupModel.showPbem();
+                break;
+              case TRIPLEA_START_LOCAL:
+              default:
+                headedServerSetupModel.showLocal();
+                MainFrame.startGameDirectly(headedServerSetupModel);
+            }
+          }
+        });
   }
 
   private static void openMapDownloadWindowIfDownloadScheduled() {
