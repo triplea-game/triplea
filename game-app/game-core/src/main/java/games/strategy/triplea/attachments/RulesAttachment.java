@@ -13,6 +13,7 @@ import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -63,6 +64,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   // condition for being at war
   private @Nullable Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
+  // condition for checking resources
+  private @Nullable String[] hasResource = null;
   // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according
   // to
   // the prices the defender pays for the units]
@@ -507,6 +510,40 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     isAI = null;
   }
 
+  @VisibleForTesting
+  public void setHasResource(final String value) throws GameParseException {
+    final String[] s = splitOnColon(value);
+    final int n = getInt(s[0]);
+    if (n < 1) {
+      throw new GameParseException("hasResource must be a positive number" + thisErrorMsg());
+    }
+    if (s.length == 1) {
+      hasResource = splitOnColon(value + ":PUs");
+    }
+    else {
+      for (int i = 1; i < s.length; i++) {
+        // validate that this resource exists in the xml
+        final Resource r = getData().getResourceList().getResource(s[i]);
+        if (r == null) {
+          throw new GameParseException("No resource called: " + s[i] + thisErrorMsg());
+        }
+      }
+      hasResource = s;
+    }
+  }
+
+  private void setHasResource(final String[] value) {
+    hasResource = value;
+  }
+
+  public String[] getHasResource() {
+    return hasResource;
+  }
+
+  private void resetHasResource() {
+    hasResource = null;
+  }
+
   private int getAtWarCount() {
     return atWarCount;
   }
@@ -756,6 +793,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     // check for AI controlled player
     if (objectiveMet && getIsAI() != null) {
       objectiveMet = checkIsAI(players);
+    }
+    // check for resources
+    if (objectiveMet && hasResource != null) {
+      objectiveMet = checkHasResource(players);
     }
     // get attached to player
     final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
@@ -1064,6 +1105,18 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return found >= techCount;
   }
 
+  @VisibleForTesting
+  public boolean checkHasResource(final List<GamePlayer> players) {
+    int itotal = 0;
+    for (GamePlayer player : players) {
+      for (int i = 1; i < hasResource.length; i++) {
+        final Resource resource = getData().getResourceList().getResource(hasResource[i]);
+        itotal += player.getResources().getQuantity(resource);
+      }
+    }
+    return itotal >= getInt(hasResource[0]);
+  }
+
   @Override
   public void validate(final GameState data) {
     validateNames(alliedOwnershipTerritories);
@@ -1100,6 +1153,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             this::resetAtWarPlayers);
       case "atWarCount":
         return MutableProperty.ofReadOnly(this::getAtWarCount);
+      case "haveResources":
+        return MutableProperty.of(
+            this::setHasResource,
+            this::setHasResource,
+            this::getHasResource,
+            this::resetHasResource);
       case "destroyedTUV":
         return MutableProperty.ofString(
             this::setDestroyedTuv, this::getDestroyedTuv, this::resetDestroyedTuv);

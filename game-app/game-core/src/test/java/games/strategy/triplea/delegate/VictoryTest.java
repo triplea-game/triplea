@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -21,8 +22,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
@@ -40,6 +43,7 @@ import org.triplea.java.collections.IntegerMap;
  * that we don't want to mess with, so "Victory" is more of an xml purely for testing purposes, and
  * probably should never be played.
  */
+/* Added testing for hasResource 8/22/24 */
 class VictoryTest {
   private final GameData gameData = TestMapGameData.VICTORY_TEST.getGameData();
   private final GamePlayer italians = GameDataTestUtil.italians(gameData);
@@ -63,6 +67,8 @@ class VictoryTest {
   private IntegerMap<Resource> italianResources;
   private MoveDelegate moveDelegate;
   private PurchaseDelegate purchaseDelegate;
+
+  private final RulesAttachment attachment = new RulesAttachment("Test attachment", null, gameData);
 
   @BeforeEach
   void setUp() {
@@ -528,5 +534,51 @@ class VictoryTest {
     final String error = purchaseDelegate.purchase(purchaseList);
     assertNull(error);
     assertEquals(italianResources, italians.getResources().getResourcesCopy());
+  }
+
+  @Test
+  void testHasResourceWithOnePlayer() throws GameParseException {
+    final List<GamePlayer> players1 = List.of(italians);
+    /* italian starts with 16 PUs, 50 Fuel and 20 Ore */
+    /* testing default value "PUs" for hasResource */
+    attachment.setHasResource("15");
+    assertTrue(attachment.checkHasResource(players1));
+    attachment.setHasResource("20");
+    assertFalse(attachment.checkHasResource(players1));
+    /* testing for one resource */
+    attachment.setHasResource("20:Ore");
+    assertTrue(attachment.checkHasResource(players1));
+    attachment.setHasResource("25:Ore");
+    assertFalse(attachment.checkHasResource(players1));
+    /* testing multiple resources */
+    attachment.setHasResource("35:PUs:Ore");
+    assertTrue(attachment.checkHasResource(players1));
+    attachment.setHasResource("40:PUs:Ore");
+    assertFalse(attachment.checkHasResource(players1));
+  }
+
+  @Test
+  void testHasResourceWithTwoPlayers() throws GameParseException {
+    final List<GamePlayer> players2 = List.of(italians, germans);
+    /* italian starts with 16 PUs, 50 Fuel and 20 Ore */
+    /* germany starts with 40 PUs */
+    /* testing default value "PUs" for hasResource */
+    /* 16 + 40 */
+    attachment.setHasResource("55");
+    assertTrue(attachment.checkHasResource(players2));
+    attachment.setHasResource("60");
+    assertFalse(attachment.checkHasResource(players2));
+    /* testing for one resource */
+    /* 20 + 0 */
+    attachment.setHasResource("20:Ore");
+    assertTrue(attachment.checkHasResource(players2));
+    attachment.setHasResource("25:Ore");
+    assertFalse(attachment.checkHasResource(players2));
+    /* testing multiple resources */
+    /* 16 + 40 + 20 + 0 */
+    attachment.setHasResource("75:PUs:Ore");
+    assertTrue(attachment.checkHasResource(players2));
+    attachment.setHasResource("80:PUs:Ore");
+    assertFalse(attachment.checkHasResource(players2));
   }
 }
