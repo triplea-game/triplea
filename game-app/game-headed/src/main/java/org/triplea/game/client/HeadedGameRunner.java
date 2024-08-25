@@ -2,7 +2,16 @@ package org.triplea.game.client;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static games.strategy.engine.framework.CliProperties.*;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD_PREFIX;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_LOBBY;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_LOCAL;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_PBEM;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_PBF;
 import static games.strategy.triplea.Constants.PROPERTY_FALSE;
 import static games.strategy.triplea.Constants.PROPERTY_TRUE;
 
