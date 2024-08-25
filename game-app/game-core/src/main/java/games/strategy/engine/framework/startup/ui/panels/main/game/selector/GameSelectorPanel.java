@@ -359,7 +359,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     }
   }
 
-  private void gameSelected(final Path gameFile) {
+  public void gameSelected(final Path gameFile) {
     BackgroundTaskRunner.runInBackground(
         "Loading map...",
         () -> {
