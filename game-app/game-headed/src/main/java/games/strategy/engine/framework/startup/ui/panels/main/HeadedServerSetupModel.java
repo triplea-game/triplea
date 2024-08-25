@@ -57,8 +57,7 @@ public class HeadedServerSetupModel {
   }
 
   /**
-   * Starts the game server and displays the game start screen afterwards, awaiting remote game
-   * clients.
+   * Starts the game server and then displays the game start screen, awaiting remote game clients.
    */
   public ServerModel showServer() {
     final ServerModel serverModel = new ServerModel(gameSelectorModel, new HeadedLaunchAction(ui));
@@ -81,7 +80,7 @@ public class HeadedServerSetupModel {
         () -> {
           setGameTypePanel(new ServerSetupPanel(serverModel, gameSelectorModel));
 
-          // for whatever reason, the server window is showing very very small, causing the nation
+          // for whatever reason, the server window is showing very, very small, causing the nation
           // info to be cut and requiring scroll bars
           final int x = Math.max(ui.getPreferredSize().width, 800);
           final int y = Math.max(ui.getPreferredSize().height, 660);
@@ -92,7 +91,7 @@ public class HeadedServerSetupModel {
 
   /**
    * A method that establishes a connection to a remote game and displays the game start screen
-   * afterwards if the connection was successfully established.
+   * after the connection was successfully established.
    */
   public void showClient() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
@@ -123,7 +122,8 @@ public class HeadedServerSetupModel {
   /**
    * Executes a login sequence prompting the user for their lobby username+password and sends it to
    * server. If successful the user is presented with the lobby frame. Failure cases are handled and
-   * user is presented with another try or they can abort. In the abort case this method is a no-op.
+   * user is presented with another try, or they can abort. In the abort case this method is a
+   * no-op.
    */
   public void login() {
     new LobbyLogin(ui)

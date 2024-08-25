@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.triplea.game.client.HeadedGameRunner;
@@ -26,35 +27,35 @@ public class MainFrame {
 
   private static MainFrame instance;
 
-  private final JFrame mainFrame;
+  private final JFrame mainJFrame;
   private final MainPanel mainPanel;
   private final List<Runnable> quitActions = new ArrayList<>();
 
   private MainFrame(
       final HeadedServerSetupModel headedServerSetupModel,
       final GameSelectorModel gameSelectorModel) {
-    mainFrame =
+    mainJFrame =
         JFrameBuilder.builder()
             .title("TripleA")
             .iconImage(EngineImageLoader.loadFrameIcon())
             .windowClosedAction(HeadedGameRunner::exitGameIfNoWindowsVisible)
             .build();
-    BackgroundTaskRunner.setMainFrame(mainFrame);
+    BackgroundTaskRunner.setMainFrame(mainJFrame);
 
-    LookAndFeelSwingFrameListener.register(mainFrame);
+    LookAndFeelSwingFrameListener.register(mainJFrame);
 
     final Runnable quitAction =
         () -> {
           quitActions.forEach(Runnable::run);
-          mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+          mainJFrame.dispatchEvent(new WindowEvent(mainJFrame, WindowEvent.WINDOW_CLOSING));
         };
 
     mainPanel =
         new MainPanelBuilder(quitAction).buildMainPanel(headedServerSetupModel, gameSelectorModel);
-    mainFrame.add(mainPanel);
-    mainFrame.pack();
+    mainJFrame.add(mainPanel);
+    mainJFrame.pack();
 
-    headedServerSetupModel.setUi(mainFrame);
+    headedServerSetupModel.setUi(mainJFrame);
   }
 
   public static void buildMainFrame(
@@ -67,14 +68,20 @@ public class MainFrame {
   public static void show() {
     SwingUtilities.invokeLater(
         () -> {
-          instance.mainFrame.requestFocus();
-          instance.mainFrame.toFront();
-          instance.mainFrame.setVisible(true);
+          instance.mainJFrame.requestFocus();
+          instance.mainJFrame.toFront();
+          instance.mainJFrame.setVisible(true);
         });
   }
 
+  public static void startGameDirectly(final HeadedServerSetupModel headedServerSetupModel) {
+    Consumer<MainPanel> mainPanelLaunchAction =
+        MainPanelBuilder.getMainPanelLaunchAction(headedServerSetupModel);
+    SwingUtilities.invokeLater(() -> mainPanelLaunchAction.accept(instance.mainPanel));
+  }
+
   public static void hide() {
-    SwingUtilities.invokeLater(() -> instance.mainFrame.setVisible(false));
+    SwingUtilities.invokeLater(() -> instance.mainJFrame.setVisible(false));
   }
 
   public static void addQuitAction(final Runnable onQuitAction) {

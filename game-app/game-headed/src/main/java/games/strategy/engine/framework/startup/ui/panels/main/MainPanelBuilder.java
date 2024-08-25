@@ -5,8 +5,10 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import java.util.Optional;
+import java.util.function.Consumer;
 import javax.swing.JOptionPane;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.ThreadRunner;
 
@@ -31,11 +33,7 @@ public class MainPanelBuilder {
         new MainPanel(
             quitAction,
             gameSelectorPanel,
-            uiPanel -> {
-              final var setupPanel = headedServerSetupModel.getPanel();
-              setupPanel.getLauncher().ifPresent(launcher -> launch(uiPanel, launcher));
-              setupPanel.postStartGame();
-            },
+            getMainPanelLaunchAction(headedServerSetupModel),
             Optional.ofNullable(headedServerSetupModel.getPanel())
                 .map(SetupModel::getChatModel)
                 .orElse(null),
@@ -45,7 +43,16 @@ public class MainPanelBuilder {
     return mainPanel;
   }
 
-  private void launch(MainPanel uiPanel, ILauncher launcher) {
+  public static @NotNull Consumer<MainPanel> getMainPanelLaunchAction(
+      HeadedServerSetupModel headedServerSetupModel) {
+    return uiPanel -> {
+      final var setupPanel = headedServerSetupModel.getPanel();
+      setupPanel.getLauncher().ifPresent(launcher -> launch(uiPanel, launcher));
+      setupPanel.postStartGame();
+    };
+  }
+
+  private static void launch(MainPanel uiPanel, ILauncher launcher) {
     final WaitWindow gameLoadingWindow = new WaitWindow();
     final var frame = JOptionPane.getFrameForComponent(uiPanel);
     gameLoadingWindow.setLocationRelativeTo(frame);
