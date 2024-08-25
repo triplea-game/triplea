@@ -2841,3 +2841,9 @@
     <br>In 1995 a meteor struck down in Italy. From it a formerly unknown
     <br>type of crystal grew and quickly spread around the world. The new
     <br>substance was named Tiberium.
+- mapName: Hearts of Iron 2-Europe
+  mapCategory: Experimental
+  url: https://github.com/triplea-maps/HOI2Europe
+  img: https://github.com/triplea-maps/HOI2Europe/blob/master/HOI2Europe/preview.png
+  version: 1
+  description: World War 2 in Europe starting in 1941
