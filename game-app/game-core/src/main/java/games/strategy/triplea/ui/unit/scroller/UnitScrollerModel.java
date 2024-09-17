@@ -29,8 +29,9 @@ class UnitScrollerModel {
             .and(
                 (Matches.unitHasMovementLeft())
                     // add transported units that have not landed
-                    .or(Matches.unitIsBeingTransported()
-                        .and(Matches.unitWasUnloadedThisTurn().negate()))
+                    .or(
+                        Matches.unitIsBeingTransported()
+                            .and(Matches.unitWasUnloadedThisTurn().negate()))
                     // including units that cannot move, that have not moved
                     // that can be transported or that can receive movement bonus
                     .or(
