@@ -67,7 +67,7 @@ public enum SettingsWindow {
   public void open(final Frame owner) {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     if (dialog == null) {
-      dialog = new JDialog(owner, "Settings");
+      dialog = new JDialog(owner, "Engine Preferences");
       dialog.setContentPane(newContentPane());
       dialog.setMinimumSize(new Dimension(400, 50));
       dialog.pack();
@@ -199,19 +199,29 @@ public enum SettingsWindow {
         .horizontalAlignmentCenter()
         .boxLayoutHorizontal()
         .addHorizontalGlue()
-        .add(new JButtonBuilder().title("Save").actionListener(this::saveSettings).build())
+        .add(new JButtonBuilder()
+                .title("Save")
+                .toolTipText("Save changes")
+                .actionListener(this::saveSettings)
+                .build())
         .addHorizontalStrut(5)
-        .add(new JButtonBuilder().title("Close").actionListener(this::close).build())
+        .add(new JButtonBuilder()
+                .title("Close")
+                .toolTipText("Close settings menu")
+                .actionListener(this::close)
+                .build())
         .addHorizontalStrut(5)
         .add(
             new JButtonBuilder()
                 .title("Reset to Saved")
+                .toolTipText("Reset settings to their last saved state")
                 .actionListener(this::resetSettings)
                 .build())
         .addHorizontalStrut(5)
         .add(
             new JButtonBuilder()
                 .title("Reset to Default")
+                .toolTipText("Reset settings to default settings")
                 .actionListener(this::resetSettingsToDefault)
                 .build())
         .addHorizontalGlue()
