@@ -2848,3 +2848,10 @@
   version: 1
   description: |
     <br>World War 2 in Europe starting in 1941
+- mapName: Blood and Iron
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/blood_and_iron/archive/master.zip
+  img: https://github.com/triplea-maps/blood_and_iron/blob/master/preview.png
+  version: 1
+  description: |
+    <br>World War 2 on a world map starting in 1941
