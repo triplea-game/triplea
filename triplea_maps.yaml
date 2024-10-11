@@ -2844,14 +2844,14 @@
 - mapName: Hearts of Iron 2-Europe
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/HOI2Europe/archive/master.zip
-  img: https://github.com/triplea-maps/HOI2Europe/blob/master/HOI2Europe/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/HOI2Europe/blob/master/HOI2Europe/preview.png
   version: 1
   description: |
     <br>World War 2 in Europe starting in 1941
 - mapName: Blood and Iron
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/blood_and_iron/archive/master.zip
-  img: https://github.com/triplea-maps/blood_and_iron/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/blood_and_iron/blob/master/preview.png
   version: 1
   description: |
     <br>World War 2 on a world map starting in 1941
