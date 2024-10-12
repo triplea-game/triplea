@@ -2855,3 +2855,10 @@
   version: 1
   description: |
     <br>World War 2 on a world map starting in 1941
+- mapName: tiberian_conquest_au
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/tiberian_conquest_au/archive/master.zip
+  img: https://raw.githubusercontent.com/triplea-maps/tiberian_conquest_au/blob/master/preview.png
+  version: 1
+  description: |
+    <br>Tiberian Conquest mod for TripleA, the Australian war theatre, by Fei. 
