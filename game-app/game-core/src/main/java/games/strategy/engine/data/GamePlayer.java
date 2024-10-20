@@ -201,7 +201,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     if (data == null) {
       return currentPlayers;
     }
-    for (final GamePlayer player : data.getPlayerList().getSortedPlayers()) {
+    for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       currentPlayers.put(player.getName(), player.getPlayerType().name);
     }
     return currentPlayers;

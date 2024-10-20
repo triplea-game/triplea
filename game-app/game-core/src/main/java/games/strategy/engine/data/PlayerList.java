@@ -83,7 +83,7 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
   /** an iterator of a new ArrayList copy of the players. */
   @Override
   public Iterator<GamePlayer> iterator() {
-    return getSortedPlayers().iterator();
+    return getPlayers().iterator();
   }
 
   public Stream<GamePlayer> stream() {
