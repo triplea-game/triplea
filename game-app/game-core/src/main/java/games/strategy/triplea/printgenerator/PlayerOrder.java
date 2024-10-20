@@ -6,6 +6,7 @@ import games.strategy.triplea.delegate.BidPlaceDelegate;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.InitializationDelegate;
+import games.strategy.triplea.util.PlayerOrderComparator;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +28,7 @@ class PlayerOrder {
 
   void saveToFile(final PrintGenerationData printData) throws IOException {
     for (final GameStep currentStep : printData.getData().getSequence()) {
-      if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
+      if (currentStep.getDelegate() != null) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();
         if (delegateClassName.equals(InitializationDelegate.class.getName())
             || delegateClassName.equals(BidPurchaseDelegate.class.getName())
@@ -45,6 +46,7 @@ class PlayerOrder {
         playerSet.add(currentGamePlayer);
       }
     }
+    playerSet.sort(new PlayerOrderComparator(printData.getData()));
     Files.createDirectory(printData.getOutDir());
     final Path outFile = printData.getOutDir().resolve("General Information.csv");
     try (Writer turnWriter =
