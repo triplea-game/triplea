@@ -86,7 +86,7 @@ public class PlayerList extends GameDataComponent implements Iterable<GamePlayer
     return getSortedPlayers().iterator();
   }
 
-  private Stream<GamePlayer> stream() {
+  public Stream<GamePlayer> stream() {
     return players.values().stream();
   }
 
